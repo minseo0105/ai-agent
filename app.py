@@ -1,8 +1,7 @@
 import streamlit as st
 import anthropic
 import requests
-import zipfile
-import io
+import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
@@ -77,24 +76,10 @@ def calculate(expression):
     except Exception as e:
         return f"계산 중 오류: {e}"
 
-@st.cache_data(ttl=86400)
+@st.cache_data
 def load_corp_codes():
-    url = "https://opendart.fss.or.kr/api/corpCode.xml"
-    params = {"crtfc_key": DART_API_KEY}
-    response = requests.get(url, params=params, timeout=30)
-
-    zip_file = zipfile.ZipFile(io.BytesIO(response.content))
-    xml_data = zip_file.read("CORPCODE.xml")
-    root = ET.fromstring(xml_data)
-
-    corp_map = {}
-    for corp in root.findall("list"):
-        name = corp.find("corp_name").text
-        code = corp.find("corp_code").text
-        if name not in corp_map:
-            corp_map[name] = []
-        corp_map[name].append(code)
-    return corp_map
+    with open("corp_codes.json", "r", encoding="utf-8") as f:
+        return json.load(f)
 
 def try_fetch_disclosures(corp_code):
     url = "https://opendart.fss.or.kr/api/list.json"
