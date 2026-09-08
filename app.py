@@ -7,6 +7,48 @@ from datetime import datetime
 
 st.set_page_config(page_title="AI 에이전트", page_icon="🤖", layout="wide")
 
+st.markdown("""
+<style>
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        max-width: 800px;
+    }
+
+    h1 {
+        font-size: 1.8rem !important;
+    }
+
+    [data-testid="stChatMessage"] {
+        border-radius: 16px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+        background-color: #f0f2f6;
+    }
+
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
+        background-color: #eef6ff;
+    }
+
+    [data-testid="stChatInput"] {
+        border-radius: 24px;
+    }
+
+    button {
+        border-radius: 8px !important;
+    }
+
+    [data-testid="stSidebar"] {
+        min-width: 250px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
 tools = [
@@ -90,10 +132,17 @@ def try_fetch_disclosures(corp_code):
         "end_de": "20261231",
         "page_count": 5
     }
-    response = requests.get(url, params=params, timeout=30)
-    data = response.json()
-    if data["status"] == "000" and data["list"]:
-        return data["list"]
+    for attempt in range(3):
+        try:
+            response = requests.get(url, params=params, timeout=20)
+            data = response.json()
+            if data["status"] == "000" and data["list"]:
+                return data["list"]
+            return None
+        except Exception:
+            if attempt == 2:
+                return None
+            continue
     return None
 
 def get_disclosures(company_name):
@@ -130,17 +179,14 @@ def get_disclosures(company_name):
     matched_name, codes = candidates[0]
 
     for code in codes:
-        try:
-            filings = try_fetch_disclosures(code)
-        except Exception:
-            continue
+        filings = try_fetch_disclosures(code)
         if filings:
             results = []
             for item in filings:
                 results.append(item["rcept_dt"] + " - " + item["report_nm"])
             return f"[{matched_name}]\n" + "\n".join(results)
 
-    return f"'{matched_name}'의 최근 공시가 없어요."
+    return f"'{matched_name}'의 최근 공시를 조회하지 못했어요. 잠시 후 다시 시도해주세요."
 
 def search_law(query):
     url = "http://www.law.go.kr/DRF/lawSearch.do"
