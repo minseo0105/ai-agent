@@ -1,6 +1,8 @@
 import streamlit as st
 import anthropic
 import requests
+import zipfile
+import io
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
@@ -75,27 +77,57 @@ def calculate(expression):
     except Exception as e:
         return f"계산 중 오류: {e}"
 
+@st.cache_data(ttl=86400)
+def load_corp_codes():
+    url = "https://opendart.fss.or.kr/api/corpCode.xml"
+    params = {"crtfc_key": DART_API_KEY}
+    response = requests.get(url, params=params)
+
+    zip_file = zipfile.ZipFile(io.BytesIO(response.content))
+    xml_data = zip_file.read("CORPCODE.xml")
+    root = ET.fromstring(xml_data)
+
+    corp_map = {}
+    for corp in root.findall("list"):
+        name = corp.find("corp_name").text
+        code = corp.find("corp_code").text
+        corp_map[name] = code
+    return corp_map
+
 def get_disclosures(company_name):
-    known_companies = {
-        "삼성전자": "00126380",
-        "네이버": "00266961",
-        "NAVER": "00266961",
-        "SK하이닉스": "00164779",
-        "카카오": "00258801"
-    }
-    if company_name not in known_companies:
-        return f"'{company_name}'의 고유번호를 아직 몰라요."
-    corp_code = known_companies[company_name]
+    corp_map = load_corp_codes()
+
+    corp_code = None
+    matched_name = company_name
+
+    if company_name in corp_map:
+        corp_code = corp_map[company_name]
+    else:
+        for name, code in corp_map.items():
+            if company_name in name:
+                corp_code = code
+                matched_name = name
+                break
+
+    if corp_code is None:
+        return f"'{company_name}' 회사를 DART에서 찾지 못했어요."
+
     url = "https://opendart.fss.or.kr/api/list.json"
     params = {"crtfc_key": DART_API_KEY, "corp_code": corp_code, "page_count": 5}
     response = requests.get(url, params=params)
     data = response.json()
+
     if data["status"] != "000":
-        return f"조회 실패: {data['message']}"
+        return f"'{matched_name}' 조회 실패: {data['message']}"
+
     results = []
     for item in data["list"]:
         results.append(item["rcept_dt"] + " - " + item["report_nm"])
-    return "\n".join(results)
+
+    if not results:
+        return f"'{matched_name}'의 최근 공시가 없어요."
+
+    return f"[{matched_name}]\n" + "\n".join(results)
 
 def search_law(query):
     url = "http://www.law.go.kr/DRF/lawSearch.do"
@@ -143,14 +175,12 @@ def call_claude(messages):
 
     return extract_text(response.content)
 
-# ---- 여기부터 화면 부분 ----
-
 with st.sidebar:
     st.header("사용 가능한 기능")
     st.markdown("""
     - 🕐 현재 시각 / 요일
     - 🧮 계산기
-    - 📊 DART 기업 공시 조회
+    - 📊 DART 기업 공시 조회 (전체 회사)
     - ⚖️ 법령 검색
     """)
     st.divider()
