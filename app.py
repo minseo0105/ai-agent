@@ -4,6 +4,8 @@ import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
+st.set_page_config(page_title="AI 에이전트", page_icon="🤖", layout="wide")
+
 client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
 tools = [
@@ -141,26 +143,45 @@ def call_claude(messages):
 
     return extract_text(response.content)
 
-st.title("나만의 AI 에이전트")
+# ---- 여기부터 화면 부분 ----
+
+with st.sidebar:
+    st.header("사용 가능한 기능")
+    st.markdown("""
+    - 🕐 현재 시각 / 요일
+    - 🧮 계산기
+    - 📊 DART 기업 공시 조회
+    - ⚖️ 법령 검색
+    """)
+    st.divider()
+    st.caption("예시: '삼성전자 최근 공시 알려줘'")
+    st.divider()
+    if st.button("🔄 대화 초기화"):
+        st.session_state.messages = []
+        st.rerun()
+
+st.title("🤖 나만의 AI 에이전트")
+st.caption("DART 공시 조회 · 법령 검색 · 계산기 · 시계 기능을 갖춘 어시스턴트예요")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 for msg in st.session_state.messages:
     if msg["role"] in ["user", "assistant"] and isinstance(msg["content"], str):
-        with st.chat_message(msg["role"]):
+        avatar = "🧑" if msg["role"] == "user" else "🤖"
+        with st.chat_message(msg["role"], avatar=avatar):
             st.write(msg["content"])
 
 user_input = st.chat_input("무엇이든 물어보세요")
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
-    with st.chat_message("user"):
+    with st.chat_message("user", avatar="🧑"):
         st.write(user_input)
 
     reply = call_claude(st.session_state.messages)
 
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar="🤖"):
         st.write(reply)
 
     st.session_state.messages.append({"role": "assistant", "content": reply})
