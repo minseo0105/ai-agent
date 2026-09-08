@@ -91,43 +91,65 @@ def load_corp_codes():
     for corp in root.findall("list"):
         name = corp.find("corp_name").text
         code = corp.find("corp_code").text
-        corp_map[name] = code
+        if name not in corp_map:
+            corp_map[name] = []
+        corp_map[name].append(code)
     return corp_map
+
+def try_fetch_disclosures(corp_code):
+    url = "https://opendart.fss.or.kr/api/list.json"
+    params = {
+        "crtfc_key": DART_API_KEY,
+        "corp_code": corp_code,
+        "bgn_de": "20250101",
+        "end_de": "20261231",
+        "page_count": 5
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    if data["status"] == "000" and data["list"]:
+        return data["list"]
+    return None
 
 def get_disclosures(company_name):
     corp_map = load_corp_codes()
 
-    corp_code = None
-    matched_name = company_name
+    def normalize(text):
+        return text.replace(" ", "").lower()
 
-    if company_name in corp_map:
-        corp_code = corp_map[company_name]
+    query_norm = normalize(company_name)
+
+    exact_matches = []
+    partial_matches = []
+
+    for name, codes in corp_map.items():
+        name_norm = normalize(name)
+        if name_norm == query_norm:
+            exact_matches.append((name, codes))
+        elif query_norm in name_norm or name_norm in query_norm:
+            partial_matches.append((name, codes))
+
+    if exact_matches:
+        candidates = exact_matches
+    elif len(partial_matches) == 1:
+        candidates = partial_matches
+    elif len(partial_matches) > 1:
+        names = ", ".join([name for name, codes in partial_matches[:10]])
+        return f"'{company_name}'과 비슷한 회사가 여러 개 있어요: {names}\n정확한 이름으로 다시 물어봐주세요."
     else:
-        for name, code in corp_map.items():
-            if company_name in name:
-                corp_code = code
-                matched_name = name
-                break
-
-    if corp_code is None:
         return f"'{company_name}' 회사를 DART에서 찾지 못했어요."
 
-    url = "https://opendart.fss.or.kr/api/list.json"
-    params = {"crtfc_key": DART_API_KEY, "corp_code": corp_code, "page_count": 5}
-    response = requests.get(url, params=params)
-    data = response.json()
+    matched_name, codes = candidates[0]
 
-    if data["status"] != "000":
-        return f"'{matched_name}' 조회 실패: {data['message']}"
+    for code in codes:
+        filings = try_fetch_disclosures(code)
+        if filings:
+            results = []
+            for item in filings:
+                results.append(item["rcept_dt"] + " - " + item["report_nm"])
+            return f"[{matched_name}]\n" + "\n".join(results)
 
-    results = []
-    for item in data["list"]:
-        results.append(item["rcept_dt"] + " - " + item["report_nm"])
-
-    if not results:
-        return f"'{matched_name}'의 최근 공시가 없어요."
-
-    return f"[{matched_name}]\n" + "\n".join(results)
+    return f"'{matched_name}'의 최근 공시가 없어요."
 
 def search_law(query):
     url = "http://www.law.go.kr/DRF/lawSearch.do"
