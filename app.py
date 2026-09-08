@@ -81,7 +81,7 @@ def calculate(expression):
 def load_corp_codes():
     url = "https://opendart.fss.or.kr/api/corpCode.xml"
     params = {"crtfc_key": DART_API_KEY}
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=30)
 
     zip_file = zipfile.ZipFile(io.BytesIO(response.content))
     xml_data = zip_file.read("CORPCODE.xml")
@@ -105,14 +105,17 @@ def try_fetch_disclosures(corp_code):
         "end_de": "20261231",
         "page_count": 5
     }
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=30)
     data = response.json()
     if data["status"] == "000" and data["list"]:
         return data["list"]
     return None
 
 def get_disclosures(company_name):
-    corp_map = load_corp_codes()
+    try:
+        corp_map = load_corp_codes()
+    except Exception as e:
+        return "회사 목록을 불러오는 중 문제가 발생했어요. 잠시 후 다시 시도해주세요."
 
     def normalize(text):
         return text.replace(" ", "").lower()
@@ -142,7 +145,10 @@ def get_disclosures(company_name):
     matched_name, codes = candidates[0]
 
     for code in codes:
-        filings = try_fetch_disclosures(code)
+        try:
+            filings = try_fetch_disclosures(code)
+        except Exception:
+            continue
         if filings:
             results = []
             for item in filings:
@@ -154,7 +160,7 @@ def get_disclosures(company_name):
 def search_law(query):
     url = "http://www.law.go.kr/DRF/lawSearch.do"
     params = {"OC": LAW_OC, "target": "law", "type": "XML", "query": query}
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=30)
     root = ET.fromstring(response.content)
     results = []
     for law in root.findall("law"):
