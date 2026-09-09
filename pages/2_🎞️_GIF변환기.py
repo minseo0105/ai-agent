@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+from rembg import remove, new_session
 import io
 import math
 
@@ -8,22 +9,17 @@ st.set_page_config(page_title="이미지 → GIF 변환기", page_icon="🎞️"
 st.title("🎞️ 이미지를 움직이는 GIF로")
 st.caption("사진을 올리고, 원하는 움직임 효과를 골라보세요")
 
+@st.cache_resource
+def get_rembg_session():
+    return new_session("u2net")
+
 def remove_white_background(img, sensitivity=30):
-    img = img.convert("RGBA")
-    datas = img.getdata()
-    new_data = []
-    threshold = 255 - sensitivity
-    for item in datas:
-        r, g, b = item[0], item[1], item[2]
-        if r > threshold and g > threshold and b > threshold:
-            new_data.append((r, g, b, 0))
-        else:
-            new_data.append((r, g, b, 255))
-    img.putdata(new_data)
-    return img
+    session = get_rembg_session()
+    result = remove(img, session=session)
+    return result.convert("RGBA")
 
 st.subheader("1. 차량(전경) 이미지 업로드")
-uploaded_file = st.file_uploader("배경이 흰색인 이미지를 올려주세요", type=["png", "jpg", "jpeg"], key="fg")
+uploaded_file = st.file_uploader("배경을 제거할 이미지를 올려주세요", type=["png", "jpg", "jpeg"], key="fg")
 
 st.subheader("2. 배경 이미지 (선택사항)")
 bg_file = st.file_uploader("합성할 배경 이미지를 올려주세요", type=["png", "jpg", "jpeg"], key="bg")
@@ -36,13 +32,13 @@ if uploaded_file:
     sensitivity = 30
 
     if bg_file:
-        use_bg_composite = st.checkbox("흰색 배경 제거하고 합성하기", value=True)
+        use_bg_composite = st.checkbox("배경 제거하고 합성하기", value=True)
         if use_bg_composite:
-            sensitivity = st.slider("배경 제거 민감도 (높을수록 더 많이 지워요)", 10, 100, 30)
             background_img = Image.open(bg_file).convert("RGB")
 
     if use_bg_composite and background_img:
-        fg_transparent = remove_white_background(original, sensitivity)
+        with st.spinner("배경을 제거하고 있어요... (처음엔 시간이 좀 걸려요)"):
+            fg_transparent = remove_white_background(original, sensitivity)
 
         bg_resized = background_img.resize(original.size)
         preview = bg_resized.convert("RGBA")
@@ -50,12 +46,10 @@ if uploaded_file:
 
         st.image(preview, caption="합성 미리보기", use_container_width=True)
         working_image = preview.convert("RGB")
-        canvas_bg_color = None
         canvas_bg_image = bg_resized
     else:
         st.image(original, caption="원본 이미지", use_container_width=True)
         working_image = original
-        canvas_bg_color = (255, 255, 255)
         canvas_bg_image = None
 
     st.write("적용할 효과를 선택하세요")

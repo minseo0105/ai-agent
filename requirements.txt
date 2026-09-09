@@ -5,3 +5,6 @@ pandas
 openpyxl
 Pillow
 reportlab
+matplotlib
+rembg
+onnxruntime
