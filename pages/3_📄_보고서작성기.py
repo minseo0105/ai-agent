@@ -5,17 +5,23 @@ import json
 import time
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from collections import Counter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+from reportlab.lib.colors import HexColor
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 import io
 import textwrap
 
 st.set_page_config(page_title="보고서 작성기", page_icon="📄")
 
 st.title("📄 AI 보고서 작성기")
-st.caption("DART 공시, 법령, 웹 검색 결과를 활용해서 보고서를 작성해요")
+st.caption("DART 공시, 법령, 웹 검색 결과를 활용해서 차트가 포함된 보고서를 작성해요")
 
 client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
@@ -59,6 +65,8 @@ tools = [
     }
 ]
 
+chart_data_store = {"company": None, "dates": []}
+
 @st.cache_data
 def load_corp_codes():
     with open("corp_codes.json", "r", encoding="utf-8") as f:
@@ -71,7 +79,7 @@ def try_fetch_disclosures(corp_code):
         "corp_code": corp_code,
         "bgn_de": "20250101",
         "end_de": "20261231",
-        "page_count": 5
+        "page_count": 20
     }
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     last_error = None
@@ -124,8 +132,12 @@ def get_disclosures(company_name):
         filings, error = try_fetch_disclosures(code)
         if filings:
             results = []
+            dates = []
             for item in filings:
                 results.append(item["rcept_dt"] + " - " + item["report_nm"])
+                dates.append(item["rcept_dt"])
+            chart_data_store["company"] = matched_name
+            chart_data_store["dates"] = dates
             return f"[{matched_name}]\n" + "\n".join(results)
         last_error = error
 
@@ -170,6 +182,9 @@ def extract_text(content_blocks):
     return ""
 
 def generate_report(topic):
+    chart_data_store["company"] = None
+    chart_data_store["dates"] = []
+
     messages = [
         {"role": "user", "content": f"다음 주제로 한국어 보고서를 작성해줘. 필요하면 DART 공시 조회, 법령 검색, 웹 검색 도구를 활용해서 최신 정보를 담아줘. 제목, 서론, 본문(소제목 포함), 결론 형식으로 정리해줘. 마크다운 기호(#, * 등)는 쓰지 말고 일반 텍스트로만 작성해줘.\n\n주제: {topic}"}
     ]
@@ -195,6 +210,30 @@ def generate_report(topic):
 
     return extract_text(response.content)
 
+def create_chart_image(company, dates):
+    month_counts = Counter()
+    for d in dates:
+        month = d[:6]
+        month_counts[month] += 1
+
+    sorted_months = sorted(month_counts.keys())
+    labels = [f"{m[:4]}.{m[4:]}" for m in sorted_months]
+    values = [month_counts[m] for m in sorted_months]
+
+    plt.rcParams["font.family"] = "DejaVu Sans"
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.bar(labels, values, color="#4472C4")
+    ax.set_title(f"{company} Monthly Disclosure Count", fontsize=11)
+    ax.set_ylabel("Count")
+    plt.xticks(rotation=45, ha="right", fontsize=8)
+    plt.tight_layout()
+
+    img_buffer = io.BytesIO()
+    plt.savefig(img_buffer, format="png", dpi=150)
+    plt.close(fig)
+    img_buffer.seek(0)
+    return img_buffer
+
 topic = st.text_area("보고서 주제나 내용을 입력하세요", height=100,
                       placeholder="예: 삼성전자 최근 공시 내용을 바탕으로 요약 보고서를 작성해줘")
 
@@ -205,9 +244,19 @@ if st.button("보고서 생성"):
         with st.spinner("Claude가 필요한 정보를 찾고 보고서를 작성하고 있어요..."):
             report_text = generate_report(topic)
         st.session_state.report_text = report_text
+        st.session_state.chart_company = chart_data_store["company"]
+        st.session_state.chart_dates = chart_data_store["dates"]
 
 if "report_text" in st.session_state:
     st.subheader("생성된 보고서")
+
+    has_chart = st.session_state.get("chart_company") and st.session_state.get("chart_dates")
+
+    if has_chart:
+        chart_buf = create_chart_image(st.session_state.chart_company, st.session_state.chart_dates)
+        st.image(chart_buf, caption=f"{st.session_state.chart_company} 월별 공시 건수")
+        chart_buf.seek(0)
+
     st.write(st.session_state.report_text)
 
     pdfmetrics.registerFont(UnicodeCIDFont("HYSMyeongJo-Medium"))
@@ -215,11 +264,36 @@ if "report_text" in st.session_state:
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
-    c.setFont("HYSMyeongJo-Medium", 12)
+
+    y = height - 60
+
+    # 제목 배경 박스
+    c.setFillColor(HexColor("#4472C4"))
+    c.rect(0, y - 10, width, 50, fill=1, stroke=0)
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setFont("HYSMyeongJo-Medium", 16)
+    title_line = st.session_state.report_text.split("\n")[0][:30]
+    c.drawString(50, y + 8, title_line)
+    y -= 60
+
+    c.setFillColor(HexColor("#000000"))
+    c.setFont("HYSMyeongJo-Medium", 11)
+
+    # 차트 이미지 삽입
+    if has_chart:
+        chart_buf.seek(0)
+        from reportlab.lib.utils import ImageReader
+        img_reader = ImageReader(chart_buf)
+        img_w, img_h = 400, 200
+        if y - img_h < 60:
+            c.showPage()
+            y = height - 60
+            c.setFont("HYSMyeongJo-Medium", 11)
+        c.drawImage(img_reader, 50, y - img_h, width=img_w, height=img_h)
+        y -= (img_h + 20)
 
     x_margin = 50
-    y = height - 60
-    line_height = 20
+    line_height = 18
     max_chars_per_line = 45
 
     for paragraph in st.session_state.report_text.split("\n"):
@@ -232,7 +306,7 @@ if "report_text" in st.session_state:
         for line in wrapped_lines:
             if y < 60:
                 c.showPage()
-                c.setFont("HYSMyeongJo-Medium", 12)
+                c.setFont("HYSMyeongJo-Medium", 11)
                 y = height - 60
             c.drawString(x_margin, y, line)
             y -= line_height

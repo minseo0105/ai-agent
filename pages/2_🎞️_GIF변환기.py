@@ -25,6 +25,10 @@ if uploaded_file:
     with col4:
         use_drive = st.checkbox("달려가기(3D)", value=True)
 
+    direction = "왼쪽 → 오른쪽"
+    if use_drive:
+        direction = st.radio("달려가는 방향", ["왼쪽 → 오른쪽", "오른쪽 → 왼쪽"], horizontal=True)
+
     speed = st.slider("애니메이션 속도", min_value=1, max_value=5, value=3)
 
     if st.button("GIF로 변환하기"):
@@ -37,22 +41,20 @@ if uploaded_file:
                 frames = []
 
                 if use_drive:
-                    # 뒤에서 앞으로 다가오며 달려오는 느낌
-                    # : 작게(멀리) 시작해서 점점 크게(가까이) 변하며, 살짝 좌->우로 이동
                     for i in range(num_frames):
                         t = i / (num_frames - 1)
 
-                        # 크기: 0.7배(멀리) -> 1.0배(가까이)
                         scale = 0.7 + 0.3 * t
                         new_w, new_h = int(W * scale), int(H * scale)
                         resized = original.resize((new_w, new_h))
 
                         canvas = Image.new("RGB", (W, H), (255, 255, 255))
 
-                        # 좌우 이동 (전체 폭의 20% 정도만 살짝 이동)
-                        x_shift = int(-W * 0.12 + W * 0.24 * t)
+                        if direction == "왼쪽 → 오른쪽":
+                            x_shift = int(-W * 0.12 + W * 0.24 * t)
+                        else:
+                            x_shift = int(W * 0.12 - W * 0.24 * t)
 
-                        # 통통 튀기 옵션이 켜져 있으면 위아래도 살짝
                         bounce_offset = int(4 * abs(math.sin(t * 8 * 3.14159))) if use_bounce else 0
 
                         paste_x = (W - new_w) // 2 + x_shift
