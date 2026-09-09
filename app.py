@@ -136,25 +136,20 @@ def try_fetch_disclosures(corp_code):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     }
-    for attempt in range(2):
-        try:
-            response = requests.get(url, params=params, headers=headers, timeout=20)
-            data = response.json()
-            if data["status"] == "000" and data["list"]:
-                return data["list"]
-            return None
-        except Exception:
-            if attempt == 1:
-                return None
-            time.sleep(1)
-            continue
-    return None
+    try:
+        response = requests.get(url, params=params, headers=headers, timeout=30)
+        data = response.json()
+        if data["status"] == "000" and data["list"]:
+            return data["list"], None
+        return None, f"DART 응답: status={data.get('status')}, message={data.get('message')}"
+    except Exception as e:
+        return None, f"에러 종류: {type(e).__name__}, 내용: {str(e)}"
 
 def get_disclosures(company_name):
     try:
         corp_map = load_corp_codes()
     except Exception as e:
-        return "회사 목록을 불러오는 중 문제가 발생했어요. 잠시 후 다시 시도해주세요."
+        return f"회사 목록 로딩 실패: {str(e)}"
 
     def normalize(text):
         return text.replace(" ", "").lower()
@@ -183,15 +178,17 @@ def get_disclosures(company_name):
 
     matched_name, codes = candidates[0]
 
+    last_error = None
     for code in codes:
-        filings = try_fetch_disclosures(code)
+        filings, error = try_fetch_disclosures(code)
         if filings:
             results = []
             for item in filings:
                 results.append(item["rcept_dt"] + " - " + item["report_nm"])
             return f"[{matched_name}]\n" + "\n".join(results)
+        last_error = error
 
-    return f"'{matched_name}'의 최근 공시를 조회하지 못했어요. 잠시 후 다시 시도해주세요."
+    return f"'{matched_name}' 조회 실패. 진단 정보: {last_error}"
 
 def search_law(query):
     url = "http://www.law.go.kr/DRF/lawSearch.do"
