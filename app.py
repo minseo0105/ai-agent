@@ -2,6 +2,7 @@ import streamlit as st
 import anthropic
 import requests
 import json
+import time
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
@@ -132,16 +133,20 @@ def try_fetch_disclosures(corp_code):
         "end_de": "20261231",
         "page_count": 5
     }
-    for attempt in range(3):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    }
+    for attempt in range(4):
         try:
-            response = requests.get(url, params=params, timeout=20)
+            response = requests.get(url, params=params, headers=headers, timeout=25)
             data = response.json()
             if data["status"] == "000" and data["list"]:
                 return data["list"]
             return None
         except Exception:
-            if attempt == 2:
+            if attempt == 3:
                 return None
+            time.sleep(1)
             continue
     return None
 
