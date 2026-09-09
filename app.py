@@ -136,15 +136,15 @@ def try_fetch_disclosures(corp_code):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     }
-    for attempt in range(4):
+    for attempt in range(2):
         try:
-            response = requests.get(url, params=params, headers=headers, timeout=25)
+            response = requests.get(url, params=params, headers=headers, timeout=20)
             data = response.json()
             if data["status"] == "000" and data["list"]:
                 return data["list"]
             return None
         except Exception:
-            if attempt == 3:
+            if attempt == 1:
                 return None
             time.sleep(1)
             continue
@@ -273,7 +273,8 @@ if user_input:
     with st.chat_message("user", avatar="🧑"):
         st.write(user_input)
 
-    reply = call_claude(st.session_state.messages)
+    with st.spinner("답변을 준비하고 있어요..."):
+        reply = call_claude(st.session_state.messages)
 
     with st.chat_message("assistant", avatar="🤖"):
         st.write(reply)
