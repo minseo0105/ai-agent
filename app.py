@@ -95,11 +95,23 @@ tools = [
             },
             "required": ["query"]
         }
+    },
+    {
+        "name": "web_search",
+        "description": "실시간 뉴스, 최신 정보, 일반적인 인터넷 검색이 필요할 때 사용한다.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "검색할 키워드나 질문"}
+            },
+            "required": ["query"]
+        }
     }
 ]
 
 DART_API_KEY = st.secrets["DART_API_KEY"]
 LAW_OC = st.secrets["LAW_OC"]
+TAVILY_API_KEY = st.secrets["TAVILY_API_KEY"]
 
 def get_current_time():
     now = datetime.now()
@@ -136,14 +148,19 @@ def try_fetch_disclosures(corp_code):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     }
-    try:
-        response = requests.get(url, params=params, headers=headers, timeout=30)
-        data = response.json()
-        if data["status"] == "000" and data["list"]:
-            return data["list"], None
-        return None, f"DART 응답: status={data.get('status')}, message={data.get('message')}"
-    except Exception as e:
-        return None, f"에러 종류: {type(e).__name__}, 내용: {str(e)}"
+    last_error = None
+    for attempt in range(3):
+        try:
+            response = requests.get(url, params=params, headers=headers, timeout=25)
+            data = response.json()
+            if data["status"] == "000" and data["list"]:
+                return data["list"], None
+            return None, f"DART 응답: status={data.get('status')}, message={data.get('message')}"
+        except Exception as e:
+            last_error = f"에러 종류: {type(e).__name__}"
+            time.sleep(2)
+            continue
+    return None, last_error
 
 def get_disclosures(company_name):
     try:
@@ -188,7 +205,7 @@ def get_disclosures(company_name):
             return f"[{matched_name}]\n" + "\n".join(results)
         last_error = error
 
-    return f"'{matched_name}' 조회 실패. 진단 정보: {last_error}"
+    return f"'{matched_name}' 조회에 실패했어요 (네트워크 문제일 수 있어요). 잠시 후 다시 시도해주세요. 진단: {last_error}"
 
 def search_law(query):
     url = "http://www.law.go.kr/DRF/lawSearch.do"
@@ -203,6 +220,28 @@ def search_law(query):
     if not results:
         return f"'{query}'와 관련된 법령을 찾지 못했어요."
     return "\n".join(results)
+
+def web_search(query):
+    url = "https://api.tavily.com/search"
+    payload = {
+        "api_key": TAVILY_API_KEY,
+        "query": query,
+        "max_results": 5
+    }
+    try:
+        response = requests.post(url, json=payload, timeout=20)
+        data = response.json()
+        results = data.get("results", [])
+        if not results:
+            return f"'{query}'에 대한 검색 결과를 찾지 못했어요."
+        summary = []
+        for item in results:
+            title = item.get("title", "")
+            content = item.get("content", "")[:200]
+            summary.append(f"- {title}: {content}")
+        return "\n".join(summary)
+    except Exception as e:
+        return f"검색 중 오류가 발생했어요: {str(e)}"
 
 def extract_text(content_blocks):
     for block in content_blocks:
@@ -228,6 +267,8 @@ def call_claude(messages):
                     result = get_disclosures(block.input["company_name"])
                 elif block.name == "search_law":
                     result = search_law(block.input["query"])
+                elif block.name == "web_search":
+                    result = web_search(block.input["query"])
                 else:
                     result = "알 수 없는 도구예요."
                 tool_results.append({"type": "tool_result", "tool_use_id": block.id, "content": result})
@@ -243,16 +284,17 @@ with st.sidebar:
     - 🧮 계산기
     - 📊 DART 기업 공시 조회 (전체 회사)
     - ⚖️ 법령 검색
+    - 🔍 실시간 웹 검색
     """)
     st.divider()
-    st.caption("예시: '삼성전자 최근 공시 알려줘'")
+    st.caption("예시: '오늘 코스피 지수 뉴스 알려줘'")
     st.divider()
     if st.button("🔄 대화 초기화"):
         st.session_state.messages = []
         st.rerun()
 
 st.title("🤖 나만의 AI 에이전트")
-st.caption("DART 공시 조회 · 법령 검색 · 계산기 · 시계 기능을 갖춘 어시스턴트예요")
+st.caption("DART 공시 조회 · 법령 검색 · 웹 검색 · 계산기 · 시계 기능을 갖춘 어시스턴트예요")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
