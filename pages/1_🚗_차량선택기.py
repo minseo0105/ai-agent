@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
 from pathlib import Path
+import base64
 
 # =========================================================
-# 1. 기본 설정
+# 기본 설정
 # =========================================================
 st.set_page_config(
     page_title="내차만들기",
@@ -12,773 +13,402 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 현재 프로젝트 구조:
-# ai-agent/
-# ├─ app.py
-# ├─ sample_cars_v2.xlsx
-# ├─ car_images_real/
-# └─ pages/
-#    └─ 1_🚗_차량선택기.py
 BASE_DIR = Path(__file__).resolve().parent.parent
 EXCEL_PATH = BASE_DIR / "sample_cars_v2.xlsx"
-IMAGE_DIR = BASE_DIR / "car_images_real"
+IMAGE_DIR = BASE_DIR / "car_images_cutout"
 
 
-# =========================================================
-# 2. HTML 렌더링 헬퍼
-# =========================================================
 def html(content):
     clean = "\n".join(line.strip() for line in content.splitlines())
     st.markdown(clean, unsafe_allow_html=True)
 
 
+def image_data_uri(path):
+    if not path.exists():
+        return ""
+    suffix = path.suffix.lower()
+    mime = "image/png" if suffix == ".png" else "image/jpeg"
+    encoded = base64.b64encode(path.read_bytes()).decode("utf-8")
+    return f"data:{mime};base64,{encoded}"
+
+
 # =========================================================
-# 3. 디자인
+# PREMIUM LIGHT UI
 # =========================================================
 html("""
 <style>
 :root{
-    --navy:#071426;
-    --navy2:#102A52;
-    --blue:#2F67F6;
-    --violet:#6C55F5;
-    --ink:#111827;
-    --muted:#748195;
-    --line:#E6EBF3;
-    --panel:#FFFFFF;
-    --soft:#F5F7FB;
+ --ink:#101828; --muted:#667085; --line:#E8ECF2;
+ --blue:#2858F5; --navy:#07152B; --soft:#F7F8FA;
 }
-
-html, body, [class*="css"]{
-    font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-}
-
-.stApp{
-    background:
-        radial-gradient(circle at 85% 5%, rgba(47,103,246,.10), transparent 23%),
-        radial-gradient(circle at 8% 32%, rgba(108,85,245,.07), transparent 20%),
-        linear-gradient(180deg,#F9FAFC 0%,#F4F6FA 100%);
-}
-
-.block-container{
-    max-width:1040px;
-    padding-top:1.2rem;
-    padding-bottom:4rem;
-}
-
-header[data-testid="stHeader"]{background:transparent;}
-#MainMenu, footer{visibility:hidden;}
+html,body,[class*="css"]{font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.stApp{background:#F6F8FB}
+.block-container{max-width:1060px;padding-top:1rem;padding-bottom:3rem}
+header[data-testid="stHeader"]{background:rgba(246,248,251,.84);backdrop-filter:blur(12px)}
+#MainMenu,footer{visibility:hidden}
 
 /* HERO */
-.hero{
-    position:relative;
-    overflow:hidden;
-    border-radius:34px;
-    min-height:292px;
-    padding:54px 55px;
-    margin-bottom:24px;
-    color:white;
-    background:
-        radial-gradient(circle at 82% 20%,rgba(116,163,255,.20),transparent 22%),
-        linear-gradient(130deg,#061426 0%,#102A55 55%,#214BB5 100%);
-    box-shadow:0 28px 70px rgba(10,24,48,.20);
-}
-.hero:before{
-    content:"";
-    position:absolute;
-    width:250px;height:250px;
-    right:-45px;top:-95px;
-    border:1px solid rgba(255,255,255,.16);
-    border-radius:50%;
-    animation:heroOrbit 8s ease-in-out infinite;
-}
-.hero:after{
-    content:"";
-    position:absolute;
-    width:155px;height:155px;
-    right:95px;bottom:-95px;
-    border-radius:50%;
-    background:rgba(80,132,255,.15);
-    filter:blur(2px);
-    animation:heroFloat 6s ease-in-out infinite;
-}
-@keyframes heroOrbit{
-    0%,100%{transform:translate(0,0) rotate(0deg)}
-    50%{transform:translate(-12px,12px) rotate(7deg)}
-}
-@keyframes heroFloat{
-    0%,100%{transform:translateY(0) scale(1)}
-    50%{transform:translateY(-14px) scale(1.07)}
-}
-
-.eyebrow{
-    position:relative;z-index:2;
-    font-size:11px;font-weight:900;
-    letter-spacing:.20em;color:#BED5FF;
-    margin-bottom:13px;
-}
-.hero-title{
-    position:relative;z-index:2;
-    max-width:700px;
-    font-size:43px;font-weight:900;
-    line-height:1.19;letter-spacing:-.045em;
-}
-.hero-title b{
-    background:linear-gradient(90deg,#FFFFFF,#AFCBFF);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-.hero-desc{
-    position:relative;z-index:2;
-    max-width:665px;
-    margin-top:17px;
-    color:#D8E5F8;font-size:15px;line-height:1.75;
-}
-.hero-meta{
-    position:relative;z-index:2;
-    display:flex;gap:8px;flex-wrap:wrap;
-    margin-top:23px;
-}
-.hero-chip{
-    padding:7px 12px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.16);
-    background:rgba(255,255,255,.07);
-    color:#EDF4FF;font-size:10px;font-weight:800;
-}
+.hero{position:relative;overflow:hidden;border-radius:30px;padding:48px 50px;margin-bottom:18px;color:#fff;
+background:linear-gradient(122deg,#071426 0%,#102A51 60%,#244DA4 100%);
+box-shadow:0 22px 55px rgba(16,32,60,.13)}
+.hero:before{content:"";position:absolute;width:320px;height:320px;right:-120px;top:-170px;border-radius:50%;
+border:1px solid rgba(255,255,255,.12);animation:drift 8s ease-in-out infinite}
+.hero-kicker{font-size:10px;font-weight:900;letter-spacing:.18em;color:#ABC5FF}
+.hero-title{position:relative;z-index:2;margin-top:10px;font-size:41px;line-height:1.16;font-weight:900;letter-spacing:-.05em}
+.hero-title span{color:#C3D4FF}
+.hero-desc{position:relative;z-index:2;margin-top:14px;max-width:650px;font-size:13px;line-height:1.72;color:#D9E3F2}
+@keyframes drift{50%{transform:translate(-15px,15px)}}
 
 /* QUESTION */
-.q-head{
-    background:rgba(255,255,255,.94);
-    border:1px solid var(--line);
-    border-radius:26px;
-    padding:29px 31px 25px;
-    margin-bottom:15px;
-    box-shadow:0 12px 34px rgba(15,23,42,.05);
-}
-.step-row{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:10px;
-}
-.step-label{font-size:11px;font-weight:900;color:var(--blue);letter-spacing:.09em}
-.step-count{font-size:11px;font-weight:800;color:#9AA6B7}
-.progress{
-    height:6px;border-radius:999px;background:#E9EDF5;overflow:hidden;margin-bottom:23px;
-}
-.progress > div{
-    height:100%;border-radius:999px;
-    background:linear-gradient(90deg,var(--blue),var(--violet));
-    transition:width .35s ease;
-}
-.question-title{
-    font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-.035em;
-}
-.question-desc{
-    margin-top:7px;color:var(--muted);font-size:13px;line-height:1.6;
-}
+.step-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:23px 26px 21px;
+box-shadow:0 8px 22px rgba(15,23,42,.035);margin-bottom:14px}
+.step-top{display:flex;justify-content:space-between;font-size:10px;font-weight:850;color:#98A2B3}
+.step-top b{color:var(--blue);letter-spacing:.1em}
+.progress{height:4px;background:#EAEDF3;border-radius:999px;margin:10px 0 17px;overflow:hidden}
+.progress>div{height:100%;background:linear-gradient(90deg,#2858F5,#7257E7)}
+.step-title{font-size:23px;font-weight:900;letter-spacing:-.035em;color:var(--ink)}
+.step-desc{margin-top:5px;font-size:12px;color:var(--muted)}
 
-/* VISUAL OPTION */
-.visual-card{
-    height:290px;
-    border:1px solid #E4E9F1;
-    border-radius:26px;
-    background:linear-gradient(180deg,#FFFFFF 0%,#FBFCFE 100%);
-    overflow:hidden;
-    box-shadow:0 10px 28px rgba(15,23,42,.045);
-    transition:.22s ease;
-    margin-bottom:8px;
-}
-.visual-card:hover{
-    transform:translateY(-4px);
-    border-color:#B8CBF8;
-    box-shadow:0 18px 38px rgba(47,103,246,.09);
-}
-.visual-scene{
-    position:relative;
-    height:190px;
-    margin:14px;
-    border-radius:20px;
-    overflow:hidden;
-    background:
-        radial-gradient(circle at 73% 25%,rgba(255,255,255,.85),transparent 18%),
-        linear-gradient(145deg,#EEF4FF,#F4F0FF);
-}
-.visual-copy{
-    padding:4px 20px 18px;text-align:left;
-}
-.visual-title{
-    font-size:16px;font-weight:900;color:#182236;letter-spacing:-.02em;
-}
-.visual-desc{
-    margin-top:5px;font-size:12px;line-height:1.5;color:#8591A2;
-}
+.choice{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:22px;margin-bottom:7px;
+box-shadow:0 7px 20px rgba(15,23,42,.03);transition:.22s ease}
+.choice:hover{transform:translateY(-3px);border-color:#B7C5F8;box-shadow:0 15px 32px rgba(40,88,245,.08)}
+.choice-visual{height:174px;margin:9px;border-radius:17px;overflow:hidden;background:#F1F4F9}
+.choice-visual svg{width:100%;height:100%}
+.choice-copy{padding:8px 19px 18px}
+.choice-title{font-size:15px;font-weight:900;color:#172033}
+.choice-desc{margin-top:4px;font-size:11px;color:#8A95A6}
 
-/* SVG motion */
-.scene-svg{
-    width:100%;height:100%;
-}
-.float-a{animation:floatA 3.8s ease-in-out infinite}
-.float-b{animation:floatB 4.6s ease-in-out infinite}
-.drive{animation:drive 4.8s ease-in-out infinite}
-.pulse{animation:pulse 3s ease-in-out infinite;transform-origin:center}
-.rotate{animation:slowRotate 10s linear infinite;transform-origin:center}
-@keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
-@keyframes drive{0%,100%{transform:translateX(-4px)}50%{transform:translateX(8px)}}
-@keyframes pulse{0%,100%{transform:scale(.96);opacity:.80}50%{transform:scale(1.05);opacity:1}}
-@keyframes slowRotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+/* elegant animated scene */
+.scene-bg{animation:scene 7s ease-in-out infinite}
+.scene-car{animation:drive 5s ease-in-out infinite}
+.scene-float{animation:float 4s ease-in-out infinite}
+.scene-glow{animation:glow 2.8s ease-in-out infinite}
+@keyframes scene{50%{transform:translateX(-5px)}}
+@keyframes drive{0%,100%{transform:translateX(-8px)}50%{transform:translateX(12px)}}
+@keyframes float{50%{transform:translateY(-7px)}}
+@keyframes glow{0%,100%{opacity:.45}50%{opacity:1}}
 
-/* BUTTON */
-.stButton > button{
-    width:100%;
-    min-height:48px;
-    border-radius:14px !important;
-    border:1px solid #DBE2EC !important;
-    background:#FFFFFF !important;
-    color:#223047 !important;
-    font-weight:800 !important;
-    transition:.18s ease;
-}
-.stButton > button:hover{
-    transform:translateY(-1px);
-    color:var(--blue) !important;
-    border-color:#98B6FF !important;
-    box-shadow:0 8px 20px rgba(47,103,246,.08);
-}
-button[kind="primary"]{
-    background:linear-gradient(135deg,#2457D7,#6647E8) !important;
-    color:white !important;border:none !important;
-}
+/* STREAMLIT BUTTON */
+.stButton>button{min-height:42px;border-radius:12px!important;border:1px solid #DFE4EC!important;background:#fff!important;
+color:#26354B!important;font-size:12px!important;font-weight:800!important;box-shadow:none!important}
+.stButton>button:hover{border-color:#A7B9F7!important;color:#2858F5!important;box-shadow:0 6px 16px rgba(40,88,245,.07)!important}
+button[kind="primary"]{min-height:49px!important;color:#fff!important;border:none!important;
+background:linear-gradient(135deg,#2858F5,#624FE2)!important;box-shadow:0 10px 22px rgba(40,88,245,.18)!important}
 
-/* PERSONA */
-.persona-card{
-    position:relative;
-    overflow:hidden;
-    border-radius:30px;
-    padding:34px;
-    margin-bottom:18px;
-    color:white;
-    background:
-        radial-gradient(circle at 83% 21%,rgba(136,174,255,.19),transparent 20%),
-        linear-gradient(132deg,#071426 0%,#102958 60%,#2E317E 100%);
-    box-shadow:0 22px 52px rgba(15,23,42,.16);
-}
-.persona-card:after{
-    content:"";
-    position:absolute;
-    width:150px;height:150px;border-radius:50%;
-    right:-55px;bottom:-70px;
-    background:rgba(92,128,255,.15);
-    animation:heroFloat 5.5s ease-in-out infinite;
-}
-.persona-layout{
-    position:relative;z-index:2;
-    display:grid;
-    grid-template-columns:165px 1fr;
-    gap:28px;
-    align-items:center;
-}
-.persona-art{
-    height:165px;border-radius:25px;
-    display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
-    border:1px solid rgba(255,255,255,.13);
-    backdrop-filter:blur(9px);
-}
-.persona-art svg{width:135px;height:135px}
-.persona-label{
-    color:#AFC9FF;font-size:10px;font-weight:900;letter-spacing:.18em;
-}
-.persona-name{
-    margin-top:7px;font-size:33px;font-weight:900;letter-spacing:-.04em;
-}
-.persona-sub{
-    margin-top:5px;color:#D0DDF4;font-size:14px;font-weight:700;
-}
-.persona-copy{
-    margin-top:15px;color:#E3EAF6;font-size:13px;line-height:1.72;
-}
-.persona-quote{
-    margin-top:15px;padding:12px 15px;border-radius:14px;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.10);
-    color:#FFFFFF;font-size:12px;font-weight:700;
-}
-.tags{margin-top:14px}
-.tag{
-    display:inline-block;margin-right:5px;margin-bottom:5px;
-    padding:5px 10px;border-radius:999px;
-    background:rgba(255,255,255,.09);
-    border:1px solid rgba(255,255,255,.11);
-    color:#EAF1FF;font-size:10px;font-weight:700;
-}
+/* RESULT INTRO */
+.result-intro{padding:9px 3px 18px}
+.result-kicker{font-size:10px;font-weight:900;letter-spacing:.14em;color:#2858F5}
+.result-title{margin-top:5px;font-size:32px;font-weight:900;letter-spacing:-.045em;color:#101828}
+.result-desc{margin-top:5px;font-size:12px;color:#7B8798}
 
-/* CAR SHOWCASE */
-.car-stage{
-    position:relative;
-    border-radius:30px;
-    overflow:hidden;
-    background:
-        radial-gradient(circle at 50% 45%,rgba(217,227,245,.95),transparent 31%),
-        linear-gradient(180deg,#F8FAFD 0%,#EEF2F7 100%);
-    border:1px solid #E1E7F0;
-    box-shadow:0 18px 44px rgba(15,23,42,.075);
-    padding:24px 28px 26px;
-    margin-bottom:18px;
-}
-.car-stage:before{
-    content:"";
-    position:absolute;
-    width:64%;height:22px;
-    left:18%;bottom:38px;
-    border-radius:50%;
-    background:rgba(21,35,58,.15);
-    filter:blur(15px);
-}
-.car-top{
-    position:relative;z-index:2;
-    display:flex;justify-content:space-between;align-items:flex-start;
-}
-.smart-badge{
-    display:inline-block;
-    padding:6px 10px;border-radius:999px;
-    background:#E8EFFF;color:#355ED5;
-    font-size:10px;font-weight:900;letter-spacing:.07em;
-}
-.car-name{
-    margin-top:9px;font-size:30px;font-weight:900;color:#111827;letter-spacing:-.035em;
-}
-.car-sub{
-    margin-top:5px;color:#738094;font-size:12px;
-}
-.car-image-shell{
-    position:relative;z-index:2;
-    height:390px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
-}
-.car-image-shell img{
-    width:88% !important;
-    max-height:345px !important;
-    object-fit:contain !important;
-    border-radius:0 !important;
-    box-shadow:none !important;
-    animation:carFloat 4.2s ease-in-out infinite;
-}
-@keyframes carFloat{
-    0%,100%{transform:translateY(3px)}
-    50%{transform:translateY(-5px)}
-}
+/* PERSONA - no cartoon icon */
+.persona-card{position:relative;overflow:hidden;display:grid;grid-template-columns:190px 1fr;gap:27px;align-items:center;
+border-radius:27px;padding:26px 29px;margin-bottom:14px;color:#fff;
+background:linear-gradient(122deg,#07162B 0%,#102C55 68%,#29498D 100%);
+box-shadow:0 17px 38px rgba(15,23,42,.11)}
+.persona-visual{height:150px;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.persona-visual svg{width:100%;height:100%}
+.persona-label{color:#AFC6FF;font-size:9px;font-weight:900;letter-spacing:.17em}
+.persona-name{margin-top:5px;font-size:29px;font-weight:900;letter-spacing:-.04em}
+.persona-sub{margin-top:2px;font-size:13px;color:#D5DFF0;font-weight:750}
+.persona-copy{margin-top:9px;max-width:630px;font-size:12px;color:#E1E8F3;line-height:1.65}
+.persona-quote{display:inline-block;margin-top:10px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.07);
+border:1px solid rgba(255,255,255,.09);font-size:10px;color:#fff}
 
-/* MATCH */
-.match-grid{
-    position:relative;z-index:2;
-    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-}
-.match-item{
-    padding:13px 14px;border-radius:14px;
-    background:rgba(255,255,255,.76);
-    border:1px solid rgba(222,228,237,.95);
-    backdrop-filter:blur(5px);
-}
-.match-num{font-size:9px;font-weight:900;color:#3A66E2}
-.match-text{margin-top:3px;font-size:11px;font-weight:800;color:#26364E}
+/* VEHICLE CONFIGURATOR */
+.configurator{overflow:hidden;border-radius:29px;background:#fff;border:1px solid var(--line);
+box-shadow:0 14px 38px rgba(15,23,42,.05);margin-bottom:12px}
+.config-top{display:flex;justify-content:space-between;align-items:flex-start;padding:27px 29px 0}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#EEF3FF;color:#2858F5;font-size:9px;font-weight:900;letter-spacing:.08em}
+.vehicle-name{margin-top:8px;font-size:31px;font-weight:900;color:#101828;letter-spacing:-.045em}
+.vehicle-copy{margin-top:3px;color:#7C899A;font-size:11px}
+.match-score{text-align:right}
+.match-score small{display:block;font-size:9px;font-weight:900;color:#98A2B3;letter-spacing:.08em}
+.match-score strong{font-size:30px;color:#2858F5;letter-spacing:-.04em}
 
-/* COLOR + TERM */
-.control-card{
-    background:#FFFFFF;
-    border:1px solid #E4E9F1;
-    border-radius:24px;
-    padding:23px 24px;
-    margin-top:14px;
-    box-shadow:0 10px 28px rgba(15,23,42,.045);
-}
-.control-label{
-    font-size:11px;font-weight:900;color:#718096;letter-spacing:.10em;
-    margin-bottom:12px;
-}
-.term-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:9px;
-}
-.term-pill{
-    border-radius:16px;
-    padding:13px 8px;
-    text-align:center;
-    border:1px solid #DCE3ED;
-    background:#FAFBFD;
-    color:#354258;
-    font-size:12px;font-weight:900;
-}
-.term-pill.active{
-    border-color:#4C75E8;
-    background:linear-gradient(135deg,#EDF3FF,#F2EEFF);
-    color:#2857D4;
-}
+.vehicle-stage{position:relative;height:385px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+background:linear-gradient(180deg,#fff 0%,#F4F6F9 100%)}
+.vehicle-stage:before{content:"";position:absolute;width:70%;height:55%;border-radius:50%;
+background:radial-gradient(circle,rgba(222,228,238,.78),rgba(255,255,255,0) 70%)}
+.vehicle-stage:after{content:"";position:absolute;width:51%;height:15px;bottom:54px;border-radius:50%;background:rgba(21,32,49,.13);filter:blur(13px)}
+.vehicle-stage img{position:relative;z-index:2;width:84%;height:86%;object-fit:contain;
+filter:drop-shadow(0 18px 14px rgba(20,31,47,.10));animation:carfloat 4.8s ease-in-out infinite}
+@keyframes carfloat{50%{transform:translateY(-5px)}}
 
-/* QUOTE */
-.quote-card{
-    position:relative;overflow:hidden;
-    margin-top:16px;
-    border-radius:27px;padding:27px 29px;
-    color:white;
-    background:
-        radial-gradient(circle at 88% 18%,rgba(104,149,255,.19),transparent 20%),
-        linear-gradient(135deg,#071525,#122955 65%,#1E3A8A);
-    box-shadow:0 18px 42px rgba(15,23,42,.18);
-}
-.quote-row{
-    display:flex;justify-content:space-between;
-    padding:5px 0;color:#C7D4E7;font-size:12px;
-}
-.quote-divider{height:1px;background:rgba(255,255,255,.12);margin:14px 0}
-.monthly-label{color:#9FC0FF;font-size:10px;font-weight:900;letter-spacing:.08em}
-.monthly-fee{margin-top:4px;font-size:34px;font-weight:900;letter-spacing:-.04em}
-.monthly-note{margin-top:6px;color:#99A8BC;font-size:10px}
+.match-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 20px 20px}
+.match-item{border-top:1px solid #E7EAF0;padding:12px 4px 4px}
+.match-item b{display:block;font-size:8px;color:#2858F5;letter-spacing:.08em}
+.match-item span{display:block;margin-top:3px;color:#2C3A50;font-size:10px;font-weight:850}
 
-@media(max-width:720px){
-    .hero{padding:38px 26px;min-height:auto;border-radius:26px}
-    .hero-title{font-size:31px}
-    .persona-layout{grid-template-columns:1fr}
-    .persona-art{height:140px}
-    .car-image-shell{height:300px}
-    .match-grid{grid-template-columns:1fr}
+/* compact controls */
+.control-label{margin-top:10px;font-size:9px;font-weight:900;color:#66758A;letter-spacing:.11em}
+.control-sub{margin-top:2px;margin-bottom:4px;font-size:10px;color:#9AA5B4}
+
+/* QUOTE: light premium card, not another giant navy block */
+.quote-shell{margin-top:14px;padding:28px 30px;border-radius:27px;background:#fff;border:1px solid #E4E8EF;
+box-shadow:0 13px 34px rgba(15,23,42,.045)}
+.quote-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;padding-bottom:20px;border-bottom:1px solid #E8ECF2}
+.quote-kicker{font-size:9px;font-weight:900;letter-spacing:.11em;color:#2858F5}
+.quote-label{margin-top:6px;font-size:12px;color:#667085}
+.quote-fee{margin-top:1px;font-size:40px;font-weight:900;letter-spacing:-.055em;color:#101828}
+.quote-fee em{font-style:normal;color:#2858F5}
+.quote-chip{padding:9px 12px;border-radius:999px;background:#F1F5FF;color:#2858F5;font-size:10px;font-weight:850}
+.quote-details{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-top:17px}
+.quote-detail{padding:12px 13px;border-radius:14px;background:#F7F9FC}
+.quote-detail span{display:block;font-size:9px;color:#8B96A7}
+.quote-detail strong{display:block;margin-top:3px;font-size:11px;color:#26354B}
+.quote-note{margin-top:13px;font-size:9px;color:#A0A9B7}
+
+@media(max-width:760px){
+ .hero{padding:35px 25px}.hero-title{font-size:31px}
+ .persona-card{grid-template-columns:1fr}.persona-visual{height:135px}
+ .config-top{display:block}.match-score{text-align:left;margin-top:12px}
+ .vehicle-stage{height:300px}.match-row,.quote-details{grid-template-columns:1fr}
+ .quote-head{display:block}.quote-chip{display:inline-block;margin-top:12px}
 }
 </style>
 """)
 
 
 # =========================================================
-# 4. 질문용 동적 SVG 일러스트
+# QUESTION VISUALS - 라이프스타일 모션 이미지
 # =========================================================
-CITY_SCENE = """
-<svg class="scene-svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="sky1" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#EAF1FF"/>
-<stop offset="100%" stop-color="#F5EEFF"/>
-</linearGradient>
-<linearGradient id="car1" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#2F67F6"/>
-<stop offset="100%" stop-color="#654BE5"/>
-</linearGradient>
-</defs>
-<rect width="420" height="220" rx="24" fill="url(#sky1)"/>
-<circle class="pulse" cx="337" cy="47" r="24" fill="#FFFFFF" opacity=".9"/>
-<rect x="38" y="55" width="52" height="108" rx="8" fill="#B7C7E8"/>
-<rect x="102" y="29" width="66" height="134" rx="9" fill="#9FB4DF"/>
-<rect x="181" y="72" width="48" height="91" rx="7" fill="#C3CDE5"/>
-<rect x="243" y="45" width="75" height="118" rx="9" fill="#AABAE0"/>
-<g opacity=".85">
-<rect x="53" y="71" width="11" height="11" rx="2" fill="#F7FAFF"/>
-<rect x="70" y="71" width="11" height="11" rx="2" fill="#F7FAFF"/>
-<rect x="119" y="48" width="12" height="12" rx="2" fill="#F7FAFF"/>
-<rect x="139" y="48" width="12" height="12" rx="2" fill="#F7FAFF"/>
-<rect x="262" y="64" width="13" height="13" rx="2" fill="#F7FAFF"/>
-<rect x="285" y="64" width="13" height="13" rx="2" fill="#F7FAFF"/>
+CITY = """
+<svg viewBox="0 0 420 210">
+<defs><linearGradient id="csky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#DDE8FF"/><stop offset="1" stop-color="#F6F8FC"/></linearGradient></defs>
+<rect width="420" height="210" fill="url(#csky)"/>
+<g class="scene-bg" opacity=".75">
+<rect x="38" y="54" width="48" height="110" rx="5" fill="#8EA7CE"/><rect x="98" y="28" width="61" height="136" rx="5" fill="#6E8FC4"/>
+<rect x="174" y="72" width="47" height="92" rx="5" fill="#B7C5DA"/><rect x="236" y="43" width="70" height="121" rx="5" fill="#91A8CB"/>
+<rect x="319" y="81" width="50" height="83" rx="5" fill="#C2CCDA"/>
 </g>
-<rect x="0" y="163" width="420" height="57" fill="#DCE4F2"/>
-<rect x="0" y="188" width="420" height="3" fill="#F8FAFC" opacity=".9"/>
-<g class="drive">
-<rect x="135" y="149" width="128" height="35" rx="15" fill="url(#car1)"/>
-<path d="M160 149L181 128H231L250 149Z" fill="#446FD8"/>
-<path d="M185 132H205V148H168Z" fill="#DCE9FF" opacity=".9"/>
-<path d="M209 132H228L243 148H209Z" fill="#DCE9FF" opacity=".9"/>
-<circle cx="165" cy="184" r="12" fill="#273249"/>
-<circle cx="237" cy="184" r="12" fill="#273249"/>
-<circle cx="165" cy="184" r="5" fill="#A9B5C9"/>
-<circle cx="237" cy="184" r="5" fill="#A9B5C9"/>
-</g>
+<path d="M0 164H420V210H0Z" fill="#D9E0EA"/><path d="M0 187H420" stroke="#FFF" stroke-width="3" stroke-dasharray="26 20"/>
+<g class="scene-car"><path d="M120 163L143 143H211L238 163L262 168V184H101V170Z" fill="#162C55"/>
+<path d="M150 146H205L224 162H132Z" fill="#8CA8D9"/><circle cx="135" cy="184" r="12" fill="#101827"/><circle cx="229" cy="184" r="12" fill="#101827"/>
+<path class="scene-glow" d="M260 172H300" stroke="#88A9FF" stroke-width="5" stroke-linecap="round"/></g>
 </svg>
 """
 
-TRIP_SCENE = """
-<svg class="scene-svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="sky2" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#EAF4FF"/>
-<stop offset="100%" stop-color="#EFEAFF"/>
-</linearGradient>
-</defs>
-<rect width="420" height="220" rx="24" fill="url(#sky2)"/>
-<circle class="pulse" cx="328" cy="53" r="27" fill="#FFD778"/>
-<path class="float-b" d="M0 171L95 87L164 151L234 60L345 171Z" fill="#9EB3DF"/>
-<path class="float-a" d="M90 171L170 100L229 154L295 93L420 171Z" fill="#718FD1"/>
-<path d="M0 171H420V220H0Z" fill="#D9E4DE"/>
-<path d="M0 220C89 180 161 183 234 195C304 206 350 196 420 173V220H0Z" fill="#E8EDF5"/>
-<g class="drive">
-<rect x="151" y="155" width="122" height="35" rx="14" fill="#263B67"/>
-<path d="M174 155L193 134H237L257 155Z" fill="#36517E"/>
-<rect x="193" y="137" width="39" height="15" rx="3" fill="#DCE9FF" opacity=".9"/>
-<circle cx="178" cy="190" r="12" fill="#243044"/>
-<circle cx="248" cy="190" r="12" fill="#243044"/>
-<path d="M206 130L215 116L224 130Z" fill="#7A5AF8"/>
-</g>
+TRIP = """
+<svg viewBox="0 0 420 210">
+<defs><linearGradient id="tsky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#DCE9FF"/><stop offset="1" stop-color="#F8FAFC"/></linearGradient></defs>
+<rect width="420" height="210" fill="url(#tsky)"/><circle class="scene-glow" cx="330" cy="44" r="22" fill="#FFD98A"/>
+<g class="scene-bg"><path d="M0 163L87 81L148 145L224 59L336 163Z" fill="#A9BBDC"/><path d="M78 163L157 103L215 151L288 91L420 163Z" fill="#6F8FC7"/></g>
+<path d="M0 163H420V210H0Z" fill="#D9E3DC"/><path d="M0 187H420" stroke="#FFF" stroke-width="3" stroke-dasharray="27 20"/>
+<g class="scene-car"><path d="M124 162L146 141H213L241 162L265 168V184H104V170Z" fill="#203758"/>
+<path d="M152 145H207L226 161H135Z" fill="#9AB0D1"/><circle cx="138" cy="184" r="12" fill="#182334"/><circle cx="232" cy="184" r="12" fill="#182334"/></g>
 </svg>
 """
 
-DUO_SCENE = """
-<svg class="scene-svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="sky3" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#EFF4FF"/>
-<stop offset="100%" stop-color="#F6F1FF"/>
-</linearGradient>
-</defs>
-<rect width="420" height="220" rx="24" fill="url(#sky3)"/>
-<circle cx="210" cy="108" r="76" fill="#FFFFFF" opacity=".72"/>
-<g class="float-a">
-<circle cx="167" cy="87" r="29" fill="#385FDB"/>
-<path d="M121 166C124 127 141 111 167 111C193 111 210 127 213 166Z" fill="#6F8DE0"/>
-</g>
-<g class="float-b">
-<circle cx="251" cy="87" r="29" fill="#7056E8"/>
-<path d="M205 166C208 127 225 111 251 111C277 111 294 127 297 166Z" fill="#9C8BEA"/>
-</g>
-<path d="M190 111C199 119 219 119 228 111" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity=".9"/>
-<circle class="pulse" cx="210" cy="45" r="8" fill="#89A8F0"/>
+DUO = """
+<svg viewBox="0 0 420 210">
+<defs><linearGradient id="d" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E4EBFF"/><stop offset="1" stop-color="#F9FAFC"/></linearGradient></defs>
+<rect width="420" height="210" fill="url(#d)"/>
+<path d="M64 178C92 113 140 79 210 77C281 75 333 111 356 178" fill="none" stroke="#CAD6EE" stroke-width="24" stroke-linecap="round"/>
+<g class="scene-float"><rect x="116" y="69" width="78" height="91" rx="28" fill="#284F9A"/><circle cx="155" cy="74" r="22" fill="#C6D5F5"/></g>
+<g class="scene-float" style="animation-delay:.6s"><rect x="226" y="69" width="78" height="91" rx="28" fill="#5D57A8"/><circle cx="265" cy="74" r="22" fill="#D7D0F7"/></g>
+<path d="M195 158L210 142L225 158" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
 </svg>
 """
 
-FAMILY_SCENE = """
-<svg class="scene-svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="sky4" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#EDF4FF"/>
-<stop offset="100%" stop-color="#F2EDFF"/>
-</linearGradient>
-</defs>
-<rect width="420" height="220" rx="24" fill="url(#sky4)"/>
-<circle cx="210" cy="108" r="82" fill="#FFFFFF" opacity=".72"/>
-<g class="float-a">
-<circle cx="157" cy="84" r="26" fill="#355FD8"/>
-<path d="M116 162C119 125 134 111 157 111C180 111 195 125 198 162Z" fill="#7692E0"/>
-</g>
-<g class="float-b">
-<circle cx="263" cy="84" r="26" fill="#6A55E4"/>
-<path d="M222 162C225 125 240 111 263 111C286 111 301 125 304 162Z" fill="#9D8DEA"/>
-</g>
-<g class="pulse">
-<circle cx="210" cy="116" r="20" fill="#486CD7"/>
-<path d="M177 172C180 143 190 132 210 132C230 132 240 143 243 172Z" fill="#95A8E8"/>
-</g>
-<path d="M190 54C197 45 223 45 230 54" stroke="#88A5EC" stroke-width="5" stroke-linecap="round"/>
+FAMILY = """
+<svg viewBox="0 0 420 210">
+<defs><linearGradient id="f" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E1EAFF"/><stop offset="1" stop-color="#FAFBFD"/></linearGradient></defs>
+<rect width="420" height="210" fill="url(#f)"/>
+<path d="M68 177C99 112 146 82 210 82C277 82 326 114 352 177" fill="none" stroke="#CDD8EE" stroke-width="25" stroke-linecap="round"/>
+<g class="scene-float"><rect x="91" y="67" width="70" height="94" rx="27" fill="#284F98"/><circle cx="126" cy="71" r="21" fill="#C7D7F6"/></g>
+<g class="scene-float" style="animation-delay:.5s"><rect x="259" y="67" width="70" height="94" rx="27" fill="#58549E"/><circle cx="294" cy="71" r="21" fill="#D7D1F7"/></g>
+<g class="scene-float" style="animation-delay:1s"><rect x="176" y="101" width="68" height="64" rx="25" fill="#4771C4"/><circle cx="210" cy="105" r="18" fill="#D5E1FA"/></g>
 </svg>
 """
 
-STYLE_SCENE = """
-<svg class="scene-svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="gem" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0%" stop-color="#2E67F4"/>
-<stop offset="100%" stop-color="#8057F0"/>
-</linearGradient>
-</defs>
-<rect width="420" height="220" rx="24" fill="#F1F4FF"/>
-<circle cx="210" cy="110" r="80" fill="#FFFFFF" opacity=".68"/>
-<circle class="rotate" cx="210" cy="110" r="65" fill="none" stroke="#B4C7F7" stroke-width="2" stroke-dasharray="8 10"/>
-<g class="pulse">
-<path d="M210 45L273 89L249 163H171L147 89Z" fill="url(#gem)"/>
-<path d="M210 45L210 163M147 89H273M171 163L210 89L249 163M147 89L210 89L273 89" stroke="#FFFFFF" stroke-width="2.5" opacity=".75"/>
-</g>
-<circle cx="292" cy="62" r="8" fill="#8DAAF3" class="float-a"/>
-<circle cx="126" cy="152" r="6" fill="#B299F7" class="float-b"/>
+STYLE = """
+<svg viewBox="0 0 420 210">
+<defs><linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E4EBFF"/><stop offset="1" stop-color="#F8F7FF"/></linearGradient></defs>
+<rect width="420" height="210" fill="url(#s)"/>
+<ellipse cx="210" cy="172" rx="124" ry="13" fill="#CAD2DF" opacity=".55"/>
+<g class="scene-car"><path d="M92 148L126 119H242L286 148L325 156V174H73V158Z" fill="#142A51"/>
+<path d="M137 123H234L268 147H109Z" fill="#7F9CCB"/><circle cx="124" cy="174" r="16" fill="#101827"/><circle cx="275" cy="174" r="16" fill="#101827"/>
+<path class="scene-glow" d="M77 157H104M289 153H319" stroke="#87A9FF" stroke-width="6" stroke-linecap="round"/></g>
+<path class="scene-glow" d="M95 68C164 40 258 40 326 70" fill="none" stroke="#718FF1" stroke-width="3" opacity=".55"/>
 </svg>
 """
 
-SPACE_SCENE = """
-<svg class="scene-svg" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
-<rect width="420" height="220" rx="24" fill="#EFF4FF"/>
-<rect x="78" y="43" width="264" height="134" rx="26" fill="#FFFFFF" opacity=".76"/>
-<g class="pulse">
-<rect x="112" y="72" width="84" height="76" rx="16" fill="#4B70DB"/>
-<rect x="207" y="72" width="101" height="76" rx="16" fill="#8D82E9"/>
-</g>
-<g class="float-a">
-<rect x="132" y="91" width="44" height="38" rx="9" fill="#D8E4FF"/>
-<path d="M221 91H294M221 110H283M221 129H272" stroke="#E7E4FF" stroke-width="8" stroke-linecap="round"/>
-</g>
-<path d="M100 168H320" stroke="#A8B9DF" stroke-width="5" stroke-linecap="round"/>
+SPACE = """
+<svg viewBox="0 0 420 210">
+<defs><linearGradient id="sp" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E5ECFA"/><stop offset="1" stop-color="#FAFBFC"/></linearGradient></defs>
+<rect width="420" height="210" fill="url(#sp)"/>
+<path d="M80 166V83C80 59 99 40 123 40H297C321 40 340 59 340 83V166" fill="#E8EDF5" stroke="#AEBED6" stroke-width="4"/>
+<path d="M111 68H309V161H111Z" fill="#F8FAFD"/>
+<g class="scene-float"><rect x="130" y="100" width="65" height="57" rx="10" fill="#345FAE"/><path d="M143 100V87H182V100" fill="none" stroke="#345FAE" stroke-width="7"/></g>
+<g class="scene-float" style="animation-delay:.6s"><rect x="209" y="84" width="78" height="73" rx="11" fill="#7167B6"/><path d="M225 84V68H271V84" fill="none" stroke="#7167B6" stroke-width="7"/></g>
+<path class="scene-glow" d="M103 167H317" stroke="#7294DF" stroke-width="5" stroke-linecap="round"/>
 </svg>
 """
-
 
 # =========================================================
-# 5. 질문
+# QUESTIONS
 # =========================================================
 questions = [
     {
-        "question": "당신의 주말은 어느 장면에 더 가깝나요?",
-        "desc": "일상에서 가장 자주 마주하는 이동 장면부터 읽어볼게요.",
-        "options": [
-            {"visual": CITY_SCENE, "label": "도심을 가볍게 누비는 편", "desc": "맛집 · 카페 · 쇼핑 · 근거리 이동"},
-            {"visual": TRIP_SCENE, "label": "주말이면 멀리 떠나는 편", "desc": "여행 · 캠핑 · 레저 · 장거리 이동"},
-        ],
+        "title":"당신의 주말은 어느 장면에 더 가깝나요?",
+        "desc":"가장 자연스럽게 반복되는 이동 장면부터 읽어볼게요.",
+        "options":[
+            {"art":CITY,"label":"도심을 가볍게 누비는 편","desc":"맛집 · 카페 · 쇼핑 · 근거리 이동"},
+            {"art":TRIP,"label":"주말이면 멀리 떠나는 편","desc":"여행 · 캠핑 · 레저 · 장거리 이동"},
+        ]
     },
     {
-        "question": "차 안에서 가장 자주 함께하는 사람은 누구인가요?",
-        "desc": "누구와 이동하는지가 공간과 편안함의 기준을 바꿉니다.",
-        "options": [
-            {"visual": DUO_SCENE, "label": "혼자 또는 둘이", "desc": "나의 감도와 이동 편의가 더 중요해요"},
-            {"visual": FAMILY_SCENE, "label": "가족과 함께", "desc": "사람과 짐, 일정까지 함께 담아야 해요"},
-        ],
+        "title":"차 안에서 가장 자주 함께하는 사람은?",
+        "desc":"누구와 이동하는지가 공간과 편안함의 기준을 바꿉니다.",
+        "options":[
+            {"art":DUO,"label":"혼자 또는 둘이","desc":"나의 감도와 이동 편의가 중요해요"},
+            {"art":FAMILY,"label":"가족과 함께","desc":"사람과 짐, 일정까지 함께 담아야 해요"},
+        ]
     },
     {
-        "question": "차를 고를 때 마지막까지 포기하기 어려운 한 가지는?",
-        "desc": "당신의 선택 기준을 하나만 남기면 추천이 더 선명해집니다.",
-        "options": [
-            {"visual": STYLE_SCENE, "label": "볼 때마다 마음에 드는 디자인", "desc": "스타일 · 정제된 주행감 · 소유 만족감"},
-            {"visual": SPACE_SCENE, "label": "필요할 때 든든한 공간", "desc": "수납 · 안정감 · 다양한 상황 대응력"},
-        ],
+        "title":"차를 고를 때 마지막까지 포기하기 어려운 것은?",
+        "desc":"마지막 선택으로 추천 방향을 완성합니다.",
+        "options":[
+            {"art":STYLE,"label":"볼 때마다 마음에 드는 디자인","desc":"스타일 · 주행감 · 소유 만족감"},
+            {"art":SPACE,"label":"필요할 때 든든한 공간","desc":"수납 · 안정감 · 다양한 상황 대응력"},
+        ]
     },
 ]
 
 
 # =========================================================
-# 6. 8개 선택 조합 → 6개 페르소나
+# PERSONAS + 추천 차량 로직
+# 3개 질문의 8개 조합마다 별도 페르소나와 추천 차량을 지정합니다.
 # =========================================================
-personas = {
-    "CITY_CURATOR": {
+recommendation_map = {
+    # 도심 / 혼자·둘 / 디자인
+    (0, 0, 0): {
         "name": "CITY CURATOR",
         "sub": "도시의 장면을 고르는 사람",
-        "copy": "차를 단순한 이동수단보다 하루의 분위기를 완성하는 오브제에 가깝게 봅니다. "
-                "복잡한 도심에서 다루기 편하면서도, 주차한 뒤 다시 한 번 돌아보게 되는 차를 선호합니다.",
-        "quote": "“큰 차보다, 내 일상의 템포와 잘 맞는 차.”",
-        "tags": ["도심 감도", "스타일", "데일리", "정제된 주행"],
-        "models": ["디 올 뉴 그랜저", "쏘나타"],
-        "reasons": ["도심 활용성", "정제된 승차감", "스타일 만족도"],
-        "art": "CITY"
+        "copy": "복잡한 도심에서도 편하고 세련된 이동을 중요하게 생각합니다. "
+                "차를 단순한 이동수단보다 나의 하루와 분위기를 완성하는 오브제로 보는 타입입니다.",
+        "quote": "“내 일상의 템포와 가장 자연스럽게 맞는 차.”",
+        "model": "디 올 뉴 그랜저",
+        "reasons": ["도심 활용성", "정제된 승차감", "디자인 만족도"],
+        "art": CITY,
+        "match": 96
     },
-    "QUIET_LUXE": {
-        "name": "QUIET LUXE",
-        "sub": "조용한 만족을 고르는 사람",
-        "copy": "화려한 기능보다 매일 타도 질리지 않는 감도와 편안함을 중요하게 봅니다. "
-                "차 안에서 보내는 시간이 스트레스 없이 부드럽게 이어지는가가 선택의 기준입니다.",
-        "quote": "“좋은 차는 과시보다, 매일의 기분을 조용히 높여준다.”",
-        "tags": ["편안함", "정숙성", "세련된 감도", "데일리 프리미엄"],
-        "models": ["디 올 뉴 그랜저", "쏘나타"],
-        "reasons": ["일상 편안함", "정숙한 이동", "균형 잡힌 감성"],
-        "art": "STYLE"
+
+    # 도심 / 혼자·둘 / 공간·실용
+    (0, 0, 1): {
+        "name": "SMART MINIMALIST",
+        "sub": "필요한 만큼 정확하게 고르는 사람",
+        "copy": "과한 크기나 기능보다 실제 일상에서 자주 쓰는 편의와 효율을 중요하게 봅니다. "
+                "부담 없이 운전하고 합리적으로 이용할 수 있는 균형 잡힌 선택을 선호합니다.",
+        "quote": "“좋은 선택은 더 많이 갖는 것이 아니라, 딱 맞게 갖는 것.”",
+        "model": "쏘나타",
+        "reasons": ["운전 편의성", "합리적 이용", "데일리 실용성"],
+        "art": SPACE,
+        "match": 93
     },
-    "FAMILY_DIRECTOR": {
-        "name": "FAMILY DIRECTOR",
-        "sub": "가족의 하루를 설계하는 사람",
-        "copy": "등하원, 장보기, 주말 일정, 여행까지 차량 하나에 가족의 하루가 연결됩니다. "
-                "그래서 나만 편한 차보다 모두의 이동이 편해지는 차를 더 좋은 선택으로 봅니다.",
-        "quote": "“내가 편한 차보다, 모두가 편해지는 차.”",
-        "tags": ["패밀리 허브", "공간", "승하차", "일상 확장"],
-        "models": ["디 올 뉴 팰리세이드", "더 뉴 카니발"],
-        "reasons": ["가족 이동 최적화", "공간 활용성", "안정적인 주행"],
-        "art": "FAMILY"
+
+    # 도심 / 가족 / 디자인
+    (0, 1, 0): {
+        "name": "URBAN HOST",
+        "sub": "함께 타는 순간까지 세련되게 만드는 사람",
+        "copy": "가족이나 동승자와 함께 이동하지만, 큰 차만을 답으로 생각하지 않습니다. "
+                "편안함과 디자인, 도심에서의 세련된 주행감을 함께 중요하게 봅니다.",
+        "quote": "“함께 타는 사람도, 나도 만족하는 균형.”",
+        "model": "디 올 뉴 그랜저",
+        "reasons": ["동승자 편안함", "도심 주행감", "프리미엄 감성"],
+        "art": FAMILY,
+        "match": 94
     },
-    "WEEKEND_ESCAPER": {
-        "name": "WEEKEND ESCAPER",
-        "sub": "주말의 반경을 넓히는 사람",
-        "copy": "평일의 이동보다 주말의 가능성을 더 크게 봅니다. "
-                "갑자기 떠나는 여행과 캠핑 장비, 긴 이동거리까지 받아주는 여유가 차량 선택의 핵심입니다.",
-        "quote": "“차가 커지는 게 아니라, 내 주말의 반경이 넓어진다.”",
-        "tags": ["여행", "캠핑", "장거리", "공간 확장"],
-        "models": ["더 뉴 카니발", "디 올 뉴 팰리세이드"],
-        "reasons": ["장거리 편안함", "짐 적재 능력", "여행 활용성"],
-        "art": "TRIP"
+
+    # 도심 / 가족 / 공간
+    (0, 1, 1): {
+        "name": "FAMILY NAVIGATOR",
+        "sub": "가족의 매일을 더 여유롭게 설계하는 사람",
+        "copy": "등하원, 장보기, 주말 외출처럼 가족의 일상이 차 안에서 연결됩니다. "
+                "도심에서도 다루기 편하면서 공간과 안정감까지 충분한 차량을 선호합니다.",
+        "quote": "“가족의 하루가 편해지면, 내 하루도 편해진다.”",
+        "model": "디 올 뉴 팰리세이드",
+        "reasons": ["가족 이동 최적화", "넉넉한 실내", "도심·주말 균형"],
+        "art": FAMILY,
+        "match": 97
     },
-    "FLEX_CAPTAIN": {
-        "name": "FLEX CAPTAIN",
-        "sub": "평일과 주말을 모두 잡는 사람",
-        "copy": "도심의 편리함도 놓치고 싶지 않고, 주말에는 공간과 활용성도 필요합니다. "
-                "한쪽으로 치우친 차보다 상황에 따라 역할을 바꿀 수 있는 균형감 있는 선택을 선호합니다.",
-        "quote": "“월요일에도 좋고, 토요일에는 더 좋은 차.”",
-        "tags": ["밸런스", "멀티유즈", "도심+여행", "실용성"],
-        "models": ["디 올 뉴 팰리세이드", "디 올 뉴 그랜저"],
-        "reasons": ["다목적 활용", "도심 적응력", "주말 확장성"],
-        "art": "SPACE"
-    },
-    "DESIGN_VOYAGER": {
-        "name": "DESIGN VOYAGER",
-        "sub": "감도와 여행을 함께 고르는 사람",
-        "copy": "떠나는 즐거움만큼 타고 있는 순간의 분위기도 중요하게 생각합니다. "
-                "공간만 큰 차보다, 이동의 장면 자체를 멋지게 만들어주는 차에 더 끌립니다.",
+
+    # 여행 / 혼자·둘 / 디자인
+    (1, 0, 0): {
+        "name": "ROAD VOYAGER",
+        "sub": "가는 길의 감도를 즐기는 사람",
+        "copy": "목적지뿐 아니라 이동하는 시간 자체를 중요하게 생각합니다. "
+                "장거리에서도 편안하고, 도착했을 때까지 운전의 감성과 만족감이 이어지는 차를 선호합니다.",
         "quote": "“목적지보다 가는 길이 기억에 남는 차.”",
-        "tags": ["스타일", "여행 감성", "주행 경험", "취향"],
-        "models": ["디 올 뉴 그랜저", "디 올 뉴 팰리세이드"],
-        "reasons": ["디자인 만족도", "장거리 승차감", "라이프스타일 감성"],
-        "art": "STYLE"
+        "model": "디 올 뉴 그랜저",
+        "reasons": ["장거리 승차감", "주행 감성", "디자인 완성도"],
+        "art": TRIP,
+        "match": 92
+    },
+
+    # 여행 / 혼자·둘 / 공간
+    (1, 0, 1): {
+        "name": "FREEDOM EXPLORER",
+        "sub": "주말의 반경을 자유롭게 넓히는 사람",
+        "copy": "평소에는 여유 있게, 필요할 때는 짐과 활동 범위를 크게 확장하고 싶어합니다. "
+                "여행과 레저를 위해 SUV의 공간과 안정감을 적극적으로 활용하는 타입입니다.",
+        "quote": "“차가 커지는 것이 아니라, 갈 수 있는 곳이 많아진다.”",
+        "model": "디 올 뉴 팰리세이드",
+        "reasons": ["여행 활용성", "적재 공간", "장거리 안정감"],
+        "art": TRIP,
+        "match": 95
+    },
+
+    # 여행 / 가족 / 디자인
+    (1, 1, 0): {
+        "name": "WEEKEND DIRECTOR",
+        "sub": "가족의 특별한 주말을 만드는 사람",
+        "copy": "가족 여행의 편안함도 중요하지만 차량의 존재감과 스타일도 포기하지 않습니다. "
+                "일상과 여행 모두에서 만족감을 주는 프리미엄 패밀리 SUV가 잘 맞습니다.",
+        "quote": "“함께하는 시간도, 그 장면도 특별하게.”",
+        "model": "디 올 뉴 팰리세이드",
+        "reasons": ["패밀리 여행", "프리미엄 디자인", "편안한 주행"],
+        "art": STYLE,
+        "match": 96
+    },
+
+    # 여행 / 가족 / 공간
+    (1, 1, 1): {
+        "name": "LIFE ORCHESTRATOR",
+        "sub": "가족의 모든 장면을 담아내는 사람",
+        "copy": "사람도 많고, 짐도 많고, 하고 싶은 일도 많습니다. "
+                "여행·레저·일상까지 한 대의 차가 여러 역할을 해내는 압도적인 공간 활용성을 가장 중요하게 봅니다.",
+        "quote": "“차 한 대가 가족의 가능성을 더 크게 만든다.”",
+        "model": "더 뉴 카니발",
+        "reasons": ["최대 공간 활용", "다인승 편의성", "여행·레저 확장성"],
+        "art": SPACE,
+        "match": 98
     },
 }
 
-combo_map = {
-    (0, 0, 0): "CITY_CURATOR",
-    (0, 0, 1): "QUIET_LUXE",
-    (0, 1, 0): "QUIET_LUXE",
-    (0, 1, 1): "FAMILY_DIRECTOR",
-    (1, 0, 0): "DESIGN_VOYAGER",
-    (1, 0, 1): "WEEKEND_ESCAPER",
-    (1, 1, 0): "DESIGN_VOYAGER",
-    (1, 1, 1): "WEEKEND_ESCAPER",
-}
+
+def get_recommendation(answers):
+    """
+    3개 질문의 선택값을 기반으로 추천 페르소나와 차량을 반환합니다.
+    answers 예시: [0, 1, 1]
+    """
+    key = tuple(answers)
+
+    if key in recommendation_map:
+        return recommendation_map[key]
+
+    # 예외 상황에서는 가족/공간 활용성이 높은 기본 추천
+    return recommendation_map[(0, 1, 1)]
 
 
 # =========================================================
-# 7. 페르소나용 동적 이미지형 SVG
-# =========================================================
-PERSONA_ART = {
-"CITY": """
-<svg viewBox="0 0 160 160">
-<defs><linearGradient id="pc1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#64A1FF"/><stop offset="1" stop-color="#876AF7"/></linearGradient></defs>
-<circle cx="80" cy="80" r="61" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.5" class="rotate" stroke-dasharray="7 9"/>
-<g class="float-a">
-<rect x="35" y="65" width="22" height="47" rx="5" fill="#9DB9F3"/>
-<rect x="63" y="42" width="29" height="70" rx="5" fill="url(#pc1)"/>
-<rect x="98" y="57" width="27" height="55" rx="5" fill="#B4A7F4"/>
-</g>
-<path d="M25 119H135" stroke="#DCE7FF" stroke-width="4" stroke-linecap="round"/>
-<g class="drive"><rect x="54" y="104" width="58" height="17" rx="8" fill="#FFFFFF"/><circle cx="67" cy="121" r="6" fill="#4265C9"/><circle cx="99" cy="121" r="6" fill="#4265C9"/></g>
-</svg>
-""",
-"STYLE": """
-<svg viewBox="0 0 160 160">
-<defs><linearGradient id="pc2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#73B1FF"/><stop offset="1" stop-color="#8B65F5"/></linearGradient></defs>
-<circle cx="80" cy="80" r="58" fill="none" stroke="rgba(255,255,255,.16)" class="rotate" stroke-dasharray="7 10"/>
-<g class="pulse"><path d="M80 28L127 62L109 119H51L33 62Z" fill="url(#pc2)"/><path d="M80 28L80 119M33 62H127M51 119L80 62L109 119" stroke="#FFFFFF" stroke-width="2" opacity=".7"/></g>
-</svg>
-""",
-"FAMILY": """
-<svg viewBox="0 0 160 160">
-<circle cx="80" cy="80" r="60" fill="rgba(255,255,255,.06)"/>
-<g class="float-a"><circle cx="53" cy="62" r="18" fill="#78A8FF"/><path d="M27 118C30 91 39 80 53 80C67 80 76 91 79 118Z" fill="#7192E3"/></g>
-<g class="float-b"><circle cx="108" cy="62" r="18" fill="#A687F4"/><path d="M82 118C85 91 94 80 108 80C122 80 131 91 134 118Z" fill="#9A82E7"/></g>
-<g class="pulse"><circle cx="80" cy="89" r="14" fill="#FFFFFF"/><path d="M59 128C61 107 68 100 80 100C92 100 99 107 101 128Z" fill="#BFD3FF"/></g>
-</svg>
-""",
-"TRIP": """
-<svg viewBox="0 0 160 160">
-<circle cx="118" cy="39" r="16" fill="#FFD987" class="pulse"/>
-<path d="M18 112L53 61L81 99L103 50L143 112Z" fill="#7799DB" class="float-a"/>
-<path d="M17 112H144V128H17Z" fill="rgba(255,255,255,.18)"/>
-<g class="drive"><rect x="51" y="100" width="63" height="19" rx="8" fill="#FFFFFF"/><circle cx="65" cy="119" r="7" fill="#405D9E"/><circle cx="101" cy="119" r="7" fill="#405D9E"/></g>
-</svg>
-""",
-"SPACE": """
-<svg viewBox="0 0 160 160">
-<rect x="24" y="29" width="112" height="102" rx="24" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.13)"/>
-<g class="pulse"><rect x="40" y="48" width="34" height="64" rx="9" fill="#75A5FB"/><rect x="83" y="48" width="37" height="28" rx="9" fill="#9A7DEF"/><rect x="83" y="84" width="37" height="28" rx="9" fill="#C4B7FA"/></g>
-</svg>
-"""
-}
-
-
-# =========================================================
-# 8. 데이터
+# DATA / STATE
 # =========================================================
 @st.cache_data
 def load_data():
     return pd.read_excel(EXCEL_PATH, sheet_name="차량목록")
 
-
-# =========================================================
-# 9. 상태
-# =========================================================
 if "step" not in st.session_state:
     st.session_state.step = 0
 if "answers" not in st.session_state:
@@ -790,56 +420,53 @@ if "months" not in st.session_state:
 
 
 # =========================================================
-# 10. HERO
+# HERO
 # =========================================================
 html("""
 <div class="hero">
-<div class="eyebrow">MY CAR MAKER · PERSONALIZED MOBILITY</div>
-<div class="hero-title">세 번의 선택으로,<br><b>나를 닮은 차를 발견하세요.</b></div>
-<div class="hero-desc">차종을 고르는 대신 당신의 하루를 먼저 묻습니다. 이동 장면, 함께 타는 사람, 포기할 수 없는 취향을 읽어 지금의 라이프스타일과 가장 자연스럽게 맞는 차량을 제안합니다.</div>
-<div class="hero-meta">
-<span class="hero-chip">3 LIFESTYLE SIGNALS</span>
-<span class="hero-chip">PERSONA MATCHING</span>
-<span class="hero-chip">SMART QUOTE</span>
-</div>
+<div class="hero-kicker">MY CAR MAKER · PERSONALIZED MOBILITY</div>
+<div class="hero-title">나의 일상을 읽고,<br><span>지금 가장 어울리는 차를 만납니다.</span></div>
+<div class="hero-desc">세 번의 선택만으로 이동 습관과 취향을 분석해, 나에게 자연스럽게 어울리는 차량과 이용 조건을 제안합니다.</div>
 </div>
 """)
 
 
 # =========================================================
-# 11. 질문 화면
+# QUESTION VIEW
 # =========================================================
 if st.session_state.step < len(questions):
     step = st.session_state.step
     q = questions[step]
-    progress = int(((step + 1) / len(questions)) * 100)
+    progress = int(((step+1)/len(questions))*100)
 
     html(f"""
-    <div class="q-head">
-    <div class="step-row">
-    <div class="step-label">LIFESTYLE SIGNAL {step + 1}</div>
-    <div class="step-count">{step + 1} / {len(questions)}</div>
+    <div class="step-card">
+    <div class="step-top">
+    <b>LIFESTYLE SIGNAL {step+1}</b>
+    <span>{step+1} / {len(questions)}</span>
     </div>
     <div class="progress"><div style="width:{progress}%"></div></div>
-    <div class="question-title">{q["question"]}</div>
-    <div class="question-desc">{q["desc"]}</div>
+    <div class="step-title">{q["title"]}</div>
+    <div class="step-desc">{q["desc"]}</div>
     </div>
     """)
 
     cols = st.columns(2, gap="large")
-    for i, opt in enumerate(q["options"]):
+
+    for i,opt in enumerate(q["options"]):
         with cols[i]:
             html(f"""
-            <div class="visual-card">
-            <div class="visual-scene">{opt["visual"]}</div>
-            <div class="visual-copy">
-            <div class="visual-title">{opt["label"]}</div>
-            <div class="visual-desc">{opt["desc"]}</div>
+            <div class="choice">
+            <div class="choice-visual">{opt["art"]}</div>
+            <div class="choice-copy">
+            <div class="choice-title">{opt["label"]}</div>
+            <div class="choice-desc">{opt["desc"]}</div>
             </div>
             </div>
             """)
+
             if st.button(
-                "이 장면이 나와 가까워요",
+                "이 선택이 나와 가까워요",
                 key=f"q_{step}_{i}",
                 use_container_width=True
             ):
@@ -848,181 +475,204 @@ if st.session_state.step < len(questions):
                 st.rerun()
 
     if step > 0:
-        back_col, _ = st.columns([1, 3])
-        with back_col:
-            if st.button("← 이전 선택", use_container_width=True):
+        b1,_ = st.columns([1,3])
+        with b1:
+            if st.button("← 이전", use_container_width=True):
                 st.session_state.answers.pop()
                 st.session_state.step -= 1
                 st.rerun()
 
 
 # =========================================================
-# 12. 결과 화면
+# RESULT VIEW
 # =========================================================
 else:
     if not EXCEL_PATH.exists():
-        st.error(f"엑셀 파일을 찾지 못했습니다: {EXCEL_PATH}")
+        st.error(f"엑셀 파일이 없습니다: {EXCEL_PATH}")
         st.stop()
 
     if not IMAGE_DIR.exists():
-        st.error(f"이미지 폴더를 찾지 못했습니다: {IMAGE_DIR}")
+        st.error(f"배경 제거 차량 이미지 폴더가 없습니다: {IMAGE_DIR}")
         st.stop()
 
-    try:
-        df = load_data()
-    except Exception as e:
-        st.error("sample_cars_v2.xlsx의 '차량목록' 시트를 확인해주세요.")
-        st.code(str(e))
-        st.stop()
+    df = load_data()
 
-    combo = tuple(st.session_state.answers)
-    persona_key = combo_map.get(combo, "FLEX_CAPTAIN")
-    persona = personas[persona_key]
+    recommendation = get_recommendation(st.session_state.answers)
+
+    persona = recommendation
+    model = recommendation["model"]
 
     models = df["모델"].dropna().astype(str).unique().tolist()
-    recommended_model = next(
-        (m for m in persona["models"] if m in models),
-        models[0]
-    )
 
-    filtered = df[df["모델"].astype(str) == recommended_model].copy()
+    # 엑셀에 추천 모델이 없을 경우 첫 번째 모델로 안전하게 대체
+    if model not in models:
+        model = models[0]
+
+    filtered = df[df["모델"].astype(str)==model].copy()
     colors = filtered["색상"].dropna().astype(str).unique().tolist()
-
-    if not colors:
-        st.error("선택 가능한 색상 데이터가 없습니다.")
-        st.stop()
 
     if st.session_state.color not in colors:
         st.session_state.color = colors[0]
 
     selected = filtered[
-        filtered["색상"].astype(str) == st.session_state.color
+        filtered["색상"].astype(str)==st.session_state.color
     ].iloc[0]
 
-    # Persona
-    tags = "".join(f'<span class="tag">#{x}</span>' for x in persona["tags"])
-    persona_art = PERSONA_ART[persona["art"]]
+    # Result headline
+    html("""
+    <div class="result-intro">
+    <div class="result-kicker">PERSONALIZED MATCH COMPLETE</div>
+    <div class="result-title">당신의 이동 취향을 찾았습니다.</div>
+    <div class="result-desc">선택한 라이프스타일 신호를 바탕으로 가장 자연스럽게 어울리는 차량을 제안합니다.</div>
+    </div>
+    """)
 
+    # Persona
     html(f"""
     <div class="persona-card">
-    <div class="persona-layout">
-    <div class="persona-art">{persona_art}</div>
+    <div class="persona-visual">{persona["art"]}</div>
     <div>
     <div class="persona-label">YOUR MOBILITY PERSONA</div>
     <div class="persona-name">{persona["name"]}</div>
     <div class="persona-sub">{persona["sub"]}</div>
     <div class="persona-copy">{persona["copy"]}</div>
     <div class="persona-quote">{persona["quote"]}</div>
-    <div class="tags">{tags}</div>
-    </div>
-    </div>
-    </div>
-    """)
-
-    # Car stage header
-    r1, r2, r3 = persona["reasons"]
-    html(f"""
-    <div class="car-stage">
-    <div class="car-top">
-    <div>
-    <span class="smart-badge">SMART MATCH · 01</span>
-    <div class="car-name">{recommended_model}</div>
-    <div class="car-sub">당신의 선택 장면과 가장 자연스럽게 이어지는 차량입니다.</div>
     </div>
     </div>
     """)
 
-    # Vehicle image, rendered inside same visual stage via Streamlit image container
-    image_path = IMAGE_DIR / str(selected["이미지파일명"])
+    # 배경 제거 PNG 차량 이미지
+    original_name = Path(str(selected["이미지파일명"]))
+    png_name = original_name.with_suffix(".png").name
+    image_path = IMAGE_DIR / png_name
+
+    # PNG가 아직 없을 경우 기존 실사 JPG를 자동 fallback
     if image_path.exists():
-        html('<div class="car-image-shell">')
-        st.image(str(image_path), use_container_width=True)
-        html('</div>')
+        uri = image_data_uri(image_path)
     else:
-        st.warning(f"이미지를 찾지 못했습니다: {image_path.name}")
+        fallback_path = BASE_DIR / "car_images_real" / original_name.name
+        uri = image_data_uri(fallback_path)
+
+    r1,r2,r3 = persona["reasons"]
+    match_pct = recommendation["match"]
 
     html(f"""
-    <div class="match-grid">
-    <div class="match-item"><div class="match-num">MATCH 01</div><div class="match-text">{r1}</div></div>
-    <div class="match-item"><div class="match-num">MATCH 02</div><div class="match-text">{r2}</div></div>
-    <div class="match-item"><div class="match-num">MATCH 03</div><div class="match-text">{r3}</div></div>
+    <div class="configurator">
+    <div class="config-top">
+      <div>
+        <span class="badge">RECOMMENDED FOR YOU</span>
+        <div class="vehicle-name">{model}</div>
+        <div class="vehicle-copy">당신의 선택 패턴과 가장 자연스럽게 이어지는 차량입니다.</div>
+      </div>
+      <div class="match-score"><small>LIFESTYLE MATCH</small><strong>{match_pct}%</strong></div>
+    </div>
+    <div class="vehicle-stage"><img src="{uri}" alt="{model}"></div>
+    <div class="match-row">
+      <div class="match-item"><b>MATCH 01</b><span>{r1}</span></div>
+      <div class="match-item"><b>MATCH 02</b><span>{r2}</span></div>
+      <div class="match-item"><b>MATCH 03</b><span>{r3}</span></div>
     </div>
     </div>
     """)
 
-    # Color selector
-    html("""
-    <div class="control-card">
-    <div class="control-label">COLOR</div>
-    </div>
-    """)
-    color_cols = st.columns(len(colors))
-    for i, color in enumerate(colors):
-        with color_cols[i]:
-            label = f"✓ {color}" if color == st.session_state.color else color
-            if st.button(label, key=f"color_{i}", use_container_width=True):
-                st.session_state.color = color
-                st.rerun()
+    # Controls
+    left,right = st.columns(2, gap="medium")
 
+    with left:
+        html("""
+        <div class="control-label">COLOR</div>
+        <div class="control-sub">원하는 컬러를 선택하세요.</div>
+        """)
+
+        color_cols = st.columns(len(colors))
+
+        for i,color in enumerate(colors):
+            with color_cols[i]:
+                label = f"✓ {color}" if color == st.session_state.color else color
+
+                if st.button(
+                    label,
+                    key=f"color_{i}",
+                    use_container_width=True
+                ):
+                    st.session_state.color = color
+                    st.rerun()
+
+    with right:
+        html("""
+        <div class="control-label">TERM</div>
+        <div class="control-sub">이용기간을 선택하세요.</div>
+        """)
+
+        term_cols = st.columns(3)
+
+        for term in [36,48,60]:
+            with term_cols[[36,48,60].index(term)]:
+                label = f"✓ {term}개월" if term == st.session_state.months else f"{term}개월"
+
+                if st.button(
+                    label,
+                    key=f"term_{term}",
+                    use_container_width=True
+                ):
+                    st.session_state.months = term
+                    st.rerun()
+
+    # Re-select after color change
     selected = filtered[
-        filtered["색상"].astype(str) == st.session_state.color
+        filtered["색상"].astype(str)==st.session_state.color
     ].iloc[0]
 
-    # Period - no radio
-    html("""
-    <div class="control-card">
-    <div class="control-label">이용기간</div>
-    <div style="color:#8A95A5;font-size:12px;margin-bottom:12px;">원하는 기간을 선택하세요.</div>
-    </div>
-    """)
-
-    term_cols = st.columns(3)
-    for idx, term in enumerate([36, 48, 60]):
-        with term_cols[idx]:
-            label = f"✓ {term}개월" if st.session_state.months == term else f"{term}개월"
-            if st.button(label, key=f"term_{term}", use_container_width=True):
-                st.session_state.months = term
-                st.rerun()
-
     months = st.session_state.months
-
-    # Quote
     column = f"{months}개월"
-    if column in selected.index and pd.notna(selected[column]):
-        monthly_fee = float(selected[column])
-    else:
-        price_temp = float(selected["차량가격(만원)"])
-        residual = max(0.35, 0.75 - months / 100)
-        monthly_fee = round(
-            (price_temp * (1 - residual)) / months + price_temp * 0.012,
-            1
-        )
+
+    monthly = float(selected[column]) if (
+        column in selected.index and pd.notna(selected[column])
+    ) else 0
 
     price = int(float(selected["차량가격(만원)"]))
 
+    # Quote
     html(f"""
-    <div class="quote-card">
-    <div class="quote-row"><span>추천 차량</span><span>{recommended_model}</span></div>
-    <div class="quote-row"><span>선택 색상</span><span>{st.session_state.color}</span></div>
-    <div class="quote-row"><span>차량 가격</span><span>{price:,}만원</span></div>
-    <div class="quote-row"><span>이용기간</span><span>{months}개월</span></div>
-    <div class="quote-divider"></div>
-    <div class="monthly-label">ESTIMATED MONTHLY PAYMENT</div>
-    <div class="monthly-fee">월 {monthly_fee:,.0f}만원부터</div>
-    <div class="monthly-note">시연용 예상 금액이며 실제 계약 조건에 따라 달라질 수 있습니다.</div>
+    <div class="quote-shell">
+      <div class="quote-head">
+        <div>
+          <div class="quote-kicker">PERSONALIZED SMART QUOTE</div>
+          <div class="quote-label">나에게 맞춘 예상 이용금액</div>
+          <div class="quote-fee">월 <em>{monthly:,.0f}만원</em>부터</div>
+        </div>
+        <div class="quote-chip">{months}개월 · {st.session_state.color}</div>
+      </div>
+      <div class="quote-details">
+        <div class="quote-detail"><span>추천 차량</span><strong>{model}</strong></div>
+        <div class="quote-detail"><span>선택 색상</span><strong>{st.session_state.color}</strong></div>
+        <div class="quote-detail"><span>이용기간</span><strong>{months}개월</strong></div>
+        <div class="quote-detail"><span>차량가격</span><strong>{price:,}만원</strong></div>
+      </div>
+      <div class="quote-note">시연용 예상 금액이며 실제 계약 조건에 따라 달라질 수 있습니다.</div>
     </div>
     """)
 
     st.write("")
-    c1, c2 = st.columns([2, 1])
-    with c1:
-        if st.button("이 차량으로 내 견적 완성하기 →", type="primary", use_container_width=True):
+
+    a,b = st.columns([2,1])
+
+    with a:
+        if st.button(
+            "이 차량으로 내 견적 완성하기 →",
+            type="primary",
+            use_container_width=True
+        ):
             st.success(
-                f"{recommended_model} / {st.session_state.color} / "
+                f"{model} / {st.session_state.color} / "
                 f"{months}개월 조건이 선택되었습니다."
             )
-    with c2:
-        if st.button("처음부터 다시", use_container_width=True):
+
+    with b:
+        if st.button(
+            "처음부터 다시",
+            use_container_width=True
+        ):
             st.session_state.step = 0
             st.session_state.answers = []
             st.session_state.color = None
