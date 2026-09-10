@@ -6,7 +6,7 @@ import time
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-st.set_page_config(page_title="AI 에이전트", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="나만의 AI 에이전트", page_icon="✦", layout="wide")
 
 st.markdown("""
 <style>
@@ -20,32 +20,47 @@ st.markdown("""
 
     h1 {
         font-size: 1.8rem !important;
+        color: #1E293B;
     }
 
     [data-testid="stChatMessage"] {
-        border-radius: 16px;
-        padding: 0.5rem 1rem;
-        margin-bottom: 0.5rem;
+        border-radius: 18px;
+        padding: 0.6rem 1.1rem;
+        margin-bottom: 0.6rem;
+        border: 1px solid #E5EAF7;
     }
 
     [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-        background-color: #f0f2f6;
+        background-color: #F4F6FB;
     }
 
     [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
-        background-color: #eef6ff;
+        background: linear-gradient(135deg, #EEF2FF 0%, #E0E9FF 100%);
     }
 
     [data-testid="stChatInput"] {
-        border-radius: 24px;
+        border-radius: 26px;
+        border: 1px solid #D6E0FA !important;
     }
 
-    button {
-        border-radius: 8px !important;
+    .stButton > button {
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
     }
 
     [data-testid="stSidebar"] {
         min-width: 250px;
+    }
+
+    [data-testid="stSidebar"] h2 {
+        color: #2563EB;
+        font-size: 1.1rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -278,22 +293,24 @@ def call_claude(messages):
     return extract_text(response.content)
 
 with st.sidebar:
-    st.header("사용 가능한 기능")
+    st.header("✦ 주요 기능")
     st.markdown("""
-    - 🕐 현재 시각 / 요일
-    - 🧮 계산기
-    - 📊 DART 기업 공시 조회 (전체 회사)
-    - ⚖️ 법령 검색
-    - 🔍 실시간 웹 검색
-    """)
+    <div style="line-height: 2.2;">
+    🕐&nbsp;&nbsp;현재 시각 / 요일<br>
+    🧮&nbsp;&nbsp;계산기<br>
+    📊&nbsp;&nbsp;DART 기업 공시 조회<br>
+    ⚖️&nbsp;&nbsp;법령 검색<br>
+    🔍&nbsp;&nbsp;실시간 웹 검색
+    </div>
+    """, unsafe_allow_html=True)
     st.divider()
-    st.caption("예시: '오늘 코스피 지수 뉴스 알려줘'")
+    st.caption("예시: '삼성전자 최근 공시 알려줘'")
     st.divider()
     if st.button("🔄 대화 초기화"):
         st.session_state.messages = []
         st.rerun()
 
-st.title("🤖 나만의 AI 에이전트")
+st.title("✦ 나만의 AI 에이전트")
 st.caption("DART 공시 조회 · 법령 검색 · 웹 검색 · 계산기 · 시계 기능을 갖춘 어시스턴트예요")
 
 if "messages" not in st.session_state:
@@ -301,7 +318,7 @@ if "messages" not in st.session_state:
 
 for msg in st.session_state.messages:
     if msg["role"] in ["user", "assistant"] and isinstance(msg["content"], str):
-        avatar = "🧑" if msg["role"] == "user" else "🤖"
+        avatar = "🧑" if msg["role"] == "user" else "✦"
         with st.chat_message(msg["role"], avatar=avatar):
             st.write(msg["content"])
 
@@ -315,7 +332,7 @@ if user_input:
     with st.spinner("답변을 준비하고 있어요..."):
         reply = call_claude(st.session_state.messages)
 
-    with st.chat_message("assistant", avatar="🤖"):
+    with st.chat_message("assistant", avatar="✦"):
         st.write(reply)
 
     st.session_state.messages.append({"role": "assistant", "content": reply})
