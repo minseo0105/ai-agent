@@ -187,6 +187,25 @@ def monthly_installment(principal_manwon, months, annual_rate=DEMO_APR):
     return monthly / 10000, total_interest / 10000
 
 
+
+def resolve_car_image(filename):
+    """
+    차량 이미지 파일을 JPG/JPEG/PNG 순서로 자동 탐색합니다.
+    sample_cars_v3.xlsx가 예전 .jpg/.png 파일명을 가지고 있어도
+    car_images_photoreal_39 폴더의 실제 파일을 찾아줍니다.
+    """
+    raw = Path(str(filename))
+    candidates = [
+        IMAGE_DIR / raw.name,
+        IMAGE_DIR / f"{raw.stem}.jpg",
+        IMAGE_DIR / f"{raw.stem}.jpeg",
+        IMAGE_DIR / f"{raw.stem}.png",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
+
 # =========================================================
 # 추천 질문용 GIF 비주얼
 # dreamcar_gifs 폴더의 실제 GIF 파일을 사용합니다.
@@ -1370,18 +1389,6 @@ button[kind="primary"]{
         line-height:1.5!important;
     }
 
-    /* Streamlit columns -> one card per row */
-    div[data-testid="stHorizontalBlock"]{
-        flex-wrap:wrap!important;
-        gap:.55rem!important;
-    }
-
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]{
-        flex:1 1 100%!important;
-        width:100%!important;
-        min-width:100%!important;
-    }
-
     .choice{
         margin-bottom:1px!important;
         border-radius:19px!important;
@@ -1542,6 +1549,256 @@ button[kind="primary"]{
     .used-price{
         font-size:31px!important;
     }
+}
+
+
+/* =========================================================
+   MOBILE UX REFINEMENT v2
+   - 질문/TOP3만 1열
+   - 색상/기간 버튼은 가로 유지
+   - 결과 화면 세로 길이 대폭 축소
+========================================================= */
+.reco-mobile-card{
+    display:grid;
+    grid-template-columns:42% 58%;
+    align-items:center;
+    min-height:150px;
+    overflow:hidden;
+    border:1px solid #E8EDF5;
+    border-radius:20px;
+    background:#FFFFFF;
+    box-shadow:0 8px 24px rgba(31,49,83,.07);
+    margin:3px 0 8px;
+}
+.reco-mobile-card.top{
+    border:1.5px solid #7C8CFF;
+    box-shadow:0 10px 26px rgba(89,101,225,.13);
+}
+.reco-mobile-img{
+    height:100%;
+    min-height:150px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(145deg,#F8FAFD,#EEF2F7);
+}
+.reco-mobile-img img{
+    width:100%;
+    height:145px;
+    object-fit:contain;
+    padding:7px;
+}
+.reco-mobile-copy{
+    padding:14px 14px 13px;
+    min-width:0;
+}
+.reco-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:8px;
+    margin-top:10px;
+    color:#78869B;
+    font-size:10px;
+}
+.reco-bottom b{color:#263750;}
+.reco-bottom strong{
+    color:#4968F2;
+    font-size:24px;
+    line-height:1;
+    letter-spacing:-1px;
+}
+
+/* 모바일 결과 화면에서 불필요한 장식/여백 축소 */
+@media(max-width:760px){
+    /* 질문 선택지와 TOP3만 세로 1열 */
+    div[data-testid="stHorizontalBlock"]:has(.choice),
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card){
+        flex-wrap:wrap!important;
+        gap:.45rem!important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(.choice) > div[data-testid="column"],
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card) > div[data-testid="column"]{
+        flex:1 1 100%!important;
+        width:100%!important;
+        min-width:100%!important;
+    }
+
+    /* 일반 선택 버튼(색상/기간)은 가로 배열 유지 */
+    div[data-testid="stHorizontalBlock"]:not(:has(.choice)):not(:has(.reco-mobile-card)){
+        flex-wrap:nowrap!important;
+        gap:.35rem!important;
+    }
+    div[data-testid="stHorizontalBlock"]:not(:has(.choice)):not(:has(.reco-mobile-card))
+      > div[data-testid="column"]{
+        min-width:0!important;
+        width:auto!important;
+        flex:1 1 0!important;
+    }
+
+    .persona{
+        padding:13px!important;
+        gap:10px!important;
+    }
+    .persona-visual{
+        height:92px!important;
+    }
+    .persona-visual img{
+        object-fit:cover!important;
+    }
+    .persona-name{
+        font-size:21px!important;
+        margin-top:3px!important;
+    }
+    .persona-sub{
+        font-size:11px!important;
+        margin-top:2px!important;
+    }
+    .persona-copy{
+        font-size:9px!important;
+        line-height:1.45!important;
+        margin-top:5px!important;
+    }
+
+    .top3-title{
+        margin:13px 0 2px!important;
+        font-size:17px!important;
+    }
+    .top3-sub{
+        margin-bottom:7px!important;
+    }
+
+    .reco-mobile-card{
+        grid-template-columns:43% 57%!important;
+        min-height:128px!important;
+        border-radius:17px!important;
+        margin-bottom:2px!important;
+    }
+    .reco-mobile-img{
+        min-height:128px!important;
+    }
+    .reco-mobile-img img{
+        height:122px!important;
+        padding:5px!important;
+    }
+    .reco-mobile-copy{
+        padding:10px 11px!important;
+    }
+    .reco-rank{
+        font-size:8px!important;
+        margin-bottom:3px!important;
+    }
+    .reco-model{
+        font-size:17px!important;
+        line-height:1.18!important;
+        margin-bottom:4px!important;
+    }
+    .reco-tag{
+        font-size:9px!important;
+        line-height:1.35!important;
+        min-height:auto!important;
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+    }
+    .reco-bottom{
+        margin-top:7px!important;
+        font-size:8px!important;
+    }
+    .reco-bottom strong{
+        font-size:20px!important;
+    }
+
+    /* TOP3 버튼을 카드와 붙여서 작게 */
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card) .stButton>button{
+        min-height:38px!important;
+        height:38px!important;
+        font-size:10px!important;
+        margin:0 0 5px!important;
+        border-radius:11px!important;
+    }
+
+    .top3-guide{
+        margin:7px 0 4px!important;
+        padding:9px 11px!important;
+        font-size:9px!important;
+    }
+
+    /* 선택 차량 상세도 지나치게 크게 보이지 않게 */
+    .dream{
+        margin-top:8px!important;
+    }
+    .dream-head{
+        padding:15px 14px 0!important;
+    }
+    .dream-name{
+        font-size:22px!important;
+    }
+    .car-stage{
+        height:190px!important;
+    }
+    .car-stage img{
+        width:92%!important;
+        height:96%!important;
+        object-fit:contain!important;
+    }
+    .reason-row{
+        padding:0 11px 10px!important;
+        gap:4px!important;
+    }
+
+    /* 일반 버튼은 모바일에서 너무 높지 않게 */
+    .stButton>button{
+        min-height:42px!important;
+        height:auto!important;
+        padding:.45rem .45rem!important;
+        font-size:11px!important;
+        border-radius:11px!important;
+    }
+
+    /* 색상/할부기간 버튼의 텍스트 줄바꿈 억제 */
+    div[data-testid="stHorizontalBlock"]:not(:has(.choice)):not(:has(.reco-mobile-card))
+      .stButton>button{
+        white-space:nowrap!important;
+        font-size:10px!important;
+        padding:.38rem .2rem!important;
+    }
+
+    /* 견적은 핵심 금액을 먼저, 상세는 컴팩트하게 */
+    .quote{
+        padding:15px 14px!important;
+        border-radius:18px!important;
+    }
+    .quote-fee{
+        font-size:31px!important;
+        margin-top:2px!important;
+    }
+    .quote-details{
+        gap:5px!important;
+        margin-top:9px!important;
+    }
+    .detail{
+        padding:9px!important;
+        min-height:58px!important;
+    }
+    .money-flow{
+        gap:5px!important;
+        margin-top:8px!important;
+    }
+    .money-box{
+        padding:9px!important;
+    }
+}
+
+/* 아주 작은 휴대폰 */
+@media(max-width:390px){
+    .hero-title{font-size:24px!important;}
+    .result-title{font-size:23px!important;}
+    .reco-mobile-card{grid-template-columns:41% 59%!important;}
+    .reco-mobile-img img{height:112px!important;}
+    .reco-model{font-size:16px!important;}
+    .reco-bottom strong{font-size:18px!important;}
 }
 
 </style>
@@ -1881,24 +2138,27 @@ else:
             ].iloc[0]
 
             top_file = Path(str(top_row["이미지파일명"]))
-            top_image_path = IMAGE_DIR / top_file.with_suffix(".png").name
+            top_image_path = resolve_car_image(top_file.name)
             top_uri = image_data_uri(top_image_path)
             top_price = int(float(top_row["차량가격(만원)"]))
 
-            if top_uri:
-                html(f"""
-                <div class="reco-photo">
-                <img src="{top_uri}" alt="{item["model"]}">
-                </div>
-                """)
+            image_html = (
+                f'<img src="{top_uri}" alt="{item["model"]}">'
+                if top_uri else ""
+            )
 
             html(f"""
-            <div class="reco-card{top_class}">
-            <div class="reco-rank">TOP {idx + 1}{selected_mark}</div>
-            <div class="reco-model">{item["model"]}</div>
-            <div class="reco-tag">{item["profile"]["tagline"]}</div>
-            <div class="reco-price">신차가 약 <b>{top_price:,}만원</b></div>
-            <div class="reco-match">LIFESTYLE MATCH<strong>{item["match"]}%</strong></div>
+            <div class="reco-mobile-card{top_class}">
+                <div class="reco-mobile-img">{image_html}</div>
+                <div class="reco-mobile-copy">
+                    <div class="reco-rank">TOP {idx + 1}{selected_mark}</div>
+                    <div class="reco-model">{item["model"]}</div>
+                    <div class="reco-tag">{item["profile"]["tagline"]}</div>
+                    <div class="reco-bottom">
+                        <span>신차가 약 <b>{top_price:,}만원</b></span>
+                        <strong>{item["match"]}%</strong>
+                    </div>
+                </div>
             </div>
             """)
 
@@ -1918,8 +2178,7 @@ else:
     """)
 
     original_image = Path(str(selected["이미지파일명"]))
-    png_name = original_image.with_suffix(".png").name
-    image_path = IMAGE_DIR / png_name
+    image_path = resolve_car_image(original_image.name)
     uri = image_data_uri(image_path)
 
     r1, r2, r3 = recommendation["reasons"]
