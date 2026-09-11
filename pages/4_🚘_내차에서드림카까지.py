@@ -18,7 +18,7 @@ st.set_page_config(
 BASE_DIR = Path(__file__).resolve().parent.parent
 EXCEL_PATH = BASE_DIR / "sample_cars_v3.xlsx"
 IMAGE_DIR = BASE_DIR / "car_images_photoreal_39"
-GIF_DIR = BASE_DIR / "dreamcar_gifs"
+ASSET_DIR = BASE_DIR / "dreamcar_assets"
 
 # 시연용 고정 금리
 DEMO_APR = 5.9
@@ -47,6 +47,8 @@ def image_data_uri(path):
         mime = "image/png"
     elif suffix == ".gif":
         mime = "image/gif"
+    elif suffix == ".webp":
+        mime = "image/webp"
     else:
         mime = "image/jpeg"
 
@@ -245,19 +247,19 @@ def resolve_car_image(filename):
     return None
 
 # =========================================================
-# 추천 질문용 GIF 비주얼
-# dreamcar_gifs 폴더의 실제 GIF 파일을 사용합니다.
+# 추천 질문용 Premium WebP 비주얼
+# dreamcar_assets 폴더의 고품질 Animated WebP 파일을 사용합니다.
 # =========================================================
-CITY = "city_drive.gif"
-TRIP = "road_trip.gif"
-DUO = "duo_drive.gif"
-FAMILY = "family_trip.gif"
-STYLE = "design_motion.gif"
-SPACE = "cargo_space.gif"
+CITY = "q1_city.webp"
+TRIP = "q1_trip.webp"
+DUO = "q2_duo.webp"
+FAMILY = "q2_family.webp"
+STYLE = "q3_style.webp"
+SPACE = "q3_space.webp"
 
 
-def gif_uri(filename):
-    return image_data_uri(GIF_DIR / filename)
+def asset_uri(filename, category="lifestyle"):
+    return image_data_uri(ASSET_DIR / category / filename)
 
 
 # =========================================================
@@ -268,36 +270,36 @@ questions = [
         "title": "평소 차량을 가장 많이 쓰는 장면은?",
         "desc": "일상에서 가장 자주 반복되는 이동 장면을 골라주세요.",
         "options": [
-            {"art": "q1_city.gif", "label": "출퇴근 · 도심 이동", "desc": "주차와 기동성, 일상 편의가 중요해요", "scores": {"city": 3, "comfort": 1}},
-            {"art": "q1_trip.gif", "label": "주말 여행 · 장거리", "desc": "장거리 안정감과 승차감을 중요하게 봐요", "scores": {"trip": 3, "comfort": 2}},
-            {"art": "q1_mix.gif", "label": "도심과 여행을 반반", "desc": "평일과 주말을 모두 만족시키고 싶어요", "scores": {"city": 2, "trip": 2, "versatility": 2}},
+            {"art": "q1_city.webp", "label": "출퇴근 · 도심 이동", "desc": "주차와 기동성, 일상 편의가 중요해요", "scores": {"city": 3, "comfort": 1}},
+            {"art": "q1_trip.webp", "label": "주말 여행 · 장거리", "desc": "장거리 안정감과 승차감을 중요하게 봐요", "scores": {"trip": 3, "comfort": 2}},
+            {"art": "q1_mix.webp", "label": "도심과 여행을 반반", "desc": "평일과 주말을 모두 만족시키고 싶어요", "scores": {"city": 2, "trip": 2, "versatility": 2}},
         ]
     },
     {
         "title": "차 안에서 가장 자주 함께하는 사람은?",
         "desc": "동승 인원이 차량 크기와 공간의 기준을 크게 바꿉니다.",
         "options": [
-            {"art": "q2_duo.gif", "label": "혼자 또는 둘이", "desc": "운전자 중심의 편안함과 감도가 중요해요", "scores": {"solo": 3, "style": 1}},
-            {"art": "q2_family.gif", "label": "3~4인 가족", "desc": "가족이 편하면서도 너무 크지 않았으면 해요", "scores": {"family": 3, "space": 2}},
-            {"art": "q2_large.gif", "label": "5인 이상 · 다인승", "desc": "사람과 짐을 넉넉하게 태울 공간이 필요해요", "scores": {"large_family": 4, "space": 4}},
+            {"art": "q2_duo.webp", "label": "혼자 또는 둘이", "desc": "운전자 중심의 편안함과 감도가 중요해요", "scores": {"solo": 3, "style": 1}},
+            {"art": "q2_family.webp", "label": "3~4인 가족", "desc": "가족이 편하면서도 너무 크지 않았으면 해요", "scores": {"family": 3, "space": 2}},
+            {"art": "q2_large.webp", "label": "5인 이상 · 다인승", "desc": "사람과 짐을 넉넉하게 태울 공간이 필요해요", "scores": {"large_family": 4, "space": 4}},
         ]
     },
     {
         "title": "차를 고를 때 가장 중요하게 보는 것은?",
         "desc": "한 가지를 가장 우선한다면 무엇인가요?",
         "options": [
-            {"art": "q3_style.gif", "label": "디자인 · 고급감", "desc": "볼 때마다 만족스럽고 품격 있는 차", "scores": {"style": 4, "premium": 3}},
-            {"art": "q3_space.gif", "label": "공간 · 실용성", "desc": "짐과 사람을 편하게 담는 활용성", "scores": {"space": 4, "versatility": 3}},
-            {"art": "q3_efficiency.gif", "label": "편안함 · 효율", "desc": "매일 타기 편하고 부담이 적은 차", "scores": {"comfort": 3, "value": 3}},
+            {"art": "q3_style.webp", "label": "디자인 · 고급감", "desc": "볼 때마다 만족스럽고 품격 있는 차", "scores": {"style": 4, "premium": 3}},
+            {"art": "q3_space.webp", "label": "공간 · 실용성", "desc": "짐과 사람을 편하게 담는 활용성", "scores": {"space": 4, "versatility": 3}},
+            {"art": "q3_efficiency.webp", "label": "편안함 · 효율", "desc": "매일 타기 편하고 부담이 적은 차", "scores": {"comfort": 3, "value": 3}},
         ]
     },
     {
         "title": "새 차를 고를 때 가장 가까운 생각은?",
         "desc": "차급과 가격에 대한 선호를 반영해 추천을 정교하게 만듭니다.",
         "options": [
-            {"art": "q4_value.gif", "label": "합리적인 가격이 우선", "desc": "필요한 기능은 충분하되 부담은 낮게", "scores": {"value": 5}},
-            {"art": "q4_balance.gif", "label": "가격과 만족의 균형", "desc": "예산 안에서 한 단계 좋은 차를 원해요", "scores": {"balanced": 4, "premium": 1}},
-            {"art": "q4_premium.gif", "label": "마음에 들면 차급을 올려도 좋아요", "desc": "가격보다 만족도와 완성도가 중요해요", "scores": {"premium": 5, "style": 2}},
+            {"art": "q4_value.webp", "label": "합리적인 가격이 우선", "desc": "필요한 기능은 충분하되 부담은 낮게", "scores": {"value": 5}},
+            {"art": "q4_balance.webp", "label": "가격과 만족의 균형", "desc": "예산 안에서 한 단계 좋은 차를 원해요", "scores": {"balanced": 4, "premium": 1}},
+            {"art": "q4_premium.webp", "label": "마음에 들면 차급을 올려도 좋아요", "desc": "가격보다 만족도와 완성도가 중요해요", "scores": {"premium": 5, "style": 2}},
         ]
     },
 ]
@@ -404,14 +406,14 @@ def build_persona(answers, ranked):
     trip = s.get("trip",0)+s.get("versatility",0)
 
     if family >= 10:
-        return {"name":"LIFE EXPANDER","sub":"가족의 모든 이동을 넓게 설계하는 사람","copy":"사람과 짐, 평일과 주말을 모두 고려하며 차량 한 대의 활용 범위를 크게 보는 타입입니다.","quote":"“차 한 대가 가족의 활동 반경을 넓혀준다.”","art":"persona_life.gif"}
+        return {"name":"LIFE EXPANDER","sub":"가족의 모든 이동을 넓게 설계하는 사람","copy":"사람과 짐, 평일과 주말을 모두 고려하며 차량 한 대의 활용 범위를 크게 보는 타입입니다.","quote":"“차 한 대가 가족의 활동 반경을 넓혀준다.”","art":"persona_life.webp"}
     if premium >= 9:
-        return {"name":"PREMIUM CURATOR","sub":"이동의 감도까지 고르는 사람","copy":"편안함과 디자인, 소유 만족도를 중요하게 보며 한 단계 높은 완성도를 선호합니다.","quote":"“매일 타는 차일수록 만족감이 중요하다.”","art":"persona_premium.gif"}
+        return {"name":"PREMIUM CURATOR","sub":"이동의 감도까지 고르는 사람","copy":"편안함과 디자인, 소유 만족도를 중요하게 보며 한 단계 높은 완성도를 선호합니다.","quote":"“매일 타는 차일수록 만족감이 중요하다.”","art":"persona_premium.webp"}
     if value >= 6:
-        return {"name":"SMART SELECTOR","sub":"필요한 만큼 정확하게 고르는 사람","copy":"차량가격과 실용성을 함께 보며 매일 쓰는 기능에 집중해 효율적인 선택을 하는 타입입니다.","quote":"“좋은 차는 내 생활에 정확히 맞는 차.”","art":"persona_smart.gif"}
+        return {"name":"SMART SELECTOR","sub":"필요한 만큼 정확하게 고르는 사람","copy":"차량가격과 실용성을 함께 보며 매일 쓰는 기능에 집중해 효율적인 선택을 하는 타입입니다.","quote":"“좋은 차는 내 생활에 정확히 맞는 차.”","art":"persona_smart.webp"}
     if trip >= 7:
-        return {"name":"WEEKEND VOYAGER","sub":"주말의 반경을 넓히는 사람","copy":"평일의 이동뿐 아니라 여행과 장거리 주행까지 고려해 활용성과 편안함을 함께 봅니다.","quote":"“차가 바뀌면 갈 수 있는 곳도 달라진다.”","art":"persona_weekend.gif"}
-    return {"name":"BALANCE DRIVER","sub":"평일과 주말의 균형을 고르는 사람","copy":"편안함, 가격, 공간, 디자인 어느 하나에 치우치기보다 전체 균형을 중요하게 생각합니다.","quote":"“매일 타도 좋고, 주말에는 더 좋은 차.”","art":"persona_balance.gif"}
+        return {"name":"WEEKEND VOYAGER","sub":"주말의 반경을 넓히는 사람","copy":"평일의 이동뿐 아니라 여행과 장거리 주행까지 고려해 활용성과 편안함을 함께 봅니다.","quote":"“차가 바뀌면 갈 수 있는 곳도 달라진다.”","art":"persona_weekend.webp"}
+    return {"name":"BALANCE DRIVER","sub":"평일과 주말의 균형을 고르는 사람","copy":"편안함, 가격, 공간, 디자인 어느 하나에 치우치기보다 전체 균형을 중요하게 생각합니다.","quote":"“매일 타도 좋고, 주말에는 더 좋은 차.”","art":"persona_balance.webp"}
 
 
 # =========================================================
@@ -2468,7 +2470,7 @@ elif st.session_state.flow_step == "persona":
 
     for i, opt in enumerate(q["options"]):
         with cols[i]:
-            art_uri = gif_uri(opt["art"])
+            art_uri = asset_uri(opt["art"], "lifestyle")
 
             html(f"""
             <div class="choice">
@@ -2517,8 +2519,8 @@ else:
         st.error(f"차량 이미지 폴더가 없습니다: {IMAGE_DIR}")
         st.stop()
 
-    if not GIF_DIR.exists():
-        st.error(f"GIF 폴더가 없습니다: {GIF_DIR}")
+    if not ASSET_DIR.exists():
+        st.error(f"에셋 폴더가 없습니다: {ASSET_DIR}")
         st.stop()
 
     df = load_car_data(str(EXCEL_PATH)).copy()
@@ -2588,7 +2590,7 @@ else:
     </div>
     """)
 
-    persona_gif = gif_uri(recommendation["art"])
+    persona_gif = asset_uri(recommendation["art"], "persona")
 
     html(f"""
     <div class="persona">
