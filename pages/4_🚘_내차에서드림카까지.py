@@ -211,36 +211,36 @@ questions = [
         "title": "평소 차량을 가장 많이 쓰는 장면은?",
         "desc": "일상에서 가장 자주 반복되는 이동 장면을 골라주세요.",
         "options": [
-            {"art": CITY, "label": "출퇴근 · 도심 이동", "desc": "주차와 기동성, 일상 편의가 중요해요", "scores": {"city": 3, "comfort": 1}},
-            {"art": TRIP, "label": "주말 여행 · 장거리", "desc": "장거리 안정감과 승차감을 중요하게 봐요", "scores": {"trip": 3, "comfort": 2}},
-            {"art": SPACE, "label": "도심과 여행을 반반", "desc": "평일과 주말을 모두 만족시키고 싶어요", "scores": {"city": 2, "trip": 2, "versatility": 2}},
+            {"art": "q1_city.gif", "label": "출퇴근 · 도심 이동", "desc": "주차와 기동성, 일상 편의가 중요해요", "scores": {"city": 3, "comfort": 1}},
+            {"art": "q1_trip.gif", "label": "주말 여행 · 장거리", "desc": "장거리 안정감과 승차감을 중요하게 봐요", "scores": {"trip": 3, "comfort": 2}},
+            {"art": "q1_mix.gif", "label": "도심과 여행을 반반", "desc": "평일과 주말을 모두 만족시키고 싶어요", "scores": {"city": 2, "trip": 2, "versatility": 2}},
         ]
     },
     {
         "title": "차 안에서 가장 자주 함께하는 사람은?",
         "desc": "동승 인원이 차량 크기와 공간의 기준을 크게 바꿉니다.",
         "options": [
-            {"art": DUO, "label": "혼자 또는 둘이", "desc": "운전자 중심의 편안함과 감도가 중요해요", "scores": {"solo": 3, "style": 1}},
-            {"art": FAMILY, "label": "3~4인 가족", "desc": "가족이 편하면서도 너무 크지 않았으면 해요", "scores": {"family": 3, "space": 2}},
-            {"art": FAMILY, "label": "5인 이상 · 다인승", "desc": "사람과 짐을 넉넉하게 태울 공간이 필요해요", "scores": {"large_family": 4, "space": 4}},
+            {"art": "q2_duo.gif", "label": "혼자 또는 둘이", "desc": "운전자 중심의 편안함과 감도가 중요해요", "scores": {"solo": 3, "style": 1}},
+            {"art": "q2_family.gif", "label": "3~4인 가족", "desc": "가족이 편하면서도 너무 크지 않았으면 해요", "scores": {"family": 3, "space": 2}},
+            {"art": "q2_large.gif", "label": "5인 이상 · 다인승", "desc": "사람과 짐을 넉넉하게 태울 공간이 필요해요", "scores": {"large_family": 4, "space": 4}},
         ]
     },
     {
         "title": "차를 고를 때 가장 중요하게 보는 것은?",
         "desc": "한 가지를 가장 우선한다면 무엇인가요?",
         "options": [
-            {"art": STYLE, "label": "디자인 · 고급감", "desc": "볼 때마다 만족스럽고 품격 있는 차", "scores": {"style": 4, "premium": 3}},
-            {"art": SPACE, "label": "공간 · 실용성", "desc": "짐과 사람을 편하게 담는 활용성", "scores": {"space": 4, "versatility": 3}},
-            {"art": CITY, "label": "편안함 · 효율", "desc": "매일 타기 편하고 부담이 적은 차", "scores": {"comfort": 3, "value": 3}},
+            {"art": "q3_style.gif", "label": "디자인 · 고급감", "desc": "볼 때마다 만족스럽고 품격 있는 차", "scores": {"style": 4, "premium": 3}},
+            {"art": "q3_space.gif", "label": "공간 · 실용성", "desc": "짐과 사람을 편하게 담는 활용성", "scores": {"space": 4, "versatility": 3}},
+            {"art": "q3_efficiency.gif", "label": "편안함 · 효율", "desc": "매일 타기 편하고 부담이 적은 차", "scores": {"comfort": 3, "value": 3}},
         ]
     },
     {
         "title": "새 차를 고를 때 가장 가까운 생각은?",
         "desc": "차급과 가격에 대한 선호를 반영해 추천을 정교하게 만듭니다.",
         "options": [
-            {"art": CITY, "label": "합리적인 가격이 우선", "desc": "필요한 기능은 충분하되 부담은 낮게", "scores": {"value": 5}},
-            {"art": STYLE, "label": "가격과 만족의 균형", "desc": "예산 안에서 한 단계 좋은 차를 원해요", "scores": {"balanced": 4, "premium": 1}},
-            {"art": STYLE, "label": "마음에 들면 차급을 올려도 좋아요", "desc": "가격보다 만족도와 완성도가 중요해요", "scores": {"premium": 5, "style": 2}},
+            {"art": "q4_value.gif", "label": "합리적인 가격이 우선", "desc": "필요한 기능은 충분하되 부담은 낮게", "scores": {"value": 5}},
+            {"art": "q4_balance.gif", "label": "가격과 만족의 균형", "desc": "예산 안에서 한 단계 좋은 차를 원해요", "scores": {"balanced": 4, "premium": 1}},
+            {"art": "q4_premium.gif", "label": "마음에 들면 차급을 올려도 좋아요", "desc": "가격보다 만족도와 완성도가 중요해요", "scores": {"premium": 5, "style": 2}},
         ]
     },
 ]
@@ -347,14 +347,14 @@ def build_persona(answers, ranked):
     trip = s.get("trip",0)+s.get("versatility",0)
 
     if family >= 10:
-        return {"name":"LIFE EXPANDER","sub":"가족의 모든 이동을 넓게 설계하는 사람","copy":"사람과 짐, 평일과 주말을 모두 고려하며 차량 한 대의 활용 범위를 크게 보는 타입입니다.","quote":"“차 한 대가 가족의 활동 반경을 넓혀준다.”","art":FAMILY}
+        return {"name":"LIFE EXPANDER","sub":"가족의 모든 이동을 넓게 설계하는 사람","copy":"사람과 짐, 평일과 주말을 모두 고려하며 차량 한 대의 활용 범위를 크게 보는 타입입니다.","quote":"“차 한 대가 가족의 활동 반경을 넓혀준다.”","art":"persona_life.gif"}
     if premium >= 9:
-        return {"name":"PREMIUM CURATOR","sub":"이동의 감도까지 고르는 사람","copy":"편안함과 디자인, 소유 만족도를 중요하게 보며 한 단계 높은 완성도를 선호합니다.","quote":"“매일 타는 차일수록 만족감이 중요하다.”","art":STYLE}
+        return {"name":"PREMIUM CURATOR","sub":"이동의 감도까지 고르는 사람","copy":"편안함과 디자인, 소유 만족도를 중요하게 보며 한 단계 높은 완성도를 선호합니다.","quote":"“매일 타는 차일수록 만족감이 중요하다.”","art":"persona_premium.gif"}
     if value >= 6:
-        return {"name":"SMART SELECTOR","sub":"필요한 만큼 정확하게 고르는 사람","copy":"차량가격과 실용성을 함께 보며 매일 쓰는 기능에 집중해 효율적인 선택을 하는 타입입니다.","quote":"“좋은 차는 내 생활에 정확히 맞는 차.”","art":CITY}
+        return {"name":"SMART SELECTOR","sub":"필요한 만큼 정확하게 고르는 사람","copy":"차량가격과 실용성을 함께 보며 매일 쓰는 기능에 집중해 효율적인 선택을 하는 타입입니다.","quote":"“좋은 차는 내 생활에 정확히 맞는 차.”","art":"persona_smart.gif"}
     if trip >= 7:
-        return {"name":"WEEKEND VOYAGER","sub":"주말의 반경을 넓히는 사람","copy":"평일의 이동뿐 아니라 여행과 장거리 주행까지 고려해 활용성과 편안함을 함께 봅니다.","quote":"“차가 바뀌면 갈 수 있는 곳도 달라진다.”","art":TRIP}
-    return {"name":"BALANCE DRIVER","sub":"평일과 주말의 균형을 고르는 사람","copy":"편안함, 가격, 공간, 디자인 어느 하나에 치우치기보다 전체 균형을 중요하게 생각합니다.","quote":"“매일 타도 좋고, 주말에는 더 좋은 차.”","art":SPACE}
+        return {"name":"WEEKEND VOYAGER","sub":"주말의 반경을 넓히는 사람","copy":"평일의 이동뿐 아니라 여행과 장거리 주행까지 고려해 활용성과 편안함을 함께 봅니다.","quote":"“차가 바뀌면 갈 수 있는 곳도 달라진다.”","art":"persona_weekend.gif"}
+    return {"name":"BALANCE DRIVER","sub":"평일과 주말의 균형을 고르는 사람","copy":"편안함, 가격, 공간, 디자인 어느 하나에 치우치기보다 전체 균형을 중요하게 생각합니다.","quote":"“매일 타도 좋고, 주말에는 더 좋은 차.”","art":"persona_balance.gif"}
 
 
 # =========================================================
@@ -1256,6 +1256,294 @@ button[kind="primary"]{
 .reco-match{margin-top:11px;color:#8A95A6;font-size:9px}
 .reco-match strong{display:block;color:#315EF5;font-size:22px}
 
+
+/* =======================================================
+   TOP 3 - MOBILE FIRST
+======================================================= */
+.reco-photo{
+    height:150px;
+    margin:2px 0 7px;
+    border-radius:18px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 58%,rgba(221,228,239,.8),transparent 38%),
+      linear-gradient(180deg,#FFFFFF,#F4F6F9);
+    border:1px solid #EDF0F4;
+}
+.reco-photo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    padding:6px;
+}
+.reco-price{
+    margin-top:7px;
+    color:#7A8698;
+    font-size:10px;
+}
+.reco-price b{
+    color:#2C3B52;
+}
+.top3-guide{
+    margin:12px 0 3px;
+    padding:11px 13px;
+    border-radius:14px;
+    background:linear-gradient(135deg,#F0F5FF,#F5F1FF);
+    color:#52627A;
+    font-size:10px;
+    line-height:1.55;
+}
+
+
+@media(max-width:760px){
+
+    .block-container{
+        max-width:100%!important;
+        padding-top:.35rem!important;
+        padding-left:.72rem!important;
+        padding-right:.72rem!important;
+        padding-bottom:2rem!important;
+    }
+
+    .hero{
+        padding:24px 19px!important;
+        margin-bottom:10px!important;
+        border-radius:22px!important;
+        min-height:auto!important;
+    }
+
+    .hero-kicker{
+        font-size:8px!important;
+    }
+
+    .hero-title{
+        margin-top:7px!important;
+        font-size:27px!important;
+        line-height:1.18!important;
+    }
+
+    .hero-desc{
+        margin-top:9px!important;
+        font-size:11px!important;
+        line-height:1.55!important;
+    }
+
+    .flowbar{
+        grid-template-columns:1fr 1fr!important;
+        gap:6px!important;
+        margin-bottom:10px!important;
+    }
+
+    .flow{
+        min-height:50px!important;
+        padding:9px 10px!important;
+        border-radius:13px!important;
+        font-size:8px!important;
+    }
+
+    .lookup,
+    .qbox,
+    .quote{
+        padding:20px 17px!important;
+        border-radius:20px!important;
+    }
+
+    .lookup-title{
+        font-size:23px!important;
+    }
+
+    .lookup:after{
+        display:none!important;
+    }
+
+    .qbox{
+        margin-bottom:10px!important;
+    }
+
+    .qtitle{
+        font-size:21px!important;
+        line-height:1.27!important;
+    }
+
+    .qdesc{
+        font-size:11px!important;
+        line-height:1.5!important;
+    }
+
+    /* Streamlit columns -> one card per row */
+    div[data-testid="stHorizontalBlock"]{
+        flex-wrap:wrap!important;
+        gap:.55rem!important;
+    }
+
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]{
+        flex:1 1 100%!important;
+        width:100%!important;
+        min-width:100%!important;
+    }
+
+    .choice{
+        margin-bottom:1px!important;
+        border-radius:19px!important;
+    }
+
+    .choice-visual{
+        height:155px!important;
+        margin:7px!important;
+        border-radius:15px!important;
+    }
+
+    .choice-copy{
+        padding:7px 15px 14px!important;
+    }
+
+    .choice-title{
+        font-size:15px!important;
+    }
+
+    .choice-desc{
+        font-size:10px!important;
+    }
+
+    .stButton>button{
+        min-height:48px!important;
+        border-radius:13px!important;
+        font-size:13px!important;
+    }
+
+    .result-title{
+        font-size:26px!important;
+        line-height:1.22!important;
+    }
+
+    .result-desc{
+        font-size:10px!important;
+        line-height:1.5!important;
+    }
+
+    .persona{
+        grid-template-columns:1fr!important;
+        gap:14px!important;
+        padding:18px!important;
+        border-radius:21px!important;
+    }
+
+    .persona-visual{
+        height:135px!important;
+    }
+
+    .persona-name{
+        font-size:24px!important;
+    }
+
+    .persona-sub{
+        font-size:12px!important;
+    }
+
+    .persona-copy{
+        font-size:10px!important;
+    }
+
+    .top3-title{
+        margin-top:14px!important;
+        font-size:16px!important;
+    }
+
+    .top3-sub{
+        font-size:10px!important;
+        line-height:1.5!important;
+    }
+
+    .reco-photo{
+        height:170px!important;
+        margin-top:5px!important;
+    }
+
+    .reco-card{
+        min-height:auto!important;
+        padding:15px!important;
+        border-radius:18px!important;
+    }
+
+    .reco-model{
+        font-size:19px!important;
+    }
+
+    .reco-tag{
+        min-height:auto!important;
+        font-size:10px!important;
+    }
+
+    .reco-match strong{
+        font-size:24px!important;
+    }
+
+    .dream{
+        margin-top:12px!important;
+        border-radius:21px!important;
+    }
+
+    .dream-head{
+        padding:20px 18px 0!important;
+    }
+
+    .dream-name{
+        font-size:25px!important;
+    }
+
+    .car-stage{
+        height:245px!important;
+    }
+
+    .car-stage img{
+        width:94%!important;
+        height:92%!important;
+    }
+
+    .reason-row{
+        grid-template-columns:1fr!important;
+        padding:0 15px 15px!important;
+    }
+
+    .reason{
+        padding:9px 4px!important;
+    }
+
+    .quote{
+        margin-top:10px!important;
+    }
+
+    .quote-fee{
+        font-size:34px!important;
+    }
+
+    .quote-details{
+        grid-template-columns:1fr 1fr!important;
+    }
+
+    .money-flow{
+        grid-template-columns:1fr!important;
+    }
+
+    .operator{
+        font-size:16px!important;
+        line-height:1!important;
+    }
+
+    .usedcar-card{
+        grid-template-columns:1fr!important;
+    }
+
+    .used-main{
+        min-height:auto!important;
+        padding:20px!important;
+    }
+
+    .used-price{
+        font-size:31px!important;
+    }
+}
+
 </style>
 """)
 
@@ -1551,10 +1839,10 @@ else:
     recommendation["reasons"] = selected_rank["profile"]["reason_pool"][:3]
 
     html(f"""
-    <div class="result-title">당신에게 맞는 드림카 후보를 찾았습니다.</div>
+    <div class="result-title">당신에게 가장 잘 맞는 드림카 TOP 3</div>
     <div class="result-desc">
-    현재 <b>{len(loaded_models)}개 차종</b>을 라이프스타일 점수로 비교했습니다.
-    TOP 3 추천과 전체 추천 순위를 함께 확인할 수 있습니다.
+    총 <b>{len(loaded_models)}개 차종</b>을 내부적으로 비교하고,
+    선택을 어렵게 하지 않도록 가장 적합한 3대만 추천합니다.
     </div>
     """)
 
@@ -1588,17 +1876,34 @@ else:
             top_class = " top" if idx == 0 else ""
             selected_mark = " · 선택됨" if item["model"] == model else ""
 
+            top_row = df[
+                df["모델"].astype(str) == item["model"]
+            ].iloc[0]
+
+            top_file = Path(str(top_row["이미지파일명"]))
+            top_image_path = IMAGE_DIR / top_file.with_suffix(".png").name
+            top_uri = image_data_uri(top_image_path)
+            top_price = int(float(top_row["차량가격(만원)"]))
+
+            if top_uri:
+                html(f"""
+                <div class="reco-photo">
+                <img src="{top_uri}" alt="{item["model"]}">
+                </div>
+                """)
+
             html(f"""
             <div class="reco-card{top_class}">
             <div class="reco-rank">TOP {idx + 1}{selected_mark}</div>
             <div class="reco-model">{item["model"]}</div>
             <div class="reco-tag">{item["profile"]["tagline"]}</div>
+            <div class="reco-price">신차가 약 <b>{top_price:,}만원</b></div>
             <div class="reco-match">LIFESTYLE MATCH<strong>{item["match"]}%</strong></div>
             </div>
             """)
 
             if st.button(
-                "이 차량 자세히 보기",
+                "이 차량으로 견적 보기",
                 key=f"select_model_{idx}",
                 use_container_width=True
             ):
@@ -1606,50 +1911,11 @@ else:
                 st.session_state.color = None
                 st.rerun()
 
-    html(f"""
-    <div class="top3-title" style="margin-top:22px;">전체 추천 순위 · {len(ranked)}개 차종</div>
-    <div class="top3-sub">
-    동일한 답변을 기준으로 13개 차량을 모두 점수화했습니다.
-    다른 차량을 선택하면 아래 이미지와 교체 견적이 즉시 변경됩니다.
+    html("""
+    <div class="top3-guide">
+    💡 마음에 드는 차량 1대를 선택하면 아래에서 색상과 할부기간을 바로 조정할 수 있습니다.
     </div>
     """)
-
-    # 전체 추천 차량: 추천 점수 순으로 4개씩 노출
-    for row_start in range(0, len(ranked), 4):
-        row_items = ranked[row_start:row_start + 4]
-        browse_cols = st.columns(len(row_items), gap="small")
-
-        for offset, item in enumerate(row_items):
-            with browse_cols[offset]:
-                browse_model = item["model"]
-
-                first_row = df[
-                    df["모델"].astype(str) == browse_model
-                ].iloc[0]
-
-                browse_file = Path(str(first_row["이미지파일명"]))
-                browse_path = IMAGE_DIR / browse_file.with_suffix(".png").name
-                browse_uri = image_data_uri(browse_path)
-
-                if browse_uri:
-                    st.image(browse_uri, use_container_width=True)
-
-                rank_no = row_start + offset + 1
-                selected_text = " · 선택됨" if browse_model == model else ""
-
-                st.markdown(f"**{rank_no}위 · {browse_model}{selected_text}**")
-                st.caption(
-                    f'{item["profile"]["tagline"]} · 적합도 {item["match"]}%'
-                )
-
-                if st.button(
-                    "이 차량으로 견적 보기",
-                    key=f"browse_rank_{rank_no}_{browse_model}",
-                    use_container_width=True
-                ):
-                    st.session_state.selected_model = browse_model
-                    st.session_state.color = None
-                    st.rerun()
 
     original_image = Path(str(selected["이미지파일명"]))
     png_name = original_image.with_suffix(".png").name
