@@ -18,6 +18,7 @@ st.set_page_config(
 BASE_DIR = Path(__file__).resolve().parent.parent
 EXCEL_PATH = BASE_DIR / "sample_cars_v2.xlsx"
 IMAGE_DIR = BASE_DIR / "car_images_cutout"
+GIF_DIR = BASE_DIR / "dreamcar_gifs"
 
 # 시연용 고정 금리
 DEMO_APR = 5.9
@@ -34,7 +35,16 @@ def html(content):
 def image_data_uri(path):
     if not path.exists():
         return ""
-    mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
+
+    suffix = path.suffix.lower()
+
+    if suffix == ".png":
+        mime = "image/png"
+    elif suffix == ".gif":
+        mime = "image/gif"
+    else:
+        mime = "image/jpeg"
+
     encoded = base64.b64encode(path.read_bytes()).decode("utf-8")
     return f"data:{mime};base64,{encoded}"
 
@@ -174,109 +184,19 @@ def monthly_installment(principal_manwon, months, annual_rate=DEMO_APR):
 
 
 # =========================================================
-# 추천 질문용 이미지형 SVG
+# 추천 질문용 GIF 비주얼
+# dreamcar_gifs 폴더의 실제 GIF 파일을 사용합니다.
 # =========================================================
-CITY = """
-<svg viewBox="0 0 420 210">
-<defs><linearGradient id="c1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#DDE8FF"/><stop offset="1" stop-color="#F8FAFC"/></linearGradient></defs>
-<rect width="420" height="210" fill="url(#c1)"/>
-<g class="bgmove" opacity=".76">
-<rect x="40" y="60" width="47" height="105" rx="5" fill="#9DB0D1"/>
-<rect x="101" y="30" width="61" height="135" rx="5" fill="#7693C3"/>
-<rect x="176" y="76" width="48" height="89" rx="5" fill="#C0CBDD"/>
-<rect x="241" y="45" width="72" height="120" rx="5" fill="#9FB1D0"/>
-</g>
-<path d="M0 165H420V210H0Z" fill="#DCE3ED"/>
-<g class="carmove">
-<path d="M123 164L146 142H217L245 164L269 170V185H104V171Z" fill="#17305B"/>
-<path d="M152 146H211L229 163H136Z" fill="#86A4D3"/>
-<circle cx="138" cy="184" r="12" fill="#101827"/>
-<circle cx="239" cy="184" r="12" fill="#101827"/>
-</g>
-</svg>
-"""
+CITY = "city_drive.gif"
+TRIP = "road_trip.gif"
+DUO = "duo_drive.gif"
+FAMILY = "family_trip.gif"
+STYLE = "design_motion.gif"
+SPACE = "cargo_space.gif"
 
-TRIP = """
-<svg viewBox="0 0 420 210">
-<rect width="420" height="210" fill="#EAF2FF"/>
-<circle class="glow" cx="330" cy="45" r="24" fill="#FFD986"/>
-<g class="bgmove">
-<path d="M0 164L90 84L153 147L231 62L345 164Z" fill="#A5B8DA"/>
-<path d="M81 164L161 104L219 152L291 91L420 164Z" fill="#6F8FC7"/>
-</g>
-<path d="M0 164H420V210H0Z" fill="#DEE7DF"/>
-<g class="carmove">
-<path d="M126 163L149 142H217L245 163L269 169V185H106V171Z" fill="#243C63"/>
-<path d="M155 146H211L230 162H139Z" fill="#98ADD1"/>
-<circle cx="140" cy="184" r="12" fill="#172233"/>
-<circle cx="239" cy="184" r="12" fill="#172233"/>
-</g>
-</svg>
-"""
 
-DUO = """
-<svg viewBox="0 0 420 210">
-<rect width="420" height="210" fill="#EEF3FF"/>
-<circle cx="210" cy="106" r="81" fill="#FFFFFF" opacity=".72"/>
-<g class="float">
-<rect x="112" y="66" width="81" height="98" rx="30" fill="#2E529C"/>
-<circle cx="152" cy="72" r="22" fill="#CCD9F4"/>
-</g>
-<g class="float delay">
-<rect x="228" y="66" width="81" height="98" rx="30" fill="#615AA8"/>
-<circle cx="268" cy="72" r="22" fill="#DBD5F7"/>
-</g>
-</svg>
-"""
-
-FAMILY = """
-<svg viewBox="0 0 420 210">
-<rect width="420" height="210" fill="#EEF3FF"/>
-<circle cx="210" cy="106" r="82" fill="#FFFFFF" opacity=".72"/>
-<g class="float">
-<rect x="88" y="67" width="72" height="96" rx="28" fill="#2C519A"/>
-<circle cx="124" cy="72" r="21" fill="#CBD9F5"/>
-</g>
-<g class="float delay">
-<rect x="260" y="67" width="72" height="96" rx="28" fill="#5D57A3"/>
-<circle cx="296" cy="72" r="21" fill="#D9D3F5"/>
-</g>
-<g class="float delay2">
-<rect x="177" y="103" width="66" height="62" rx="24" fill="#4971C0"/>
-<circle cx="210" cy="107" r="18" fill="#DAE4F9"/>
-</g>
-</svg>
-"""
-
-STYLE = """
-<svg viewBox="0 0 420 210">
-<rect width="420" height="210" fill="#EFF3FB"/>
-<ellipse cx="210" cy="171" rx="124" ry="13" fill="#CDD5E1" opacity=".58"/>
-<g class="carmove">
-<path d="M91 149L127 119H244L289 149L327 157V176H73V159Z" fill="#142A51"/>
-<path d="M140 123H236L271 148H112Z" fill="#819CC8"/>
-<circle cx="125" cy="175" r="16" fill="#101827"/>
-<circle cx="278" cy="175" r="16" fill="#101827"/>
-<path class="glow" d="M77 157H105M292 154H320" stroke="#86A8FF" stroke-width="6" stroke-linecap="round"/>
-</g>
-</svg>
-"""
-
-SPACE = """
-<svg viewBox="0 0 420 210">
-<rect width="420" height="210" fill="#EDF3FC"/>
-<path d="M80 167V83C80 59 100 40 124 40H296C320 40 340 59 340 83V167" fill="#E8EDF5" stroke="#AABBD3" stroke-width="4"/>
-<path d="M110 69H310V160H110Z" fill="#FFFFFF"/>
-<g class="float">
-<rect x="129" y="100" width="67" height="58" rx="10" fill="#345FAC"/>
-<path d="M143 100V86H182V100" fill="none" stroke="#345FAC" stroke-width="7"/>
-</g>
-<g class="float delay">
-<rect x="210" y="84" width="78" height="74" rx="11" fill="#7067B2"/>
-<path d="M226 84V68H272V84" fill="none" stroke="#7067B2" stroke-width="7"/>
-</g>
-</svg>
-"""
+def gif_uri(filename):
+    return image_data_uri(GIF_DIR / filename)
 
 
 # =========================================================
@@ -424,222 +344,375 @@ if "months" not in st.session_state:
 html("""
 <style>
 :root{
-    --ink:#101828;
-    --muted:#667085;
-    --blue:#2A5CF4;
-    --line:#E7EBF2;
-    --soft:#F7F9FC;
+    --ink:#111827;
+    --muted:#748094;
+    --line:#E6EAF0;
+    --blue:#315EF5;
+    --violet:#7056E8;
+    --navy:#07172D;
+    --navy2:#173B70;
+    --soft:#F6F8FB;
+    --white:#FFFFFF;
 }
+
 html,body,[class*="css"]{
     font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
+
 .stApp{
     background:
-      radial-gradient(circle at 92% 0%,rgba(56,99,246,.09),transparent 22%),
-      #F6F8FB;
+      radial-gradient(circle at 92% 2%,rgba(66,98,255,.10),transparent 22%),
+      radial-gradient(circle at 5% 46%,rgba(112,86,232,.05),transparent 18%),
+      linear-gradient(180deg,#FAFBFD 0%,#F5F7FA 100%);
 }
-.block-container{
-    max-width:1060px;
-    padding-top:1rem;
-    padding-bottom:3rem;
-}
-header[data-testid="stHeader"]{
-    background:rgba(246,248,251,.82);
-    backdrop-filter:blur(10px);
-}
-#MainMenu,footer{visibility:hidden}
 
+.block-container{
+    max-width:1080px;
+    padding-top:1rem;
+    padding-bottom:3.2rem;
+}
+
+header[data-testid="stHeader"]{
+    background:rgba(249,250,252,.78);
+    backdrop-filter:blur(14px);
+}
+
+#MainMenu,footer{
+    visibility:hidden;
+}
+
+/* =======================================================
+   HERO
+======================================================= */
 .hero{
     position:relative;
     overflow:hidden;
-    border-radius:30px;
-    padding:45px 49px;
-    margin-bottom:17px;
+    min-height:280px;
+    border-radius:32px;
+    padding:48px 50px;
+    margin-bottom:16px;
     color:#fff;
     background:
-      linear-gradient(122deg,#071426 0%,#102A51 60%,#244EA6 100%);
-    box-shadow:0 22px 55px rgba(16,32,60,.13);
+      radial-gradient(circle at 82% 18%,rgba(115,148,255,.24),transparent 24%),
+      linear-gradient(125deg,#061426 0%,#0D284F 60%,#244B9C 100%);
+    box-shadow:0 25px 62px rgba(15,29,55,.16);
 }
+
+.hero:before,
 .hero:after{
     content:"";
     position:absolute;
-    width:300px;height:300px;
     border-radius:50%;
-    right:-105px;top:-160px;
     border:1px solid rgba(255,255,255,.12);
-    animation:orb 8s ease-in-out infinite;
 }
-@keyframes orb{
-    50%{transform:translate(-14px,14px)}
+
+.hero:before{
+    width:300px;
+    height:300px;
+    right:-85px;
+    top:-150px;
+    animation:heroOrbit 8s ease-in-out infinite;
 }
+
+.hero:after{
+    width:150px;
+    height:150px;
+    right:145px;
+    bottom:-95px;
+    background:rgba(101,136,255,.09);
+    animation:heroFloat 6s ease-in-out infinite;
+}
+
+@keyframes heroOrbit{
+    50%{transform:translate(-13px,13px) scale(1.04)}
+}
+
+@keyframes heroFloat{
+    50%{transform:translateY(-13px)}
+}
+
 .hero-kicker{
-    position:relative;z-index:2;
-    color:#AAC4FF;
+    position:relative;
+    z-index:2;
+    color:#AAC3FF;
     font-size:10px;
     font-weight:900;
     letter-spacing:.18em;
 }
+
 .hero-title{
-    position:relative;z-index:2;
-    margin-top:10px;
-    font-size:40px;
+    position:relative;
+    z-index:2;
+    margin-top:11px;
+    max-width:730px;
+    font-size:41px;
     font-weight:900;
-    line-height:1.18;
+    line-height:1.17;
     letter-spacing:-.05em;
 }
-.hero-title span{color:#C4D5FF}
+
+.hero-title span{
+    background:linear-gradient(90deg,#FFFFFF,#BFD1FF);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
 .hero-desc{
-    position:relative;z-index:2;
+    position:relative;
+    z-index:2;
     margin-top:14px;
-    max-width:680px;
-    color:#D7E1F1;
+    max-width:690px;
+    color:#D7E1F0;
     font-size:13px;
     line-height:1.72;
 }
 
+/* =======================================================
+   FLOW
+======================================================= */
 .flowbar{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:7px;
+    gap:8px;
     margin-bottom:14px;
 }
+
 .flow{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:15px;
+    position:relative;
+    overflow:hidden;
+    min-height:59px;
     padding:11px 13px;
-    color:#98A2B3;
+    border:1px solid #E5E9F0;
+    border-radius:16px;
+    background:rgba(255,255,255,.86);
+    box-shadow:0 5px 18px rgba(15,23,42,.025);
+    color:#99A3B2;
     font-size:9px;
     font-weight:800;
 }
-.flow.active{
-    border-color:#AFC0F8;
-    background:#F2F5FF;
-    color:#2A5CF4;
-}
+
 .flow b{
     display:block;
+    margin-bottom:3px;
     font-size:8px;
-    margin-bottom:2px;
+    letter-spacing:.07em;
 }
 
+.flow.active{
+    color:#2856D9;
+    border-color:#BFCCF8;
+    background:linear-gradient(135deg,#F7F9FF,#EEF3FF);
+}
+
+.flow.active:after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:0;
+    height:3px;
+    background:linear-gradient(90deg,#315EF5,#765AE8);
+}
+
+/* =======================================================
+   LOOKUP
+======================================================= */
 .lookup{
-    background:#fff;
+    position:relative;
+    overflow:hidden;
+    padding:31px 32px 28px;
     border:1px solid var(--line);
     border-radius:27px;
-    padding:29px 31px;
-    box-shadow:0 11px 31px rgba(15,23,42,.045);
+    background:#FFFFFF;
+    box-shadow:0 12px 34px rgba(15,23,42,.045);
 }
+
+.lookup:after{
+    content:"12가 3456";
+    position:absolute;
+    right:30px;
+    top:30px;
+    padding:10px 18px;
+    border-radius:10px;
+    border:2px solid #25395B;
+    background:#F8FAFD;
+    color:#172B4D;
+    font-size:19px;
+    font-weight:900;
+    letter-spacing:.08em;
+    opacity:.18;
+    transform:rotate(-4deg);
+}
+
 .lookup-kicker{
+    color:#315EF5;
     font-size:9px;
     font-weight:900;
-    color:#2A5CF4;
     letter-spacing:.12em;
 }
+
 .lookup-title{
     margin-top:6px;
-    font-size:27px;
+    font-size:28px;
     font-weight:900;
     letter-spacing:-.04em;
     color:var(--ink);
 }
+
 .lookup-desc{
     margin-top:7px;
     max-width:670px;
-    color:#7D8898;
+    color:#7B8798;
     font-size:12px;
-    line-height:1.65;
+    line-height:1.66;
 }
+
 .lookup-notice{
-    margin-top:16px;
+    margin-top:14px;
     padding:11px 13px;
-    background:#F7F9FC;
+    border:1px solid #EEF1F5;
     border-radius:13px;
-    color:#8A95A5;
+    background:#F8FAFC;
+    color:#8D98A8;
     font-size:10px;
     line-height:1.55;
 }
 
+/* Streamlit radio + input */
+div[role="radiogroup"]{
+    gap:8px!important;
+}
+
+div[role="radiogroup"] label{
+    padding:8px 12px!important;
+    border:1px solid #E2E7EF!important;
+    border-radius:12px!important;
+    background:#FFFFFF!important;
+}
+
+div[data-baseweb="input"]{
+    border-radius:13px!important;
+}
+
+/* =======================================================
+   USED CAR VALUE
+======================================================= */
 .usedcar-card{
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1.08fr .92fr;
     gap:10px;
     margin-top:14px;
 }
+
 .used-main{
-    background:
-      radial-gradient(circle at 92% 10%,rgba(98,136,255,.18),transparent 22%),
-      linear-gradient(125deg,#08172D,#17386B);
-    color:#fff;
+    position:relative;
+    overflow:hidden;
+    min-height:215px;
+    padding:25px 26px;
     border-radius:24px;
-    padding:24px 25px;
+    color:#fff;
+    background:
+      radial-gradient(circle at 90% 10%,rgba(101,139,255,.21),transparent 23%),
+      linear-gradient(128deg,#07172D,#17396E);
 }
+
+.used-main:after{
+    content:"";
+    position:absolute;
+    width:145px;
+    height:145px;
+    right:-55px;
+    bottom:-65px;
+    border-radius:50%;
+    background:rgba(111,150,255,.11);
+}
+
 .used-label{
-    color:#AFC7FF;
+    color:#AAC4FF;
     font-size:9px;
     font-weight:900;
     letter-spacing:.11em;
 }
+
 .used-model{
     margin-top:7px;
-    font-size:25px;
+    font-size:26px;
     font-weight:900;
+    letter-spacing:-.035em;
 }
+
 .used-sub{
-    margin-top:5px;
-    color:#C8D5E8;
+    margin-top:4px;
+    color:#C7D3E5;
     font-size:11px;
 }
+
 .used-value{
-    margin-top:18px;
-    color:#AFC7FF;
+    margin-top:20px;
+    color:#AFC6F7;
     font-size:10px;
 }
+
 .used-price{
-    margin-top:2px;
-    font-size:34px;
+    margin-top:1px;
+    font-size:36px;
     font-weight:900;
+    letter-spacing:-.045em;
 }
+
 .used-price span{
-    color:#BFD2FF;
-    font-size:15px;
+    margin-left:3px;
+    color:#C6D6FA;
+    font-size:14px;
 }
+
 .used-detail{
-    background:#fff;
+    padding:20px;
     border:1px solid var(--line);
     border-radius:24px;
-    padding:20px;
+    background:#FFFFFF;
 }
+
 .used-detail-row{
     display:flex;
     justify-content:space-between;
-    padding:7px 0;
-    border-bottom:1px solid #EEF1F5;
+    padding:8px 0;
+    border-bottom:1px solid #EFF2F6;
+    color:#7D8999;
     font-size:11px;
-    color:#7B8797;
 }
-.used-detail-row:last-child{border-bottom:none}
-.used-detail-row strong{color:#26354B}
 
+.used-detail-row:last-child{
+    border-bottom:none;
+}
+
+.used-detail-row strong{
+    color:#28374E;
+}
+
+/* =======================================================
+   PERSONA QUESTION
+======================================================= */
 .qbox{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:23px;
     padding:23px 26px 21px;
     margin-bottom:13px;
+    border:1px solid var(--line);
+    border-radius:23px;
+    background:#FFFFFF;
     box-shadow:0 8px 22px rgba(15,23,42,.035);
 }
+
 .qtop{
     display:flex;
     justify-content:space-between;
-    font-size:10px;
     color:#98A2B3;
+    font-size:10px;
     font-weight:800;
 }
+
 .qtop b{
-    color:#2A5CF4;
+    color:#315EF5;
     letter-spacing:.1em;
 }
+
 .progress{
     height:4px;
     margin:10px 0 17px;
@@ -647,383 +720,488 @@ header[data-testid="stHeader"]{
     background:#EAEDF3;
     overflow:hidden;
 }
+
 .progress div{
     height:100%;
-    background:linear-gradient(90deg,#2A5CF4,#7257E7);
+    border-radius:999px;
+    background:linear-gradient(90deg,#315EF5,#7257E7);
 }
+
 .qtitle{
+    color:#101828;
     font-size:23px;
     font-weight:900;
     letter-spacing:-.035em;
-    color:#101828;
-}
-.qdesc{
-    margin-top:5px;
-    font-size:12px;
-    color:#758195;
 }
 
+.qdesc{
+    margin-top:5px;
+    color:#758195;
+    font-size:12px;
+}
+
+/* GIF CHOICE CARD */
 .choice{
     overflow:hidden;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:22px;
     margin-bottom:7px;
-    box-shadow:0 7px 20px rgba(15,23,42,.03);
-    transition:.2s ease;
+    border:1px solid #E5E9F0;
+    border-radius:23px;
+    background:#FFFFFF;
+    box-shadow:0 8px 23px rgba(15,23,42,.032);
+    transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
+
 .choice:hover{
-    transform:translateY(-3px);
+    transform:translateY(-4px);
     border-color:#B7C5F8;
-    box-shadow:0 15px 31px rgba(42,92,244,.08);
+    box-shadow:0 17px 34px rgba(49,94,245,.085);
 }
+
 .choice-visual{
-    height:172px;
+    height:190px;
     margin:9px;
-    border-radius:17px;
+    border-radius:18px;
     overflow:hidden;
-    background:#F1F4FA;
+    background:#EEF2F8;
 }
-.choice-visual svg{
+
+.choice-visual img{
     width:100%;
     height:100%;
+    object-fit:cover;
+    display:block;
 }
+
 .choice-copy{
     padding:8px 19px 18px;
 }
+
 .choice-title{
+    color:#182236;
     font-size:15px;
     font-weight:900;
-    color:#182236;
 }
+
 .choice-desc{
     margin-top:4px;
-    font-size:11px;
     color:#8995A6;
+    font-size:11px;
 }
 
-.bgmove{animation:bgmove 7s ease-in-out infinite}
-.carmove{animation:carmove 5s ease-in-out infinite}
-.float{animation:float 4s ease-in-out infinite}
-.delay{animation-delay:.6s}
-.delay2{animation-delay:1.1s}
-.glow{animation:glow 2.8s ease-in-out infinite}
-@keyframes bgmove{50%{transform:translateX(-5px)}}
-@keyframes carmove{0%,100%{transform:translateX(-7px)}50%{transform:translateX(11px)}}
-@keyframes float{50%{transform:translateY(-6px)}}
-@keyframes glow{0%,100%{opacity:.48}50%{opacity:1}}
-
+/* =======================================================
+   BUTTONS
+======================================================= */
 .stButton>button{
     min-height:42px;
-    border-radius:12px!important;
     border:1px solid #DFE4EC!important;
-    background:#fff!important;
+    border-radius:12px!important;
+    background:#FFFFFF!important;
     color:#26354B!important;
+    box-shadow:none!important;
     font-size:12px!important;
     font-weight:800!important;
-    box-shadow:none!important;
+    transition:.16s ease!important;
 }
+
 .stButton>button:hover{
+    transform:translateY(-1px);
     border-color:#A7B9F7!important;
-    color:#2A5CF4!important;
-    box-shadow:0 6px 16px rgba(42,92,244,.07)!important;
+    color:#315EF5!important;
+    box-shadow:0 7px 17px rgba(49,94,245,.07)!important;
 }
+
 button[kind="primary"]{
     min-height:48px!important;
     border:none!important;
-    color:#fff!important;
-    background:linear-gradient(135deg,#2A5CF4,#624FE2)!important;
-    box-shadow:0 10px 22px rgba(42,92,244,.18)!important;
+    color:#FFFFFF!important;
+    background:linear-gradient(135deg,#315EF5,#654FE1)!important;
+    box-shadow:0 11px 24px rgba(49,94,245,.19)!important;
 }
 
+/* =======================================================
+   RESULT PERSONA
+======================================================= */
 .result-title{
-    font-size:30px;
+    margin-bottom:3px;
     color:#101828;
+    font-size:31px;
     font-weight:900;
     letter-spacing:-.045em;
-    margin-bottom:3px;
 }
+
 .result-desc{
+    margin-bottom:13px;
     color:#7B8798;
     font-size:11px;
-    margin-bottom:13px;
 }
+
 .persona{
     display:grid;
-    grid-template-columns:175px 1fr;
-    gap:25px;
+    grid-template-columns:220px 1fr;
+    gap:26px;
     align-items:center;
     padding:25px 28px;
-    border-radius:26px;
-    color:#fff;
-    background:linear-gradient(122deg,#07162B,#112E58 68%,#294A8E);
-    box-shadow:0 16px 37px rgba(15,23,42,.11);
+    border-radius:27px;
+    color:#FFFFFF;
+    background:
+      radial-gradient(circle at 88% 12%,rgba(109,146,255,.22),transparent 21%),
+      linear-gradient(124deg,#07162B,#102E5A 67%,#29498D);
+    box-shadow:0 17px 39px rgba(15,23,42,.11);
 }
+
 .persona-visual{
-    height:138px;
-    border-radius:19px;
+    height:150px;
     overflow:hidden;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:20px;
     background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.1);
 }
-.persona-visual svg{width:100%;height:100%}
+
+.persona-visual img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    opacity:.94;
+}
+
 .persona-label{
     color:#AFC6FF;
     font-size:9px;
     font-weight:900;
     letter-spacing:.16em;
 }
+
 .persona-name{
     margin-top:5px;
-    font-size:28px;
+    font-size:29px;
     font-weight:900;
+    letter-spacing:-.035em;
 }
+
 .persona-sub{
     margin-top:2px;
-    color:#D2DDF0;
+    color:#D3DEF0;
     font-size:13px;
     font-weight:700;
 }
+
 .persona-copy{
     margin-top:8px;
-    color:#E1E8F3;
+    color:#E0E8F3;
     font-size:11px;
-    line-height:1.62;
+    line-height:1.64;
 }
+
 .persona-quote{
     display:inline-block;
     margin-top:9px;
     padding:7px 10px;
+    border:1px solid rgba(255,255,255,.09);
     border-radius:999px;
     background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.09);
     font-size:10px;
 }
 
+/* =======================================================
+   DREAM CAR
+======================================================= */
 .dream{
-    margin-top:13px;
+    position:relative;
     overflow:hidden;
-    background:#fff;
+    margin-top:13px;
     border:1px solid var(--line);
-    border-radius:28px;
-    box-shadow:0 13px 34px rgba(15,23,42,.05);
+    border-radius:29px;
+    background:#FFFFFF;
+    box-shadow:0 14px 36px rgba(15,23,42,.05);
 }
+
 .dream-head{
     display:flex;
     justify-content:space-between;
-    padding:26px 29px 0;
+    padding:27px 30px 0;
 }
+
 .dream-badge{
     display:inline-block;
     padding:5px 9px;
     border-radius:999px;
     background:#EEF3FF;
-    color:#2A5CF4;
+    color:#315EF5;
     font-size:9px;
     font-weight:900;
 }
+
 .dream-name{
     margin-top:8px;
-    font-size:30px;
+    color:#101828;
+    font-size:31px;
     font-weight:900;
     letter-spacing:-.045em;
-    color:#101828;
 }
+
 .dream-copy{
     margin-top:4px;
     color:#7D8999;
     font-size:11px;
 }
+
 .match-score{
     text-align:right;
 }
+
 .match-score span{
     display:block;
-    font-size:9px;
     color:#98A2B3;
+    font-size:9px;
     font-weight:900;
 }
+
 .match-score strong{
-    font-size:30px;
-    color:#2A5CF4;
+    color:#315EF5;
+    font-size:31px;
+    letter-spacing:-.04em;
 }
+
 .car-stage{
     position:relative;
-    height:370px;
+    height:385px;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
-    background:linear-gradient(180deg,#fff,#F4F6F9);
+    background:
+      radial-gradient(ellipse at 50% 62%,rgba(212,220,233,.68),transparent 35%),
+      linear-gradient(180deg,#FFFFFF,#F3F5F8);
 }
-.car-stage:before{
-    content:"";
-    position:absolute;
-    width:68%;height:52%;
-    border-radius:50%;
-    background:radial-gradient(circle,rgba(219,225,235,.8),transparent 70%);
-}
+
 .car-stage:after{
     content:"";
     position:absolute;
-    width:48%;height:15px;
-    bottom:48px;
+    width:49%;
+    height:15px;
+    bottom:52px;
     border-radius:50%;
     background:rgba(20,31,48,.13);
     filter:blur(13px);
 }
+
 .car-stage img{
     position:relative;
     z-index:2;
-    width:84%;
+    width:83%;
     height:86%;
     object-fit:contain;
     filter:drop-shadow(0 18px 14px rgba(20,31,47,.10));
     animation:carfloat 4.8s ease-in-out infinite;
 }
-@keyframes carfloat{50%{transform:translateY(-5px)}}
+
+@keyframes carfloat{
+    50%{transform:translateY(-5px)}
+}
+
 .reason-row{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:7px;
-    padding:0 20px 20px;
+    padding:0 21px 21px;
 }
+
 .reason{
-    padding:11px 5px 4px;
+    padding:11px 6px 4px;
     border-top:1px solid #E7EAF0;
 }
+
 .reason b{
     display:block;
+    color:#315EF5;
     font-size:8px;
-    color:#2A5CF4;
 }
+
 .reason span{
     display:block;
     margin-top:3px;
-    font-size:10px;
     color:#2C3A50;
+    font-size:10px;
     font-weight:850;
 }
 
+/* =======================================================
+   QUOTE - PREMIUM FINANCE CARD
+======================================================= */
 .quote{
-    margin-top:13px;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:27px;
-    padding:27px 29px;
-    box-shadow:0 13px 34px rgba(15,23,42,.045);
+    margin-top:14px;
+    padding:28px 30px;
+    border:1px solid #E3E7EE;
+    border-radius:28px;
+    background:#FFFFFF;
+    box-shadow:0 14px 36px rgba(15,23,42,.045);
 }
+
 .quote-top{
-    display:flex;
-    justify-content:space-between;
-    gap:25px;
-    align-items:flex-start;
-    padding-bottom:18px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:24px;
+    align-items:start;
+    padding-bottom:19px;
     border-bottom:1px solid #E9EDF2;
 }
+
 .quote-kicker{
-    color:#2A5CF4;
+    color:#315EF5;
     font-size:9px;
     font-weight:900;
     letter-spacing:.11em;
 }
+
 .quote-label{
     margin-top:5px;
     color:#667085;
     font-size:11px;
 }
+
 .quote-fee{
     margin-top:1px;
     color:#101828;
-    font-size:39px;
+    font-size:41px;
     font-weight:900;
     letter-spacing:-.055em;
 }
+
 .quote-fee em{
-    color:#2A5CF4;
+    color:#315EF5;
     font-style:normal;
 }
+
 .quote-chip{
     padding:9px 12px;
     border-radius:999px;
-    background:#F1F5FF;
-    color:#2A5CF4;
+    background:#F0F4FF;
+    color:#315EF5;
     font-size:10px;
     font-weight:850;
 }
+
 .money-flow{
     display:grid;
-    grid-template-columns:1fr auto 1fr auto 1fr;
-    gap:8px;
+    grid-template-columns:1fr 32px 1fr 32px 1fr;
+    gap:7px;
     align-items:center;
     margin-top:18px;
 }
+
 .money-box{
+    min-height:72px;
     padding:14px;
     border-radius:15px;
     background:#F7F9FC;
 }
+
 .money-box span{
     display:block;
-    font-size:9px;
     color:#8C97A8;
+    font-size:9px;
 }
+
 .money-box strong{
     display:block;
     margin-top:4px;
-    font-size:13px;
     color:#26354B;
+    font-size:13px;
 }
+
 .money-box.highlight{
-    background:#EEF3FF;
+    background:linear-gradient(135deg,#EEF3FF,#F3F0FF);
 }
+
 .money-box.highlight strong{
-    color:#2A5CF4;
+    color:#315EF5;
 }
+
 .operator{
-    font-size:20px;
     color:#A0A9B7;
+    font-size:20px;
     font-weight:700;
+    text-align:center;
 }
+
 .quote-details{
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:7px;
     margin-top:9px;
 }
+
 .qdetail{
     padding:11px 12px;
-    background:#FAFBFD;
+    border:1px solid #F0F2F5;
     border-radius:13px;
+    background:#FAFBFD;
 }
+
 .qdetail span{
     display:block;
-    font-size:9px;
     color:#929DAC;
+    font-size:9px;
 }
+
 .qdetail strong{
     display:block;
     margin-top:3px;
     color:#314057;
     font-size:10px;
 }
+
 .quote-note{
     margin-top:11px;
     color:#A0A9B7;
     font-size:9px;
 }
 
+/* =======================================================
+   MOBILE
+======================================================= */
 @media(max-width:760px){
-    .hero{padding:34px 24px}
-    .hero-title{font-size:31px}
-    .flowbar{grid-template-columns:1fr 1fr}
-    .usedcar-card,.persona{grid-template-columns:1fr}
-    .dream-head,.quote-top{display:block}
-    .match-score{text-align:left;margin-top:10px}
-    .car-stage{height:295px}
-    .reason-row,.quote-details{grid-template-columns:1fr}
-    .money-flow{grid-template-columns:1fr}
-    .operator{text-align:center}
+    .hero{
+        padding:34px 24px;
+        min-height:auto;
+    }
+
+    .hero-title{
+        font-size:31px;
+    }
+
+    .flowbar{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .usedcar-card,
+    .persona{
+        grid-template-columns:1fr;
+    }
+
+    .dream-head,
+    .quote-top{
+        display:block;
+    }
+
+    .match-score{
+        margin-top:10px;
+        text-align:left;
+    }
+
+    .car-stage{
+        height:300px;
+    }
+
+    .reason-row,
+    .quote-details{
+        grid-template-columns:1fr;
+    }
+
+    .money-flow{
+        grid-template-columns:1fr;
+    }
 }
 </style>
 """)
@@ -1207,9 +1385,13 @@ elif st.session_state.flow_step == "persona":
 
     for i, opt in enumerate(q["options"]):
         with cols[i]:
+            art_uri = gif_uri(opt["art"])
+
             html(f"""
             <div class="choice">
-            <div class="choice-visual">{opt["art"]}</div>
+            <div class="choice-visual">
+            <img src="{art_uri}" alt="{opt["label"]}">
+            </div>
             <div class="choice-copy">
             <div class="choice-title">{opt["label"]}</div>
             <div class="choice-desc">{opt["desc"]}</div>
@@ -1244,6 +1426,10 @@ elif st.session_state.flow_step == "persona":
 # STEP 3/4. 추천 + 교체 견적
 # =========================================================
 else:
+    if not GIF_DIR.exists():
+        st.error(f"GIF 폴더가 없습니다: {GIF_DIR}")
+        st.stop()
+
     df = load_car_data()
 
     key = tuple(st.session_state.persona_answers)
@@ -1284,9 +1470,13 @@ else:
     </div>
     """)
 
+    persona_gif = gif_uri(recommendation["art"])
+
     html(f"""
     <div class="persona">
-    <div class="persona-visual">{recommendation["art"]}</div>
+    <div class="persona-visual">
+    <img src="{persona_gif}" alt="{recommendation["name"]}">
+    </div>
     <div>
     <div class="persona-label">YOUR MOBILITY PERSONA</div>
     <div class="persona-name">{recommendation["name"]}</div>
