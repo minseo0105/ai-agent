@@ -33,6 +33,11 @@ def html(content):
 
 
 def image_data_uri(path):
+    if path is None:
+        return ""
+
+    path = Path(path)
+
     if not path.exists():
         return ""
 
@@ -61,7 +66,8 @@ def load_car_data(excel_path):
 def reset_all():
     keys = [
         "flow_step", "has_car", "plate_no", "owned_car",
-        "persona_step", "persona_answers", "color", "months", "selected_model"
+        "persona_step", "persona_answers", "color", "months", "selected_model",
+        "color_selector", "term_selector"
     ]
     for key in keys:
         st.session_state.pop(key, None)
@@ -190,21 +196,53 @@ def monthly_installment(principal_manwon, months, annual_rate=DEMO_APR):
 
 def resolve_car_image(filename):
     """
-    차량 이미지 파일을 JPG/JPEG/PNG 순서로 자동 탐색합니다.
-    sample_cars_v3.xlsx가 예전 .jpg/.png 파일명을 가지고 있어도
-    car_images_photoreal_39 폴더의 실제 파일을 찾아줍니다.
+    차량 이미지 위치를 자동으로 찾습니다.
+
+    지원 예:
+    ai-agent/car_images_photoreal_39/gv80_white.jpg
+    ai-agent/car_images_photoreal_39/car_images_photoreal_39/gv80_white.jpg
+    ai-agent/어떤폴더/gv80_white.jpg
+
+    엑셀에 .png가 적혀 있어도 같은 stem의 .jpg/.jpeg/.png를 찾습니다.
     """
     raw = Path(str(filename))
-    candidates = [
+    stem = raw.stem.lower()
+
+    # 1. 정상 위치 우선
+    direct_candidates = [
         IMAGE_DIR / raw.name,
         IMAGE_DIR / f"{raw.stem}.jpg",
         IMAGE_DIR / f"{raw.stem}.jpeg",
         IMAGE_DIR / f"{raw.stem}.png",
+        IMAGE_DIR / "car_images_photoreal_39" / f"{raw.stem}.jpg",
+        IMAGE_DIR / "car_images_photoreal_39" / f"{raw.stem}.jpeg",
+        IMAGE_DIR / "car_images_photoreal_39" / f"{raw.stem}.png",
     ]
-    for candidate in candidates:
-        if candidate.exists():
+
+    for candidate in direct_candidates:
+        if candidate.exists() and candidate.is_file():
             return candidate
-    return candidates[0]
+
+    # 2. 이미지 폴더 내부 재귀 검색
+    if IMAGE_DIR.exists():
+        for candidate in IMAGE_DIR.rglob("*"):
+            if (
+                candidate.is_file()
+                and candidate.suffix.lower() in [".jpg", ".jpeg", ".png"]
+                and candidate.stem.lower() == stem
+            ):
+                return candidate
+
+    # 3. 마지막 안전장치: ai-agent 루트 전체에서 검색
+    for candidate in BASE_DIR.rglob("*"):
+        if (
+            candidate.is_file()
+            and candidate.suffix.lower() in [".jpg", ".jpeg", ".png"]
+            and candidate.stem.lower() == stem
+        ):
+            return candidate
+
+    return None
 
 # =========================================================
 # 추천 질문용 GIF 비주얼
@@ -1801,6 +1839,216 @@ button[kind="primary"]{
     .reco-bottom strong{font-size:18px!important;}
 }
 
+
+.image-missing{
+    width:100%;
+    min-height:180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#7C899C;
+    font-size:11px;
+    background:linear-gradient(145deg,#F7F9FC,#EEF2F7);
+    border-radius:16px;
+}
+@media(max-width:760px){
+    .image-missing{min-height:145px!important;}
+}
+
+
+/* =========================================================
+   MOBILE FINAL POLISH
+========================================================= */
+html, body, .stApp{
+    overflow-x:hidden!important;
+    max-width:100vw!important;
+}
+.block-container{
+    overflow-x:hidden!important;
+}
+
+/* 추천 TOP3 - 선택 카드 강조 */
+.reco-mobile-card.selected{
+    border:2px solid #4D6BFF!important;
+    background:linear-gradient(145deg,#F8FAFF,#EEF2FF)!important;
+    box-shadow:0 12px 30px rgba(77,107,255,.16)!important;
+    position:relative;
+}
+.reco-mobile-card.selected:after{
+    content:"SELECTED";
+    position:absolute;
+    top:9px;
+    right:9px;
+    padding:4px 7px;
+    border-radius:999px;
+    background:#4D6BFF;
+    color:#fff;
+    font-size:7px;
+    font-weight:900;
+    letter-spacing:.08em;
+}
+
+/* 견적 조건 섹션 - 추천영역과 명확히 분리 */
+.config-section{
+    margin-top:14px;
+    padding:14px 15px 11px;
+    border:1px solid #E6E9FF;
+    border-radius:18px 18px 0 0;
+    background:linear-gradient(135deg,#F8F9FF,#F1F4FF);
+}
+.config-title{
+    color:#1B2940;
+    font-size:14px;
+    font-weight:900;
+    letter-spacing:-.02em;
+}
+.config-sub{
+    margin-top:3px;
+    color:#8590A3;
+    font-size:9px;
+    line-height:1.45;
+}
+.control-label{
+    margin:10px 0 5px;
+    color:#667085;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.06em;
+}
+.term-label{margin-top:13px;}
+
+/* Streamlit radio를 선택칩처럼 */
+div[role="radiogroup"]{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    gap:6px!important;
+    width:100%!important;
+    overflow:visible!important;
+}
+div[role="radiogroup"] > label{
+    flex:1 1 0!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    border:1px solid #DDE3EC!important;
+    border-radius:12px!important;
+    background:#FFFFFF!important;
+    transition:.15s ease!important;
+    box-shadow:none!important;
+}
+div[role="radiogroup"] > label:hover{
+    border-color:#AEBBFF!important;
+}
+div[role="radiogroup"] > label:has(input:checked){
+    border:2px solid #4D6BFF!important;
+    background:#EEF2FF!important;
+    box-shadow:0 5px 14px rgba(77,107,255,.12)!important;
+}
+div[role="radiogroup"] > label > div:first-child{
+    display:none!important;
+}
+div[role="radiogroup"] > label > div:last-child{
+    width:100%!important;
+    justify-content:center!important;
+    padding:9px 5px!important;
+    text-align:center!important;
+}
+div[role="radiogroup"] p{
+    margin:0!important;
+    color:#344054!important;
+    font-size:10px!important;
+    font-weight:800!important;
+    white-space:nowrap!important;
+}
+div[role="radiogroup"] > label:has(input:checked) p{
+    color:#315EF5!important;
+}
+
+/* 견적 결과 섹션 */
+.quote-section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:15px;
+    padding:14px 15px;
+    border-radius:18px;
+    background:linear-gradient(125deg,#0A1B34,#163B73);
+    color:#fff;
+}
+.quote-section-kicker{
+    color:#9FBCFF;
+    font-size:8px;
+    font-weight:900;
+    letter-spacing:.12em;
+}
+.quote-section-title{
+    margin-top:3px;
+    font-size:17px;
+    font-weight:900;
+}
+.quote-section-chip{
+    padding:6px 9px;
+    border-radius:999px;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.13);
+    color:#DCE7FF;
+    font-size:8px;
+    font-weight:850;
+}
+
+@media(max-width:760px){
+    .block-container{
+        width:100%!important;
+        max-width:100%!important;
+        padding-left:.65rem!important;
+        padding-right:.65rem!important;
+    }
+
+    /* 사이드 스크롤 유발 요소 제거 */
+    [data-testid="stAppViewContainer"],
+    [data-testid="stMain"],
+    section.main{
+        overflow-x:hidden!important;
+        max-width:100vw!important;
+    }
+
+    div[role="radiogroup"]{
+        gap:5px!important;
+    }
+    div[role="radiogroup"] > label > div:last-child{
+        padding:9px 2px!important;
+    }
+    div[role="radiogroup"] p{
+        font-size:9px!important;
+    }
+
+    .quote-section-head{
+        margin-top:12px!important;
+        padding:12px 13px!important;
+        border-radius:15px!important;
+    }
+    .quote-section-title{
+        font-size:15px!important;
+    }
+
+    .config-section{
+        margin-top:10px!important;
+        padding:12px 13px 9px!important;
+        border-radius:15px 15px 0 0!important;
+    }
+
+    /* 선택차량 상세 카드는 추천영역보다 다른 톤 */
+    .dream{
+        border:1px solid #E1E6F5!important;
+        background:linear-gradient(180deg,#FFFFFF,#FAFBFF)!important;
+    }
+    .dream-badge{
+        background:#EDEBFF!important;
+        color:#6941C6!important;
+    }
+}
+
 </style>
 """)
 
@@ -1810,7 +2058,7 @@ button[kind="primary"]{
 # =========================================================
 html("""
 <div class="hero">
-<div class="hero-kicker">MY CAR CHANGE JOURNEY</div>
+<div class="hero-kicker">MY CAR CHANGE JOURNEY · MOBILE UI v3</div>
 <div class="hero-title">지금 타는 차의 가치에서,<br><span>다음 드림카까지 연결합니다.</span></div>
 <div class="hero-desc">
 내 차의 현재 가치를 확인하고, 라이프스타일을 바탕으로 새 차를 추천한 뒤
@@ -2130,8 +2378,10 @@ else:
 
     for idx, item in enumerate(top_items):
         with top_cols[idx]:
+            is_selected = item["model"] == model
             top_class = " top" if idx == 0 else ""
-            selected_mark = " · 선택됨" if item["model"] == model else ""
+            selected_class = " selected" if is_selected else ""
+            selected_mark = " · 선택됨" if is_selected else ""
 
             top_row = df[
                 df["모델"].astype(str) == item["model"]
@@ -2148,7 +2398,7 @@ else:
             )
 
             html(f"""
-            <div class="reco-mobile-card{top_class}">
+            <div class="reco-mobile-card{top_class}{selected_class}">
                 <div class="reco-mobile-img">{image_html}</div>
                 <div class="reco-mobile-copy">
                     <div class="reco-rank">TOP {idx + 1}{selected_mark}</div>
@@ -2162,13 +2412,17 @@ else:
             </div>
             """)
 
+            button_label = "✓ 선택된 차량" if is_selected else "이 차량으로 견적 보기"
+
             if st.button(
-                "이 차량으로 견적 보기",
+                button_label,
                 key=f"select_model_{idx}",
-                use_container_width=True
+                use_container_width=True,
+                disabled=is_selected
             ):
                 st.session_state.selected_model = item["model"]
                 st.session_state.color = None
+                st.session_state.pop("color_selector", None)
                 st.rerun()
 
     html("""
@@ -2181,7 +2435,26 @@ else:
     image_path = resolve_car_image(original_image.name)
     uri = image_data_uri(image_path)
 
+    # 이미지가 없을 때만 사용자에게 정확한 원인을 보여줍니다.
+    if not uri:
+        st.warning(
+            f"'{model}' 이미지를 찾지 못했습니다. "
+            f"찾는 파일 기준: {original_image.stem}.jpg / .jpeg / .png"
+        )
+        with st.expander("이미지 폴더 위치 확인"):
+            st.code(
+                f"BASE_DIR = {BASE_DIR}\n"
+                f"IMAGE_DIR = {IMAGE_DIR}\n"
+                f"IMAGE_DIR exists = {IMAGE_DIR.exists()}"
+            )
+
     r1, r2, r3 = recommendation["reasons"]
+
+    detail_image_html = (
+        f'<img src="{uri}" alt="{model}">'
+        if uri else
+        '<div class="image-missing">차량 이미지를 찾는 중입니다.</div>'
+    )
 
     html(f"""
     <div class="dream">
@@ -2203,7 +2476,7 @@ else:
     </div>
 
     <div class="car-stage">
-    <img src="{uri}" alt="{model}">
+    {detail_image_html}
     </div>
 
     <div class="reason-row">
@@ -2215,45 +2488,48 @@ else:
     </div>
     """)
 
-    c1, c2 = st.columns(2, gap="medium")
+    html("""
+    <div class="config-section">
+        <div class="config-title">내 견적 조건 선택</div>
+        <div class="config-sub">추천 차량을 기준으로 색상과 할부기간을 선택해주세요.</div>
+    </div>
+    """)
 
-    with c1:
-        st.caption("COLOR")
-        color_cols = st.columns(len(colors))
-        for i, color in enumerate(colors):
-            with color_cols[i]:
-                label = (
-                    f"✓ {color}"
-                    if color == st.session_state.color
-                    else color
-                )
-                if st.button(
-                    label,
-                    key=f"color_{i}",
-                    use_container_width=True
-                ):
-                    st.session_state.color = color
-                    st.rerun()
+    # COLOR - 모바일에서 깨지지 않는 pill형 radio
+    st.markdown('<div class="control-label">COLOR</div>', unsafe_allow_html=True)
+    color_index = colors.index(st.session_state.color) if st.session_state.color in colors else 0
 
-    with c2:
-        st.caption("할부기간")
-        terms = [24, 36, 48, 60]
-        term_cols = st.columns(4)
+    selected_color = st.radio(
+        "COLOR",
+        colors,
+        index=color_index,
+        horizontal=True,
+        label_visibility="collapsed",
+        key="color_selector"
+    )
 
-        for i, term in enumerate(terms):
-            with term_cols[i]:
-                label = (
-                    f"✓ {term}"
-                    if term == st.session_state.months
-                    else str(term)
-                )
-                if st.button(
-                    label,
-                    key=f"term_{term}",
-                    use_container_width=True
-                ):
-                    st.session_state.months = term
-                    st.rerun()
+    if selected_color != st.session_state.color:
+        st.session_state.color = selected_color
+        st.rerun()
+
+    # TERM
+    terms = [24, 36, 48, 60]
+    st.markdown('<div class="control-label term-label">할부기간</div>', unsafe_allow_html=True)
+
+    term_index = terms.index(st.session_state.months) if st.session_state.months in terms else 2
+    selected_term = st.radio(
+        "할부기간",
+        terms,
+        index=term_index,
+        horizontal=True,
+        format_func=lambda x: f"{x}개월",
+        label_visibility="collapsed",
+        key="term_selector"
+    )
+
+    if selected_term != st.session_state.months:
+        st.session_state.months = selected_term
+        st.rerun()
 
     selected = filtered[
         filtered["색상"].astype(str) == st.session_state.color
@@ -2283,6 +2559,16 @@ else:
         if st.session_state.owned_car
         else "보유차량 없음"
     )
+
+    html("""
+    <div class="quote-section-head">
+        <div>
+            <div class="quote-section-kicker">SELECTED CAR QUOTE</div>
+            <div class="quote-section-title">선택 차량 견적</div>
+        </div>
+        <div class="quote-section-chip">MY QUOTE</div>
+    </div>
+    """)
 
     html(f"""
     <div class="quote">
