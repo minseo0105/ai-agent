@@ -3621,6 +3621,123 @@ button[data-testid="baseButton-primary"]{
     }
 }
 
+
+/* =========================================================
+   MOBILE CONTROL + CAR ZOOM FIX v11
+========================================================= */
+@media(max-width:760px){
+
+    /* 1) COLOR / TERM: Streamlit column이 화면 밖으로 밀리지 않도록 강제 */
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]),
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]){
+        display:grid!important;
+        width:100%!important;
+        max-width:100%!important;
+        gap:6px!important;
+        overflow:visible!important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]){
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]){
+        grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]) > div[data-testid="column"],
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]) > div[data-testid="column"]{
+        width:100%!important;
+        min-width:0!important;
+        max-width:none!important;
+        flex:none!important;
+        padding:0!important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]) .stButton,
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]) .stButton{
+        width:100%!important;
+        margin:0!important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]) button,
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]) button{
+        width:100%!important;
+        min-width:0!important;
+        max-width:100%!important;
+        height:43px!important;
+        min-height:43px!important;
+        margin:0!important;
+        padding:0 2px!important;
+        border-radius:12px!important;
+        font-size:9px!important;
+        line-height:1!important;
+        font-weight:900!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:clip!important;
+        box-sizing:border-box!important;
+    }
+
+    /* 선택 상태 */
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]) button[kind="primary"],
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]) button[kind="primary"]{
+        border:2px solid #4169F6!important;
+        background:linear-gradient(135deg,#316AF7,#674CE8)!important;
+        color:#FFFFFF!important;
+        box-shadow:0 7px 17px rgba(65,105,246,.20)!important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]) button[kind="secondary"],
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]) button[kind="secondary"]{
+        border:1px solid #DDE3EC!important;
+        background:#FFFFFF!important;
+        color:#344054!important;
+        box-shadow:none!important;
+    }
+
+    /* 2) 상세 차량: 블러 배경 유지 + 중앙 차량을 더 크게 */
+    .car-stage{
+        position:relative!important;
+        height:auto!important;
+        min-height:0!important;
+        aspect-ratio:16 / 8.2!important;
+        padding:0!important;
+        overflow:hidden!important;
+        background:#E9EDF3!important;
+    }
+
+    .car-stage img,
+    .car-stage img[src*="car_images"]{
+        width:100%!important;
+        height:100%!important;
+        object-fit:cover!important;
+        object-position:center!important;
+        transform:scale(1.18)!important;
+        transform-origin:center center!important;
+        transition:transform .35s ease!important;
+        will-change:transform!important;
+        border-radius:12px!important;
+    }
+
+    /* TOP3는 차량 전체가 보여야 하므로 확대 금지 */
+    .reco-mobile-img img{
+        object-fit:contain!important;
+        transform:none!important;
+    }
+}
+
+@media(max-width:390px){
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]) button,
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]) button{
+        height:40px!important;
+        min-height:40px!important;
+        font-size:8px!important;
+    }
+    .car-stage img,
+    .car-stage img[src*="car_images"]{
+        transform:scale(1.15)!important;
+    }
+}
+
 </style>
 """)
 
