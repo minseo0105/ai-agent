@@ -16,8 +16,8 @@ st.set_page_config(
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-EXCEL_PATH = BASE_DIR / "sample_cars_v2.xlsx"
-IMAGE_DIR = BASE_DIR / "car_images_cutout"
+EXCEL_PATH = BASE_DIR / "sample_cars_v3.xlsx"
+IMAGE_DIR = BASE_DIR / "car_images_photoreal_39"
 GIF_DIR = BASE_DIR / "dreamcar_gifs"
 
 # 시연용 고정 금리
@@ -49,15 +49,19 @@ def image_data_uri(path):
     return f"data:{mime};base64,{encoded}"
 
 
-@st.cache_data
-def load_car_data():
-    return pd.read_excel(EXCEL_PATH, sheet_name="차량목록")
+@st.cache_data(show_spinner=False)
+def load_car_data(excel_path):
+    """
+    엑셀 경로를 cache key에 포함시켜
+    v2 -> v3 파일 변경 시 이전 차량 데이터가 남지 않도록 합니다.
+    """
+    return pd.read_excel(excel_path, sheet_name="차량목록")
 
 
 def reset_all():
     keys = [
         "flow_step", "has_car", "plate_no", "owned_car",
-        "persona_step", "persona_answers", "color", "months"
+        "persona_step", "persona_answers", "color", "months", "selected_model"
     ]
     for key in keys:
         st.session_state.pop(key, None)
@@ -200,121 +204,157 @@ def gif_uri(filename):
 
 
 # =========================================================
-# 페르소나 질문
+# 페르소나 질문 - 4문항 × 3선택
 # =========================================================
 questions = [
     {
-        "title": "당신의 주말은 어느 장면에 더 가깝나요?",
-        "desc": "평소 가장 자연스럽게 반복되는 이동 장면을 골라주세요.",
+        "title": "평소 차량을 가장 많이 쓰는 장면은?",
+        "desc": "일상에서 가장 자주 반복되는 이동 장면을 골라주세요.",
         "options": [
-            {"art": CITY, "label": "도심을 가볍게 누비는 편", "desc": "맛집 · 카페 · 쇼핑 · 근거리 이동"},
-            {"art": TRIP, "label": "주말이면 멀리 떠나는 편", "desc": "여행 · 캠핑 · 레저 · 장거리 이동"},
+            {"art": CITY, "label": "출퇴근 · 도심 이동", "desc": "주차와 기동성, 일상 편의가 중요해요", "scores": {"city": 3, "comfort": 1}},
+            {"art": TRIP, "label": "주말 여행 · 장거리", "desc": "장거리 안정감과 승차감을 중요하게 봐요", "scores": {"trip": 3, "comfort": 2}},
+            {"art": SPACE, "label": "도심과 여행을 반반", "desc": "평일과 주말을 모두 만족시키고 싶어요", "scores": {"city": 2, "trip": 2, "versatility": 2}},
         ]
     },
     {
         "title": "차 안에서 가장 자주 함께하는 사람은?",
-        "desc": "누구와 이동하는지가 공간과 편안함의 기준을 바꿉니다.",
+        "desc": "동승 인원이 차량 크기와 공간의 기준을 크게 바꿉니다.",
         "options": [
-            {"art": DUO, "label": "혼자 또는 둘이", "desc": "나의 감도와 이동 편의가 중요해요"},
-            {"art": FAMILY, "label": "가족과 함께", "desc": "사람과 짐, 일정까지 함께 담아야 해요"},
+            {"art": DUO, "label": "혼자 또는 둘이", "desc": "운전자 중심의 편안함과 감도가 중요해요", "scores": {"solo": 3, "style": 1}},
+            {"art": FAMILY, "label": "3~4인 가족", "desc": "가족이 편하면서도 너무 크지 않았으면 해요", "scores": {"family": 3, "space": 2}},
+            {"art": FAMILY, "label": "5인 이상 · 다인승", "desc": "사람과 짐을 넉넉하게 태울 공간이 필요해요", "scores": {"large_family": 4, "space": 4}},
         ]
     },
     {
-        "title": "차를 고를 때 마지막까지 포기하기 어려운 것은?",
-        "desc": "마지막 선택으로 드림카 추천의 방향을 완성합니다.",
+        "title": "차를 고를 때 가장 중요하게 보는 것은?",
+        "desc": "한 가지를 가장 우선한다면 무엇인가요?",
         "options": [
-            {"art": STYLE, "label": "볼 때마다 마음에 드는 디자인", "desc": "스타일 · 주행감 · 소유 만족감"},
-            {"art": SPACE, "label": "필요할 때 든든한 공간", "desc": "수납 · 안정감 · 다양한 상황 대응력"},
+            {"art": STYLE, "label": "디자인 · 고급감", "desc": "볼 때마다 만족스럽고 품격 있는 차", "scores": {"style": 4, "premium": 3}},
+            {"art": SPACE, "label": "공간 · 실용성", "desc": "짐과 사람을 편하게 담는 활용성", "scores": {"space": 4, "versatility": 3}},
+            {"art": CITY, "label": "편안함 · 효율", "desc": "매일 타기 편하고 부담이 적은 차", "scores": {"comfort": 3, "value": 3}},
+        ]
+    },
+    {
+        "title": "새 차를 고를 때 가장 가까운 생각은?",
+        "desc": "차급과 가격에 대한 선호를 반영해 추천을 정교하게 만듭니다.",
+        "options": [
+            {"art": CITY, "label": "합리적인 가격이 우선", "desc": "필요한 기능은 충분하되 부담은 낮게", "scores": {"value": 5}},
+            {"art": STYLE, "label": "가격과 만족의 균형", "desc": "예산 안에서 한 단계 좋은 차를 원해요", "scores": {"balanced": 4, "premium": 1}},
+            {"art": STYLE, "label": "마음에 들면 차급을 올려도 좋아요", "desc": "가격보다 만족도와 완성도가 중요해요", "scores": {"premium": 5, "style": 2}},
         ]
     },
 ]
 
-
-# =========================================================
-# 8개 조합 추천
-# =========================================================
-recommendation_map = {
-    (0,0,0): {
-        "name":"CITY CURATOR",
-        "sub":"도시의 장면을 고르는 사람",
-        "copy":"도심에서의 편안함과 세련된 감도를 함께 중요하게 생각합니다.",
-        "quote":"\u201c내 일상의 템포와 가장 자연스럽게 맞는 차.\u201d",
-        "model":"디 올 뉴 그랜저",
-        "reasons":["도심 활용성","정제된 승차감","디자인 만족도"],
-        "art":CITY,
-        "match":96
+vehicle_profiles = {
+    "아반떼": {
+        "scores": {"city":6,"trip":1,"comfort":3,"solo":6,"family":1,"large_family":0,"space":1,"style":3,"premium":0,"value":6,"balanced":3,"versatility":2},
+        "tagline":"가볍고 합리적인 도심형 준중형 세단",
+        "reason_pool":["도심 주행 편의","합리적인 차량가격","초기 교체 부담 절감","데일리 효율성"],
     },
-    (0,0,1): {
-        "name":"SMART MINIMALIST",
-        "sub":"필요한 만큼 정확하게 고르는 사람",
-        "copy":"과한 크기보다 일상에서 자주 쓰는 편의와 효율을 중요하게 봅니다.",
-        "quote":"\u201c좋은 선택은 더 많이 갖는 것이 아니라 딱 맞게 갖는 것.\u201d",
-        "model":"쏘나타",
-        "reasons":["운전 편의성","합리적 이용","데일리 실용성"],
-        "art":SPACE,
-        "match":93
+    "쏘나타": {
+        "scores": {"city":5,"trip":3,"comfort":5,"solo":5,"family":3,"large_family":0,"space":2,"style":3,"premium":1,"value":5,"balanced":5,"versatility":3},
+        "tagline":"편안함과 실용성을 고르게 갖춘 중형 세단",
+        "reason_pool":["데일리 편안함","도심·장거리 균형","합리적인 가격","안정적인 승차감"],
     },
-    (0,1,0): {
-        "name":"URBAN HOST",
-        "sub":"함께 타는 순간까지 세련되게 만드는 사람",
-        "copy":"동승자의 편안함과 도심에서의 세련된 주행감을 함께 중요하게 봅니다.",
-        "quote":"\u201c함께 타는 사람도, 나도 만족하는 균형.\u201d",
-        "model":"디 올 뉴 그랜저",
-        "reasons":["동승자 편안함","도심 주행감","프리미엄 감성"],
-        "art":FAMILY,
-        "match":94
+    "K5": {
+        "scores": {"city":5,"trip":3,"comfort":4,"solo":5,"family":2,"large_family":0,"space":2,"style":5,"premium":2,"value":4,"balanced":4,"versatility":3},
+        "tagline":"스타일을 중시하는 감각적인 중형 세단",
+        "reason_pool":["스포티한 디자인","도심 주행 감도","가격·스타일 균형","운전자 중심 만족감"],
     },
-    (0,1,1): {
-        "name":"FAMILY NAVIGATOR",
-        "sub":"가족의 매일을 더 여유롭게 설계하는 사람",
-        "copy":"도심에서도 다루기 편하면서 가족을 위한 공간과 안정감도 충분해야 합니다.",
-        "quote":"\u201c가족의 하루가 편해지면, 내 하루도 편해진다.\u201d",
-        "model":"디 올 뉴 팰리세이드",
-        "reasons":["가족 이동 최적화","넉넉한 실내","도심·주말 균형"],
-        "art":FAMILY,
-        "match":97
+    "디 올 뉴 그랜저": {
+        "scores": {"city":4,"trip":4,"comfort":6,"solo":4,"family":3,"large_family":0,"space":2,"style":5,"premium":6,"value":2,"balanced":6,"versatility":3},
+        "tagline":"편안함과 고급감을 함께 잡는 프리미엄 세단",
+        "reason_pool":["프리미엄 감성","정숙한 승차감","도심·장거리 균형","높은 소유 만족감"],
     },
-    (1,0,0): {
-        "name":"ROAD VOYAGER",
-        "sub":"가는 길의 감도를 즐기는 사람",
-        "copy":"목적지뿐 아니라 이동하는 시간 자체의 편안함과 감성을 중요하게 생각합니다.",
-        "quote":"\u201c목적지보다 가는 길이 기억에 남는 차.\u201d",
-        "model":"디 올 뉴 그랜저",
-        "reasons":["장거리 승차감","주행 감성","디자인 완성도"],
-        "art":TRIP,
-        "match":92
+    "K8": {
+        "scores": {"city":4,"trip":4,"comfort":5,"solo":4,"family":3,"large_family":0,"space":2,"style":5,"premium":5,"value":3,"balanced":6,"versatility":3},
+        "tagline":"품격과 합리성의 균형을 갖춘 준대형 세단",
+        "reason_pool":["준대형 세단의 여유","세련된 디자인","가격·차급 균형","편안한 장거리 주행"],
     },
-    (1,0,1): {
-        "name":"FREEDOM EXPLORER",
-        "sub":"주말의 반경을 자유롭게 넓히는 사람",
-        "copy":"여행과 레저를 위해 SUV의 공간과 안정감을 적극적으로 활용하는 타입입니다.",
-        "quote":"\u201c차가 커지는 것이 아니라, 갈 수 있는 곳이 많아진다.\u201d",
-        "model":"디 올 뉴 팰리세이드",
-        "reasons":["여행 활용성","적재 공간","장거리 안정감"],
-        "art":TRIP,
-        "match":95
+    "투싼": {
+        "scores": {"city":5,"trip":4,"comfort":4,"solo":4,"family":4,"large_family":1,"space":4,"style":3,"premium":1,"value":5,"balanced":5,"versatility":5},
+        "tagline":"도심과 주말을 연결하는 실용적인 SUV",
+        "reason_pool":["도심 친화적 크기","주말 활용성","SUV 실용 공간","균형 잡힌 차량가격"],
     },
-    (1,1,0): {
-        "name":"WEEKEND DIRECTOR",
-        "sub":"가족의 특별한 주말을 만드는 사람",
-        "copy":"가족 여행의 편안함과 차량의 존재감, 디자인 모두를 중요하게 생각합니다.",
-        "quote":"\u201c함께하는 시간도, 그 장면도 특별하게.\u201d",
-        "model":"디 올 뉴 팰리세이드",
-        "reasons":["패밀리 여행","프리미엄 디자인","편안한 주행"],
-        "art":STYLE,
-        "match":96
+    "스포티지": {
+        "scores": {"city":5,"trip":4,"comfort":4,"solo":4,"family":4,"large_family":1,"space":4,"style":4,"premium":1,"value":5,"balanced":5,"versatility":5},
+        "tagline":"스타일과 실용성을 함께 갖춘 준중형 SUV",
+        "reason_pool":["감각적인 SUV 디자인","도심 활용성","가족 일상 적합","가격 대비 공간"],
     },
-    (1,1,1): {
-        "name":"LIFE ORCHESTRATOR",
-        "sub":"가족의 모든 장면을 담아내는 사람",
-        "copy":"사람과 짐, 여행과 일상까지 한 대의 차가 여러 역할을 해내길 원합니다.",
-        "quote":"\u201c차 한 대가 가족의 가능성을 더 크게 만든다.\u201d",
-        "model":"더 뉴 카니발",
-        "reasons":["최대 공간 활용","다인승 편의성","여행·레저 확장성"],
-        "art":SPACE,
-        "match":98
+    "싼타페": {
+        "scores": {"city":3,"trip":6,"comfort":5,"solo":2,"family":6,"large_family":3,"space":6,"style":4,"premium":3,"value":4,"balanced":5,"versatility":6},
+        "tagline":"가족의 일상과 여행에 강한 중형 SUV",
+        "reason_pool":["가족 이동 최적화","넉넉한 적재공간","여행·캠핑 활용성","편안한 장거리 주행"],
+    },
+    "쏘렌토": {
+        "scores": {"city":3,"trip":6,"comfort":5,"solo":2,"family":6,"large_family":3,"space":6,"style":4,"premium":3,"value":4,"balanced":6,"versatility":6},
+        "tagline":"패밀리와 장거리 활용의 균형형 SUV",
+        "reason_pool":["패밀리 SUV 균형","도심·여행 대응력","넉넉한 공간","높은 활용 범위"],
+    },
+    "디 올 뉴 팰리세이드": {
+        "scores": {"city":2,"trip":6,"comfort":6,"solo":1,"family":6,"large_family":5,"space":7,"style":5,"premium":5,"value":2,"balanced":4,"versatility":6},
+        "tagline":"가족과 여행의 반경을 넓히는 대형 SUV",
+        "reason_pool":["넉넉한 실내공간","가족 이동 최적화","장거리 안정감","대형 SUV의 존재감"],
+    },
+    "더 뉴 카니발": {
+        "scores": {"city":1,"trip":6,"comfort":5,"solo":0,"family":6,"large_family":8,"space":8,"style":2,"premium":2,"value":3,"balanced":3,"versatility":8},
+        "tagline":"사람과 짐을 모두 담는 패밀리 모빌리티",
+        "reason_pool":["최대 공간 활용","다인승 편의성","가족·레저 활용성","다양한 좌석 활용"],
+    },
+    "GV70": {
+        "scores": {"city":4,"trip":5,"comfort":5,"solo":5,"family":3,"large_family":0,"space":3,"style":7,"premium":7,"value":1,"balanced":4,"versatility":4},
+        "tagline":"운전 감성과 고급감을 강조한 프리미엄 SUV",
+        "reason_pool":["프리미엄 디자인","도심 주행 감성","고급 실내 만족감","SUV의 활용성"],
+    },
+    "GV80": {
+        "scores": {"city":2,"trip":6,"comfort":7,"solo":2,"family":5,"large_family":3,"space":6,"style":7,"premium":8,"value":0,"balanced":4,"versatility":5},
+        "tagline":"공간과 품격을 모두 원하는 프리미엄 대형 SUV",
+        "reason_pool":["프리미엄 대형 SUV","최상급 승차감","가족과 비즈니스 활용","높은 소유 만족감"],
     },
 }
+
+def calculate_user_scores(answers):
+    user_scores = {}
+    for q_idx, option_idx in enumerate(answers):
+        option = questions[q_idx]["options"][option_idx]
+        for key, value in option["scores"].items():
+            user_scores[key] = user_scores.get(key, 0) + value
+    return user_scores
+
+def rank_vehicles(answers, available_models):
+    user_scores = calculate_user_scores(answers)
+    ranked = []
+    for model in available_models:
+        if model not in vehicle_profiles:
+            continue
+        profile = vehicle_profiles[model]
+        score = sum(v * profile["scores"].get(k, 0) for k, v in user_scores.items())
+        ranked.append({"model": model, "score": score, "profile": profile})
+    ranked.sort(key=lambda x: x["score"], reverse=True)
+    if not ranked:
+        return []
+    max_score = ranked[0]["score"] or 1
+    for idx, item in enumerate(ranked):
+        relative = item["score"] / max_score
+        item["match"] = max(82, min(98, round(82 + relative * 16 - idx * 2)))
+    return ranked
+
+def build_persona(answers, ranked):
+    s = calculate_user_scores(answers)
+    family = s.get("family",0)+s.get("large_family",0)+s.get("space",0)
+    premium = s.get("premium",0)+s.get("style",0)
+    value = s.get("value",0)
+    trip = s.get("trip",0)+s.get("versatility",0)
+
+    if family >= 10:
+        return {"name":"LIFE EXPANDER","sub":"가족의 모든 이동을 넓게 설계하는 사람","copy":"사람과 짐, 평일과 주말을 모두 고려하며 차량 한 대의 활용 범위를 크게 보는 타입입니다.","quote":"“차 한 대가 가족의 활동 반경을 넓혀준다.”","art":FAMILY}
+    if premium >= 9:
+        return {"name":"PREMIUM CURATOR","sub":"이동의 감도까지 고르는 사람","copy":"편안함과 디자인, 소유 만족도를 중요하게 보며 한 단계 높은 완성도를 선호합니다.","quote":"“매일 타는 차일수록 만족감이 중요하다.”","art":STYLE}
+    if value >= 6:
+        return {"name":"SMART SELECTOR","sub":"필요한 만큼 정확하게 고르는 사람","copy":"차량가격과 실용성을 함께 보며 매일 쓰는 기능에 집중해 효율적인 선택을 하는 타입입니다.","quote":"“좋은 차는 내 생활에 정확히 맞는 차.”","art":CITY}
+    if trip >= 7:
+        return {"name":"WEEKEND VOYAGER","sub":"주말의 반경을 넓히는 사람","copy":"평일의 이동뿐 아니라 여행과 장거리 주행까지 고려해 활용성과 편안함을 함께 봅니다.","quote":"“차가 바뀌면 갈 수 있는 곳도 달라진다.”","art":TRIP}
+    return {"name":"BALANCE DRIVER","sub":"평일과 주말의 균형을 고르는 사람","copy":"편안함, 가격, 공간, 디자인 어느 하나에 치우치기보다 전체 균형을 중요하게 생각합니다.","quote":"“매일 타도 좋고, 주말에는 더 좋은 차.”","art":SPACE}
 
 
 # =========================================================
@@ -336,6 +376,8 @@ if "color" not in st.session_state:
     st.session_state.color = None
 if "months" not in st.session_state:
     st.session_state.months = 48
+if "selected_model" not in st.session_state:
+    st.session_state.selected_model = None
 
 
 # =========================================================
@@ -1203,6 +1245,17 @@ button[kind="primary"]{
         grid-template-columns:1fr;
     }
 }
+
+.top3-title{margin-top:15px;margin-bottom:5px;color:#101828;font-size:14px;font-weight:900}
+.top3-sub{margin-bottom:10px;color:#8B96A6;font-size:10px}
+.reco-card{min-height:154px;padding:17px;border:1px solid #E4E9F0;border-radius:19px;background:#fff;box-shadow:0 8px 21px rgba(15,23,42,.035)}
+.reco-card.top{border-color:#B9C8FA;background:linear-gradient(145deg,#fff,#F3F6FF)}
+.reco-rank{color:#315EF5;font-size:9px;font-weight:900;letter-spacing:.08em}
+.reco-model{margin-top:6px;color:#172237;font-size:18px;font-weight:900;letter-spacing:-.035em}
+.reco-tag{margin-top:4px;min-height:30px;color:#7D8999;font-size:9px;line-height:1.45}
+.reco-match{margin-top:11px;color:#8A95A6;font-size:9px}
+.reco-match strong{display:block;color:#315EF5;font-size:22px}
+
 </style>
 """)
 
@@ -1381,7 +1434,7 @@ elif st.session_state.flow_step == "persona":
     </div>
     """)
 
-    cols = st.columns(2, gap="large")
+    cols = st.columns(len(q["options"]), gap="medium")
 
     for i, opt in enumerate(q["options"]):
         with cols[i]:
@@ -1426,23 +1479,53 @@ elif st.session_state.flow_step == "persona":
 # STEP 3/4. 추천 + 교체 견적
 # =========================================================
 else:
+    if not EXCEL_PATH.exists():
+        st.error(f"엑셀 파일이 없습니다: {EXCEL_PATH}")
+        st.stop()
+
+    if not IMAGE_DIR.exists():
+        st.error(f"차량 이미지 폴더가 없습니다: {IMAGE_DIR}")
+        st.stop()
+
     if not GIF_DIR.exists():
         st.error(f"GIF 폴더가 없습니다: {GIF_DIR}")
         st.stop()
 
-    df = load_car_data()
+    df = load_car_data(str(EXCEL_PATH)).copy()
 
-    key = tuple(st.session_state.persona_answers)
-    recommendation = recommendation_map.get(
-        key,
-        recommendation_map[(0, 1, 1)]
-    )
+    # 문자열 공백 때문에 동일 모델이 다르게 인식되는 문제 방지
+    df["모델"] = df["모델"].astype(str).str.strip()
+    df["색상"] = df["색상"].astype(str).str.strip()
 
-    model = recommendation["model"]
+    loaded_models = df["모델"].dropna().unique().tolist()
+
+    if len(loaded_models) != 13:
+        st.warning(
+            f"현재 엑셀에서 {len(loaded_models)}개 차종만 읽혔습니다. "
+            f"사용 중인 파일: {EXCEL_PATH.name}"
+        )
 
     models = df["모델"].dropna().astype(str).unique().tolist()
-    if model not in models:
-        model = models[0]
+    ranked = rank_vehicles(st.session_state.persona_answers, models)
+
+    if not ranked:
+        st.error("추천 가능한 차량 데이터가 없습니다.")
+        st.stop()
+
+    # 엑셀 모델과 추천 프로파일의 모델명이 정확히 맞는지 확인
+    missing_profiles = [m for m in models if m not in vehicle_profiles]
+    if missing_profiles:
+        st.warning(
+            "추천 프로파일이 없는 모델: " + ", ".join(missing_profiles)
+        )
+
+    recommendation = build_persona(st.session_state.persona_answers, ranked)
+    ranked_models = [item["model"] for item in ranked]
+
+    if st.session_state.selected_model not in ranked_models:
+        st.session_state.selected_model = ranked_models[0]
+
+    model = st.session_state.selected_model
 
     filtered = df[
         df["모델"].astype(str) == model
@@ -1463,10 +1546,15 @@ else:
         filtered["색상"].astype(str) == st.session_state.color
     ].iloc[0]
 
-    html("""
-    <div class="result-title">당신의 드림카를 찾았습니다.</div>
+    selected_rank = next((item for item in ranked if item["model"] == model), ranked[0])
+    recommendation["match"] = selected_rank["match"]
+    recommendation["reasons"] = selected_rank["profile"]["reason_pool"][:3]
+
+    html(f"""
+    <div class="result-title">당신에게 맞는 드림카 후보를 찾았습니다.</div>
     <div class="result-desc">
-    기존 차량의 가치와 새로운 라이프스타일 추천을 연결해 실제 교체 견적까지 계산합니다.
+    현재 <b>{len(loaded_models)}개 차종</b>을 라이프스타일 점수로 비교했습니다.
+    TOP 3 추천과 전체 추천 순위를 함께 확인할 수 있습니다.
     </div>
     """)
 
@@ -1486,6 +1574,82 @@ else:
     </div>
     </div>
     """)
+
+    html("""
+    <div class="top3-title">AI 추천 차량 TOP 3</div>
+    <div class="top3-sub">한 대로 단정하지 않고, 라이프스타일 점수가 높은 차량을 비교해보세요.</div>
+    """)
+
+    top_items = ranked[:3]
+    top_cols = st.columns(len(top_items), gap="medium")
+
+    for idx, item in enumerate(top_items):
+        with top_cols[idx]:
+            top_class = " top" if idx == 0 else ""
+            selected_mark = " · 선택됨" if item["model"] == model else ""
+
+            html(f"""
+            <div class="reco-card{top_class}">
+            <div class="reco-rank">TOP {idx + 1}{selected_mark}</div>
+            <div class="reco-model">{item["model"]}</div>
+            <div class="reco-tag">{item["profile"]["tagline"]}</div>
+            <div class="reco-match">LIFESTYLE MATCH<strong>{item["match"]}%</strong></div>
+            </div>
+            """)
+
+            if st.button(
+                "이 차량 자세히 보기",
+                key=f"select_model_{idx}",
+                use_container_width=True
+            ):
+                st.session_state.selected_model = item["model"]
+                st.session_state.color = None
+                st.rerun()
+
+    html(f"""
+    <div class="top3-title" style="margin-top:22px;">전체 추천 순위 · {len(ranked)}개 차종</div>
+    <div class="top3-sub">
+    동일한 답변을 기준으로 13개 차량을 모두 점수화했습니다.
+    다른 차량을 선택하면 아래 이미지와 교체 견적이 즉시 변경됩니다.
+    </div>
+    """)
+
+    # 전체 추천 차량: 추천 점수 순으로 4개씩 노출
+    for row_start in range(0, len(ranked), 4):
+        row_items = ranked[row_start:row_start + 4]
+        browse_cols = st.columns(len(row_items), gap="small")
+
+        for offset, item in enumerate(row_items):
+            with browse_cols[offset]:
+                browse_model = item["model"]
+
+                first_row = df[
+                    df["모델"].astype(str) == browse_model
+                ].iloc[0]
+
+                browse_file = Path(str(first_row["이미지파일명"]))
+                browse_path = IMAGE_DIR / browse_file.with_suffix(".png").name
+                browse_uri = image_data_uri(browse_path)
+
+                if browse_uri:
+                    st.image(browse_uri, use_container_width=True)
+
+                rank_no = row_start + offset + 1
+                selected_text = " · 선택됨" if browse_model == model else ""
+
+                st.markdown(f"**{rank_no}위 · {browse_model}{selected_text}**")
+                st.caption(
+                    f'{item["profile"]["tagline"]} · 적합도 {item["match"]}%'
+                )
+
+                if st.button(
+                    "이 차량으로 견적 보기",
+                    key=f"browse_rank_{rank_no}_{browse_model}",
+                    use_container_width=True
+                ):
+                    st.session_state.selected_model = browse_model
+                    st.session_state.color = None
+                    st.rerun()
 
     original_image = Path(str(selected["이미지파일명"]))
     png_name = original_image.with_suffix(".png").name
@@ -1683,6 +1847,7 @@ else:
             st.session_state.persona_step = 0
             st.session_state.persona_answers = []
             st.session_state.color = None
+            st.session_state.selected_model = None
             st.session_state.flow_step = "persona"
             st.rerun()
 
