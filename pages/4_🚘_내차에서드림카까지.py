@@ -68,7 +68,7 @@ def load_car_data(excel_path):
 def reset_all():
     keys = [
         "flow_step", "has_car", "plate_no", "owned_car",
-        "persona_step", "persona_answers", "color", "months", "selected_model",
+        "persona_step", "persona_answers", "color", "months", "deposit_rate", "selected_model",
         "color_selector", "term_selector"
     ]
     for key in keys:
@@ -435,6 +435,8 @@ if "color" not in st.session_state:
     st.session_state.color = None
 if "months" not in st.session_state:
     st.session_state.months = 48
+if "deposit_rate" not in st.session_state:
+    st.session_state.deposit_rate = 0
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
@@ -3943,6 +3945,155 @@ div[data-testid="stSegmentedControl"] button p{
     }
 }
 
+
+/* =========================================================
+   MOBILE QUOTE OPTIONS v14
+   COLOR / TERM / DEPOSIT 통일
+========================================================= */
+
+.control-label{
+    font-size:13px!important;
+    line-height:1.2!important;
+    font-weight:950!important;
+    color:#24344D!important;
+    letter-spacing:.04em!important;
+    margin-top:15px!important;
+    margin-bottom:4px!important;
+}
+.choice-section-copy{
+    font-size:9.5px!important;
+    line-height:1.35!important;
+    color:#8793A5!important;
+    margin-bottom:7px!important;
+}
+.deposit-label{
+    margin-top:15px!important;
+}
+
+/* Streamlit 테마의 빨간 선택색을 이 영역에서는 파란색으로 강제 */
+div[data-testid="stSegmentedControl"]{
+    width:100%!important;
+    max-width:100%!important;
+}
+div[data-testid="stSegmentedControl"] > div{
+    display:flex!important;
+    width:100%!important;
+    max-width:100%!important;
+    gap:6px!important;
+}
+div[data-testid="stSegmentedControl"] button{
+    flex:1 1 0!important;
+    min-width:0!important;
+    max-width:none!important;
+    border:1px solid #D8E0EC!important;
+    background:#FFFFFF!important;
+    color:#344054!important;
+    outline:none!important;
+    box-shadow:none!important;
+    border-radius:12px!important;
+    font-weight:900!important;
+    transition:none!important;
+}
+
+/* Streamlit 버전별 selected DOM 대응 */
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"],
+div[data-testid="stSegmentedControl"] button[data-state="active"],
+div[data-testid="stSegmentedControl"] button[data-selected="true"],
+div[data-testid="stSegmentedControl"] button:has(input:checked){
+    border:2px solid #316AF7!important;
+    background:#EEF4FF!important;
+    color:#245BE7!important;
+    outline:0!important;
+    box-shadow:0 5px 14px rgba(49,106,247,.14)!important;
+}
+
+/* 선택시 내부 글자도 파랑 */
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"] *,
+div[data-testid="stSegmentedControl"] button[data-state="active"] *,
+div[data-testid="stSegmentedControl"] button[data-selected="true"] *{
+    color:#245BE7!important;
+}
+
+/* 브라우저/테마 accent 빨강 방지 */
+div[data-testid="stSegmentedControl"] input{
+    accent-color:#316AF7!important;
+}
+
+.deposit-strip{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;
+}
+.deposit-strip .money-mini{
+    min-width:0!important;
+}
+.deposit-strip .money-mini span{
+    white-space:normal!important;
+}
+
+@media(max-width:760px){
+    .control-label{
+        font-size:12px!important;
+        margin-top:13px!important;
+        margin-bottom:3px!important;
+    }
+    .choice-section-copy{
+        font-size:9px!important;
+        margin-bottom:6px!important;
+    }
+
+    div[data-testid="stSegmentedControl"] > div{
+        gap:5px!important;
+    }
+    div[data-testid="stSegmentedControl"] button{
+        height:44px!important;
+        min-height:44px!important;
+        padding:0 4px!important;
+        font-size:10px!important;
+        border-radius:11px!important;
+    }
+    div[data-testid="stSegmentedControl"] button p,
+    div[data-testid="stSegmentedControl"] button span{
+        font-size:10px!important;
+        line-height:1!important;
+        font-weight:900!important;
+        white-space:nowrap!important;
+    }
+
+    .deposit-strip{
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        gap:6px!important;
+        margin-top:10px!important;
+    }
+    .deposit-strip .money-mini{
+        min-height:54px!important;
+        padding:8px 6px!important;
+    }
+    .deposit-strip .money-mini span{
+        font-size:8px!important;
+    }
+    .deposit-strip .money-mini strong{
+        font-size:11px!important;
+    }
+
+    /* 정보 카드가 6개이므로 2열 유지 */
+    .quote-mini-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    }
+}
+
+@media(max-width:390px){
+    div[data-testid="stSegmentedControl"] button{
+        height:41px!important;
+        min-height:41px!important;
+        padding:0 2px!important;
+    }
+    div[data-testid="stSegmentedControl"] button p,
+    div[data-testid="stSegmentedControl"] button span{
+        font-size:9px!important;
+    }
+}
+
 </style>
 """)
 
@@ -4411,7 +4562,7 @@ else:
     html("""
     <div class="config-section">
         <div class="config-title">내 견적 조건 선택</div>
-        <div class="config-sub">색상과 할부기간을 선택해주세요.</div>
+        <div class="config-sub">색상 · 할부기간 · 보증금을 선택해주세요.</div>
     </div>
     """)
 
@@ -4481,6 +4632,41 @@ else:
             st.session_state.months = selected_term
             st.rerun()
 
+    # DEPOSIT - 보증금 선택
+    deposit_rates = [0, 10, 20, 30]
+    st.markdown(
+        '<div class="control-label deposit-label">보증금</div>'
+        '<div class="choice-section-copy">교체 필요금액 기준 보증금 비율을 선택하세요</div>',
+        unsafe_allow_html=True
+    )
+
+    deposit_options = [f"{rate}%" for rate in deposit_rates]
+    current_deposit_label = f"{st.session_state.deposit_rate}%"
+
+    try:
+        selected_deposit_label = st.segmented_control(
+            "보증금",
+            options=deposit_options,
+            default=current_deposit_label,
+            key="deposit_segment",
+            label_visibility="collapsed",
+            width="stretch",
+        )
+    except TypeError:
+        selected_deposit_label = st.segmented_control(
+            "보증금",
+            options=deposit_options,
+            default=current_deposit_label,
+            key="deposit_segment",
+            label_visibility="collapsed",
+        )
+
+    if selected_deposit_label:
+        selected_deposit = int(selected_deposit_label.replace("%", ""))
+        if selected_deposit != st.session_state.deposit_rate:
+            st.session_state.deposit_rate = selected_deposit
+            st.rerun()
+
     selected = filtered[
         filtered["색상"].astype(str) == st.session_state.color
     ].iloc[0]
@@ -4493,8 +4679,17 @@ else:
         else 0
     )
 
-    finance_principal = max(
+    replacement_amount = max(
         new_price - tradein_value,
+        0
+    )
+
+    deposit_amount = int(
+        round(replacement_amount * st.session_state.deposit_rate / 100)
+    )
+
+    finance_principal = max(
+        replacement_amount - deposit_amount,
         0
     )
 
@@ -4534,19 +4729,21 @@ else:
             </div>
         </div>
 
-        <div class="money-strip">
+        <div class="money-strip deposit-strip">
             <div class="money-mini">
                 <span>신차가격</span>
                 <strong>{new_price:,}만원</strong>
             </div>
-            <div class="money-sign">−</div>
             <div class="money-mini">
                 <span>내 차 시세</span>
                 <strong>{tradein_value:,}만원</strong>
             </div>
-            <div class="money-sign">=</div>
+            <div class="money-mini">
+                <span>보증금 {st.session_state.deposit_rate}%</span>
+                <strong>{deposit_amount:,}만원</strong>
+            </div>
             <div class="money-mini highlight">
-                <span>할부원금</span>
+                <span>최종 할부원금</span>
                 <strong>{finance_principal:,}만원</strong>
             </div>
         </div>
@@ -4563,6 +4760,14 @@ else:
             <div class="qmini">
                 <span>선택 색상</span>
                 <strong>{st.session_state.color}</strong>
+            </div>
+            <div class="qmini">
+                <span>보증금</span>
+                <strong>{st.session_state.deposit_rate}% · {deposit_amount:,}만원</strong>
+            </div>
+            <div class="qmini">
+                <span>할부기간</span>
+                <strong>{st.session_state.months}개월</strong>
             </div>
             <div class="qmini">
                 <span>예상 총 이자</span>
@@ -4587,7 +4792,7 @@ else:
             use_container_width=True
         ):
             st.success(
-                f"{model} / 할부원금 {finance_principal:,}만원 / "
+                f"{model} / 보증금 {st.session_state.deposit_rate}%({deposit_amount:,}만원) / 할부원금 {finance_principal:,}만원 / "
                 f"{st.session_state.months}개월 / "
                 f"월 약 {monthly_payment:,.1f}만원"
             )
