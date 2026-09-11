@@ -422,7 +422,7 @@ def build_persona(answers, ranked):
 if "flow_step" not in st.session_state:
     st.session_state.flow_step = "tradein"
 if "has_car" not in st.session_state:
-    st.session_state.has_car = True
+    st.session_state.has_car = None
 if "plate_no" not in st.session_state:
     st.session_state.plate_no = ""
 if "owned_car" not in st.session_state:
@@ -2288,6 +2288,526 @@ div[role="radiogroup"] > label:has(input:checked) p{
     .money-mini span{font-size:6px!important;}
 }
 
+
+/* =========================================================
+   DREAM CAR IMAGE SCALE FIX v5
+   - 차량을 더 크게
+   - 위/아래 여백 최소화
+   - 모바일에서 이미지 영역 높이 축소
+========================================================= */
+.car-stage{
+    height:220px!important;
+    min-height:220px!important;
+    margin:10px 16px 8px!important;
+    padding:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+    background:#F7F9FC!important;
+    border-radius:16px!important;
+}
+
+.car-stage img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center center!important;
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    transform:scale(1.16);
+}
+
+/* 이미지 파일 자체에 흰 여백이 있는 경우도 시각적으로 더 크게 보이게 */
+.car-stage img[src*="car_images"]{
+    transform:scale(1.22)!important;
+}
+
+@media(max-width:760px){
+    .car-stage{
+        height:150px!important;
+        min-height:150px!important;
+        margin:8px 10px 6px!important;
+        border-radius:12px!important;
+    }
+
+    .car-stage img{
+        width:100%!important;
+        height:100%!important;
+        object-fit:cover!important;
+        object-position:center center!important;
+        transform:scale(1.22)!important;
+    }
+
+    .car-stage img[src*="car_images"]{
+        transform:scale(1.28)!important;
+    }
+
+    /* 차량명~이미지 사이 공백 축소 */
+    .dream-head{
+        padding:12px 14px 0!important;
+        margin-bottom:0!important;
+    }
+    .dream-copy{
+        margin-top:5px!important;
+        margin-bottom:0!important;
+    }
+    .match-score{
+        margin-bottom:0!important;
+    }
+
+    /* 이미지 아래 추천사유도 바로 붙게 */
+    .reason-row{
+        margin-top:0!important;
+        padding-top:0!important;
+    }
+}
+
+@media(max-width:390px){
+    .car-stage{
+        height:138px!important;
+        min-height:138px!important;
+        margin:7px 8px 5px!important;
+    }
+    .car-stage img{
+        transform:scale(1.28)!important;
+    }
+}
+
+
+/* =========================================================
+   TOP3 RECOMMENDATION IMAGE FIX v6
+   - 추천차량 3개 이미지 비율 개선
+   - 위/아래 공백 제거
+   - 차량이 카드 안에서 더 크게 보이도록 확대
+========================================================= */
+
+/* 데스크톱/공통 */
+.reco-mobile-card{
+    overflow:hidden!important;
+    min-height:132px!important;
+    padding:0!important;
+}
+
+.reco-mobile-img{
+    width:44%!important;
+    min-width:44%!important;
+    max-width:44%!important;
+    height:132px!important;
+    overflow:hidden!important;
+    background:#F7F9FC!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border-radius:16px 0 0 16px!important;
+}
+
+.reco-mobile-img img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center center!important;
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    transform:scale(1.18)!important;
+}
+
+.reco-mobile-copy{
+    width:56%!important;
+    padding:12px 12px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+}
+
+/* 모바일에서는 이미지 영역을 조금 더 넓게 */
+@media(max-width:760px){
+
+    .reco-mobile-card{
+        min-height:118px!important;
+        max-height:118px!important;
+        display:flex!important;
+        flex-direction:row!important;
+        align-items:stretch!important;
+        border-radius:16px!important;
+    }
+
+    .reco-mobile-img{
+        width:46%!important;
+        min-width:46%!important;
+        max-width:46%!important;
+        height:118px!important;
+        min-height:118px!important;
+        border-radius:16px 0 0 16px!important;
+        overflow:hidden!important;
+    }
+
+    .reco-mobile-img img{
+        width:100%!important;
+        height:100%!important;
+        object-fit:cover!important;
+        object-position:center center!important;
+        transform:scale(1.30)!important;
+    }
+
+    .reco-mobile-copy{
+        width:54%!important;
+        padding:9px 10px!important;
+        justify-content:center!important;
+    }
+
+    .reco-rank{
+        font-size:7px!important;
+        margin-bottom:3px!important;
+    }
+
+    .reco-model{
+        font-size:15px!important;
+        line-height:1.1!important;
+        margin-bottom:3px!important;
+    }
+
+    .reco-tag{
+        font-size:8px!important;
+        line-height:1.25!important;
+        margin-bottom:5px!important;
+        display:-webkit-box!important;
+        -webkit-line-clamp:2!important;
+        -webkit-box-orient:vertical!important;
+        overflow:hidden!important;
+    }
+
+    .reco-bottom{
+        font-size:7px!important;
+        gap:4px!important;
+    }
+
+    .reco-bottom strong{
+        font-size:11px!important;
+    }
+
+    /* 추천카드 아래 선택 버튼도 바로 붙게 */
+    .reco-mobile-card + div{
+        margin-top:4px!important;
+    }
+}
+
+@media(max-width:390px){
+    .reco-mobile-card{
+        min-height:108px!important;
+        max-height:108px!important;
+    }
+
+    .reco-mobile-img{
+        width:47%!important;
+        min-width:47%!important;
+        max-width:47%!important;
+        height:108px!important;
+        min-height:108px!important;
+    }
+
+    .reco-mobile-img img{
+        transform:scale(1.34)!important;
+    }
+
+    .reco-mobile-copy{
+        width:53%!important;
+        padding:8px 8px!important;
+    }
+
+    .reco-model{
+        font-size:14px!important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE UX REFINEMENT v7
+========================================================= */
+
+/* ---------- STEP1 차량 보유 선택 ---------- */
+.car-status-guide{
+    margin:0 0 7px;
+    color:#697586;
+    font-size:10px;
+    font-weight:800;
+}
+.status-empty-hint{
+    margin-top:8px;
+    padding:10px 12px;
+    text-align:center;
+    border-radius:12px;
+    background:#F6F8FC;
+    color:#8A95A6;
+    font-size:9px;
+}
+
+/* 차량 보유 여부 두 버튼만 크게 강조 */
+button[data-testid="baseButton-secondary"]{
+    transition:.16s ease!important;
+}
+#root button{ box-sizing:border-box; }
+
+@media(max-width:760px){
+
+    /* STEP 1 안내 카드 자체도 짧게 */
+    .lookup{
+        padding:14px 14px 12px!important;
+        border-radius:17px!important;
+    }
+    .lookup-title{
+        font-size:20px!important;
+        line-height:1.2!important;
+    }
+    .lookup-desc{
+        margin-top:5px!important;
+        font-size:9px!important;
+        line-height:1.45!important;
+    }
+
+    /* 차량 보유 여부 버튼 */
+    div[data-testid="stHorizontalBlock"]:has(#car_status_yes),
+    div[data-testid="stHorizontalBlock"]:has(#car_status_no){
+        gap:8px!important;
+    }
+    button[kind="secondary"],
+    button[kind="primary"]{
+        border-radius:14px!important;
+    }
+
+    /* 첫 선택 2개는 카드처럼 */
+    button[data-testid="baseButton-secondary"]{
+        min-height:58px!important;
+        border:1px solid #DCE2EB!important;
+        background:#FFFFFF!important;
+        color:#344054!important;
+        font-size:11px!important;
+        font-weight:850!important;
+        box-shadow:0 5px 14px rgba(20,40,80,.04)!important;
+    }
+    button[data-testid="baseButton-primary"]{
+        min-height:58px!important;
+        border:2px solid #4F6BFF!important;
+        background:linear-gradient(135deg,#EEF3FF,#F7F2FF)!important;
+        color:#315EF5!important;
+        font-size:11px!important;
+        font-weight:900!important;
+        box-shadow:0 8px 20px rgba(79,107,255,.14)!important;
+    }
+
+    /* ---------- STEP2 질문: 3개 선택지를 한 화면에 압축 ---------- */
+    .qbox{
+        padding:12px 13px 10px!important;
+        margin-bottom:8px!important;
+        border-radius:16px!important;
+    }
+    .qtop{
+        margin-bottom:5px!important;
+    }
+    .qtitle{
+        margin-top:7px!important;
+        font-size:16px!important;
+        line-height:1.2!important;
+    }
+    .qdesc{
+        margin-top:3px!important;
+        font-size:8px!important;
+        line-height:1.35!important;
+    }
+
+    /* 반드시 3열 유지 */
+    div[data-testid="stHorizontalBlock"]:has(.choice){
+        display:flex!important;
+        flex-wrap:nowrap!important;
+        align-items:flex-start!important;
+        gap:5px!important;
+        width:100%!important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(.choice) > div[data-testid="column"]{
+        flex:1 1 0!important;
+        width:33.333%!important;
+        min-width:0!important;
+        max-width:33.333%!important;
+    }
+
+    .choice{
+        min-height:104px!important;
+        max-height:104px!important;
+        padding:5px!important;
+        border-radius:13px!important;
+        overflow:hidden!important;
+        display:flex!important;
+        flex-direction:column!important;
+    }
+    .choice-visual{
+        height:62px!important;
+        min-height:62px!important;
+        border-radius:10px!important;
+        overflow:hidden!important;
+    }
+    .choice-visual img{
+        width:100%!important;
+        height:100%!important;
+        object-fit:cover!important;
+        object-position:center!important;
+        margin:0!important;
+        border-radius:10px!important;
+    }
+    .choice-copy{
+        padding:5px 2px 1px!important;
+        min-height:0!important;
+    }
+    .choice-title{
+        font-size:9px!important;
+        line-height:1.15!important;
+        font-weight:900!important;
+        display:-webkit-box!important;
+        -webkit-line-clamp:2!important;
+        -webkit-box-orient:vertical!important;
+        overflow:hidden!important;
+    }
+    .choice-desc{
+        display:none!important;
+    }
+
+    /* 질문 선택 버튼 짧게 */
+    div[data-testid="stHorizontalBlock"]:has(.choice) .stButton>button{
+        min-height:32px!important;
+        height:32px!important;
+        padding:0 2px!important;
+        border-radius:9px!important;
+        font-size:9px!important;
+        font-weight:850!important;
+        margin-top:3px!important;
+    }
+
+    /* ---------- TOP3: 이미지 전체 폭 + 안 잘림 ---------- */
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card){
+        display:block!important;
+        width:100%!important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card) > div[data-testid="column"]{
+        width:100%!important;
+        max-width:100%!important;
+        min-width:100%!important;
+        margin-bottom:8px!important;
+    }
+
+    .reco-mobile-card{
+        display:block!important;
+        width:100%!important;
+        min-height:0!important;
+        max-height:none!important;
+        overflow:hidden!important;
+        padding:0!important;
+        border-radius:16px!important;
+    }
+
+    .reco-mobile-img{
+        width:100%!important;
+        max-width:100%!important;
+        min-width:100%!important;
+        height:92px!important;
+        min-height:92px!important;
+        padding:0!important;
+        margin:0!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+        overflow:hidden!important;
+        background:#F6F8FB!important;
+        border-radius:16px 16px 0 0!important;
+    }
+
+    .reco-mobile-img img{
+        width:100%!important;
+        height:100%!important;
+        object-fit:contain!important;
+        object-position:center center!important;
+        transform:none!important;
+        padding:0!important;
+        margin:0!important;
+    }
+
+    .reco-mobile-copy{
+        width:100%!important;
+        display:flex!important;
+        flex-direction:row!important;
+        align-items:center!important;
+        justify-content:space-between!important;
+        gap:8px!important;
+        padding:8px 11px!important;
+        box-sizing:border-box!important;
+    }
+    .reco-copy-left{
+        min-width:0!important;
+        flex:1 1 auto!important;
+    }
+    .reco-copy-right{
+        flex:0 0 auto!important;
+        text-align:right!important;
+    }
+    .reco-copy-right strong{
+        display:block!important;
+        color:#315EF5!important;
+        font-size:15px!important;
+        line-height:1!important;
+    }
+    .reco-copy-right span{
+        display:block!important;
+        margin-top:3px!important;
+        color:#8A96A8!important;
+        font-size:8px!important;
+        white-space:nowrap!important;
+    }
+
+    .reco-rank{
+        font-size:7px!important;
+        margin-bottom:2px!important;
+    }
+    .reco-model{
+        font-size:15px!important;
+        line-height:1.05!important;
+        margin:0!important;
+    }
+    .reco-tag{
+        margin-top:3px!important;
+        font-size:8px!important;
+        line-height:1.15!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card) .stButton>button{
+        min-height:34px!important;
+        height:34px!important;
+        border-radius:10px!important;
+        font-size:9px!important;
+        margin-top:3px!important;
+    }
+}
+
+@media(max-width:390px){
+    .choice{
+        min-height:98px!important;
+        max-height:98px!important;
+    }
+    .choice-visual{
+        height:57px!important;
+        min-height:57px!important;
+    }
+    .choice-title{
+        font-size:8px!important;
+    }
+    .reco-mobile-img{
+        height:84px!important;
+        min-height:84px!important;
+    }
+}
+
 </style>
 """)
 
@@ -2342,16 +2862,40 @@ if st.session_state.flow_step == "tradein":
 
     st.write("")
 
-    has_car = st.radio(
-        "현재 차량 보유 여부",
-        ["내 차가 있어요", "현재 차량이 없어요"],
-        horizontal=True,
-        label_visibility="collapsed"
-    )
+    html("""
+    <div class="car-status-guide">
+        <span>차량 보유 여부를 선택해주세요</span>
+    </div>
+    """)
 
-    st.session_state.has_car = has_car == "내 차가 있어요"
+    car_yes, car_no = st.columns(2, gap="small")
 
-    if st.session_state.has_car:
+    with car_yes:
+        yes_selected = st.session_state.has_car is True
+        yes_label = "✓ 내 차가 있어요" if yes_selected else "🚘 내 차가 있어요"
+        if st.button(
+            yes_label,
+            key="car_status_yes",
+            use_container_width=True,
+            type="primary" if yes_selected else "secondary"
+        ):
+            st.session_state.has_car = True
+            st.rerun()
+
+    with car_no:
+        no_selected = st.session_state.has_car is False
+        no_label = "✓ 차량이 없어요" if no_selected else "✨ 차량이 없어요"
+        if st.button(
+            no_label,
+            key="car_status_no",
+            use_container_width=True,
+            type="primary" if no_selected else "secondary"
+        ):
+            st.session_state.has_car = False
+            st.session_state.owned_car = None
+            st.rerun()
+
+    if st.session_state.has_car is True:
         plate = st.text_input(
             "차량 번호",
             placeholder="예: 123가4567",
@@ -2428,7 +2972,7 @@ if st.session_state.flow_step == "tradein":
                 st.session_state.flow_step = "persona"
                 st.rerun()
 
-    else:
+    elif st.session_state.has_car is False:
         html("""
         <div class="lookup-notice">
         현재 차량이 없으므로 보상판매 금액 없이 신차 전체 가격을 기준으로 견적을 계산합니다.
@@ -2443,6 +2987,13 @@ if st.session_state.flow_step == "tradein":
             st.session_state.owned_car = None
             st.session_state.flow_step = "persona"
             st.rerun()
+
+    else:
+        html("""
+        <div class="status-empty-hint">
+        위 두 카드 중 하나를 선택하면 다음 단계가 열립니다.
+        </div>
+        """)
 
 
 # =========================================================
@@ -2485,7 +3036,7 @@ elif st.session_state.flow_step == "persona":
             """)
 
             if st.button(
-                "이 선택이 나와 가까워요",
+                "선택",
                 key=f"persona_{step}_{i}",
                 use_container_width=True
             ):
@@ -2640,12 +3191,14 @@ else:
             <div class="reco-mobile-card{top_class}{selected_class}">
                 <div class="reco-mobile-img">{image_html}</div>
                 <div class="reco-mobile-copy">
-                    <div class="reco-rank">TOP {idx + 1}{selected_mark}</div>
-                    <div class="reco-model">{item["model"]}</div>
-                    <div class="reco-tag">{item["profile"]["tagline"]}</div>
-                    <div class="reco-bottom">
-                        <span>신차가 약 <b>{top_price:,}만원</b></span>
+                    <div class="reco-copy-left">
+                        <div class="reco-rank">TOP {idx + 1}{selected_mark}</div>
+                        <div class="reco-model">{item["model"]}</div>
+                        <div class="reco-tag">{item["profile"]["tagline"]}</div>
+                    </div>
+                    <div class="reco-copy-right">
                         <strong>{item["match"]}%</strong>
+                        <span>{top_price:,}만원</span>
                     </div>
                 </div>
             </div>
