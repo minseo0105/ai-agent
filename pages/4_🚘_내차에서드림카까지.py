@@ -438,9 +438,6 @@ if "months" not in st.session_state:
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
-if "deposit_rate" not in st.session_state:
-    st.session_state.deposit_rate = 0
-
 
 # =========================================================
 # 프리미엄 UI
@@ -3848,52 +3845,100 @@ div[data-testid="stSegmentedControl"] button p{
 
 
 /* =========================================================
-   DEPOSIT UI v13
+   MOBILE BOTTOM ACTION FIX v13
+   - 상세 견적 보기 하단 액션 영역이 화면 밖으로 밀리지 않도록 수정
+   - 모든 하단 버튼을 세로 스택 또는 100% 폭으로 강제
 ========================================================= */
+
 @media(max-width:760px){
-    .money-strip-4{
-        display:grid!important;
-        grid-template-columns:repeat(4,minmax(0,1fr))!important;
-        gap:5px!important;
-        margin-top:10px!important;
+
+    /* 하단 CTA가 들어있는 horizontal block은 세로로 쌓기 */
+    div[data-testid="stHorizontalBlock"]:has(button[kind="primary"]){
+        display:flex!important;
+        flex-direction:column!important;
+        flex-wrap:nowrap!important;
+        width:100%!important;
+        max-width:100%!important;
+        gap:7px!important;
+        overflow:visible!important;
     }
-    .money-strip-4 .money-mini{
+
+    div[data-testid="stHorizontalBlock"]:has(button[kind="primary"]) > div[data-testid="column"]{
+        width:100%!important;
+        min-width:100%!important;
+        max-width:100%!important;
+        flex:0 0 100%!important;
+        padding:0!important;
+        margin:0!important;
+    }
+
+    /* CTA 버튼은 항상 화면폭 안에 */
+    div[data-testid="stHorizontalBlock"]:has(button[kind="primary"]) .stButton{
+        width:100%!important;
+        max-width:100%!important;
+        margin:0!important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[kind="primary"]) .stButton > button,
+    div[data-testid="stButton"] > button[kind="primary"],
+    div[data-testid="stButton"] > button[kind="secondary"]{
+        width:100%!important;
+        max-width:100%!important;
         min-width:0!important;
-        padding:8px 3px!important;
-        border-radius:11px!important;
-    }
-    .money-strip-4 .money-mini span{
-        display:block!important;
-        font-size:7.5px!important;
-        line-height:1.15!important;
-        min-height:18px!important;
-        white-space:normal!important;
-    }
-    .money-strip-4 .money-mini strong{
-        display:block!important;
-        margin-top:4px!important;
-        font-size:10px!important;
-        line-height:1.1!important;
+        box-sizing:border-box!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
         white-space:nowrap!important;
     }
 
-    .quote-mini-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr))!important;
-        gap:5px!important;
+    /* 상세 견적 보기 버튼 */
+    div[data-testid="stButton"] > button[kind="primary"]{
+        min-height:48px!important;
+        height:48px!important;
+        border-radius:14px!important;
+        font-size:13px!important;
+        font-weight:900!important;
+        padding:0 12px!important;
+        background:linear-gradient(135deg,#316AF7,#674CE8)!important;
+        color:#FFFFFF!important;
+        box-shadow:0 8px 20px rgba(65,105,246,.18)!important;
+    }
+
+    /* 보조 액션은 더 얇게 */
+    div[data-testid="stButton"] > button[kind="secondary"]{
+        min-height:42px!important;
+        height:42px!important;
+        border-radius:12px!important;
+        font-size:10px!important;
+        font-weight:850!important;
+        padding:0 10px!important;
+        background:#FFFFFF!important;
+        color:#475467!important;
+        border:1px solid #DDE3EC!important;
+        box-shadow:none!important;
+    }
+
+    /* 페이지 맨 아래 여백 확보 */
+    .block-container{
+        padding-bottom:6.5rem!important;
+    }
+
+    /* 플로팅 버튼과 겹치지 않도록 마지막 버튼 아래 여백 */
+    [data-testid="stVerticalBlock"] > div:last-child{
+        margin-bottom:18px!important;
     }
 }
 
 @media(max-width:390px){
-    .money-strip-4{
-        gap:4px!important;
+    div[data-testid="stButton"] > button[kind="primary"]{
+        min-height:46px!important;
+        height:46px!important;
+        font-size:12px!important;
     }
-    .money-strip-4 .money-mini{
-        padding:7px 2px!important;
-    }
-    .money-strip-4 .money-mini span{
-        font-size:7px!important;
-    }
-    .money-strip-4 .money-mini strong{
+
+    div[data-testid="stButton"] > button[kind="secondary"]{
+        min-height:40px!important;
+        height:40px!important;
         font-size:9px!important;
     }
 }
@@ -4366,7 +4411,7 @@ else:
     html("""
     <div class="config-section">
         <div class="config-title">내 견적 조건 선택</div>
-        <div class="config-sub">색상·할부기간·보증금을 선택해주세요.</div>
+        <div class="config-sub">색상과 할부기간을 선택해주세요.</div>
     </div>
     """)
 
@@ -4436,42 +4481,6 @@ else:
             st.session_state.months = selected_term
             st.rerun()
 
-
-    # DEPOSIT - 할부원금(신차가격 - 내차시세) 기준
-    deposit_rates = [0, 10, 20, 30]
-    st.markdown(
-        '<div class="control-label term-label">보증금</div>'
-        '<div class="choice-section-copy">교체 필요금액 기준 보증금 비율을 선택하세요</div>',
-        unsafe_allow_html=True
-    )
-
-    deposit_options = [f"{rate}%" for rate in deposit_rates]
-    current_deposit = f"{st.session_state.deposit_rate}%"
-
-    try:
-        selected_deposit = st.segmented_control(
-            "보증금",
-            options=deposit_options,
-            default=current_deposit,
-            key="deposit_segment",
-            label_visibility="collapsed",
-            width="stretch",
-        )
-    except TypeError:
-        selected_deposit = st.segmented_control(
-            "보증금",
-            options=deposit_options,
-            default=current_deposit,
-            key="deposit_segment",
-            label_visibility="collapsed",
-        )
-
-    if selected_deposit:
-        selected_deposit_rate = int(selected_deposit.replace("%", ""))
-        if selected_deposit_rate != st.session_state.deposit_rate:
-            st.session_state.deposit_rate = selected_deposit_rate
-            st.rerun()
-
     selected = filtered[
         filtered["색상"].astype(str) == st.session_state.color
     ].iloc[0]
@@ -4484,20 +4493,8 @@ else:
         else 0
     )
 
-    # 교체 필요금액 = 신차가격 - 내 차 시세
-    gross_finance_principal = max(
-        new_price - tradein_value,
-        0
-    )
-
-    # 보증금 = 교체 필요금액 × 선택 비율
-    deposit_amount = gross_finance_principal * (
-        st.session_state.deposit_rate / 100
-    )
-
-    # 최종 할부원금 = 교체 필요금액 - 보증금
     finance_principal = max(
-        gross_finance_principal - deposit_amount,
+        new_price - tradein_value,
         0
     )
 
@@ -4537,22 +4534,20 @@ else:
             </div>
         </div>
 
-        <div class="money-strip money-strip-4">
+        <div class="money-strip">
             <div class="money-mini">
                 <span>신차가격</span>
                 <strong>{new_price:,}만원</strong>
             </div>
+            <div class="money-sign">−</div>
             <div class="money-mini">
                 <span>내 차 시세</span>
                 <strong>{tradein_value:,}만원</strong>
             </div>
-            <div class="money-mini">
-                <span>보증금 {st.session_state.deposit_rate}%</span>
-                <strong>{deposit_amount:,.0f}만원</strong>
-            </div>
+            <div class="money-sign">=</div>
             <div class="money-mini highlight">
-                <span>최종 할부원금</span>
-                <strong>{finance_principal:,.0f}만원</strong>
+                <span>할부원금</span>
+                <strong>{finance_principal:,}만원</strong>
             </div>
         </div>
 
@@ -4568,14 +4563,6 @@ else:
             <div class="qmini">
                 <span>선택 색상</span>
                 <strong>{st.session_state.color}</strong>
-            </div>
-            <div class="qmini">
-                <span>보증금</span>
-                <strong>{st.session_state.deposit_rate}% · {deposit_amount:,.0f}만원</strong>
-            </div>
-            <div class="qmini">
-                <span>할부기간</span>
-                <strong>{st.session_state.months}개월</strong>
             </div>
             <div class="qmini">
                 <span>예상 총 이자</span>
@@ -4600,9 +4587,7 @@ else:
             use_container_width=True
         ):
             st.success(
-                f"{model} / 보증금 {st.session_state.deposit_rate}% "
-                f"({deposit_amount:,.0f}만원) / "
-                f"최종 할부원금 {finance_principal:,.0f}만원 / "
+                f"{model} / 할부원금 {finance_principal:,}만원 / "
                 f"{st.session_state.months}개월 / "
                 f"월 약 {monthly_payment:,.1f}만원"
             )
