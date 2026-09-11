@@ -17,7 +17,7 @@ st.set_page_config(
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 EXCEL_PATH = BASE_DIR / "sample_cars_v3.xlsx"
-IMAGE_DIR = BASE_DIR / "car_images_photoreal_39"
+IMAGE_DIR = BASE_DIR / "car_images_mobile_39"
 ASSET_DIR = BASE_DIR / "dreamcar_assets"
 
 # 시연용 고정 금리
@@ -2997,6 +2997,630 @@ button[data-testid="baseButton-primary"]{
     }
 }
 
+
+/* =========================================================
+   MOBILE PREMIUM RESULT UI v9
+========================================================= */
+@media(max-width:760px){
+
+    /* ---------- 전체 화면 ---------- */
+    .block-container{
+        padding-left:.62rem!important;
+        padding-right:.62rem!important;
+        padding-bottom:4.5rem!important;
+    }
+
+    /* ---------- TOP3 제목 ---------- */
+    .top3-title{
+        font-size:17px!important;
+        line-height:1.2!important;
+        margin-top:8px!important;
+    }
+    .top3-sub{
+        font-size:8px!important;
+        line-height:1.35!important;
+        margin:3px 0 8px!important;
+    }
+
+    /* ---------- TOP3: 짧은 가로 카드 ---------- */
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card){
+        display:block!important;
+        width:100%!important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card) > div[data-testid="column"]{
+        width:100%!important;
+        min-width:100%!important;
+        max-width:100%!important;
+        margin-bottom:7px!important;
+    }
+
+    .reco-mobile-card{
+        display:grid!important;
+        grid-template-columns:42% 58%!important;
+        width:100%!important;
+        min-height:96px!important;
+        max-height:96px!important;
+        overflow:hidden!important;
+        border-radius:15px!important;
+        background:#fff!important;
+        box-sizing:border-box!important;
+    }
+    .reco-mobile-img{
+        width:100%!important;
+        min-width:0!important;
+        max-width:none!important;
+        height:96px!important;
+        min-height:96px!important;
+        padding:0!important;
+        margin:0!important;
+        border-radius:15px 0 0 15px!important;
+        overflow:hidden!important;
+        background:#EEF2F7!important;
+    }
+    .reco-mobile-img img{
+        width:100%!important;
+        height:100%!important;
+        object-fit:cover!important;
+        object-position:center!important;
+        transform:none!important;
+        display:block!important;
+    }
+    .reco-mobile-copy{
+        width:100%!important;
+        min-width:0!important;
+        padding:9px 10px!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:space-between!important;
+        gap:6px!important;
+        box-sizing:border-box!important;
+    }
+    .reco-rank{
+        font-size:7px!important;
+        margin-bottom:3px!important;
+    }
+    .reco-model{
+        font-size:15px!important;
+        line-height:1.05!important;
+        font-weight:950!important;
+    }
+    .reco-tag{
+        margin-top:4px!important;
+        font-size:8px!important;
+        line-height:1.2!important;
+        white-space:normal!important;
+        display:-webkit-box!important;
+        -webkit-line-clamp:2!important;
+        -webkit-box-orient:vertical!important;
+        overflow:hidden!important;
+    }
+    .reco-copy-right strong{
+        font-size:16px!important;
+        line-height:1!important;
+    }
+    .reco-copy-right span{
+        font-size:8px!important;
+        margin-top:4px!important;
+    }
+
+    /* TOP3 선택 버튼 */
+    div[data-testid="stHorizontalBlock"]:has(.reco-mobile-card) .stButton>button{
+        height:31px!important;
+        min-height:31px!important;
+        margin-top:2px!important;
+        font-size:9px!important;
+        border-radius:9px!important;
+    }
+    .top3-guide{
+        margin:5px 0 8px!important;
+        padding:8px 10px!important;
+        font-size:8px!important;
+        line-height:1.3!important;
+    }
+
+    /* ---------- 선택 차량 상세 ---------- */
+    .dream{
+        border-radius:18px!important;
+        overflow:hidden!important;
+    }
+    .dream-head{
+        padding:12px 13px 2px!important;
+    }
+    .dream-badge{
+        font-size:7px!important;
+        padding:5px 8px!important;
+    }
+    .dream-name{
+        font-size:22px!important;
+        line-height:1.05!important;
+        margin-top:7px!important;
+    }
+    .dream-copy{
+        font-size:9px!important;
+        margin-top:5px!important;
+    }
+    .match-score span{
+        font-size:7px!important;
+    }
+    .match-score strong{
+        font-size:28px!important;
+    }
+
+    /* 차량 이미지: 공백 없이 크게 */
+    .car-stage{
+        height:188px!important;
+        min-height:188px!important;
+        margin:6px 10px 5px!important;
+        padding:0!important;
+        background:#EEF2F7!important;
+        overflow:hidden!important;
+        border-radius:13px!important;
+    }
+    .car-stage img,
+    .car-stage img[src*="car_images"]{
+        width:100%!important;
+        height:100%!important;
+        object-fit:cover!important;
+        object-position:center!important;
+        transform:none!important;
+        margin:0!important;
+        padding:0!important;
+    }
+
+    /* MATCH 주요 정보 크게 */
+    .reason-row{
+        grid-template-columns:repeat(3,1fr)!important;
+        padding:4px 9px 10px!important;
+        gap:5px!important;
+    }
+    .reason{
+        min-height:48px!important;
+        padding:7px 6px!important;
+        border-radius:10px!important;
+        background:#F8FAFD!important;
+    }
+    .reason b{
+        font-size:7px!important;
+    }
+    .reason span{
+        font-size:9px!important;
+        line-height:1.25!important;
+        font-weight:800!important;
+    }
+
+    /* ---------- 견적 조건 선택 ---------- */
+    .config-section{
+        margin-top:8px!important;
+        padding:11px 12px 9px!important;
+        border-radius:15px!important;
+    }
+    .config-title{
+        font-size:15px!important;
+    }
+    .config-sub{
+        font-size:8px!important;
+    }
+    .control-label{
+        margin:9px 0 5px!important;
+        font-size:9px!important;
+        letter-spacing:.08em!important;
+    }
+
+    /* Streamlit radio → premium segmented pill */
+    div[role="radiogroup"]{
+        display:flex!important;
+        width:100%!important;
+        gap:6px!important;
+        flex-wrap:nowrap!important;
+    }
+    div[role="radiogroup"] label{
+        flex:1 1 0!important;
+        min-width:0!important;
+        margin:0!important;
+        padding:0!important;
+        border:1px solid #DCE3EE!important;
+        background:#FFFFFF!important;
+        border-radius:12px!important;
+        box-shadow:0 3px 10px rgba(24,44,80,.035)!important;
+        overflow:hidden!important;
+    }
+    div[role="radiogroup"] label:has(input:checked){
+        border:2px solid #4169F6!important;
+        background:linear-gradient(135deg,#EDF3FF,#F2EFFF)!important;
+        box-shadow:0 6px 16px rgba(65,105,246,.12)!important;
+    }
+
+    /* 라디오 원 제거 */
+    div[role="radiogroup"] label > div:first-child,
+    div[role="radiogroup"] label [data-testid="stRadio"]{
+        display:none!important;
+    }
+    div[role="radiogroup"] label > div:last-child{
+        width:100%!important;
+        min-width:0!important;
+        padding:10px 2px!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+    }
+    div[role="radiogroup"] label p{
+        width:100%!important;
+        margin:0!important;
+        padding:0!important;
+        text-align:center!important;
+        white-space:nowrap!important;
+        font-size:10px!important;
+        line-height:1!important;
+        font-weight:850!important;
+        color:#435066!important;
+    }
+    div[role="radiogroup"] label:has(input:checked) p{
+        color:#315EF5!important;
+    }
+
+    /* ---------- 선택 차량 견적 헤더 ---------- */
+    .quote-section-head{
+        margin-top:11px!important;
+        padding:11px 12px!important;
+        border-radius:15px!important;
+    }
+    .quote-section-kicker{
+        font-size:7px!important;
+    }
+    .quote-section-title{
+        font-size:16px!important;
+        margin-top:2px!important;
+    }
+    .quote-section-chip{
+        font-size:7px!important;
+        padding:6px 8px!important;
+    }
+
+    /* ---------- 견적 카드 ---------- */
+    .compact-quote{
+        padding:13px 12px 11px!important;
+        border-radius:17px!important;
+    }
+    .quote-summary{
+        padding-bottom:10px!important;
+        align-items:center!important;
+    }
+    .quote-kicker{
+        font-size:7px!important;
+    }
+    .quote-label{
+        font-size:9px!important;
+        margin-top:3px!important;
+    }
+    .quote-fee{
+        font-size:32px!important;
+        line-height:1.02!important;
+        margin-top:5px!important;
+        font-weight:950!important;
+    }
+    .quote-fee em{
+        font-size:32px!important;
+    }
+    .quote-chip{
+        font-size:8px!important;
+        padding:7px 8px!important;
+    }
+
+    /* 금액 핵심 3개 */
+    .money-strip{
+        grid-template-columns:1fr 10px 1fr 10px 1fr!important;
+        gap:2px!important;
+        margin-top:10px!important;
+    }
+    .money-mini{
+        min-height:53px!important;
+        padding:8px 3px!important;
+        border-radius:11px!important;
+    }
+    .money-mini span{
+        font-size:8px!important;
+        line-height:1.1!important;
+    }
+    .money-mini strong{
+        font-size:11px!important;
+        line-height:1.15!important;
+        margin-top:4px!important;
+    }
+    .money-sign{
+        font-size:14px!important;
+    }
+
+    /* 부가정보 2x2 */
+    .quote-mini-grid{
+        gap:5px!important;
+        margin-top:6px!important;
+    }
+    .qmini{
+        min-height:49px!important;
+        padding:8px 9px!important;
+    }
+    .qmini span{
+        font-size:8px!important;
+    }
+    .qmini strong{
+        margin-top:3px!important;
+        font-size:10px!important;
+    }
+    .compact-note{
+        font-size:7px!important;
+        line-height:1.3!important;
+    }
+}
+
+/* 아주 작은 화면 */
+@media(max-width:390px){
+    .reco-mobile-card{
+        grid-template-columns:40% 60%!important;
+        min-height:90px!important;
+        max-height:90px!important;
+    }
+    .reco-mobile-img{
+        height:90px!important;
+        min-height:90px!important;
+    }
+    .car-stage{
+        height:172px!important;
+        min-height:172px!important;
+    }
+    .quote-fee,
+    .quote-fee em{
+        font-size:29px!important;
+    }
+    div[role="radiogroup"] label p{
+        font-size:9px!important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE RESULT REFINEMENT v10
+   - 차량 전체 실루엣 보존
+   - radio 제거 후 카드형 버튼
+   - persona 가독성 확대
+========================================================= */
+
+.choice-section-copy{
+    margin:-1px 0 6px;
+    color:#98A2B3;
+    font-size:8px;
+    line-height:1.3;
+}
+
+@media(max-width:760px){
+
+    /* ---------- PERSONA 가독성 확대 ---------- */
+    .persona{
+        grid-template-columns:106px minmax(0,1fr)!important;
+        gap:11px!important;
+        padding:12px!important;
+        border-radius:17px!important;
+    }
+    .persona-visual{
+        width:106px!important;
+        height:106px!important;
+        border-radius:13px!important;
+        overflow:hidden!important;
+    }
+    .persona-visual img{
+        width:100%!important;
+        height:100%!important;
+        object-fit:cover!important;
+    }
+    .persona-label{
+        font-size:8px!important;
+        letter-spacing:.09em!important;
+        margin-bottom:3px!important;
+    }
+    .persona-name{
+        font-size:18px!important;
+        line-height:1.05!important;
+        font-weight:950!important;
+        margin-bottom:4px!important;
+    }
+    .persona-sub{
+        font-size:11px!important;
+        line-height:1.3!important;
+        font-weight:850!important;
+    }
+    .persona-copy{
+        margin-top:5px!important;
+        font-size:9px!important;
+        line-height:1.45!important;
+        color:#647184!important;
+    }
+    .persona-quote{
+        margin-top:5px!important;
+        font-size:9px!important;
+        line-height:1.35!important;
+        font-weight:800!important;
+    }
+
+    /* ---------- TOP3 이미지: 절대 양옆 자르지 않음 ---------- */
+    .reco-mobile-card{
+        grid-template-columns:44% 56%!important;
+        min-height:100px!important;
+        max-height:100px!important;
+    }
+    .reco-mobile-img{
+        height:100px!important;
+        min-height:100px!important;
+        padding:5px!important;
+        background:#F3F5F8!important;
+        box-sizing:border-box!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+    }
+    .reco-mobile-img img{
+        width:100%!important;
+        height:100%!important;
+        object-fit:contain!important;
+        object-position:center!important;
+        transform:none!important;
+        border-radius:8px!important;
+        background:#F3F5F8!important;
+    }
+    .reco-mobile-copy{
+        padding:9px 10px!important;
+    }
+    .reco-model{
+        font-size:16px!important;
+    }
+    .reco-tag{
+        font-size:8.5px!important;
+    }
+    .reco-copy-right strong{
+        font-size:17px!important;
+    }
+    .reco-copy-right span{
+        font-size:8.5px!important;
+    }
+
+    /* ---------- 최종 선택 차량 이미지: 16:9 + contain ---------- */
+    .car-stage{
+        width:calc(100% - 20px)!important;
+        height:auto!important;
+        min-height:0!important;
+        aspect-ratio:16 / 9!important;
+        margin:7px 10px 7px!important;
+        padding:5px!important;
+        box-sizing:border-box!important;
+        background:#F2F4F7!important;
+        border-radius:14px!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+        overflow:hidden!important;
+    }
+    .car-stage img,
+    .car-stage img[src*="car_images"]{
+        width:100%!important;
+        height:100%!important;
+        object-fit:contain!important;
+        object-position:center center!important;
+        transform:none!important;
+        margin:0!important;
+        padding:0!important;
+        border-radius:10px!important;
+        background:#F2F4F7!important;
+    }
+
+    /* ---------- COLOR / TERM 카드형 선택 버튼 ---------- */
+    .control-label{
+        margin-top:10px!important;
+        margin-bottom:2px!important;
+        font-size:10px!important;
+        color:#475467!important;
+        letter-spacing:.08em!important;
+    }
+    .choice-section-copy{
+        margin-bottom:6px!important;
+        font-size:8px!important;
+    }
+
+    /* 색상 3개/기간 4개만 화면 안에 유지 */
+    div[data-testid="stHorizontalBlock"]:has(button[id*="color_btn"]),
+    div[data-testid="stHorizontalBlock"]:has(button[id*="term_btn"]){
+        flex-wrap:nowrap!important;
+        gap:5px!important;
+        width:100%!important;
+    }
+
+    /* Streamlit 버튼 공통: pill-card */
+    div[data-testid="stHorizontalBlock"] .stButton>button{
+        box-sizing:border-box!important;
+    }
+
+    /* 이 영역은 글자가 짧으므로 컬럼을 모바일에서도 유지 */
+    div[data-testid="stHorizontalBlock"]:has(button[kind="secondary"]),
+    div[data-testid="stHorizontalBlock"]:has(button[kind="primary"]){
+        gap:5px!important;
+    }
+
+    /* 조건 선택 버튼은 이전 radio 원형표시 없이 텍스트 카드 */
+    .config-section ~ div[data-testid="stHorizontalBlock"] button{
+        min-height:42px!important;
+        height:42px!important;
+        padding:0 4px!important;
+        border-radius:12px!important;
+        font-size:9px!important;
+        font-weight:900!important;
+        white-space:nowrap!important;
+        box-shadow:none!important;
+    }
+    .config-section ~ div[data-testid="stHorizontalBlock"] button[kind="secondary"]{
+        border:1px solid #DDE3EC!important;
+        background:#FFFFFF!important;
+        color:#475467!important;
+    }
+    .config-section ~ div[data-testid="stHorizontalBlock"] button[kind="primary"]{
+        border:2px solid #4169F6!important;
+        background:linear-gradient(135deg,#EDF3FF,#F4F0FF)!important;
+        color:#315EF5!important;
+        box-shadow:0 5px 14px rgba(65,105,246,.12)!important;
+    }
+
+    /* 견적 숫자 조금 더 크게 */
+    .quote-label{
+        font-size:10px!important;
+    }
+    .quote-fee,
+    .quote-fee em{
+        font-size:34px!important;
+    }
+    .money-mini span{
+        font-size:8.5px!important;
+    }
+    .money-mini strong{
+        font-size:11.5px!important;
+    }
+    .qmini span{
+        font-size:8.5px!important;
+    }
+    .qmini strong{
+        font-size:10.5px!important;
+    }
+}
+
+@media(max-width:390px){
+    .persona{
+        grid-template-columns:94px minmax(0,1fr)!important;
+        gap:9px!important;
+    }
+    .persona-visual{
+        width:94px!important;
+        height:94px!important;
+    }
+    .persona-name{
+        font-size:17px!important;
+    }
+    .persona-sub{
+        font-size:10px!important;
+    }
+
+    .reco-mobile-card{
+        grid-template-columns:43% 57%!important;
+        min-height:94px!important;
+        max-height:94px!important;
+    }
+    .reco-mobile-img{
+        height:94px!important;
+        min-height:94px!important;
+    }
+
+    .config-section ~ div[data-testid="stHorizontalBlock"] button{
+        min-height:40px!important;
+        height:40px!important;
+        font-size:8.5px!important;
+        padding:0 2px!important;
+    }
+}
+
 </style>
 """)
 
@@ -3342,7 +3966,7 @@ else:
 
     html("""
     <div class="top3-title">AI 추천 차량 TOP 3</div>
-    <div class="top3-sub">한 대로 단정하지 않고, 라이프스타일 점수가 높은 차량을 비교해보세요.</div>
+    <div class="top3-sub">라이프스타일 적합도가 높은 3대를 빠르게 비교해보세요.</div>
     """)
 
     top_items = ranked[:3]
@@ -3438,7 +4062,7 @@ else:
     <span class="dream-badge">YOUR DREAM CAR</span>
     <div class="dream-name">{model}</div>
     <div class="dream-copy">
-    선택한 라이프스타일에 가장 자연스럽게 어울리는 차량입니다.
+    내 라이프스타일에 가장 잘 맞는 선택입니다.
     </div>
     </div>
 
@@ -3465,45 +4089,53 @@ else:
     html("""
     <div class="config-section">
         <div class="config-title">내 견적 조건 선택</div>
-        <div class="config-sub">추천 차량을 기준으로 색상과 할부기간을 선택해주세요.</div>
+        <div class="config-sub">색상과 할부기간을 선택해주세요.</div>
     </div>
     """)
 
-    # COLOR - 모바일에서 깨지지 않는 pill형 radio
-    st.markdown('<div class="control-label">COLOR</div>', unsafe_allow_html=True)
-    color_index = colors.index(st.session_state.color) if st.session_state.color in colors else 0
-
-    selected_color = st.radio(
-        "COLOR",
-        colors,
-        index=color_index,
-        horizontal=True,
-        label_visibility="collapsed",
-        key="color_selector"
+    # COLOR - 라디오 대신 카드형 버튼
+    st.markdown(
+        '<div class="control-label">COLOR</div>'
+        '<div class="choice-section-copy">차량 색상을 선택하세요</div>',
+        unsafe_allow_html=True
     )
 
-    if selected_color != st.session_state.color:
-        st.session_state.color = selected_color
-        st.rerun()
+    color_cols = st.columns(len(colors), gap="small")
+    for i, color in enumerate(colors):
+        with color_cols[i]:
+            is_selected = color == st.session_state.color
+            swatch = {"화이트":"○", "블랙":"●", "그레이":"◐"}.get(color, "●")
+            label = f"✓ {color}" if is_selected else f"{swatch} {color}"
+            if st.button(
+                label,
+                key=f"color_btn_{i}",
+                use_container_width=True,
+                type="primary" if is_selected else "secondary"
+            ):
+                st.session_state.color = color
+                st.rerun()
 
-    # TERM
+    # TERM - 라디오 대신 카드형 버튼
     terms = [24, 36, 48, 60]
-    st.markdown('<div class="control-label term-label">할부기간</div>', unsafe_allow_html=True)
-
-    term_index = terms.index(st.session_state.months) if st.session_state.months in terms else 2
-    selected_term = st.radio(
-        "할부기간",
-        terms,
-        index=term_index,
-        horizontal=True,
-        format_func=lambda x: f"{x}개월",
-        label_visibility="collapsed",
-        key="term_selector"
+    st.markdown(
+        '<div class="control-label term-label">할부기간</div>'
+        '<div class="choice-section-copy">원하는 할부기간을 선택하세요</div>',
+        unsafe_allow_html=True
     )
 
-    if selected_term != st.session_state.months:
-        st.session_state.months = selected_term
-        st.rerun()
+    term_cols = st.columns(len(terms), gap="small")
+    for i, term in enumerate(terms):
+        with term_cols[i]:
+            is_selected = term == st.session_state.months
+            label = f"✓ {term}개월" if is_selected else f"{term}개월"
+            if st.button(
+                label,
+                key=f"term_btn_{term}",
+                use_container_width=True,
+                type="primary" if is_selected else "secondary"
+            ):
+                st.session_state.months = term
+                st.rerun()
 
     selected = filtered[
         filtered["색상"].astype(str) == st.session_state.color
