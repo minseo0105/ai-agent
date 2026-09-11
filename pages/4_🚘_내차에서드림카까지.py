@@ -2808,6 +2808,195 @@ button[data-testid="baseButton-secondary"]{
     }
 }
 
+
+/* =========================================================
+   MOBILE NO-CLIP FIX v8
+   st.columns 의존 제거 + 모바일 가로 잘림 방지
+========================================================= */
+
+html, body, .stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+section.main{
+    max-width:100%!important;
+    overflow-x:hidden!important;
+}
+
+.block-container{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+}
+
+/* 첫 화면 차량 보유 선택 버튼 */
+button[data-testid="baseButton-secondary"],
+button[data-testid="baseButton-primary"]{
+    max-width:100%!important;
+    box-sizing:border-box!important;
+}
+
+/* 질문 선택 compact row */
+.choice-row{
+    width:100%;
+    box-sizing:border-box;
+    display:grid;
+    grid-template-columns:112px minmax(0,1fr);
+    align-items:center;
+    gap:10px;
+    min-height:82px;
+    margin-top:7px;
+    padding:7px;
+    border:1px solid #E5EAF2;
+    border-radius:15px;
+    background:#FFFFFF;
+    overflow:hidden;
+    box-shadow:0 5px 16px rgba(26,45,82,.035);
+}
+.choice-row-visual{
+    width:112px;
+    height:68px;
+    overflow:hidden;
+    border-radius:11px;
+    background:#F5F7FA;
+}
+.choice-row-visual img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center!important;
+    display:block!important;
+    margin:0!important;
+}
+.choice-row-copy{
+    min-width:0;
+    padding-right:4px;
+}
+.choice-row-title{
+    color:#17263D;
+    font-size:14px;
+    line-height:1.25;
+    font-weight:900;
+    word-break:keep-all;
+}
+.choice-row-desc{
+    margin-top:4px;
+    color:#8692A3;
+    font-size:9px;
+    line-height:1.35;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+/* 각 카드 바로 아래 버튼 */
+.choice-row + div[data-testid="stButton"]{
+    margin-top:3px!important;
+    margin-bottom:3px!important;
+}
+.choice-row + div[data-testid="stButton"] button{
+    min-height:32px!important;
+    height:32px!important;
+    border-radius:10px!important;
+    font-size:9px!important;
+    font-weight:850!important;
+}
+
+@media(max-width:760px){
+    .block-container{
+        padding-left:.72rem!important;
+        padding-right:.72rem!important;
+    }
+
+    /* 첫 화면: 두 버튼은 무조건 한 줄씩 */
+    button#car_status_yes,
+    button#car_status_no{
+        width:100%!important;
+    }
+
+    /* 실제 Streamlit 버튼 DOM 대응 */
+    div[data-testid="stButton"]:has(button[key="car_status_yes"]),
+    div[data-testid="stButton"]:has(button[key="car_status_no"]){
+        width:100%!important;
+        max-width:100%!important;
+    }
+
+    /* 차량 보유 선택 버튼 두 개를 카드형으로 */
+    button[data-testid="baseButton-secondary"],
+    button[data-testid="baseButton-primary"]{
+        width:100%!important;
+        min-height:50px!important;
+        height:50px!important;
+        margin-bottom:7px!important;
+        border-radius:14px!important;
+        font-size:11px!important;
+        font-weight:900!important;
+        white-space:nowrap!important;
+    }
+
+    .car-status-guide{
+        margin-bottom:6px!important;
+        font-size:9px!important;
+    }
+
+    /* 질문 카드 자체 압축 */
+    .qbox{
+        padding:11px 12px 9px!important;
+        margin-bottom:5px!important;
+    }
+    .qtitle{
+        font-size:15px!important;
+        margin-top:6px!important;
+    }
+    .qdesc{
+        font-size:8px!important;
+        margin-top:2px!important;
+    }
+
+    .choice-row{
+        grid-template-columns:104px minmax(0,1fr)!important;
+        gap:9px!important;
+        min-height:76px!important;
+        margin-top:6px!important;
+        padding:6px!important;
+        border-radius:13px!important;
+    }
+    .choice-row-visual{
+        width:104px!important;
+        height:64px!important;
+        border-radius:9px!important;
+    }
+    .choice-row-title{
+        font-size:12px!important;
+    }
+    .choice-row-desc{
+        font-size:8px!important;
+        -webkit-line-clamp:1!important;
+    }
+
+    /* TOP3도 화면폭 안에서만 */
+    .reco-mobile-card,
+    .reco-mobile-img,
+    .reco-mobile-copy{
+        max-width:100%!important;
+        box-sizing:border-box!important;
+    }
+}
+
+@media(max-width:390px){
+    .choice-row{
+        grid-template-columns:92px minmax(0,1fr)!important;
+        min-height:70px!important;
+    }
+    .choice-row-visual{
+        width:92px!important;
+        height:58px!important;
+    }
+    .choice-row-title{
+        font-size:11px!important;
+    }
+}
+
 </style>
 """)
 
@@ -2868,32 +3057,28 @@ if st.session_state.flow_step == "tradein":
     </div>
     """)
 
-    car_yes, car_no = st.columns(2, gap="small")
+    yes_selected = st.session_state.has_car is True
+    yes_label = "✓  내 차가 있어요" if yes_selected else "🚘  내 차가 있어요"
+    if st.button(
+        yes_label,
+        key="car_status_yes",
+        use_container_width=True,
+        type="primary" if yes_selected else "secondary"
+    ):
+        st.session_state.has_car = True
+        st.rerun()
 
-    with car_yes:
-        yes_selected = st.session_state.has_car is True
-        yes_label = "✓ 내 차가 있어요" if yes_selected else "🚘 내 차가 있어요"
-        if st.button(
-            yes_label,
-            key="car_status_yes",
-            use_container_width=True,
-            type="primary" if yes_selected else "secondary"
-        ):
-            st.session_state.has_car = True
-            st.rerun()
-
-    with car_no:
-        no_selected = st.session_state.has_car is False
-        no_label = "✓ 차량이 없어요" if no_selected else "✨ 차량이 없어요"
-        if st.button(
-            no_label,
-            key="car_status_no",
-            use_container_width=True,
-            type="primary" if no_selected else "secondary"
-        ):
-            st.session_state.has_car = False
-            st.session_state.owned_car = None
-            st.rerun()
+    no_selected = st.session_state.has_car is False
+    no_label = "✓  차량이 없어요" if no_selected else "✨  차량이 없어요"
+    if st.button(
+        no_label,
+        key="car_status_no",
+        use_container_width=True,
+        type="primary" if no_selected else "secondary"
+    ):
+        st.session_state.has_car = False
+        st.session_state.owned_car = None
+        st.rerun()
 
     if st.session_state.has_car is True:
         plate = st.text_input(
@@ -3017,37 +3202,34 @@ elif st.session_state.flow_step == "persona":
     </div>
     """)
 
-    cols = st.columns(len(q["options"]), gap="medium")
-
     for i, opt in enumerate(q["options"]):
-        with cols[i]:
-            art_uri = asset_uri(opt["art"], "lifestyle")
+        art_uri = asset_uri(opt["art"], "lifestyle")
 
-            html(f"""
-            <div class="choice">
-            <div class="choice-visual">
-            <img src="{art_uri}" alt="{opt["label"]}">
+        html(f"""
+        <div class="choice-row">
+            <div class="choice-row-visual">
+                <img src="{art_uri}" alt="{opt["label"]}">
             </div>
-            <div class="choice-copy">
-            <div class="choice-title">{opt["label"]}</div>
-            <div class="choice-desc">{opt["desc"]}</div>
+            <div class="choice-row-copy">
+                <div class="choice-row-title">{opt["label"]}</div>
+                <div class="choice-row-desc">{opt["desc"]}</div>
             </div>
-            </div>
-            """)
+        </div>
+        """)
 
-            if st.button(
-                "선택",
-                key=f"persona_{step}_{i}",
-                use_container_width=True
-            ):
-                st.session_state.persona_answers.append(i)
+        if st.button(
+            f"이 선택으로 진행",
+            key=f"persona_{step}_{i}",
+            use_container_width=True
+        ):
+            st.session_state.persona_answers.append(i)
 
-                if step < len(questions) - 1:
-                    st.session_state.persona_step += 1
-                else:
-                    st.session_state.flow_step = "result"
+            if step < len(questions) - 1:
+                st.session_state.persona_step += 1
+            else:
+                st.session_state.flow_step = "result"
 
-                st.rerun()
+            st.rerun()
 
     if step > 0:
         back, _ = st.columns([1, 3])
