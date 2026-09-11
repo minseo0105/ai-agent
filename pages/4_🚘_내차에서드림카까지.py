@@ -2049,6 +2049,243 @@ div[role="radiogroup"] > label:has(input:checked) p{
     }
 }
 
+
+/* =========================================================
+   COMPACT MOBILE QUOTE v4
+========================================================= */
+.compact-quote{
+    padding:18px 18px 15px!important;
+    border-radius:22px!important;
+}
+.quote-summary{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    padding-bottom:13px;
+    border-bottom:1px solid #EEF1F5;
+}
+.quote-summary .quote-fee{
+    margin-top:2px;
+}
+.money-strip{
+    display:grid;
+    grid-template-columns:1fr 18px 1fr 18px 1fr;
+    align-items:center;
+    gap:4px;
+    margin-top:13px;
+}
+.money-mini{
+    min-width:0;
+    padding:10px 7px;
+    border-radius:13px;
+    background:#F7F9FC;
+    text-align:center;
+}
+.money-mini span{
+    display:block;
+    color:#8B96A7;
+    font-size:8px;
+    white-space:nowrap;
+}
+.money-mini strong{
+    display:block;
+    margin-top:3px;
+    color:#26364D;
+    font-size:11px;
+    font-weight:900;
+    white-space:nowrap;
+}
+.money-mini.highlight{
+    background:linear-gradient(135deg,#EEF3FF,#F2EEFF);
+}
+.money-mini.highlight strong{
+    color:#315EF5;
+}
+.money-sign{
+    text-align:center;
+    color:#A3ADBA;
+    font-size:17px;
+    font-weight:800;
+}
+.quote-mini-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-top:8px;
+}
+.qmini{
+    min-height:52px;
+    padding:9px 10px;
+    border-radius:12px;
+    border:1px solid #EEF1F5;
+    background:#FBFCFD;
+}
+.qmini span{
+    display:block;
+    color:#98A2B3;
+    font-size:8px;
+}
+.qmini strong{
+    display:block;
+    margin-top:3px;
+    color:#344054;
+    font-size:10px;
+    font-weight:850;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.compact-note{
+    margin-top:8px!important;
+    font-size:8px!important;
+    line-height:1.4!important;
+}
+
+@media(max-width:760px){
+    /* 추천차량 상세 자체도 더 짧게 */
+    .dream-head{
+        padding:13px 13px 0!important;
+    }
+    .dream-name{
+        font-size:20px!important;
+        margin-top:5px!important;
+    }
+    .dream-copy{
+        font-size:9px!important;
+        line-height:1.4!important;
+    }
+    .match-score strong{
+        font-size:25px!important;
+    }
+    .car-stage{
+        height:150px!important;
+    }
+    .car-stage img{
+        width:94%!important;
+        height:96%!important;
+        object-fit:contain!important;
+    }
+    .reason-row{
+        grid-template-columns:repeat(3,1fr)!important;
+        padding:0 10px 10px!important;
+        gap:5px!important;
+    }
+    .reason{
+        padding:8px 3px 2px!important;
+    }
+    .reason span{
+        font-size:8px!important;
+        line-height:1.3!important;
+    }
+
+    /* 견적 조건 섹션도 더 압축 */
+    .config-section{
+        margin-top:8px!important;
+        padding:10px 11px 7px!important;
+    }
+    .config-title{
+        font-size:13px!important;
+    }
+    .config-sub{
+        font-size:8px!important;
+    }
+    .control-label{
+        margin:8px 0 4px!important;
+        font-size:9px!important;
+    }
+
+    /* 견적 헤더 */
+    .quote-section-head{
+        margin-top:10px!important;
+        padding:10px 12px!important;
+    }
+    .quote-section-title{
+        font-size:14px!important;
+    }
+
+    .compact-quote{
+        padding:14px 12px 12px!important;
+        border-radius:18px!important;
+    }
+    .quote-summary{
+        gap:8px!important;
+        padding-bottom:10px!important;
+    }
+    .quote-kicker{
+        font-size:7px!important;
+    }
+    .quote-label{
+        font-size:9px!important;
+        margin-top:3px!important;
+    }
+    .quote-fee{
+        font-size:29px!important;
+        line-height:1.05!important;
+    }
+    .quote-chip{
+        padding:6px 8px!important;
+        font-size:8px!important;
+        white-space:nowrap!important;
+    }
+
+    .money-strip{
+        grid-template-columns:1fr 12px 1fr 12px 1fr!important;
+        gap:2px!important;
+        margin-top:10px!important;
+    }
+    .money-mini{
+        padding:8px 3px!important;
+        border-radius:10px!important;
+    }
+    .money-mini span{
+        font-size:7px!important;
+    }
+    .money-mini strong{
+        font-size:9px!important;
+    }
+    .money-sign{
+        font-size:14px!important;
+    }
+
+    .quote-mini-grid{
+        gap:5px!important;
+        margin-top:6px!important;
+    }
+    .qmini{
+        min-height:46px!important;
+        padding:7px 8px!important;
+    }
+    .qmini span{
+        font-size:7px!important;
+    }
+    .qmini strong{
+        font-size:9px!important;
+    }
+    .compact-note{
+        font-size:7px!important;
+        margin-top:6px!important;
+    }
+
+    /* CTA를 견적 바로 아래 붙게 */
+    .compact-quote + div{
+        margin-top:5px!important;
+    }
+
+    /* 마지막 액션 버튼도 높이 축소 */
+    button[kind="primary"]{
+        min-height:44px!important;
+        height:44px!important;
+        font-size:11px!important;
+    }
+}
+
+@media(max-width:390px){
+    .quote-fee{font-size:27px!important;}
+    .money-mini strong{font-size:8px!important;}
+    .money-mini span{font-size:6px!important;}
+}
+
 </style>
 """)
 
@@ -2571,76 +2808,68 @@ else:
     """)
 
     html(f"""
-    <div class="quote">
+    <div class="quote compact-quote">
 
-    <div class="quote-top">
-    <div>
-    <div class="quote-kicker">DREAM CAR CHANGE QUOTE</div>
-    <div class="quote-label">보상판매 반영 예상 월 할부금</div>
-    <div class="quote-fee">월 <em>{monthly_payment:,.1f}만원</em></div>
-    </div>
-    <div class="quote-chip">
-    {st.session_state.months}개월 · 연 {DEMO_APR:.1f}%
-    </div>
-    </div>
+        <div class="quote-summary">
+            <div>
+                <div class="quote-kicker">DREAM CAR CHANGE QUOTE</div>
+                <div class="quote-label">보상판매 반영 예상 월 할부금</div>
+                <div class="quote-fee">월 <em>{monthly_payment:,.1f}만원</em></div>
+            </div>
+            <div class="quote-chip">
+                {st.session_state.months}개월 · 연 {DEMO_APR:.1f}%
+            </div>
+        </div>
 
-    <div class="money-flow">
+        <div class="money-strip">
+            <div class="money-mini">
+                <span>신차가격</span>
+                <strong>{new_price:,}만원</strong>
+            </div>
+            <div class="money-sign">−</div>
+            <div class="money-mini">
+                <span>내 차 시세</span>
+                <strong>{tradein_value:,}만원</strong>
+            </div>
+            <div class="money-sign">=</div>
+            <div class="money-mini highlight">
+                <span>할부원금</span>
+                <strong>{finance_principal:,}만원</strong>
+            </div>
+        </div>
 
-    <div class="money-box">
-    <span>추천 신차가격</span>
-    <strong>{new_price:,}만원</strong>
-    </div>
+        <div class="quote-mini-grid">
+            <div class="qmini">
+                <span>추천 차량</span>
+                <strong>{model}</strong>
+            </div>
+            <div class="qmini">
+                <span>현재 차량</span>
+                <strong>{owned_name}</strong>
+            </div>
+            <div class="qmini">
+                <span>선택 색상</span>
+                <strong>{st.session_state.color}</strong>
+            </div>
+            <div class="qmini">
+                <span>예상 총 이자</span>
+                <strong>{total_interest:,.0f}만원</strong>
+            </div>
+        </div>
 
-    <div class="operator">−</div>
-
-    <div class="money-box">
-    <span>내 차 예상 시세</span>
-    <strong>{tradein_value:,}만원</strong>
-    </div>
-
-    <div class="operator">=</div>
-
-    <div class="money-box highlight">
-    <span>예상 할부원금</span>
-    <strong>{finance_principal:,}만원</strong>
-    </div>
-
-    </div>
-
-    <div class="quote-details">
-    <div class="qdetail">
-    <span>추천 차량</span>
-    <strong>{model}</strong>
-    </div>
-    <div class="qdetail">
-    <span>현재 차량</span>
-    <strong>{owned_name}</strong>
-    </div>
-    <div class="qdetail">
-    <span>선택 색상</span>
-    <strong>{st.session_state.color}</strong>
-    </div>
-    <div class="qdetail">
-    <span>예상 총 이자</span>
-    <strong>{total_interest:,.0f}만원</strong>
-    </div>
-    </div>
-
-    <div class="quote-note">
-    ※ 프로토타입 기준 연 {DEMO_APR:.1f}% 원리금균등 상환 방식입니다.
-    실제 시세, 금리, 취급수수료, 신용도, 차량 옵션 및 금융상품 조건에 따라 달라질 수 있습니다.
-    </div>
+        <div class="quote-note compact-note">
+        ※ 프로토타입 기준 · 실제 시세/금리/수수료/신용도/옵션에 따라 달라질 수 있습니다.
+        </div>
 
     </div>
     """)
-
     st.write("")
 
     a, b, c = st.columns([2, 1, 1])
 
     with a:
         if st.button(
-            "이 조건으로 상세 견적 보기 →",
+            "상세 견적 보기 →",
             type="primary",
             use_container_width=True
         ):
