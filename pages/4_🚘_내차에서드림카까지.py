@@ -3738,6 +3738,111 @@ button[data-testid="baseButton-primary"]{
     }
 }
 
+
+/* =========================================================
+   MOBILE SEGMENTED CONTROL FIX v12
+   COLOR / TERM은 st.columns를 사용하지 않음
+========================================================= */
+
+div[data-testid="stSegmentedControl"]{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+}
+
+div[data-testid="stSegmentedControl"] > div{
+    width:100%!important;
+    max-width:100%!important;
+    display:flex!important;
+    gap:6px!important;
+    box-sizing:border-box!important;
+}
+
+/* 각 세그먼트 동일 폭 */
+div[data-testid="stSegmentedControl"] button{
+    flex:1 1 0!important;
+    min-width:0!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+    border:1px solid #DDE3EC!important;
+    border-radius:12px!important;
+    background:#FFFFFF!important;
+    color:#344054!important;
+    box-shadow:none!important;
+    font-weight:850!important;
+    white-space:nowrap!important;
+}
+
+/* 선택 상태 */
+div[data-testid="stSegmentedControl"] button[aria-pressed="true"]{
+    border:2px solid #4169F6!important;
+    background:linear-gradient(135deg,#316AF7,#674CE8)!important;
+    color:#FFFFFF!important;
+    box-shadow:0 7px 17px rgba(65,105,246,.20)!important;
+}
+
+/* 선택 아이콘/내부 여백 */
+div[data-testid="stSegmentedControl"] button span,
+div[data-testid="stSegmentedControl"] button p{
+    font-weight:850!important;
+    white-space:nowrap!important;
+}
+
+@media(max-width:760px){
+    div[data-testid="stSegmentedControl"]{
+        margin:0 0 4px!important;
+        padding:0!important;
+    }
+
+    div[data-testid="stSegmentedControl"] > div{
+        gap:5px!important;
+    }
+
+    div[data-testid="stSegmentedControl"] button{
+        height:42px!important;
+        min-height:42px!important;
+        padding:0 5px!important;
+        border-radius:11px!important;
+        font-size:10px!important;
+    }
+
+    div[data-testid="stSegmentedControl"] button span,
+    div[data-testid="stSegmentedControl"] button p{
+        font-size:10px!important;
+        line-height:1!important;
+    }
+
+    .control-label{
+        margin-top:11px!important;
+        margin-bottom:2px!important;
+        font-size:10px!important;
+    }
+
+    .choice-section-copy{
+        margin-bottom:6px!important;
+        font-size:8px!important;
+    }
+}
+
+@media(max-width:390px){
+    div[data-testid="stSegmentedControl"] > div{
+        gap:4px!important;
+    }
+
+    div[data-testid="stSegmentedControl"] button{
+        height:39px!important;
+        min-height:39px!important;
+        padding:0 2px!important;
+        font-size:9px!important;
+    }
+
+    div[data-testid="stSegmentedControl"] button span,
+    div[data-testid="stSegmentedControl"] button p{
+        font-size:9px!important;
+    }
+}
+
 </style>
 """)
 
@@ -4210,29 +4315,38 @@ else:
     </div>
     """)
 
-    # COLOR - 라디오 대신 카드형 버튼
+    # COLOR - 모바일에서 깨지지 않는 native segmented control
     st.markdown(
         '<div class="control-label">COLOR</div>'
         '<div class="choice-section-copy">차량 색상을 선택하세요</div>',
         unsafe_allow_html=True
     )
 
-    color_cols = st.columns(len(colors), gap="small")
-    for i, color in enumerate(colors):
-        with color_cols[i]:
-            is_selected = color == st.session_state.color
-            swatch = {"화이트":"○", "블랙":"●", "그레이":"◐"}.get(color, "●")
-            label = f"✓ {color}" if is_selected else f"{swatch} {color}"
-            if st.button(
-                label,
-                key=f"color_btn_{i}",
-                use_container_width=True,
-                type="primary" if is_selected else "secondary"
-            ):
-                st.session_state.color = color
-                st.rerun()
+    # Streamlit 최신 버전은 width="stretch" 지원.
+    # 구버전에서는 TypeError fallback.
+    try:
+        selected_color = st.segmented_control(
+            "COLOR",
+            options=colors,
+            default=st.session_state.color,
+            key="color_segment",
+            label_visibility="collapsed",
+            width="stretch",
+        )
+    except TypeError:
+        selected_color = st.segmented_control(
+            "COLOR",
+            options=colors,
+            default=st.session_state.color,
+            key="color_segment",
+            label_visibility="collapsed",
+        )
 
-    # TERM - 라디오 대신 카드형 버튼
+    if selected_color is not None and selected_color != st.session_state.color:
+        st.session_state.color = selected_color
+        st.rerun()
+
+    # TERM - 4개를 하나의 segmented control로
     terms = [24, 36, 48, 60]
     st.markdown(
         '<div class="control-label term-label">할부기간</div>'
@@ -4240,19 +4354,32 @@ else:
         unsafe_allow_html=True
     )
 
-    term_cols = st.columns(len(terms), gap="small")
-    for i, term in enumerate(terms):
-        with term_cols[i]:
-            is_selected = term == st.session_state.months
-            label = f"✓ {term}개월" if is_selected else f"{term}개월"
-            if st.button(
-                label,
-                key=f"term_btn_{term}",
-                use_container_width=True,
-                type="primary" if is_selected else "secondary"
-            ):
-                st.session_state.months = term
-                st.rerun()
+    term_options = [f"{term}개월" for term in terms]
+    current_term_label = f"{st.session_state.months}개월"
+
+    try:
+        selected_term_label = st.segmented_control(
+            "할부기간",
+            options=term_options,
+            default=current_term_label,
+            key="term_segment",
+            label_visibility="collapsed",
+            width="stretch",
+        )
+    except TypeError:
+        selected_term_label = st.segmented_control(
+            "할부기간",
+            options=term_options,
+            default=current_term_label,
+            key="term_segment",
+            label_visibility="collapsed",
+        )
+
+    if selected_term_label:
+        selected_term = int(selected_term_label.replace("개월", ""))
+        if selected_term != st.session_state.months:
+            st.session_state.months = selected_term
+            st.rerun()
 
     selected = filtered[
         filtered["색상"].astype(str) == st.session_state.color
