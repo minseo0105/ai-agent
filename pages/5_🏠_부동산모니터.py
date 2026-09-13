@@ -25,6 +25,7 @@ from services.realestate_monitor import (
     fetch_unsold_subscriptions,
     filter_subscriptions,
     fetch_trades_multi,
+    build_naver_land_url,
     save_alert_rules,
     get_alert_rules,
     toggle_alert_rule,
@@ -32,6 +33,9 @@ from services.realestate_monitor import (
     get_notifications,
     mark_notification_read,
     run_monitoring_once,
+    get_auto_monitor_enabled,
+    set_auto_monitor_enabled,
+    estimate_monitor_api_calls,
     ALL_REGIONS,
     SEOUL_REGIONS,
     GYEONGGI_REGIONS,
@@ -424,7 +428,8 @@ with tab_trade:
         """
 <div class="section-desc">
 아파트뿐 아니라 연립·다세대(빌라), 단독·다가구, 오피스텔을
-서울·경기 여러 지역에서 동시에 조회할 수 있습니다.
+서울·경기 여러 지역에서 동시에 조회할 수 있습니다.<br>
+조회 결과의 <b>네이버부동산에서 주변 매물 보기</b> 버튼을 누르면 해당 지역·동·단지명을 검색어로 네이버페이 부동산이 열립니다.
 </div>
 """,
         unsafe_allow_html=True,
@@ -648,6 +653,14 @@ white-space:nowrap;
                 unsafe_allow_html=True,
             )
 
+            naver_url = build_naver_land_url(item)
+
+            st.link_button(
+                "네이버부동산에서 주변 매물 보기 ↗",
+                naver_url,
+                use_container_width=True,
+            )
+
 
 # ============================================================
 # TAB 3 : 모니터링 조건
@@ -668,6 +681,47 @@ with tab_monitor:
 </div>
 """,
         unsafe_allow_html=True,
+    )
+
+    auto_enabled = get_auto_monitor_enabled(BASE_DIR)
+
+    toggle_col1, toggle_col2 = st.columns([2.2, 5])
+
+    with toggle_col1:
+        new_auto_enabled = st.toggle(
+            "자동 모니터링",
+            value=auto_enabled,
+            help="OFF이면 scheduler.py가 실행 중이어도 공공데이터 API를 호출하지 않습니다.",
+        )
+
+        if new_auto_enabled != auto_enabled:
+            set_auto_monitor_enabled(
+                BASE_DIR,
+                new_auto_enabled,
+            )
+            st.rerun()
+
+    with toggle_col2:
+        if auto_enabled:
+            st.success(
+                "자동 모니터링 ON · 설정된 주기마다 활성 조건을 확인합니다."
+            )
+        else:
+            st.info(
+                "자동 모니터링 OFF · scheduler.py가 실행 중이어도 API 조회를 건너뜁니다."
+            )
+
+    usage = estimate_monitor_api_calls(BASE_DIR)
+
+    u1, u2, u3, u4 = st.columns(4)
+    u1.metric("활성 조건", usage["enabled_rules"])
+    u2.metric("청약 API / 회", usage["subscription_calls"])
+    u3.metric("실거래 API / 회", usage["trade_calls"])
+    u4.metric("총 API 호출 / 회", usage["total_calls_per_cycle"])
+
+    st.caption(
+        "여기서 말하는 호출량은 공공데이터포털 API 요청 수입니다. "
+        "현재 자동 모니터링 로직에는 OpenAI/LLM 호출이 없어 AI 토큰은 사용하지 않습니다."
     )
 
     with st.form("monitor_rule_form"):

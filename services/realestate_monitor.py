@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from datetime import datetime, date
 from typing import Optional
+from urllib.parse import quote
 
 import requests
 import streamlit as st
@@ -188,6 +189,11 @@ def init_db(base_dir: Path):
         first_seen_at TEXT NOT NULL,
         last_seen_at TEXT NOT NULL,
         PRIMARY KEY(source, item_key)
+    );
+
+    CREATE TABLE IF NOT EXISTS app_settings(
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
     );
     """)
 
@@ -696,6 +702,51 @@ def fetch_trades_multi(
     return all_rows, errors
 
 
+
+def build_naver_land_url(item: dict) -> str:
+    """
+    국토부 실거래 결과를 이용해 네이버페이 부동산의 지역/단지 검색 화면으로 이동한다.
+
+    - 아파트/오피스텔/연립·다세대: 지역 + 동 + 건물명 중심
+    - 단독·다가구: 지역 + 동 + 지번 중심
+    - 특정 complexNo를 알 수 없는 경우이므로 단지 상세 고정 링크가 아니라
+      네이버부동산 검색 결과 화면으로 연결한다.
+    """
+    property_type = str(item.get("property_type") or "")
+    region_label = str(item.get("region_label") or "").replace(">", " ")
+    umd = str(item.get("region") or "")
+    name = str(item.get("name") or "")
+    jibun = str(item.get("jibun") or "")
+    road_name = str(item.get("road_name") or "")
+
+    parts = [region_label, umd]
+
+    if property_type in ("아파트", "오피스텔", "연립·다세대"):
+        if name and name not in ("아파트", "오피스텔", "연립·다세대"):
+            parts.append(name)
+        elif road_name:
+            parts.append(road_name)
+        elif jibun:
+            parts.append(jibun)
+
+    elif property_type == "단독·다가구":
+        if jibun:
+            parts.append(jibun)
+        elif road_name:
+            parts.append(road_name)
+
+    parts.append(property_type)
+
+    query = " ".join(
+        x.strip()
+        for x in parts
+        if x and x.strip()
+    )
+
+    # 네이버 모바일 부동산 검색 경로.
+    # PC/모바일 환경에 따라 네이버페이 부동산의 최신 화면으로 리다이렉트될 수 있다.
+    return f"https://m.land.naver.com/search/result/{quote(query, safe='')}"
+
 def save_alert_rules(
     base_dir: Path,
     regions: list[str],
@@ -772,6 +823,73 @@ def save_alert_rules(
     con.commit()
     con.close()
 
+
+
+def get_auto_monitor_enabled(base_dir: Path) -> bool:
+    init_db(base_dir)
+
+    con = _db(base_dir)
+    row = con.execute(
+        "SELECT value FROM app_settings WHERE key='auto_monitor_enabled'"
+    ).fetchone()
+    con.close()
+
+    if row is None:
+        return False
+
+    return str(row[0]).lower() in ("1", "true", "yes", "on")
+
+
+def set_auto_monitor_enabled(base_dir: Path, enabled: bool):
+    init_db(base_dir)
+
+    con = _db(base_dir)
+    con.execute("""
+        INSERT INTO app_settings(key, value)
+        VALUES('auto_monitor_enabled', ?)
+        ON CONFLICT(key) DO UPDATE SET value=excluded.value
+    """, ("1" if enabled else "0",))
+    con.commit()
+    con.close()
+
+
+def estimate_monitor_api_calls(base_dir: Path) -> dict:
+    """
+    현재 활성화된 rule 기준 1회 모니터링에서 예상되는 공공데이터 API 호출 수.
+    OpenAI/LLM 토큰은 사용하지 않는다.
+    """
+    rules = [
+        row for row in get_alert_rules(base_dir)
+        if row["enabled"]
+    ]
+
+    has_new_subscription = any(
+        r["event_type"] == "신규청약" for r in rules
+    )
+    has_unsold_subscription = any(
+        r["event_type"] == "무순위청약" for r in rules
+    )
+
+    trade_rules = [
+        r for r in rules
+        if r["event_type"] == "신규실거래"
+    ]
+
+    subscription_calls = (
+        (1 if has_new_subscription else 0)
+        + (1 if has_unsold_subscription else 0)
+    )
+
+    trade_calls = len(trade_rules)
+
+    total = subscription_calls + trade_calls
+
+    return {
+        "subscription_calls": subscription_calls,
+        "trade_calls": trade_calls,
+        "total_calls_per_cycle": total,
+        "enabled_rules": len(rules),
+    }
 
 def get_alert_rules(base_dir: Path):
     init_db(base_dir)
@@ -966,16 +1084,14 @@ def run_monitoring_once(base_dir: Path):
     apt_subscriptions = []
     unsold_subscriptions = []
 
-    if any(
-        r["event_type"] in ("신규청약", "무순위청약")
-        for r in rules
-    ):
+    if any(r["event_type"] == "신규청약" for r in rules):
         try:
             apt_subscriptions = fetch_apt_subscriptions()
             report["fetched"]["subscriptions"] += len(apt_subscriptions)
         except Exception as e:
             report["errors"].append(f"신규청약 조회 실패: {e}")
 
+    if any(r["event_type"] == "무순위청약" for r in rules):
         try:
             unsold_subscriptions = fetch_unsold_subscriptions()
             report["fetched"]["subscriptions"] += len(unsold_subscriptions)
