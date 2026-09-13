@@ -794,6 +794,27 @@ ELEMENT_SYMBOL = {
     "목":"🌱", "화":"🔥", "토":"⛰️", "금":"⚙️", "수":"💧"
 }
 
+GAN_HANGUL = {
+    "甲":"갑", "乙":"을", "丙":"병", "丁":"정", "戊":"무",
+    "己":"기", "庚":"경", "辛":"신", "壬":"임", "癸":"계",
+}
+ZHI_HANGUL = {
+    "子":"자", "丑":"축", "寅":"인", "卯":"묘", "辰":"진", "巳":"사",
+    "午":"오", "未":"미", "申":"신", "酉":"유", "戌":"술", "亥":"해",
+}
+
+def ganji_to_hangul(gz):
+    """갑자(甲子) 형식의 간지를 갑자처럼 한글로 표시."""
+    if not gz:
+        return ""
+    return "".join(GAN_HANGUL.get(ch, ZHI_HANGUL.get(ch, ch)) for ch in gz)
+
+def gan_to_hangul(gan):
+    return GAN_HANGUL.get(gan, gan)
+
+def zhi_to_hangul(zhi):
+    return ZHI_HANGUL.get(zhi, zhi)
+
 ELEMENT_LONG_DESC = {
     "목": "성장·기획·확장·관계 형성의 기운",
     "화": "표현·실행·주목·성과 노출의 기운",
@@ -1299,7 +1320,7 @@ def build_personal_summary(chart, daewoon):
     if current:
         detail = cycle_detail(chart, current)
         current_text = (
-            f"현재는 {current['ganji']} 대운({current['start_year']}~{current['end_year']})에 있고, "
+            f"현재는 {ganji_to_hangul(current['ganji'])} 대운({current['start_year']}~{current['end_year']})에 있고, "
             f"{detail.get('gan_group')}의 외부 과제와 {detail.get('zhi_group')}의 생활 주제가 함께 강조됩니다."
         )
 
@@ -1422,7 +1443,7 @@ def build_personalized_profile(chart, daewoon):
     if current:
         detail = cycle_detail(chart, current)
         cycle_text = (
-            f"현재는 {current['ganji']} 대운({current['start_year']}~{current['end_year']})으로, "
+            f"현재는 {ganji_to_hangul(current['ganji'])} 대운({current['start_year']}~{current['end_year']})으로, "
             f"{detail.get('gan_group') or '외부 역할'}과 "
             f"{detail.get('zhi_group') or '생활 기반'}의 주제가 동시에 커지는 시기입니다."
         )
@@ -1451,6 +1472,7 @@ def build_personalized_profile(chart, daewoon):
         "main_god": main_god,
         "second_god": second_god,
         "god_sentences": [_god_sentence(g, c) for g, c in top],
+        "top_gods": top,
         "strength": dm_info.get("strength", ""),
         "shadow": dm_info.get("shadow", ""),
         "work": work or "직업에서는 한 가지 역할보다 상황에 맞춰 책임과 성과를 조정하는 방식이 중요합니다.",
@@ -1678,7 +1700,7 @@ def build_year_ai_prompt(chart, daewoon, year):
 일간 {chart['day_gan']}
 
 [해당 연도]
-{year}년 {yd.get('ganji')}
+{year}년 {ganji_to_hangul(yd.get('ganji'))}
 천간 십성 {yd.get('gan_god')}
 천간 오행 {yd.get('gan_el')}
 지지 오행 {yd.get('zhi_el')}
@@ -2054,9 +2076,17 @@ if "saju_data" in st.session_state:
             st.write(profile["one_line"])
 
             if profile["god_sentences"]:
-                st.markdown("**내 사주에서 실제로 반복되는 패턴**")
-                for sentence in profile["god_sentences"]:
-                    st.write("• " + sentence)
+                st.markdown("**내 사주에서 실제로 반복되는 십성**")
+                for god, cnt in profile.get("top_gods", []):
+                    group = ten_god_group(god)
+                    group_info = ROLE_GROUP_DESC.get(group, {})
+                    st.markdown(f"#### {god} · {cnt}회")
+                    st.write(_god_sentence(god, cnt))
+                    if group_info:
+                        st.caption(
+                            f"쉽게 말하면 · {group_info.get('title', '')} | "
+                            f"일에서는 {group_info.get('work', '')}"
+                        )
 
         c1, c2 = st.columns(2)
         with c1:
@@ -2138,13 +2168,16 @@ if "saju_data" in st.session_state:
             for idx, (title, value) in enumerate(pillar_data):
                 with cols[idx]:
                     st.caption(title)
-                    st.markdown(f"### {value}")
+                    st.markdown(f"### {ganji_to_hangul(value)}")
 
             gods = collect_ten_gods(chart).most_common(5)
             if gods:
                 st.caption(
                     "반복 십성 · "
-                    + " / ".join([f"{g} {c}회" for g, c in gods])
+                    + " / ".join([
+                        f"{g} {c}회 ({TEN_GOD_DESC.get(g, '')})"
+                        for g, c in gods
+                    ])
                 )
 
         if chart["unknown_time"]:
@@ -2197,7 +2230,7 @@ if "saju_data" in st.session_state:
             <div class="current-cycle">
                 <div class="current-cycle-label">CURRENT 10-YEAR CYCLE</div>
                 <div class="current-cycle-title">
-                    {current['ganji']} 대운 · {current['start_year']}~{current['end_year']}
+                    {ganji_to_hangul(current['ganji'])} 대운 · {current['start_year']}~{current['end_year']}
                 </div>
                 <div class="current-cycle-text">
                     {current['start_age']}~{current['end_age']}세 ·
@@ -2239,7 +2272,7 @@ if "saju_data" in st.session_state:
                 c = cycles[idx]
                 active = idx == st.session_state["selected_daewoon_index"]
                 label = (
-                    f"{'● ' if active else ''}{c['ganji']} 대운\n"
+                    f"{'● ' if active else ''}{ganji_to_hangul(c['ganji'])} 대운\n"
                     f"{c['start_year']}~{c['end_year']} · {c['start_age']}~{c['end_age']}세"
                 )
                 with cols[j]:
@@ -2263,13 +2296,13 @@ if "saju_data" in st.session_state:
         <div class="cycle-detail-wrap">
             <div class="cycle-detail-kicker">SELECTED DAEWOON</div>
             <div class="cycle-detail-title">
-                {selected['ganji']} 대운 · {selected['start_year']}~{selected['end_year']}
+                {ganji_to_hangul(selected['ganji'])} 대운 · {selected['start_year']}~{selected['end_year']}
             </div>
             <div class="cycle-detail-meta">
-                <b>천간 {detail.get('gan')}</b> · {detail.get('gan_el')} ·
+                <b>천간 {gan_to_hangul(detail.get('gan'))}</b> · {detail.get('gan_el')} ·
                 {detail.get('gan_god') or detail.get('gan_group')}
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <b>지지 {detail.get('zhi')}</b> · {detail.get('zhi_el')} ·
+                <b>지지 {zhi_to_hangul(detail.get('zhi'))}</b> · {detail.get('zhi_el')} ·
                 {detail.get('zhi_group')}
                 <br>
                 {detail.get('headline')}
@@ -2303,7 +2336,7 @@ if "saju_data" in st.session_state:
             key="deep_cycle_ai"
         ):
             prompt = build_cycle_ai_prompt(chart, selected)
-            with st.spinner(f"{selected['ganji']} 대운을 원국과 함께 정밀 해석하고 있습니다..."):
+            with st.spinner(f"{ganji_to_hangul(selected['ganji'])} 대운을 원국과 함께 정밀 해석하고 있습니다..."):
                 result, error = ask_openai(prompt)
             if result:
                 st.session_state["cycle_ai_result"] = result
@@ -2316,7 +2349,7 @@ if "saju_data" in st.session_state:
             and st.session_state.get("cycle_ai_index") == selected_idx
         ):
             with st.container(border=True):
-                st.markdown(f"### {selected['ganji']} 대운 심층 해석")
+                st.markdown(f"### {ganji_to_hangul(selected['ganji'])} 대운 심층 해석")
                 st.markdown(st.session_state["cycle_ai_result"])
 
 
@@ -2342,7 +2375,7 @@ if "saju_data" in st.session_state:
                 active = y == st.session_state["selected_year"]
                 with cols[j]:
                     if st.button(
-                        f"{'● ' if active else ''}{y}\n{yd.get('ganji','')}",
+                        f"{'● ' if active else ''}{y}\n{ganji_to_hangul(yd.get('ganji',''))}",
                         key=f"select_year_{selected_idx}_{y}",
                         use_container_width=True,
                         type="primary" if active else "secondary"
@@ -2358,11 +2391,11 @@ if "saju_data" in st.session_state:
         html(f"""
         <div class="cycle-detail-wrap">
             <div class="cycle-detail-kicker">YEAR FLOW</div>
-            <div class="cycle-detail-title">{sy}년 · {yd.get('ganji')}</div>
+            <div class="cycle-detail-title">{sy}년 · {ganji_to_hangul(yd.get('ganji'))}</div>
             <div class="cycle-detail-meta">
-                천간 <b>{yd.get('gan')}</b> · {yd.get('gan_god') or yd.get('gan_group')}
+                천간 <b>{gan_to_hangul(yd.get('gan'))}</b> · {yd.get('gan_god') or yd.get('gan_group')}
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                지지 <b>{yd.get('zhi')}</b> · {yd.get('zhi_group')}
+                지지 <b>{zhi_to_hangul(yd.get('zhi'))}</b> · {yd.get('zhi_group')}
                 <br>{yd.get('headline')}
             </div>
         </div>
