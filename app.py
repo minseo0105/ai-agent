@@ -968,6 +968,13 @@ if st.button(
 ):
     st.switch_page("pages/3_보고서_작성기.py")
 
+if st.button(
+    "🔮  AI 사주 · 대운 분석  ·  사주팔자 · 오행 · 대운 흐름 분석",
+    key="open_saju",
+    use_container_width=True,
+):
+    st.switch_page("pages/saju.py")
+
 with st.expander("기타 도구"):
     if st.button(
         "🚗 차량 선택기",

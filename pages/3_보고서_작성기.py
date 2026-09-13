@@ -23,6 +23,7 @@ from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.lib.utils import ImageReader
 
 from auth import require_page_auth
+from services.navigation import render_sidebar
 
 
 # ============================================================
@@ -39,56 +40,9 @@ require_page_auth()
 
 
 # ============================================================
-# 한글 사이드바
+# 공통 사이드바
 # ============================================================
-with st.sidebar:
-    st.markdown("### ✦ AI WORKBENCH")
-    st.caption("민서의 AI Lab")
-
-    if st.button(
-        "🏠 메인으로",
-        key="sidebar_home",
-        use_container_width=True,
-    ):
-        st.switch_page("app.py")
-
-    st.divider()
-    st.markdown("**빠른 이동**")
-
-    if st.button(
-        "🚙 내차에서 드림카까지",
-        key="sidebar_dreamcar",
-        use_container_width=True,
-    ):
-        st.switch_page("pages/1_내차에서_드림카까지.py")
-
-    if st.button(
-        "🏠 부동산 모니터",
-        key="sidebar_realestate",
-        use_container_width=True,
-    ):
-        st.switch_page("pages/2_부동산_모니터.py")
-
-    st.button(
-        "📄 보고서 작성기",
-        key="sidebar_report",
-        use_container_width=True,
-        disabled=True,
-    )
-
-    if st.button(
-        "🚗 차량 선택기",
-        key="sidebar_car_selector",
-        use_container_width=True,
-    ):
-        st.switch_page("pages/4_차량_선택기.py")
-
-    if st.button(
-        "🎞️ GIF 변환기",
-        key="sidebar_gif",
-        use_container_width=True,
-    ):
-        st.switch_page("pages/5_GIF_변환기.py")
+render_sidebar(current_page="3_보고서_작성기.py")
 
 
 # ============================================================

@@ -8,3 +8,5 @@ reportlab
 matplotlib
 rembg
 onnxruntime
+lunar_python
+openai
