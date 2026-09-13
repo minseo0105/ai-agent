@@ -21,8 +21,8 @@ try:
 except Exception:
     INTERVAL_MINUTES = 60
 
-def main():
 
+def main():
     init_db(BASE_DIR)
 
     print(
@@ -31,20 +31,16 @@ def main():
     )
 
     while True:
-
         try:
-
             result = run_monitoring_once(
                 BASE_DIR
             )
-
             print(
                 "[monitor result]",
                 result,
             )
 
         except Exception as e:
-
             print(
                 "[monitor error]",
                 repr(e),
@@ -53,6 +49,7 @@ def main():
         time.sleep(
             INTERVAL_MINUTES * 60
         )
+
 
 if __name__ == "__main__":
     main()

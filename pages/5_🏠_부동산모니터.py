@@ -24,7 +24,7 @@ from services.realestate_monitor import (
     fetch_apt_subscriptions,
     fetch_unsold_subscriptions,
     filter_subscriptions,
-    fetch_apt_trades,
+    fetch_trades_multi,
     save_alert_rules,
     get_alert_rules,
     toggle_alert_rule,
@@ -32,15 +32,14 @@ from services.realestate_monitor import (
     get_notifications,
     mark_notification_read,
     run_monitoring_once,
-    SEOUL_LAWD,
+    ALL_REGIONS,
+    SEOUL_REGIONS,
+    GYEONGGI_REGIONS,
+    PROPERTY_TYPES,
 )
 
 init_db(BASE_DIR)
 
-
-# ============================================================
-# STYLE
-# ============================================================
 
 st.markdown(
     """
@@ -84,7 +83,7 @@ st.markdown(
     font-size: 14px;
     line-height: 1.75;
     color: #FCE8EB;
-    max-width: 800px;
+    max-width: 850px;
     margin-top: 15px;
 }
 
@@ -119,6 +118,17 @@ st.markdown(
     font-weight: 800;
     background: #FBEAEC;
     color: #9D1C2A;
+    margin-right: 5px;
+}
+
+.badge-gray {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    background: #F1F5F9;
+    color: #475569;
     margin-right: 5px;
 }
 
@@ -163,24 +173,27 @@ div[data-testid="stFormSubmitButton"] button:hover {
     }
 }
 </style>
+
 <div class="hero">
 <div class="hero-kicker">REAL ESTATE MONITORING AGENT</div>
-<div class="hero-title">내가 기다리던 청약과 부동산 변화,<br>놓치지 않도록.</div>
-<div class="hero-desc">관심지역의 신규 청약·무순위 공고와 아파트 실거래 변화를 공공데이터를 통해 확인하고, 저장한 조건에 맞는 새로운 이벤트만 탐지합니다.</div>
+<div class="hero-title">
+내가 기다리던 청약과 부동산 변화,<br>
+놓치지 않도록.
+</div>
+<div class="hero-desc">
+서울·경기의 청약과 아파트·빌라·단독/다가구·오피스텔 실거래를
+조건별로 조회하고, 관심지역의 새로운 변화를 자동으로 탐지합니다.
+</div>
 </div>
 """,
     unsafe_allow_html=True,
 )
 
 
-# ============================================================
-# API STATUS
-# ============================================================
-
 status = get_api_status()
 
 if status["public_data_key"]:
-    st.success("공공데이터포털 API Key가 정상적으로 등록되어 있습니다.")
+    st.success("공공데이터포털 API Key가 등록되어 있습니다.")
 else:
     st.error(
         "PUBLIC_DATA_API_KEY가 없습니다. "
@@ -188,13 +201,10 @@ else:
     )
 
 
-# ============================================================
-# TABS - 설정확인 제거
-# ============================================================
-
-tab_data, tab_monitor, tab_alert = st.tabs(
+tab_subscription, tab_trade, tab_monitor, tab_alert = st.tabs(
     [
-        "실데이터 조회",
+        "청약 조회",
+        "실거래 조회",
         "모니터링 조건",
         "알림함",
     ]
@@ -202,10 +212,10 @@ tab_data, tab_monitor, tab_alert = st.tabs(
 
 
 # ============================================================
-# TAB 1 : 실데이터 조회
+# TAB 1 : 청약 조회
 # ============================================================
 
-with tab_data:
+with tab_subscription:
 
     st.markdown(
         '<div class="section-title">청약홈 실데이터</div>',
@@ -215,25 +225,39 @@ with tab_data:
     st.markdown(
         """
 <div class="section-desc">
-지역·공급구분·청약유형·접수상태를 기준으로 청약홈 공고를 필터링합니다.
-공공/민간 분류는 청약홈 응답의 사업주체·주택구분 텍스트를 조합한 보조 분류입니다.
+서울·경기 관심지역과 공급구분·청약유형·접수상태를 조합해
+신규 청약과 무순위 공고를 조회합니다.
 </div>
 """,
         unsafe_allow_html=True,
     )
 
-    filter_row1 = st.columns(2)
+    region_scope = st.radio(
+        "지역 범위",
+        ["서울", "경기", "서울 + 경기"],
+        horizontal=True,
+        key="subscription_scope",
+    )
 
-    with filter_row1[0]:
+    if region_scope == "서울":
+        subscription_region_options = SEOUL_REGIONS
+    elif region_scope == "경기":
+        subscription_region_options = GYEONGGI_REGIONS
+    else:
+        subscription_region_options = ALL_REGIONS
+
+    r1 = st.columns(2)
+
+    with r1[0]:
         subscription_regions = st.multiselect(
             "조회지역",
-            list(SEOUL_LAWD.keys()),
+            subscription_region_options,
             default=[],
             placeholder="여러 지역을 선택할 수 있습니다",
             key="subscription_regions",
         )
 
-    with filter_row1[1]:
+    with r1[1]:
         supply_types = st.multiselect(
             "공급구분",
             ["공공", "민간", "미분류"],
@@ -242,9 +266,9 @@ with tab_data:
             key="subscription_supply_types",
         )
 
-    filter_row2 = st.columns(2)
+    r2 = st.columns(2)
 
-    with filter_row2[0]:
+    with r2[0]:
         subscription_kinds = st.multiselect(
             "청약유형",
             [
@@ -258,7 +282,7 @@ with tab_data:
             key="subscription_kinds",
         )
 
-    with filter_row2[1]:
+    with r2[1]:
         subscription_statuses = st.multiselect(
             "접수상태",
             [
@@ -300,8 +324,10 @@ with tab_data:
                 )
 
             st.session_state["apt_subscriptions_filtered"] = filtered
+
             st.success(
-                f"전체 {len(rows)}건 중 조건에 맞는 {len(filtered)}건을 찾았습니다."
+                f"전체 {len(rows)}건 중 조건에 맞는 "
+                f"{len(filtered)}건을 찾았습니다."
             )
 
         except Exception as e:
@@ -321,8 +347,10 @@ with tab_data:
                 )
 
             st.session_state["unsold_subscriptions_filtered"] = filtered
+
             st.success(
-                f"전체 {len(rows)}건 중 조건에 맞는 {len(filtered)}건을 찾았습니다."
+                f"전체 {len(rows)}건 중 조건에 맞는 "
+                f"{len(filtered)}건을 찾았습니다."
             )
 
         except Exception as e:
@@ -380,86 +408,249 @@ with tab_data:
                 unsafe_allow_html=True,
             )
 
-    st.divider()
+
+# ============================================================
+# TAB 2 : 실거래 조회
+# ============================================================
+
+with tab_trade:
 
     st.markdown(
-        '<div class="section-title">국토교통부 아파트 실거래</div>',
+        '<div class="section-title">국토교통부 실거래 조회</div>',
         unsafe_allow_html=True,
     )
 
     st.markdown(
         """
 <div class="section-desc">
-관심지역과 계약연월을 선택해 아파트 매매 실거래를 조회합니다.
+아파트뿐 아니라 연립·다세대(빌라), 단독·다가구, 오피스텔을
+서울·경기 여러 지역에서 동시에 조회할 수 있습니다.
 </div>
 """,
         unsafe_allow_html=True,
     )
 
-    c1, c2 = st.columns(2)
+    property_types = st.multiselect(
+        "주택유형",
+        PROPERTY_TYPES,
+        default=[
+            "아파트",
+            "연립·다세대",
+        ],
+        help="여러 유형을 동시에 선택할 수 있습니다.",
+        key="trade_property_types",
+    )
 
-    with c1:
-        regions = list(SEOUL_LAWD.keys())
-        default_index = regions.index("서울 송파구")
+    trade_scope = st.radio(
+        "지역 범위",
+        ["서울", "경기", "서울 + 경기"],
+        index=2,
+        horizontal=True,
+        key="trade_scope",
+    )
 
-        trade_region = st.selectbox(
-            "실거래 조회지역",
-            regions,
-            index=default_index,
-        )
+    if trade_scope == "서울":
+        trade_region_options = SEOUL_REGIONS
+    elif trade_scope == "경기":
+        trade_region_options = GYEONGGI_REGIONS
+    else:
+        trade_region_options = ALL_REGIONS
 
-    with c2:
-        trade_month = st.text_input(
-            "계약년월",
-            value=datetime.now().strftime("%Y%m"),
-            help="예: 202609",
-        )
+    default_trade_regions = [
+        x for x in [
+            "서울 > 송파구",
+            "서울 > 강동구",
+            "경기 > 하남시",
+        ]
+        if x in trade_region_options
+    ]
+
+    trade_regions = st.multiselect(
+        "실거래 조회지역",
+        trade_region_options,
+        default=default_trade_regions,
+        placeholder="예: 서울 > 성동구, 경기 > 하남시",
+        key="trade_regions",
+    )
+
+    trade_month = st.text_input(
+        "계약년월",
+        value=datetime.now().strftime("%Y%m"),
+        help="예: 202609",
+        key="trade_month",
+    )
 
     if st.button(
-        "아파트 실거래 조회",
+        "선택 조건 실거래 조회",
         type="primary",
         use_container_width=True,
+        key="trade_search_btn",
     ):
-        if not trade_month.isdigit() or len(trade_month) != 6:
+
+        if not property_types:
+            st.warning("주택유형을 1개 이상 선택해주세요.")
+
+        elif not trade_regions:
+            st.warning("실거래 조회지역을 1개 이상 선택해주세요.")
+
+        elif not trade_month.isdigit() or len(trade_month) != 6:
             st.warning("계약년월은 YYYYMM 형식으로 입력해주세요.")
+
         else:
             try:
-                with st.spinner("실거래 데이터를 조회하고 있습니다..."):
-                    rows = fetch_apt_trades(
-                        SEOUL_LAWD[trade_region],
+                request_count = len(property_types) * len(trade_regions)
+
+                with st.spinner(
+                    f"{len(trade_regions)}개 지역 × "
+                    f"{len(property_types)}개 주택유형을 조회하고 있습니다..."
+                ):
+                    rows, errors = fetch_trades_multi(
+                        trade_regions,
+                        property_types,
                         trade_month,
                     )
 
-                st.session_state["real_trades"] = rows
-                st.success(f"실거래 {len(rows)}건을 조회했습니다.")
+                st.session_state["trade_results"] = rows
+                st.session_state["trade_errors"] = errors
+
+                st.success(
+                    f"{request_count}개 조회 조합에서 "
+                    f"실거래 {len(rows)}건을 찾았습니다."
+                )
 
             except Exception as e:
                 st.error(f"실거래 조회 실패: {e}")
 
-    for item in st.session_state.get("real_trades", [])[:50]:
-        st.markdown(
-            f"""
+    errors = st.session_state.get(
+        "trade_errors",
+        [],
+    )
+
+    if errors:
+        with st.expander(
+            f"일부 조회 실패 {len(errors)}건 보기"
+        ):
+            for error in errors:
+                st.warning(error)
+
+        st.caption(
+            "연립·다세대·단독/다가구·오피스텔 API를 처음 사용하는 경우 "
+            "공공데이터포털에서 해당 API 활용신청이 별도로 필요할 수 있습니다."
+        )
+
+    trade_items = st.session_state.get(
+        "trade_results",
+        [],
+    )
+
+    if trade_items:
+
+        st.markdown("### 조회 요약")
+
+        type_counts = {}
+
+        for item in trade_items:
+            key = item.get("property_type", "기타")
+            type_counts[key] = type_counts.get(key, 0) + 1
+
+        summary_cols = st.columns(
+            min(4, max(1, len(type_counts)))
+        )
+
+        for idx, property_type in enumerate(PROPERTY_TYPES):
+            if property_type in type_counts:
+                summary_cols[
+                    idx % len(summary_cols)
+                ].metric(
+                    property_type,
+                    f"{type_counts[property_type]}건",
+                )
+
+        st.markdown("### 실거래 결과")
+
+        result_filter = st.multiselect(
+            "결과에서 주택유형 다시 필터",
+            sorted(
+                set(
+                    item.get("property_type", "")
+                    for item in trade_items
+                    if item.get("property_type")
+                )
+            ),
+            default=[],
+            placeholder="선택하지 않으면 전체",
+            key="trade_result_type_filter",
+        )
+
+        display_items = trade_items
+
+        if result_filter:
+            display_items = [
+                x for x in trade_items
+                if x.get("property_type") in result_filter
+            ]
+
+        st.caption(
+            f"총 {len(display_items)}건 표시 "
+            "(화면 성능을 위해 최대 300건까지 표시)"
+        )
+
+        for item in display_items[:300]:
+
+            address_bits = [
+                item.get("region", ""),
+                item.get("road_name", ""),
+                item.get("jibun", ""),
+            ]
+
+            address_line = " · ".join(
+                x for x in address_bits if x
+            )
+
+            area_text = (
+                f"{item.get('area', 0):.1f}㎡"
+                if item.get("area", 0) > 0
+                else "면적정보 없음"
+            )
+
+            st.markdown(
+                f"""
 <div class="card">
-<div style="display:flex;justify-content:space-between;gap:15px;">
+<div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start;">
 <div>
+<span class="badge">{item.get('property_type','')}</span>
+<span class="badge-gray">{item.get('region_label','')}</span>
+<br><br>
 <b style="font-size:16px;">{item.get('name','')}</b><br>
-<span class="muted">{item.get('region','')} · {item.get('area',0):.1f}㎡ · {item.get('floor','-')}층</span>
+<span class="muted">{address_line}</span><br>
+<span class="muted">
+{area_text}
+· {item.get('floor','-')}층
+· 준공 {item.get('build_year','-')}
+</span>
 </div>
-<div style="font-size:18px;font-weight:900;color:#A91F2D;">
+
+<div style="
+font-size:18px;
+font-weight:900;
+color:#A91F2D;
+white-space:nowrap;
+">
 {item.get('price_text','')}
 </div>
 </div>
+
 <div class="muted" style="margin-top:8px;">
-거래일 {item.get('date','-')} · 준공 {item.get('build_year','-')}
+거래일 {item.get('date','-')}
 </div>
 </div>
 """,
-            unsafe_allow_html=True,
-        )
+                unsafe_allow_html=True,
+            )
 
 
 # ============================================================
-# TAB 2 : 모니터링 조건
+# TAB 3 : 모니터링 조건
 # ============================================================
 
 with tab_monitor:
@@ -472,8 +663,8 @@ with tab_monitor:
     st.markdown(
         """
 <div class="section-desc">
-관심지역과 탐지 이벤트를 여러 개 선택할 수 있습니다.
-저장 시 지역 × 이벤트 조합으로 자동 등록됩니다.
+서울·경기 여러 관심지역과 여러 탐지 이벤트를 저장하고,
+실거래는 주택유형까지 구분해 모니터링합니다.
 </div>
 """,
         unsafe_allow_html=True,
@@ -483,8 +674,12 @@ with tab_monitor:
 
         monitor_regions = st.multiselect(
             "관심지역",
-            list(SEOUL_LAWD.keys()),
-            default=["서울 송파구", "서울 강동구"],
+            ALL_REGIONS,
+            default=[
+                "서울 > 송파구",
+                "서울 > 강동구",
+                "경기 > 하남시",
+            ],
             placeholder="여러 지역 선택",
         )
 
@@ -499,6 +694,16 @@ with tab_monitor:
                 "신규청약",
                 "무순위청약",
             ],
+        )
+
+        monitor_property_types = st.multiselect(
+            "실거래 주택유형",
+            PROPERTY_TYPES,
+            default=[
+                "아파트",
+                "연립·다세대",
+            ],
+            help="신규실거래 모니터링에만 적용됩니다.",
         )
 
         monitor_supply_types = st.multiselect(
@@ -522,15 +727,17 @@ with tab_monitor:
                 max_value=100.0,
                 value=20.0,
                 step=0.5,
+                help="0으로 설정하면 가격 상한을 적용하지 않습니다.",
             )
 
         with c2:
             min_area = st.number_input(
                 "실거래 최소면적 (㎡)",
                 min_value=0.0,
-                max_value=300.0,
-                value=59.0,
+                max_value=500.0,
+                value=40.0,
                 step=1.0,
+                help="0으로 설정하면 최소면적 조건을 적용하지 않습니다.",
             )
 
         submitted = st.form_submit_button(
@@ -539,11 +746,20 @@ with tab_monitor:
         )
 
         if submitted:
+
             if not monitor_regions:
                 st.warning("관심지역을 1개 이상 선택해주세요.")
 
             elif not event_types:
                 st.warning("탐지 이벤트를 1개 이상 선택해주세요.")
+
+            elif (
+                "신규실거래" in event_types
+                and not monitor_property_types
+            ):
+                st.warning(
+                    "신규실거래를 선택했다면 주택유형도 1개 이상 선택해주세요."
+                )
 
             else:
                 try:
@@ -554,12 +770,13 @@ with tab_monitor:
                         max_price,
                         min_area,
                         monitor_supply_types,
+                        monitor_property_types,
                     )
 
                     st.success(
-                        f"{len(monitor_regions)}개 지역 × "
-                        f"{len(event_types)}개 이벤트 조건을 저장했습니다."
+                        "모니터링 조건을 저장했습니다."
                     )
+
                     st.rerun()
 
                 except Exception as e:
@@ -572,16 +789,27 @@ with tab_monitor:
         type="primary",
         use_container_width=True,
     ):
+
         try:
-            with st.spinner("저장된 조건을 기준으로 새 이벤트를 확인하고 있습니다..."):
+            with st.spinner(
+                "저장된 조건을 기준으로 새 이벤트를 확인하고 있습니다..."
+            ):
                 result = run_monitoring_once(BASE_DIR)
 
             m1, m2, m3 = st.columns(3)
 
-            m1.metric("탐지 이벤트", result.get("events", 0))
-            m2.metric("생성 알림", result.get("notifications", 0))
+            m1.metric(
+                "탐지 이벤트",
+                result.get("events", 0),
+            )
+
+            m2.metric(
+                "생성 알림",
+                result.get("notifications", 0),
+            )
 
             fetched = result.get("fetched", {})
+
             m3.metric(
                 "조회 데이터",
                 fetched.get("subscriptions", 0)
@@ -592,7 +820,9 @@ with tab_monitor:
                 st.warning(error)
 
             if not result.get("errors"):
-                st.success("전체 모니터링 조회가 완료되었습니다.")
+                st.success(
+                    "전체 모니터링 조회가 완료되었습니다."
+                )
 
         except Exception as e:
             st.error(f"모니터링 실행 실패: {e}")
@@ -606,20 +836,28 @@ with tab_monitor:
 
     for rule in rules:
 
-        c1, c2, c3 = st.columns([5, 1.2, 1.2])
+        c1, c2, c3 = st.columns(
+            [5, 1.2, 1.2]
+        )
 
         with c1:
-            status_text = "모니터링 중" if rule["enabled"] else "중지됨"
-
-            detail = ""
+            status_text = (
+                "모니터링 중"
+                if rule["enabled"]
+                else "중지됨"
+            )
 
             if rule["event_type"] == "신규실거래":
                 detail = (
+                    f"{rule.get('property_type','아파트')} · "
                     f"{rule['max_price_100m']}억원 이하 · "
                     f"{rule['min_area']}㎡ 이상"
                 )
             else:
-                detail = f"공급구분 {rule.get('supply_type','전체')}"
+                detail = (
+                    f"공급구분 "
+                    f"{rule.get('supply_type','전체')}"
+                )
 
             st.markdown(
                 f"""
@@ -632,14 +870,21 @@ with tab_monitor:
             )
 
         with c2:
-            label = "중지" if rule["enabled"] else "재시작"
+            label = (
+                "중지"
+                if rule["enabled"]
+                else "재시작"
+            )
 
             if st.button(
                 label,
                 key=f"toggle_{rule['id']}",
                 use_container_width=True,
             ):
-                toggle_alert_rule(BASE_DIR, rule["id"])
+                toggle_alert_rule(
+                    BASE_DIR,
+                    rule["id"],
+                )
                 st.rerun()
 
         with c3:
@@ -648,12 +893,15 @@ with tab_monitor:
                 key=f"delete_{rule['id']}",
                 use_container_width=True,
             ):
-                delete_alert_rule(BASE_DIR, rule["id"])
+                delete_alert_rule(
+                    BASE_DIR,
+                    rule["id"],
+                )
                 st.rerun()
 
 
 # ============================================================
-# TAB 3 : 알림함
+# TAB 4 : 알림함
 # ============================================================
 
 with tab_alert:
@@ -666,32 +914,43 @@ with tab_alert:
     st.markdown(
         """
 <div class="section-desc">
-현재 버전은 웹 알림함에만 기록합니다.
-휴대폰 Push·텔레그램·문자 알림 로직은 포함하지 않았습니다.
+저장된 조건에서 새롭게 탐지된 청약·무순위·실거래 이벤트를 확인합니다.
+현재 버전은 웹 알림함만 사용합니다.
 </div>
 """,
         unsafe_allow_html=True,
     )
 
-    notifications = get_notifications(BASE_DIR, 100)
+    notifications = get_notifications(
+        BASE_DIR,
+        100,
+    )
 
     if not notifications:
         st.info("아직 생성된 알림이 없습니다.")
 
     for item in notifications:
 
-        c1, c2 = st.columns([6, 1])
+        c1, c2 = st.columns(
+            [6, 1]
+        )
 
         with c1:
-            icon = "🔴" if not item["is_read"] else "⚪"
+            icon = (
+                "🔴"
+                if not item["is_read"]
+                else "⚪"
+            )
 
             st.markdown(
                 f"""
 <div class="card">
-<b>{icon} {item.get('title','')}</b><br><br>
+<b>{icon} {item.get('title','')}</b>
+<br><br>
 <span style="font-size:13px;color:#334155;">
 {item.get('category','')} · {item.get('message','')}
-</span><br>
+</span>
+<br>
 <span class="muted">{item.get('created_at','')}</span>
 </div>
 """,

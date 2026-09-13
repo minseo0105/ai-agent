@@ -22,38 +22,105 @@ CHEONGYAK_UNSOLD_URL = (
     "https://api.odcloud.kr/api/ApplyhomeInfoDetailSvc/v1/getRemndrLttotPblancDetail"
 )
 
-APT_TRADE_URL = (
-    "https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/"
-    "getRTMSDataSvcAptTradeDev"
-)
-
-SEOUL_LAWD = {
-    "서울 종로구": "11110",
-    "서울 중구": "11140",
-    "서울 용산구": "11170",
-    "서울 성동구": "11200",
-    "서울 광진구": "11215",
-    "서울 동대문구": "11230",
-    "서울 중랑구": "11260",
-    "서울 성북구": "11290",
-    "서울 강북구": "11305",
-    "서울 도봉구": "11320",
-    "서울 노원구": "11350",
-    "서울 은평구": "11380",
-    "서울 서대문구": "11410",
-    "서울 마포구": "11440",
-    "서울 양천구": "11470",
-    "서울 강서구": "11500",
-    "서울 구로구": "11530",
-    "서울 금천구": "11545",
-    "서울 영등포구": "11560",
-    "서울 동작구": "11590",
-    "서울 관악구": "11620",
-    "서울 서초구": "11650",
-    "서울 강남구": "11680",
-    "서울 송파구": "11710",
-    "서울 강동구": "11740",
+# 실거래 매매 API
+TRADE_APIS = {
+    "아파트": "https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev",
+    "연립·다세대": "https://apis.data.go.kr/1613000/RTMSDataSvcRHTrade/getRTMSDataSvcRHTrade",
+    "단독·다가구": "https://apis.data.go.kr/1613000/RTMSDataSvcSHTrade/getRTMSDataSvcSHTrade",
+    "오피스텔": "https://apis.data.go.kr/1613000/RTMSDataSvcOffiTrade/getRTMSDataSvcOffiTrade",
 }
+
+PROPERTY_TYPES = list(TRADE_APIS.keys())
+
+# 화면 표시용 지역명 → 법정동 시군구코드 앞 5자리
+REGION_LAWD = {
+    # 서울
+    "서울 > 종로구": "11110",
+    "서울 > 중구": "11140",
+    "서울 > 용산구": "11170",
+    "서울 > 성동구": "11200",
+    "서울 > 광진구": "11215",
+    "서울 > 동대문구": "11230",
+    "서울 > 중랑구": "11260",
+    "서울 > 성북구": "11290",
+    "서울 > 강북구": "11305",
+    "서울 > 도봉구": "11320",
+    "서울 > 노원구": "11350",
+    "서울 > 은평구": "11380",
+    "서울 > 서대문구": "11410",
+    "서울 > 마포구": "11440",
+    "서울 > 양천구": "11470",
+    "서울 > 강서구": "11500",
+    "서울 > 구로구": "11530",
+    "서울 > 금천구": "11545",
+    "서울 > 영등포구": "11560",
+    "서울 > 동작구": "11590",
+    "서울 > 관악구": "11620",
+    "서울 > 서초구": "11650",
+    "서울 > 강남구": "11680",
+    "서울 > 송파구": "11710",
+    "서울 > 강동구": "11740",
+
+    # 경기
+    "경기 > 수원시 장안구": "41111",
+    "경기 > 수원시 권선구": "41113",
+    "경기 > 수원시 팔달구": "41115",
+    "경기 > 수원시 영통구": "41117",
+
+    "경기 > 성남시 수정구": "41131",
+    "경기 > 성남시 중원구": "41133",
+    "경기 > 성남시 분당구": "41135",
+
+    "경기 > 의정부시": "41150",
+
+    "경기 > 안양시 만안구": "41171",
+    "경기 > 안양시 동안구": "41173",
+
+    "경기 > 부천시 원미구": "41192",
+    "경기 > 부천시 소사구": "41194",
+    "경기 > 부천시 오정구": "41196",
+
+    "경기 > 광명시": "41210",
+    "경기 > 평택시": "41220",
+    "경기 > 동두천시": "41250",
+
+    "경기 > 안산시 상록구": "41271",
+    "경기 > 안산시 단원구": "41273",
+
+    "경기 > 고양시 덕양구": "41281",
+    "경기 > 고양시 일산동구": "41285",
+    "경기 > 고양시 일산서구": "41287",
+
+    "경기 > 과천시": "41290",
+    "경기 > 구리시": "41310",
+    "경기 > 남양주시": "41360",
+    "경기 > 오산시": "41370",
+    "경기 > 시흥시": "41390",
+    "경기 > 군포시": "41410",
+    "경기 > 의왕시": "41430",
+    "경기 > 하남시": "41450",
+
+    "경기 > 용인시 처인구": "41461",
+    "경기 > 용인시 기흥구": "41463",
+    "경기 > 용인시 수지구": "41465",
+
+    "경기 > 파주시": "41480",
+    "경기 > 이천시": "41500",
+    "경기 > 안성시": "41550",
+    "경기 > 김포시": "41570",
+    "경기 > 화성시": "41590",
+    "경기 > 광주시": "41610",
+    "경기 > 양주시": "41630",
+    "경기 > 포천시": "41650",
+    "경기 > 여주시": "41670",
+    "경기 > 연천군": "41800",
+    "경기 > 가평군": "41820",
+    "경기 > 양평군": "41830",
+}
+
+SEOUL_REGIONS = [k for k in REGION_LAWD if k.startswith("서울 >")]
+GYEONGGI_REGIONS = [k for k in REGION_LAWD if k.startswith("경기 >")]
+ALL_REGIONS = SEOUL_REGIONS + GYEONGGI_REGIONS
 
 
 def _secret(name: str, default: Optional[str] = None) -> Optional[str]:
@@ -99,6 +166,7 @@ def init_db(base_dir: Path):
         min_area REAL NOT NULL,
         event_type TEXT NOT NULL,
         supply_type TEXT DEFAULT '전체',
+        property_type TEXT DEFAULT '아파트',
         enabled INTEGER DEFAULT 1,
         created_at TEXT NOT NULL
     );
@@ -123,11 +191,16 @@ def init_db(base_dir: Path):
     );
     """)
 
-    # 기존 DB에 supply_type 컬럼이 없을 수 있으므로 보정
     cols = [row[1] for row in cur.execute("PRAGMA table_info(alert_rules)").fetchall()]
+
     if "supply_type" not in cols:
         cur.execute(
             "ALTER TABLE alert_rules ADD COLUMN supply_type TEXT DEFAULT '전체'"
+        )
+
+    if "property_type" not in cols:
+        cur.execute(
+            "ALTER TABLE alert_rules ADD COLUMN property_type TEXT DEFAULT '아파트'"
         )
 
     con.commit()
@@ -140,6 +213,20 @@ def _now():
 
 def _normalize(text: str) -> str:
     return str(text or "").replace(" ", "").strip()
+
+
+def region_terms(region_label: str) -> list[str]:
+    left, _, right = region_label.partition(">")
+    terms = [left.strip()]
+    terms.extend([x.strip() for x in right.strip().split() if x.strip()])
+    return [x for x in terms if x]
+
+
+def region_matches_text(region_label: str, text: str) -> bool:
+    compact = _normalize(text)
+    terms = region_terms(region_label)
+    locality_terms = terms[1:] if len(terms) > 1 else terms
+    return all(_normalize(term) in compact for term in locality_terms)
 
 
 def _parse_date(value: str):
@@ -158,16 +245,10 @@ def _parse_date(value: str):
 
 
 def classify_supply_type(raw: dict) -> str:
-    """
-    청약홈 응답은 공공/민간이 단일 표준 필드로 항상 내려온다고 보기 어렵다.
-    따라서 공급기관/주택구분/사업주체 관련 텍스트를 조합해 보수적으로 분류한다.
-    애매하면 '미분류'로 둔다.
-    """
     candidate_keys = [
         "HOUSE_SECD_NM",
         "HOUSE_DTL_SECD_NM",
         "BSNS_MBY_NM",
-        "MDHS_TELNO",
         "CNSTRCT_ENTRPS_NM",
         "HSSPLY_ADRES",
         "HOUSE_NM",
@@ -346,23 +427,21 @@ def filter_subscriptions(
     filtered = []
 
     for item in items:
-        region_text = _normalize(
-            f"{item.get('region', '')} {item.get('address', '')}"
-        )
+        text = f"{item.get('region', '')} {item.get('address', '')}"
 
         if regions:
-            if not any(_normalize(region) in region_text for region in regions):
+            if not any(region_matches_text(region, text) for region in regions):
                 continue
 
-        if supply_types and "전체" not in supply_types:
+        if supply_types:
             if item.get("supply_type") not in supply_types:
                 continue
 
-        if subscription_kinds and "전체" not in subscription_kinds:
+        if subscription_kinds:
             if item.get("subscription_kind") not in subscription_kinds:
                 continue
 
-        if statuses and "전체" not in statuses:
+        if statuses:
             if item.get("status") not in statuses:
                 continue
 
@@ -378,7 +457,153 @@ def _xml_text(node, tag, default=""):
     return (child.text or "").strip()
 
 
-def fetch_apt_trades(lawd_cd: str, deal_ymd: str, rows=1000):
+def _first_xml_text(node, tags, default=""):
+    for tag in tags:
+        value = _xml_text(node, tag)
+        if value:
+            return value
+    return default
+
+
+def _parse_money_100m(amount_text: str) -> float:
+    try:
+        return int(str(amount_text).replace(",", "").strip()) / 10000.0
+    except Exception:
+        return 0.0
+
+
+def _parse_float(text: str) -> float:
+    try:
+        return float(str(text).strip())
+    except Exception:
+        return 0.0
+
+
+def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str):
+    amount_text = _first_xml_text(
+        item,
+        ["dealAmount", "dealAmount "],
+        "",
+    )
+
+    if property_type == "단독·다가구":
+        area_text = _first_xml_text(
+            item,
+            ["totalFloorAr", "buildingAr", "excluUseAr", "plottageAr"],
+            "",
+        )
+    else:
+        area_text = _first_xml_text(
+            item,
+            ["excluUseAr", "area", "buildingAr"],
+            "",
+        )
+
+    year = _xml_text(item, "dealYear")
+    month = _xml_text(item, "dealMonth")
+    day = _xml_text(item, "dealDay")
+
+    if year and month and day:
+        try:
+            deal_date = f"{year}-{int(month):02d}-{int(day):02d}"
+        except Exception:
+            deal_date = deal_ymd
+    else:
+        deal_date = deal_ymd
+
+    if property_type == "아파트":
+        name = _first_xml_text(
+            item,
+            ["aptNm", "aptName"],
+            "아파트",
+        )
+    elif property_type == "연립·다세대":
+        name = _first_xml_text(
+            item,
+            ["mhouseNm", "houseType"],
+            "연립·다세대",
+        )
+    elif property_type == "오피스텔":
+        name = _first_xml_text(
+            item,
+            ["offiNm", "offiName"],
+            "오피스텔",
+        )
+    else:
+        name = _first_xml_text(
+            item,
+            ["houseType"],
+            "단독·다가구",
+        )
+
+    floor = _first_xml_text(
+        item,
+        ["floor"],
+        "-",
+    )
+
+    build_year = _first_xml_text(
+        item,
+        ["buildYear"],
+        "-",
+    )
+
+    umd = _first_xml_text(
+        item,
+        ["umdNm", "umdName"],
+        "",
+    )
+
+    jibun = _first_xml_text(
+        item,
+        ["jibun"],
+        "",
+    )
+
+    road_name = _first_xml_text(
+        item,
+        ["roadNm", "roadName"],
+        "",
+    )
+
+    # 거래 고유키용 보조값
+    sequence = _first_xml_text(
+        item,
+        ["aptSeq", "sggCd"],
+        "",
+    )
+
+    price_100m = _parse_money_100m(amount_text)
+    area = _parse_float(area_text)
+
+    return {
+        "id": (
+            f"{property_type}:{lawd_cd}:{sequence}:"
+            f"{name}:{deal_date}:{floor}:{amount_text}:{area_text}"
+        ),
+        "property_type": property_type,
+        "name": name,
+        "region": umd,
+        "jibun": jibun,
+        "road_name": road_name,
+        "area": area,
+        "price_100m": price_100m,
+        "price_text": f"{price_100m:.2f}억원",
+        "date": deal_date,
+        "floor": floor,
+        "build_year": build_year,
+    }
+
+
+def fetch_trade(
+    property_type: str,
+    lawd_cd: str,
+    deal_ymd: str,
+    rows=1000,
+):
+    if property_type not in TRADE_APIS:
+        raise ValueError(f"지원하지 않는 주택유형입니다: {property_type}")
+
     params = {
         "serviceKey": get_public_data_key(),
         "LAWD_CD": lawd_cd,
@@ -388,13 +613,18 @@ def fetch_apt_trades(lawd_cd: str, deal_ymd: str, rows=1000):
     }
 
     response = requests.get(
-        APT_TRADE_URL,
+        TRADE_APIS[property_type],
         params=params,
         timeout=25,
     )
     response.raise_for_status()
 
-    root = ET.fromstring(response.content)
+    try:
+        root = ET.fromstring(response.content)
+    except ET.ParseError as e:
+        raise RuntimeError(
+            f"{property_type} API 응답을 XML로 해석하지 못했습니다."
+        ) from e
 
     header = root.find(".//header")
     if header is not None:
@@ -403,50 +633,67 @@ def fetch_apt_trades(lawd_cd: str, deal_ymd: str, rows=1000):
 
         if result_code not in ("000", "00", ""):
             raise RuntimeError(
-                f"실거래 API 오류 {result_code}: {result_msg}"
+                f"{property_type} API 오류 {result_code}: {result_msg}"
             )
 
     result = []
 
     for item in root.findall(".//item"):
-        amount_text = _xml_text(item, "dealAmount").replace(",", "").strip()
-        area_text = _xml_text(item, "excluUseAr")
-
-        try:
-            price_100m = int(amount_text) / 10000.0
-        except Exception:
-            price_100m = 0.0
-
-        try:
-            area = float(area_text)
-        except Exception:
-            area = 0.0
-
-        year = _xml_text(item, "dealYear")
-        month = _xml_text(item, "dealMonth")
-        day = _xml_text(item, "dealDay")
-
-        if year and month and day:
-            deal_date = f"{year}-{int(month):02d}-{int(day):02d}"
-        else:
-            deal_date = deal_ymd
-
-        apt_seq = _xml_text(item, "aptSeq")
-        floor = _xml_text(item, "floor")
-
-        result.append({
-            "id": f"{lawd_cd}:{apt_seq}:{deal_date}:{floor}:{amount_text}",
-            "name": _xml_text(item, "aptNm", "아파트"),
-            "region": _xml_text(item, "umdNm"),
-            "area": area,
-            "price_100m": price_100m,
-            "price_text": f"{price_100m:.2f}억원",
-            "date": deal_date,
-            "floor": floor,
-            "build_year": _xml_text(item, "buildYear"),
-        })
+        result.append(
+            _trade_item_to_common(
+                item,
+                property_type,
+                lawd_cd,
+                deal_ymd,
+            )
+        )
 
     return result
+
+
+def fetch_trades_multi(
+    region_labels: list[str],
+    property_types: list[str],
+    deal_ymd: str,
+):
+    all_rows = []
+    errors = []
+
+    for region_label in region_labels:
+        lawd_cd = REGION_LAWD.get(region_label)
+
+        if not lawd_cd:
+            errors.append(f"{region_label}: 지역코드를 찾을 수 없습니다.")
+            continue
+
+        for property_type in property_types:
+            try:
+                rows = fetch_trade(
+                    property_type,
+                    lawd_cd,
+                    deal_ymd,
+                )
+
+                for row in rows:
+                    row["region_label"] = region_label
+
+                all_rows.extend(rows)
+
+            except Exception as e:
+                errors.append(
+                    f"{region_label} · {property_type}: {e}"
+                )
+
+    all_rows.sort(
+        key=lambda x: (
+            x.get("date", ""),
+            x.get("region_label", ""),
+            x.get("property_type", ""),
+        ),
+        reverse=True,
+    )
+
+    return all_rows, errors
 
 
 def save_alert_rules(
@@ -456,42 +703,71 @@ def save_alert_rules(
     max_price_100m: float,
     min_area: float,
     supply_types: list[str],
+    property_types: list[str],
 ):
-    """
-    여러 지역 × 여러 이벤트를 개별 rule row로 풀어서 저장.
-    """
     init_db(base_dir)
 
-    supply_values = supply_types or ["전체"]
-    supply_value = ",".join(supply_values)
+    supply_value = ",".join(supply_types or ["전체"])
+
+    # 실거래가 선택되어도 주택유형을 고르지 않았다면 아파트 기본
+    trade_property_types = property_types or ["아파트"]
 
     con = _db(base_dir)
 
     for region in regions:
-        lawd_cd = SEOUL_LAWD.get(region, "")
+        lawd_cd = REGION_LAWD.get(region, "")
 
         for event_type in event_types:
-            con.execute("""
-                INSERT INTO alert_rules(
+
+            if event_type == "신규실거래":
+                for property_type in trade_property_types:
+                    con.execute("""
+                        INSERT INTO alert_rules(
+                            region,
+                            lawd_cd,
+                            max_price_100m,
+                            min_area,
+                            event_type,
+                            supply_type,
+                            property_type,
+                            enabled,
+                            created_at
+                        )
+                        VALUES(?,?,?,?,?,?,?,1,?)
+                    """, (
+                        region,
+                        lawd_cd,
+                        max_price_100m,
+                        min_area,
+                        event_type,
+                        supply_value,
+                        property_type,
+                        _now(),
+                    ))
+            else:
+                con.execute("""
+                    INSERT INTO alert_rules(
+                        region,
+                        lawd_cd,
+                        max_price_100m,
+                        min_area,
+                        event_type,
+                        supply_type,
+                        property_type,
+                        enabled,
+                        created_at
+                    )
+                    VALUES(?,?,?,?,?,?,?,1,?)
+                """, (
                     region,
                     lawd_cd,
                     max_price_100m,
                     min_area,
                     event_type,
-                    supply_type,
-                    enabled,
-                    created_at
-                )
-                VALUES(?,?,?,?,?,?,1,?)
-            """, (
-                region,
-                lawd_cd,
-                max_price_100m,
-                min_area,
-                event_type,
-                supply_value,
-                _now(),
-            ))
+                    supply_value,
+                    "해당없음",
+                    _now(),
+                ))
 
     con.commit()
     con.close()
@@ -715,14 +991,10 @@ def run_monitoring_once(base_dir: Path):
                 else apt_subscriptions
             )
 
-            region_key = _normalize(rule["region"])
-
             for item in items:
-                region_text = _normalize(
-                    f"{item.get('region','')} {item.get('address','')}"
-                )
+                text = f"{item.get('region','')} {item.get('address','')}"
 
-                if region_key not in region_text:
+                if not region_matches_text(rule["region"], text):
                     continue
 
                 if not _rule_supply_matches(rule, item):
@@ -739,7 +1011,7 @@ def run_monitoring_once(base_dir: Path):
                 report["events"] += 1
 
                 message = (
-                    f"{item.get('region','')} · "
+                    f"{rule['region']} · "
                     f"{item.get('supply_type','')} · "
                     f"{item.get('status','')} · "
                     f"접수 {item.get('apply_date','')} · "
@@ -756,8 +1028,17 @@ def run_monitoring_once(base_dir: Path):
                     report["notifications"] += 1
 
         elif rule["event_type"] == "신규실거래":
+            if not rule["lawd_cd"]:
+                report["errors"].append(
+                    f"{rule['region']}: 실거래 지역코드가 없습니다."
+                )
+                continue
+
+            property_type = rule.get("property_type") or "아파트"
+
             try:
-                trades = fetch_apt_trades(
+                trades = fetch_trade(
+                    property_type,
                     rule["lawd_cd"],
                     datetime.now().strftime("%Y%m"),
                 )
@@ -765,20 +1046,20 @@ def run_monitoring_once(base_dir: Path):
 
             except Exception as e:
                 report["errors"].append(
-                    f"{rule['region']} 실거래 조회 실패: {e}"
+                    f"{rule['region']} · {property_type} 실거래 조회 실패: {e}"
                 )
                 continue
 
             for item in trades:
-                if item["area"] < rule["min_area"]:
+                if rule["min_area"] > 0 and item["area"] < rule["min_area"]:
                     continue
 
-                if item["price_100m"] > rule["max_price_100m"]:
+                if rule["max_price_100m"] > 0 and item["price_100m"] > rule["max_price_100m"]:
                     continue
 
                 if not _snapshot_new(
                     base_dir,
-                    "apt_trade",
+                    f"trade:{property_type}",
                     item["id"],
                     item,
                 ):
@@ -786,8 +1067,16 @@ def run_monitoring_once(base_dir: Path):
 
                 report["events"] += 1
 
-                message = (
+                area_text = (
                     f"{item['area']:.1f}㎡ · "
+                    if item["area"] > 0
+                    else ""
+                )
+
+                message = (
+                    f"{rule['region']} · "
+                    f"{property_type} · "
+                    f"{area_text}"
                     f"{item['price_text']} · "
                     f"{item['date']} · "
                     f"{item['floor']}층"
