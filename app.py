@@ -818,6 +818,81 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown(r"""
+<style>
+/* 기본 pages 자동 메뉴 강제 숨김 */
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarNavItems"] {
+    display: none !important;
+}
+
+/* 모바일 홈 압축 */
+@media (max-width: 768px) {
+    .block-container {
+        padding-top: .55rem !important;
+        padding-left: .85rem !important;
+        padding-right: .85rem !important;
+        padding-bottom: 4.5rem !important;
+    }
+
+    .hero {
+        padding: 20px 20px !important;
+        border-radius: 20px !important;
+        margin-bottom: 16px !important;
+        min-height: 0 !important;
+    }
+
+    .hero-kicker {
+        font-size: 9px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .hero-title {
+        font-size: 1.65rem !important;
+        line-height: 1.22 !important;
+        margin: 0 !important;
+    }
+
+    .hero-desc {
+        font-size: .83rem !important;
+        line-height: 1.5 !important;
+        margin-top: 8px !important;
+    }
+
+    .hero-badges {
+        margin-top: 12px !important;
+        gap: 6px !important;
+    }
+
+    .hero-badge {
+        font-size: .69rem !important;
+        padding: 5px 9px !important;
+    }
+
+    h3 {
+        margin-top: .65rem !important;
+        margin-bottom: .25rem !important;
+        font-size: 1.45rem !important;
+    }
+
+    div[data-testid="stButton"] {
+        margin-bottom: .2rem !important;
+    }
+
+    div[data-testid="stButton"] button {
+        min-height: 2.65rem !important;
+        padding: .45rem .75rem !important;
+        border-radius: 13px !important;
+        font-size: .92rem !important;
+    }
+
+    div[data-testid="stExpander"] {
+        margin-top: .35rem !important;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
 with st.sidebar:
     st.markdown("### ✦ AI WORKBENCH")
     st.caption("직접 만든 AI 서비스와 에이전트를 한 곳에서")
@@ -871,62 +946,45 @@ st.markdown("""
 
 # 서비스 허브
 st.markdown("### 내가 만든 서비스")
-st.caption("자주 쓰는 3개 서비스를 바로 실행합니다.")
+st.caption("서비스를 선택하면 바로 이동합니다.")
 
-svc1, svc2, svc3 = st.columns(3)
+if st.button(
+    "🚙  내차에서 드림카까지  ·  내 차 시세 → 다음 차량 탐색·추천",
+    key="open_dreamcar",
+    use_container_width=True,
+):
+    st.switch_page("pages/dreamcar.py")
 
-with svc1:
-    st.markdown("**🚙 내차에서 드림카까지**")
-    st.caption("내 차 시세 → 다음 차량 탐색·추천")
+if st.button(
+    "🏠  부동산 모니터  ·  청약 · 실거래 · 관심지역 모니터링",
+    key="open_realestate",
+    use_container_width=True,
+):
+    st.switch_page("pages/realestate.py")
+
+if st.button(
+    "📄  보고서 작성기  ·  업무 내용을 경영진 보고 구조로 정리",
+    key="open_report",
+    use_container_width=True,
+):
+    st.switch_page("pages/report.py")
+
+with st.expander("기타 도구"):
     if st.button(
-        "열기 →",
-        key="open_dreamcar",
+        "🚗 차량 선택기",
+        key="open_car_selector",
         use_container_width=True,
     ):
-        st.switch_page("pages/dreamcar.py")
+        st.switch_page("pages/car_selector.py")
 
-with svc2:
-    st.markdown("**🏠 부동산 모니터**")
-    st.caption("청약 · 실거래 · 관심지역 모니터링")
     if st.button(
-        "열기 →",
-        key="open_realestate",
+        "🎞️ GIF 변환기",
+        key="open_gif",
         use_container_width=True,
     ):
-        st.switch_page("pages/realestate.py")
+        st.switch_page("pages/gif_converter.py")
 
-with svc3:
-    st.markdown("**📄 보고서 작성기**")
-    st.caption("업무 내용을 경영진 보고 구조로 정리")
-    if st.button(
-        "열기 →",
-        key="open_report",
-        use_container_width=True,
-    ):
-        st.switch_page("pages/report.py")
-
-with st.expander("기타 도구 보기"):
-    ex1, ex2 = st.columns(2)
-
-    with ex1:
-        st.markdown("**🚗 차량 선택기**")
-        if st.button(
-            "차량 선택기 열기",
-            key="open_car_selector",
-            use_container_width=True,
-        ):
-            st.switch_page("pages/car_selector.py")
-
-    with ex2:
-        st.markdown("**🎞️ GIF 변환기**")
-        if st.button(
-            "GIF 변환기 열기",
-            key="open_gif",
-            use_container_width=True,
-        ):
-            st.switch_page("pages/gif_converter.py")
-
-st.markdown("<div style='height:.25rem'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:.1rem'></div>", unsafe_allow_html=True)
 
 # AI 에이전트 영역
 st.markdown('<div id="ai-agent"></div><div class="section-title">AI 에이전트</div>', unsafe_allow_html=True)

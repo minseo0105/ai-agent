@@ -3,18 +3,42 @@ import streamlit as st
 
 def require_page_auth():
     """
-    메인 화면에서 한 번 로그인한 세션인지 확인합니다.
-    같은 Streamlit 세션에서는 다시 비밀번호를 묻지 않습니다.
+    메인에서 한 번 로그인한 같은 Streamlit 세션이면
+    상세 페이지에서 비밀번호를 다시 묻지 않습니다.
     """
     if not st.session_state.get("authenticated", False):
         st.switch_page("app.py")
 
 
+def _hide_streamlit_default_nav():
+    """
+    pages 폴더의 영문 파일명이 자동으로 노출되는
+    Streamlit 기본 사이드바 메뉴를 강제로 숨깁니다.
+    config.toml 설정이 반영되지 않는 환경에서도 동작하도록
+    CSS를 페이지마다 직접 주입합니다.
+    """
+    st.markdown(
+        """
+<style>
+[data-testid="stSidebarNav"] {
+    display: none !important;
+}
+[data-testid="stSidebarNavItems"] {
+    display: none !important;
+}
+</style>
+""",
+        unsafe_allow_html=True,
+    )
+
+
 def show_home_button():
     """
-    상세 페이지의 왼쪽 메뉴를 한글로 표시합니다.
-    Streamlit 기본 페이지 목록은 config.toml에서 숨깁니다.
+    모든 상세 페이지에서 동일한 한글 사이드바를 표시합니다.
+    내부 파일명은 영문으로 유지하고 화면 표시만 한글로 합니다.
     """
+    _hide_streamlit_default_nav()
+
     with st.sidebar:
         st.markdown("### ✦ AI WORKBENCH")
         st.caption("민서의 AI Lab")
