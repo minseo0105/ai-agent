@@ -810,6 +810,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+[data-testid="stSidebarNav"] {
+    display: none !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 with st.sidebar:
     st.markdown("### ✦ AI WORKBENCH")
     st.caption("직접 만든 AI 서비스와 에이전트를 한 곳에서")
@@ -817,15 +825,20 @@ with st.sidebar:
     st.divider()
     st.markdown("**빠른 이동**")
 
-    st.markdown("""
-    <div class="side-nav">
-        <a href="/내차에서드림카까지" target="_self">🚙 <span>내차에서 드림카까지</span></a>
-        <a href="/부동산모니터" target="_self">🏠 <span>부동산 모니터</span></a>
-        <a href="/보고서작성기" target="_self">📄 <span>보고서 작성기</span></a>
-        <a href="/차량선택기" target="_self">🚗 <span>차량 선택기</span></a>
-        <a href="/GIF변환기" target="_self">🎞️ <span>GIF 변환기</span></a>
-    </div>
-    """, unsafe_allow_html=True)
+    if st.button("🚙 내차에서 드림카까지", key="side_dreamcar", use_container_width=True):
+        st.switch_page("pages/dreamcar.py")
+
+    if st.button("🏠 부동산 모니터", key="side_realestate", use_container_width=True):
+        st.switch_page("pages/realestate.py")
+
+    if st.button("📄 보고서 작성기", key="side_report", use_container_width=True):
+        st.switch_page("pages/report.py")
+
+    if st.button("🚗 차량 선택기", key="side_car_selector", use_container_width=True):
+        st.switch_page("pages/car_selector.py")
+
+    if st.button("🎞️ GIF 변환기", key="side_gif", use_container_width=True):
+        st.switch_page("pages/gif_converter.py")
 
     st.divider()
     st.markdown("**AI 에이전트 기능**")
@@ -870,7 +883,7 @@ with svc1:
         key="open_dreamcar",
         use_container_width=True,
     ):
-        st.switch_page("pages/1_🚙_내차에서드림카까지.py")
+        st.switch_page("pages/dreamcar.py")
 
 with svc2:
     st.markdown("**🏠 부동산 모니터**")
@@ -880,7 +893,7 @@ with svc2:
         key="open_realestate",
         use_container_width=True,
     ):
-        st.switch_page("pages/2_🏠_부동산모니터.py")
+        st.switch_page("pages/realestate.py")
 
 with svc3:
     st.markdown("**📄 보고서 작성기**")
@@ -890,7 +903,7 @@ with svc3:
         key="open_report",
         use_container_width=True,
     ):
-        st.switch_page("pages/3_📄_보고서작성기.py")
+        st.switch_page("pages/report.py")
 
 with st.expander("기타 도구 보기"):
     ex1, ex2 = st.columns(2)
@@ -902,7 +915,7 @@ with st.expander("기타 도구 보기"):
             key="open_car_selector",
             use_container_width=True,
         ):
-            st.switch_page("pages/4_🚗_차량선택기.py")
+            st.switch_page("pages/car_selector.py")
 
     with ex2:
         st.markdown("**🎞️ GIF 변환기**")
@@ -911,7 +924,7 @@ with st.expander("기타 도구 보기"):
             key="open_gif",
             use_container_width=True,
         ):
-            st.switch_page("pages/5_🎞️_GIF변환기.py")
+            st.switch_page("pages/gif_converter.py")
 
 st.markdown("<div style='height:.25rem'></div>", unsafe_allow_html=True)
 
