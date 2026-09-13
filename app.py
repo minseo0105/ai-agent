@@ -6,64 +6,7 @@ import time
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-st.set_page_config(page_title="나만의 AI 에이전트", page_icon="✦", layout="wide")
-
-st.markdown("""
-<style>
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        max-width: 800px;
-    }
-
-    h1 {
-        font-size: 1.8rem !important;
-        color: #1E293B;
-    }
-
-    [data-testid="stChatMessage"] {
-        border-radius: 18px;
-        padding: 0.6rem 1.1rem;
-        margin-bottom: 0.6rem;
-        border: 1px solid #E5EAF7;
-    }
-
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-        background-color: #F4F6FB;
-    }
-
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
-        background: linear-gradient(135deg, #EEF2FF 0%, #E0E9FF 100%);
-    }
-
-    [data-testid="stChatInput"] {
-        border-radius: 26px;
-        border: 1px solid #D6E0FA !important;
-    }
-
-    .stButton > button {
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease;
-    }
-
-    .stButton > button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-    }
-
-    [data-testid="stSidebar"] {
-        min-width: 250px;
-    }
-
-    [data-testid="stSidebar"] h2 {
-        color: #2563EB;
-        font-size: 1.1rem;
-    }
-</style>
-""", unsafe_allow_html=True)
+st.set_page_config(page_title="AI Workbench", page_icon="✦", layout="wide", initial_sidebar_state="expanded")
 
 client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
@@ -292,26 +235,392 @@ def call_claude(messages):
 
     return extract_text(response.content)
 
+
+# =========================
+# UI / HOME
+# =========================
+
+# 페이지 스타일
+st.markdown("""
+<style>
+    .block-container {
+        padding-top: 1.4rem;
+        padding-bottom: 3rem;
+        max-width: 1180px;
+    }
+
+    /* 기본 폰트/타이틀 */
+    h1, h2, h3 {
+        letter-spacing: -0.03em;
+        color: #0F172A;
+    }
+
+    .hero {
+        padding: 2.2rem 2.3rem;
+        border-radius: 28px;
+        background:
+            radial-gradient(circle at 90% 15%, rgba(59,130,246,.22), transparent 26%),
+            linear-gradient(135deg, #0F172A 0%, #172554 55%, #1D4ED8 100%);
+        color: white;
+        margin-bottom: 1.4rem;
+        box-shadow: 0 18px 50px rgba(15,23,42,.16);
+    }
+
+    .hero-kicker {
+        font-size: .82rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        opacity: .78;
+        margin-bottom: .65rem;
+    }
+
+    .hero-title {
+        font-size: 2.25rem;
+        line-height: 1.16;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin-bottom: .75rem;
+    }
+
+    .hero-desc {
+        max-width: 760px;
+        font-size: 1rem;
+        line-height: 1.7;
+        opacity: .9;
+        margin-bottom: .9rem;
+    }
+
+    .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+        margin-top: .7rem;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        padding: .42rem .72rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,.11);
+        border: 1px solid rgba(255,255,255,.17);
+        font-size: .8rem;
+    }
+
+    .section-title {
+        margin-top: .3rem;
+        margin-bottom: .15rem;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #0F172A;
+    }
+
+    .section-desc {
+        color: #64748B;
+        margin-bottom: 1rem;
+        font-size: .92rem;
+    }
+
+    .service-card {
+        min-height: 176px;
+        padding: 1.15rem 1.1rem 1rem 1.1rem;
+        border: 1px solid #E2E8F0;
+        border-radius: 20px;
+        background: rgba(255,255,255,.96);
+        box-shadow: 0 8px 24px rgba(15,23,42,.055);
+        margin-bottom: .65rem;
+    }
+
+    .service-icon {
+        font-size: 1.5rem;
+        margin-bottom: .65rem;
+    }
+
+    .service-title {
+        font-size: 1.03rem;
+        font-weight: 800;
+        color: #0F172A;
+        margin-bottom: .35rem;
+    }
+
+    .service-desc {
+        font-size: .84rem;
+        line-height: 1.58;
+        color: #64748B;
+        min-height: 54px;
+    }
+
+    .agent-wrap {
+        margin-top: 1.2rem;
+        padding: 1.3rem 1.35rem .35rem 1.35rem;
+        border: 1px solid #E2E8F0;
+        border-radius: 24px;
+        background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+        box-shadow: 0 10px 30px rgba(15,23,42,.05);
+    }
+
+    [data-testid="stChatMessage"] {
+        border-radius: 18px;
+        padding: .65rem 1rem;
+        margin-bottom: .55rem;
+        border: 1px solid #E2E8F0;
+        background: white;
+    }
+
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+        background: #F8FAFC;
+    }
+
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
+        background: linear-gradient(135deg, #EFF6FF 0%, #EEF2FF 100%);
+    }
+
+    [data-testid="stChatInput"] {
+        border-radius: 24px;
+        border: 1px solid #CBD5E1 !important;
+    }
+
+    .stButton > button {
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        min-height: 42px;
+        transition: all .18s ease;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(37,99,235,.14);
+    }
+
+    [data-testid="stSidebar"] {
+        min-width: 260px;
+    }
+
+    [data-testid="stSidebar"] h2 {
+        color: #2563EB;
+        font-size: 1.05rem;
+    }
+
+    .side-nav {
+        display: flex;
+        flex-direction: column;
+        gap: .45rem;
+        margin-top: .55rem;
+    }
+
+    .side-nav a {
+        display: flex;
+        align-items: center;
+        gap: .65rem;
+        padding: .72rem .8rem;
+        border-radius: 12px;
+        text-decoration: none !important;
+        color: #334155 !important;
+        font-size: .9rem;
+        font-weight: 700;
+        border: 1px solid transparent;
+        transition: all .18s ease;
+    }
+
+    .side-nav a:hover {
+        background: #EFF6FF;
+        color: #1D4ED8 !important;
+        border-color: #DBEAFE;
+        transform: translateX(2px);
+    }
+
+    .service-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        box-sizing: border-box;
+        padding: .72rem .9rem;
+        margin-bottom: .8rem;
+        border-radius: 12px;
+        background: #FFFFFF;
+        border: 1px solid #DCE4EF;
+        text-decoration: none !important;
+        color: #1D4ED8 !important;
+        font-size: .88rem;
+        font-weight: 800;
+        box-shadow: 0 4px 14px rgba(15,23,42,.035);
+        transition: all .18s ease;
+    }
+
+    .service-link:hover {
+        background: #EFF6FF;
+        border-color: #BFDBFE;
+        transform: translateY(-1px);
+        box-shadow: 0 7px 18px rgba(37,99,235,.10);
+    }
+
+    .service-link span {
+        font-size: 1rem;
+    }
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+        .block-container {
+            padding-left: .75rem;
+            padding-right: .75rem;
+        }
+        .hero {
+            padding: 1.5rem 1.25rem;
+            border-radius: 22px;
+        }
+        .hero-title {
+            font-size: 1.72rem;
+        }
+        .hero-desc {
+            font-size: .92rem;
+        }
+        .service-card {
+            min-height: auto;
+        }
+    }
+</style>
+""", unsafe_allow_html=True)
+
 with st.sidebar:
-    st.header("✦ 주요 기능")
+    st.markdown("### ✦ AI WORKBENCH")
+    st.caption("직접 만든 AI 서비스와 에이전트를 한 곳에서")
+
+    st.divider()
+    st.markdown("**빠른 이동**")
+
     st.markdown("""
-    <div style="line-height: 2.2;">
-    🕐&nbsp;&nbsp;현재 시각 / 요일<br>
-    🧮&nbsp;&nbsp;계산기<br>
-    📊&nbsp;&nbsp;DART 기업 공시 조회<br>
-    ⚖️&nbsp;&nbsp;법령 검색<br>
-    🔍&nbsp;&nbsp;실시간 웹 검색
+    <div class="side-nav">
+        <a href="/내차에서드림카까지" target="_self">🚙 <span>내차에서 드림카까지</span></a>
+        <a href="/부동산모니터" target="_self">🏠 <span>부동산 모니터</span></a>
+        <a href="/보고서작성기" target="_self">📄 <span>보고서 작성기</span></a>
+        <a href="/차량선택기" target="_self">🚗 <span>차량 선택기</span></a>
+        <a href="/GIF변환기" target="_self">🎞️ <span>GIF 변환기</span></a>
     </div>
     """, unsafe_allow_html=True)
+
     st.divider()
-    st.caption("예시: '삼성전자 최근 공시 알려줘'")
-    st.divider()
-    if st.button("🔄 대화 초기화"):
+    st.markdown("**AI 에이전트 기능**")
+    st.caption("DART · 법령 · 웹검색 · 계산 · 시간")
+
+    if st.button("🔄 대화 초기화", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
 
-st.title("✦ 나만의 AI 에이전트")
-st.caption("DART 공시 조회 · 법령 검색 · 웹 검색 · 계산기 · 시계 기능을 갖춘 어시스턴트예요")
+# Hero
+st.markdown("""
+<div class="hero">
+    <div class="hero-kicker">MY AI WORKBENCH</div>
+    <div class="hero-title">아이디어를 직접 서비스로 만드는<br>나만의 AI 실험실</div>
+    <div class="hero-desc">
+        차량 추천과 금융견적, 부동산 모니터링, 보고서 작성, DART 공시·법령·웹 검색까지.
+        지금까지 직접 만든 기능들을 하나의 화면에서 연결하고, 필요한 업무로 바로 이동할 수 있습니다.
+    </div>
+    <div class="hero-badges">
+        <span class="hero-badge">AI Prototype</span>
+        <span class="hero-badge">Vibe Coding</span>
+        <span class="hero-badge">Agent + API</span>
+        <span class="hero-badge">Business Automation</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# 서비스 허브
+st.markdown('<div class="section-title">내가 만든 서비스</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-desc">각 기능은 독립 서비스이면서, 향후 하나의 AI 업무 플랫폼으로 확장할 수 있도록 구성합니다.</div>',
+    unsafe_allow_html=True
+)
+
+cards = [
+    (
+        "🚙", "내차에서 드림카까지",
+        "내 차 시세조회부터 다음 차량 탐색·추천까지 연결하는 리텐션형 자동차 서비스",
+        "/내차에서드림카까지",
+        "서비스 열기"
+    ),
+    (
+        "🏡", "부동산 모니터",
+        "청약·실거래·관심지역을 한 곳에서 확인하고 조건별 모니터링하는 부동산 정보 서비스",
+        "/부동산모니터",
+        "모니터 열기"
+    ),
+    (
+        "📄", "보고서 작성기",
+        "업무 내용을 경영진 관점의 구조와 메시지로 정리하는 AI 보고서 작성 도구",
+        "/보고서작성기",
+        "작성기 열기"
+    ),
+    (
+        "🚗", "차량 선택기",
+        "차량 조건과 선호도를 바탕으로 적합한 모델을 탐색하는 차량 선택 프로토타입",
+        "/차량선택기",
+        "선택기 열기"
+    ),
+    (
+        "🎞️", "GIF 변환기",
+        "서비스 시연용 이미지·화면을 움직이는 콘텐츠로 변환하기 위한 제작 도구",
+        "pages/5_🎞_GIF변환기.py",
+        "도구 열기"
+    ),
+    (
+        "✦", "AI 에이전트",
+        "DART 공시, 법령정보, 실시간 웹검색을 도구 호출 방식으로 연결한 개인 업무 에이전트",
+        None,
+        None
+    )
+]
+
+row1 = st.columns(3)
+row2 = st.columns(3)
+
+for idx, card in enumerate(cards):
+    icon, title, desc, path, btn = card
+    col = row1[idx] if idx < 3 else row2[idx - 3]
+
+    with col:
+        st.markdown(
+            f"""
+            <div class="service-card">
+                <div class="service-icon">{icon}</div>
+                <div class="service-title">{title}</div>
+                <div class="service-desc">{desc}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        if path:
+            st.markdown(
+                f"""
+                <a class="service-link" href="{path}" target="_self">
+                    {btn} <span>→</span>
+                </a>
+                """,
+                unsafe_allow_html=True
+            )
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# AI 에이전트 영역
+st.markdown('<div class="section-title">AI 에이전트</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-desc">공시·법령·웹 검색을 필요한 순간에 호출하는 도구형 에이전트입니다.</div>',
+    unsafe_allow_html=True
+)
+
+quick1, quick2, quick3, quick4 = st.columns(4)
+with quick1:
+    st.caption("📊 DART")
+    st.markdown("기업 최근 공시 조회")
+with quick2:
+    st.caption("⚖️ LAW")
+    st.markdown("대한민국 법령 검색")
+with quick3:
+    st.caption("🔍 WEB")
+    st.markdown("실시간 웹 검색")
+with quick4:
+    st.caption("🧮 TOOL")
+    st.markdown("계산·시간 확인")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -322,14 +631,15 @@ for msg in st.session_state.messages:
         with st.chat_message(msg["role"], avatar=avatar):
             st.write(msg["content"])
 
-user_input = st.chat_input("무엇이든 물어보세요")
+user_input = st.chat_input("예: 삼성전자 최근 공시 알려줘 / 전자금융거래법 검색해줘")
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
+
     with st.chat_message("user", avatar="🧑"):
         st.write(user_input)
 
-    with st.spinner("답변을 준비하고 있어요..."):
+    with st.spinner("에이전트가 필요한 도구를 확인하고 있어요..."):
         reply = call_claude(st.session_state.messages)
 
     with st.chat_message("assistant", avatar="✦"):
