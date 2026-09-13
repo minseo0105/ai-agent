@@ -12,7 +12,7 @@ st.set_page_config(
     page_title="내 차에서 드림카까지",
     page_icon="🚘",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
