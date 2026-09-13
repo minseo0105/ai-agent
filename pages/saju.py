@@ -721,6 +721,33 @@ DAY_MASTER_DESC = {
     "癸": ("계수", "비와 이슬처럼 미세한 신호를 포착하고 스며드는 유형", "분석·관찰·정보"),
 }
 
+TEN_GOD_KO = {
+    "比肩": "비견",
+    "劫财": "겁재",
+    "食神": "식신",
+    "伤官": "상관",
+    "傷官": "상관",
+    "偏财": "편재",
+    "偏財": "편재",
+    "正财": "정재",
+    "正財": "정재",
+    "七杀": "편관",
+    "七殺": "편관",
+    "偏官": "편관",
+    "正官": "정관",
+    "偏印": "편인",
+    "正印": "정인",
+    "日主": "일주",
+    "日元": "일주",
+}
+
+def normalize_ten_god(value):
+    """lunar_python의 한자 십성명을 한국 명리 용어로 통일."""
+    if not value:
+        return value
+    return TEN_GOD_KO.get(value, value)
+
+
 TEN_GOD_DESC = {
     "비견": "자기주도·동료·독립성",
     "겁재": "경쟁·추진·관계 속 주도권",
@@ -997,6 +1024,12 @@ def safe_call(obj, method, default=""):
         return default
 
 
+def normalize_ten_god_list(values):
+    if not isinstance(values, list):
+        return values
+    return [normalize_ten_god(v) for v in values if v]
+
+
 def make_solar_from_input(birth_date, calendar_type, time_text, lunar_leap=False):
     """
     time_text가 '모름'이면 명식의 연·월·일 계산을 위해 12:00을 임시 사용합니다.
@@ -1050,17 +1083,17 @@ def build_chart(birth_date, calendar_type, time_text, gender, lunar_leap=False):
     elem_counts = visible_element_counts(pillars_for_count)
 
     shishen_gan = {
-        "연간": safe_call(eight, "getYearShiShenGan"),
-        "월간": safe_call(eight, "getMonthShiShenGan"),
+        "연간": normalize_ten_god(safe_call(eight, "getYearShiShenGan")),
+        "월간": normalize_ten_god(safe_call(eight, "getMonthShiShenGan")),
         "일간": "일주",
-        "시간": "" if unknown_time else safe_call(eight, "getTimeShiShenGan"),
+        "시간": "" if unknown_time else normalize_ten_god(safe_call(eight, "getTimeShiShenGan")),
     }
 
     shishen_zhi = {
-        "연지": safe_call(eight, "getYearShiShenZhi", []),
-        "월지": safe_call(eight, "getMonthShiShenZhi", []),
-        "일지": safe_call(eight, "getDayShiShenZhi", []),
-        "시지": [] if unknown_time else safe_call(eight, "getTimeShiShenZhi", []),
+        "연지": normalize_ten_god_list(safe_call(eight, "getYearShiShenZhi", [])),
+        "월지": normalize_ten_god_list(safe_call(eight, "getMonthShiShenZhi", [])),
+        "일지": normalize_ten_god_list(safe_call(eight, "getDayShiShenZhi", [])),
+        "시지": [] if unknown_time else normalize_ten_god_list(safe_call(eight, "getTimeShiShenZhi", [])),
     }
 
     wuxing = {
