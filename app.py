@@ -10,13 +10,12 @@ st.set_page_config(page_title="AI Workbench", page_icon="✦", layout="wide", in
 
 
 # ==========================================
-# ACCESS GATE
+# WELCOME GATE
 # ==========================================
 def require_login():
     if st.session_state.get("authenticated", False):
         return
 
-    # 로그인 화면 전용 스타일
     st.markdown("""
 <style>
 [data-testid="stSidebar"] { display: none !important; }
@@ -24,32 +23,32 @@ def require_login():
 [data-testid="stSidebarCollapsedControl"] { display: none !important; }
 
 .block-container {
-    max-width: 760px;
+    max-width: 780px;
     padding-top: 7vh;
     padding-bottom: 4rem;
 }
 
-.login-shell {
-    max-width: 520px;
+.welcome-shell {
+    max-width: 560px;
     margin: 0 auto;
     text-align: center;
 }
 
-.login-logo {
-    width: 72px;
-    height: 72px;
+.welcome-logo {
+    width: 76px;
+    height: 76px;
     margin: 0 auto 22px auto;
-    border-radius: 22px;
+    border-radius: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 31px;
     color: white;
     background: linear-gradient(135deg, #0F172A 0%, #1D4ED8 100%);
     box-shadow: 0 16px 38px rgba(37, 99, 235, .24);
 }
 
-.login-kicker {
+.welcome-kicker {
     font-size: .76rem;
     font-weight: 800;
     letter-spacing: .14em;
@@ -57,26 +56,26 @@ def require_login():
     margin-bottom: .65rem;
 }
 
-.login-title {
-    font-size: 2.25rem;
+.welcome-title {
+    font-size: 2.35rem;
     line-height: 1.16;
     font-weight: 850;
     letter-spacing: -.05em;
     color: #0F172A;
-    margin-bottom: .8rem;
+    margin-bottom: .85rem;
 }
 
-.login-desc {
+.welcome-desc {
     color: #64748B;
-    font-size: .96rem;
-    line-height: 1.7;
-    margin-bottom: 2rem;
+    font-size: .98rem;
+    line-height: 1.75;
+    margin-bottom: 1.7rem;
 }
 
-.quiz-box {
-    max-width: 520px;
-    margin: 0 auto 1.25rem auto;
-    padding: 1.3rem 1.2rem;
+.welcome-card {
+    max-width: 560px;
+    margin: 0 auto 1.1rem auto;
+    padding: 1.3rem 1.25rem;
     border: 1px solid #E2E8F0;
     border-radius: 20px;
     background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
@@ -84,108 +83,135 @@ def require_login():
     text-align: center;
 }
 
-.quiz-title {
-    font-size: 1.15rem;
+.welcome-card-title {
+    font-size: 1.08rem;
     font-weight: 850;
     color: #0F172A;
     margin-bottom: .35rem;
 }
 
-.quiz-hint {
+.welcome-card-desc {
     color: #64748B;
     font-size: .84rem;
+    line-height: 1.6;
 }
 
-.login-footnote {
-    margin-top: 1.35rem;
-    padding: .9rem 1rem;
-    border-radius: 14px;
-    background: #F8FAFC;
-    border: 1px solid #E2E8F0;
-    font-size: .82rem;
-    line-height: 1.65;
-    color: #64748B;
-    text-align: center;
+.welcome-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: .45rem;
+    margin-top: 1rem;
 }
 
-div[data-testid="stTextInput"] input {
+.welcome-tag {
+    display: inline-block;
+    padding: .4rem .68rem;
+    border-radius: 999px;
+    background: #EFF6FF;
+    border: 1px solid #DBEAFE;
+    color: #1D4ED8;
+    font-size: .75rem;
+    font-weight: 750;
+}
+
+.welcome-footnote {
+    margin-top: 1.15rem;
+    font-size: .79rem;
+    line-height: 1.6;
+    color: #94A3B8;
     text-align: center;
-    letter-spacing: .35em;
-    font-size: 1.15rem;
-    font-weight: 800;
-    border-radius: 14px;
 }
 
 .stButton > button {
     border-radius: 14px !important;
-    min-height: 46px;
+    min-height: 50px;
     font-weight: 800 !important;
+    font-size: .98rem !important;
+}
+
+@media (max-width: 768px) {
+    .block-container {
+        padding-top: 5vh;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .welcome-logo {
+        width: 66px;
+        height: 66px;
+        border-radius: 20px;
+        font-size: 27px;
+        margin-bottom: 18px;
+    }
+
+    .welcome-title {
+        font-size: 1.9rem;
+    }
+
+    .welcome-desc {
+        font-size: .9rem;
+        line-height: 1.65;
+    }
+
+    .welcome-card {
+        padding: 1.1rem 1rem;
+        border-radius: 18px;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
 
-    # HTML은 들여쓰기 없이 별도 렌더링해서 코드처럼 보이는 문제 방지
     st.markdown(
-        '<div class="login-shell">'
-        '<div class="login-logo">✦</div>'
-        '<div class="login-kicker">MINSEO&#39;S AI LAB</div>'
-        '<div class="login-title">민서의 AI Lab</div>'
-        '<div class="login-desc">'
-        '아이디어를 직접 서비스로 만드는 개인 AI 작업공간입니다.<br>'
-        '입장 전에 아주 간단한 문제 하나만 풀어주세요.'
+        '<div class="welcome-shell">'
+        '<div class="welcome-logo">✦</div>'
+        '<div class="welcome-kicker">MINSEO&#39;S AI LAB</div>'
+        '<div class="welcome-title">민서의 AI Lab</div>'
+        '<div class="welcome-desc">'
+        '아이디어가 떠오르면, 직접 만들어봅니다.<br>'
+        'AI Agent · API · Vibe Coding으로 만든 작은 서비스들을<br>'
+        '자유롭게 둘러보고 직접 체험해보세요.'
         '</div>'
         '</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="quiz-box">'
-        '<div class="quiz-title">🤔 김민서의 생일은?</div>'
-        '<div class="quiz-hint">4자리 숫자를 맞히면 AI Lab의 문이 열립니다.</div>'
+        '<div class="welcome-card">'
+        '<div class="welcome-card-title">👋 방문해주셔서 반가워요</div>'
+        '<div class="welcome-card-desc">'
+        '이곳은 아이디어를 실제 서비스 형태로 만들어보는 개인 AI 실험실입니다.<br>'
+        '드림카 추천, 부동산 모니터, 보고서 작성기 등 직접 만든 Prototype을 공개합니다.'
+        '</div>'
+        '<div class="welcome-tags">'
+        '<span class="welcome-tag">AI Agent</span>'
+        '<span class="welcome-tag">API</span>'
+        '<span class="welcome-tag">Vibe Coding</span>'
+        '<span class="welcome-tag">Prototype</span>'
+        '</div>'
         '</div>',
         unsafe_allow_html=True
     )
 
-    left, center, right = st.columns([1, 1.2, 1])
+    left, center, right = st.columns([1, 1.35, 1])
 
     with center:
-        pin = st.text_input(
-            "PIN",
-            type="password",
-            placeholder="••••",
-            max_chars=4,
-            label_visibility="collapsed",
-            key="login_pin"
-        )
-
         if st.button(
-            "민서의 AI Lab 입장하기 →",
+            "민서의 AI Lab 구경하기 →",
             type="primary",
-            use_container_width=True
+            use_container_width=True,
+            key="enter_ai_lab"
         ):
-            app_pin = st.secrets.get("APP_PIN", None)
+            st.session_state.authenticated = True
+            st.toast("✨ 민서의 AI Lab에 오신 걸 환영합니다.")
+            st.rerun()
 
-            if not app_pin:
-                st.error("⚙️ APP_PIN이 설정되지 않았어요. .streamlit/secrets.toml을 확인해 주세요.")
-            elif pin == str(app_pin):
-                st.session_state.authenticated = True
-                st.toast("✨ 정답! 민서의 AI Lab에 오신 걸 환영합니다.")
-                st.rerun()
-            else:
-                st.error("🫢 앗, 그날은 아닌데요! 민서에게 힌트를 요청해보세요.")
-
-        st.markdown(
-            """
-<div class="login-footnote">
-    <b style="color:#334155;">비밀번호가 궁금하다고요? 👀</b><br>
-    민서에게 슬쩍 물어보세요.<br>
-    <span style="color:#2563EB;font-weight:700;">
-        아이디어 있는 사람에겐 언제나 열려 있어요 :)
-    </span>
-</div>
-""",
-            unsafe_allow_html=True
-        )
+    st.markdown(
+        '<div class="welcome-footnote">'
+        '개인적으로 기획하고 직접 구현해보는 AI Prototype 공간입니다.'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
     st.stop()
 
@@ -897,9 +923,8 @@ with st.sidebar:
         st.session_state.messages = []
         st.rerun()
 
-    if st.button("🔒 로그아웃", use_container_width=True):
+    if st.button("🚪 처음 화면으로", use_container_width=True):
         st.session_state.authenticated = False
-        st.session_state.pop("login_pin", None)
         st.rerun()
 
 # Hero
