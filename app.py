@@ -8,6 +8,160 @@ from datetime import datetime
 
 st.set_page_config(page_title="AI Workbench", page_icon="✦", layout="wide", initial_sidebar_state="expanded")
 
+
+# ==========================================
+# ACCESS GATE
+# ==========================================
+def require_login():
+    if st.session_state.get("authenticated", False):
+        return
+
+    st.markdown("""
+    <style>
+        [data-testid="stSidebar"] { display: none; }
+
+        .block-container {
+            max-width: 760px;
+            padding-top: 7vh;
+            padding-bottom: 4rem;
+        }
+
+        .login-shell {
+            max-width: 520px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 22px auto;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            background: linear-gradient(135deg, #0F172A 0%, #1D4ED8 100%);
+            box-shadow: 0 16px 38px rgba(37, 99, 235, .24);
+        }
+
+        .login-kicker {
+            font-size: .76rem;
+            font-weight: 800;
+            letter-spacing: .14em;
+            color: #2563EB;
+            margin-bottom: .65rem;
+        }
+
+        .login-title {
+            font-size: 2.25rem;
+            line-height: 1.16;
+            font-weight: 850;
+            letter-spacing: -.05em;
+            color: #0F172A;
+            margin-bottom: .8rem;
+        }
+
+        .login-desc {
+            color: #64748B;
+            font-size: .96rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-box {
+            margin: 0 auto 1rem auto;
+            padding: 1.25rem 1.2rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, .055);
+        }
+
+        .quiz-title {
+            font-size: 1.15rem;
+            font-weight: 850;
+            color: #0F172A;
+            margin-bottom: .35rem;
+        }
+
+        .quiz-hint {
+            color: #64748B;
+            font-size: .84rem;
+        }
+
+        .login-footnote {
+            margin-top: 1.25rem;
+            font-size: .78rem;
+            color: #94A3B8;
+        }
+
+        div[data-testid="stTextInput"] input {
+            text-align: center;
+            letter-spacing: .35em;
+            font-size: 1.15rem;
+            font-weight: 800;
+            border-radius: 14px;
+        }
+
+        .stButton > button {
+            border-radius: 14px !important;
+            min-height: 46px;
+            font-weight: 800 !important;
+        }
+    </style>
+
+    <div class="login-shell">
+        <div class="login-logo">✦</div>
+        <div class="login-kicker">PRIVATE AI WORKBENCH</div>
+        <div class="login-title">민서의 AI Lab</div>
+        <div class="login-desc">
+            아이디어를 직접 서비스로 만드는 개인 AI 작업공간입니다.<br>
+            입장 전에 아주 간단한 문제 하나만 풀어주세요.
+        </div>
+
+        <div class="quiz-box">
+            <div class="quiz-title">🤔 김민서의 생일은?</div>
+            <div class="quiz-hint">힌트: 4자리 숫자만 입력하면 문이 열립니다.</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    left, center, right = st.columns([1, 1.2, 1])
+
+    with center:
+        pin = st.text_input(
+            "PIN",
+            type="password",
+            placeholder="••••",
+            max_chars=4,
+            label_visibility="collapsed",
+            key="login_pin"
+        )
+
+        if st.button(
+            "나만의 AI Lab 입장하기 →",
+            type="primary",
+            use_container_width=True
+        ):
+            if pin == str(st.secrets["APP_PIN"]):
+                st.session_state.authenticated = True
+                st.toast("🎉 정답! 민서의 AI Lab에 오신 걸 환영합니다.")
+                st.rerun()
+            else:
+                st.error("🫢 민서 생일을 모르시네요. 입장 불가!")
+
+        st.markdown(
+            '<div class="login-footnote">Authorized access only · AI WORKBENCH</div>',
+            unsafe_allow_html=True
+        )
+
+    st.stop()
+
+
+require_login()
+
 client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
 tools = [
@@ -505,6 +659,11 @@ with st.sidebar:
 
     if st.button("🔄 대화 초기화", use_container_width=True):
         st.session_state.messages = []
+        st.rerun()
+
+    if st.button("🔒 로그아웃", use_container_width=True):
+        st.session_state.authenticated = False
+        st.session_state.pop("login_pin", None)
         st.rerun()
 
 # Hero
