@@ -810,14 +810,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<style>
-[data-testid="stSidebarNav"] {
-    display: none !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.markdown(r"""
 <style>
 /* 기본 pages 자동 메뉴 강제 숨김 */
@@ -895,25 +887,7 @@ st.markdown(r"""
 
 with st.sidebar:
     st.markdown("### ✦ AI WORKBENCH")
-    st.caption("직접 만든 AI 서비스와 에이전트를 한 곳에서")
-
-    st.divider()
-    st.markdown("**빠른 이동**")
-
-    if st.button("🚙 내차에서 드림카까지", key="side_dreamcar", use_container_width=True):
-        st.switch_page("pages/dreamcar.py")
-
-    if st.button("🏠 부동산 모니터", key="side_realestate", use_container_width=True):
-        st.switch_page("pages/realestate.py")
-
-    if st.button("📄 보고서 작성기", key="side_report", use_container_width=True):
-        st.switch_page("pages/report.py")
-
-    if st.button("🚗 차량 선택기", key="side_car_selector", use_container_width=True):
-        st.switch_page("pages/car_selector.py")
-
-    if st.button("🎞️ GIF 변환기", key="side_gif", use_container_width=True):
-        st.switch_page("pages/gif_converter.py")
+    st.caption("왼쪽 메뉴에서 원하는 서비스를 선택하세요.")
 
     st.divider()
     st.markdown("**AI 에이전트 기능**")
@@ -953,21 +927,21 @@ if st.button(
     key="open_dreamcar",
     use_container_width=True,
 ):
-    st.switch_page("pages/dreamcar.py")
+    st.switch_page("pages/1_내차에서_드림카까지.py")
 
 if st.button(
     "🏠  부동산 모니터  ·  청약 · 실거래 · 관심지역 모니터링",
     key="open_realestate",
     use_container_width=True,
 ):
-    st.switch_page("pages/realestate.py")
+    st.switch_page("pages/2_부동산_모니터.py")
 
 if st.button(
     "📄  보고서 작성기  ·  업무 내용을 경영진 보고 구조로 정리",
     key="open_report",
     use_container_width=True,
 ):
-    st.switch_page("pages/report.py")
+    st.switch_page("pages/3_보고서_작성기.py")
 
 with st.expander("기타 도구"):
     if st.button(
@@ -975,14 +949,14 @@ with st.expander("기타 도구"):
         key="open_car_selector",
         use_container_width=True,
     ):
-        st.switch_page("pages/car_selector.py")
+        st.switch_page("pages/4_차량_선택기.py")
 
     if st.button(
         "🎞️ GIF 변환기",
         key="open_gif",
         use_container_width=True,
     ):
-        st.switch_page("pages/gif_converter.py")
+        st.switch_page("pages/5_GIF_변환기.py")
 
 st.markdown("<div style='height:.1rem'></div>", unsafe_allow_html=True)
 

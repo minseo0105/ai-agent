@@ -4,6 +4,7 @@ from pathlib import Path
 import base64
 import re
 import hashlib
+from auth import require_page_auth
 
 # =========================================================
 # 기본 설정
@@ -14,6 +15,60 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# =========================================================
+# 로그인 세션 확인 + 한글 사이드바
+# =========================================================
+require_page_auth()
+
+with st.sidebar:
+    st.markdown("### ✦ AI WORKBENCH")
+    st.caption("민서의 AI Lab")
+
+    if st.button(
+        "🏠 메인으로",
+        key="sidebar_home",
+        use_container_width=True
+    ):
+        st.switch_page("app.py")
+
+    st.divider()
+    st.markdown("**빠른 이동**")
+
+    if st.button(
+        "🚙 내차에서 드림카까지",
+        key="sidebar_dreamcar",
+        use_container_width=True
+    ):
+        st.switch_page("pages/1_내차에서_드림카까지.py")
+
+    if st.button(
+        "🏠 부동산 모니터",
+        key="sidebar_realestate",
+        use_container_width=True
+    ):
+        st.switch_page("pages/2_부동산_모니터.py")
+
+    if st.button(
+        "📄 보고서 작성기",
+        key="sidebar_report",
+        use_container_width=True
+    ):
+        st.switch_page("pages/3_보고서_작성기.py")
+
+    if st.button(
+        "🚗 차량 선택기",
+        key="sidebar_car_selector",
+        use_container_width=True
+    ):
+        st.switch_page("pages/4_차량_선택기.py")
+
+    if st.button(
+        "🎞️ GIF 변환기",
+        key="sidebar_gif",
+        use_container_width=True
+    ):
+        st.switch_page("pages/5_GIF_변환기.py")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 EXCEL_PATH = BASE_DIR / "sample_cars_v3.xlsx"
@@ -446,6 +501,18 @@ if "selected_model" not in st.session_state:
 # =========================================================
 html("""
 <style>
+/* 상세 페이지 사이드바 보이기 */
+[data-testid="stSidebar"]{
+    display:block !important;
+}
+[data-testid="stSidebarContent"]{
+    display:block !important;
+}
+@media (max-width:760px){
+    [data-testid="stSidebar"]{
+        display:block !important;
+    }
+}
 :root{
     --ink:#111827;
     --muted:#748094;

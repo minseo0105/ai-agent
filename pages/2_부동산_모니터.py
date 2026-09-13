@@ -3,19 +3,71 @@ from pathlib import Path
 from datetime import datetime
 
 import streamlit as st
-from auth import require_page_auth, show_home_button
+from auth import require_page_auth
 
 
 st.set_page_config(
     page_title="주택청약 · 부동산 모니터",
     page_icon="🏠",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
-# 로그인 여부 확인 + 홈 버튼
+# 로그인 여부 확인
 require_page_auth()
-show_home_button()
+
+# ============================================================
+# 한글 사이드바
+# ============================================================
+with st.sidebar:
+    st.markdown("### ✦ AI WORKBENCH")
+    st.caption("민서의 AI Lab")
+
+    if st.button(
+        "🏠 메인으로",
+        key="sidebar_home",
+        use_container_width=True,
+    ):
+        st.switch_page("app.py")
+
+    st.divider()
+    st.markdown("**빠른 이동**")
+
+    if st.button(
+        "🚙 내차에서 드림카까지",
+        key="sidebar_dreamcar",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/1_내차에서_드림카까지.py")
+
+    if st.button(
+        "🏠 부동산 모니터",
+        key="sidebar_realestate",
+        use_container_width=True,
+        disabled=True,
+    ):
+        pass
+
+    if st.button(
+        "📄 보고서 작성기",
+        key="sidebar_report",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/3_보고서_작성기.py")
+
+    if st.button(
+        "🚗 차량 선택기",
+        key="sidebar_car_selector",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/4_차량_선택기.py")
+
+    if st.button(
+        "🎞️ GIF 변환기",
+        key="sidebar_gif",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/5_GIF_변환기.py")
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,6 +105,15 @@ init_db(BASE_DIR)
 st.markdown(
     """
 <style>
+
+/* 상세 페이지 사이드바 표시 보조 */
+[data-testid="stSidebar"] {
+    display: block !important;
+}
+[data-testid="stSidebarContent"] {
+    display: block !important;
+}
+
 .block-container {
     max-width: 1140px;
     padding-top: 1.3rem;
@@ -169,16 +230,46 @@ div[data-testid="stFormSubmitButton"] button:hover {
 
 @media (max-width: 768px) {
     .block-container {
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-top: .65rem;
+        padding-left: .8rem;
+        padding-right: .8rem;
+        padding-bottom: 4rem;
     }
 
     .hero {
-        padding: 30px 24px;
+        padding: 24px 20px;
+        border-radius: 22px;
+        margin-bottom: 14px;
+    }
+
+    .hero-kicker {
+        font-size: 9px;
     }
 
     .hero-title {
-        font-size: 29px;
+        font-size: 27px;
+        line-height: 1.18;
+        margin-top: 7px;
+    }
+
+    .hero-desc {
+        font-size: 11px;
+        line-height: 1.55;
+        margin-top: 9px;
+    }
+
+    .section-title {
+        font-size: 22px;
+    }
+
+    .section-desc {
+        font-size: 11px;
+        margin-bottom: 12px;
+    }
+
+    .card {
+        padding: 14px 15px;
+        border-radius: 14px;
     }
 }
 </style>
