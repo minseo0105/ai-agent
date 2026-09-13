@@ -1,9 +1,9 @@
-
 import sys
 from pathlib import Path
 from datetime import datetime
 
 import streamlit as st
+from auth import require_page_auth, show_home_button
 
 
 st.set_page_config(
@@ -12,6 +12,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+# 로그인 여부 확인 + 홈 버튼
+require_page_auth()
+show_home_button()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

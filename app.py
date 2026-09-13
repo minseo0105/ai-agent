@@ -97,9 +97,14 @@ def require_login():
 }
 
 .login-footnote {
-    margin-top: 1.25rem;
-    font-size: .78rem;
-    color: #94A3B8;
+    margin-top: 1.35rem;
+    padding: .9rem 1rem;
+    border-radius: 14px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    font-size: .82rem;
+    line-height: 1.65;
+    color: #64748B;
     text-align: center;
 }
 
@@ -123,7 +128,7 @@ div[data-testid="stTextInput"] input {
     st.markdown(
         '<div class="login-shell">'
         '<div class="login-logo">✦</div>'
-        '<div class="login-kicker">PRIVATE AI WORKBENCH</div>'
+        '<div class="login-kicker">MINSEO&#39;S AI LAB</div>'
         '<div class="login-title">민서의 AI Lab</div>'
         '<div class="login-desc">'
         '아이디어를 직접 서비스로 만드는 개인 AI 작업공간입니다.<br>'
@@ -136,7 +141,7 @@ div[data-testid="stTextInput"] input {
     st.markdown(
         '<div class="quiz-box">'
         '<div class="quiz-title">🤔 김민서의 생일은?</div>'
-        '<div class="quiz-hint">힌트: 4자리 숫자만 입력하면 문이 열립니다.</div>'
+        '<div class="quiz-hint">4자리 숫자를 맞히면 AI Lab의 문이 열립니다.</div>'
         '</div>',
         unsafe_allow_html=True
     )
@@ -154,18 +159,31 @@ div[data-testid="stTextInput"] input {
         )
 
         if st.button(
-            "나만의 AI Lab 입장하기 →",
+            "민서의 AI Lab 입장하기 →",
             type="primary",
             use_container_width=True
         ):
-            if pin == str(st.secrets["APP_PIN"]):
+            app_pin = st.secrets.get("APP_PIN", None)
+
+            if not app_pin:
+                st.error("⚙️ APP_PIN이 설정되지 않았어요. .streamlit/secrets.toml을 확인해 주세요.")
+            elif pin == str(app_pin):
                 st.session_state.authenticated = True
+                st.toast("✨ 정답! 민서의 AI Lab에 오신 걸 환영합니다.")
                 st.rerun()
             else:
-                st.error("🫢 민서 생일을 모르시네요. 입장 불가!")
+                st.error("🫢 앗, 그날은 아닌데요! 민서에게 힌트를 요청해보세요.")
 
         st.markdown(
-            '<div class="login-footnote">Authorized access only · AI WORKBENCH</div>',
+            """
+<div class="login-footnote">
+    <b style="color:#334155;">비밀번호가 궁금하다고요? 👀</b><br>
+    민서에게 슬쩍 물어보세요.<br>
+    <span style="color:#2563EB;font-weight:700;">
+        아이디어 있는 사람에겐 언제나 열려 있어요 :)
+    </span>
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -847,26 +865,53 @@ svc1, svc2, svc3 = st.columns(3)
 with svc1:
     st.markdown("**🚙 내차에서 드림카까지**")
     st.caption("내 차 시세 → 다음 차량 탐색·추천")
-    st.link_button("열기 →", "/내차에서드림카까지", use_container_width=True)
+    if st.button(
+        "열기 →",
+        key="open_dreamcar",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/1_🚙_내차에서드림카까지.py")
 
 with svc2:
     st.markdown("**🏠 부동산 모니터**")
     st.caption("청약 · 실거래 · 관심지역 모니터링")
-    st.link_button("열기 →", "/부동산모니터", use_container_width=True)
+    if st.button(
+        "열기 →",
+        key="open_realestate",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/2_🏠_부동산모니터.py")
 
 with svc3:
     st.markdown("**📄 보고서 작성기**")
     st.caption("업무 내용을 경영진 보고 구조로 정리")
-    st.link_button("열기 →", "/보고서작성기", use_container_width=True)
+    if st.button(
+        "열기 →",
+        key="open_report",
+        use_container_width=True,
+    ):
+        st.switch_page("pages/3_📄_보고서작성기.py")
 
 with st.expander("기타 도구 보기"):
     ex1, ex2 = st.columns(2)
+
     with ex1:
         st.markdown("**🚗 차량 선택기**")
-        st.link_button("차량 선택기 열기", "/차량선택기", use_container_width=True)
+        if st.button(
+            "차량 선택기 열기",
+            key="open_car_selector",
+            use_container_width=True,
+        ):
+            st.switch_page("pages/4_🚗_차량선택기.py")
+
     with ex2:
         st.markdown("**🎞️ GIF 변환기**")
-        st.link_button("GIF 변환기 열기", "/GIF변환기", use_container_width=True)
+        if st.button(
+            "GIF 변환기 열기",
+            key="open_gif",
+            use_container_width=True,
+        ):
+            st.switch_page("pages/5_🎞️_GIF변환기.py")
 
 st.markdown("<div style='height:.25rem'></div>", unsafe_allow_html=True)
 
