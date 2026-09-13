@@ -16,117 +16,130 @@ def require_login():
     if st.session_state.get("authenticated", False):
         return
 
+    # 로그인 화면 전용 스타일
     st.markdown("""
-    <style>
-        [data-testid="stSidebar"] { display: none; }
+<style>
+[data-testid="stSidebar"] { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+[data-testid="stSidebarCollapsedControl"] { display: none !important; }
 
-        .block-container {
-            max-width: 760px;
-            padding-top: 7vh;
-            padding-bottom: 4rem;
-        }
+.block-container {
+    max-width: 760px;
+    padding-top: 7vh;
+    padding-bottom: 4rem;
+}
 
-        .login-shell {
-            max-width: 520px;
-            margin: 0 auto;
-            text-align: center;
-        }
+.login-shell {
+    max-width: 520px;
+    margin: 0 auto;
+    text-align: center;
+}
 
-        .login-logo {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 22px auto;
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
-            background: linear-gradient(135deg, #0F172A 0%, #1D4ED8 100%);
-            box-shadow: 0 16px 38px rgba(37, 99, 235, .24);
-        }
+.login-logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 22px auto;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+    background: linear-gradient(135deg, #0F172A 0%, #1D4ED8 100%);
+    box-shadow: 0 16px 38px rgba(37, 99, 235, .24);
+}
 
-        .login-kicker {
-            font-size: .76rem;
-            font-weight: 800;
-            letter-spacing: .14em;
-            color: #2563EB;
-            margin-bottom: .65rem;
-        }
+.login-kicker {
+    font-size: .76rem;
+    font-weight: 800;
+    letter-spacing: .14em;
+    color: #2563EB;
+    margin-bottom: .65rem;
+}
 
-        .login-title {
-            font-size: 2.25rem;
-            line-height: 1.16;
-            font-weight: 850;
-            letter-spacing: -.05em;
-            color: #0F172A;
-            margin-bottom: .8rem;
-        }
+.login-title {
+    font-size: 2.25rem;
+    line-height: 1.16;
+    font-weight: 850;
+    letter-spacing: -.05em;
+    color: #0F172A;
+    margin-bottom: .8rem;
+}
 
-        .login-desc {
-            color: #64748B;
-            font-size: .96rem;
-            line-height: 1.7;
-            margin-bottom: 2rem;
-        }
+.login-desc {
+    color: #64748B;
+    font-size: .96rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
 
-        .quiz-box {
-            margin: 0 auto 1rem auto;
-            padding: 1.25rem 1.2rem;
-            border: 1px solid #E2E8F0;
-            border-radius: 20px;
-            background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
-            box-shadow: 0 12px 32px rgba(15, 23, 42, .055);
-        }
+.quiz-box {
+    max-width: 520px;
+    margin: 0 auto 1.25rem auto;
+    padding: 1.3rem 1.2rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, .055);
+    text-align: center;
+}
 
-        .quiz-title {
-            font-size: 1.15rem;
-            font-weight: 850;
-            color: #0F172A;
-            margin-bottom: .35rem;
-        }
+.quiz-title {
+    font-size: 1.15rem;
+    font-weight: 850;
+    color: #0F172A;
+    margin-bottom: .35rem;
+}
 
-        .quiz-hint {
-            color: #64748B;
-            font-size: .84rem;
-        }
+.quiz-hint {
+    color: #64748B;
+    font-size: .84rem;
+}
 
-        .login-footnote {
-            margin-top: 1.25rem;
-            font-size: .78rem;
-            color: #94A3B8;
-        }
+.login-footnote {
+    margin-top: 1.25rem;
+    font-size: .78rem;
+    color: #94A3B8;
+    text-align: center;
+}
 
-        div[data-testid="stTextInput"] input {
-            text-align: center;
-            letter-spacing: .35em;
-            font-size: 1.15rem;
-            font-weight: 800;
-            border-radius: 14px;
-        }
+div[data-testid="stTextInput"] input {
+    text-align: center;
+    letter-spacing: .35em;
+    font-size: 1.15rem;
+    font-weight: 800;
+    border-radius: 14px;
+}
 
-        .stButton > button {
-            border-radius: 14px !important;
-            min-height: 46px;
-            font-weight: 800 !important;
-        }
-    </style>
+.stButton > button {
+    border-radius: 14px !important;
+    min-height: 46px;
+    font-weight: 800 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    <div class="login-shell">
-        <div class="login-logo">✦</div>
-        <div class="login-kicker">PRIVATE AI WORKBENCH</div>
-        <div class="login-title">민서의 AI Lab</div>
-        <div class="login-desc">
-            아이디어를 직접 서비스로 만드는 개인 AI 작업공간입니다.<br>
-            입장 전에 아주 간단한 문제 하나만 풀어주세요.
-        </div>
+    # HTML은 들여쓰기 없이 별도 렌더링해서 코드처럼 보이는 문제 방지
+    st.markdown(
+        '<div class="login-shell">'
+        '<div class="login-logo">✦</div>'
+        '<div class="login-kicker">PRIVATE AI WORKBENCH</div>'
+        '<div class="login-title">민서의 AI Lab</div>'
+        '<div class="login-desc">'
+        '아이디어를 직접 서비스로 만드는 개인 AI 작업공간입니다.<br>'
+        '입장 전에 아주 간단한 문제 하나만 풀어주세요.'
+        '</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
-        <div class="quiz-box">
-            <div class="quiz-title">🤔 김민서의 생일은?</div>
-            <div class="quiz-hint">힌트: 4자리 숫자만 입력하면 문이 열립니다.</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        '<div class="quiz-box">'
+        '<div class="quiz-title">🤔 김민서의 생일은?</div>'
+        '<div class="quiz-hint">힌트: 4자리 숫자만 입력하면 문이 열립니다.</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
     left, center, right = st.columns([1, 1.2, 1])
 
@@ -147,7 +160,6 @@ def require_login():
         ):
             if pin == str(st.secrets["APP_PIN"]):
                 st.session_state.authenticated = True
-                st.toast("🎉 정답! 민서의 AI Lab에 오신 걸 환영합니다.")
                 st.rerun()
             else:
                 st.error("🫢 민서 생일을 모르시네요. 입장 불가!")
@@ -613,24 +625,168 @@ st.markdown("""
         font-size: 1rem;
     }
 
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .8rem;
+        margin-top: .6rem;
+    }
+
+    .mini-card {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+        min-height: 92px;
+        padding: 1rem;
+        border: 1px solid #E2E8F0;
+        border-radius: 18px;
+        background: #FFFFFF;
+        text-decoration: none !important;
+        color: #0F172A !important;
+        box-shadow: 0 7px 20px rgba(15,23,42,.045);
+        transition: all .18s ease;
+    }
+
+    .mini-card:hover {
+        transform: translateY(-2px);
+        border-color: #BFDBFE;
+        box-shadow: 0 10px 24px rgba(37,99,235,.10);
+    }
+
+    .mini-icon {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F8FAFC;
+        font-size: 1.35rem;
+    }
+
+    .mini-body {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .mini-title {
+        font-size: .95rem;
+        font-weight: 800;
+        line-height: 1.35;
+        margin-bottom: .22rem;
+    }
+
+    .mini-desc {
+        font-size: .78rem;
+        line-height: 1.45;
+        color: #64748B;
+    }
+
+    .mini-arrow {
+        color: #2563EB;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
     /* 모바일 */
     @media (max-width: 768px) {
         .block-container {
-            padding-left: .75rem;
-            padding-right: .75rem;
+            padding-top: .65rem;
+            padding-left: .65rem;
+            padding-right: .65rem;
+            padding-bottom: 1.5rem;
         }
+
         .hero {
-            padding: 1.5rem 1.25rem;
-            border-radius: 22px;
+            padding: 1.05rem 1rem;
+            border-radius: 18px;
+            margin-bottom: .75rem;
+            box-shadow: 0 10px 26px rgba(15,23,42,.11);
         }
+
+        .hero-kicker {
+            font-size: .68rem;
+            margin-bottom: .35rem;
+        }
+
         .hero-title {
-            font-size: 1.72rem;
+            font-size: 1.35rem;
+            line-height: 1.2;
+            margin-bottom: .35rem;
         }
+
         .hero-desc {
-            font-size: .92rem;
+            font-size: .78rem;
+            line-height: 1.45;
+            margin-bottom: .45rem;
         }
-        .service-card {
-            min-height: auto;
+
+        .hero-badges {
+            gap: .3rem;
+            margin-top: .35rem;
+        }
+
+        .hero-badge {
+            padding: .25rem .48rem;
+            font-size: .64rem;
+        }
+
+        .section-title {
+            font-size: 1.08rem;
+            margin-top: .1rem;
+            margin-bottom: .45rem;
+        }
+
+        .mobile-hide {
+            display: none;
+        }
+
+        .service-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .5rem;
+            margin-top: .25rem;
+        }
+
+        .mini-card {
+            min-height: 76px;
+            padding: .7rem;
+            border-radius: 14px;
+            gap: .55rem;
+            box-shadow: none;
+        }
+
+        .mini-icon {
+            width: 34px;
+            height: 34px;
+            flex-basis: 34px;
+            border-radius: 10px;
+            font-size: 1.05rem;
+        }
+
+        .mini-title {
+            font-size: .82rem;
+            margin-bottom: 0;
+        }
+
+        .mini-desc,
+        .mini-arrow {
+            display: none;
+        }
+
+        /* 모바일에서는 보조 도구 3개를 접어서 첫 화면 길이를 줄임 */
+        .secondary-card {
+            display: none;
+        }
+
+        [data-testid="stChatMessage"] {
+            padding: .48rem .7rem;
+            margin-bottom: .4rem;
+            border-radius: 14px;
+        }
+
+        [data-testid="stChatInput"] {
+            border-radius: 18px;
         }
     }
 </style>
@@ -670,98 +826,52 @@ with st.sidebar:
 st.markdown("""
 <div class="hero">
     <div class="hero-kicker">MY AI WORKBENCH</div>
-    <div class="hero-title">아이디어를 직접 서비스로 만드는<br>나만의 AI 실험실</div>
+    <div class="hero-title">아이디어를 서비스로 만드는<br>나만의 AI 실험실</div>
     <div class="hero-desc">
-        차량 추천과 금융견적, 부동산 모니터링, 보고서 작성, DART 공시·법령·웹 검색까지.
-        지금까지 직접 만든 기능들을 하나의 화면에서 연결하고, 필요한 업무로 바로 이동할 수 있습니다.
+        직접 만든 AI 서비스와 업무 도구를 한 곳에서 실행합니다.
     </div>
     <div class="hero-badges">
-        <span class="hero-badge">AI Prototype</span>
         <span class="hero-badge">Vibe Coding</span>
         <span class="hero-badge">Agent + API</span>
-        <span class="hero-badge">Business Automation</span>
+        <span class="hero-badge">AI Prototype</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 # 서비스 허브
-st.markdown('<div class="section-title">내가 만든 서비스</div>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="section-desc">각 기능은 독립 서비스이면서, 향후 하나의 AI 업무 플랫폼으로 확장할 수 있도록 구성합니다.</div>',
-    unsafe_allow_html=True
-)
+st.markdown("### 내가 만든 서비스")
+st.caption("자주 쓰는 3개 서비스를 바로 실행합니다.")
 
-cards = [
-    (
-        "🚙", "내차에서 드림카까지",
-        "내 차 시세조회부터 다음 차량 탐색·추천까지 연결하는 리텐션형 자동차 서비스",
-        "/내차에서드림카까지",
-        "서비스 열기"
-    ),
-    (
-        "🏡", "부동산 모니터",
-        "청약·실거래·관심지역을 한 곳에서 확인하고 조건별 모니터링하는 부동산 정보 서비스",
-        "/부동산모니터",
-        "모니터 열기"
-    ),
-    (
-        "📄", "보고서 작성기",
-        "업무 내용을 경영진 관점의 구조와 메시지로 정리하는 AI 보고서 작성 도구",
-        "/보고서작성기",
-        "작성기 열기"
-    ),
-    (
-        "🚗", "차량 선택기",
-        "차량 조건과 선호도를 바탕으로 적합한 모델을 탐색하는 차량 선택 프로토타입",
-        "/차량선택기",
-        "선택기 열기"
-    ),
-    (
-        "🎞️", "GIF 변환기",
-        "서비스 시연용 이미지·화면을 움직이는 콘텐츠로 변환하기 위한 제작 도구",
-        "pages/5_🎞_GIF변환기.py",
-        "도구 열기"
-    ),
-    (
-        "✦", "AI 에이전트",
-        "DART 공시, 법령정보, 실시간 웹검색을 도구 호출 방식으로 연결한 개인 업무 에이전트",
-        None,
-        None
-    )
-]
+svc1, svc2, svc3 = st.columns(3)
 
-row1 = st.columns(3)
-row2 = st.columns(3)
+with svc1:
+    st.markdown("**🚙 내차에서 드림카까지**")
+    st.caption("내 차 시세 → 다음 차량 탐색·추천")
+    st.link_button("열기 →", "/내차에서드림카까지", use_container_width=True)
 
-for idx, card in enumerate(cards):
-    icon, title, desc, path, btn = card
-    col = row1[idx] if idx < 3 else row2[idx - 3]
+with svc2:
+    st.markdown("**🏠 부동산 모니터**")
+    st.caption("청약 · 실거래 · 관심지역 모니터링")
+    st.link_button("열기 →", "/부동산모니터", use_container_width=True)
 
-    with col:
-        st.markdown(
-            f"""
-            <div class="service-card">
-                <div class="service-icon">{icon}</div>
-                <div class="service-title">{title}</div>
-                <div class="service-desc">{desc}</div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        if path:
-            st.markdown(
-                f"""
-                <a class="service-link" href="{path}" target="_self">
-                    {btn} <span>→</span>
-                </a>
-                """,
-                unsafe_allow_html=True
-            )
+with svc3:
+    st.markdown("**📄 보고서 작성기**")
+    st.caption("업무 내용을 경영진 보고 구조로 정리")
+    st.link_button("열기 →", "/보고서작성기", use_container_width=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
+with st.expander("기타 도구 보기"):
+    ex1, ex2 = st.columns(2)
+    with ex1:
+        st.markdown("**🚗 차량 선택기**")
+        st.link_button("차량 선택기 열기", "/차량선택기", use_container_width=True)
+    with ex2:
+        st.markdown("**🎞️ GIF 변환기**")
+        st.link_button("GIF 변환기 열기", "/GIF변환기", use_container_width=True)
+
+st.markdown("<div style='height:.25rem'></div>", unsafe_allow_html=True)
 
 # AI 에이전트 영역
-st.markdown('<div class="section-title">AI 에이전트</div>', unsafe_allow_html=True)
+st.markdown('<div id="ai-agent"></div><div class="section-title">AI 에이전트</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="section-desc">공시·법령·웹 검색을 필요한 순간에 호출하는 도구형 에이전트입니다.</div>',
     unsafe_allow_html=True
