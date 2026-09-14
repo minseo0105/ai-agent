@@ -1439,44 +1439,36 @@ else:
         f"⚡ {selected_model} · 빠르게 — 웹 결과 최대 5건, 빠른 검색과 핵심 답변"
     )
 
-st.markdown(
-    """
-    <div class="agent-tool-grid">
-        <div class="agent-tool-chip">
-            <div class="agent-tool-icon">📊</div>
-            <div class="agent-tool-text">
-                <div class="agent-tool-title">DART</div>
-                <div class="agent-tool-desc">기업 공시</div>
-            </div>
-        </div>
-
-        <div class="agent-tool-chip">
-            <div class="agent-tool-icon">⚖️</div>
-            <div class="agent-tool-text">
-                <div class="agent-tool-title">LAW</div>
-                <div class="agent-tool-desc">법령 검색</div>
-            </div>
-        </div>
-
-        <div class="agent-tool-chip">
-            <div class="agent-tool-icon">🔍</div>
-            <div class="agent-tool-text">
-                <div class="agent-tool-title">WEB</div>
-                <div class="agent-tool-desc">실시간 검색</div>
-            </div>
-        </div>
-
-        <div class="agent-tool-chip">
-            <div class="agent-tool-icon">🧮</div>
-            <div class="agent-tool-text">
-                <div class="agent-tool-title">TOOL</div>
-                <div class="agent-tool-desc">계산 · 시간</div>
-            </div>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
+tool_grid_html = (
+    '<div class="agent-tool-grid">'
+    '<div class="agent-tool-chip">'
+    '<div class="agent-tool-icon">📊</div>'
+    '<div class="agent-tool-text">'
+    '<div class="agent-tool-title">DART</div>'
+    '<div class="agent-tool-desc">기업 공시</div>'
+    '</div></div>'
+    '<div class="agent-tool-chip">'
+    '<div class="agent-tool-icon">⚖️</div>'
+    '<div class="agent-tool-text">'
+    '<div class="agent-tool-title">LAW</div>'
+    '<div class="agent-tool-desc">법령 검색</div>'
+    '</div></div>'
+    '<div class="agent-tool-chip">'
+    '<div class="agent-tool-icon">🔍</div>'
+    '<div class="agent-tool-text">'
+    '<div class="agent-tool-title">WEB</div>'
+    '<div class="agent-tool-desc">실시간 검색</div>'
+    '</div></div>'
+    '<div class="agent-tool-chip">'
+    '<div class="agent-tool-icon">🧮</div>'
+    '<div class="agent-tool-text">'
+    '<div class="agent-tool-title">TOOL</div>'
+    '<div class="agent-tool-desc">계산 · 시간</div>'
+    '</div></div>'
+    '</div>'
 )
+
+st.markdown(tool_grid_html, unsafe_allow_html=True)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
