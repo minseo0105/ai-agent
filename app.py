@@ -1348,7 +1348,7 @@ if "messages" not in st.session_state:
 
 for msg in st.session_state.messages:
     if msg["role"] in ["user", "assistant"] and isinstance(msg["content"], str):
-        avatar = "🧑" if msg["role"] == "user" else "✦"
+        avatar = "🧑" if msg["role"] == "user" else "🤖"
         with st.chat_message(msg["role"], avatar=avatar):
             if msg["role"] == "assistant" and msg.get("model"):
                 st.caption(f"답변 모델 · {msg['model']}")
