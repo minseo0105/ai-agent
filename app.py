@@ -10,8 +10,11 @@ import json
 import time
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from pathlib import Path
 
 st.set_page_config(page_title="AI Workbench", page_icon="✦", layout="wide", initial_sidebar_state="expanded")
+
+BASE_DIR = Path(__file__).resolve().parent
 
 
 # ==========================================
@@ -319,7 +322,7 @@ def calculate(expression):
 
 @st.cache_data
 def load_corp_codes():
-    with open("corp_codes.json", "r", encoding="utf-8") as f:
+    with (BASE_DIR / "corp_codes.json").open("r", encoding="utf-8") as f:
         return json.load(f)
 
 def try_fetch_disclosures(corp_code):
@@ -691,7 +694,7 @@ def call_gpt(messages, search_mode="빠르게"):
         max_tool_rounds = 5 if search_mode == "심층 검색" else 4
 
         response = gpt_client.responses.create(
-            model="gpt-5.6",
+            model="gpt-5.6-terra",
             instructions=(
                 "당신은 민서의 AI Workbench 에이전트다. "
                 "질문에 최신 정보, 공시, 법령, 계산이 필요하면 제공된 도구를 사용한다. "
@@ -742,7 +745,7 @@ def call_gpt(messages, search_mode="빠르게"):
                 )
 
             response = gpt_client.responses.create(
-                model="gpt-5.6",
+            model="gpt-5.6-terra",
                 instructions=(
                     "도구 결과를 바탕으로 질문에 직접 답하라. "
                     "검색 내용은 핵심만 종합하고 불확실성은 명시하라."
@@ -771,7 +774,7 @@ def call_selected_model(messages, provider, search_mode="빠르게"):
         and isinstance(m.get("content"), str)
     ]
 
-    if provider == "GPT-5.6":
+    if provider == "GPT-5.6 Terra":
         return call_gpt(safe_messages, search_mode)
 
     return call_claude(safe_messages, search_mode)
@@ -1417,7 +1420,7 @@ model_col, depth_col = st.columns(2)
 with model_col:
     selected_model = st.radio(
         "검색 · 답변 모델",
-        ["Claude Sonnet 5", "GPT-5.6"],
+        ["Claude Sonnet 5", "GPT-5.6 Terra"],
         horizontal=True,
         key="agent_model_provider",
     )

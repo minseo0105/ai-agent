@@ -1,9 +1,16 @@
+import os
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REMBG_CACHE_DIR = PROJECT_ROOT / ".rembg"
+REMBG_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("REMBG_HOME", str(REMBG_CACHE_DIR))
+
 import streamlit as st
 from PIL import Image, ImageEnhance
 from rembg import remove, new_session
 import io
 import math
-from pathlib import Path
 
 from auth import require_page_auth
 from services.navigation import render_sidebar

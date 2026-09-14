@@ -1,4 +1,16 @@
-.streamlit/
+# Keep deployable Streamlit configuration in Git, but never commit credentials.
+.streamlit/secrets.toml
+
+# Local runtime data and Python build artifacts.
+realestate_monitor.db
+.venv/
+.rembg/
+__pycache__/
+*.py[cod]
+*.bak
+
+# Generated exports from local runs.
+*.pdf
 test.py
 dart_test.py
 law_test.py
