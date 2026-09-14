@@ -1,6 +1,7 @@
 
 from pathlib import Path
 import time
+import argparse
 
 import streamlit as st
 
@@ -51,5 +52,17 @@ def main():
         )
 
 
+def run_once():
+    """Run one safe monitoring cycle for GitHub Actions."""
+    init_db(BASE_DIR)
+    result = run_monitoring_once(BASE_DIR)
+    print("[monitor result]", result)
+    if result["errors"]:
+        raise RuntimeError("; ".join(result["errors"]))
+
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--once", action="store_true")
+    args = parser.parse_args()
+    run_once() if args.once else main()

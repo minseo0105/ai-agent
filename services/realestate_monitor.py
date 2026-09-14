@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -125,6 +126,10 @@ ALL_REGIONS = SEOUL_REGIONS + GYEONGGI_REGIONS
 
 
 def _secret(name: str, default: Optional[str] = None) -> Optional[str]:
+    # GitHub Actions uses environment secrets; Streamlit uses st.secrets.
+    environment_value = os.getenv(name)
+    if environment_value:
+        return environment_value.strip()
     try:
         if "realestate" in st.secrets and name in st.secrets["realestate"]:
             value = st.secrets["realestate"][name]
@@ -147,7 +152,58 @@ def get_public_data_key() -> str:
 
 
 def get_api_status():
-    return {"public_data_key": bool(_secret("PUBLIC_DATA_API_KEY"))}
+    return {
+        "public_data_key": bool(_secret("PUBLIC_DATA_API_KEY")),
+        "persistent_storage": bool(_supabase_config()),
+    }
+
+
+def _supabase_config():
+    """Return the Cloud database settings when Supabase is configured.
+
+    Local development deliberately continues to use SQLite when these secrets
+    are absent, so existing data and the standalone scheduler keep working.
+    """
+    url = _secret("SUPABASE_URL")
+    key = _secret("SUPABASE_SERVICE_ROLE_KEY")
+    if not url or not key:
+        return None
+    return url.rstrip("/"), key
+
+
+def _remote_request(method: str, table: str, *, params=None, payload=None,
+                    prefer=None):
+    """Small PostgREST client used only for the four monitor tables."""
+    config = _supabase_config()
+    if not config:
+        raise RuntimeError("Supabase 설정이 없습니다.")
+
+    url, key = config
+    headers = {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+    }
+    if prefer:
+        headers["Prefer"] = prefer
+
+    response = requests.request(
+        method,
+        f"{url}/rest/v1/{table}",
+        params=params,
+        json=payload,
+        headers=headers,
+        timeout=20,
+    )
+    response.raise_for_status()
+
+    if not response.content:
+        return []
+    return response.json()
+
+
+def _using_remote_db() -> bool:
+    return _supabase_config() is not None
 
 
 def _db(base_dir: Path):
@@ -155,6 +211,11 @@ def _db(base_dir: Path):
 
 
 def init_db(base_dir: Path):
+    # Schema is applied once through supabase/schema.sql.  Do not create a
+    # local database on Streamlit Cloud, whose filesystem is ephemeral.
+    if _using_remote_db():
+        return
+
     con = _db(base_dir)
     cur = con.cursor()
 
@@ -763,6 +824,28 @@ def save_alert_rules(
     # 실거래가 선택되어도 주택유형을 고르지 않았다면 아파트 기본
     trade_property_types = property_types or ["아파트"]
 
+    if _using_remote_db():
+        rows = []
+        for region in regions:
+            lawd_cd = REGION_LAWD.get(region, "")
+            for event_type in event_types:
+                types = trade_property_types if event_type == "신규실거래" else ["해당없음"]
+                for property_type in types:
+                    rows.append({
+                        "region": region,
+                        "lawd_cd": lawd_cd,
+                        "max_price_100m": max_price_100m,
+                        "min_area": min_area,
+                        "event_type": event_type,
+                        "supply_type": supply_value,
+                        "property_type": property_type,
+                        "enabled": True,
+                        "created_at": _now(),
+                    })
+        if rows:
+            _remote_request("POST", "alert_rules", payload=rows)
+        return
+
     con = _db(base_dir)
 
     for region in regions:
@@ -828,6 +911,13 @@ def save_alert_rules(
 def get_auto_monitor_enabled(base_dir: Path) -> bool:
     init_db(base_dir)
 
+    if _using_remote_db():
+        rows = _remote_request(
+            "GET", "app_settings",
+            params={"select": "value", "key": "eq.auto_monitor_enabled"},
+        )
+        return bool(rows) and str(rows[0]["value"]).lower() in ("1", "true", "yes", "on")
+
     con = _db(base_dir)
     row = con.execute(
         "SELECT value FROM app_settings WHERE key='auto_monitor_enabled'"
@@ -842,6 +932,14 @@ def get_auto_monitor_enabled(base_dir: Path) -> bool:
 
 def set_auto_monitor_enabled(base_dir: Path, enabled: bool):
     init_db(base_dir)
+
+    if _using_remote_db():
+        _remote_request(
+            "POST", "app_settings",
+            payload={"key": "auto_monitor_enabled", "value": "1" if enabled else "0"},
+            prefer="resolution=merge-duplicates",
+        )
+        return
 
     con = _db(base_dir)
     con.execute("""
@@ -894,6 +992,14 @@ def estimate_monitor_api_calls(base_dir: Path) -> dict:
 def get_alert_rules(base_dir: Path):
     init_db(base_dir)
 
+    if _using_remote_db():
+        rows = _remote_request(
+            "GET", "alert_rules", params={"select": "*", "order": "id.desc"}
+        )
+        for row in rows:
+            row["enabled"] = bool(row.get("enabled"))
+        return rows
+
     con = _db(base_dir)
     con.row_factory = sqlite3.Row
 
@@ -913,6 +1019,19 @@ def get_alert_rules(base_dir: Path):
 
 
 def toggle_alert_rule(base_dir: Path, rule_id: int):
+    if _using_remote_db():
+        rows = _remote_request(
+            "GET", "alert_rules",
+            params={"select": "enabled", "id": f"eq.{rule_id}"},
+        )
+        if rows:
+            _remote_request(
+                "PATCH", "alert_rules",
+                params={"id": f"eq.{rule_id}"},
+                payload={"enabled": not bool(rows[0]["enabled"])},
+            )
+        return
+
     con = _db(base_dir)
 
     con.execute("""
@@ -930,6 +1049,10 @@ def toggle_alert_rule(base_dir: Path, rule_id: int):
 
 
 def delete_alert_rule(base_dir: Path, rule_id: int):
+    if _using_remote_db():
+        _remote_request("DELETE", "alert_rules", params={"id": f"eq.{rule_id}"})
+        return
+
     con = _db(base_dir)
     con.execute("DELETE FROM alert_rules WHERE id=?", (rule_id,))
     con.commit()
@@ -938,6 +1061,15 @@ def delete_alert_rule(base_dir: Path, rule_id: int):
 
 def get_notifications(base_dir: Path, limit=100):
     init_db(base_dir)
+
+    if _using_remote_db():
+        rows = _remote_request(
+            "GET", "notifications",
+            params={"select": "*", "order": "id.desc", "limit": str(limit)},
+        )
+        for row in rows:
+            row["is_read"] = bool(row.get("is_read"))
+        return rows
 
     con = _db(base_dir)
     con.row_factory = sqlite3.Row
@@ -959,6 +1091,14 @@ def get_notifications(base_dir: Path, limit=100):
 
 
 def mark_notification_read(base_dir: Path, notification_id: int):
+    if _using_remote_db():
+        _remote_request(
+            "PATCH", "notifications",
+            params={"id": f"eq.{notification_id}"},
+            payload={"is_read": True},
+        )
+        return
+
     con = _db(base_dir)
     con.execute(
         "UPDATE notifications SET is_read=1 WHERE id=?",
@@ -969,6 +1109,33 @@ def mark_notification_read(base_dir: Path, notification_id: int):
 
 
 def _snapshot_new(base_dir: Path, source: str, item_key: str, payload: dict):
+    if _using_remote_db():
+        rows = _remote_request(
+            "GET", "source_snapshots",
+            params={
+                "select": "item_key",
+                "source": f"eq.{source}",
+                "item_key": f"eq.{item_key}",
+            },
+        )
+        now = _now()
+        record = {
+            "source": source,
+            "item_key": item_key,
+            "payload": payload,
+            "last_seen_at": now,
+        }
+        if rows:
+            _remote_request(
+                "PATCH", "source_snapshots",
+                params={"source": f"eq.{source}", "item_key": f"eq.{item_key}"},
+                payload=record,
+            )
+            return False
+        record["first_seen_at"] = now
+        _remote_request("POST", "source_snapshots", payload=record)
+        return True
+
     con = _db(base_dir)
 
     exists = con.execute("""
@@ -1022,6 +1189,21 @@ def _notify(
     title: str,
     message: str,
 ):
+    if _using_remote_db():
+        rows = _remote_request(
+            "POST", "notifications",
+            payload={
+                "event_key": event_key,
+                "category": category,
+                "title": title,
+                "message": message,
+                "is_read": False,
+                "created_at": _now(),
+            },
+            prefer="resolution=ignore-duplicates,return=representation",
+        )
+        return bool(rows)
+
     con = _db(base_dir)
 
     try:
