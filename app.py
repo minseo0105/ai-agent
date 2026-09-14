@@ -891,6 +891,53 @@ st.markdown("""
         min-height: 54px;
     }
 
+
+    .agent-tool-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: .6rem;
+        margin: .7rem 0 .95rem 0;
+    }
+
+    .agent-tool-chip {
+        display: flex;
+        align-items: center;
+        gap: .55rem;
+        min-height: 64px;
+        padding: .72rem .8rem;
+        border: 1px solid #E2E8F0;
+        border-radius: 14px;
+        background: #FFFFFF;
+        box-shadow: 0 4px 14px rgba(15,23,42,.035);
+    }
+
+    .agent-tool-icon {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F8FAFC;
+        font-size: 1rem;
+    }
+
+    .agent-tool-title {
+        font-size: .78rem;
+        font-weight: 800;
+        color: #334155;
+        line-height: 1.15;
+    }
+
+    .agent-tool-desc {
+        margin-top: .13rem;
+        font-size: .72rem;
+        color: #94A3B8;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
     .agent-wrap {
         margin-top: 1.2rem;
         padding: 1.3rem 1.35rem .35rem 1.35rem;
@@ -1154,6 +1201,41 @@ st.markdown("""
             display: none;
         }
 
+
+        .agent-tool-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .35rem;
+            margin: .45rem 0 .7rem 0;
+        }
+
+        .agent-tool-chip {
+            min-height: 0;
+            padding: .5rem .35rem;
+            border-radius: 12px;
+            gap: .3rem;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            box-shadow: none;
+        }
+
+        .agent-tool-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 9px;
+            font-size: .9rem;
+        }
+
+        .agent-tool-title {
+            font-size: .68rem;
+            line-height: 1.05;
+        }
+
+        .agent-tool-desc {
+            display: none;
+        }
+
         [data-testid="stChatMessage"] {
             padding: .48rem .7rem;
             margin-bottom: .4rem;
@@ -1357,19 +1439,44 @@ else:
         f"⚡ {selected_model} · 빠르게 — 웹 결과 최대 5건, 빠른 검색과 핵심 답변"
     )
 
-quick1, quick2, quick3, quick4 = st.columns(4)
-with quick1:
-    st.caption("📊 DART")
-    st.markdown("기업 최근 공시 조회")
-with quick2:
-    st.caption("⚖️ LAW")
-    st.markdown("대한민국 법령 검색")
-with quick3:
-    st.caption("🔍 WEB")
-    st.markdown("실시간 웹 검색")
-with quick4:
-    st.caption("🧮 TOOL")
-    st.markdown("계산·시간 확인")
+st.markdown(
+    """
+    <div class="agent-tool-grid">
+        <div class="agent-tool-chip">
+            <div class="agent-tool-icon">📊</div>
+            <div class="agent-tool-text">
+                <div class="agent-tool-title">DART</div>
+                <div class="agent-tool-desc">기업 공시</div>
+            </div>
+        </div>
+
+        <div class="agent-tool-chip">
+            <div class="agent-tool-icon">⚖️</div>
+            <div class="agent-tool-text">
+                <div class="agent-tool-title">LAW</div>
+                <div class="agent-tool-desc">법령 검색</div>
+            </div>
+        </div>
+
+        <div class="agent-tool-chip">
+            <div class="agent-tool-icon">🔍</div>
+            <div class="agent-tool-text">
+                <div class="agent-tool-title">WEB</div>
+                <div class="agent-tool-desc">실시간 검색</div>
+            </div>
+        </div>
+
+        <div class="agent-tool-chip">
+            <div class="agent-tool-icon">🧮</div>
+            <div class="agent-tool-text">
+                <div class="agent-tool-title">TOOL</div>
+                <div class="agent-tool-desc">계산 · 시간</div>
+            </div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
