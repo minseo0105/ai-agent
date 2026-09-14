@@ -430,7 +430,7 @@ def web_search(query):
         "api_key": TAVILY_API_KEY,
         "query": query,
         "search_depth": "basic",
-        "max_results": 5,
+        "max_results": 10,
     }
 
     try:
@@ -445,7 +445,7 @@ def web_search(query):
         summary = []
         for item in results:
             title = item.get("title", "")
-            content = item.get("content", "")[:450]
+            content = item.get("content", "")[:1000]
             url = item.get("url", "")
             summary.append(f"- {title}\n  {content}\n  출처: {url}")
 
@@ -494,7 +494,7 @@ def call_claude(messages):
     try:
         response = claude_client.messages.create(
             model="claude-sonnet-5",
-            max_tokens=1400,
+            max_tokens=3000,
             tools=tools,
             messages=messages,
         )
@@ -534,7 +534,7 @@ def call_claude(messages):
 
             response = claude_client.messages.create(
                 model="claude-sonnet-5",
-                max_tokens=1400,
+                max_tokens=3000,
                 tools=tools,
                 messages=messages,
             )
@@ -684,11 +684,11 @@ def call_gpt(messages):
             tools=OPENAI_TOOLS,
             tool_choice="auto",
             input=input_items,
-            max_output_tokens=1600,
+            max_output_tokens=3000,
         )
 
         tool_round = 0
-        max_tool_rounds = 4
+        max_tool_rounds = 5
 
         while tool_round < max_tool_rounds:
             function_calls = [
@@ -733,7 +733,7 @@ def call_gpt(messages):
                 tools=OPENAI_TOOLS,
                 tool_choice="auto",
                 input=input_items,
-                max_output_tokens=1600,
+                max_output_tokens=3000,
             )
 
         return response.output_text or "응답을 생성하지 못했어요."
