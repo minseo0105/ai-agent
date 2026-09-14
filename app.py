@@ -1,5 +1,10 @@
 import streamlit as st
 import anthropic
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
+
 import requests
 import json
 import time
@@ -218,7 +223,20 @@ def require_login():
 
 require_login()
 
-client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
+ANTHROPIC_API_KEY = st.secrets.get("ANTHROPIC_API_KEY", "")
+OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")
+
+claude_client = (
+    anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    if ANTHROPIC_API_KEY
+    else None
+)
+
+gpt_client = (
+    OpenAI(api_key=OPENAI_API_KEY)
+    if OpenAI is not None and OPENAI_API_KEY
+    else None
+)
 
 tools = [
     {
@@ -277,9 +295,9 @@ tools = [
     }
 ]
 
-DART_API_KEY = st.secrets["DART_API_KEY"]
-LAW_OC = st.secrets["LAW_OC"]
-TAVILY_API_KEY = st.secrets["TAVILY_API_KEY"]
+DART_API_KEY = st.secrets.get("DART_API_KEY", "")
+LAW_OC = st.secrets.get("LAW_OC", "")
+TAVILY_API_KEY = st.secrets.get("TAVILY_API_KEY", "")
 
 def get_current_time():
     now = datetime.now()
@@ -376,74 +394,370 @@ def get_disclosures(company_name):
     return f"'{matched_name}' 조회에 실패했어요 (네트워크 문제일 수 있어요). 잠시 후 다시 시도해주세요. 진단: {last_error}"
 
 def search_law(query):
-    url = "http://www.law.go.kr/DRF/lawSearch.do"
+    if not LAW_OC:
+        return "LAW_OC가 설정되지 않았습니다."
+
+    url = "https://www.law.go.kr/DRF/lawSearch.do"
     params = {"OC": LAW_OC, "target": "law", "type": "XML", "query": query}
-    response = requests.get(url, params=params, timeout=30)
-    root = ET.fromstring(response.content)
-    results = []
-    for law in root.findall("law"):
-        name = law.find("법령명한글").text
-        date = law.find("공포일자").text
-        results.append(date + " - " + name)
-    if not results:
-        return f"'{query}'와 관련된 법령을 찾지 못했어요."
-    return "\n".join(results)
+
+    try:
+        response = requests.get(url, params=params, timeout=15)
+        response.raise_for_status()
+        root = ET.fromstring(response.content)
+
+        results = []
+        for law in root.findall("law"):
+            name_node = law.find("법령명한글")
+            date_node = law.find("공포일자")
+            if name_node is not None and name_node.text:
+                date = date_node.text if date_node is not None and date_node.text else ""
+                results.append(f"{date} - {name_node.text}".strip(" -"))
+
+        if not results:
+            return f"'{query}'와 관련된 법령을 찾지 못했어요."
+
+        return "\n".join(results[:10])
+
+    except Exception as e:
+        return f"법령 검색 중 오류가 발생했어요: {type(e).__name__}: {e}"
 
 def web_search(query):
+    if not TAVILY_API_KEY:
+        return "TAVILY_API_KEY가 설정되지 않았습니다."
+
     url = "https://api.tavily.com/search"
     payload = {
         "api_key": TAVILY_API_KEY,
         "query": query,
-        "max_results": 5
+        "search_depth": "basic",
+        "max_results": 5,
     }
+
     try:
-        response = requests.post(url, json=payload, timeout=20)
+        response = requests.post(url, json=payload, timeout=15)
+        response.raise_for_status()
         data = response.json()
         results = data.get("results", [])
+
         if not results:
             return f"'{query}'에 대한 검색 결과를 찾지 못했어요."
+
         summary = []
         for item in results:
             title = item.get("title", "")
-            content = item.get("content", "")[:200]
-            summary.append(f"- {title}: {content}")
+            content = item.get("content", "")[:450]
+            url = item.get("url", "")
+            summary.append(f"- {title}\n  {content}\n  출처: {url}")
+
         return "\n".join(summary)
+
     except Exception as e:
-        return f"검색 중 오류가 발생했어요: {str(e)}"
+        return f"웹 검색 중 오류가 발생했어요: {type(e).__name__}: {e}"
 
 def extract_text(content_blocks):
     for block in content_blocks:
-        if block.type == "text":
+        if getattr(block, "type", None) == "text":
             return block.text
     return ""
 
+
+def execute_tool(tool_name, tool_input):
+    """Claude와 GPT가 공통으로 사용하는 실제 도구 실행부."""
+    if tool_name == "get_current_time":
+        return get_current_time()
+
+    if tool_name == "get_day_of_week":
+        return get_day_of_week()
+
+    if tool_name == "calculate":
+        return calculate(tool_input.get("expression", ""))
+
+    if tool_name == "get_disclosures":
+        return get_disclosures(tool_input.get("company_name", ""))
+
+    if tool_name == "search_law":
+        return search_law(tool_input.get("query", ""))
+
+    if tool_name == "web_search":
+        return web_search(tool_input.get("query", ""))
+
+    return "알 수 없는 도구예요."
+
+
 def call_claude(messages):
-    response = client.messages.create(model="claude-sonnet-5", max_tokens=1000, tools=tools, messages=messages)
+    if claude_client is None:
+        return (
+            "Claude API를 사용할 수 없습니다. "
+            ".streamlit/secrets.toml에 ANTHROPIC_API_KEY를 확인해 주세요."
+        )
 
-    while response.stop_reason == "tool_use":
-        messages.append({"role": "assistant", "content": response.content})
-        tool_results = []
-        for block in response.content:
-            if block.type == "tool_use":
-                if block.name == "get_current_time":
-                    result = get_current_time()
-                elif block.name == "get_day_of_week":
-                    result = get_day_of_week()
-                elif block.name == "calculate":
-                    result = calculate(block.input["expression"])
-                elif block.name == "get_disclosures":
-                    result = get_disclosures(block.input["company_name"])
-                elif block.name == "search_law":
-                    result = search_law(block.input["query"])
-                elif block.name == "web_search":
-                    result = web_search(block.input["query"])
-                else:
-                    result = "알 수 없는 도구예요."
-                tool_results.append({"type": "tool_result", "tool_use_id": block.id, "content": result})
-        messages.append({"role": "user", "content": tool_results})
-        response = client.messages.create(model="claude-sonnet-5", max_tokens=1000, tools=tools, messages=messages)
+    try:
+        response = claude_client.messages.create(
+            model="claude-sonnet-5",
+            max_tokens=1400,
+            tools=tools,
+            messages=messages,
+        )
 
-    return extract_text(response.content)
+        tool_round = 0
+        max_tool_rounds = 4
+
+        while response.stop_reason == "tool_use" and tool_round < max_tool_rounds:
+            tool_round += 1
+
+            messages.append(
+                {"role": "assistant", "content": response.content}
+            )
+
+            tool_results = []
+
+            for block in response.content:
+                if block.type != "tool_use":
+                    continue
+
+                result = execute_tool(
+                    block.name,
+                    block.input,
+                )
+
+                tool_results.append(
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": str(result),
+                    }
+                )
+
+            messages.append(
+                {"role": "user", "content": tool_results}
+            )
+
+            response = claude_client.messages.create(
+                model="claude-sonnet-5",
+                max_tokens=1400,
+                tools=tools,
+                messages=messages,
+            )
+
+        return extract_text(response.content) or "응답을 생성하지 못했어요."
+
+    except Exception as e:
+        return f"Claude 호출 중 오류가 발생했어요: {type(e).__name__}: {e}"
+
+
+OPENAI_TOOLS = [
+    {
+        "type": "function",
+        "name": "get_current_time",
+        "description": "현재 날짜와 시간을 알려준다.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": False,
+        },
+    },
+    {
+        "type": "function",
+        "name": "get_day_of_week",
+        "description": "오늘이 무슨 요일인지 알려준다.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": False,
+        },
+    },
+    {
+        "type": "function",
+        "name": "calculate",
+        "description": "수학 계산식을 계산한다.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "expression": {
+                    "type": "string",
+                    "description": "계산할 수식",
+                }
+            },
+            "required": ["expression"],
+            "additionalProperties": False,
+        },
+    },
+    {
+        "type": "function",
+        "name": "get_disclosures",
+        "description": "특정 회사의 최근 공시 목록을 DART에서 조회한다.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "company_name": {
+                    "type": "string",
+                    "description": "조회할 회사 이름",
+                }
+            },
+            "required": ["company_name"],
+            "additionalProperties": False,
+        },
+    },
+    {
+        "type": "function",
+        "name": "search_law",
+        "description": "키워드로 대한민국 법령을 검색한다.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "검색할 법령 키워드",
+                }
+            },
+            "required": ["query"],
+            "additionalProperties": False,
+        },
+    },
+    {
+        "type": "function",
+        "name": "web_search",
+        "description": "최신 뉴스나 인터넷 정보 검색이 필요할 때 Tavily로 검색한다.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "검색할 키워드 또는 질문",
+                }
+            },
+            "required": ["query"],
+            "additionalProperties": False,
+        },
+    },
+]
+
+
+def _to_openai_input(messages):
+    """Streamlit 대화기록을 OpenAI Responses API 입력형식으로 변환."""
+    converted = []
+
+    for msg in messages:
+        role = msg.get("role")
+        content = msg.get("content")
+
+        if role not in ("user", "assistant"):
+            continue
+
+        if not isinstance(content, str):
+            continue
+
+        converted.append(
+            {
+                "role": role,
+                "content": content,
+            }
+        )
+
+    return converted
+
+
+def call_gpt(messages):
+    if OpenAI is None:
+        return (
+            "OpenAI Python 패키지가 설치되지 않았습니다. "
+            "터미널에서 `pip install openai`를 실행한 뒤 다시 시작해 주세요."
+        )
+
+    if gpt_client is None:
+        return (
+            "GPT API를 사용할 수 없습니다. "
+            ".streamlit/secrets.toml에 OPENAI_API_KEY를 추가해 주세요."
+        )
+
+    try:
+        input_items = _to_openai_input(messages)
+
+        response = gpt_client.responses.create(
+            model="gpt-5.6",
+            instructions=(
+                "당신은 민서의 AI Workbench 에이전트다. "
+                "질문에 최신 정보, 공시, 법령, 계산이 필요하면 제공된 도구를 사용한다. "
+                "검색 결과는 그대로 나열하지 말고 핵심을 이해하기 쉽게 정리한다. "
+                "근거가 부족하면 추정하지 말고 그 점을 명시한다."
+            ),
+            tools=OPENAI_TOOLS,
+            tool_choice="auto",
+            input=input_items,
+            max_output_tokens=1600,
+        )
+
+        tool_round = 0
+        max_tool_rounds = 4
+
+        while tool_round < max_tool_rounds:
+            function_calls = [
+                item
+                for item in response.output
+                if getattr(item, "type", None) == "function_call"
+            ]
+
+            if not function_calls:
+                break
+
+            tool_round += 1
+
+            # 모델의 기존 출력 항목을 다음 입력에 유지
+            input_items.extend(response.output)
+
+            for call in function_calls:
+                try:
+                    args = json.loads(call.arguments or "{}")
+                except Exception:
+                    args = {}
+
+                result = execute_tool(
+                    call.name,
+                    args,
+                )
+
+                input_items.append(
+                    {
+                        "type": "function_call_output",
+                        "call_id": call.call_id,
+                        "output": str(result),
+                    }
+                )
+
+            response = gpt_client.responses.create(
+                model="gpt-5.6",
+                instructions=(
+                    "도구 결과를 바탕으로 질문에 직접 답하라. "
+                    "검색 내용은 핵심만 종합하고 불확실성은 명시하라."
+                ),
+                tools=OPENAI_TOOLS,
+                tool_choice="auto",
+                input=input_items,
+                max_output_tokens=1600,
+            )
+
+        return response.output_text or "응답을 생성하지 못했어요."
+
+    except Exception as e:
+        return f"GPT 호출 중 오류가 발생했어요: {type(e).__name__}: {e}"
+
+
+def call_selected_model(messages, provider):
+    # 도구 호출 과정에서 messages가 수정될 수 있으므로 복사본 사용
+    safe_messages = [
+        {
+            "role": m.get("role"),
+            "content": m.get("content"),
+        }
+        for m in messages
+        if m.get("role") in ("user", "assistant")
+        and isinstance(m.get("content"), str)
+    ]
+
+    if provider == "GPT-5.6":
+        return call_gpt(safe_messages)
+
+    return call_claude(safe_messages)
 
 
 # =========================
@@ -999,6 +1313,22 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+model_col, info_col = st.columns([1.25, 2.75])
+
+with model_col:
+    selected_model = st.radio(
+        "검색 · 답변 모델",
+        ["Claude Sonnet 5", "GPT-5.6"],
+        horizontal=True,
+        key="agent_model_provider",
+    )
+
+with info_col:
+    if selected_model == "Claude Sonnet 5":
+        st.caption("Claude가 질문을 판단하고 필요할 때 DART · 법령 · Tavily 검색 도구를 사용합니다.")
+    else:
+        st.caption("GPT가 질문을 판단하고 필요할 때 동일한 DART · 법령 · Tavily 검색 도구를 사용합니다.")
+
 quick1, quick2, quick3, quick4 = st.columns(4)
 with quick1:
     st.caption("📊 DART")
@@ -1020,6 +1350,8 @@ for msg in st.session_state.messages:
     if msg["role"] in ["user", "assistant"] and isinstance(msg["content"], str):
         avatar = "🧑" if msg["role"] == "user" else "✦"
         with st.chat_message(msg["role"], avatar=avatar):
+            if msg["role"] == "assistant" and msg.get("model"):
+                st.caption(f"답변 모델 · {msg['model']}")
             st.write(msg["content"])
 
 user_input = st.chat_input("예: 삼성전자 최근 공시 알려줘 / 전자금융거래법 검색해줘")
@@ -1030,10 +1362,22 @@ if user_input:
     with st.chat_message("user", avatar="🧑"):
         st.write(user_input)
 
-    with st.spinner("에이전트가 필요한 도구를 확인하고 있어요..."):
-        reply = call_claude(st.session_state.messages)
+    with st.spinner(
+        f"{selected_model}가 필요한 도구를 확인하고 있어요..."
+    ):
+        reply = call_selected_model(
+            st.session_state.messages,
+            selected_model,
+        )
 
-    with st.chat_message("assistant", avatar="✦"):
+    with st.chat_message("assistant", avatar="🤖"):
+        st.caption(f"답변 모델 · {selected_model}")
         st.write(reply)
 
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+    st.session_state.messages.append(
+        {
+            "role": "assistant",
+            "content": reply,
+            "model": selected_model,
+        }
+    )
