@@ -421,20 +421,32 @@ def search_law(query):
     except Exception as e:
         return f"법령 검색 중 오류가 발생했어요: {type(e).__name__}: {e}"
 
-def web_search(query):
+def web_search(query, search_mode="빠르게"):
     if not TAVILY_API_KEY:
         return "TAVILY_API_KEY가 설정되지 않았습니다."
+
+    # 공개 체험용 기본값과 심층 조사용 값을 분리
+    if search_mode == "심층 검색":
+        search_depth = "advanced"
+        max_results = 8
+        content_limit = 1000
+        timeout = 25
+    else:
+        search_depth = "basic"
+        max_results = 5
+        content_limit = 450
+        timeout = 15
 
     url = "https://api.tavily.com/search"
     payload = {
         "api_key": TAVILY_API_KEY,
         "query": query,
-        "search_depth": "basic",
-        "max_results": 10,
+        "search_depth": search_depth,
+        "max_results": max_results,
     }
 
     try:
-        response = requests.post(url, json=payload, timeout=15)
+        response = requests.post(url, json=payload, timeout=timeout)
         response.raise_for_status()
         data = response.json()
         results = data.get("results", [])
@@ -445,7 +457,7 @@ def web_search(query):
         summary = []
         for item in results:
             title = item.get("title", "")
-            content = item.get("content", "")[:1000]
+            content = item.get("content", "")[:content_limit]
             url = item.get("url", "")
             summary.append(f"- {title}\n  {content}\n  출처: {url}")
 
@@ -461,7 +473,7 @@ def extract_text(content_blocks):
     return ""
 
 
-def execute_tool(tool_name, tool_input):
+def execute_tool(tool_name, tool_input, search_mode="빠르게"):
     """Claude와 GPT가 공통으로 사용하는 실제 도구 실행부."""
     if tool_name == "get_current_time":
         return get_current_time()
@@ -479,12 +491,12 @@ def execute_tool(tool_name, tool_input):
         return search_law(tool_input.get("query", ""))
 
     if tool_name == "web_search":
-        return web_search(tool_input.get("query", ""))
+        return web_search(tool_input.get("query", ""), search_mode)
 
     return "알 수 없는 도구예요."
 
 
-def call_claude(messages):
+def call_claude(messages, search_mode="빠르게"):
     if claude_client is None:
         return (
             "Claude API를 사용할 수 없습니다. "
@@ -492,15 +504,17 @@ def call_claude(messages):
         )
 
     try:
+        answer_tokens = 3000 if search_mode == "심층 검색" else 1400
+        max_tool_rounds = 5 if search_mode == "심층 검색" else 4
+
         response = claude_client.messages.create(
             model="claude-sonnet-5",
-            max_tokens=3000,
+            max_tokens=answer_tokens,
             tools=tools,
             messages=messages,
         )
 
         tool_round = 0
-        max_tool_rounds = 4
 
         while response.stop_reason == "tool_use" and tool_round < max_tool_rounds:
             tool_round += 1
@@ -518,6 +532,7 @@ def call_claude(messages):
                 result = execute_tool(
                     block.name,
                     block.input,
+                    search_mode,
                 )
 
                 tool_results.append(
@@ -534,7 +549,7 @@ def call_claude(messages):
 
             response = claude_client.messages.create(
                 model="claude-sonnet-5",
-                max_tokens=3000,
+                max_tokens=answer_tokens,
                 tools=tools,
                 messages=messages,
             )
@@ -657,7 +672,7 @@ def _to_openai_input(messages):
     return converted
 
 
-def call_gpt(messages):
+def call_gpt(messages, search_mode="빠르게"):
     if OpenAI is None:
         return (
             "OpenAI Python 패키지가 설치되지 않았습니다. "
@@ -672,6 +687,8 @@ def call_gpt(messages):
 
     try:
         input_items = _to_openai_input(messages)
+        answer_tokens = 3000 if search_mode == "심층 검색" else 1600
+        max_tool_rounds = 5 if search_mode == "심층 검색" else 4
 
         response = gpt_client.responses.create(
             model="gpt-5.6",
@@ -684,11 +701,10 @@ def call_gpt(messages):
             tools=OPENAI_TOOLS,
             tool_choice="auto",
             input=input_items,
-            max_output_tokens=3000,
+            max_output_tokens=answer_tokens,
         )
 
         tool_round = 0
-        max_tool_rounds = 5
 
         while tool_round < max_tool_rounds:
             function_calls = [
@@ -714,6 +730,7 @@ def call_gpt(messages):
                 result = execute_tool(
                     call.name,
                     args,
+                    search_mode,
                 )
 
                 input_items.append(
@@ -733,7 +750,7 @@ def call_gpt(messages):
                 tools=OPENAI_TOOLS,
                 tool_choice="auto",
                 input=input_items,
-                max_output_tokens=3000,
+                max_output_tokens=answer_tokens,
             )
 
         return response.output_text or "응답을 생성하지 못했어요."
@@ -742,7 +759,7 @@ def call_gpt(messages):
         return f"GPT 호출 중 오류가 발생했어요: {type(e).__name__}: {e}"
 
 
-def call_selected_model(messages, provider):
+def call_selected_model(messages, provider, search_mode="빠르게"):
     # 도구 호출 과정에서 messages가 수정될 수 있으므로 복사본 사용
     safe_messages = [
         {
@@ -755,9 +772,9 @@ def call_selected_model(messages, provider):
     ]
 
     if provider == "GPT-5.6":
-        return call_gpt(safe_messages)
+        return call_gpt(safe_messages, search_mode)
 
-    return call_claude(safe_messages)
+    return call_claude(safe_messages, search_mode)
 
 
 # =========================
@@ -1313,7 +1330,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-model_col, info_col = st.columns([1.25, 2.75])
+model_col, depth_col = st.columns(2)
 
 with model_col:
     selected_model = st.radio(
@@ -1323,11 +1340,22 @@ with model_col:
         key="agent_model_provider",
     )
 
-with info_col:
-    if selected_model == "Claude Sonnet 5":
-        st.caption("Claude가 질문을 판단하고 필요할 때 DART · 법령 · Tavily 검색 도구를 사용합니다.")
-    else:
-        st.caption("GPT가 질문을 판단하고 필요할 때 동일한 DART · 법령 · Tavily 검색 도구를 사용합니다.")
+with depth_col:
+    search_mode = st.radio(
+        "검색 깊이",
+        ["빠르게", "심층 검색"],
+        horizontal=True,
+        key="agent_search_mode",
+    )
+
+if search_mode == "심층 검색":
+    st.caption(
+        f"🔎 {selected_model} · 심층 검색 — 웹 결과 최대 8건, 본문 확대, 답변 최대 3,000 tokens"
+    )
+else:
+    st.caption(
+        f"⚡ {selected_model} · 빠르게 — 웹 결과 최대 5건, 빠른 검색과 핵심 답변"
+    )
 
 quick1, quick2, quick3, quick4 = st.columns(4)
 with quick1:
@@ -1351,7 +1379,8 @@ for msg in st.session_state.messages:
         avatar = "🧑" if msg["role"] == "user" else "🤖"
         with st.chat_message(msg["role"], avatar=avatar):
             if msg["role"] == "assistant" and msg.get("model"):
-                st.caption(f"답변 모델 · {msg['model']}")
+                mode_label = msg.get("search_mode", "빠르게")
+                st.caption(f"답변 모델 · {msg['model']}  |  검색 · {mode_label}")
             st.write(msg["content"])
 
 user_input = st.chat_input("예: 삼성전자 최근 공시 알려줘 / 전자금융거래법 검색해줘")
@@ -1363,15 +1392,16 @@ if user_input:
         st.write(user_input)
 
     with st.spinner(
-        f"{selected_model}가 필요한 도구를 확인하고 있어요..."
+        f"{selected_model} · {search_mode} 모드로 확인하고 있어요..."
     ):
         reply = call_selected_model(
             st.session_state.messages,
             selected_model,
+            search_mode,
         )
 
     with st.chat_message("assistant", avatar="🤖"):
-        st.caption(f"답변 모델 · {selected_model}")
+        st.caption(f"답변 모델 · {selected_model}  |  검색 · {search_mode}")
         st.write(reply)
 
     st.session_state.messages.append(
@@ -1379,5 +1409,6 @@ if user_input:
             "role": "assistant",
             "content": reply,
             "model": selected_model,
+            "search_mode": search_mode,
         }
     )
