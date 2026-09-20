@@ -1,0 +1,203 @@
+{
+  "executed_at": "2026-09-20T19:20:10",
+  "catalog_count": 555,
+  "backup": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\backups\\catalog_before_2A_normalize_20260920_192010.json",
+  "catalog": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\catalog.json",
+  "rules": [
+    "기존 안전 매칭 public_data만 사용",
+    "운영형태는 public_data.business_type이 명시된 경우만 반영",
+    "코스명은 KGA course_combinations에서 추출하되 홀수 추정 금지",
+    "홀수는 이름 '(9홀)' 또는 KGA tee '(18)'처럼 숫자가 명시된 경우만 반영",
+    "city 권역명 오류는 실제 주소에서 시/군이 확인되는 경우만 복원",
+    "기존 값은 원칙적으로 덮어쓰지 않음"
+  ],
+  "stats": {
+    "courses_filled": 203,
+    "clubs_changed": 260,
+    "operation_type_filled": 95,
+    "basic_count_recomputed": 15,
+    "holes_filled_explicit_only": 3
+  },
+  "samples": [
+    {
+      "name": "스마트KU골프파빌리온",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "서원밸리G.C",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "안성C.C",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "안성베네스트G.C",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "아시아드C.C",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "해운대C.C",
+      "changed": [
+        "operation_type"
+      ]
+    },
+    {
+      "name": "골프존카운티 안성H",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "김포SEASIDE컨트리클럽",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "발리오스",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "화성상록",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "곤지암",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "남촌",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "뉴서울",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "이스트밸리",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "레이크우드",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "송추",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "몽베르",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "일동레이크",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "포천아도니스",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "팔공컨트리클럽",
+      "changed": [
+        "operation_type"
+      ]
+    },
+    {
+      "name": "일동레이크",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "포천 힐스 컨트리클럽",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "금강",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "렉스필드",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "블루헤런GC",
+      "changed": [
+        "service_basic_count"
+      ]
+    },
+    {
+      "name": "스카이밸리",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "신라CC",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "이포",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "자유",
+      "changed": [
+        "courses"
+      ]
+    },
+    {
+      "name": "해슬리나인브릿지",
+      "changed": [
+        "courses"
+      ]
+    }
+  ]
+}

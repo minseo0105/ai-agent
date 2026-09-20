@@ -5565,18 +5565,6 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "booking_url": "https://blueheron.co.kr/reservation/golf",
-    "verified_basic_info": {
-      "fields": {
-        "booking_url": {
-          "value": "https://blueheron.co.kr/reservation/golf",
-          "source_type": "official_operator",
-          "confidence": "A",
-          "checked_at": "2026-09-20T20:58:25.755563+09:00"
-        }
-      },
-      "checked_at": "2026-09-20T20:58:25.755563+09:00"
     }
   },
   {
@@ -9597,6 +9585,223 @@
       "checked_at": "2026-09-20",
       "assessed_at": "2026-09-20"
     }
+  },
+  {
+    "id": "vworld_더플레이어스",
+    "name": "더 플레이어스 골프클럽",
+    "aliases": [],
+    "area": "강원권",
+    "region": "",
+    "city": "춘천",
+    "holes": null,
+    "courses": [
+      "마운틴",
+      "밸리",
+      "레이크"
+    ],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "vworld",
+    "pool_source": "VWorld LT_P_SGISGOLF",
+    "pool_checked": "2026-09-20",
+    "vworld_x": 127.7602900000001,
+    "vworld_y": 37.77482699908623,
+    "vworld_properties": {},
+    "subregion": "강원영서",
+    "region_source": "public_address",
+    "region_field_sources": {
+      "area": "public_address",
+      "subregion": "public_address",
+      "city": "public_address"
+    },
+    "service_status": "candidate",
+    "service_basic_count": 1,
+    "verification": {
+      "sources": [
+        "VWorld",
+        "data.go.kr",
+        "공공데이터",
+        "공공데이터상 영업"
+      ],
+      "status": "partial",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20",
+      "public_data": {
+        "matched": true,
+        "checked_at": "2026-09-20",
+        "dataset_id": "15154978",
+        "source_name": "행정안전부_생활_골프장 조회서비스",
+        "match_type": "exact",
+        "public_name": "더플레이어스골프클럽",
+        "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+        "phone": "",
+        "status": "영업/정상",
+        "detail_status": "영업",
+        "closed_date": "",
+        "data_updated_at": "2026-06-24 03:03:03",
+        "last_modified_at": "2026-06-23 10:13:10",
+        "business_type": "비회원제",
+        "management_no": "302012012000006",
+        "operating_in_public_data": true
+      }
+    },
+    "public_data_name": "더플레이어스골프클럽",
+    "region_checked_at": "2026-09-20",
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "클럽디 더플레이어스",
+      "match_type": "safe_fuzzy",
+      "match_score": 0.97,
+      "checked_at": "2026-09-20",
+      "region": "강원",
+      "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+      "course_combinations": [
+        "마운틴 +밸리",
+        "밸리 +레이크",
+        "레이크 +마운틴"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
+      "ratings": [
+        {
+          "tee": "Black",
+          "gender": "남자",
+          "course_rating": 75.5,
+          "slope_rating": 145,
+          "length_yds": 7126,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.6,
+          "slope_rating": 142,
+          "length_yds": 6791,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 71.3,
+          "slope_rating": 140,
+          "length_yds": 6406,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Yellow",
+          "gender": "남자",
+          "course_rating": 68.7,
+          "slope_rating": 131,
+          "length_yds": 5713,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 70.7,
+          "slope_rating": 124,
+          "length_yds": 5141,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Black",
+          "gender": "남자",
+          "course_rating": 75.3,
+          "slope_rating": 150,
+          "length_yds": 7115,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.3,
+          "slope_rating": 148,
+          "length_yds": 6752,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 71.3,
+          "slope_rating": 143,
+          "length_yds": 6395,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Yellow",
+          "gender": "남자",
+          "course_rating": 68.8,
+          "slope_rating": 135,
+          "length_yds": 5675,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 71.0,
+          "slope_rating": 125,
+          "length_yds": 5117,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Black",
+          "gender": "남자",
+          "course_rating": 75.2,
+          "slope_rating": 146,
+          "length_yds": 7105,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.1,
+          "slope_rating": 144,
+          "length_yds": 6743,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 71.4,
+          "slope_rating": 140,
+          "length_yds": 6421,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "Yellow",
+          "gender": "남자",
+          "course_rating": 69.1,
+          "slope_rating": 133,
+          "length_yds": 5850,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 70.9,
+          "slope_rating": 124,
+          "length_yds": 5242,
+          "course": "마운틴 +밸리"
+        }
+      ],
+      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
+      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
+      "ratings_source_date": "2024-07-15",
+      "ratings_checked_at": "2026-09-20"
+    },
+    "operation_type": "회원제",
+    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
+    "courses_source": "KGA course_combinations"
   },
   {
     "id": "vworld_스프링베일리조트",
@@ -37051,19 +37256,7 @@
       }
     },
     "public_data_name": "88",
-    "region_checked_at": "2026-09-20",
-    "booking_url": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
-    "verified_basic_info": {
-      "fields": {
-        "booking_url": {
-          "value": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
-          "source_type": "official_operator",
-          "confidence": "A",
-          "checked_at": "2026-09-20T20:58:25.755563+09:00"
-        }
-      },
-      "checked_at": "2026-09-20T20:58:25.755563+09:00"
-    }
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_지사",
@@ -44127,6 +44320,220 @@
     "operation_type_source": "행정안전부_생활_골프장 조회서비스"
   },
   {
+    "id": "kgba_세레니티",
+    "name": "세레니티",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "청원",
+    "holes": null,
+    "courses": [
+      "블루",
+      "실크",
+      "리버"
+    ],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "충청북도 청원군 남이면 문곡구절골길 235",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 1,
+    "verification": {
+      "sources": [
+        "data.go.kr",
+        "공공데이터",
+        "공공데이터상 영업"
+      ],
+      "status": "partial",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20",
+      "public_data": {
+        "matched": true,
+        "checked_at": "2026-09-20",
+        "dataset_id": "15154978",
+        "source_name": "행정안전부_생활_골프장 조회서비스",
+        "match_type": "normalized_1.00",
+        "public_name": "세레니티CC(회원제)",
+        "address": "충청북도 청원군 남이면 문곡구절골길 235",
+        "phone": "",
+        "status": "영업/정상",
+        "detail_status": "영업",
+        "closed_date": "",
+        "data_updated_at": "2025-12-15 16:15:28",
+        "last_modified_at": "2024-04-26 13:35:19",
+        "business_type": "회원제",
+        "management_no": "302012007000012",
+        "operating_in_public_data": true
+      }
+    },
+    "public_data_name": "세레니티CC(회원제)",
+    "subregion": "충북",
+    "region_source": "public_address",
+    "region_checked_at": "2026-09-20",
+    "region_field_sources": {
+      "area": "public_address",
+      "subregion": "public_address",
+      "city": "public_address"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "세레니티",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "충북",
+      "address": "충북 청주시 서원구 남이면 문곡구절골길 235",
+      "course_combinations": [
+        "블루 +실크",
+        "실크 +리버",
+        "리버 +블루"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
+      "ratings": [
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 74.8,
+          "slope_rating": 134,
+          "length_yds": 7035,
+          "course": "실크 +리버"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 71.6,
+          "slope_rating": 129,
+          "length_yds": 6359,
+          "course": "실크 +리버"
+        },
+        {
+          "tee": "Gold",
+          "gender": "남자",
+          "course_rating": 67.7,
+          "slope_rating": 122,
+          "length_yds": 5524,
+          "course": "실크 +리버"
+        },
+        {
+          "tee": "Gold",
+          "gender": "여자",
+          "course_rating": 72.3,
+          "slope_rating": 125,
+          "length_yds": 5524,
+          "course": "실크 +리버"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 69.5,
+          "slope_rating": 119,
+          "length_yds": 5019,
+          "course": "실크 +리버"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.0,
+          "slope_rating": 133,
+          "length_yds": 6786,
+          "course": "리버 +블루"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 70.2,
+          "slope_rating": 126,
+          "length_yds": 6228,
+          "course": "리버 +블루"
+        },
+        {
+          "tee": "Gold",
+          "gender": "남자",
+          "course_rating": 67.1,
+          "slope_rating": 117,
+          "length_yds": 5541,
+          "course": "리버 +블루"
+        },
+        {
+          "tee": "Gold",
+          "gender": "여자",
+          "course_rating": 71.7,
+          "slope_rating": 123,
+          "length_yds": 5541,
+          "course": "리버 +블루"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 68.0,
+          "slope_rating": 114,
+          "length_yds": 4859,
+          "course": "리버 +블루"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.6,
+          "slope_rating": 134,
+          "length_yds": 6833,
+          "course": "블루 +실크"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 70.8,
+          "slope_rating": 132,
+          "length_yds": 6243,
+          "course": "블루 +실크"
+        },
+        {
+          "tee": "Gold",
+          "gender": "남자",
+          "course_rating": 67.0,
+          "slope_rating": 122,
+          "length_yds": 5395,
+          "course": "블루 +실크"
+        },
+        {
+          "tee": "Gold",
+          "gender": "여자",
+          "course_rating": 71.2,
+          "slope_rating": 124,
+          "length_yds": 5395,
+          "course": "블루 +실크"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 67.7,
+          "slope_rating": 116,
+          "length_yds": 4750,
+          "course": "블루 +실크"
+        }
+      ],
+      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
+      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
+      "ratings_source_date": "2024-07-15",
+      "ratings_checked_at": "2026-09-20"
+    },
+    "operation_type": "회원제",
+    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
+    "courses_source": "KGA course_combinations"
+  },
+  {
     "id": "kgba_서산수",
     "name": "서산수",
     "aliases": [],
@@ -44532,9 +44939,7 @@
     "id": "clubd_theplayers",
     "name": "클럽디 더플레이어스",
     "aliases": [
-      "더플레이어스",
-      "더 플레이어스 골프클럽",
-      "더플레이어스골프클럽"
+      "더플레이어스"
     ],
     "area": "강원권",
     "region": "강원",
@@ -44583,33 +44988,11 @@
     "verification": {
       "sources": [
         "official_homepage_record",
-        "verified_fee_record",
-        "VWorld",
-        "data.go.kr",
-        "공공데이터",
-        "공공데이터상 영업"
+        "verified_fee_record"
       ],
       "status": "verified",
       "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20",
-      "public_data": {
-        "matched": true,
-        "checked_at": "2026-09-20",
-        "dataset_id": "15154978",
-        "source_name": "행정안전부_생활_골프장 조회서비스",
-        "match_type": "exact",
-        "public_name": "더플레이어스골프클럽",
-        "address": "강원특별자치도 춘천시 동산면 새술막길 438",
-        "phone": "",
-        "status": "영업/정상",
-        "detail_status": "영업",
-        "closed_date": "",
-        "data_updated_at": "2026-06-24 03:03:03",
-        "last_modified_at": "2026-06-23 10:13:10",
-        "business_type": "비회원제",
-        "management_no": "302012012000006",
-        "operating_in_public_data": true
-      }
+      "assessed_at": "2026-09-20"
     },
     "kga": {
       "matched": true,
@@ -44626,152 +45009,8 @@
         "레이크 +마운틴"
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
-      "ratings": [
-        {
-          "tee": "Black",
-          "gender": "남자",
-          "course_rating": 75.5,
-          "slope_rating": 145,
-          "length_yds": 7126,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.6,
-          "slope_rating": 142,
-          "length_yds": 6791,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 71.3,
-          "slope_rating": 140,
-          "length_yds": 6406,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Yellow",
-          "gender": "남자",
-          "course_rating": 68.7,
-          "slope_rating": 131,
-          "length_yds": 5713,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 70.7,
-          "slope_rating": 124,
-          "length_yds": 5141,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Black",
-          "gender": "남자",
-          "course_rating": 75.3,
-          "slope_rating": 150,
-          "length_yds": 7115,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.3,
-          "slope_rating": 148,
-          "length_yds": 6752,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 71.3,
-          "slope_rating": 143,
-          "length_yds": 6395,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Yellow",
-          "gender": "남자",
-          "course_rating": 68.8,
-          "slope_rating": 135,
-          "length_yds": 5675,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 71.0,
-          "slope_rating": 125,
-          "length_yds": 5117,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Black",
-          "gender": "남자",
-          "course_rating": 75.2,
-          "slope_rating": 146,
-          "length_yds": 7105,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.1,
-          "slope_rating": 144,
-          "length_yds": 6743,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 71.4,
-          "slope_rating": 140,
-          "length_yds": 6421,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "Yellow",
-          "gender": "남자",
-          "course_rating": 69.1,
-          "slope_rating": 133,
-          "length_yds": 5850,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 70.9,
-          "slope_rating": 124,
-          "length_yds": 5242,
-          "course": "마운틴 +밸리"
-        }
-      ],
-      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
-      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
-      "ratings_source_date": "2024-07-15",
-      "ratings_checked_at": "2026-09-20"
-    },
-    "public_data_name": "더플레이어스골프클럽",
-    "merge_history": [
-      {
-        "merged_from_id": "vworld_더플레이어스",
-        "merged_from_name": "더 플레이어스 골프클럽",
-        "merged_at": "2026-09-20T21:00:34.362299+09:00",
-        "reason": "duplicate_same_golf_course",
-        "moved_fields": [
-          "verification.public_data",
-          "public_data_name",
-          "kga.ratings",
-          "kga.ratings_source_name",
-          "kga.ratings_source_url",
-          "kga.ratings_source_date",
-          "kga.ratings_checked_at"
-        ]
-      }
-    ]
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
+    }
   },
   {
     "id": "club72",
@@ -44928,19 +45167,7 @@
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
     },
-    "courses_source": "KGA course_combinations",
-    "operation_type": "대중제",
-    "verified_basic_info": {
-      "fields": {
-        "operation_type": {
-          "value": "대중제",
-          "source_type": "official_operator",
-          "confidence": "A",
-          "checked_at": "2026-09-20T20:58:25.755563+09:00"
-        }
-      },
-      "checked_at": "2026-09-20T20:58:25.755563+09:00"
-    }
+    "courses_source": "KGA course_combinations"
   },
   {
     "id": "clubd_boeun",
@@ -45043,9 +45270,7 @@
     "aliases": [
       "실크리버CC",
       "세레니티CC",
-      "청주 세레니티",
-      "세레니티",
-      "세레니티CC(회원제)"
+      "청주 세레니티"
     ],
     "area": "충청권",
     "region": "충북",
@@ -45094,32 +45319,11 @@
         "official",
         "official_homepage_record",
         "data_checked_record",
-        "verified_fee_record",
-        "data.go.kr",
-        "공공데이터",
-        "공공데이터상 영업"
+        "verified_fee_record"
       ],
       "status": "verified",
       "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20",
-      "public_data": {
-        "matched": true,
-        "checked_at": "2026-09-20",
-        "dataset_id": "15154978",
-        "source_name": "행정안전부_생활_골프장 조회서비스",
-        "match_type": "normalized_1.00",
-        "public_name": "세레니티CC(회원제)",
-        "address": "충청북도 청원군 남이면 문곡구절골길 235",
-        "phone": "",
-        "status": "영업/정상",
-        "detail_status": "영업",
-        "closed_date": "",
-        "data_updated_at": "2025-12-15 16:15:28",
-        "last_modified_at": "2024-04-26 13:35:19",
-        "business_type": "회원제",
-        "management_no": "302012007000012",
-        "operating_in_public_data": true
-      }
+      "assessed_at": "2026-09-20"
     },
     "kga": {
       "matched": true,
@@ -45136,152 +45340,8 @@
         "리버 +블루"
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
-      "ratings": [
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 74.8,
-          "slope_rating": 134,
-          "length_yds": 7035,
-          "course": "실크 +리버"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 71.6,
-          "slope_rating": 129,
-          "length_yds": 6359,
-          "course": "실크 +리버"
-        },
-        {
-          "tee": "Gold",
-          "gender": "남자",
-          "course_rating": 67.7,
-          "slope_rating": 122,
-          "length_yds": 5524,
-          "course": "실크 +리버"
-        },
-        {
-          "tee": "Gold",
-          "gender": "여자",
-          "course_rating": 72.3,
-          "slope_rating": 125,
-          "length_yds": 5524,
-          "course": "실크 +리버"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 69.5,
-          "slope_rating": 119,
-          "length_yds": 5019,
-          "course": "실크 +리버"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.0,
-          "slope_rating": 133,
-          "length_yds": 6786,
-          "course": "리버 +블루"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 70.2,
-          "slope_rating": 126,
-          "length_yds": 6228,
-          "course": "리버 +블루"
-        },
-        {
-          "tee": "Gold",
-          "gender": "남자",
-          "course_rating": 67.1,
-          "slope_rating": 117,
-          "length_yds": 5541,
-          "course": "리버 +블루"
-        },
-        {
-          "tee": "Gold",
-          "gender": "여자",
-          "course_rating": 71.7,
-          "slope_rating": 123,
-          "length_yds": 5541,
-          "course": "리버 +블루"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 68.0,
-          "slope_rating": 114,
-          "length_yds": 4859,
-          "course": "리버 +블루"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.6,
-          "slope_rating": 134,
-          "length_yds": 6833,
-          "course": "블루 +실크"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 70.8,
-          "slope_rating": 132,
-          "length_yds": 6243,
-          "course": "블루 +실크"
-        },
-        {
-          "tee": "Gold",
-          "gender": "남자",
-          "course_rating": 67.0,
-          "slope_rating": 122,
-          "length_yds": 5395,
-          "course": "블루 +실크"
-        },
-        {
-          "tee": "Gold",
-          "gender": "여자",
-          "course_rating": 71.2,
-          "slope_rating": 124,
-          "length_yds": 5395,
-          "course": "블루 +실크"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 67.7,
-          "slope_rating": 116,
-          "length_yds": 4750,
-          "course": "블루 +실크"
-        }
-      ],
-      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
-      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
-      "ratings_source_date": "2024-07-15",
-      "ratings_checked_at": "2026-09-20"
-    },
-    "public_data_name": "세레니티CC(회원제)",
-    "merge_history": [
-      {
-        "merged_from_id": "kgba_세레니티",
-        "merged_from_name": "세레니티",
-        "merged_at": "2026-09-20T21:00:34.362299+09:00",
-        "reason": "duplicate_same_golf_course",
-        "moved_fields": [
-          "verification.public_data",
-          "public_data_name",
-          "kga.ratings",
-          "kga.ratings_source_name",
-          "kga.ratings_source_url",
-          "kga.ratings_source_date",
-          "kga.ratings_checked_at"
-        ]
-      }
-    ]
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
+    }
   },
   {
     "id": "lavie",

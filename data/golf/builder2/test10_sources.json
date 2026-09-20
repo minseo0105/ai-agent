@@ -1,0 +1,1080 @@
+{
+  "88cc": {
+    "sources": [
+      {
+        "id": "88-home",
+        "club_id": "88cc",
+        "url": "https://88countryclub.co.kr/",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [
+          "https://88countryclub.co.kr/",
+          "https://88countryclub.co.kr/Reservation/Reservation.aspx"
+        ],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "국가보훈부 88골프장",
+          "branch": "88cc",
+          "basis": "사업자등록 135-83-00798 및 국가보훈부 88골프장 고지, 공공 매칭 주소와 동일",
+          "evidence_url": "https://88countryclub.co.kr/",
+          "address_or_phone_match": true
+        }
+      },
+      {
+        "id": "88-intro",
+        "club_id": "88cc",
+        "url": "https://88countryclub.co.kr/About/ClubInfo.aspx",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "국가보훈부 88골프장",
+          "branch": "88cc",
+          "basis": "검토한 공식 홈의 클럽소개 링크; 해당 용인 주소/전화 일치",
+          "evidence_url": "https://88countryclub.co.kr/About/ClubInfo.aspx",
+          "address_or_phone_match": true
+        }
+      },
+      {
+        "id": "88-course",
+        "club_id": "88cc",
+        "url": "https://88countryclub.co.kr/Course/CourseInfo.aspx",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "국가보훈부 88골프장",
+          "branch": "88cc",
+          "basis": "공식 홈 코스안내 링크; 해당 지점 유지",
+          "evidence_url": "https://88countryclub.co.kr/Course/CourseInfo.aspx",
+          "address_or_phone_match": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "official_url",
+        "value": "https://88countryclub.co.kr/",
+        "source_id": "88-home",
+        "quote": "국가보훈부 88골프장",
+        "locator": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "review_note": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "address",
+        "value": "경기도 용인시 기흥구 석성로521번길 169",
+        "source_id": "88-home",
+        "quote": "경기도 용인시 기흥구 석성로521번길 169",
+        "locator": "해당 지점 주소 안내",
+        "review_note": "해당 지점 주소 안내",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "phone",
+        "value": "031-287-8811",
+        "source_id": "88-home",
+        "quote": "031-287-8811",
+        "locator": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "review_note": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "holes",
+        "value": 36,
+        "source_id": "88-intro",
+        "quote": "4계절 즐길 수있는 36홀 88 COUNTRY CLUB",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "courses",
+        "value": [
+          {
+            "name": "동코스",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "서코스",
+            "holes": null,
+            "holes_evidence": null
+          }
+        ],
+        "source_id": "88-course",
+        "quote": "동코스 서코스",
+        "locator": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "review_note": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "assertion": "physical_courses",
+        "scope": "club",
+        "temporal": "undated",
+        "complete_course_inventory": false
+      },
+      {
+        "field": "booking_url",
+        "value": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
+        "source_id": "88-home",
+        "quote": "실시간예약",
+        "locator": "홈페이지 상단 실시간예약 링크",
+        "review_note": "검토한 운영 사이트에서 직접 연결된 예약 경로; 로그인 필요할 수 있음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "official_booking_link"
+      },
+      {
+        "field": "name",
+        "value": "88컨트리클럽",
+        "source_id": "88-home",
+        "quote": "88컨트리클럽",
+        "locator": "클럽소개/페이지 제목",
+        "review_note": "현재 공식 페이지의 지점 명칭; 기존 catalog 표시명을 자동 변경하지 않음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      },
+      {
+        "field": "description",
+        "value": "국가유공자 복지 재원인 보훈기금 증식을 목적으로 설립된 골프장.",
+        "source_id": "88-intro",
+        "quote": "보훈기금 증식을 목적으로 설립된 골프장",
+        "locator": "클럽/코스 소개",
+        "review_note": "확인한 구조 또는 설립목적만 요약; 후기 체감평가 제외",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      }
+    ],
+    "notes": [
+      "동/서 명칭은 확인했으나 이번 근거에 코스별 홀수는 명시되지 않아 null.",
+      "창립연도를 개장연도로 해석하지 않음. 현재 운영형태는 별도 최신 명시 출처 필요."
+    ]
+  },
+  "lavie": {
+    "sources": [
+      {
+        "id": "lavie-operator",
+        "club_id": "lavie",
+        "url": "https://www.kolon.com/kr/subsidiary/construction-distribution",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "authority_link_review",
+          "publisher": "코오롱그룹 / 그린나래",
+          "branch": "lavie",
+          "basis": "그룹 계열사 소개에서 그린나래의 라비에벨 운영을 명시. 골프장 홈페이지 자체 identity는 아직 미확인",
+          "evidence_url": "https://www.kolon.com/kr/subsidiary/construction-distribution",
+          "address_or_phone_match": false,
+          "operator_relationship_explicit": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "holes",
+        "value": 36,
+        "source_id": "lavie-operator",
+        "quote": "라비에벨 골프앤리조트 (2015년 개장/36홀 규모, 34객실 보유)",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      }
+    ],
+    "notes": [
+      "기존 홈페이지는 HTTP 302, 웹 열기는 412. 공식 홈페이지/예약 URL을 새로 확정하지 않음.",
+      "운영사 공식 소개의 총36홀만 확인. 올드18+듄스18은 현재 catalog에 있으나 이번 출처에서 개별 홀수 재확인 전."
+    ]
+  },
+  "lakeside": {
+    "sources": [
+      {
+        "id": "lakeside-main",
+        "club_id": "lakeside",
+        "url": "https://www.lakeside.kr/main/mainPage.do",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [
+          "https://www.lakeside.kr/main/mainPage.do"
+        ],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "레이크사이드 / 서울레이크사이드",
+          "branch": "lakeside",
+          "basis": "사업자등록 135-81-02491, 용인 모현읍 주소 및 대표전화가 catalog와 일치; 공식 법인 입회신청서도 존재",
+          "evidence_url": "https://www.lakeside.kr/main/mainPage.do",
+          "address_or_phone_match": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "official_url",
+        "value": "https://www.lakeside.kr/main/mainPage.do",
+        "source_id": "lakeside-main",
+        "quote": "레이크사이드 / 서울레이크사이드",
+        "locator": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "review_note": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "address",
+        "value": "경기도 용인시 처인구 모현읍 능원로 181",
+        "source_id": "lakeside-main",
+        "quote": "경기도 용인시 처인구 모현읍 능원로 181",
+        "locator": "해당 지점 주소 안내",
+        "review_note": "해당 지점 주소 안내",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "phone",
+        "value": "031-334-2111",
+        "source_id": "lakeside-main",
+        "quote": "031-334-2111",
+        "locator": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "review_note": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "holes",
+        "value": 54,
+        "source_id": "lakeside-main",
+        "quote": "고품격 54홀의 레이크사이드 코스를 만나보세요!",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "name",
+        "value": "레이크사이드",
+        "source_id": "lakeside-main",
+        "quote": "레이크사이드",
+        "locator": "클럽소개/페이지 제목",
+        "review_note": "현재 공식 페이지의 지점 명칭; 기존 catalog 표시명을 자동 변경하지 않음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      }
+    ],
+    "notes": [
+      "루트 응답은 짧은 진입 HTML. 실제 본문 main/mainPage.do를 출처로 사용.",
+      "동/남/서 각18홀과 현재 회원제/대중제 구성은 이번 dossier에서 재확인 전이며 baseline에 보존."
+    ]
+  },
+  "rainbow": {
+    "sources": [
+      {
+        "id": "rainbow-main",
+        "club_id": "rainbow",
+        "url": "https://www.rainbowhills.co.kr/index.asp",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [
+          "https://www.rainbowhills.co.kr/index.asp",
+          "https://www.rainbowhills.co.kr/pagesite/reservation/live.asp"
+        ],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "주식회사 디비월드",
+          "branch": "rainbow",
+          "basis": "사업자번호 303-85-17902, 상호 주식회사 디비월드, 음성 주소/전화 일치",
+          "evidence_url": "https://www.rainbowhills.co.kr/index.asp",
+          "address_or_phone_match": true
+        }
+      },
+      {
+        "id": "rainbow-course",
+        "club_id": "rainbow",
+        "url": "https://www.rainbowhills.co.kr/pagesite/course/intro.asp",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "주식회사 디비월드",
+          "branch": "rainbow",
+          "basis": "검토한 공식 홈의 코스소개 링크, 동일 법적 고지",
+          "evidence_url": "https://www.rainbowhills.co.kr/pagesite/course/intro.asp",
+          "address_or_phone_match": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "official_url",
+        "value": "https://www.rainbowhills.co.kr/index.asp",
+        "source_id": "rainbow-main",
+        "quote": "주식회사 디비월드",
+        "locator": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "review_note": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "address",
+        "value": "충청북도 음성군 생극면 차생로 168",
+        "source_id": "rainbow-main",
+        "quote": "충청북도 음성군 생극면 차생로 168",
+        "locator": "해당 지점 주소 안내",
+        "review_note": "해당 지점 주소 안내",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "phone",
+        "value": "043-879-7950",
+        "source_id": "rainbow-main",
+        "quote": "043-879-7950",
+        "locator": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "review_note": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "courses",
+        "value": [
+          {
+            "name": "동코스",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "남코스",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "서코스",
+            "holes": null,
+            "holes_evidence": null
+          }
+        ],
+        "source_id": "rainbow-course",
+        "quote": "동코스 남코스 서코스",
+        "locator": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "review_note": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "assertion": "physical_courses",
+        "scope": "club",
+        "temporal": "undated",
+        "complete_course_inventory": false
+      },
+      {
+        "field": "booking_url",
+        "value": "https://www.rainbowhills.co.kr/pagesite/reservation/live.asp",
+        "source_id": "rainbow-main",
+        "quote": "실시간예약",
+        "locator": "홈페이지 상단 실시간예약 링크",
+        "review_note": "검토한 운영 사이트에서 직접 연결된 예약 경로; 로그인 필요할 수 있음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "official_booking_link"
+      },
+      {
+        "field": "name",
+        "value": "레인보우힐스컨트리클럽",
+        "source_id": "rainbow-main",
+        "quote": "레인보우힐스컨트리클럽",
+        "locator": "클럽소개/페이지 제목",
+        "review_note": "현재 공식 페이지의 지점 명칭; 기존 catalog 표시명을 자동 변경하지 않음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      }
+    ],
+    "notes": [
+      "코스별 홀수를 KGA 조합에서 추정하지 않음. 대회요강의 본선18홀을 전체 규모로 사용하지 않음.",
+      "공식 코스 페이지의 레이팅 표는 조합/성별 맥락 부족으로 KGA 레이팅에 병합하지 않음."
+    ]
+  },
+  "blackstone": {
+    "sources": [
+      {
+        "id": "blackstone-course",
+        "club_id": "blackstone",
+        "url": "https://www.blackstoneresort.com/ic/aboutList?section=course",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [
+          "https://www.blackstoneresort.com/ic/aboutList?section=course"
+        ],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "블랙스톤리조트 이천",
+          "branch": "blackstone",
+          "basis": "이천 지점 소개/입회/예약 규정과 주소를 확인. 제주 /jj/ 페이지와 분리; 기존 전화는 대표전화, 630-0700은 예약실",
+          "evidence_url": "https://www.blackstoneresort.com/ic/aboutList?section=course",
+          "address_or_phone_match": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "official_url",
+        "value": "https://www.blackstoneresort.com/ic/aboutList?section=course",
+        "source_id": "blackstone-course",
+        "quote": "블랙스톤리조트 이천",
+        "locator": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "review_note": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "holes",
+        "value": 27,
+        "source_id": "blackstone-course",
+        "quote": "총 27홀의 코스",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "courses",
+        "value": [
+          {
+            "name": "동코스",
+            "holes": 9,
+            "holes_evidence": "동코스(9H)"
+          },
+          {
+            "name": "북코스",
+            "holes": 9,
+            "holes_evidence": "북코스(9H)"
+          },
+          {
+            "name": "서코스",
+            "holes": 9,
+            "holes_evidence": "서코스(9H)"
+          }
+        ],
+        "source_id": "blackstone-course",
+        "quote": "회원제 [동코스(9H), 북코스(9H)] 비회원제(대중형) [서코스(9H)]",
+        "locator": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "review_note": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "assertion": "physical_courses",
+        "scope": "club",
+        "temporal": "undated",
+        "complete_course_inventory": true
+      },
+      {
+        "field": "operation_type",
+        "value": "혼합",
+        "source_id": "blackstone-course",
+        "quote": "회원제골프장 - 18홀 대중골프장 - 9홀",
+        "locator": "동시 운영 구조는 있지만 페이지 작성일 불명: 현재 운영형태 확정은 보류",
+        "review_note": "동시 운영 구조는 있지만 페이지 작성일 불명: 현재 운영형태 확정은 보류",
+        "assertion": "explicit_current_operation",
+        "scope": "club",
+        "temporal": "undated",
+        "simultaneous_operation_evidence": "동/북 회원제, 서 비회원제"
+      },
+      {
+        "field": "address",
+        "value": "경기도 이천시 장호원읍 장여로 459-160",
+        "source_id": "blackstone-course",
+        "quote": "경기도 이천시 장호원읍 장여로 459-160",
+        "locator": "이천 지점 주소 명시",
+        "review_note": "이천 지점 주소 명시",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "name",
+        "value": "블랙스톤 이천",
+        "source_id": "blackstone-course",
+        "quote": "블랙스톤 이천",
+        "locator": "클럽소개/페이지 제목",
+        "review_note": "현재 공식 페이지의 지점 명칭; 기존 catalog 표시명을 자동 변경하지 않음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      },
+      {
+        "field": "description",
+        "value": "동·북·서 코스로 구성된 총 27홀 골프장.",
+        "source_id": "blackstone-course",
+        "quote": "총 27홀",
+        "locator": "클럽/코스 소개",
+        "review_note": "확인한 구조 또는 설립목적만 요약; 후기 체감평가 제외",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      }
+    ],
+    "notes": [
+      "로컬 HTTPS 요청 SSL 오류. TLS 검증을 끄지 않았고 웹 열람 결과와 HTTP 진단을 분리.",
+      "예약실 번호를 대표전화로 교체하지 않음.",
+      "혼합을 뒷받침하는 동시 운영 구성이 있어도 작성일 미상이라 current 확정 보류."
+    ]
+  },
+  "blueheron": {
+    "sources": [
+      {
+        "id": "blueheron-main",
+        "club_id": "blueheron",
+        "url": "https://blueheron.co.kr/",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [
+          "https://blueheron.co.kr/",
+          "https://blueheron.co.kr/reservation/golf"
+        ],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "블루헤런 주식회사",
+          "branch": "blueheron",
+          "basis": "사업자등록번호 126-81-64682, 상호/대표/주소 명시. catalog 주소 일치; 대표전화는 차이 발견",
+          "evidence_url": "https://blueheron.co.kr/",
+          "address_or_phone_match": true
+        }
+      },
+      {
+        "id": "blueheron-course",
+        "club_id": "blueheron",
+        "url": "https://blueheron.co.kr/swp/course/outline",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "블루헤런 주식회사",
+          "branch": "blueheron",
+          "basis": "검토한 공식 홈 코스개요 링크; 동일 사업자 고지",
+          "evidence_url": "https://blueheron.co.kr/swp/course/outline",
+          "address_or_phone_match": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "official_url",
+        "value": "https://blueheron.co.kr/",
+        "source_id": "blueheron-main",
+        "quote": "블루헤런 주식회사",
+        "locator": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "review_note": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "address",
+        "value": "경기도 여주시 대신면 고달사로 67",
+        "source_id": "blueheron-main",
+        "quote": "경기도 여주시 대신면 고달사로 67",
+        "locator": "해당 지점 주소 안내",
+        "review_note": "해당 지점 주소 안내",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "phone",
+        "value": "031-880-0700",
+        "source_id": "blueheron-main",
+        "quote": "031-880-0700",
+        "locator": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "review_note": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "holes",
+        "value": 18,
+        "source_id": "blueheron-course",
+        "quote": "코스규모 18HOLE 72PAR",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "courses",
+        "value": [
+          {
+            "name": "West",
+            "holes": 9,
+            "holes_evidence": "West Course 9 Hole"
+          },
+          {
+            "name": "East",
+            "holes": 9,
+            "holes_evidence": "East Course 9 Hole"
+          }
+        ],
+        "source_id": "blueheron-course",
+        "quote": "West Course 9 Hole East Course 9 Hole",
+        "locator": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "review_note": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "assertion": "physical_courses",
+        "scope": "club",
+        "temporal": "undated",
+        "complete_course_inventory": true
+      },
+      {
+        "field": "booking_url",
+        "value": "https://blueheron.co.kr/reservation/golf",
+        "source_id": "blueheron-main",
+        "quote": "실시간예약",
+        "locator": "홈페이지 상단 실시간예약 링크",
+        "review_note": "검토한 운영 사이트에서 직접 연결된 예약 경로; 로그인 필요할 수 있음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "official_booking_link"
+      },
+      {
+        "field": "name",
+        "value": "블루헤런",
+        "source_id": "blueheron-main",
+        "quote": "블루헤런",
+        "locator": "클럽소개/페이지 제목",
+        "review_note": "현재 공식 페이지의 지점 명칭; 기존 catalog 표시명을 자동 변경하지 않음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      },
+      {
+        "field": "description",
+        "value": "West와 East 두 코스를 갖춘 총18홀 골프장.",
+        "source_id": "blueheron-course",
+        "quote": "코스규모 18HOLE 72PAR",
+        "locator": "클럽/코스 소개",
+        "review_note": "확인한 구조 또는 설립목적만 요약; 후기 체감평가 제외",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      }
+    ],
+    "notes": [
+      "공식 대표전화031-880-0700과 기존031-884-0701이 다름. 기존 값은 자동 수정하지 않음."
+    ]
+  },
+  "southsprings": {
+    "sources": [
+      {
+        "id": "southsprings-home",
+        "club_id": "southsprings",
+        "url": "https://www.sscc.co.kr/",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [
+          "https://www.sscc.co.kr/"
+        ],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "사우스스프링스",
+          "branch": "southsprings",
+          "basis": "사업자등록번호114-86-03810, 골프장 전용 copyright/주소/대표전화 확인. 주소/전화 catalog 일치",
+          "evidence_url": "https://www.sscc.co.kr/",
+          "address_or_phone_match": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "official_url",
+        "value": "https://www.sscc.co.kr/",
+        "source_id": "southsprings-home",
+        "quote": "사우스스프링스",
+        "locator": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "review_note": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "address",
+        "value": "경기 이천시 모가면 공원로 64",
+        "source_id": "southsprings-home",
+        "quote": "경기 이천시 모가면 공원로 64",
+        "locator": "해당 지점 주소 안내",
+        "review_note": "해당 지점 주소 안내",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "phone",
+        "value": "031-630-7000",
+        "source_id": "southsprings-home",
+        "quote": "031-630-7000",
+        "locator": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "review_note": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "name",
+        "value": "사우스스프링스",
+        "source_id": "southsprings-home",
+        "quote": "사우스스프링스",
+        "locator": "클럽소개/페이지 제목",
+        "review_note": "현재 공식 페이지의 지점 명칭; 기존 catalog 표시명을 자동 변경하지 않음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      }
+    ],
+    "notes": [
+      "이용규정의 라운드 소요시간 18홀/9홀은 전체 홀수 근거로 채택하지 않음.",
+      "현재 catalog18홀 및 Lake/Mountain 각9홀은 이번 사실 검증값으로 자동 복사하지 않음."
+    ]
+  },
+  "silkriver": {
+    "sources": [
+      {
+        "id": "serenity-home",
+        "club_id": "silkriver",
+        "url": "https://www.serenitygolfresort.com/cheongju/",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "unresolved",
+          "publisher": "SERENITY GOLF & RESORT",
+          "branch": "silkriver",
+          "basis": "청주 전용 소개에서 동일 주소/전화 확인. 운영 법적 고지의 독립 검증은 아직 미완료",
+          "evidence_url": "https://www.serenitygolfresort.com/cheongju/",
+          "address_or_phone_match": false
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "holes",
+        "value": 27,
+        "source_id": "serenity-home",
+        "quote": "27홀 컨트리클럽",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "courses",
+        "value": [
+          {
+            "name": "Silk",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "River",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "Blue",
+            "holes": null,
+            "holes_evidence": null
+          }
+        ],
+        "source_id": "serenity-home",
+        "quote": "Silk·River·Blue 세 코스",
+        "locator": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "review_note": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "assertion": "physical_courses",
+        "scope": "club",
+        "temporal": "undated",
+        "complete_course_inventory": false
+      },
+      {
+        "field": "address",
+        "value": "충청북도 청주시 서원구 남이면 문곡구절골길 235",
+        "source_id": "serenity-home",
+        "quote": "충청북도 청주시 서원구 남이면 문곡구절골길 235",
+        "locator": "해당 지점 주소 안내",
+        "review_note": "해당 지점 주소 안내",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "phone",
+        "value": "043-277-5000",
+        "source_id": "serenity-home",
+        "quote": "043-277-5000",
+        "locator": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "review_note": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      }
+    ],
+    "notes": [
+      "명칭/주소/전화 일치만으로 identity 확정하지 않음. 사업자/운영주체 추가 확인 필요.",
+      "본문 총27홀 및3코스 표현은 reference로 보존. 각9홀로 나누어 추정하지 않음.",
+      "청주 예약 링크를 열었으나 본문은 강촌 안내이고 강촌 외 다른 지점 예약 미지원이라고 표시. 지점 identity 검토 전 공식 예약URL로 채택하지 않음. 검토 URL: https://www.serenitygolfresort.com/booking/?destination=cheongju"
+    ]
+  },
+  "club72": {
+    "sources": [
+      {
+        "id": "club72-operator",
+        "club_id": "club72",
+        "url": "https://kxgroup.co.kr/sub/sub04_02.php?boardid=press&category=&idx=41&mode=view&offset=18&sk=&sw=",
+        "kind": "official",
+        "source_date": "2026-05-12",
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "authority_link_review",
+          "publisher": "KX그룹",
+          "branch": "club72",
+          "basis": "KX그룹 자사 발표에서 클럽72 운영과 원더클럽 공식 홈페이지 관계를 명시",
+          "evidence_url": "https://kxgroup.co.kr/sub/sub04_02.php?boardid=press&category=&idx=41&mode=view&offset=18&sk=&sw=",
+          "address_or_phone_match": false,
+          "operator_relationship_explicit": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "holes",
+        "value": 72,
+        "source_id": "club72-operator",
+        "quote": "국내 유일의 72홀 명품 대중제 골프장",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "operation_type",
+        "value": "대중제",
+        "source_id": "club72-operator",
+        "quote": "72홀 명품 대중제 골프장",
+        "locator": "2026-05-12 운영사 발표의 현재 운영형태 명시",
+        "review_note": "2026-05-12 운영사 발표의 현재 운영형태 명시",
+        "assertion": "explicit_current_operation",
+        "scope": "club",
+        "temporal": "current"
+      },
+      {
+        "field": "courses",
+        "value": [
+          {
+            "name": "하늘",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "오션",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "레이크",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "클래식",
+            "holes": null,
+            "holes_evidence": null
+          }
+        ],
+        "source_id": "club72-operator",
+        "quote": "하늘, 오션, 레이크, 클래식 총 4개 코스",
+        "locator": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "review_note": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "assertion": "physical_courses",
+        "scope": "club",
+        "temporal": "undated",
+        "complete_course_inventory": false
+      }
+    ],
+    "notes": [
+      "기존 onetheclub.com/club72/은 실제HTTP404. 운영사 발표의 홈페이지 관계와 개별 URL 가용성은 분리.",
+      "kxleisure.com은 운영 예약망 후보지만 지점의 정확한 진입/예약URL은 추가 검토.",
+      "72/4로 개별18홀을 추정하지 않음. catalog KGA는 하늘/오션만 있어 전체 구조가 아님."
+    ]
+  },
+  "clubd_theplayers": {
+    "sources": [
+      {
+        "id": "clubd-intro",
+        "club_id": "clubd_theplayers",
+        "url": "https://www.clubd.com/theplayers/club/cibi.do",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [
+          "https://www.clubd.com/theplayers/club/cibi.do"
+        ],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "주식회사 이도 춘천지점",
+          "branch": "clubd_theplayers",
+          "basis": "상호/사업자등록881-85-02928, 해당 춘천 지점 주소와 전화가 일치. 운영 브랜드 전용 페이지",
+          "evidence_url": "https://www.clubd.com/theplayers/club/cibi.do",
+          "address_or_phone_match": true
+        }
+      },
+      {
+        "id": "clubd-mobile",
+        "club_id": "clubd_theplayers",
+        "url": "https://www.clubd.com/m_clubd/tpintro.do?iCoDiv=06",
+        "kind": "official",
+        "source_date": null,
+        "checked_at": "2026-09-20",
+        "reviewed_by": "Codex source review; pending user review",
+        "authorized_urls": [],
+        "identity": {
+          "method": "operator_legal_review",
+          "publisher": "주식회사 이도 춘천지점",
+          "branch": "clubd_theplayers",
+          "basis": "같은 운영 사이트의 더플레이어스 모바일 전용 소개; 지점 주소 및 대표전화 일치",
+          "evidence_url": "https://www.clubd.com/m_clubd/tpintro.do?iCoDiv=06",
+          "address_or_phone_match": true
+        }
+      }
+    ],
+    "claims": [
+      {
+        "field": "official_url",
+        "value": "https://www.clubd.com/theplayers/club/cibi.do",
+        "source_id": "clubd-intro",
+        "quote": "주식회사 이도 춘천지점",
+        "locator": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "review_note": "운영주체/해당 지점의 공식 안내 및 법적 고지 직접 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "address",
+        "value": "강원도 춘천시 동산면 새술막길 438",
+        "source_id": "clubd-intro",
+        "quote": "강원도 춘천시 동산면 새술막길 438",
+        "locator": "해당 지점 주소 안내",
+        "review_note": "해당 지점 주소 안내",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "phone",
+        "value": "033-250-5000",
+        "source_id": "clubd-intro",
+        "quote": "033-250-5000",
+        "locator": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "review_note": "전화 용도를 원문에서 확인; 기존 값과 다르면 사람이 검토",
+        "assertion": "explicit_field",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "holes",
+        "value": 27,
+        "source_id": "clubd-mobile",
+        "quote": "강원도 춘천 27홀 컨트리클럽",
+        "locator": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "review_note": "전체 골프장 소개의 규모 명시, 라운드 요금/대회 홀수 제외",
+        "assertion": "explicit_club_total",
+        "scope": "club",
+        "temporal": "undated"
+      },
+      {
+        "field": "courses",
+        "value": [
+          {
+            "name": "VALLEY",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "LAKE",
+            "holes": null,
+            "holes_evidence": null
+          },
+          {
+            "name": "MOUNTAIN",
+            "holes": null,
+            "holes_evidence": null
+          }
+        ],
+        "source_id": "clubd-mobile",
+        "quote": "VALLEY LAKE MOUNTAIN",
+        "locator": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "review_note": "물리 코스 안내의 명칭과 홀수; KGA 조합으로부터 생성하지 않음",
+        "assertion": "physical_courses",
+        "scope": "club",
+        "temporal": "undated",
+        "complete_course_inventory": false
+      },
+      {
+        "field": "name",
+        "value": "클럽디 더플레이어스",
+        "source_id": "clubd-intro",
+        "quote": "클럽디 더플레이어스",
+        "locator": "클럽소개/페이지 제목",
+        "review_note": "현재 공식 페이지의 지점 명칭; 기존 catalog 표시명을 자동 변경하지 않음",
+        "scope": "club",
+        "temporal": "undated",
+        "assertion": "explicit_field"
+      }
+    ],
+    "notes": [
+      "기존 playersgc.com은 로컬TLS 오류. 새 후보는 운영사 이도 사이트의 해당 지점 법적 고지를 직접 확인.",
+      "코스별9홀은 catalog에 있지만 이번 출처에서 명시적 재확인 전이므로 null."
+    ]
+  }
+}

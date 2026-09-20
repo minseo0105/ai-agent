@@ -1,0 +1,3635 @@
+{
+  "mode": "DIAGNOSTIC_ONLY",
+  "created_at": "2026-09-20T21:02:16.629748+09:00",
+  "catalog_count": 553,
+  "selected_count": 50,
+  "catalog_modified": false,
+  "external_search_calls": 0,
+  "llm_calls": 0,
+  "planned_search_units": 115,
+  "missing_by_field": {
+    "booking_url": 48,
+    "operation_type": 20,
+    "courses": 1,
+    "holes": 37,
+    "official_url": 36,
+    "phone": 23,
+    "description": 36
+  },
+  "search_plan_by_type": {
+    "official_booking": 48,
+    "official_profile": 44,
+    "official_contact": 23
+  },
+  "clubs": [
+    {
+      "order": 1,
+      "id": "silkriver",
+      "name": "청주 세레니티",
+      "service_status": "service",
+      "area": "충청권",
+      "subregion": null,
+      "city": "청주",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": 27,
+        "courses": [
+          {
+            "name": "Silk",
+            "holes": 9,
+            "type": "3,238m"
+          },
+          {
+            "name": "River",
+            "holes": 9,
+            "type": "3,195m"
+          },
+          {
+            "name": "Blue",
+            "holes": 9,
+            "type": "9H"
+          }
+        ],
+        "official_url": "https://www.serenitygolfresort.com/cheongju/",
+        "booking_url": null,
+        "address": "충청북도 청주시 서원구 남이면 문곡구절골길 235",
+        "phone": "043-277-5000",
+        "description": "구 실크리버CC. Silk · River · Blue 3개 코스, 총 27홀 · Par 108. 그레이엄 마쉬 설계."
+      },
+      "missing_fields": [
+        "booking_url"
+      ],
+      "missing_count": 1,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012007000012",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "safe_fuzzy",
+        "kga_matched_name": "세레니티",
+        "kga_course_combinations": [
+          "블루 +실크",
+          "실크 +리버",
+          "리버 +블루"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "청주 세레니티 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 2,
+      "id": "clubd_theplayers",
+      "name": "클럽디 더플레이어스",
+      "service_status": "service",
+      "area": "강원권",
+      "subregion": null,
+      "city": "춘천",
+      "current_facts": {
+        "operation_type": "비회원제",
+        "holes": 27,
+        "courses": [
+          {
+            "name": "VALLEY",
+            "holes": 9,
+            "type": "대중형"
+          },
+          {
+            "name": "LAKE",
+            "holes": 9,
+            "type": "대중형"
+          },
+          {
+            "name": "MOUNTAIN",
+            "holes": 9,
+            "type": "대중형"
+          }
+        ],
+        "official_url": "https://www.playersgc.com/",
+        "booking_url": null,
+        "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+        "phone": "033-250-5000",
+        "description": "VALLEY · LAKE · MOUNTAIN 각 9홀, 총 27홀. 각 코스 Par 36."
+      },
+      "missing_fields": [
+        "booking_url"
+      ],
+      "missing_count": 1,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "비회원제",
+        "public_management_no": "302012012000006",
+        "public_updated_at": "2026-06-24 03:03:03",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "클럽디 더플레이어스",
+        "kga_course_combinations": [
+          "마운틴 +밸리",
+          "밸리 +레이크",
+          "레이크 +마운틴"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "클럽디 더플레이어스 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 3,
+      "id": "pineridge",
+      "name": "파인리즈CC",
+      "service_status": "service",
+      "area": "강원권",
+      "subregion": "강원영동",
+      "city": "고성",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": 27,
+        "courses": [
+          {
+            "name": "Pine",
+            "holes": 9,
+            "type": "Par 36"
+          },
+          {
+            "name": "Lake",
+            "holes": 9,
+            "type": "9H"
+          },
+          {
+            "name": "Ridge",
+            "holes": 9,
+            "type": "9H"
+          }
+        ],
+        "official_url": "http://www.pineridge.co.kr/",
+        "booking_url": null,
+        "address": "강원특별자치도 고성군 토성면 잼버리동로 267",
+        "phone": "1577-6399",
+        "description": "Pine · Lake · Ridge 각 9홀, 총 27홀 · Par 108. 공식 가이드맵과 코스 제원 기준."
+      },
+      "missing_fields": [
+        "booking_url"
+      ],
+      "missing_count": 1,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012009000001",
+        "public_updated_at": "2026-03-11 21:05:10",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "파인리즈",
+        "kga_course_combinations": [
+          "파인 +레이크",
+          "리즈 +파인",
+          "레이크 +리즈"
+        ],
+        "kga_ratings_count": 9,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "파인리즈CC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 4,
+      "id": "southsprings",
+      "name": "사우스스프링스CC",
+      "service_status": "service",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "이천",
+      "current_facts": {
+        "operation_type": null,
+        "holes": 18,
+        "courses": [
+          {
+            "name": "Lake",
+            "holes": 9,
+            "type": "대중형"
+          },
+          {
+            "name": "Mountain",
+            "holes": 9,
+            "type": "대중형"
+          }
+        ],
+        "official_url": "https://www.sscc.co.kr/",
+        "booking_url": null,
+        "address": "경기도 이천시 모가면 공원로 64",
+        "phone": "031-630-7000",
+        "description": "Lake · Mountain 코스, 총 18홀."
+      },
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "missing_count": 2,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302012009000001",
+        "public_updated_at": "2026-05-01 22:01:45",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "사우스스프링스",
+        "kga_course_combinations": [
+          "레이크 +마운틴"
+        ],
+        "kga_ratings_count": 7,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type"
+          ],
+          "query": "사우스스프링스CC 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "사우스스프링스CC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 5,
+      "id": "blueheron",
+      "name": "블루헤런GC",
+      "service_status": "service",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "여주",
+      "current_facts": {
+        "operation_type": null,
+        "holes": 18,
+        "courses": [
+          {
+            "name": "WEST",
+            "holes": 9,
+            "type": "9H"
+          },
+          {
+            "name": "EAST",
+            "holes": 9,
+            "type": "9H"
+          }
+        ],
+        "official_url": "https://blueheron.co.kr/",
+        "booking_url": "https://blueheron.co.kr/reservation/golf",
+        "address": "경기도 여주시 대신면 고달사로 67",
+        "phone": "031-884-0701",
+        "description": "WEST 9H + EAST 9H, 총 18홀. 공식 코스 제원 기준 총 Par 72 · 7,043yd. 페어웨이 중지, 그린 벤트그라스."
+      },
+      "missing_fields": [
+        "operation_type"
+      ],
+      "missing_count": 1,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011992000003",
+        "public_updated_at": "2026-05-10 22:10:42",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "블루헤런",
+        "kga_course_combinations": [
+          "서 +동"
+        ],
+        "kga_ratings_count": 0,
+        "verified_basic_info": {
+          "fields": {
+            "booking_url": {
+              "value": "https://blueheron.co.kr/reservation/golf",
+              "source_type": "official_operator",
+              "confidence": "A",
+              "checked_at": "2026-09-20T20:58:25.755563+09:00"
+            }
+          },
+          "checked_at": "2026-09-20T20:58:25.755563+09:00"
+        }
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type"
+          ],
+          "query": "블루헤런GC 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 6,
+      "id": "whistling",
+      "name": "휘슬링락CC",
+      "service_status": "service",
+      "area": "강원권",
+      "subregion": "강원영서",
+      "city": "춘천",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": 27,
+        "courses": [
+          {
+            "name": "Cocoon",
+            "holes": 9,
+            "type": "3,519yd"
+          },
+          {
+            "name": "Temple",
+            "holes": 9,
+            "type": "3,559yd"
+          },
+          {
+            "name": "Cloud",
+            "holes": 9,
+            "type": "3,646yd"
+          }
+        ],
+        "official_url": "http://www.whistlingrockcc.com/",
+        "booking_url": null,
+        "address": "강원특별자치도 춘천시 남산면 동촌로 501",
+        "phone": "070-8121-0100",
+        "description": "Ted Robinson Jr. 설계. Cocoon · Temple · Cloud 각 9홀, 총 27홀의 회원제 코스."
+      },
+      "missing_fields": [
+        "booking_url"
+      ],
+      "missing_count": 1,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012011000014",
+        "public_updated_at": "2026-05-16 03:03:03",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "휘슬링락",
+        "kga_course_combinations": [
+          "코쿤 +템플",
+          "템플 +클라우드",
+          "클라우드 +코쿤"
+        ],
+        "kga_ratings_count": 0,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "휘슬링락CC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 7,
+      "id": "club72",
+      "name": "클럽72",
+      "service_status": "service",
+      "area": "수도권",
+      "subregion": null,
+      "city": "중구",
+      "current_facts": {
+        "operation_type": "대중제",
+        "holes": 72,
+        "courses": [
+          "하늘 (Out)",
+          "하늘 (In)",
+          "오션 (Out)",
+          "오션 (In)"
+        ],
+        "official_url": "https://www.onetheclub.com/club72/",
+        "booking_url": null,
+        "address": "인천광역시 중구 공항도로 392",
+        "phone": "1599-0072",
+        "description": "하늘·바다 권역의 복수 코스로 운영. 하늘코스는 공식 제원 페이지에서 홀별 티 거리와 Par를 제공합니다."
+      },
+      "missing_fields": [
+        "booking_url"
+      ],
+      "missing_count": 1,
+      "existing_evidence": {
+        "public_matched": false,
+        "public_match_type": null,
+        "public_operating": null,
+        "public_business_type": null,
+        "public_management_no": null,
+        "public_updated_at": null,
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "클럽72",
+        "kga_course_combinations": [
+          "하늘 (Out) +하늘 (In)",
+          "오션 (Out) +오션 (In)"
+        ],
+        "kga_ratings_count": 11,
+        "verified_basic_info": {
+          "fields": {
+            "operation_type": {
+              "value": "대중제",
+              "source_type": "official_operator",
+              "confidence": "A",
+              "checked_at": "2026-09-20T20:58:25.755563+09:00"
+            }
+          },
+          "checked_at": "2026-09-20T20:58:25.755563+09:00"
+        }
+      },
+      "search_plan": [
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "클럽72 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 8,
+      "id": "lakeside",
+      "name": "레이크사이드CC",
+      "service_status": "service",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "용인",
+      "current_facts": {
+        "operation_type": null,
+        "holes": 54,
+        "courses": [
+          {
+            "name": "동코스",
+            "holes": 18,
+            "type": "대중형"
+          },
+          {
+            "name": "남코스",
+            "holes": 18,
+            "type": "대중형"
+          },
+          {
+            "name": "서코스",
+            "holes": 18,
+            "type": "회원제"
+          }
+        ],
+        "official_url": "https://www.lakeside.kr/",
+        "booking_url": null,
+        "address": "경기도 용인시 처인구 모현읍 능원로 181",
+        "phone": "031-334-2111",
+        "description": "동·남·서 3개 코스, 총 54홀. 동·남코스는 대중형, 서코스는 회원제."
+      },
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "missing_count": 2,
+      "existing_evidence": {
+        "public_matched": false,
+        "public_match_type": null,
+        "public_operating": null,
+        "public_business_type": null,
+        "public_management_no": null,
+        "public_updated_at": null,
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "레이크사이드",
+        "kga_course_combinations": [
+          "서 (Out) +서 (In)",
+          "동 (Out) +동 (In)",
+          "남 (Out) +남 (In)"
+        ],
+        "kga_ratings_count": 9,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type"
+          ],
+          "query": "레이크사이드CC 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "레이크사이드CC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 9,
+      "id": "rainbow",
+      "name": "레인보우힐스CC",
+      "service_status": "service",
+      "area": "충청권",
+      "subregion": "충북",
+      "city": "음성",
+      "current_facts": {
+        "operation_type": null,
+        "holes": 27,
+        "courses": [
+          "서",
+          "남",
+          "동"
+        ],
+        "official_url": "https://www.rainbowhills.co.kr/",
+        "booking_url": null,
+        "address": "충청북도 음성군 생극면 차생로 168",
+        "phone": "043-879-7950",
+        "description": "27홀 규모. 코스별 상세정보는 공식 홈페이지에서 확인합니다."
+      },
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "missing_count": 2,
+      "existing_evidence": {
+        "public_matched": false,
+        "public_match_type": null,
+        "public_operating": null,
+        "public_business_type": null,
+        "public_management_no": null,
+        "public_updated_at": null,
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "레인보우힐스",
+        "kga_course_combinations": [
+          "서 +남",
+          "남 +동",
+          "동 +서"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type"
+          ],
+          "query": "레인보우힐스CC 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "레인보우힐스CC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 10,
+      "id": "blackstone",
+      "name": "블랙스톤 이천",
+      "service_status": "service",
+      "area": "수도권",
+      "subregion": null,
+      "city": "이천",
+      "current_facts": {
+        "operation_type": null,
+        "holes": 27,
+        "courses": [
+          "북",
+          "동",
+          "서"
+        ],
+        "official_url": "https://www.blackstoneresort.com/ic/",
+        "booking_url": null,
+        "address": "경기도 이천시 장호원읍 풍계리 산52",
+        "phone": "031-643-2000",
+        "description": "27홀 규모. 상세 코스 구성은 공식 홈페이지에서 확인할 수 있습니다."
+      },
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "missing_count": 2,
+      "existing_evidence": {
+        "public_matched": false,
+        "public_match_type": null,
+        "public_operating": null,
+        "public_business_type": null,
+        "public_management_no": null,
+        "public_updated_at": null,
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "블랙스톤 이천",
+        "kga_course_combinations": [
+          "북 +동",
+          "동 +서",
+          "서 +북"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type"
+          ],
+          "query": "블랙스톤 이천 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "블랙스톤 이천 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 11,
+      "id": "kingsdale",
+      "name": "킹스데일GC",
+      "service_status": "service",
+      "area": "충청권",
+      "subregion": "충북",
+      "city": "충주",
+      "current_facts": {
+        "operation_type": null,
+        "holes": 18,
+        "courses": [
+          "레이크",
+          "힐"
+        ],
+        "official_url": "https://www.kingsdale.co.kr/",
+        "booking_url": null,
+        "address": "충청북도 충주시 주덕읍 화곡리 산32-42",
+        "phone": "043-870-4100",
+        "description": "18홀 규모. 코스별 상세정보는 공식 홈페이지에서 확인합니다."
+      },
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "missing_count": 2,
+      "existing_evidence": {
+        "public_matched": false,
+        "public_match_type": null,
+        "public_operating": null,
+        "public_business_type": null,
+        "public_management_no": null,
+        "public_updated_at": null,
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "킹스데일",
+        "kga_course_combinations": [
+          "레이크 +힐"
+        ],
+        "kga_ratings_count": 6,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type"
+          ],
+          "query": "킹스데일GC 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "킹스데일GC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 12,
+      "id": "lavie",
+      "name": "라비에벨CC",
+      "service_status": "service",
+      "area": "강원권",
+      "subregion": "강원영서",
+      "city": "춘천",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": 36,
+        "courses": [
+          {
+            "name": "올드코스",
+            "holes": 18,
+            "type": "대중형"
+          },
+          {
+            "name": "듄스코스",
+            "holes": 18,
+            "type": "대중형"
+          }
+        ],
+        "official_url": "https://www.lavieestbellegolfnresort.com/",
+        "booking_url": null,
+        "address": "강원특별자치도 춘천시 동산면 종자리로 436",
+        "phone": "033-245-7000",
+        "description": "올드코스 18홀 · 듄스코스 18홀, 총 36홀."
+      },
+      "missing_fields": [
+        "booking_url"
+      ],
+      "missing_count": 1,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012015000001",
+        "public_updated_at": "2026-03-04 09:09:23",
+        "kga_matched": false,
+        "kga_match_type": null,
+        "kga_matched_name": null,
+        "kga_course_combinations": [],
+        "kga_ratings_count": 0,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "라비에벨CC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 13,
+      "id": "88cc",
+      "name": "88컨트리클럽",
+      "service_status": "service",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "용인",
+      "current_facts": {
+        "operation_type": null,
+        "holes": 36,
+        "courses": null,
+        "official_url": "https://www.88countryclub.co.kr/",
+        "booking_url": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
+        "address": "경기도 용인시 기흥구 석성로521번길 169",
+        "phone": "031-287-8811",
+        "description": "동·서코스 총 36홀. 공식 홀 공략에서 일부 홀의 페어웨이 폭이 넓다고 안내하는 전략적 코스."
+      },
+      "missing_fields": [
+        "operation_type",
+        "courses"
+      ],
+      "missing_count": 2,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011988000001",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": false,
+        "kga_match_type": null,
+        "kga_matched_name": null,
+        "kga_course_combinations": [],
+        "kga_ratings_count": 0,
+        "verified_basic_info": {
+          "fields": {
+            "booking_url": {
+              "value": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
+              "source_type": "official_operator",
+              "confidence": "A",
+              "checked_at": "2026-09-20T20:58:25.755563+09:00"
+            }
+          },
+          "checked_at": "2026-09-20T20:58:25.755563+09:00"
+        }
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "courses"
+          ],
+          "query": "88컨트리클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        }
+      ],
+      "planned_search_units": 1
+    },
+    {
+      "order": 14,
+      "id": "jade",
+      "name": "제이드팰리스GC",
+      "service_status": "candidate",
+      "area": "강원권",
+      "subregion": "강원영서",
+      "city": "춘천",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "동",
+          "서"
+        ],
+        "official_url": "https://www.jadepalacegc.com/",
+        "booking_url": null,
+        "address": "강원특별자치도 춘천시 남산면 경춘로 212-30",
+        "phone": "033-260-8000",
+        "description": "자연 지형을 살린 18홀 회원제 코스. 비회원 요금과 3인 이하 라운드 조건을 공식 안내."
+      },
+      "missing_fields": [
+        "holes",
+        "booking_url"
+      ],
+      "missing_count": 2,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012007000011",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "제이드팰리스",
+        "kga_course_combinations": [
+          "동 +서"
+        ],
+        "kga_ratings_count": 6,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes"
+          ],
+          "query": "제이드팰리스GC 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "제이드팰리스GC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 15,
+      "id": "vworld_주_창원",
+      "name": "(주)창원컨트리클럽",
+      "service_status": "candidate",
+      "area": "영남권",
+      "subregion": "경남",
+      "city": "창원",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "서",
+          "동"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경상남도 창원시 의창구 대봉로 103 (봉림동)",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012006000001",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "창원",
+        "kga_course_combinations": [
+          "서 +동"
+        ],
+        "kga_ratings_count": 4,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "(주)창원컨트리클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "(주)창원컨트리클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "(주)창원컨트리클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 16,
+      "id": "vworld_가평베네스트g_c",
+      "name": "가평베네스트G.C",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기북부",
+      "city": "가평",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "메이플",
+          "파인",
+          "버치"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 가평군 상면 둔덕말길 232",
+        "phone": "1577-9727",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302012004000003",
+        "public_updated_at": "2026-05-19 03:03:03",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "가평베네스트",
+        "kga_course_combinations": [
+          "메이플 +파인",
+          "파인 +버치",
+          "버치 +메이플"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "가평베네스트G.C 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "가평베네스트G.C 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 17,
+      "id": "vworld_고창",
+      "name": "고창컨트리클럽",
+      "service_status": "candidate",
+      "area": "호남권",
+      "subregion": "전북",
+      "city": "고창",
+      "current_facts": {
+        "operation_type": "대중제(퍼블릭)",
+        "holes": null,
+        "courses": [
+          "비치",
+          "블루"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "전북특별자치도 고창군 심원면 애향갯벌로 70-0, 1동 (고창컨트리클럽)",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "정규대중",
+        "public_management_no": "302012017000002",
+        "public_updated_at": "2026-05-10 21:08:19",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "고창",
+        "kga_course_combinations": [
+          "비치 +블루"
+        ],
+        "kga_ratings_count": 6,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "고창컨트리클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "고창컨트리클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "고창컨트리클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 18,
+      "id": "kgba_곤지암",
+      "name": "곤지암",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "광주",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "마운틴",
+          "레이크"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 광주시 도척면 도척윗로 280",
+        "phone": "031-760-3421",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011993000001",
+        "public_updated_at": "2026-01-22 21:24:10",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "곤지암",
+        "kga_course_combinations": [
+          "마운틴 +레이크"
+        ],
+        "kga_ratings_count": 4,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "곤지암 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "곤지암 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 19,
+      "id": "vworld_골든베이골프_리조트",
+      "name": "골든베이 골프&리조트",
+      "service_status": "candidate",
+      "area": "충청권",
+      "subregion": "충남",
+      "city": "태안",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "오션",
+          "마운틴",
+          "밸리"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "충청남도 태안군 근흥면 정산포로 217",
+        "phone": "041-671-8000",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "302012010000003",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "safe_fuzzy",
+        "kga_matched_name": "골든베이",
+        "kga_course_combinations": [
+          "오션 +마운틴",
+          "마운틴 +밸리",
+          "밸리 +오션"
+        ],
+        "kga_ratings_count": 12,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "골든베이 골프&리조트 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "골든베이 골프&리조트 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 20,
+      "id": "kgba_골프존카운티_안성h",
+      "name": "골프존카운티 안성H",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "안성",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "힐",
+          "레이크"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 안성시 보개면 보삼로 302",
+        "phone": "070-8056-0700",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302012014000001",
+        "public_updated_at": "2026-05-01 22:01:54",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "골프존카운티 안성 H",
+        "kga_course_combinations": [
+          "힐 +레이크"
+        ],
+        "kga_ratings_count": 3,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "골프존카운티 안성H 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "골프존카운티 안성H 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 21,
+      "id": "vworld_군산",
+      "name": "군산컨트리클럽",
+      "service_status": "candidate",
+      "area": "호남권",
+      "subregion": "전북",
+      "city": "군산",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": null,
+        "courses": [
+          "김제",
+          "정읍",
+          "전주",
+          "익산",
+          "부안",
+          "남원",
+          "토너먼트 (Out)",
+          "토너먼트 (In)"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "전북특별자치도 군산시 옥서면 남군산로 1911-7",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012010000002",
+        "public_updated_at": "2026-05-10 21:08:16",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "군산",
+        "kga_course_combinations": [
+          "김제 +정읍",
+          "전주 +익산",
+          "부안 +남원",
+          "토너먼트 (Out) +토너먼트 (In)"
+        ],
+        "kga_ratings_count": 20,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "군산컨트리클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "군산컨트리클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "군산컨트리클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 22,
+      "id": "kgba_그랜드",
+      "name": "그랜드",
+      "service_status": "candidate",
+      "area": "충청권",
+      "subregion": "충북",
+      "city": "청주",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "동",
+          "남",
+          "서"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "충청북도 청주시 청원구 오창읍 꽃화산길 14-0",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012005000001",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "그랜드",
+        "kga_course_combinations": [
+          "동 +남",
+          "서 +동",
+          "남 +서"
+        ],
+        "kga_ratings_count": 12,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "그랜드 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "그랜드 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "그랜드 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 23,
+      "id": "vworld_글렌로스",
+      "name": "글렌로스골프클럽",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "용인",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "9 Hole"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 용인시 처인구 포곡읍 에버랜드로 199, 삼성에버랜드",
+        "phone": "031-320-8344",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011999000002",
+        "public_updated_at": "2026-04-08 03:03:03",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "글렌로스",
+        "kga_course_combinations": [
+          "9 Hole +9 Hole"
+        ],
+        "kga_ratings_count": 2,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "글렌로스골프클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "글렌로스골프클럽 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 24,
+      "id": "kgba_노스팜",
+      "name": "노스팜",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기북부",
+      "city": "파주",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "동",
+          "서"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 파주시 광탄면 쇠장이길 265, 노스팜 컨트리클럽",
+        "phone": "031-941-4277",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302012011000002",
+        "public_updated_at": "2026-03-26 22:41:15",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "노스팜",
+        "kga_course_combinations": [
+          "동 +서"
+        ],
+        "kga_ratings_count": 4,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "노스팜 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "노스팜 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 25,
+      "id": "kgba_뉴코리아",
+      "name": "뉴코리아",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기북부",
+      "city": "고양",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "OUT",
+          "IN"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 고양시 덕양구 신원2로 57, 뉴코리아컨트리클럽 (신원동)",
+        "phone": "02-353-0091",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011974000001",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "뉴코리아",
+        "kga_course_combinations": [
+          "OUT +IN"
+        ],
+        "kga_ratings_count": 6,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "뉴코리아 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "뉴코리아 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 26,
+      "id": "vworld_다이아몬드c_c",
+      "name": "다이아몬드C.C",
+      "service_status": "candidate",
+      "area": "영남권",
+      "subregion": "경남",
+      "city": "양산",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": null,
+        "courses": [
+          "북",
+          "남"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경상남도 양산시 상북면 공원로 305-391",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012013000003",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "다이아몬드",
+        "kga_course_combinations": [
+          "북 +남"
+        ],
+        "kga_ratings_count": 3,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "다이아몬드C.C 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "다이아몬드C.C 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "다이아몬드C.C 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 27,
+      "id": "vworld_더스타휴골프장",
+      "name": "더스타 휴 골프장",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "양평",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "스타",
+          "휴"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 양평군 양동면 양동로 756",
+        "phone": "031-770-9975",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302012013000001",
+        "public_updated_at": "2026-05-03 22:02:49",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "더스타휴",
+        "kga_course_combinations": [
+          "스타 +휴"
+        ],
+        "kga_ratings_count": 5,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "더스타 휴 골프장 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "더스타 휴 골프장 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 28,
+      "id": "vworld_동래베네스트",
+      "name": "동래베네스트골프클럽",
+      "service_status": "candidate",
+      "area": "영남권",
+      "subregion": "경남",
+      "city": "부산광역",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "OUT",
+          "IN"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "부산광역시 금정구 하정로 66 (선동)",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012007000003",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "동래베네스트",
+        "kga_course_combinations": [
+          "OUT +IN"
+        ],
+        "kga_ratings_count": 4,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "동래베네스트골프클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "동래베네스트골프클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "동래베네스트골프클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 29,
+      "id": "vworld_동촌",
+      "name": "동촌골프클럽",
+      "service_status": "candidate",
+      "area": "충청권",
+      "subregion": "충북",
+      "city": "충주",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": null,
+        "courses": [
+          "동",
+          "서"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "충청북도 충주시 노은면 감노로 1327",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012012000008",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "동촌",
+        "kga_course_combinations": [
+          "동 +서"
+        ],
+        "kga_ratings_count": 4,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "동촌골프클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "동촌골프클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "동촌골프클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 30,
+      "id": "kgba_라데나",
+      "name": "라데나",
+      "service_status": "candidate",
+      "area": "강원권",
+      "subregion": "강원영서",
+      "city": "춘천",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "네이쳐",
+          "레이크",
+          "가든"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "강원특별자치도 춘천시 신동면 칠전동길 72",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012007000014",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "라데나",
+        "kga_course_combinations": [
+          "네이쳐 +레이크",
+          "레이크 +가든",
+          "가든 +네이쳐"
+        ],
+        "kga_ratings_count": 14,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "라데나 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "라데나 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "라데나 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 31,
+      "id": "vworld_마우나오션",
+      "name": "마우나오션CC",
+      "service_status": "candidate",
+      "area": "영남권",
+      "subregion": "경북",
+      "city": "경주",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "오션",
+          "블루",
+          "마우나"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경상북도 경주시 양남면 신대리 산 140-1",
+        "phone": "054-771-0900",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011999000002",
+        "public_updated_at": "2026-03-26 22:40:02",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "마우나오션",
+        "kga_course_combinations": [
+          "오션 +블루",
+          "블루 +마우나",
+          "마우나 +오션"
+        ],
+        "kga_ratings_count": 12,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "마우나오션CC 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "마우나오션CC 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 32,
+      "id": "kgba_몽베르",
+      "name": "몽베르",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기북부",
+      "city": "포천",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "명성산OUT",
+          "명성산IN",
+          "망무봉OUT",
+          "망무봉IN"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 포천시 영북면 산정호수로 359-12",
+        "phone": "031-531-3841",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302012004000001",
+        "public_updated_at": "2026-05-05 22:00:24",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "몽베르",
+        "kga_course_combinations": [
+          "명성산OUT +명성산IN",
+          "망무봉OUT +망무봉IN"
+        ],
+        "kga_ratings_count": 8,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "몽베르 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "몽베르 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 33,
+      "id": "vworld_무등산",
+      "name": "무등산",
+      "service_status": "candidate",
+      "area": "호남권",
+      "subregion": "전남",
+      "city": "전남",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": null,
+        "courses": [
+          "지왕봉",
+          "인왕봉",
+          "천왕봉"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "전남광주통합특별시 화순군 화순읍 오성로 292-90",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012009000004",
+        "public_updated_at": "2026-07-14 11:38:15",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "무등산",
+        "kga_course_combinations": [
+          "지왕봉 +인왕봉",
+          "천왕봉 +지왕봉",
+          "인왕봉 +천왕봉"
+        ],
+        "kga_ratings_count": 9,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "무등산 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "무등산 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "무등산 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 34,
+      "id": "vworld_무안",
+      "name": "무안",
+      "service_status": "candidate",
+      "area": "호남권",
+      "subregion": "전남",
+      "city": "전남",
+      "current_facts": {
+        "operation_type": "대중제(퍼블릭)",
+        "holes": null,
+        "courses": [
+          "남 (A)",
+          "남 (B)",
+          "서 (A)",
+          "서 (B)",
+          "동 (A)",
+          "동 (B)"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "전남광주통합특별시 무안군 청계면 서호로 162",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "정규대중",
+        "public_management_no": "302012008000003",
+        "public_updated_at": "2026-07-14 11:38:15",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "무안",
+        "kga_course_combinations": [
+          "남 (A) +남 (B)",
+          "서 (A) +서 (B)",
+          "동 (A) +동 (B)"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "무안 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "무안 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "무안 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 35,
+      "id": "vworld_백제",
+      "name": "백제컨트리클럽",
+      "service_status": "candidate",
+      "area": "충청권",
+      "subregion": "충남",
+      "city": "부여",
+      "current_facts": {
+        "operation_type": "대중제(퍼블릭)",
+        "holes": null,
+        "courses": [
+          "사비",
+          "한성",
+          "웅진"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "충청남도 부여군 은산면 충절로 3734-82",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "정규대중",
+        "public_management_no": "302012008000002",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "백제",
+        "kga_course_combinations": [
+          "사비 +한성",
+          "웅진 +사비",
+          "한성 +웅진"
+        ],
+        "kga_ratings_count": 20,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "백제컨트리클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "백제컨트리클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "백제컨트리클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 36,
+      "id": "kgba_베뉴지",
+      "name": "베뉴지",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기북부",
+      "city": "가평",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "G",
+          "휴",
+          "힐"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 가평군 가평읍 용추로171번길 100, 가평베뉴지골프장",
+        "phone": "031-582-5999",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302012018000001",
+        "public_updated_at": "2025-12-25 02:40:00",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "베뉴지",
+        "kga_course_combinations": [
+          "G +휴",
+          "휴 +힐",
+          "힐 +G"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "베뉴지 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "베뉴지 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 37,
+      "id": "vworld_베어즈베스트청라",
+      "name": "베어즈베스트청라골프클럽",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "인천",
+      "city": "인천광역",
+      "current_facts": {
+        "operation_type": "대중제(퍼블릭)",
+        "holes": null,
+        "courses": [
+          "아메리카",
+          "오스트랄 아시아",
+          "유럽"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "인천광역시 서해구 청라대로316번길 45-0 (청라동)",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "일반대중",
+        "public_management_no": "302012016000001",
+        "public_updated_at": "2026-07-06 16:13:00",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "베어즈베스트청라",
+        "kga_course_combinations": [
+          "아메리카 +오스트랄 아시아",
+          "오스트랄 아시아 +유럽",
+          "유럽 +아메리카"
+        ],
+        "kga_ratings_count": 18,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "베어즈베스트청라골프클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "베어즈베스트청라골프클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "베어즈베스트청라골프클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 38,
+      "id": "kgba_베어크리크_춘천",
+      "name": "베어크리크 춘천",
+      "service_status": "candidate",
+      "area": "강원권",
+      "subregion": "강원영서",
+      "city": "춘천",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": null,
+        "courses": [
+          "Out",
+          "In"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "강원특별자치도 춘천시 신동면 김유정로 730-0",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012019000003",
+        "public_updated_at": "2026-05-19 03:03:03",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "베어크리크 춘천",
+        "kga_course_combinations": [
+          "Out +In"
+        ],
+        "kga_ratings_count": 6,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "베어크리크 춘천 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "베어크리크 춘천 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "베어크리크 춘천 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 39,
+      "id": "vworld_보라",
+      "name": "보라컨트리클럽",
+      "service_status": "candidate",
+      "area": "영남권",
+      "subregion": "경남",
+      "city": "울산광역",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "에드워드",
+          "헨리",
+          "윌리암"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "울산광역시 울주군 삼동면 삼동로 404",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012007000003",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "보라",
+        "kga_course_combinations": [
+          "에드워드 +헨리",
+          "헨리 +윌리암",
+          "윌리암 +에드워드"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "보라컨트리클럽 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "보라컨트리클럽 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "보라컨트리클럽 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 40,
+      "id": "kgba_블랙밸리",
+      "name": "블랙밸리",
+      "service_status": "candidate",
+      "area": "강원권",
+      "subregion": "강원영동",
+      "city": "삼척",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "블랙",
+          "밸리"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "강원특별자치도 삼척시 도계읍 도상로 307-84, 1동 (블랙밸리골프장)",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "비회원제",
+        "public_management_no": "302012006000004",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "블랙밸리",
+        "kga_course_combinations": [
+          "블랙 +밸리"
+        ],
+        "kga_ratings_count": 2,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "블랙밸리 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "블랙밸리 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "블랙밸리 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 41,
+      "id": "vworld_블랙스톤제주",
+      "name": "블랙스톤제주",
+      "service_status": "candidate",
+      "area": "제주권",
+      "subregion": "제주",
+      "city": "제주",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "북",
+          "남",
+          "동"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "제주특별자치도 제주시 한림읍 한창로 925-122",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "비회원제",
+        "public_management_no": "302012008000021",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "블랙스톤 제주",
+        "kga_course_combinations": [
+          "북 +남",
+          "남 +동",
+          "동 +북"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "블랙스톤제주 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "블랙스톤제주 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "블랙스톤제주 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 42,
+      "id": "vworld_블루원상주골프리조트",
+      "name": "블루원상주 골프리조트",
+      "service_status": "candidate",
+      "area": "영남권",
+      "subregion": "경북",
+      "city": "상주",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": null,
+        "courses": [
+          "동",
+          "서"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경상북도 상주시 모서면 화현3길 127",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012008000054",
+        "public_updated_at": "2026-02-12 21:05:10",
+        "kga_matched": true,
+        "kga_match_type": "safe_fuzzy",
+        "kga_matched_name": "블루원상주",
+        "kga_course_combinations": [
+          "동 +서"
+        ],
+        "kga_ratings_count": 6,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "블루원상주 골프리조트 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "블루원상주 골프리조트 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "블루원상주 골프리조트 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 43,
+      "id": "kgba_샌드파인",
+      "name": "샌드파인",
+      "service_status": "candidate",
+      "area": "강원권",
+      "subregion": "강원영동",
+      "city": "강릉",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "Out",
+          "In"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "강원특별자치도 강릉시 저동등길 53 (저동)",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012007000013",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "샌드파인",
+        "kga_course_combinations": [
+          "Out +In"
+        ],
+        "kga_ratings_count": 5,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "샌드파인 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "샌드파인 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "샌드파인 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 44,
+      "id": "kgba_설해원",
+      "name": "설해원",
+      "service_status": "candidate",
+      "area": "강원권",
+      "subregion": "강원영동",
+      "city": "양양",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "더 레전드 (Out)",
+          "더 레전드 (In)",
+          "씨뷰",
+          "파인",
+          "살몬"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "강원특별자치도 양양군 손양면 공항로 230",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "비회원제",
+        "public_management_no": "302012007000023",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "설해원",
+        "kga_course_combinations": [
+          "더 레전드 (Out) +더 레전드 (In)",
+          "씨뷰 +파인",
+          "파인 +살몬",
+          "살몬 +씨뷰"
+        ],
+        "kga_ratings_count": 25,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "설해원 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "설해원 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "설해원 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 45,
+      "id": "kgba_세종에머슨",
+      "name": "세종에머슨",
+      "service_status": "candidate",
+      "area": "충청권",
+      "subregion": "충남",
+      "city": "세종특별자치",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "밸리",
+          "마운틴",
+          "레이크"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "세종특별자치시 전의면 운주산로 1510",
+        "phone": "044-862-9715",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011994000001",
+        "public_updated_at": "2026-07-10 21:26:40",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "세종에머슨",
+        "kga_course_combinations": [
+          "밸리 +마운틴",
+          "마운틴 +레이크",
+          "레이크 +밸리"
+        ],
+        "kga_ratings_count": 9,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "세종에머슨 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "세종에머슨 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    },
+    {
+      "order": 46,
+      "id": "kgba_센추리21",
+      "name": "센추리21",
+      "service_status": "candidate",
+      "area": "강원권",
+      "subregion": "강원영서",
+      "city": "원주",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "밸리",
+          "마운틴",
+          "파인",
+          "레이크",
+          "필드"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "강원특별자치도 원주시 문막읍 궁말길 193",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "회원제",
+        "public_management_no": "302012007000001",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "센추리21",
+        "kga_course_combinations": [
+          "밸리 +마운틴",
+          "파인 +레이크",
+          "마운틴 +필드",
+          "필드 +밸리"
+        ],
+        "kga_ratings_count": 13,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "센추리21 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "센추리21 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "센추리21 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 47,
+      "id": "vworld_스프링데일골프_리조트",
+      "name": "스프링데일 골프&리조트",
+      "service_status": "candidate",
+      "area": "제주권",
+      "subregion": "제주",
+      "city": "서귀포",
+      "current_facts": {
+        "operation_type": "회원제",
+        "holes": null,
+        "courses": [
+          "스프링",
+          "데일"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "제주특별자치도 서귀포시 남원읍 서성로 459",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "비회원제",
+        "public_management_no": "302012011000002",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "safe_fuzzy",
+        "kga_matched_name": "스프링데일",
+        "kga_course_combinations": [
+          "스프링 +데일"
+        ],
+        "kga_ratings_count": 2,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "스프링데일 골프&리조트 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "스프링데일 골프&리조트 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "스프링데일 골프&리조트 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 48,
+      "id": "vworld_아시아드c_c",
+      "name": "아시아드C.C",
+      "service_status": "candidate",
+      "area": "영남권",
+      "subregion": "경남",
+      "city": "부산광역",
+      "current_facts": {
+        "operation_type": "없음",
+        "holes": null,
+        "courses": [
+          "밸리",
+          "레이크",
+          "파인"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "부산광역시 기장군 일광면 차양길 26",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "없음",
+        "public_management_no": "302012008000001",
+        "public_updated_at": "2025-12-15 16:15:28",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "아시아드",
+        "kga_course_combinations": [
+          "밸리 +레이크",
+          "레이크 +파인",
+          "파인 +밸리"
+        ],
+        "kga_ratings_count": 15,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "아시아드C.C 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "아시아드C.C 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "아시아드C.C 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 49,
+      "id": "vworld_아크로",
+      "name": "아크로",
+      "service_status": "candidate",
+      "area": "호남권",
+      "subregion": "전남",
+      "city": "전남",
+      "current_facts": {
+        "operation_type": "대중제(퍼블릭)",
+        "holes": null,
+        "courses": [
+          "마스터",
+          "챌린지",
+          "스카이"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "전남광주통합특별시 영암군 금정면 안적동길 403",
+        "phone": null,
+        "description": null
+      },
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "exact",
+        "public_operating": true,
+        "public_business_type": "정규대중",
+        "public_management_no": "302012007000010",
+        "public_updated_at": "2026-07-01 14:26:55",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "아크로",
+        "kga_course_combinations": [
+          "마스터 +챌린지",
+          "챌린지 +스카이",
+          "스카이 +마스터"
+        ],
+        "kga_ratings_count": 16,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "아크로 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "아크로 공식 예약",
+          "priority": 2
+        },
+        {
+          "type": "official_contact",
+          "fields": [
+            "phone"
+          ],
+          "query": "아크로 공식 주소 전화번호",
+          "priority": 3
+        }
+      ],
+      "planned_search_units": 3
+    },
+    {
+      "order": 50,
+      "id": "vworld_안성c_c",
+      "name": "안성C.C",
+      "service_status": "candidate",
+      "area": "수도권",
+      "subregion": "경기남부",
+      "city": "안성",
+      "current_facts": {
+        "operation_type": null,
+        "holes": null,
+        "courses": [
+          "Out",
+          "In"
+        ],
+        "official_url": null,
+        "booking_url": null,
+        "address": "경기도 안성시 죽산면 장계길 134",
+        "phone": "031-674-9111",
+        "description": null
+      },
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "description"
+      ],
+      "missing_count": 5,
+      "existing_evidence": {
+        "public_matched": true,
+        "public_match_type": "normalized_1.00",
+        "public_operating": true,
+        "public_business_type": "",
+        "public_management_no": "CDFH2302011992000001",
+        "public_updated_at": "2026-05-01 22:01:54",
+        "kga_matched": true,
+        "kga_match_type": "exact",
+        "kga_matched_name": "안성",
+        "kga_course_combinations": [
+          "Out +In"
+        ],
+        "kga_ratings_count": 2,
+        "verified_basic_info": {}
+      },
+      "search_plan": [
+        {
+          "type": "official_profile",
+          "fields": [
+            "operation_type",
+            "holes",
+            "official_url",
+            "description"
+          ],
+          "query": "안성C.C 공식 홈페이지 골프장 코스 홀수 회원제 대중제",
+          "priority": 1
+        },
+        {
+          "type": "official_booking",
+          "fields": [
+            "booking_url"
+          ],
+          "query": "안성C.C 공식 예약",
+          "priority": 2
+        }
+      ],
+      "planned_search_units": 2
+    }
+  ]
+}

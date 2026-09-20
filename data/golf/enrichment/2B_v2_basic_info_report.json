@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-09-20T19:28:38",
+  "searched": 10,
+  "proposed_field_counts": {
+    "official_url": 3,
+    "booking_url": 2,
+    "holes": 1,
+    "operation_type": 1
+  },
+  "review_needed": 7,
+  "catalog_modified": false,
+  "checkpoint": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\2B_v2_basic_info_checkpoint.json"
+}

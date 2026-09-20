@@ -118,11 +118,7 @@
     "region": "",
     "city": "파주",
     "holes": null,
-    "courses": [
-      "Trust",
-      "Honesta",
-      "Justitia"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -196,8 +192,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_서원밸리g_c",
@@ -207,10 +202,7 @@
     "region": "",
     "city": "파주",
     "holes": null,
-    "courses": [
-      "밸리",
-      "서원"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -329,8 +321,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_제이퍼블릭",
@@ -1138,10 +1129,7 @@
     "region": "",
     "city": "안성",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -1235,8 +1223,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_안성베네스트g_c",
@@ -1246,12 +1233,7 @@
     "region": "",
     "city": "안성",
     "holes": null,
-    "courses": [
-      "서",
-      "북",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -1378,8 +1360,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_아시아드c_c",
@@ -1389,11 +1370,7 @@
     "region": "",
     "city": "부산광역",
     "holes": null,
-    "courses": [
-      "밸리",
-      "레이크",
-      "파인"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -1593,8 +1570,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_윈체스트",
@@ -2148,9 +2124,7 @@
       }
     },
     "public_data_name": "해운대컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "kgba_골프존카운티_안성h",
@@ -2160,10 +2134,7 @@
     "region": "경기",
     "city": "안성",
     "holes": null,
-    "courses": [
-      "힐",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -2265,8 +2236,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_김포seaside",
@@ -2276,10 +2246,7 @@
     "region": "",
     "city": "김포",
     "holes": null,
-    "courses": [
-      "서",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -2351,8 +2318,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_기흥",
@@ -2446,11 +2412,7 @@
     "region": "경기",
     "city": "화성",
     "holes": null,
-    "courses": [
-      "서",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -2601,8 +2563,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_라비돌",
@@ -2857,11 +2818,7 @@
     "region": "경기",
     "city": "화성",
     "holes": null,
-    "courses": [
-      "서",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -3013,8 +2970,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_남수원체력단련장",
@@ -3223,10 +3179,7 @@
     "region": "경기",
     "city": "광주",
     "holes": null,
-    "courses": [
-      "마운틴",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -3336,8 +3289,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_그린힐",
@@ -3414,10 +3366,7 @@
     "region": "경기",
     "city": "광주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -3535,8 +3484,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_뉴서울",
@@ -3546,12 +3494,7 @@
     "region": "경기",
     "city": "광주",
     "holes": null,
-    "courses": [
-      "아트 (Out)",
-      "아트 (In)",
-      "문화 (Out)",
-      "문화 (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -3678,8 +3621,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_이스트밸리",
@@ -3689,11 +3631,7 @@
     "region": "경기",
     "city": "광주",
     "holes": null,
-    "courses": [
-      "서",
-      "동",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -3767,8 +3705,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_해운대비치골프앤리조트",
@@ -3889,12 +3826,7 @@
     "region": "경기",
     "city": "경기북부",
     "holes": null,
-    "courses": [
-      "레이크 (물길)",
-      "레이크 (꽃길)",
-      "우드 (숲길)",
-      "우드 (산길)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -4029,8 +3961,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_송추",
@@ -4040,10 +3971,7 @@
     "region": "경기",
     "city": "양주",
     "holes": null,
-    "courses": [
-      "서",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -4120,8 +4048,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_몽베르",
@@ -4131,12 +4058,7 @@
     "region": "경기",
     "city": "포천",
     "holes": null,
-    "courses": [
-      "명성산OUT",
-      "명성산IN",
-      "망무봉OUT",
-      "망무봉IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -4279,8 +4201,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_일동레이크",
@@ -4290,10 +4211,7 @@
     "region": "경기",
     "city": "포천",
     "holes": null,
-    "courses": [
-      "마운틴",
-      "힐"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -4395,8 +4313,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_포천아도니스",
@@ -4406,11 +4323,7 @@
     "region": "경기",
     "city": "포천",
     "holes": null,
-    "courses": [
-      "동",
-      "서",
-      "중"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -4484,8 +4397,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_필로스",
@@ -4619,9 +4531,7 @@
       }
     },
     "public_data_name": "팔공컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_푸른솔",
@@ -4808,10 +4718,7 @@
     "region": "경기",
     "city": "포천",
     "holes": null,
-    "courses": [
-      "마운틴",
-      "힐"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -4883,8 +4790,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_포천힐스",
@@ -4894,11 +4800,7 @@
     "region": "",
     "city": "포천",
     "holes": null,
-    "courses": [
-      "팰리스",
-      "가든",
-      "캐슬"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -5074,8 +4976,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_포레스트힐",
@@ -5196,11 +5097,7 @@
     "region": "경기",
     "city": "경기남부",
     "holes": null,
-    "courses": [
-      "동",
-      "서",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -5250,8 +5147,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_렉스필드",
@@ -5261,11 +5157,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "레이크",
-      "마운틴",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -5417,8 +5309,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_냉천",
@@ -5515,7 +5406,7 @@
       "city": "public_address"
     },
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 6,
     "verification": {
       "sources": [
         "VWorld",
@@ -5565,18 +5456,6 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "booking_url": "https://blueheron.co.kr/reservation/golf",
-    "verified_basic_info": {
-      "fields": {
-        "booking_url": {
-          "value": "https://blueheron.co.kr/reservation/golf",
-          "source_type": "official_operator",
-          "confidence": "A",
-          "checked_at": "2026-09-20T20:58:25.755563+09:00"
-        }
-      },
-      "checked_at": "2026-09-20T20:58:25.755563+09:00"
     }
   },
   {
@@ -5654,12 +5533,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "레이크",
-      "마운틴",
-      "스카이",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -5732,8 +5606,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_신라",
@@ -5743,11 +5616,7 @@
     "region": "",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "동",
-      "서",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -5923,8 +5792,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_여주",
@@ -5978,10 +5846,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -6091,8 +5956,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_자유",
@@ -6102,10 +5966,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -6343,8 +6204,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_캐슬파인",
@@ -6442,10 +6302,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "해슬리",
-      "PGA"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -6571,8 +6428,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_sky72",
@@ -6626,11 +6482,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "마루",
-      "누리",
-      "가람"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -6757,8 +6609,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_빅토리아",
@@ -6768,9 +6619,7 @@
     "region": "",
     "city": "경기남부",
     "holes": null,
-    "courses": [
-      "9Hole"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -6819,8 +6668,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_소피아그린",
@@ -6964,10 +6812,7 @@
     "region": "",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "아웃",
-      "인"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -7093,8 +6938,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_여주썬밸리",
@@ -7238,10 +7082,7 @@
     "region": "",
     "city": "인천광역",
     "holes": null,
-    "courses": [
-      "어반",
-      "링스"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -7367,10 +7208,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_동여주체력단련장",
@@ -7380,10 +7218,7 @@
     "region": "",
     "city": "경기남부",
     "holes": null,
-    "courses": [
-      "마운틴",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -7432,8 +7267,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_노스폴",
@@ -7509,11 +7343,7 @@
     "region": "",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "메이플",
-      "파인",
-      "버치"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -7713,8 +7543,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_아난티클럽_구_리츠칼튼c_c",
@@ -7879,10 +7708,7 @@
     "region": "",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "크리스탈",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -7992,8 +7818,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_프리스틴밸리g_c",
@@ -8003,10 +7828,7 @@
     "region": "",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "프리스틴",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -8116,8 +7938,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_가평베네스트",
@@ -8127,11 +7948,7 @@
     "region": "경기",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "메이플",
-      "파인",
-      "버치"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -8205,8 +8022,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_인서울27_주",
@@ -8394,11 +8210,7 @@
     "region": "경기",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "G",
-      "휴",
-      "힐"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -8598,8 +8410,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_더스타휴골프장",
@@ -8609,10 +8420,7 @@
     "region": "",
     "city": "양평",
     "holes": null,
-    "courses": [
-      "스타",
-      "휴"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -8730,8 +8538,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "jade",
@@ -8741,10 +8548,7 @@
     "region": "강원",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "3인 이하 일반카트 예약 가능(예약실 문의)"
     },
@@ -8778,7 +8582,7 @@
       "city": "public_address"
     },
     "service_status": "candidate",
-    "service_basic_count": 3,
+    "service_basic_count": 4,
     "verification": {
       "sources": [
         "VWorld",
@@ -8882,10 +8686,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_남춘천c_c",
@@ -8895,10 +8696,7 @@
     "region": "",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "Victory",
-      "Challenge"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -8970,8 +8768,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_휘슬링락c_c",
@@ -8981,11 +8778,7 @@
     "region": "",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "코쿤",
-      "템플",
-      "클라우드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -9185,10 +8978,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_파가니카c_c",
@@ -9286,11 +9076,7 @@
     "region": "강원",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "네이쳐",
-      "레이크",
-      "가든"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -9482,10 +9268,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_오너스g_c",
@@ -9596,6 +9379,216 @@
       "status": "partial",
       "checked_at": "2026-09-20",
       "assessed_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "vworld_더플레이어스",
+    "name": "더 플레이어스 골프클럽",
+    "aliases": [],
+    "area": "강원권",
+    "region": "",
+    "city": "춘천",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "vworld",
+    "pool_source": "VWorld LT_P_SGISGOLF",
+    "pool_checked": "2026-09-20",
+    "vworld_x": 127.7602900000001,
+    "vworld_y": 37.77482699908623,
+    "vworld_properties": {},
+    "subregion": "강원영서",
+    "region_source": "public_address",
+    "region_field_sources": {
+      "area": "public_address",
+      "subregion": "public_address",
+      "city": "public_address"
+    },
+    "service_status": "candidate",
+    "service_basic_count": 1,
+    "verification": {
+      "sources": [
+        "VWorld",
+        "data.go.kr",
+        "공공데이터",
+        "공공데이터상 영업"
+      ],
+      "status": "partial",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20",
+      "public_data": {
+        "matched": true,
+        "checked_at": "2026-09-20",
+        "dataset_id": "15154978",
+        "source_name": "행정안전부_생활_골프장 조회서비스",
+        "match_type": "exact",
+        "public_name": "더플레이어스골프클럽",
+        "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+        "phone": "",
+        "status": "영업/정상",
+        "detail_status": "영업",
+        "closed_date": "",
+        "data_updated_at": "2026-06-24 03:03:03",
+        "last_modified_at": "2026-06-23 10:13:10",
+        "business_type": "비회원제",
+        "management_no": "302012012000006",
+        "operating_in_public_data": true
+      }
+    },
+    "public_data_name": "더플레이어스골프클럽",
+    "region_checked_at": "2026-09-20",
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "클럽디 더플레이어스",
+      "match_type": "safe_fuzzy",
+      "match_score": 0.97,
+      "checked_at": "2026-09-20",
+      "region": "강원",
+      "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+      "course_combinations": [
+        "마운틴 +밸리",
+        "밸리 +레이크",
+        "레이크 +마운틴"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
+      "ratings": [
+        {
+          "tee": "Black",
+          "gender": "남자",
+          "course_rating": 75.5,
+          "slope_rating": 145,
+          "length_yds": 7126,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.6,
+          "slope_rating": 142,
+          "length_yds": 6791,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 71.3,
+          "slope_rating": 140,
+          "length_yds": 6406,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Yellow",
+          "gender": "남자",
+          "course_rating": 68.7,
+          "slope_rating": 131,
+          "length_yds": 5713,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 70.7,
+          "slope_rating": 124,
+          "length_yds": 5141,
+          "course": "밸리 +레이크"
+        },
+        {
+          "tee": "Black",
+          "gender": "남자",
+          "course_rating": 75.3,
+          "slope_rating": 150,
+          "length_yds": 7115,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.3,
+          "slope_rating": 148,
+          "length_yds": 6752,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 71.3,
+          "slope_rating": 143,
+          "length_yds": 6395,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Yellow",
+          "gender": "남자",
+          "course_rating": 68.8,
+          "slope_rating": 135,
+          "length_yds": 5675,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 71.0,
+          "slope_rating": 125,
+          "length_yds": 5117,
+          "course": "레이크 +마운틴"
+        },
+        {
+          "tee": "Black",
+          "gender": "남자",
+          "course_rating": 75.2,
+          "slope_rating": 146,
+          "length_yds": 7105,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 73.1,
+          "slope_rating": 144,
+          "length_yds": 6743,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 71.4,
+          "slope_rating": 140,
+          "length_yds": 6421,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "Yellow",
+          "gender": "남자",
+          "course_rating": 69.1,
+          "slope_rating": 133,
+          "length_yds": 5850,
+          "course": "마운틴 +밸리"
+        },
+        {
+          "tee": "Red",
+          "gender": "여자",
+          "course_rating": 70.9,
+          "slope_rating": 124,
+          "length_yds": 5242,
+          "course": "마운틴 +밸리"
+        }
+      ],
+      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
+      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
+      "ratings_source_date": "2024-07-15",
+      "ratings_checked_at": "2026-09-20"
     }
   },
   {
@@ -9851,12 +9844,7 @@
     "region": "",
     "city": "원주",
     "holes": null,
-    "courses": [
-      "오크",
-      "메이플",
-      "파인",
-      "체리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -9983,10 +9971,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_오크힐스",
@@ -9996,10 +9981,7 @@
     "region": "강원",
     "city": "원주",
     "holes": null,
-    "courses": [
-      "브릿지",
-      "힐"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -10109,10 +10091,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_센추리21",
@@ -10122,13 +10101,7 @@
     "region": "강원",
     "city": "원주",
     "holes": null,
-    "courses": [
-      "밸리",
-      "마운틴",
-      "파인",
-      "레이크",
-      "필드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -10313,10 +10286,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_센추리21",
@@ -10326,13 +10296,7 @@
     "region": "",
     "city": "원주",
     "holes": null,
-    "courses": [
-      "밸리",
-      "마운틴",
-      "파인",
-      "레이크",
-      "필드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -10407,10 +10371,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_센추리21대중제",
@@ -10464,10 +10425,7 @@
     "region": "",
     "city": "인천광역",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -10577,10 +10535,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_파크밸리",
@@ -10647,9 +10602,7 @@
       }
     },
     "public_data_name": "파크밸리 골프클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_인터불고원주g_c",
@@ -10881,10 +10834,7 @@
     "region": "강원",
     "city": "강릉",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -11002,10 +10952,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_메이플비치골프_리조트",
@@ -11271,9 +11218,7 @@
       }
     },
     "public_data_name": "인천그랜드컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_o2리조트대중제",
@@ -11384,9 +11329,7 @@
       }
     },
     "public_data_name": "설악프라자 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_영랑호",
@@ -11453,9 +11396,7 @@
       }
     },
     "public_data_name": "영랑호컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_파인밸리",
@@ -11522,9 +11463,7 @@
       }
     },
     "public_data_name": "파인밸리 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "kgba_블랙밸리",
@@ -11534,10 +11473,7 @@
     "region": "강원",
     "city": "삼척",
     "holes": null,
-    "courses": [
-      "블랙",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -11631,10 +11567,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_힐드로사이c_c",
@@ -11644,10 +11577,7 @@
     "region": "",
     "city": "홍천",
     "holes": null,
-    "courses": [
-      "버치",
-      "파인"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -11757,10 +11687,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_클럽모우골프_라이프스타일",
@@ -11827,9 +11754,7 @@
       }
     },
     "public_data_name": "클럽모우 골프＆라이프 스타일",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_비발디파크",
@@ -11969,12 +11894,7 @@
     "region": "",
     "city": "인천",
     "holes": null,
-    "courses": [
-      "드림 (Out)",
-      "드림 (In)",
-      "파크 (Out)",
-      "파크 (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -12118,8 +12038,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_대명비발디파크골프장",
@@ -12504,11 +12423,7 @@
     "region": "강원",
     "city": "평창",
     "holes": null,
-    "courses": [
-      "메도우",
-      "포레스트",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -12582,8 +12497,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_베어즈베스트청라",
@@ -12593,11 +12507,7 @@
     "region": "",
     "city": "인천광역",
     "holes": null,
-    "courses": [
-      "아메리카",
-      "오스트랄 아시아",
-      "유럽"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -12821,10 +12731,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_용평2차_버찌힐",
@@ -13002,11 +12909,7 @@
     "region": "",
     "city": "평창",
     "holes": null,
-    "courses": [
-      "메도우",
-      "포레스트",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -13080,8 +12983,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_용평나인",
@@ -13179,10 +13081,7 @@
     "region": "강원",
     "city": "정선",
     "holes": null,
-    "courses": [
-      "마운틴",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -13300,10 +13199,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_에콜리안정선",
@@ -13415,9 +13311,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    }
   },
   {
     "id": "vworld_한탄강",
@@ -13484,9 +13378,7 @@
       }
     },
     "public_data_name": "한탄강 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "pineridge",
@@ -13544,7 +13436,7 @@
       "city": "public_address"
     },
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 6,
     "verification": {
       "sources": [
         "VWorld",
@@ -13918,9 +13810,7 @@
       }
     },
     "public_data_name": "대명설악컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_설악썬밸리",
@@ -13987,9 +13877,7 @@
       }
     },
     "public_data_name": "설악썬밸리 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_골든비치",
@@ -14043,10 +13931,7 @@
     "region": "",
     "city": "청원",
     "holes": null,
-    "courses": [
-      "이븐",
-      "데일"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -14118,10 +14003,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_공군사관학교",
@@ -14276,9 +14158,7 @@
       }
     },
     "public_data_name": "떼제베CC(대중제)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_떼제베_2",
@@ -14345,9 +14225,7 @@
       }
     },
     "public_data_name": "떼제베CC(대중제)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_어등산",
@@ -14423,11 +14301,7 @@
     "region": "충청",
     "city": "청주",
     "holes": null,
-    "courses": [
-      "동",
-      "남",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -14603,10 +14477,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_상떼힐",
@@ -14660,11 +14531,7 @@
     "region": "충청",
     "city": "충주",
     "holes": null,
-    "courses": [
-      "스코틀랜드",
-      "웨일즈",
-      "잉글랜드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -14791,8 +14658,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_시그너스",
@@ -14802,11 +14668,7 @@
     "region": "",
     "city": "경기남부",
     "holes": null,
-    "courses": [
-      "코튼",
-      "실크",
-      "라미"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -14996,8 +14858,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_임페리얼레이크",
@@ -15051,10 +14912,7 @@
     "region": "",
     "city": "충주",
     "holes": null,
-    "courses": [
-      "로얄",
-      "포레"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -15126,10 +14984,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_동촌",
@@ -15139,10 +14994,7 @@
     "region": "",
     "city": "충주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -15252,8 +15104,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_중원",
@@ -15408,10 +15259,7 @@
     "region": "충북",
     "city": "충주",
     "holes": 18,
-    "courses": [
-      "레이크",
-      "힐"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -15436,7 +15284,7 @@
       "subregion": "coordinate_estimate"
     },
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 5,
     "verification": {
       "sources": [
         "VWorld",
@@ -15514,8 +15362,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_대영힐스",
@@ -15582,9 +15429,7 @@
       }
     },
     "public_data_name": "대영힐스CC",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_세일",
@@ -15651,9 +15496,7 @@
       }
     },
     "public_data_name": "세일골프장",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_공군제19전투비행단",
@@ -16017,11 +15860,7 @@
     "region": "",
     "city": "진천",
     "holes": null,
-    "courses": [
-      "청룡",
-      "황룡",
-      "흑룡"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -16197,8 +16036,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_아트밸리",
@@ -16252,11 +16090,7 @@
     "region": "",
     "city": "진천",
     "holes": null,
-    "courses": [
-      "청룡",
-      "황룡",
-      "흑룡"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -16330,8 +16164,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_히든밸리",
@@ -16442,11 +16275,7 @@
     "region": "충북",
     "city": "음성",
     "holes": 27,
-    "courses": [
-      "서",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "가능(1인당 주중 1만원·주말 2만원 추가)"
     },
@@ -16476,7 +16305,7 @@
       "subregion": "coordinate_estimate"
     },
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 5,
     "verification": {
       "sources": [
         "VWorld",
@@ -16629,8 +16458,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_썬밸리",
@@ -16763,9 +16591,7 @@
       }
     },
     "public_data_name": "젠스필드CC(대중제)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "kgba_코스카",
@@ -16775,11 +16601,7 @@
     "region": "충청",
     "city": "음성",
     "holes": null,
-    "courses": [
-      "메이플",
-      "릴리",
-      "파인"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -16930,8 +16752,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_남성대체력단련장",
@@ -17130,9 +16951,7 @@
       }
     },
     "public_data_name": "대호단양CC(대중제)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_버드우드g_c",
@@ -17209,10 +17028,7 @@
     "region": "",
     "city": "충남",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -17323,8 +17139,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_마론뉴데이",
@@ -17510,10 +17325,7 @@
     "region": "충청",
     "city": "대전광역",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -17639,10 +17451,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_프린세스c_c",
@@ -17652,10 +17461,7 @@
     "region": "",
     "city": "공주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -17757,10 +17563,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_골드리버",
@@ -17858,10 +17661,7 @@
     "region": "",
     "city": "충남",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -17940,8 +17740,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_아름다운c_c",
@@ -18375,9 +18174,7 @@
       }
     },
     "public_data_name": "에딘버러 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_백제",
@@ -18387,11 +18184,7 @@
     "region": "",
     "city": "부여",
     "holes": null,
-    "courses": [
-      "사비",
-      "한성",
-      "웅진"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -18631,10 +18424,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_태안비치c_c",
@@ -18711,11 +18501,7 @@
     "region": "",
     "city": "태안",
     "holes": null,
-    "courses": [
-      "오션",
-      "마운틴",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -18891,8 +18677,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_파인스톤c_c",
@@ -18902,10 +18687,7 @@
     "region": "",
     "city": "당진",
     "holes": null,
-    "courses": [
-      "파인",
-      "스톤"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -19015,8 +18797,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_전주월드컵",
@@ -19070,16 +18851,7 @@
     "region": "",
     "city": "군산",
     "holes": null,
-    "courses": [
-      "김제",
-      "정읍",
-      "전주",
-      "익산",
-      "부안",
-      "남원",
-      "토너먼트 (Out)",
-      "토너먼트 (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -19320,8 +19092,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_베어리버골프리조트",
@@ -19551,10 +19322,7 @@
     "region": "",
     "city": "전북",
     "holes": null,
-    "courses": [
-      "레이크",
-      "마운틴"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -19641,8 +19409,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_내장산골프_리조트",
@@ -19652,10 +19419,7 @@
     "region": "",
     "city": "정읍",
     "holes": null,
-    "courses": [
-      "홍단풍",
-      "청단풍"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -19727,10 +19491,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_드라곤레이크",
@@ -19784,10 +19545,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "몽룡",
-      "춘향"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -19836,8 +19594,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_스파힐스",
@@ -20312,10 +20069,7 @@
     "region": "",
     "city": "장수",
     "holes": null,
-    "courses": [
-      "애플",
-      "트리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -20387,8 +20141,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_전주샹그릴라",
@@ -20398,11 +20151,7 @@
     "region": "",
     "city": "임실",
     "holes": null,
-    "courses": [
-      "엔젤",
-      "레이크",
-      "드림"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -20530,8 +20279,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_순창",
@@ -20585,11 +20333,7 @@
     "region": "",
     "city": "울산광역",
     "holes": null,
-    "courses": [
-      "에드워드",
-      "헨리",
-      "윌리암"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -20789,10 +20533,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_금과간이골프장",
@@ -20869,10 +20610,7 @@
     "region": "",
     "city": "고창",
     "holes": null,
-    "courses": [
-      "비치",
-      "블루"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -20998,10 +20736,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_골프존카운티선운",
@@ -21011,10 +20746,7 @@
     "region": "",
     "city": "전북",
     "holes": null,
-    "courses": [
-      "선운",
-      "화시"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -21093,8 +20825,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_석정힐",
@@ -21171,11 +20902,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "돌산도",
-      "거문도",
-      "오동도"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -21226,8 +20953,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_시티파크리조트",
@@ -21281,10 +21007,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "서",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -21379,8 +21102,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_승주",
@@ -21434,11 +21156,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "힐스",
-      "파인",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -21591,8 +21309,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_레이크힐스순천",
@@ -21703,9 +21420,7 @@
       }
     },
     "public_data_name": "울산컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_힐사이드",
@@ -21847,12 +21562,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "골드",
-      "레이크",
-      "힐",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -21988,8 +21698,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_해피니스",
@@ -21999,10 +21708,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "휴먼",
-      "해피"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -22094,8 +21800,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_골드그린",
@@ -22469,9 +22174,7 @@
         "operating_in_public_data": true
       }
     },
-    "public_data_name": "광주컨트리클럽",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "public_data_name": "광주컨트리클럽"
   },
   {
     "id": "vworld_보성",
@@ -22481,10 +22184,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "마운틴",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -22555,8 +22255,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_남광주",
@@ -22610,11 +22309,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "섬머",
-      "오텀",
-      "스프링"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -22813,10 +22508,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_골드그린골프장",
@@ -22870,11 +22562,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "지왕봉",
-      "인왕봉",
-      "천왕봉"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -23025,8 +22713,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_조아벨리",
@@ -23124,11 +22811,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "장보고",
-      "다산",
-      "베아채"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -23281,8 +22964,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_파인비치",
@@ -23292,11 +22974,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "파인",
-      "비치",
-      "오시아노"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -23497,8 +23175,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_오시아노",
@@ -23565,11 +23242,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "마스터",
-      "챌린지",
-      "스카이"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -23776,10 +23449,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_사우스링스영암",
@@ -23943,14 +23613,7 @@
     "region": "",
     "city": "전남",
     "holes": null,
-    "courses": [
-      "남 (A)",
-      "남 (B)",
-      "서 (A)",
-      "서 (B)",
-      "동 (A)",
-      "동 (B)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -24149,10 +23812,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_함평다이너스티",
@@ -24669,11 +24329,7 @@
     "region": "충청",
     "city": "세종특별자치",
     "holes": null,
-    "courses": [
-      "밸리",
-      "마운틴",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -24825,8 +24481,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_청하이스턴",
@@ -24880,12 +24535,7 @@
     "region": "",
     "city": "경주",
     "holes": null,
-    "courses": [
-      "천마 OUT",
-      "천마 IN",
-      "화랑 OUT",
-      "화랑 IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -24958,10 +24608,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_블루원보문",
@@ -25028,9 +24675,7 @@
       }
     },
     "public_data_name": "블루원보문컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_마우나오션",
@@ -25040,11 +24685,7 @@
     "region": "",
     "city": "경주",
     "holes": null,
-    "courses": [
-      "오션",
-      "블루",
-      "마우나"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -25220,8 +24861,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_서라벌",
@@ -25506,9 +25146,7 @@
     "region": "",
     "city": "경북",
     "holes": null,
-    "courses": [
-      "9Holes"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -25601,8 +25239,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_제이스시사이드",
@@ -25780,9 +25417,7 @@
       }
     },
     "public_data_name": "이스트힐골프장",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_베네치아",
@@ -25859,10 +25494,7 @@
     "region": "",
     "city": "충북",
     "holes": null,
-    "courses": [
-      "샤인",
-      "포도"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -25949,8 +25581,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_남안동",
@@ -26017,9 +25648,7 @@
       }
     },
     "public_data_name": "남안동컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_탑블리스",
@@ -26205,11 +25834,7 @@
     "region": "",
     "city": "충북",
     "holes": null,
-    "courses": [
-      "청룡",
-      "거북",
-      "백호"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -26338,8 +25963,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_제이스",
@@ -26393,11 +26017,7 @@
     "region": "",
     "city": "충북",
     "holes": null,
-    "courses": [
-      "청룡",
-      "거북",
-      "백호"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -26448,8 +26068,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_오펠",
@@ -26658,10 +26277,7 @@
     "region": "",
     "city": "상주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -26787,8 +26403,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_문경",
@@ -26798,10 +26413,7 @@
     "region": "",
     "city": "충북",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -26888,8 +26500,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_수원공군체력단련장",
@@ -27044,9 +26655,7 @@
       }
     },
     "public_data_name": "대구컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_꽃담c_c",
@@ -27143,12 +26752,8 @@
     "area": "충청권",
     "region": "",
     "city": "충북",
-    "holes": 9,
-    "courses": [
-      "챌린지",
-      "챔피언",
-      "마스터"
-    ],
+    "holes": null,
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -27199,9 +26804,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations",
-    "holes_source": "name_explicit"
+    }
   },
   {
     "id": "vworld_엠스클럽의성_18홀",
@@ -27210,12 +26813,8 @@
     "area": "충청권",
     "region": "",
     "city": "충북",
-    "holes": 18,
-    "courses": [
-      "챌린지",
-      "챔피언",
-      "마스터"
-    ],
+    "holes": null,
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -27266,9 +26865,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations",
-    "holes_source": "name_explicit"
+    }
   },
   {
     "id": "vworld_오션뷰",
@@ -27446,9 +27043,7 @@
       }
     },
     "public_data_name": "오션힐스청도골프클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_성남공군체력단련장",
@@ -27546,10 +27141,7 @@
     "region": "",
     "city": "고령",
     "holes": null,
-    "courses": [
-      "좌그린",
-      "우그린"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -27622,8 +27214,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_롯데스카이힐성주",
@@ -27690,9 +27281,7 @@
       }
     },
     "public_data_name": "롯데스카이힐성주컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_세븐밸리",
@@ -27702,10 +27291,7 @@
     "region": "",
     "city": "칠곡",
     "holes": null,
-    "courses": [
-      "세븐",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -27777,10 +27363,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_파미힐스_남",
@@ -27847,9 +27430,7 @@
       }
     },
     "public_data_name": "파미힐스 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_파미힐스_동",
@@ -27916,9 +27497,7 @@
       }
     },
     "public_data_name": "파미힐스 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_파미힐스",
@@ -27985,9 +27564,7 @@
       }
     },
     "public_data_name": "파미힐스 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_가산",
@@ -28054,9 +27631,7 @@
       }
     },
     "public_data_name": "가산CC",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_한맥",
@@ -28066,10 +27641,7 @@
     "region": "",
     "city": "예천",
     "holes": null,
-    "courses": [
-      "H",
-      "M"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -28163,10 +27735,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_주_창원",
@@ -28176,10 +27745,7 @@
     "region": "",
     "city": "창원",
     "holes": null,
-    "courses": [
-      "서",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -28289,10 +27855,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_남서울골프장",
@@ -28302,10 +27865,7 @@
     "region": "",
     "city": "경기남부",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -28400,8 +27960,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_용원",
@@ -28411,11 +27970,7 @@
     "region": "",
     "city": "창원",
     "holes": null,
-    "courses": [
-      "백구",
-      "백로",
-      "무학"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -28567,8 +28122,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_진해해군체력단련장",
@@ -28679,9 +28233,7 @@
       }
     },
     "public_data_name": "진주 CC",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_타니",
@@ -28792,9 +28344,7 @@
       }
     },
     "public_data_name": "삼삼컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_사천",
@@ -28892,13 +28442,7 @@
     "region": "",
     "city": "경남",
     "holes": null,
-    "courses": [
-      "김해",
-      "수로",
-      "낙동",
-      "신어",
-      "가락"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -28963,8 +28507,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_롯데스카이힐김해",
@@ -29085,11 +28628,7 @@
     "region": "",
     "city": "경남",
     "holes": null,
-    "courses": [
-      "별",
-      "해",
-      "달"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -29290,8 +28829,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_가야_2",
@@ -29301,13 +28839,7 @@
     "region": "",
     "city": "경남",
     "holes": null,
-    "courses": [
-      "김해",
-      "수로",
-      "낙동",
-      "신어",
-      "가락"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -29372,8 +28904,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_김해상록g_c",
@@ -29383,10 +28914,7 @@
     "region": "",
     "city": "경남",
     "holes": null,
-    "courses": [
-      "황세",
-      "여의"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -29435,8 +28963,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_리더스",
@@ -29446,11 +28973,7 @@
     "region": "",
     "city": "밀양",
     "holes": null,
-    "courses": [
-      "힐",
-      "파인",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -29524,8 +29047,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_밀양노벨",
@@ -29535,10 +29057,7 @@
     "region": "",
     "city": "밀양",
     "holes": null,
-    "courses": [
-      "HIll",
-      "Lake"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -29610,8 +29129,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_드비치g_c",
@@ -29789,9 +29307,7 @@
       }
     },
     "public_data_name": "동부산 CC",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_에덴밸리",
@@ -29858,9 +29374,7 @@
       }
     },
     "public_data_name": "에덴밸리 컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_에이원",
@@ -29870,11 +29384,7 @@
     "region": "",
     "city": "양산",
     "holes": null,
-    "courses": [
-      "서",
-      "동",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -29948,10 +29458,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_티클라우드",
@@ -29961,10 +29468,7 @@
     "region": "경기",
     "city": "경기북부",
     "holes": null,
-    "courses": [
-      "해밀",
-      "비체"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -30042,8 +29546,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_통도",
@@ -30110,9 +29613,7 @@
       }
     },
     "public_data_name": "통도c.c",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_양산",
@@ -30189,10 +29690,7 @@
     "region": "",
     "city": "양산",
     "holes": null,
-    "courses": [
-      "북",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -30294,8 +29792,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_의령친환경골프장",
@@ -30406,9 +29903,7 @@
       }
     },
     "public_data_name": "레이크힐스 경남C.C",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_부곡",
@@ -30475,9 +29970,7 @@
       }
     },
     "public_data_name": "부곡 CC",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_힐마루",
@@ -30774,10 +30267,7 @@
     "region": "",
     "city": "남해",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -30849,8 +30339,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_사우스케이프오너스",
@@ -30860,10 +30349,7 @@
     "region": "",
     "city": "경남",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -30912,8 +30398,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_함양리조트",
@@ -31091,9 +30576,7 @@
       }
     },
     "public_data_name": "라온골프클럽 (대중형 27홀)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_타미우스",
@@ -31103,11 +30586,7 @@
     "region": "",
     "city": "제주",
     "holes": null,
-    "courses": [
-      "우드",
-      "레이크",
-      "마운틴"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -31283,10 +30762,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_블랙스톤제주",
@@ -31296,11 +30772,7 @@
     "region": "",
     "city": "제주",
     "holes": null,
-    "courses": [
-      "북",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -31500,10 +30972,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_세인트포",
@@ -31681,9 +31150,7 @@
       }
     },
     "public_data_name": "에버리스컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_엘리시안",
@@ -31750,9 +31217,7 @@
       }
     },
     "public_data_name": "엘리시안컨트리클럽",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_오라",
@@ -31995,9 +31460,7 @@
       }
     },
     "public_data_name": "크라운컨트리클럽(대중형 27홀)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_한라산",
@@ -32064,9 +31527,7 @@
       }
     },
     "public_data_name": "한라산CC(대중형 18홀)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_에코랜드",
@@ -32076,11 +31537,7 @@
     "region": "",
     "city": "제주",
     "holes": null,
-    "courses": [
-      "에코",
-      "비치힐스",
-      "와일드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -32232,10 +31689,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_아덴힐",
@@ -32302,9 +31756,7 @@
       }
     },
     "public_data_name": "아덴힐(대중형 18홀)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_동래베네스트",
@@ -32314,10 +31766,7 @@
     "region": "",
     "city": "부산광역",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -32427,10 +31876,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_아일랜드_대중",
@@ -32639,9 +32085,7 @@
     "region": "",
     "city": "제주",
     "holes": null,
-    "courses": [
-      "9Hole"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -32720,8 +32164,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_나인브릿지",
@@ -32788,9 +32231,7 @@
       }
     },
     "public_data_name": "나인브릿지골프클럽(회원제)",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_더클래식",
@@ -32867,10 +32308,7 @@
     "region": "경기",
     "city": "고양",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -32996,8 +32434,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_제주레이크",
@@ -33051,11 +32488,7 @@
     "region": "",
     "city": "제주",
     "holes": null,
-    "courses": [
-      "사랑",
-      "원앙",
-      "우정"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -33232,8 +32665,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_사이프러스",
@@ -33243,12 +32675,7 @@
     "region": "",
     "city": "제주",
     "holes": null,
-    "courses": [
-      "서",
-      "북",
-      "동",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -33311,8 +32738,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_우리들매디컬",
@@ -33510,9 +32936,7 @@
       }
     },
     "public_data_name": "테디벨리",
-    "region_checked_at": "2026-09-20",
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_핀크스",
@@ -33522,11 +32946,7 @@
     "region": "",
     "city": "서귀포",
     "holes": null,
-    "courses": [
-      "동",
-      "서",
-      "북"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -33750,8 +33170,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_해비치",
@@ -33828,10 +33247,7 @@
     "region": "",
     "city": "서귀포",
     "holes": null,
-    "courses": [
-      "스프링",
-      "데일"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -33925,10 +33341,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_한양",
@@ -33938,12 +33351,7 @@
     "region": "경기",
     "city": "고양",
     "holes": null,
-    "courses": [
-      "구 (Out)",
-      "구 (In)",
-      "신 (Out)",
-      "신 (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -34016,8 +33424,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_샤인빌",
@@ -34071,10 +33478,7 @@
     "region": "",
     "city": "서귀포",
     "holes": null,
-    "courses": [
-      "한라",
-      "해안"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -34184,10 +33588,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_핀크스_2",
@@ -34197,11 +33598,7 @@
     "region": "",
     "city": "제주",
     "holes": null,
-    "courses": [
-      "동",
-      "서",
-      "북"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -34265,8 +33662,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_올림픽",
@@ -34609,10 +34005,7 @@
     "region": "경기",
     "city": "남양주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -34722,10 +34115,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_부산",
@@ -35172,7 +34562,7 @@
       "subregion": "coordinate_estimate"
     },
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 6,
     "verification": {
       "sources": [
         "VWorld",
@@ -35331,11 +34721,7 @@
     "region": "",
     "city": "경기남부",
     "holes": null,
-    "courses": [
-      "솔로몬",
-      "에벤에셀",
-      "데이비드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -35386,8 +34772,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_동래베네스트par3",
@@ -35441,12 +34826,7 @@
     "region": "",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "동 (Out)",
-      "동 (In)",
-      "서 (Out)",
-      "서 (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -35605,8 +34985,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_은화삼",
@@ -35683,11 +35062,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "서",
-      "동",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -35736,8 +35111,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_코리아c_c",
@@ -35747,11 +35121,7 @@
     "region": "",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "레이크",
-      "챌린지",
-      "크리크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -35903,8 +35273,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_블루원용인",
@@ -35913,11 +35282,8 @@
     "area": "수도권",
     "region": "경기",
     "city": "용인",
-    "holes": 18,
-    "courses": [
-      "서",
-      "중"
-    ],
+    "holes": null,
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -36072,9 +35438,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations",
-    "holes_source": "kga_tee_explicit"
+    }
   },
   {
     "id": "vworld_파인리조트",
@@ -36262,10 +35626,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -36375,8 +35736,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_글렌로스",
@@ -36386,9 +35746,7 @@
     "region": "",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "9 Hole"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -36482,8 +35840,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_하이스트_js강서_c_c",
@@ -36648,11 +36005,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "서",
-      "동",
-      "남"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -36701,8 +36054,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_써닝포인트",
@@ -36712,10 +36064,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "썬",
-      "포인트"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -36816,8 +36165,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_해솔리아",
@@ -37017,7 +36365,7 @@
       "city": "public_address"
     },
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 5,
     "verification": {
       "sources": [
         "VWorld",
@@ -37051,19 +36399,7 @@
       }
     },
     "public_data_name": "88",
-    "region_checked_at": "2026-09-20",
-    "booking_url": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
-    "verified_basic_info": {
-      "fields": {
-        "booking_url": {
-          "value": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
-          "source_type": "official_operator",
-          "confidence": "A",
-          "checked_at": "2026-09-20T20:58:25.755563+09:00"
-        }
-      },
-      "checked_at": "2026-09-20T20:58:25.755563+09:00"
-    }
+    "region_checked_at": "2026-09-20"
   },
   {
     "id": "vworld_지사",
@@ -37184,10 +36520,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -37305,8 +36638,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_수원",
@@ -37316,12 +36648,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "Old (Out)",
-      "Old (In)",
-      "New (Out)",
-      "New (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -37480,8 +36807,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_태광",
@@ -37491,11 +36817,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "남",
-      "서",
-      "북"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -37699,8 +37021,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_한성",
@@ -37710,11 +37031,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "오렌지",
-      "블루",
-      "그린"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -37914,8 +37231,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "vworld_코리아퍼브릭",
@@ -38013,10 +37329,7 @@
     "region": "",
     "city": "경기북부",
     "holes": null,
-    "courses": [
-      "레이크",
-      "힐"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -38095,8 +37408,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_라비에벨_듄스",
@@ -38106,10 +37418,7 @@
     "region": "강원",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -38209,8 +37518,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_힐드로사이",
@@ -38220,10 +37528,7 @@
     "region": "강원",
     "city": "홍천",
     "holes": null,
-    "courses": [
-      "버치",
-      "파인"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -38292,10 +37597,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "whistling",
@@ -38338,7 +37640,7 @@
     "pool_checked": "2026-09-20",
     "pool_status": "vworld_match_pending",
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 5,
     "verification": {
       "sources": [
         "official",
@@ -38395,9 +37697,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    }
   },
   {
     "id": "kgba_휘닉스평창",
@@ -38440,10 +37740,7 @@
     "region": "강원",
     "city": "속초",
     "holes": null,
-    "courses": [
-      "선라이즈",
-      "마인틴뷰"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -38511,8 +37808,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_카스카디아",
@@ -38522,11 +37818,7 @@
     "region": "강원",
     "city": "홍천",
     "holes": null,
-    "courses": [
-      "워터",
-      "스톤",
-      "트리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -38747,10 +38039,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_웰리힐리",
@@ -38824,10 +38113,7 @@
     "region": "강원",
     "city": "평창",
     "holes": null,
-    "courses": [
-      "산마루",
-      "강나루"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -38865,8 +38151,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_올데이_옥스필드",
@@ -38876,10 +38161,7 @@
     "region": "강원",
     "city": "횡성",
     "holes": null,
-    "courses": [
-      "옥스",
-      "필드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -38948,8 +38230,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "oak",
@@ -38959,12 +38240,7 @@
     "region": "강원",
     "city": "원주",
     "holes": null,
-    "courses": [
-      "오크",
-      "메이플",
-      "파인",
-      "체리"
-    ],
+    "courses": [],
     "play": {},
     "fee": {
       "verified": false,
@@ -39033,8 +38309,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_엘리시안강촌",
@@ -39044,11 +38319,7 @@
     "region": "강원",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "힐",
-      "밸리",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -39221,10 +38492,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_세이지우드_홍천",
@@ -39234,11 +38502,7 @@
     "region": "강원",
     "city": "홍천",
     "holes": null,
-    "courses": [
-      "챌린지",
-      "드림",
-      "비전"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -39380,8 +38644,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_설해원",
@@ -39391,13 +38654,7 @@
     "region": "강원",
     "city": "양양",
     "holes": null,
-    "courses": [
-      "더 레전드 (Out)",
-      "더 레전드 (In)",
-      "씨뷰",
-      "파인",
-      "살몬"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -39675,10 +38932,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_벨라45오너스클럽",
@@ -39721,10 +38975,7 @@
     "region": "강원",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -39847,8 +39098,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_라비에벨_올드",
@@ -39858,10 +39108,7 @@
     "region": "강원",
     "city": "춘천",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -39961,8 +39208,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_샴발라",
@@ -39972,10 +39218,7 @@
     "region": "경기",
     "city": "포천",
     "holes": null,
-    "courses": [
-      "마운틴",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40074,8 +39317,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_해비치_서울",
@@ -40149,10 +39391,7 @@
     "region": "경기",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "프리스틴",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40221,8 +39460,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_푸른솔포천",
@@ -40232,11 +39470,7 @@
     "region": "경기",
     "city": "포천",
     "holes": null,
-    "courses": [
-      "레이크",
-      "마운틴",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40307,8 +39541,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_크리스탈밸리",
@@ -40318,10 +39551,7 @@
     "region": "경기",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "크리스탈",
-      "밸리"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40390,8 +39620,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_잭니클라우스",
@@ -40401,10 +39630,7 @@
     "region": "경기",
     "city": "인천",
     "holes": null,
-    "courses": [
-      "어반",
-      "링스"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40442,8 +39668,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_인천국제",
@@ -40453,10 +39678,7 @@
     "region": "경기",
     "city": "인천광역",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40525,10 +39747,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_아난티클럽서울",
@@ -40666,10 +39885,7 @@
     "region": "경기",
     "city": "파주",
     "holes": null,
-    "courses": [
-      "밸리",
-      "서원"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40739,8 +39955,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_서서울",
@@ -40750,10 +39965,7 @@
     "region": "경기",
     "city": "파주",
     "holes": null,
-    "courses": [
-      "레이크",
-      "힐"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40791,8 +40003,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_마이다스밸리_청평",
@@ -40802,10 +40013,7 @@
     "region": "경기",
     "city": "가평",
     "holes": null,
-    "courses": [
-      "밸리",
-      "마이다스"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40857,8 +40065,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_노스팜",
@@ -40868,10 +40075,7 @@
     "region": "경기",
     "city": "파주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -40978,8 +40182,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_김포씨사이드",
@@ -41086,10 +40289,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -41189,8 +40389,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_크리스밸리",
@@ -41264,11 +40463,7 @@
     "region": "경기",
     "city": "이천",
     "holes": null,
-    "courses": [
-      "피닉스",
-      "와이번",
-      "그리핀"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -41513,8 +40708,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_여주클래식",
@@ -41524,11 +40718,7 @@
     "region": "경기",
     "city": "여주",
     "holes": null,
-    "courses": [
-      "챌린지",
-      "에이스",
-      "드림"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -41568,8 +40758,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_h1_club",
@@ -41612,12 +40801,7 @@
     "region": "경기",
     "city": "안성",
     "holes": null,
-    "courses": [
-      "서",
-      "북",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -41687,8 +40871,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_신안",
@@ -41790,7 +40973,7 @@
     "pool_checked": "2026-09-20",
     "pool_status": "vworld_match_pending",
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 6,
     "verification": {
       "sources": [
         "official_homepage_record",
@@ -41915,10 +41098,7 @@
     "region": "경기",
     "city": "이천",
     "holes": null,
-    "courses": [
-      "비스타",
-      "라고"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -41987,8 +41167,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "blackstone",
@@ -41998,11 +41177,7 @@
     "region": "경기",
     "city": "이천",
     "holes": 27,
-    "courses": [
-      "북",
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {},
     "fee": {
       "verified": true,
@@ -42021,7 +41196,7 @@
     "pool_checked": "2026-09-20",
     "pool_status": "vworld_match_pending",
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 5,
     "verification": {
       "sources": [
         "official_homepage_record",
@@ -42173,8 +41348,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_마이다스레이크_이천",
@@ -42184,11 +41358,7 @@
     "region": "경기",
     "city": "이천",
     "holes": null,
-    "courses": [
-      "타이탄",
-      "마이다스",
-      "올림푸스"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -42228,8 +41398,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_route52",
@@ -42303,10 +41472,7 @@
     "region": "경기",
     "city": "양평",
     "holes": null,
-    "courses": [
-      "스타",
-      "휴"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -42375,8 +41541,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_남서울",
@@ -42386,10 +41551,7 @@
     "region": "경기",
     "city": "",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -42427,8 +41589,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_플라자cc_용인",
@@ -42438,12 +41599,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "타이거 (Out)",
-      "타이거 (In)",
-      "라이온 (Out)",
-      "라이온 (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -42552,8 +41708,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_코리아",
@@ -42563,11 +41718,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "레이크",
-      "챌린지",
-      "크리크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -42638,8 +41789,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_제일",
@@ -42649,11 +41799,7 @@
     "region": "경기",
     "city": "안산",
     "holes": null,
-    "courses": [
-      "중",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -42826,8 +41972,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_양지파인",
@@ -42870,10 +42015,7 @@
     "region": "경기",
     "city": "",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -42965,8 +42107,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_안성",
@@ -42976,10 +42117,7 @@
     "region": "경기",
     "city": "안성",
     "holes": null,
-    "courses": [
-      "Out",
-      "In"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43048,8 +42186,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_아시아나",
@@ -43059,12 +42196,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "동 (Out)",
-      "동 (In)",
-      "서 (Out)",
-      "서 (In)"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43134,8 +42266,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_신원",
@@ -43145,11 +42276,7 @@
     "region": "경기",
     "city": "용인",
     "holes": null,
-    "courses": [
-      "솔로몬",
-      "에벤에셀",
-      "데이비드"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43189,8 +42316,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_골프클럽q",
@@ -43328,10 +42454,7 @@
     "region": "충청",
     "city": "공주",
     "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43369,8 +42492,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_킹즈락",
@@ -43380,11 +42502,7 @@
     "region": "충청",
     "city": "",
     "holes": null,
-    "courses": [
-      "서",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43502,8 +42620,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_천안상록",
@@ -43513,11 +42630,7 @@
     "region": "충청",
     "city": "천안",
     "holes": null,
-    "courses": [
-      "중",
-      "남",
-      "동"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43714,10 +42827,7 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
-    },
-    "operation_type": "대중제(퍼블릭)",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_천룡",
@@ -43727,11 +42837,7 @@
     "region": "충청",
     "city": "진천",
     "holes": null,
-    "courses": [
-      "청룡",
-      "황룡",
-      "흑룡"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43802,8 +42908,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_우정힐스",
@@ -43813,10 +42918,7 @@
     "region": "충청",
     "city": "천안",
     "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43854,8 +42956,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_올데이_임페리얼레이크",
@@ -43865,10 +42966,7 @@
     "region": "충청",
     "city": "충주",
     "holes": null,
-    "courses": [
-      "파인",
-      "레이크"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43906,8 +43004,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_올데이_로얄포레",
@@ -43917,10 +43014,7 @@
     "region": "충청",
     "city": "충주",
     "holes": null,
-    "courses": [
-      "로얄",
-      "포레"
-    ],
+    "courses": [],
     "play": {
       "three_person": "확인 필요"
     },
@@ -43958,8 +43052,7 @@
       ],
       "source_name": "대한골프협회(KGA) 코스레이팅 DB",
       "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
+    }
   },
   {
     "id": "kgba_sg아름다운",
@@ -44056,9 +43149,7 @@
       "area": "public_address",
       "subregion": "public_address",
       "city": "public_address"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    }
   },
   {
     "id": "kgba_아난티중앙",
@@ -44122,17 +43213,15 @@
       "area": "public_address",
       "subregion": "public_address",
       "city": "public_address"
-    },
-    "operation_type": "회원제",
-    "operation_type_source": "행정안전부_생활_골프장 조회서비스"
+    }
   },
   {
-    "id": "kgba_서산수",
-    "name": "서산수",
+    "id": "kgba_세레니티",
+    "name": "세레니티",
     "aliases": [],
     "area": "충청권",
     "region": "충청",
-    "city": "서산",
+    "city": "청원",
     "holes": null,
     "courses": [],
     "play": {
@@ -44143,7 +43232,7 @@
       "basis": "공식 요금 확인 필요"
     },
     "phone": "",
-    "address": "",
+    "address": "충청북도 청원군 남이면 문곡구절골길 235",
     "official_url": "",
     "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
     "course_source": "KGBA",
@@ -44151,955 +43240,14 @@
     "pool_checked": "2026-09-20",
     "pool_status": "vworld_match_pending",
     "service_status": "candidate",
-    "service_basic_count": 0,
-    "verification": {
-      "sources": [],
-      "status": "unverified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    }
-  },
-  {
-    "id": "kgba_마론",
-    "name": "마론",
-    "aliases": [],
-    "area": "충청권",
-    "region": "충청",
-    "city": "천안",
-    "holes": null,
-    "courses": [],
-    "play": {
-      "three_person": "확인 필요"
-    },
-    "fee": {
-      "verified": false,
-      "basis": "공식 요금 확인 필요"
-    },
-    "phone": "",
-    "address": "",
-    "official_url": "",
-    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
-    "course_source": "KGBA",
-    "pool_source": "KGBA 회원사 지역별 골프장",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "candidate",
-    "service_basic_count": 0,
-    "verification": {
-      "sources": [],
-      "status": "unverified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    }
-  },
-  {
-    "id": "kgba_롯데스카이힐_부여",
-    "name": "롯데스카이힐 부여",
-    "aliases": [],
-    "area": "충청권",
-    "region": "충청",
-    "city": "부여",
-    "holes": null,
-    "courses": [
-      "스카이",
-      "힐"
-    ],
-    "play": {
-      "three_person": "확인 필요"
-    },
-    "fee": {
-      "verified": false,
-      "basis": "공식 요금 확인 필요"
-    },
-    "phone": "",
-    "address": "",
-    "official_url": "",
-    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
-    "course_source": "KGBA",
-    "pool_source": "KGBA 회원사 지역별 골프장",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "candidate",
-    "service_basic_count": 0,
-    "verification": {
-      "sources": [],
-      "status": "unverified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    },
-    "kga": {
-      "matched": true,
-      "status": "KGA 코스정보 확인",
-      "matched_name": "롯데스카이힐 부여CC",
-      "match_type": "exact",
-      "match_score": 1.0,
-      "checked_at": "2026-09-20",
-      "region": "충남",
-      "address": "충남 부여군 규암면 백제문로 470",
-      "course_combinations": [
-        "스카이 +힐"
-      ],
-      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
-      "ratings": [
-        {
-          "tee": "Black",
-          "gender": "남자",
-          "course_rating": 75.0,
-          "slope_rating": 142,
-          "length_yds": 6845,
-          "course": "스카이 +힐"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 71.7,
-          "slope_rating": 138,
-          "length_yds": 6275,
-          "course": "스카이 +힐"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 69.9,
-          "slope_rating": 133,
-          "length_yds": 5953,
-          "course": "스카이 +힐"
-        },
-        {
-          "tee": "Red(W)",
-          "gender": "여자",
-          "course_rating": 70.2,
-          "slope_rating": 128,
-          "length_yds": 5179,
-          "course": "스카이 +힐"
-        }
-      ],
-      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
-      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
-      "ratings_source_date": "2024-07-15",
-      "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
-  },
-  {
-    "id": "kgba_도고",
-    "name": "도고",
-    "aliases": [],
-    "area": "충청권",
-    "region": "충청",
-    "city": "아산",
-    "holes": null,
-    "courses": [
-      "OUT",
-      "IN"
-    ],
-    "play": {
-      "three_person": "확인 필요"
-    },
-    "fee": {
-      "verified": false,
-      "basis": "공식 요금 확인 필요"
-    },
-    "phone": "",
-    "address": "",
-    "official_url": "",
-    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
-    "course_source": "KGBA",
-    "pool_source": "KGBA 회원사 지역별 골프장",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "candidate",
-    "service_basic_count": 0,
-    "verification": {
-      "sources": [],
-      "status": "unverified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    },
-    "kga": {
-      "matched": true,
-      "status": "KGA 코스정보 확인",
-      "matched_name": "도고",
-      "match_type": "exact",
-      "match_score": 1.0,
-      "checked_at": "2026-09-20",
-      "region": "충남",
-      "address": "충남 아산시 선장면 삼봉산길 188",
-      "course_combinations": [
-        "OUT +IN"
-      ],
-      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
-  },
-  {
-    "id": "kgba_골든베이",
-    "name": "골든베이",
-    "aliases": [],
-    "area": "충청권",
-    "region": "충청",
-    "city": "태안",
-    "holes": null,
-    "courses": [
-      "오션",
-      "마운틴",
-      "밸리"
-    ],
-    "play": {
-      "three_person": "확인 필요"
-    },
-    "fee": {
-      "verified": false,
-      "basis": "공식 요금 확인 필요"
-    },
-    "phone": "",
-    "address": "",
-    "official_url": "",
-    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
-    "course_source": "KGBA",
-    "pool_source": "KGBA 회원사 지역별 골프장",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "candidate",
-    "service_basic_count": 0,
-    "verification": {
-      "sources": [],
-      "status": "unverified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    },
-    "kga": {
-      "matched": true,
-      "status": "KGA 코스정보 확인",
-      "matched_name": "골든베이",
-      "match_type": "exact",
-      "match_score": 1.0,
-      "checked_at": "2026-09-20",
-      "region": "충남",
-      "address": "충청남도 태안군 근흥면 정산포로 217",
-      "course_combinations": [
-        "오션 +마운틴",
-        "마운틴 +밸리",
-        "밸리 +오션"
-      ],
-      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
-  },
-  {
-    "id": "kgba_계룡대",
-    "name": "계룡대",
-    "aliases": [],
-    "area": "충청권",
-    "region": "충청",
-    "city": "계룡",
-    "holes": null,
-    "courses": [],
-    "play": {
-      "three_person": "확인 필요"
-    },
-    "fee": {
-      "verified": false,
-      "basis": "공식 요금 확인 필요"
-    },
-    "phone": "",
-    "address": "",
-    "official_url": "",
-    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
-    "course_source": "KGBA",
-    "pool_source": "KGBA 회원사 지역별 골프장",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "candidate",
-    "service_basic_count": 0,
-    "verification": {
-      "sources": [],
-      "status": "unverified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    }
-  },
-  {
-    "id": "kgba_감곡",
-    "name": "감곡",
-    "aliases": [],
-    "area": "충청권",
-    "region": "충청",
-    "city": "음성",
-    "holes": null,
-    "courses": [
-      "피치",
-      "글렌"
-    ],
-    "play": {
-      "three_person": "확인 필요"
-    },
-    "fee": {
-      "verified": false,
-      "basis": "공식 요금 확인 필요"
-    },
-    "phone": "",
-    "address": "",
-    "official_url": "",
-    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
-    "course_source": "KGBA",
-    "pool_source": "KGBA 회원사 지역별 골프장",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "candidate",
-    "service_basic_count": 0,
-    "verification": {
-      "sources": [],
-      "status": "unverified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    },
-    "kga": {
-      "matched": true,
-      "status": "KGA 코스정보 확인",
-      "matched_name": "감곡",
-      "match_type": "exact",
-      "match_score": 1.0,
-      "checked_at": "2026-09-20",
-      "region": "충북",
-      "address": "충북 음성군 감곡면 오갑길 195",
-      "course_combinations": [
-        "피치 +글렌"
-      ],
-      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
-      "ratings": [
-        {
-          "tee": "T1",
-          "gender": "남자",
-          "course_rating": 75.4,
-          "slope_rating": 149,
-          "length_yds": 7114,
-          "course": "피치 +글렌"
-        },
-        {
-          "tee": "T2",
-          "gender": "남자",
-          "course_rating": 73.0,
-          "slope_rating": 143,
-          "length_yds": 6618,
-          "course": "피치 +글렌"
-        },
-        {
-          "tee": "T3",
-          "gender": "남자",
-          "course_rating": 70.7,
-          "slope_rating": 138,
-          "length_yds": 6148,
-          "course": "피치 +글렌"
-        },
-        {
-          "tee": "T4",
-          "gender": "남자",
-          "course_rating": 68.4,
-          "slope_rating": 130,
-          "length_yds": 5684,
-          "course": "피치 +글렌"
-        },
-        {
-          "tee": "T4",
-          "gender": "여자",
-          "course_rating": 73.4,
-          "slope_rating": 135,
-          "length_yds": 5684,
-          "course": "피치 +글렌"
-        },
-        {
-          "tee": "T5",
-          "gender": "여자",
-          "course_rating": 69.7,
-          "slope_rating": 124,
-          "length_yds": 5052,
-          "course": "피치 +글렌"
-        }
-      ],
-      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
-      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
-      "ratings_source_date": "2024-07-15",
-      "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations"
-  },
-  {
-    "id": "clubd_theplayers",
-    "name": "클럽디 더플레이어스",
-    "aliases": [
-      "더플레이어스",
-      "더 플레이어스 골프클럽",
-      "더플레이어스골프클럽"
-    ],
-    "area": "강원권",
-    "region": "강원",
-    "city": "춘천",
-    "holes": 27,
-    "courses": [
-      {
-        "name": "VALLEY",
-        "holes": 9,
-        "type": "대중형"
-      },
-      {
-        "name": "LAKE",
-        "holes": 9,
-        "type": "대중형"
-      },
-      {
-        "name": "MOUNTAIN",
-        "holes": 9,
-        "type": "대중형"
-      }
-    ],
-    "play": {
-      "three_person": "가능(추가요금)"
-    },
-    "fee": {
-      "verified": true,
-      "basis": "공식 안내요금",
-      "weekday_green": 210000,
-      "weekend_green": 250000,
-      "cart_team": 100000,
-      "caddie_team": 150000,
-      "three_person_weekday_extra": 10000,
-      "three_person_weekend_extra": 20000
-    },
-    "phone": "033-250-5000",
-    "address": "강원특별자치도 춘천시 동산면 새술막길 438",
-    "official_url": "https://www.playersgc.com/",
-    "course_overview": "VALLEY · LAKE · MOUNTAIN 각 9홀, 총 27홀. 각 코스 Par 36.",
-    "course_source": "official",
-    "pool_source": "기존 검증 카탈로그",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 1,
     "verification": {
       "sources": [
-        "official_homepage_record",
-        "verified_fee_record",
-        "VWorld",
-        "data.go.kr",
-        "공공데이터",
-        "공공데이터상 영업"
-      ],
-      "status": "verified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20",
-      "public_data": {
-        "matched": true,
-        "checked_at": "2026-09-20",
-        "dataset_id": "15154978",
-        "source_name": "행정안전부_생활_골프장 조회서비스",
-        "match_type": "exact",
-        "public_name": "더플레이어스골프클럽",
-        "address": "강원특별자치도 춘천시 동산면 새술막길 438",
-        "phone": "",
-        "status": "영업/정상",
-        "detail_status": "영업",
-        "closed_date": "",
-        "data_updated_at": "2026-06-24 03:03:03",
-        "last_modified_at": "2026-06-23 10:13:10",
-        "business_type": "비회원제",
-        "management_no": "302012012000006",
-        "operating_in_public_data": true
-      }
-    },
-    "kga": {
-      "matched": true,
-      "status": "KGA 코스정보 확인",
-      "matched_name": "클럽디 더플레이어스",
-      "match_type": "exact",
-      "match_score": 1.0,
-      "checked_at": "2026-09-20",
-      "region": "강원",
-      "address": "강원특별자치도 춘천시 동산면 새술막길 438",
-      "course_combinations": [
-        "마운틴 +밸리",
-        "밸리 +레이크",
-        "레이크 +마운틴"
-      ],
-      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
-      "ratings": [
-        {
-          "tee": "Black",
-          "gender": "남자",
-          "course_rating": 75.5,
-          "slope_rating": 145,
-          "length_yds": 7126,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.6,
-          "slope_rating": 142,
-          "length_yds": 6791,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 71.3,
-          "slope_rating": 140,
-          "length_yds": 6406,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Yellow",
-          "gender": "남자",
-          "course_rating": 68.7,
-          "slope_rating": 131,
-          "length_yds": 5713,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 70.7,
-          "slope_rating": 124,
-          "length_yds": 5141,
-          "course": "밸리 +레이크"
-        },
-        {
-          "tee": "Black",
-          "gender": "남자",
-          "course_rating": 75.3,
-          "slope_rating": 150,
-          "length_yds": 7115,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.3,
-          "slope_rating": 148,
-          "length_yds": 6752,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 71.3,
-          "slope_rating": 143,
-          "length_yds": 6395,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Yellow",
-          "gender": "남자",
-          "course_rating": 68.8,
-          "slope_rating": 135,
-          "length_yds": 5675,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 71.0,
-          "slope_rating": 125,
-          "length_yds": 5117,
-          "course": "레이크 +마운틴"
-        },
-        {
-          "tee": "Black",
-          "gender": "남자",
-          "course_rating": 75.2,
-          "slope_rating": 146,
-          "length_yds": 7105,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "Blue",
-          "gender": "남자",
-          "course_rating": 73.1,
-          "slope_rating": 144,
-          "length_yds": 6743,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "White",
-          "gender": "남자",
-          "course_rating": 71.4,
-          "slope_rating": 140,
-          "length_yds": 6421,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "Yellow",
-          "gender": "남자",
-          "course_rating": 69.1,
-          "slope_rating": 133,
-          "length_yds": 5850,
-          "course": "마운틴 +밸리"
-        },
-        {
-          "tee": "Red",
-          "gender": "여자",
-          "course_rating": 70.9,
-          "slope_rating": 124,
-          "length_yds": 5242,
-          "course": "마운틴 +밸리"
-        }
-      ],
-      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
-      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
-      "ratings_source_date": "2024-07-15",
-      "ratings_checked_at": "2026-09-20"
-    },
-    "public_data_name": "더플레이어스골프클럽",
-    "merge_history": [
-      {
-        "merged_from_id": "vworld_더플레이어스",
-        "merged_from_name": "더 플레이어스 골프클럽",
-        "merged_at": "2026-09-20T21:00:34.362299+09:00",
-        "reason": "duplicate_same_golf_course",
-        "moved_fields": [
-          "verification.public_data",
-          "public_data_name",
-          "kga.ratings",
-          "kga.ratings_source_name",
-          "kga.ratings_source_url",
-          "kga.ratings_source_date",
-          "kga.ratings_checked_at"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "club72",
-    "name": "클럽72",
-    "aliases": [],
-    "area": "수도권",
-    "region": "인천",
-    "city": "중구",
-    "holes": 72,
-    "courses": [
-      "하늘 (Out)",
-      "하늘 (In)",
-      "오션 (Out)",
-      "오션 (In)"
-    ],
-    "play": {
-      "three_person": "가능하나 4인 그린피 정산 조건 있음"
-    },
-    "fee": {
-      "verified": false,
-      "basis": "그린피는 통합예약 실시간 변동. 3인 플레이 시 4인 요금 적용",
-      "cart_team": 100000,
-      "caddie_team": 160000
-    },
-    "phone": "1599-0072",
-    "address": "인천광역시 중구 공항도로 392",
-    "official_url": "https://www.onetheclub.com/club72/",
-    "course_overview": "하늘·바다 권역의 복수 코스로 운영. 하늘코스는 공식 제원 페이지에서 홀별 티 거리와 Par를 제공합니다.",
-    "course_source": "catalog",
-    "data_checked": "2026-09-20",
-    "data_source": "official",
-    "pool_source": "기존 검증 카탈로그",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "service",
-    "service_basic_count": 3,
-    "verification": {
-      "sources": [
-        "official",
-        "official_homepage_record",
-        "data_checked_record"
-      ],
-      "status": "verified",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20"
-    },
-    "kga": {
-      "matched": true,
-      "status": "KGA 코스정보 확인",
-      "matched_name": "클럽72",
-      "match_type": "exact",
-      "match_score": 1.0,
-      "checked_at": "2026-09-20",
-      "region": "인천",
-      "address": "인천광역시 중구 운서동 2029-1",
-      "course_combinations": [
-        "하늘 (Out) +하늘 (In)",
-        "오션 (Out) +오션 (In)"
-      ],
-      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
-      "ratings": [
-        {
-          "tee": "TOURNAMENT",
-          "gender": "남자",
-          "course_rating": 75.1,
-          "slope_rating": 146,
-          "length_yds": 7155,
-          "course": ""
-        },
-        {
-          "tee": "CHAMPION",
-          "gender": "남자",
-          "course_rating": 73.5,
-          "slope_rating": 142,
-          "length_yds": 6841,
-          "course": ""
-        },
-        {
-          "tee": "REGULAR",
-          "gender": "남자",
-          "course_rating": 71.4,
-          "slope_rating": 133,
-          "length_yds": 6492,
-          "course": ""
-        },
-        {
-          "tee": "REGULAR",
-          "gender": "여자",
-          "course_rating": 76.1,
-          "slope_rating": 134,
-          "length_yds": 6492,
-          "course": ""
-        },
-        {
-          "tee": "HONORS",
-          "gender": "남자",
-          "course_rating": 67.2,
-          "slope_rating": 121,
-          "length_yds": 5705,
-          "course": ""
-        },
-        {
-          "tee": "LADY",
-          "gender": "여자",
-          "course_rating": 69.5,
-          "slope_rating": 116,
-          "length_yds": 5187,
-          "course": ""
-        },
-        {
-          "tee": "Tournament",
-          "gender": "남자",
-          "course_rating": 75.7,
-          "slope_rating": 140,
-          "length_yds": 7269,
-          "course": ""
-        },
-        {
-          "tee": "Champion",
-          "gender": "남자",
-          "course_rating": 73.1,
-          "slope_rating": 134,
-          "length_yds": 6753,
-          "course": ""
-        },
-        {
-          "tee": "Regular",
-          "gender": "남자",
-          "course_rating": 71.0,
-          "slope_rating": 130,
-          "length_yds": 6311,
-          "course": ""
-        },
-        {
-          "tee": "Honor",
-          "gender": "남자",
-          "course_rating": 68.5,
-          "slope_rating": 121,
-          "length_yds": 5753,
-          "course": ""
-        },
-        {
-          "tee": "Ladies",
-          "gender": "여자",
-          "course_rating": 71.1,
-          "slope_rating": 128,
-          "length_yds": 5211,
-          "course": ""
-        }
-      ],
-      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
-      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
-      "ratings_source_date": "2024-07-15",
-      "ratings_checked_at": "2026-09-20"
-    },
-    "courses_source": "KGA course_combinations",
-    "operation_type": "대중제",
-    "verified_basic_info": {
-      "fields": {
-        "operation_type": {
-          "value": "대중제",
-          "source_type": "official_operator",
-          "confidence": "A",
-          "checked_at": "2026-09-20T20:58:25.755563+09:00"
-        }
-      },
-      "checked_at": "2026-09-20T20:58:25.755563+09:00"
-    }
-  },
-  {
-    "id": "clubd_boeun",
-    "name": "클럽디 보은",
-    "aliases": [],
-    "area": "충청권",
-    "region": "충북",
-    "city": "보은",
-    "holes": null,
-    "courses": [
-      "동",
-      "서"
-    ],
-    "play": {
-      "three_person": "확인 필요"
-    },
-    "fee": {
-      "verified": true,
-      "basis": "공식 9월 안내요금",
-      "weekday_green": 180000,
-      "weekend_green": 220000,
-      "cart_team": 100000,
-      "caddie_team": 150000,
-      "weekday": 180000,
-      "weekend": 220000
-    },
-    "phone": "043-540-8888",
-    "address": "충청북도 보은군 보은읍 장속중초로 386",
-    "official_url": "https://www.clubd.com/boeun/",
-    "course_overview": "EAST · WEST 코스로 운영되는 18홀 대중형 골프장.",
-    "course_source": "catalog",
-    "data_checked": "2026-09-20",
-    "data_source": "official",
-    "pool_source": "기존 검증 카탈로그",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "candidate",
-    "service_basic_count": 3,
-    "verification": {
-      "sources": [
-        "official",
-        "official_homepage_record",
-        "data_checked_record",
-        "verified_fee_record",
         "data.go.kr",
         "공공데이터",
         "공공데이터상 영업"
       ],
       "status": "partial",
-      "checked_at": "2026-09-20",
-      "assessed_at": "2026-09-20",
-      "public_data": {
-        "matched": true,
-        "checked_at": "2026-09-20",
-        "dataset_id": "15154978",
-        "source_name": "행정안전부_생활_골프장 조회서비스",
-        "match_type": "normalized_1.00",
-        "public_name": "클럽디보은CC",
-        "address": "충청북도 보은군 보은읍 장속중초로 386-0 (클럽디보은)",
-        "phone": "043-543-0537",
-        "status": "영업/정상",
-        "detail_status": "영업",
-        "closed_date": "",
-        "data_updated_at": "2026-06-26 03:03:03",
-        "last_modified_at": "2026-06-25 18:05:48",
-        "business_type": "",
-        "management_no": "302012017000001",
-        "operating_in_public_data": true
-      }
-    },
-    "public_data_name": "클럽디보은CC",
-    "subregion": "충북",
-    "region_source": "public_address",
-    "region_checked_at": "2026-09-20",
-    "region_field_sources": {
-      "area": "public_address",
-      "subregion": "public_address",
-      "city": "public_address"
-    },
-    "kga": {
-      "matched": true,
-      "status": "KGA 코스정보 확인",
-      "matched_name": "클럽디 보은",
-      "match_type": "exact",
-      "match_score": 1.0,
-      "checked_at": "2026-09-20",
-      "region": "충북",
-      "address": "충청북도 보은군 보은읍 중초리 산 7-1",
-      "course_combinations": [
-        "동 +서"
-      ],
-      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
-      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
-    },
-    "courses_source": "KGA course_combinations"
-  },
-  {
-    "id": "silkriver",
-    "name": "청주 세레니티",
-    "aliases": [
-      "실크리버CC",
-      "세레니티CC",
-      "청주 세레니티",
-      "세레니티",
-      "세레니티CC(회원제)"
-    ],
-    "area": "충청권",
-    "region": "충북",
-    "city": "청주",
-    "holes": 27,
-    "courses": [
-      {
-        "name": "Silk",
-        "holes": 9,
-        "type": "3,238m"
-      },
-      {
-        "name": "River",
-        "holes": 9,
-        "type": "3,195m"
-      },
-      {
-        "name": "Blue",
-        "holes": 9,
-        "type": "9H"
-      }
-    ],
-    "play": {},
-    "fee": {
-      "verified": true,
-      "basis": "비회원 18홀 참고요금",
-      "weekday_green": 170000,
-      "weekend_green": 210000,
-      "cart_team": 100000,
-      "caddie_team": 130000
-    },
-    "phone": "043-277-5000",
-    "address": "충청북도 청주시 서원구 남이면 문곡구절골길 235",
-    "official_url": "https://www.serenitygolfresort.com/cheongju/",
-    "course_overview": "구 실크리버CC. Silk · River · Blue 3개 코스, 총 27홀 · Par 108. 그레이엄 마쉬 설계.",
-    "course_source": "official+reported",
-    "data_checked": "2026-09-20",
-    "data_source": "official",
-    "pool_source": "기존 검증 카탈로그",
-    "pool_checked": "2026-09-20",
-    "pool_status": "vworld_match_pending",
-    "service_status": "service",
-    "service_basic_count": 3,
-    "verification": {
-      "sources": [
-        "official",
-        "official_homepage_record",
-        "data_checked_record",
-        "verified_fee_record",
-        "data.go.kr",
-        "공공데이터",
-        "공공데이터상 영업"
-      ],
-      "status": "verified",
       "checked_at": "2026-09-20",
       "assessed_at": "2026-09-20",
       "public_data": {
@@ -45121,12 +43269,21 @@
         "operating_in_public_data": true
       }
     },
+    "public_data_name": "세레니티CC(회원제)",
+    "subregion": "충북",
+    "region_source": "public_address",
+    "region_checked_at": "2026-09-20",
+    "region_field_sources": {
+      "area": "public_address",
+      "subregion": "public_address",
+      "city": "public_address"
+    },
     "kga": {
       "matched": true,
       "status": "KGA 코스정보 확인",
       "matched_name": "세레니티",
-      "match_type": "safe_fuzzy",
-      "match_score": 0.97,
+      "match_type": "exact",
+      "match_score": 1.0,
       "checked_at": "2026-09-20",
       "region": "충북",
       "address": "충북 청주시 서원구 남이면 문곡구절골길 235",
@@ -45263,25 +43420,790 @@
       "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
       "ratings_source_date": "2024-07-15",
       "ratings_checked_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "kgba_서산수",
+    "name": "서산수",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "서산",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
     },
-    "public_data_name": "세레니티CC(회원제)",
-    "merge_history": [
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 0,
+    "verification": {
+      "sources": [],
+      "status": "unverified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "kgba_마론",
+    "name": "마론",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "천안",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 0,
+    "verification": {
+      "sources": [],
+      "status": "unverified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "kgba_롯데스카이힐_부여",
+    "name": "롯데스카이힐 부여",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "부여",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 0,
+    "verification": {
+      "sources": [],
+      "status": "unverified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "롯데스카이힐 부여CC",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "충남",
+      "address": "충남 부여군 규암면 백제문로 470",
+      "course_combinations": [
+        "스카이 +힐"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
+      "ratings": [
+        {
+          "tee": "Black",
+          "gender": "남자",
+          "course_rating": 75.0,
+          "slope_rating": 142,
+          "length_yds": 6845,
+          "course": "스카이 +힐"
+        },
+        {
+          "tee": "Blue",
+          "gender": "남자",
+          "course_rating": 71.7,
+          "slope_rating": 138,
+          "length_yds": 6275,
+          "course": "스카이 +힐"
+        },
+        {
+          "tee": "White",
+          "gender": "남자",
+          "course_rating": 69.9,
+          "slope_rating": 133,
+          "length_yds": 5953,
+          "course": "스카이 +힐"
+        },
+        {
+          "tee": "Red(W)",
+          "gender": "여자",
+          "course_rating": 70.2,
+          "slope_rating": 128,
+          "length_yds": 5179,
+          "course": "스카이 +힐"
+        }
+      ],
+      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
+      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
+      "ratings_source_date": "2024-07-15",
+      "ratings_checked_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "kgba_도고",
+    "name": "도고",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "아산",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 0,
+    "verification": {
+      "sources": [],
+      "status": "unverified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "도고",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "충남",
+      "address": "충남 아산시 선장면 삼봉산길 188",
+      "course_combinations": [
+        "OUT +IN"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
+    }
+  },
+  {
+    "id": "kgba_골든베이",
+    "name": "골든베이",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "태안",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 0,
+    "verification": {
+      "sources": [],
+      "status": "unverified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "골든베이",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "충남",
+      "address": "충청남도 태안군 근흥면 정산포로 217",
+      "course_combinations": [
+        "오션 +마운틴",
+        "마운틴 +밸리",
+        "밸리 +오션"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
+    }
+  },
+  {
+    "id": "kgba_계룡대",
+    "name": "계룡대",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "계룡",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 0,
+    "verification": {
+      "sources": [],
+      "status": "unverified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "kgba_감곡",
+    "name": "감곡",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충청",
+    "city": "음성",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "공식 요금 확인 필요"
+    },
+    "phone": "",
+    "address": "",
+    "official_url": "",
+    "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+    "course_source": "KGBA",
+    "pool_source": "KGBA 회원사 지역별 골프장",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 0,
+    "verification": {
+      "sources": [],
+      "status": "unverified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "감곡",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "충북",
+      "address": "충북 음성군 감곡면 오갑길 195",
+      "course_combinations": [
+        "피치 +글렌"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
+      "ratings": [
+        {
+          "tee": "T1",
+          "gender": "남자",
+          "course_rating": 75.4,
+          "slope_rating": 149,
+          "length_yds": 7114,
+          "course": "피치 +글렌"
+        },
+        {
+          "tee": "T2",
+          "gender": "남자",
+          "course_rating": 73.0,
+          "slope_rating": 143,
+          "length_yds": 6618,
+          "course": "피치 +글렌"
+        },
+        {
+          "tee": "T3",
+          "gender": "남자",
+          "course_rating": 70.7,
+          "slope_rating": 138,
+          "length_yds": 6148,
+          "course": "피치 +글렌"
+        },
+        {
+          "tee": "T4",
+          "gender": "남자",
+          "course_rating": 68.4,
+          "slope_rating": 130,
+          "length_yds": 5684,
+          "course": "피치 +글렌"
+        },
+        {
+          "tee": "T4",
+          "gender": "여자",
+          "course_rating": 73.4,
+          "slope_rating": 135,
+          "length_yds": 5684,
+          "course": "피치 +글렌"
+        },
+        {
+          "tee": "T5",
+          "gender": "여자",
+          "course_rating": 69.7,
+          "slope_rating": 124,
+          "length_yds": 5052,
+          "course": "피치 +글렌"
+        }
+      ],
+      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
+      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
+      "ratings_source_date": "2024-07-15",
+      "ratings_checked_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "clubd_theplayers",
+    "name": "클럽디 더플레이어스",
+    "aliases": [
+      "더플레이어스"
+    ],
+    "area": "강원권",
+    "region": "강원",
+    "city": "춘천",
+    "holes": 27,
+    "courses": [
       {
-        "merged_from_id": "kgba_세레니티",
-        "merged_from_name": "세레니티",
-        "merged_at": "2026-09-20T21:00:34.362299+09:00",
-        "reason": "duplicate_same_golf_course",
-        "moved_fields": [
-          "verification.public_data",
-          "public_data_name",
-          "kga.ratings",
-          "kga.ratings_source_name",
-          "kga.ratings_source_url",
-          "kga.ratings_source_date",
-          "kga.ratings_checked_at"
-        ]
+        "name": "VALLEY",
+        "holes": 9,
+        "type": "대중형"
+      },
+      {
+        "name": "LAKE",
+        "holes": 9,
+        "type": "대중형"
+      },
+      {
+        "name": "MOUNTAIN",
+        "holes": 9,
+        "type": "대중형"
       }
-    ]
+    ],
+    "play": {
+      "three_person": "가능(추가요금)"
+    },
+    "fee": {
+      "verified": true,
+      "basis": "공식 안내요금",
+      "weekday_green": 210000,
+      "weekend_green": 250000,
+      "cart_team": 100000,
+      "caddie_team": 150000,
+      "three_person_weekday_extra": 10000,
+      "three_person_weekend_extra": 20000
+    },
+    "phone": "033-250-5000",
+    "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+    "official_url": "https://www.playersgc.com/",
+    "course_overview": "VALLEY · LAKE · MOUNTAIN 각 9홀, 총 27홀. 각 코스 Par 36.",
+    "course_source": "official",
+    "pool_source": "기존 검증 카탈로그",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "service",
+    "service_basic_count": 6,
+    "verification": {
+      "sources": [
+        "official_homepage_record",
+        "verified_fee_record"
+      ],
+      "status": "verified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "클럽디 더플레이어스",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "강원",
+      "address": "강원특별자치도 춘천시 동산면 새술막길 438",
+      "course_combinations": [
+        "마운틴 +밸리",
+        "밸리 +레이크",
+        "레이크 +마운틴"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
+    }
+  },
+  {
+    "id": "club72",
+    "name": "클럽72",
+    "aliases": [],
+    "area": "수도권",
+    "region": "인천",
+    "city": "중구",
+    "holes": 72,
+    "courses": [],
+    "play": {
+      "three_person": "가능하나 4인 그린피 정산 조건 있음"
+    },
+    "fee": {
+      "verified": false,
+      "basis": "그린피는 통합예약 실시간 변동. 3인 플레이 시 4인 요금 적용",
+      "cart_team": 100000,
+      "caddie_team": 160000
+    },
+    "phone": "1599-0072",
+    "address": "인천광역시 중구 공항도로 392",
+    "official_url": "https://www.onetheclub.com/club72/",
+    "course_overview": "하늘·바다 권역의 복수 코스로 운영. 하늘코스는 공식 제원 페이지에서 홀별 티 거리와 Par를 제공합니다.",
+    "course_source": "catalog",
+    "data_checked": "2026-09-20",
+    "data_source": "official",
+    "pool_source": "기존 검증 카탈로그",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "service",
+    "service_basic_count": 5,
+    "verification": {
+      "sources": [
+        "official",
+        "official_homepage_record",
+        "data_checked_record"
+      ],
+      "status": "verified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "클럽72",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "인천",
+      "address": "인천광역시 중구 운서동 2029-1",
+      "course_combinations": [
+        "하늘 (Out) +하늘 (In)",
+        "오션 (Out) +오션 (In)"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator",
+      "ratings": [
+        {
+          "tee": "TOURNAMENT",
+          "gender": "남자",
+          "course_rating": 75.1,
+          "slope_rating": 146,
+          "length_yds": 7155,
+          "course": ""
+        },
+        {
+          "tee": "CHAMPION",
+          "gender": "남자",
+          "course_rating": 73.5,
+          "slope_rating": 142,
+          "length_yds": 6841,
+          "course": ""
+        },
+        {
+          "tee": "REGULAR",
+          "gender": "남자",
+          "course_rating": 71.4,
+          "slope_rating": 133,
+          "length_yds": 6492,
+          "course": ""
+        },
+        {
+          "tee": "REGULAR",
+          "gender": "여자",
+          "course_rating": 76.1,
+          "slope_rating": 134,
+          "length_yds": 6492,
+          "course": ""
+        },
+        {
+          "tee": "HONORS",
+          "gender": "남자",
+          "course_rating": 67.2,
+          "slope_rating": 121,
+          "length_yds": 5705,
+          "course": ""
+        },
+        {
+          "tee": "LADY",
+          "gender": "여자",
+          "course_rating": 69.5,
+          "slope_rating": 116,
+          "length_yds": 5187,
+          "course": ""
+        },
+        {
+          "tee": "Tournament",
+          "gender": "남자",
+          "course_rating": 75.7,
+          "slope_rating": 140,
+          "length_yds": 7269,
+          "course": ""
+        },
+        {
+          "tee": "Champion",
+          "gender": "남자",
+          "course_rating": 73.1,
+          "slope_rating": 134,
+          "length_yds": 6753,
+          "course": ""
+        },
+        {
+          "tee": "Regular",
+          "gender": "남자",
+          "course_rating": 71.0,
+          "slope_rating": 130,
+          "length_yds": 6311,
+          "course": ""
+        },
+        {
+          "tee": "Honor",
+          "gender": "남자",
+          "course_rating": 68.5,
+          "slope_rating": 121,
+          "length_yds": 5753,
+          "course": ""
+        },
+        {
+          "tee": "Ladies",
+          "gender": "여자",
+          "course_rating": 71.1,
+          "slope_rating": 128,
+          "length_yds": 5211,
+          "course": ""
+        }
+      ],
+      "ratings_source_name": "대한골프협회(KGA) 코스레이팅 현황",
+      "ratings_source_url": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
+      "ratings_source_date": "2024-07-15",
+      "ratings_checked_at": "2026-09-20"
+    }
+  },
+  {
+    "id": "clubd_boeun",
+    "name": "클럽디 보은",
+    "aliases": [],
+    "area": "충청권",
+    "region": "충북",
+    "city": "보은",
+    "holes": null,
+    "courses": [],
+    "play": {
+      "three_person": "확인 필요"
+    },
+    "fee": {
+      "verified": true,
+      "basis": "공식 9월 안내요금",
+      "weekday_green": 180000,
+      "weekend_green": 220000,
+      "cart_team": 100000,
+      "caddie_team": 150000,
+      "weekday": 180000,
+      "weekend": 220000
+    },
+    "phone": "043-540-8888",
+    "address": "충청북도 보은군 보은읍 장속중초로 386",
+    "official_url": "https://www.clubd.com/boeun/",
+    "course_overview": "EAST · WEST 코스로 운영되는 18홀 대중형 골프장.",
+    "course_source": "catalog",
+    "data_checked": "2026-09-20",
+    "data_source": "official",
+    "pool_source": "기존 검증 카탈로그",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "candidate",
+    "service_basic_count": 4,
+    "verification": {
+      "sources": [
+        "official",
+        "official_homepage_record",
+        "data_checked_record",
+        "verified_fee_record",
+        "data.go.kr",
+        "공공데이터",
+        "공공데이터상 영업"
+      ],
+      "status": "partial",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20",
+      "public_data": {
+        "matched": true,
+        "checked_at": "2026-09-20",
+        "dataset_id": "15154978",
+        "source_name": "행정안전부_생활_골프장 조회서비스",
+        "match_type": "normalized_1.00",
+        "public_name": "클럽디보은CC",
+        "address": "충청북도 보은군 보은읍 장속중초로 386-0 (클럽디보은)",
+        "phone": "043-543-0537",
+        "status": "영업/정상",
+        "detail_status": "영업",
+        "closed_date": "",
+        "data_updated_at": "2026-06-26 03:03:03",
+        "last_modified_at": "2026-06-25 18:05:48",
+        "business_type": "",
+        "management_no": "302012017000001",
+        "operating_in_public_data": true
+      }
+    },
+    "public_data_name": "클럽디보은CC",
+    "subregion": "충북",
+    "region_source": "public_address",
+    "region_checked_at": "2026-09-20",
+    "region_field_sources": {
+      "area": "public_address",
+      "subregion": "public_address",
+      "city": "public_address"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "클럽디 보은",
+      "match_type": "exact",
+      "match_score": 1.0,
+      "checked_at": "2026-09-20",
+      "region": "충북",
+      "address": "충청북도 보은군 보은읍 중초리 산 7-1",
+      "course_combinations": [
+        "동 +서"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
+    }
+  },
+  {
+    "id": "silkriver",
+    "name": "청주 세레니티",
+    "aliases": [
+      "실크리버CC",
+      "세레니티CC",
+      "청주 세레니티"
+    ],
+    "area": "충청권",
+    "region": "충북",
+    "city": "청주",
+    "holes": 27,
+    "courses": [
+      {
+        "name": "Silk",
+        "holes": 9,
+        "type": "3,238m"
+      },
+      {
+        "name": "River",
+        "holes": 9,
+        "type": "3,195m"
+      },
+      {
+        "name": "Blue",
+        "holes": 9,
+        "type": "9H"
+      }
+    ],
+    "play": {},
+    "fee": {
+      "verified": true,
+      "basis": "비회원 18홀 참고요금",
+      "weekday_green": 170000,
+      "weekend_green": 210000,
+      "cart_team": 100000,
+      "caddie_team": 130000
+    },
+    "phone": "043-277-5000",
+    "address": "충청북도 청주시 서원구 남이면 문곡구절골길 235",
+    "official_url": "https://www.serenitygolfresort.com/cheongju/",
+    "course_overview": "구 실크리버CC. Silk · River · Blue 3개 코스, 총 27홀 · Par 108. 그레이엄 마쉬 설계.",
+    "course_source": "official+reported",
+    "data_checked": "2026-09-20",
+    "data_source": "official",
+    "pool_source": "기존 검증 카탈로그",
+    "pool_checked": "2026-09-20",
+    "pool_status": "vworld_match_pending",
+    "service_status": "service",
+    "service_basic_count": 6,
+    "verification": {
+      "sources": [
+        "official",
+        "official_homepage_record",
+        "data_checked_record",
+        "verified_fee_record"
+      ],
+      "status": "verified",
+      "checked_at": "2026-09-20",
+      "assessed_at": "2026-09-20"
+    },
+    "kga": {
+      "matched": true,
+      "status": "KGA 코스정보 확인",
+      "matched_name": "세레니티",
+      "match_type": "safe_fuzzy",
+      "match_score": 0.97,
+      "checked_at": "2026-09-20",
+      "region": "충북",
+      "address": "충북 청주시 서원구 남이면 문곡구절골길 235",
+      "course_combinations": [
+        "블루 +실크",
+        "실크 +리버",
+        "리버 +블루"
+      ],
+      "source_name": "대한골프협회(KGA) 코스레이팅 DB",
+      "source_url": "https://www.kgagolf.or.kr/web/handicap/calculator"
+    }
   },
   {
     "id": "lavie",
@@ -45317,7 +44239,7 @@
     "pool_checked": "2026-09-20",
     "pool_status": "vworld_match_pending",
     "service_status": "service",
-    "service_basic_count": 3,
+    "service_basic_count": 5,
     "verification": {
       "sources": [
         "official_homepage_record",

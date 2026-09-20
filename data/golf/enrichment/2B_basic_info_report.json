@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-09-20T19:25:39",
+  "mode": "TEST_SEARCH_ONLY",
+  "catalog_count": 555,
+  "searched": 10,
+  "successful_calls": 10,
+  "failed_calls": 0,
+  "proposed_field_counts": {
+    "official_url": 10,
+    "holes": 3,
+    "booking_url": 2,
+    "operation_type": 7
+  },
+  "records_with_no_auto_proposal": 0,
+  "catalog_modified": false,
+  "checkpoint": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\2B_basic_info_checkpoint.json",
+  "next_step": "검색 품질 검토 후 high-confidence 값만 적용하는 별도 apply 단계"
+}
