@@ -5,5 +5,10 @@
   "vworld_count": 477,
   "status": "updated",
   "refresh_cycle": "quarterly",
-  "backup": "catalog_backup_2026-09-20.json"
+  "backup": "catalog_backup_20260920_153736_533913.json",
+  "service_assessed_at": "2026-09-20",
+  "service": 13,
+  "candidate": 520,
+  "excluded": 22,
+  "unclassified": 0
 }

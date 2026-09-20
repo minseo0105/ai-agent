@@ -42,23 +42,107 @@ def enrich_search_regions(clubs):
         if not coord:
             continue
         area, sub = classify_search_region(*coord)
-        if area and not str(club.get("area") or "").strip():
-            club["area"] = area
-        if sub and not str(club.get("subregion") or "").strip():
-            club["subregion"] = sub
-        if sub and not str(club.get("city") or "").strip():
-            club["city"] = sub
+        known_area = club.get("area")
+        if known_area and known_area != area:
+            lat, lon = coord
+            sub = {"강원권": "강원영동" if lon >= 128.45 else "강원영서",
+                   "충청권": "충북" if lon >= 127.35 else "충남",
+                   "영남권": "경북" if lat >= 35.65 else "경남",
+                   "호남권": "전북" if lat >= 35.45 else "전남",
+                   "제주권": "제주", "수도권": "경기북부" if lat >= 37.55 else "경기남부"}.get(known_area, "")
+        estimated = []
+        for field, value in (("area", area), ("subregion", sub), ("city", sub)):
+            if value and not str(club.get(field) or "").strip():
+                club[field] = value
+                estimated.append(field)
+        if estimated:
+            club.setdefault("region_source", "coordinate_estimate")
+            provenance = club.setdefault("region_field_sources", {})
+            for field in estimated:
+                provenance[field] = "coordinate_estimate"
     return clubs
 
 
 
+def _city_from_address(address):
+    """공공데이터 주소에서 실제 시/군 이름을 추출한다."""
+    a = str(address or "").strip()
+    if not a:
+        return ""
+    m = re.search(r"(?:^|\s)([가-힣]+(?:시|군))(?:\s|$)", a)
+    if m:
+        return re.sub(r"(시|군)$", "", m.group(1))
+    metro = {
+        "서울특별시": "서울", "서울시": "서울", "인천광역시": "인천", "인천시": "인천",
+        "부산광역시": "부산", "대구광역시": "대구", "울산광역시": "울산",
+        "광주광역시": "광주", "대전광역시": "대전", "세종특별자치시": "세종",
+        "제주특별자치도": "제주",
+    }
+    for prefix, city in metro.items():
+        if a.startswith(prefix):
+            return city
+    return ""
+
+
+def _region_from_public_address(address):
+    a = str(address or "").strip()
+    if not a:
+        return None
+    city = _city_from_address(a)
+    if a.startswith(("서울특별시", "서울시")): return "수도권", "서울", city or "서울"
+    if a.startswith(("인천광역시", "인천시")): return "수도권", "인천", city or "인천"
+    if a.startswith(("제주특별자치도", "제주도")): return "제주권", "제주", city or "제주"
+    if a.startswith("충청북도"): return "충청권", "충북", city
+    if a.startswith("충청남도"): return "충청권", "충남", city
+    if a.startswith(("강원특별자치도", "강원도")):
+        yeongdong = {"강릉", "동해", "속초", "삼척", "고성", "양양"}
+        return "강원권", "강원영동" if city in yeongdong else "강원영서", city
+    if a.startswith("경상북도"): return "영남권", "경북", city
+    if a.startswith("경상남도"): return "영남권", "경남", city
+    if a.startswith(("부산광역시", "울산광역시")):
+        return "영남권", "경남", city or ("부산" if a.startswith("부산") else "울산")
+    if a.startswith("대구광역시"): return "영남권", "경북", city or "대구"
+    if a.startswith(("전북특별자치도", "전라북도")): return "호남권", "전북", city
+    if a.startswith("전라남도"): return "호남권", "전남", city
+    if a.startswith("광주광역시"): return "호남권", "전남", city or "광주"
+    if a.startswith(("대전광역시", "세종특별자치시")):
+        return "충청권", "충남", city or ("대전" if a.startswith("대전") else "세종")
+    if a.startswith("경기도"):
+        north = {"고양", "파주", "의정부", "양주", "동두천", "포천", "연천", "가평", "구리", "남양주"}
+        return "수도권", "경기북부" if city in north else "경기남부", city
+    return None
+
+
+def enrich_public_address_regions(clubs):
+    """공공데이터 안전 매칭 주소를 좌표추정보다 우선한다."""
+    for club in clubs:
+        verification = club.get("verification") or {}
+        public = verification.get("public_data") or {}
+        if public.get("matched") is not True:
+            continue
+        address = str(public.get("address") or club.get("address") or "").strip()
+        region = _region_from_public_address(address)
+        if not region:
+            continue
+        area, subregion, city = region
+        if area: club["area"] = area
+        if subregion: club["subregion"] = subregion
+        if city: club["city"] = city
+        club["region_source"] = "public_address"
+        provenance = club.setdefault("region_field_sources", {})
+        provenance["area"] = "public_address"
+        provenance["subregion"] = "public_address"
+        provenance["city"] = "public_address"
+    return clubs
+
 def load_catalog():
     clubs = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
-    return enrich_search_regions(clubs)
+    return prepare_service_pool(clubs)
 
 
 def find_clubs(query, clubs=None):
-    clubs = clubs or load_catalog()
+    clubs = load_catalog() if clubs is None else clubs
+    clubs = [c for c in clubs if service_status(c) != "excluded"]
     q = re.sub(r"\s+", "", str(query or "")).lower()
     if not q:
         return []
@@ -287,23 +371,121 @@ def _subregion_match(club, subregion):
 
 
 
+def _has_information(value):
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return value.strip().lower() not in {"", "확인 필요", "확인필요", "미확인", "정보 없음", "unknown", "null", "none"}
+    if isinstance(value, dict):
+        return any(_has_information(v) for v in value.values())
+    if isinstance(value, (list, tuple)):
+        return any(_has_information(v) for v in value)
+    return isinstance(value, (int, float, bool))
+
+
+def service_assessment(club):
+    """Master Pool을 service / candidate / excluded로 보수적으로 분류한다."""
+    import math
+    try:
+        holes = float(str(club.get("holes")).replace("홀", "").strip())
+        if not math.isfinite(holes) or holes <= 0:
+            holes = None
+    except (TypeError, ValueError):
+        holes = None
+
+    play = club.get("play") or {}
+    twice = play.get("nine_hole_twice")
+    nine_twice = holes == 9 and twice in (True, "가능", "yes", "Y", "y")
+    round_confirmed = holes is not None and (holes >= 18 or nine_twice)
+    round_explicitly_bad = holes is not None and holes < 18 and not nine_twice
+
+    fee = club.get("fee") or {}
+    actual_fee = any(
+        isinstance(fee.get(k), (int, float)) and not isinstance(fee.get(k), bool)
+        and math.isfinite(fee[k]) and fee[k] >= 0
+        for k in ("weekday_green", "weekend_green", "weekday", "weekend", "cart_team",
+                  "caddie_team", "three_person_weekday_extra", "three_person_weekend_extra")
+    )
+    homepage = any(_has_information(club.get(k)) for k in ("official_url", "website", "homepage"))
+
+    verification = club.get("verification") or {}
+    public_data = verification.get("public_data") or {}
+    public_matched = public_data.get("matched") is True
+    public_operating = public_data.get("operating_in_public_data")
+    public_status = str(public_data.get("status") or "").strip()
+    public_detail = str(public_data.get("detail_status") or "").strip()
+    closed_date = str(public_data.get("closed_date") or "").strip()
+
+    if public_operating is None and public_matched:
+        public_operating = (
+            not closed_date and
+            (public_status in {"영업/정상", "영업"} or public_detail == "영업")
+        )
+
+    public_non_operating = public_matched and (bool(closed_date) or public_operating is False)
+
+    trust = []
+    if club.get("data_source") == "official": trust.append("official")
+    if homepage: trust.append("official_homepage_record")
+    if _has_information(club.get("data_checked")): trust.append("data_checked_record")
+    if fee.get("verified") is True: trust.append("verified_fee_record")
+    if public_matched: trust.append("공공데이터")
+    if public_operating is True: trust.append("공공데이터상 영업")
+
+    basic_count = sum((
+        holes is not None,
+        _has_information(club.get("address")),
+        _has_information(club.get("phone")),
+        homepage,
+        _has_information(club.get("courses")),
+        actual_fee,
+    ))
+
+    if public_non_operating or round_explicitly_bad:
+        status = "excluded"
+    elif round_confirmed and trust and basic_count >= 2:
+        status = "service"
+    else:
+        status = "candidate"
+
+    return status, trust, basic_count
+
+def service_status(club):
+    return service_assessment(club)[0]
+
+
 def is_recommendable(club):
-    """추천에는 서비스 정보가 검증/보강된 레코드만 사용한다.
-    VWorld-only 레코드는 존재 후보/지도 Pool에는 남기되 자동 추천에서 제외한다.
-    """
-    fee_verified = bool((club.get("fee") or {}).get("verified"))
-    checked = bool(club.get("data_checked"))
-    has_service_source = any(
-        str(club.get(k) or "").strip()
-        for k in ("official_url", "website", "homepage", "phone")
-    )
-    has_enriched_detail = bool(
-        club.get("holes")
-        or club.get("traits")
-        or club.get("review_traits")
-        or (club.get("play") or {}).get("three_person")
-    )
-    return checked or fee_verified or (has_service_source and has_enriched_detail)
+    """Service eligibility, never a claim of current operation or booking availability."""
+    return service_status(club) == "service"
+
+
+def prepare_service_pool(clubs):
+    from datetime import date
+    enrich_search_regions(clubs)
+    enrich_public_address_regions(clubs)
+    for club in clubs:
+        status, sources, count = service_assessment(club)
+        club["service_status"] = status
+        club["service_basic_count"] = count
+        verification = club.setdefault("verification", {})
+        previous_sources = verification.get("sources") or []
+        if isinstance(previous_sources, str): previous_sources = [previous_sources]
+        if str(club.get("pool_source") or "").startswith("VWorld"):
+            sources = ["VWorld"] + sources
+        verification["sources"] = list(dict.fromkeys(previous_sources + sources))
+        verification["status"] = "verified" if status == "service" else "partial" if sources else "unverified"
+        verification.setdefault("checked_at", club.get("data_checked") or
+                                (verification.get("public_data") or {}).get("checked_at") or club.get("pool_checked"))
+        verification["assessed_at"] = date.today().isoformat()
+    return clubs
+
+
+def pool_counts(clubs):
+    from collections import Counter
+    counts = Counter(c.get("service_status") or service_status(c) for c in clubs)
+    return {"count": len(clubs), "service": counts["service"], "candidate": counts["candidate"],
+            "excluded": counts["excluded"], "unclassified": sum(not c.get("area") for c in clubs)}
+
 
 def recommendation_pool(clubs, area="전체", text="", budget=None, players=4, weekend=False,
                         limit=6, offset=0, city=None, traits=None):

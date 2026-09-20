@@ -19,6 +19,7 @@ from services.golf_catalog import (
     load_review_seed,
     _subregion_match,
     is_recommendable,
+    pool_counts,
 )
 from services.golf_pool_updater import (
     load_pool_meta,
@@ -678,6 +679,15 @@ def _condition_evidence(course, cond):
 
 def _result_confidence(course, cond):
     confirmed, pending = _condition_evidence(course, cond)
+
+    # Service가 아닌 candidate는 선택조건이 맞더라도
+    # 홀 수 등 기본 라운드 정보가 아직 충분히 확인되지 않은 상태다.
+    if course.get("service_status") == "candidate":
+        if not course.get("holes") and "홀 수" not in pending:
+            pending.append("홀 수")
+        elif "기본정보" not in pending:
+            pending.append("기본정보")
+
     return ("pending" if pending else "confirmed"), confirmed, pending
 
 
@@ -757,8 +767,30 @@ def _descriptive_badges(club):
 # LOAD DATA
 # =========================================================
 
-clubs = load_catalog()
-clubs = _over_18_holes_only(clubs)
+all_clubs = load_catalog()
+clubs = [c for c in all_clubs if c["service_status"] != "excluded"]
+service_clubs = [c for c in all_clubs if c["service_status"] == "service"]
+
+def _public_operating_candidate(club):
+    """공공데이터상 영업이 확인된 candidate를 조건/AI 검색 Pool에 포함."""
+    if club.get("service_status") != "candidate":
+        return False
+    public = ((club.get("verification") or {}).get("public_data") or {})
+    return public.get("matched") is True and public.get("operating_in_public_data") is True
+
+condition_search_clubs = [
+    c for c in all_clubs
+    if c.get("service_status") == "service" or _public_operating_candidate(c)
+]
+
+# 직접검색은 excluded만 제외한 전체 검색 가능 Pool을 사용.
+# 기존 검색결과 state도 service 13개로 강제 축소하지 않는다.
+if st.session_state.get("golf_recs"):
+    searchable_ids = {c["id"] for c in clubs}
+    st.session_state.golf_recs = [
+        item for item in st.session_state.golf_recs
+        if _normalize_result_item(item)[0].get("id") in searchable_ids
+    ]
 
 if "golf_filters_open" not in st.session_state:
     st.session_state.golf_filters_open = True
@@ -955,8 +987,8 @@ with st.container(key="golf"):
 
                 # 검증 가능한 필터 검색:
                 # 1) 전체 Pool -> 2) 권역 -> 3) 세부권역 -> 4) 확인 가능한 추가조건
-                total_count = len(clubs)
-                search_clubs = list(clubs)
+                total_count = len(condition_search_clubs)
+                search_clubs = list(condition_search_clubs)
 
                 if selected_areas:
                     search_clubs = [
@@ -1138,8 +1170,8 @@ with st.container(key="golf"):
                 cond["subregions"] = []
                 cond["objective_features"] = []
 
-                total_count = len(clubs)
-                search_clubs = list(clubs)
+                total_count = len(condition_search_clubs)
+                search_clubs = list(condition_search_clubs)
 
                 # 권역
                 if cond.get("area") and cond["area"] != "전체":
@@ -1352,6 +1384,17 @@ with st.container(key="golf"):
 
     with st.expander("⚙ 골프장 Pool 관리 · VWorld 점검", expanded=False):
         pool_meta = load_pool_meta()
+        golf_pool_stats = pool_counts(all_clubs)
+        for column, (label, field) in zip(st.columns(5), (
+            ("전체 원장", "count"), ("Service Pool", "service"), ("Candidate", "candidate"),
+            ("Excluded", "excluded"), ("권역 미분류", "unclassified"),
+        )):
+            column.metric(label, f"{golf_pool_stats[field]}개")
+        if st.session_state.get("golf_pool_refresh_result"):
+            last = st.session_state["golf_pool_refresh_result"]
+            st.caption(f"갱신 완료 · 전체 {last['count']} · VWorld {last['vworld_count']} · Service {last['service']} · Candidate {last['candidate']} · Excluded {last['excluded']} · 권역 미분류 {last['unclassified']}")
+            if (last.get("public_data") or {}).get("status") != "ok":
+                st.warning((last.get("public_data") or {}).get("message", "공공데이터 교차확인 미완료"))
         vworld_key = st.secrets.get("VWORLD_API_KEY", "")
         vworld_domain = st.secrets.get("VWORLD_DOMAIN", "")
         public_service_key = st.secrets.get("DATA_GO_KR_SERVICE_KEY", "")
@@ -1409,6 +1452,7 @@ with st.container(key="golf"):
                     )
                 st.session_state["vworld_test_result"] = result
             except Exception as ex:
+                st.session_state["golf_pool_refresh_result"] = updated
                 st.session_state.pop("vworld_test_result", None)
                 st.error(f"VWorld 연결 테스트 실패: {ex}")
 
@@ -1479,7 +1523,9 @@ with st.container(key="golf"):
                     )
                 st.success(
                     f'Pool 갱신 완료 · 전체 {updated.get("count",0)}개 · '
-                    f'VWorld 원본 {updated.get("vworld_count",0)}개'
+                    f'VWorld 원본 {updated.get("vworld_count",0)}개 · '
+                    f'Service {updated.get("service",0)}개 · Candidate {updated.get("candidate",0)}개 · '
+                    f'Excluded {updated.get("excluded",0)}개 · 권역 미분류 {updated.get("unclassified",0)}개'
                 )
                 st.caption(
                     "기존 catalog.json은 자동 백업했습니다. "
@@ -1508,6 +1554,8 @@ with st.container(key="golf"):
 
     if not club:
         st.stop()
+    if club.get("service_status") == "candidate":
+        st.info("기본정보 확인 중")
 
     st.divider()
 

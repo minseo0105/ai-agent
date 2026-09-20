@@ -1,3 +1,6 @@
+import copy
+import os
+import tempfile
 import json
 import math
 import re
@@ -28,10 +31,49 @@ def _read_json(path, default):
 
 def _write_json(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
+    payload = json.dumps(value, ensure_ascii=False, indent=2).encode("utf-8")
+    _atomic_bytes(path, payload)
+
+
+def _atomic_bytes(path, payload):
+    fd, temp = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp, path)
+    finally:
+        if os.path.exists(temp): os.unlink(temp)
+
+
+def backup_catalog():
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    backup = DATA_DIR / f"catalog_backup_{datetime.now():%Y%m%d_%H%M%S_%f}.json"
+    if CATALOG_PATH.exists():
+        backup.write_bytes(CATALOG_PATH.read_bytes())
+    return backup
+
+
+def save_pool(clubs, meta, backup):
+    """Stage complete values, atomic file replacement, rollback both files on errors."""
+    from services.golf_catalog import pool_counts
+    existing_raw = CATALOG_PATH.read_bytes() if CATALOG_PATH.exists() else None
+    old = json.loads(existing_raw) if existing_raw else []
+    if len(clubs) < len(old):
+        raise ValueError("원장 레코드 감소: 저장 중단")
+    old_meta = META_PATH.read_bytes() if META_PATH.exists() else None
+    meta = dict(meta, **pool_counts(clubs), backup=backup.name)
+    try:
+        _write_json(CATALOG_PATH, clubs)
+        _write_json(META_PATH, meta)
+    except Exception:
+        if existing_raw is not None: _atomic_bytes(CATALOG_PATH, existing_raw)
+        elif CATALOG_PATH.exists(): CATALOG_PATH.unlink()
+        if old_meta is not None: _atomic_bytes(META_PATH, old_meta)
+        elif META_PATH.exists(): META_PATH.unlink()
+        raise
+    return meta
 
 
 def load_pool_meta():
@@ -422,60 +464,16 @@ def test_vworld_connection(api_key, domain, sample_size=5):
 
 
 def classify_korea_subregion(lat, lon):
-    """
-    WGS84 좌표를 라운드 탐색용 중권역으로 분류한다.
-    행정경계 API가 아니라 검색 UX용 근사 분류이며, 기존 검증된 region/city는 덮어쓰지 않는다.
-    """
+    from services.golf_catalog import classify_search_region
     try:
-        lat, lon = float(lat), float(lon)
+        return classify_search_region(float(lat), float(lon))
     except (TypeError, ValueError):
         return "", ""
 
-    # 제주
-    if 33.0 <= lat <= 34.0 and 126.0 <= lon <= 127.2:
-        return "제주권", "제주"
-
-    # 수도권: 서울/인천/경기. 경기남북은 한강·서울권 기준의 검색용 근사 분류
-    if 36.85 <= lat <= 38.35 and 126.0 <= lon <= 128.0:
-        if lon < 126.85 and 37.2 <= lat <= 37.9:
-            return "수도권", "인천"
-        if 126.75 <= lon <= 127.25 and 37.40 <= lat <= 37.72:
-            return "수도권", "서울"
-        return "수도권", "경기북부" if lat >= 37.55 else "경기남부"
-
-    # 강원
-    if 37.0 <= lat <= 38.7 and 127.3 <= lon <= 129.6:
-        return "강원권", "강원영동" if lon >= 128.45 else "강원영서"
-
-    # 충청
-    if 35.8 <= lat < 37.35 and 126.0 <= lon <= 128.7:
-        return "충청권", "충북" if lon >= 127.35 else "충남"
-
-    # 영남
-    if 34.5 <= lat <= 37.2 and 128.0 <= lon <= 130.0:
-        return "영남권", "경북" if lat >= 35.65 else "경남"
-
-    # 호남
-    if 34.0 <= lat <= 36.3 and 125.8 <= lon <= 128.0:
-        return "호남권", "전북" if lat >= 35.45 else "전남"
-
-    return "", ""
-
 
 def enrich_vworld_regions(clubs):
-    """빈 지역정보에만 좌표 기반 중권역을 채운다."""
-    for club in clubs:
-        lat = club.get("vworld_y") or club.get("latitude") or club.get("lat")
-        lon = club.get("vworld_x") or club.get("longitude") or club.get("lon")
-        area, subregion = classify_korea_subregion(lat, lon)
-        if area and not str(club.get("area") or "").strip():
-            club["area"] = area
-        # VWorld 신규건의 city는 시군 대신 검색용 중권역으로 사용
-        if subregion and not str(club.get("city") or "").strip():
-            club["city"] = subregion
-        if subregion:
-            club["subregion"] = subregion
-    return clubs
+    from services.golf_catalog import enrich_search_regions
+    return enrich_search_regions(clubs)
 
 
 def dedupe_golf_pool(clubs):
@@ -586,175 +584,84 @@ def propagate_vworld_coordinates(merged, vworld_clubs):
         club["longitude"] = vlon
         club["coord_source"] = "VWorld name rematch"
 
-        area, subregion = classify_korea_subregion(vlat, vlon)
-        if area and not club.get("area"):
-            club["area"] = area
-        if subregion:
-            club["subregion"] = subregion
-            if not club.get("city"):
-                club["city"] = subregion
+        enrich_vworld_regions([club])
         matched += 1
 
     return merged, matched
 
 
 def merge_with_existing(vworld_clubs, existing):
-    """
-    VWorld는 전국 골프장 Pool의 골격(골프장명/공간정보)으로 사용한다.
-    기존 catalog에 검증해둔 지역/요금/3인/코스/전화/공식URL 등은 보존한다.
-    """
-    existing_by_name = {
-        _normalize_name(c.get("name")): c
-        for c in existing
-        if c.get("name")
-    }
-
-    merged = []
-    used_ids = set()
-    matched_existing_names = set()
-
+    """Keep every existing record/field; merge only unambiguous exact name matches."""
+    merged = copy.deepcopy(existing)
+    index = {}
+    for i, club in enumerate(merged):
+        index.setdefault(_normalize_name(club.get("name")), []).append(i)
+    used_ids = {c.get("id") for c in merged}
     for vw in vworld_clubs:
-        key = _normalize_name(vw.get("name"))
-        old = existing_by_name.get(key)
-
-        if old:
-            item = dict(vw)
-
-            # 기존 검증/수작업 상세정보를 우선 보존
-            for field in [
-                "id", "name", "aliases", "area", "region", "city",
-                "holes", "courses", "play", "fee", "phone", "address",
-                "official_url", "course_overview", "course_source",
-                "review_traits", "facilities", "verification", "data_checked", "data_source",
-            ]:
-                if old.get(field) not in (None, "", [], {}):
-                    item[field] = old[field]
-
-            matched_existing_names.add(key)
+        matches = index.get(_normalize_name(vw.get("name")), [])
+        if len(matches) == 1:
+            item = merged[matches[0]]
+            for field, value in vw.items():
+                if field not in item or item[field] in (None, "", [], {}):
+                    item[field] = copy.deepcopy(value)
+            item["pool_source"] = "VWorld LT_P_SGISGOLF"
+            item["pool_checked"] = vw.get("pool_checked")
         else:
-            item = vw
-
-        # id 충돌 방지
-        base_id = item["id"]
-        candidate = base_id
-        seq = 2
-        while candidate in used_ids:
-            candidate = f"{base_id}_{seq}"
-            seq += 1
-        item["id"] = candidate
-
-        merged.append(item)
-        used_ids.add(candidate)
-
-    # VWorld에서 이름 매칭이 안 된 기존 상세 골프장도 삭제하지 않고 유지
-    for old in existing:
-        key = _normalize_name(old.get("name"))
-        if key in matched_existing_names:
-            continue
-
-        item = dict(old)
-        item["pool_status"] = "vworld_match_pending"
-
-        base_id = item.get("id") or _safe_id(item.get("name"))
-        candidate = base_id
-        seq = 2
-        while candidate in used_ids:
-            candidate = f"{base_id}_{seq}"
-            seq += 1
-        item["id"] = candidate
-
-        merged.append(item)
-        used_ids.add(candidate)
-
+            item = copy.deepcopy(vw)
+            base = item.get("id") or _safe_id(item.get("name"))
+            candidate, seq = base, 2
+            while candidate in used_ids:
+                candidate = f"{base}_{seq}"
+                seq += 1
+            item["id"] = candidate
+            merged.append(item)
+            used_ids.add(candidate)
     return merged
 
 
-def refresh_pool(api_key, domain, force=False):
+def refresh_pool(api_key, domain, force=False, public_service_key=""):
+    from services.golf_catalog import prepare_service_pool, pool_counts
     if not force and not quarterly_refresh_due():
-        meta = load_pool_meta()
-        return {
-            "updated": False,
-            "reason": "quarter_not_due",
-            "count": meta.get("count", 0),
-        }
-
-    existing = _read_json(CATALOG_PATH, [])
+        return dict(load_pool_meta(), updated=False, reason="quarter_not_due")
+    # Parse strictly: a corrupted catalog must never silently become an empty baseline.
+    existing = json.loads(CATALOG_PATH.read_text(encoding="utf-8")) if CATALOG_PATH.exists() else []
+    backup = backup_catalog()
     vworld_clubs = fetch_vworld_golf_pool(api_key=api_key, domain=domain)
-
     if not vworld_clubs:
         raise RuntimeError("VWorld 골프장 Pool이 비어 있어 갱신을 중단했습니다.")
-
     merged = merge_with_existing(vworld_clubs, existing)
-    merged, coord_rematched = propagate_vworld_coordinates(merged, vworld_clubs)
-    merged = enrich_vworld_regions(merged)
-    merged = dedupe_golf_pool(merged)
-
-    # 비정상 응답 안전장치
-    if existing and len(merged) < max(50, int(len(existing) * 0.5)):
-        raise RuntimeError(
-            f"갱신 결과가 비정상적으로 적습니다({len(merged)}개). "
-            "기존 catalog.json은 변경하지 않았습니다."
-        )
-
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    backup = DATA_DIR / f"catalog_backup_{date.today().isoformat()}.json"
-    if CATALOG_PATH.exists():
-        backup.write_text(
-            CATALOG_PATH.read_text(encoding="utf-8"),
-            encoding="utf-8",
-        )
-
-    _write_json(CATALOG_PATH, merged)
-
-    meta = {
-        "last_updated": date.today().isoformat(),
-        "source": "VWorld LT_P_SGISGOLF",
-        "count": len(merged),
-        "vworld_count": len(vworld_clubs),
-        "coordinate_rematched": coord_rematched,
-        "status": "updated",
-        "refresh_cycle": "quarterly",
-        "backup": backup.name if backup.exists() else None,
-    }
-    _write_json(META_PATH, meta)
-
-    return {
-        "updated": True,
-        "count": len(merged),
-        "vworld_count": len(vworld_clubs),
-        "coordinate_rematched": coord_rematched,
-        "backup": str(backup),
-    }
+    merged, rematched = propagate_vworld_coordinates(merged, vworld_clubs)
+    public = {"enabled": bool(public_service_key), "matched": 0, "status": "not_configured"}
+    if public_service_key:
+        try:
+            from services.golf_public_data import fetch_public_golf_records, match_public_records
+            records = fetch_public_golf_records(public_service_key)
+            # An optional provider failure must not leave partially-mutated verification.
+            checked, matched = match_public_records(copy.deepcopy(merged), records)
+            merged = checked
+            public.update(status="ok", matched=matched, records=len(records))
+        except Exception:
+            public.update(status="warning", message="공공데이터 교차확인 미완료: endpoint·키·연결 상태를 확인하세요. 기존 검증정보는 유지했습니다.")
+    else:
+        public["message"] = "공공데이터 키 미설정: 기존 검증정보를 유지했습니다."
+    merged = prepare_service_pool(merged)
+    meta = dict(load_pool_meta(), last_updated=date.today().isoformat(), source="VWorld LT_P_SGISGOLF",
+                vworld_count=len(vworld_clubs), coordinate_rematched=rematched, status="updated",
+                refresh_cycle="quarterly", public_data=public)
+    meta = save_pool(merged, meta, backup)
+    return dict(meta, updated=True, backup=str(backup))
 
 
 def refresh_pool_dual(api_key, domain, public_service_key="", force=False):
-    """
-    1) VWorld로 전국 Pool 갱신
-    2) 공공데이터포털 승인 API가 설정되어 있으면 같은 catalog를 교차확인
-    공공 API 미설정/실패 시 VWorld 갱신 결과는 유지하고 오류를 결과에 기록한다.
-    """
-    result = refresh_pool(api_key=api_key, domain=domain, force=force)
-    result["public_data"] = {"enabled": bool(public_service_key), "matched": 0}
-    if not public_service_key:
-        return result
+    return refresh_pool(api_key, domain, force=force, public_service_key=public_service_key)
 
-    try:
-        from services.golf_public_data import fetch_public_golf_records, match_public_records
-        records = fetch_public_golf_records(public_service_key)
-        clubs = _read_json(CATALOG_PATH, [])
-        clubs, matched = match_public_records(clubs, records)
-        _write_json(CATALOG_PATH, clubs)
-        meta = load_pool_meta()
-        meta["public_data_checked"] = date.today().isoformat()
-        meta["public_data_records"] = len(records)
-        meta["public_data_matched"] = matched
-        meta["source"] = "VWorld + 공공데이터포털" if matched else meta.get("source")
-        _write_json(META_PATH, meta)
-        result["public_data"] = {
-            "enabled": True, "records": len(records), "matched": matched, "status": "ok"
-        }
-    except Exception as exc:
-        result["public_data"] = {
-            "enabled": True, "matched": 0, "status": "error", "message": str(exc)[:300]
-        }
-    return result
+
+def apply_existing_service_pool():
+    """Classify the saved master without refetching NAVER/VWorld or inventing public matches."""
+    from services.golf_catalog import prepare_service_pool
+    clubs = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    backup = backup_catalog()
+    clubs = prepare_service_pool(clubs)
+    meta = dict(load_pool_meta(), service_assessed_at=date.today().isoformat())
+    meta = save_pool(clubs, meta, backup)
+    return clubs, meta

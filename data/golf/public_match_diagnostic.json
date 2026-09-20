@@ -1,0 +1,4868 @@
+{
+  "summary": {
+    "catalog_total": 555,
+    "public_total": 652,
+    "public_valid_name_total": 652,
+    "exact_match": 144,
+    "probable_match": 118,
+    "ambiguous": 36,
+    "unmatched": 257,
+    "automatic_safe_candidates": 144,
+    "manual_review_candidates": 154
+  },
+  "results": [
+    {
+      "catalog_name": "태릉골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "해라컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "해라컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "부산광역시 강서구 과학산단로306번길 77 (지사동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "스마트KU골프파빌리온",
+      "match_type": "exact_match",
+      "public_name": "스마트KU 골프 파빌리온",
+      "similarity": 1.0,
+      "public_address": "경기도 파주시 법원읍 보광로 1616",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "서원밸리G.C",
+      "match_type": "exact_match",
+      "public_name": "서원밸리골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 파주시 광탄면 서원길 333, 서원밸리G.C클럽",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "제이퍼블릭",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "베스트밸리골프클럽",
+      "match_type": "exact_match",
+      "public_name": "(주)베스트밸리골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 파주시 광탄면 장지산로200번길 32-41",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "(주)파주컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "(주) 파주컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 파주시 법원읍 화합로 306",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파주프리스틴밸리",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "타이거CC",
+      "match_type": "exact_match",
+      "public_name": "타이거CC 골프장",
+      "similarity": 1.0,
+      "public_address": "경기도 파주시 법원읍 술이홀로 1803",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "뉴스프링빌",
+      "match_type": "exact_match",
+      "public_name": "뉴스프링빌골프장",
+      "similarity": 1.0,
+      "public_address": "경기도 이천시 모가면 사실로527번길 158, 뉴스프링빌C.C.",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "덕평C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "BA비스타C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "은마골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "휘닉스스프링스CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "블랙스톤",
+      "match_type": "exact_match",
+      "public_name": "블랙스톤",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 제주시 한림읍 한창로 925-122",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "더반골프클럽",
+      "match_type": "exact_match",
+      "public_name": "더반골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 이천시 대월면 도리리 277",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "비승대체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "신안C.C",
+      "match_type": "exact_match",
+      "public_name": "신안컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 고삼면 개울말길 149",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "안성C.C",
+      "match_type": "exact_match",
+      "public_name": "안성컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 죽산면 장계길 134",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "안성베네스트G.C",
+      "match_type": "exact_match",
+      "public_name": "안성베네스트G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 금광면 삼흥로 660",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아시아드C.C",
+      "match_type": "exact_match",
+      "public_name": "아시아드컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "부산광역시 기장군 일광면 차양길 26",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "윈체스트골프클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "파인크리크C.C",
+      "match_type": "exact_match",
+      "public_name": "파인크리크C.C",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 양성면 안성맞춤대로 2417-13",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "에덴블루 C.C",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "에덴블루C.C",
+          "address": "경기도 안성시 죽산면 녹배길 175"
+        },
+        {
+          "name": "에덴블루 컨트리클럽",
+          "address": "경기도 안성시 죽산면 녹배길 175"
+        }
+      ]
+    },
+    {
+      "catalog_name": "마에스트로C.C",
+      "match_type": "exact_match",
+      "public_name": "마에스트로 CC",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 양성면 안성맞춤대로 2134-36",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골프클럽Q안성",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "레이크힐스안성퍼블릭",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "신안퍼블릭C.C",
+      "match_type": "exact_match",
+      "public_name": "신안 퍼블릭 CC",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 고삼면 개울말길 149",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "웨스트파인골프코스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "파인크리크C.C대중",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "해운대C.C",
+      "match_type": "exact_match",
+      "public_name": "해운대컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "부산광역시 기장군 정관면 병산2로 265",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골프존카운티 안성H",
+      "match_type": "exact_match",
+      "public_name": "골프존카운티 안성H",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 보개면 보삼로 302",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "김포SEASIDE컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "김포 SEASIDE 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 김포시 월곶면 김포대로2801번길 219",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "기흥",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "리베라",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "발리오스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "라비돌CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "링크나인골프클럽",
+      "match_type": "exact_match",
+      "public_name": "링크나인골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 화성시 만세구 마도면 해운로630번길 49, LINK LINE G.C 클럽하우스",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "화성골프클럽",
+      "match_type": "exact_match",
+      "public_name": "화성골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 화성시 만세구 남양읍 화성로 1393-27",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "베이사이드골프클럽",
+      "match_type": "exact_match",
+      "public_name": "베이사이드골프클럽",
+      "similarity": 1.0,
+      "public_address": "부산광역시 기장군 일광면 이천8길 100",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "화성상록",
+      "match_type": "probable_match",
+      "public_name": "화성 상록 G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 화성시 동탄구 풀무골로60번길 80 (중동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "남수원체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "덕산대체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "강남300",
+      "match_type": "probable_match",
+      "public_name": "강남300 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 광주시 새말길 353 (목동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "블루버드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "곤지암",
+      "match_type": "probable_match",
+      "public_name": "곤지암GC",
+      "similarity": 1.0,
+      "public_address": "경기도 광주시 도척면 도척윗로 280",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "그린힐",
+      "match_type": "probable_match",
+      "public_name": "그린힐 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 광주시 곤지암읍 내선길 176",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "남촌",
+      "match_type": "probable_match",
+      "public_name": "남촌컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 광주시 곤지암읍 부항길 135-38",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "뉴서울",
+      "match_type": "probable_match",
+      "public_name": "뉴서울컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 광주시 삼지곡길 95 (삼동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "이스트밸리",
+      "match_type": "probable_match",
+      "public_name": "이스트밸리컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 광주시 곤지암읍 건업길 195",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "해운대비치 골프앤리조트",
+      "match_type": "exact_match",
+      "public_name": "해운대비치 골프앤리조트",
+      "similarity": 1.0,
+      "public_address": "부산광역시 기장군 기장읍 대변로 74",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "중부CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "레이크우드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "송추",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "몽베르",
+      "match_type": "probable_match",
+      "public_name": "몽베르컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 영북면 산정호수로 359-12",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "일동레이크",
+      "match_type": "probable_match",
+      "public_name": "일동레이크 골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 일동면 화동로 738",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "포천아도니스",
+      "match_type": "probable_match",
+      "public_name": "포천아도니스 C.C",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 신북면 포천로 2499",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "필로스",
+      "match_type": "probable_match",
+      "public_name": "필로스골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 일동면 운악청계로 1507",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "팔공컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "팔공컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "대구광역시 동구 팔공산로237길 186 (도학동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "푸른솔GC",
+      "match_type": "exact_match",
+      "public_name": "푸른솔GC",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 장성군 동화면 임정로 155-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "베어스타운",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "베어크리크",
+      "match_type": "probable_match",
+      "public_name": "베어크리크골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 화현면 달인동로 35",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "일동레이크",
+      "match_type": "probable_match",
+      "public_name": "일동레이크 골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 일동면 화동로 738",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "포천 힐스 컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "포천힐스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 군내면 반월산성로375번길 34",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "포레스트힐 컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "포레스트힐C.C",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 화현면 봉화로 253",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "참밸리C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "금강",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "렉스필드",
+      "match_type": "probable_match",
+      "public_name": "렉스필드 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 산북면 광여로 1115",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "냉천컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "블루헤런GC",
+      "match_type": "exact_match",
+      "public_name": "블루헤런G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 대신면 고달사로 67",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "솔모로",
+      "match_type": "exact_match",
+      "public_name": "솔모로골프장",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 가남읍 솔모로그린길 171",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "스카이밸리",
+      "match_type": "exact_match",
+      "public_name": "스카이밸리골프장",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 북내면 운촌길 254",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "신라CC",
+      "match_type": "exact_match",
+      "public_name": "신라컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 북내면 신라그린길 84",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "여주CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "이포",
+      "match_type": "exact_match",
+      "public_name": "이포골프장",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 금사면 장흥로 416",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "자유",
+      "match_type": "probable_match",
+      "public_name": "자유컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 가남읍 자유그린길 69",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "캐슬파인GC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "세라지오",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "해슬리나인브릿지",
+      "match_type": "probable_match",
+      "public_name": "해슬리나인브릿지 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 명품1로 76 (연라동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "Sky72",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "남여주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "빅토리아GC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "소피아그린",
+      "match_type": "exact_match",
+      "public_name": "소피아그린",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 점동면 소피아그린길 84",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아리지CC",
+      "match_type": "probable_match",
+      "public_name": "아리지 골프장",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 가남읍 아리지그린길 68",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "360도",
+      "match_type": "probable_match",
+      "public_name": "360도 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 강천면 부평로 609",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "여주썬밸리",
+      "match_type": "probable_match",
+      "public_name": "여주썬밸리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 강천면 강문로 872",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "페럼클럽",
+      "match_type": "exact_match",
+      "public_name": "페럼클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 점동면 점동로 181",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "잭니클라우스 골프클럽 코리아",
+      "match_type": "exact_match",
+      "public_name": "잭 니클라우스 골프클럽 코리아",
+      "similarity": 1.0,
+      "public_address": "인천광역시 연수구 아카데미로 209 (송도동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "동여주체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "노스폴컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "노스폴 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 연천군 전곡읍 양연로 1268 (주)에코드림",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "가평베네스트G.C",
+      "match_type": "exact_match",
+      "public_name": "가평베네스트G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 상면 둔덕말길 232",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아난티클럽CC(구,리츠칼튼C.C)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "마이다스밸리G.C",
+      "match_type": "probable_match",
+      "public_name": "마이다스밸리 청평 골프 클럽",
+      "similarity": 0.8889,
+      "public_address": "경기도 가평군 설악면 다락재로 73-111 (청평마이다스골프클럽)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "썬힐G.C",
+      "match_type": "exact_match",
+      "public_name": "썬힐G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 조종면 운악청계로 809 (썬힐골프클럽)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "크리스탈밸리G.C",
+      "match_type": "ambiguous",
+      "public_name": "크리스탈밸리C.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 상면 대보간선로 602-111 (크리스탈밸리)",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "크리스탈밸리C.C",
+          "address": "경기도 가평군 상면 대보간선로 602-111 (크리스탈밸리)",
+          "similarity": 1.0
+        },
+        {
+          "name": "크리스밸리CC",
+          "address": "경기도 안성시 일죽면 일생로 212-41",
+          "similarity": 0.9091
+        }
+      ]
+    },
+    {
+      "catalog_name": "프리스틴밸리G.C",
+      "match_type": "exact_match",
+      "public_name": "프리스틴밸리G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 설악면 유명로 1243-199 (프리스틴밸리)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "가평베네스트",
+      "match_type": "probable_match",
+      "public_name": "가평베네스트G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 상면 둔덕말길 232",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "인서울27골프클럽(주)",
+      "match_type": "exact_match",
+      "public_name": "인서울27골프클럽",
+      "similarity": 1.0,
+      "public_address": "서울특별시 강서구 오정로 443-198, 인서울27골프클럽 (오곡동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "(주)송도골프",
+      "match_type": "exact_match",
+      "public_name": "(주)송도골프",
+      "similarity": 1.0,
+      "public_address": "인천광역시 연수구 능허대로 236 (동춘동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "리앤리CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "베뉴지",
+      "match_type": "probable_match",
+      "public_name": "베뉴지CC",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 가평읍 용추로171번길 100, 가평베뉴지골프장",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "더스타 휴 골프장",
+      "match_type": "probable_match",
+      "public_name": "더 스타 휴 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 양평군 양동면 양동로 756",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "제이드팰리스GC",
+      "match_type": "exact_match",
+      "public_name": "제이드팰리스 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 남산면 경춘로 212-30",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "남춘천 C.C",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "남춘천CC",
+          "address": "강원특별자치도 춘천시 신동면 오봉길 156"
+        },
+        {
+          "name": "남춘천컨트리클럽",
+          "address": "강원특별자치도 춘천시 신동면 오봉길 156"
+        }
+      ]
+    },
+    {
+      "catalog_name": "휘슬링 락C.C",
+      "match_type": "exact_match",
+      "public_name": "휘슬링 락 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 남산면 동촌로 501",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파가니카 C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "강촌CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "라데나",
+      "match_type": "probable_match",
+      "public_name": "라데나 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 신동면 칠전동길 72",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오너스 G.C",
+      "match_type": "exact_match",
+      "public_name": "오너스골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 남산면 동촌로 667",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "인천오렌지듄스골프클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "더 플레이어스 골프클럽",
+      "match_type": "exact_match",
+      "public_name": "더플레이어스골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 동산면 새술막길 438",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "스프링베일리조트",
+      "match_type": "exact_match",
+      "public_name": "스프링베일리조트",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 동면 금베이길 93-27",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "로드힐스골프클럽",
+      "match_type": "exact_match",
+      "public_name": "로드힐스 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 동산면 종자리로 148-16",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "강촌리조트대중제골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "베어크리크CC",
+      "match_type": "probable_match",
+      "public_name": "베어크리크골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 화현면 달인동로 35",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오크밸리회원제골프장",
+      "match_type": "exact_match",
+      "public_name": "오크밸리 회원제골프장",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 원주시 지정면 월송석화로 950-0 (오크밸리회원제골프장)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오크힐스",
+      "match_type": "probable_match",
+      "public_name": "오크힐스 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 원주시 지정면 오크밸리2길 58-0 (오크힐스클럽하우스)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "센추리21",
+      "match_type": "probable_match",
+      "public_name": "센추리21컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 원주시 문막읍 궁말길 193",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "센추리21CC-Ⅱ",
+      "match_type": "probable_match",
+      "public_name": "센추리21컨트리클럽",
+      "similarity": 0.9333,
+      "public_address": "강원특별자치도 원주시 문막읍 궁말길 193",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "센추리21대중제",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "인천국제C.C",
+      "match_type": "exact_match",
+      "public_name": "인천국제컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "인천광역시 서해구 도요지로 37 (경서동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파크밸리GC",
+      "match_type": "exact_match",
+      "public_name": "파크밸리 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 원주시 소초면 바우실길 281",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "인터불고 원주 G.C",
+      "match_type": "exact_match",
+      "public_name": "인터불고원주 GC",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 원주시 동부순환로 200 (반곡동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "동서울레스피아",
+      "match_type": "exact_match",
+      "public_name": "동서울레스피아",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 원주시 지정면 신평석화로 236",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "원주공군체력단련장(구)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "원주공군체력단련장(신)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "샌드파인",
+      "match_type": "probable_match",
+      "public_name": "샌드파인 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 강릉시 저동등길 53 (저동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "메이플비치골프＆리조트",
+      "match_type": "probable_match",
+      "public_name": "메이플비치 골프&리조트",
+      "similarity": 0.9091,
+      "public_address": "강원특별자치도 강릉시 강동면 새목이길 110",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "강릉공군체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "동해해군체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "O2리조트회원제",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "인천그랜드C.C",
+      "match_type": "exact_match",
+      "public_name": "인천그랜드컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "인천광역시 서해구 원석로 195 (원창동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "O2리조트대중제",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "설악프라자CC",
+      "match_type": "exact_match",
+      "public_name": "설악프라자 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 속초시 미시령로2983번길 56-20 (장사동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "영랑호CC",
+      "match_type": "exact_match",
+      "public_name": "영랑호컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 속초시 영랑호반길 170-0 (금호동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파인밸리CC",
+      "match_type": "exact_match",
+      "public_name": "파인밸리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 삼척시 근덕면 미근로 1629",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "블랙밸리",
+      "match_type": "probable_match",
+      "public_name": "블랙밸리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 삼척시 도계읍 도상로 307-84, 1동 (블랙밸리골프장)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "힐드로사이 C.C",
+      "match_type": "exact_match",
+      "public_name": "힐드로사이 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 홍천군 남면 한서로 2840",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "클럽모우 골프&라이프 스타일",
+      "match_type": "probable_match",
+      "public_name": "클럽모우 골프＆라이프 스타일",
+      "similarity": 0.9231,
+      "public_address": "강원특별자치도 홍천군 서면 장락동길 111-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "비발디파크CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "홍천 C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "소노펠리체",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "드림파크골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "대명비발디파크골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "오스타CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "청우GC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "옥스필드 C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "동원썬밸리",
+      "match_type": "probable_match",
+      "public_name": "동원썬밸리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 횡성군 서원면 서원서로339번길 90",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오스타퍼블릭",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "섬강벨라스톤",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "동강시스타",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "동강시스타 골프장",
+          "address": "강원특별자치도 영월군 영월읍 사지막길 160-0 (동강시스타)"
+        },
+        {
+          "name": "동강시스타",
+          "address": "강원특별자치도 영월군 영월읍 사지막길 160"
+        }
+      ]
+    },
+    {
+      "catalog_name": "알펜시아",
+      "match_type": "probable_match",
+      "public_name": "알펜시아 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 평창군 대관령면 솔봉로 325",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "베어즈베스트청라골프클럽",
+      "match_type": "exact_match",
+      "public_name": "베어즈베스트청라골프클럽",
+      "similarity": 1.0,
+      "public_address": "인천광역시 서해구 청라대로316번길 45-0 (청라동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "용평2차(버찌힐)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "용평리조트GC",
+      "match_type": "exact_match",
+      "public_name": "용평리조트 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 평창군 대관령면 올림픽로 715",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "휘닉스파크GC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "알펜시아700골프클럽",
+      "match_type": "exact_match",
+      "public_name": "알펜시아 700 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 평창군 대관령면 솔봉로 325",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "용평나인GC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "휘닉스파크대중제골프장",
+      "match_type": "probable_match",
+      "public_name": "휘닉스파크대중골프장",
+      "similarity": 0.9333,
+      "public_address": "강원특별자치도 평창군 봉평면 무이리 산 268",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "하이원",
+      "match_type": "probable_match",
+      "public_name": "하이원 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 정선군 고한읍 하이원길 265",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "에콜리안 정선CC",
+      "match_type": "probable_match",
+      "public_name": "에콜리안정선골프장",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 정선군 신동읍 새골길 112-49",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "한탄강CC",
+      "match_type": "exact_match",
+      "public_name": "한탄강 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 철원군 갈말읍 순담길 59",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파인리즈CC",
+      "match_type": "exact_match",
+      "public_name": "파인리즈 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 고성군 토성면 잼버리동로 267",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "빛고을컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "빛고을컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 남구 효우로 153 (노대동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "델피노C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "알프스퍼블릭",
+      "match_type": "exact_match",
+      "public_name": "알프스퍼블릭",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 고성군 간성읍 흘리령길 52",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "대명설악컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "대명설악컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 고성군 토성면 미시령옛길 1153",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "설악썬밸리CC",
+      "match_type": "exact_match",
+      "public_name": "설악썬밸리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 고성군 죽왕면 순포로 188",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골든비치",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "이븐데일CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "공군사관학교",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "실크리버CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "떼제베CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "떼제베CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "어등산CC",
+      "match_type": "exact_match",
+      "public_name": "어등산CC",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 광산구 무진대로 31 (운수동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "그랜드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "상떼힐CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "센테리움",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "시그너스CC",
+      "match_type": "exact_match",
+      "public_name": "(주)시그너스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청북도 충주시 앙성면 중방곡길 57-44",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "임페리얼레이크CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "로얄포레CC",
+      "match_type": "exact_match",
+      "public_name": "로얄포레CC",
+      "similarity": 1.0,
+      "public_address": "충청북도 충주시 신니면 화치3길 35",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "동촌골프클럽",
+      "match_type": "exact_match",
+      "public_name": "동촌GC",
+      "similarity": 1.0,
+      "public_address": "충청북도 충주시 노은면 감노로 1327",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "중원골프클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "대영베이스CC",
+      "match_type": "exact_match",
+      "public_name": "대영베이스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청북도 충주시 대소원면 성종두담길 113",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "에콜리안광산 골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "킹스데일GC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "킹스데일골프클럽",
+          "address": "충청북도 충주시 주덕읍 기업도시3로 2"
+        },
+        {
+          "name": "킹스데일 골프클럽",
+          "address": "충청북도 충주시 주덕읍 기업도시3로 2"
+        }
+      ]
+    },
+    {
+      "catalog_name": "대영힐스CC",
+      "match_type": "exact_match",
+      "public_name": "대영힐스CC",
+      "similarity": 1.0,
+      "public_address": "충청북도 충주시 대소원면 성종두담길 114",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "세일컨트리클럽",
+      "match_type": "probable_match",
+      "public_name": "세일골프장",
+      "similarity": 1.0,
+      "public_address": "충청북도 충주시 신니면 동락길 207-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "공군제19전투비행단",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "힐데스하임CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "에콜리안 제천골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "아리솔CC",
+      "match_type": "exact_match",
+      "public_name": "아리솔cc",
+      "similarity": 1.0,
+      "public_address": "충청북도 보은군 탄부면 평각상장로 230",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "클럽디속리산CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "벨포레CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "THE EMERSON GoldClub",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "천룡골프장",
+      "match_type": "probable_match",
+      "public_name": "천룡컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청북도 진천군 이월면 신계리 산 77",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아트밸리컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "천룡골프장",
+      "match_type": "probable_match",
+      "public_name": "천룡컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청북도 진천군 이월면 신계리 산 77",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "히든밸리",
+      "match_type": "probable_match",
+      "public_name": "히든밸리CC",
+      "similarity": 1.0,
+      "public_address": "충청북도 진천군 백곡면 소토골길 61",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "크리스탈카운티CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "레인보우힐스CC",
+      "match_type": "ambiguous",
+      "public_name": "레인보우힐스CC(대중제)",
+      "similarity": 0.8921,
+      "public_address": "충청북도 음성군 생극면 차생로 168",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "레인보우힐스CC(대중제)",
+          "address": "충청북도 음성군 생극면 차생로 168",
+          "similarity": 0.8921
+        },
+        {
+          "name": "레인보우힐스CC(회원제)",
+          "address": "충청북도 음성군 생극면 차생로 168",
+          "similarity": 0.8921
+        }
+      ]
+    },
+    {
+      "catalog_name": "썬밸리",
+      "match_type": "ambiguous",
+      "public_name": "썬밸리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 강천면 강문로 872",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "썬밸리 컨트리클럽",
+          "address": "경기도 여주시 강천면 강문로 872",
+          "similarity": 1.0
+        },
+        {
+          "name": "썬밸리CC",
+          "address": "충청북도 음성군 삼성면 범말길 49",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "젠스필드CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "코스카",
+      "match_type": "ambiguous",
+      "public_name": "코스카cc",
+      "similarity": 1.0,
+      "public_address": "충청북도 음성군 음성읍 동음로 318",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "코스카cc",
+          "address": "충청북도 음성군 음성읍 동음로 318",
+          "similarity": 1.0
+        },
+        {
+          "name": "코스카cc",
+          "address": "충청북도 음성군 음성읍 동음로 318",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "남성대체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "광주체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "진양밸리CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "대호단양CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "버드우드G.C",
+      "match_type": "exact_match",
+      "public_name": "버드우드골프클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 천안시 동남구 병천면 매성2길 103, 버드우드골프클럽",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "우정힐스C.C",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "우정힐스컨트리클럽",
+          "address": "충청남도 천안시 동남구 목천읍 충절로 1048-68"
+        },
+        {
+          "name": "우정힐스컨트리클럽",
+          "address": "충청남도 천안시 동남구 목천읍 운전리 29"
+        }
+      ]
+    },
+    {
+      "catalog_name": "마론뉴데이cc",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "상록C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "골드힐골프연습장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "천안골프클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "유성",
+      "match_type": "probable_match",
+      "public_name": "유성컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "대전광역시 유성구 현충원로 200 (덕명동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "프린세스C.C",
+      "match_type": "probable_match",
+      "public_name": "프린세스 골프클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 공주시 정안면 방자들길 81-50",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골드리버CC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "name": "골드리버 cc",
+          "address": "충청남도 공주시 의당면 신성말길 67-38"
+        },
+        {
+          "name": "골드리버cc",
+          "address": "충청남도 공주시 의당면 신성말길 67-38"
+        },
+        {
+          "name": "골드리버cc",
+          "address": "충청남도 공주시 의당면 신성말길 67-38"
+        }
+      ]
+    },
+    {
+      "catalog_name": "웨스토피아CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "도고C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "아름다운C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "윈체스트CC 서산",
+      "match_type": "exact_match",
+      "public_name": "윈체스트컨트리클럽 서산",
+      "similarity": 1.0,
+      "public_address": "충청남도 서산시 대산읍 삼길포7로 6",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "더힐컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "더힐컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 논산시 상월면 선비로 1079",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "육군항공학교체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "파나시아골프장",
+      "match_type": "probable_match",
+      "public_name": "파나시아골프클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 당진시 신평면 계명길 33",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "석문체육공원",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "금실대덕밸리cc",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "에딘버러C.C",
+      "match_type": "exact_match",
+      "public_name": "에딘버러 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 금산군 진산면 살구정길 167",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "백제컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "백제컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 부여군 은산면 충절로 3734-82",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "태안비치C.C",
+      "match_type": "exact_match",
+      "public_name": "태안비치컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 태안군 근흥면 갈음이길 77",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골든베이 골프&리조트",
+      "match_type": "exact_match",
+      "public_name": "골든베이골프&리조트",
+      "similarity": 1.0,
+      "public_address": "충청남도 태안군 근흥면 정산포로 217",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파인스톤C.C",
+      "match_type": "exact_match",
+      "public_name": "파인스톤컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 당진시 송산면 무수들길 90",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "전주월드컵컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "군산컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "군산CC",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 군산시 옥서면 남군산로 1911-7",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "베어리버골프리조트",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "대덕개발특구복지센터",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "상떼힐 익산CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "상데힐 CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "베어리버골프리조트",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "태인컨트리클럽",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "태인컨트리클럽",
+          "address": "전북특별자치도 정읍시 태인면 증산리 산 3번지"
+        },
+        {
+          "name": "태인컨트리클럽",
+          "address": "전북특별자치도 정읍시 태인면 태인동서로 395-0 (태인C.C퍼블릭)"
+        }
+      ]
+    },
+    {
+      "catalog_name": "내장산골프&리조트",
+      "match_type": "exact_match",
+      "public_name": "내장산골프&리조트",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 정읍시 첨단과학로 476-0 (신정동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "드라곤레이크CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "남원상록골프장",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "남원상록골프장",
+          "address": "전북특별자치도 남원시 대산면 월계길 11"
+        },
+        {
+          "name": "남원상록골프장",
+          "address": "전북특별자치도 남원시 대산면 월계길 11-0 (상록골프장)"
+        }
+      ]
+    },
+    {
+      "catalog_name": "스파힐스컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "자운대체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "아네스빌컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "에스페란사컨트리클럽",
+      "match_type": "probable_match",
+      "public_name": "에스페란사골프클럽",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 김제시 금구면 낙산로 120",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오케이컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "운선컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "운선컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 완주군 운주면 산북신복길 166",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "써미트CC",
+      "match_type": "exact_match",
+      "public_name": "써미트CC",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 진안군 부귀면 봉암리 산 80-1번지",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "무주컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "무주안성cc",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "무주안성CC",
+          "address": "전북특별자치도 무주군 안성면 공진리 산 53-1번지"
+        },
+        {
+          "name": "무주안성CC",
+          "address": "전북특별자치도 무주군 안성면 공진리 산 53번지 1호"
+        }
+      ]
+    },
+    {
+      "catalog_name": "장수골프&리조트",
+      "match_type": "probable_match",
+      "public_name": "장수골프리조트",
+      "similarity": 0.9333,
+      "public_address": "전북특별자치도 장수군 계남면 장안산로 303",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "전주샹그릴라컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "전주샹그릴라CC",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 임실군 신덕면 지장리 산 1번지",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "순창CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "보라컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "보라컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "울산광역시 울주군 삼동면 삼동로 404",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "금과간이골프장",
+      "match_type": "exact_match",
+      "public_name": "금과간이골프장",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 순창군 금과면 방축리 111-2",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "고창컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "고창CC",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 고창군 심원면 애향갯벌로 70-0, 1동 (고창컨트리클럽)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골프존카운티선운",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "골프존카운티선운",
+          "address": "전북특별자치도 고창군 아산면 운곡로 418-0, 1동 (골프존카운티선운)"
+        },
+        {
+          "name": "골프존카운티선운",
+          "address": "전북특별자치도 고창군 아산면 운곡로 418"
+        }
+      ]
+    },
+    {
+      "catalog_name": "석정힐CC",
+      "match_type": "exact_match",
+      "public_name": "석정힐CC",
+      "similarity": 1.0,
+      "public_address": "전북특별자치도 고창군 고창읍 석정2로 192",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "여수경도",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "시티파크리조트",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "디오션CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "승주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "파인힐스",
+      "match_type": "ambiguous",
+      "public_name": "파인힐스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 순천시 주암면 송광사길 99",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "파인힐스컨트리클럽",
+          "address": "전남광주통합특별시 순천시 주암면 송광사길 99",
+          "similarity": 1.0
+        },
+        {
+          "name": "파인힐스컨트리클럽",
+          "address": "전남광주통합특별시 순천시 주암면 송광사길 99",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "레이크힐스순천",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "울산컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "울산컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "울산광역시 울주군 웅촌면 웅촌로 1",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "힐사이드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "순천부영C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "레이크힐스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "골드레이크",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "해피니스컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "해피니스CC",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 나주시 다도면 다도로 171-60",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골드그린",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "나주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "나주힐스",
+      "match_type": "probable_match",
+      "public_name": "나주힐스CC",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 나주시 공산면 상방신포길 160-27",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "나주휴튼",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "담양다이너스티",
+      "match_type": "probable_match",
+      "public_name": "담양다이너스티컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 담양군 금성면 깊은실길 169",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "창평",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "광주",
+      "match_type": "probable_match",
+      "public_name": "광주컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 곡성군 옥과면 합강길 410",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "보성",
+      "match_type": "probable_match",
+      "public_name": "보성컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 보성군 조성면 조성3길 338",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "남광주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "화순CC",
+      "match_type": "exact_match",
+      "public_name": "화순 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 화순군 도곡면 쌍옥리 산 178번지",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "골드그린골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "무등산",
+      "match_type": "probable_match",
+      "public_name": "무등산컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 화순군 화순읍 오성로 292-90",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "조아벨리",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "JNJ골프리조트",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "다산베아채",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "파인비치",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "오시아노",
+      "match_type": "exact_match",
+      "public_name": "오시아노골프장",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 해남군 화원면 시아로 224",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아크로",
+      "match_type": "probable_match",
+      "public_name": "아크로컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 영암군 금정면 안적동길 403",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "사우스링스 영암CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "무안클린밸리cc",
+      "match_type": "exact_match",
+      "public_name": "무안클린밸리CC",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 무안군 청계면 태봉길 33-100",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "스타스콥C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "무안",
+      "match_type": "probable_match",
+      "public_name": "무안컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 무안군 청계면 서호로 162",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "함평다이너스티",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "영광 C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "백양우리컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "백양우리컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 장성군 북이면 봉암로 1574",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "푸른솔GC",
+      "match_type": "exact_match",
+      "public_name": "푸른솔GC",
+      "similarity": 1.0,
+      "public_address": "전남광주통합특별시 장성군 동화면 임정로 155-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "상무대",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "포항체력단련장(해병대)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "오션힐스포항",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "송라제니스CC",
+      "match_type": "exact_match",
+      "public_name": "송라제니스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 포항시 북구 송라면 동해대로2751번길 126",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오션힐스포항",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "남성대퍼블릭체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "세종에머슨",
+      "match_type": "probable_match",
+      "public_name": "세종에머슨 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "세종특별자치시 전의면 운주산로 1510",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "청하이스턴CC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "청하이스턴C.C",
+          "address": "경상북도 포항시 북구 청하면 용산길 94"
+        },
+        {
+          "name": "청하이스턴CC",
+          "address": "경상북도 포항시 북구 청하면 용산길 94"
+        }
+      ]
+    },
+    {
+      "catalog_name": "경주신라",
+      "match_type": "probable_match",
+      "public_name": "경주신라컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 보문로 319 (신평동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "블루원보문CC",
+      "match_type": "exact_match",
+      "public_name": "블루원보문컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 보불로 391 (천군동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "마우나오션CC",
+      "match_type": "exact_match",
+      "public_name": "마우나오션컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 양남면 동남로 981",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "서라벌",
+      "match_type": "probable_match",
+      "public_name": "서라벌골프클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 외동읍 내외로 577-189",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "경주CC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 4,
+      "candidates": [
+        {
+          "name": "경주컨트리클럽",
+          "address": "경상북도 경주시 보문로 182-98 (북군동)"
+        },
+        {
+          "name": "경주컨트리클럽",
+          "address": "경상북도 경주시 보문로 182-98 (북군동)"
+        },
+        {
+          "name": "경주컨트리클럽",
+          "address": "경상북도 경주시 보문로 182-98 (북군동)"
+        },
+        {
+          "name": "경주컨트리클럽",
+          "address": "경상북도 경주시 보문로 182-98 (북군동)"
+        }
+      ]
+    },
+    {
+      "catalog_name": "레전드CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "보문GC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "보문골프클럽",
+          "address": "경상북도 경주시 보문로 182-14, 1동 1층 1호 (북군동,보문컨트리클럽)"
+        },
+        {
+          "name": "보문골프클럽",
+          "address": "경상북도 경주시 보문로 182-14 (북군동)"
+        }
+      ]
+    },
+    {
+      "catalog_name": "선리치CC",
+      "match_type": "ambiguous",
+      "public_name": "선리치골프클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 안강읍 검단장골길 181-17",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "선리치골프클럽",
+          "address": "경상북도 경주시 안강읍 검단장골길 181-17",
+          "similarity": 1.0
+        },
+        {
+          "name": "선리치골프클럽",
+          "address": "경상북도 경주시 안강읍 검단장골길 181-17",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "세종필드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "우리GC",
+      "match_type": "probable_match",
+      "public_name": "우리골프장",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 양남면 동남로 972",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "제이스시사이드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "코오롱호텔가든",
+      "match_type": "exact_match",
+      "public_name": "코오롱호텔 가든골프장",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 불국로 289-17 (마동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "이스트힐cc",
+      "match_type": "probable_match",
+      "public_name": "이스트힐골프장",
+      "similarity": 1.0,
+      "public_address": "경상북도 경주시 양남면 외남로 1377",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "베네치아cc",
+      "match_type": "exact_match",
+      "public_name": "베네치아컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 김천시 구성면 남김천대로 2532",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "김천포도CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "남안동CC",
+      "match_type": "exact_match",
+      "public_name": "남안동컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 안동시 풍천면 풍일로 1887",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "탑블리스CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "휴그린 골프클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "선산CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "세종레이캐슬GC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "구미컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제이스CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "구미CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "오펠GC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "오펠골프클럽",
+          "address": "경상북도 영천시 고경면 호국로 1221-24"
+        },
+        {
+          "name": "오펠골프클럽",
+          "address": "경상북도 영천시 고경면 호국로 1221-24"
+        }
+      ]
+    },
+    {
+      "catalog_name": "영천CC",
+      "match_type": "exact_match",
+      "public_name": "영천CC",
+      "similarity": 1.0,
+      "public_address": "경상북도 영천시 임고면 방목길 34-2",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "영천체력단련장(충성대)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "뉴스프링빌2",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "뉴스프링빌2",
+          "address": "경상북도 상주시 모서면 백화로 40"
+        },
+        {
+          "name": "뉴스프링빌2",
+          "address": "경상북도 상주시 모서면 백화로 40"
+        }
+      ]
+    },
+    {
+      "catalog_name": "블루원상주 골프리조트",
+      "match_type": "exact_match",
+      "public_name": "블루원상주골프리조트",
+      "similarity": 1.0,
+      "public_address": "경상북도 상주시 모서면 화현3길 127",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "문경GC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "수원공군체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "경산인터불고",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "대구CC",
+      "match_type": "exact_match",
+      "public_name": "대구컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 경산시 진량읍 일연로 718-42",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "꽃담C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "군위오펠G.C",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "군위 오펠골프클럽",
+          "address": "경상북도 군위군 산성면 부흥로 227"
+        },
+        {
+          "name": "군위 오펠골프클럽",
+          "address": "대구광역시 군위군 산성면 부흥로 227"
+        }
+      ]
+    },
+    {
+      "catalog_name": "엠스클럽의성(9홀)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "엠스클럽의성(18홀)",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "name": "엠스클럽의성(18홀)",
+          "address": "경상북도 의성군 봉양면 농공마전길 1"
+        },
+        {
+          "name": "엠스클럽의성(18홀)",
+          "address": "경상북도 의성군 봉양면 농공마전길 1"
+        },
+        {
+          "name": "엠스클럽의성(18홀)",
+          "address": "경상북도 의성군 봉양면 농공마전길 1"
+        }
+      ]
+    },
+    {
+      "catalog_name": "오션뷰CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "그레이스CC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "name": "그레이스컨트리클럽",
+          "address": "경상북도 청도군 이서면 서녁길 91"
+        },
+        {
+          "name": "그레이스컨트리클럽",
+          "address": "경상북도 청도군 이서면 서녁길 91"
+        },
+        {
+          "name": "그레이스컨트리클럽",
+          "address": "경상북도 청도군 이서면 서녁길 91"
+        }
+      ]
+    },
+    {
+      "catalog_name": "오션힐스청도CC",
+      "match_type": "probable_match",
+      "public_name": "오션힐스청도골프클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 청도군 매전면 곰티로 370-204",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "성남공군체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "유니벨리CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "대가야CC",
+      "match_type": "exact_match",
+      "public_name": "대가야컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 고령군 대가야읍 대가야로 1103-0 (가야대학교)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "롯데스카이힐성주CC",
+      "match_type": "exact_match",
+      "public_name": "롯데스카이힐성주컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 성주군 초전면 소성2길 129",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "세븐밸리CC",
+      "match_type": "exact_match",
+      "public_name": "세븐밸리컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 칠곡군 왜관읍 봉계3길 180",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파미힐스CC(남)",
+      "match_type": "probable_match",
+      "public_name": "파미힐스 컨트리클럽",
+      "similarity": 0.9231,
+      "public_address": "경상북도 칠곡군 왜관읍 봉계로 263",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파미힐스CC(동)",
+      "match_type": "probable_match",
+      "public_name": "파미힐스 컨트리클럽",
+      "similarity": 0.9231,
+      "public_address": "경상북도 칠곡군 왜관읍 봉계로 263",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파미힐스",
+      "match_type": "probable_match",
+      "public_name": "파미힐스 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 칠곡군 왜관읍 봉계로 263",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "가산CC",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "가산CC",
+          "address": "경상북도 칠곡군 가산면 학하2길 54-171"
+        },
+        {
+          "name": "가산컨트리클럽",
+          "address": "경상북도 칠곡군 가산면 학하2길 54-171"
+        }
+      ]
+    },
+    {
+      "catalog_name": "한맥CC",
+      "match_type": "exact_match",
+      "public_name": "한맥컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상북도 예천군 호명읍 한맥골프장길 72-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "(주)창원컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "창원 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 창원시 의창구 대봉로 103 (봉림동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "남서울골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "용원",
+      "match_type": "ambiguous",
+      "public_name": "용원 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 창원시 진해구 가주로 133 (용원동)",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "용원 CC",
+          "address": "경상남도 창원시 진해구 가주로 133 (용원동)",
+          "similarity": 1.0
+        },
+        {
+          "name": "용원컨트리클럽",
+          "address": "경상남도 창원시 진해구 용원동 산 39",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "진해해군체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "진주",
+      "match_type": "probable_match",
+      "public_name": "진주 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 진주시 진성면 진성로464번길 82",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "타니",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "삼삼컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "삼삼컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 사천시 축동면 화당산로 224",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "사천컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "사천공군체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "가야",
+      "match_type": "probable_match",
+      "public_name": "가야 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 김해시 인제로 495 (삼방동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "롯데스카이힐김해CC",
+      "match_type": "exact_match",
+      "public_name": "롯데스카이힐김해 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 김해시 진례면 고모로134번길 54-49",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "해군2함대",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "정산",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "가야CC",
+      "match_type": "exact_match",
+      "public_name": "가야 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 김해시 인제로 495 (삼방동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "김해상록 G.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "리더스",
+      "match_type": "probable_match",
+      "public_name": "리더스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 밀양시 활성로 455 (활성동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "밀양노벨컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "밀양 노벨컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 밀양시 단장면 안법1길 88-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "드비치G.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "거제뷰CC",
+      "match_type": "exact_match",
+      "public_name": "거제뷰컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 거제시 거제면 두동로 259-80",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "동부산CC",
+      "match_type": "exact_match",
+      "public_name": "동부산 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 양산시 매곡외산로 282 (매곡동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "에덴밸리",
+      "match_type": "probable_match",
+      "public_name": "에덴밸리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 양산시 어실로 910 (어곡동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "에이원",
+      "match_type": "probable_match",
+      "public_name": "에이원 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 양산시 덕명로 190 (매곡동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "티클라우드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "통도",
+      "match_type": "probable_match",
+      "public_name": "통도c.c",
+      "similarity": 1.0,
+      "public_address": "경상남도 양산시 하북면 신평남부길 29-12",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "양산컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "양산컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 양산시 상북면 충렬로 687",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "다이아몬드C.C",
+      "match_type": "exact_match",
+      "public_name": "다이아몬드 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 양산시 상북면 공원로 305-391",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "의령친환경골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "(주)레이크힐스경남",
+      "match_type": "probable_match",
+      "public_name": "레이크힐스 경남C.C",
+      "similarity": 1.0,
+      "public_address": "경상남도 함안군 칠원면 운무로 470",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "부곡",
+      "match_type": "probable_match",
+      "public_name": "부곡 CC",
+      "similarity": 1.0,
+      "public_address": "경상남도 창녕군 부곡면 온천로 445",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "힐마루CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "노벨CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "고성CC",
+      "match_type": "exact_match",
+      "public_name": "고성컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 고성군 고성읍 월평로 6",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "제일스포츠센타",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "힐튼남해C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "힐튼남해G.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "사우스케이프오너스클럽",
+      "match_type": "exact_match",
+      "public_name": "사우스케이프오너스클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 남해군 창선면 흥선로1505번길 95",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "사우스케이프오너스",
+      "match_type": "probable_match",
+      "public_name": "사우스케이프오너스클럽",
+      "similarity": 0.9,
+      "public_address": "경상남도 남해군 창선면 흥선로1505번길 95",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "함양리조트",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "아델스코트C.C",
+      "match_type": "exact_match",
+      "public_name": "아델스코트 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경상남도 합천군 가야면 가조가야로 1916-35",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "라온",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "타미우스CC",
+      "match_type": "exact_match",
+      "public_name": "타미우스 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 제주시 애월읍 화전길 201",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "블랙스톤제주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "세인트포",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "아일랜드(회원)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "에버리스",
+      "match_type": "probable_match",
+      "public_name": "에버리스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 제주시 애월읍 평화로 1693-75",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "엘리시안CC",
+      "match_type": "exact_match",
+      "public_name": "엘리시안컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 제주시 애월읍 평화로 1738-116",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오라",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제주라헨느",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제피로스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "크라운",
+      "match_type": "probable_match",
+      "public_name": "크라운CC",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 제주시 조천읍 북선로 125-0 (크라운컨트리클럽)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "한라산CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "에코랜드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "아덴힐",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "동래베네스트골프클럽",
+      "match_type": "exact_match",
+      "public_name": "동래베네스트골프클럽",
+      "similarity": 1.0,
+      "public_address": "부산광역시 금정구 하정로 66 (선동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아일랜드(대중)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "봉개프라자",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제주힐CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "플라자CC제주",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "나인브릿지",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "더클래식",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "뉴코리아",
+      "match_type": "probable_match",
+      "public_name": "뉴코리아 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 고양시 덕양구 신원2로 57, 뉴코리아컨트리클럽 (신원동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "제주레이크CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "부영cc",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "사이프러스",
+      "match_type": "exact_match",
+      "public_name": "사이프러스",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 서귀포시 표선면 번영로 2300",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "우리들매디컬",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제주스카이힐",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "캐슬렉스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "테디벨리",
+      "match_type": "exact_match",
+      "public_name": "테디벨리",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 서귀포시 안덕면 한창로 365",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "핀크스",
+      "match_type": "probable_match",
+      "public_name": "핀크스 골프클럽",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 서귀포시 안덕면 산록남로 863",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "해비치",
+      "match_type": "ambiguous",
+      "public_name": "해비치cc",
+      "similarity": 1.0,
+      "public_address": "경기도 남양주시 화도읍 재재기로190번길 26",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "해비치cc",
+          "address": "경기도 남양주시 화도읍 재재기로190번길 26",
+          "similarity": 1.0
+        },
+        {
+          "name": "해비치 컨트리클럽",
+          "address": "경기도 남양주시 화도읍 재재기로190번길 26",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "스프링데일 골프&리조트",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "한양",
+      "match_type": "probable_match",
+      "public_name": "한양컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 고양시 덕양구 고양대로1643번길 164  (원당동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "샤인빌CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "중문",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "핀크스GC",
+      "match_type": "exact_match",
+      "public_name": "핀크스 골프클럽",
+      "similarity": 1.0,
+      "public_address": "제주특별자치도 서귀포시 안덕면 산록남로 863",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "올림픽컨트리클럽",
+      "match_type": "probable_match",
+      "public_name": "올림픽 골프장",
+      "similarity": 1.0,
+      "public_address": "경기도 고양시 덕양구 혜음로 301  (벽제동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "일산스프링힐스",
+      "match_type": "ambiguous",
+      "public_name": "일산스프링힐스 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 고양시 일산동구 산황동 산 54 일원",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "일산스프링힐스 컨트리클럽",
+          "address": "경기도 고양시 일산동구 산황동 산 54 일원",
+          "similarity": 1.0
+        },
+        {
+          "name": "일산스프링힐스 컨트리클럽",
+          "address": "경기도 고양시 일산동구 산황동 산 54",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "1.2.3골프클럽",
+      "match_type": "probable_match",
+      "public_name": "1.2.3",
+      "similarity": 1.0,
+      "public_address": "경기도 고양시 덕양구 통일로 43-168  (동산동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "고양컨트리",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "고양컨트리클럽",
+      "match_type": "exact_match",
+      "public_name": "고양컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 고양시 덕양구 흥도로 304-23  (도내동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "광릉cc",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "양주",
+      "match_type": "probable_match",
+      "public_name": "양주CC",
+      "similarity": 1.0,
+      "public_address": "경기도 남양주시 화도읍 금남리 300번지",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "부산컨트리클럽",
+      "match_type": "probable_match",
+      "public_name": "동부산 CC",
+      "similarity": 0.8889,
+      "public_address": "경상남도 양산시 매곡외산로 282 (매곡동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "비전힐스",
+      "match_type": "probable_match",
+      "public_name": "비전힐스CC",
+      "similarity": 1.0,
+      "public_address": "경기도 남양주시 화도읍 마치로 226-220",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "해비치cc",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "해비치cc",
+          "address": "경기도 남양주시 화도읍 재재기로190번길 26"
+        },
+        {
+          "name": "해비치 컨트리클럽",
+          "address": "경기도 남양주시 화도읍 재재기로190번길 26"
+        }
+      ]
+    },
+    {
+      "catalog_name": "남양주CC",
+      "match_type": "probable_match",
+      "public_name": "양주CC",
+      "similarity": 0.8889,
+      "public_address": "경기도 남양주시 화도읍 금남리 300번지",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "솔트베이(대중)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "안양베네스트골프클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "캐슬렉스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "레이크사이드CC",
+      "match_type": "ambiguous",
+      "public_name": "레이크사이드회원",
+      "similarity": 0.9071,
+      "public_address": "경기도 용인시 처인구 모현읍 능원로 181",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "레이크사이드회원",
+          "address": "경기도 용인시 처인구 모현읍 능원로 181",
+          "similarity": 0.9071
+        },
+        {
+          "name": "레이크사이드대중",
+          "address": "경기도 용인시 처인구 모현읍 능원로 181",
+          "similarity": 0.9071
+        }
+      ]
+    },
+    {
+      "catalog_name": "레이크힐스용인컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "신원C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "동래베네스트 Par3 골프클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "아시아나C.C",
+      "match_type": "exact_match",
+      "public_name": "아시아나CC",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 양지읍 양대로 290",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "은화삼",
+      "match_type": "exact_match",
+      "public_name": "은화삼",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 백옥대로 860-38 (호동, 은화삼C.C)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "지산",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "지산골프장",
+          "address": "경기도 이천시 마장면 지산로 267"
+        },
+        {
+          "name": "지산골프장",
+          "address": "경기도 용인시 처인구 원삼면 죽양대로2000번길 60, 지산C.C"
+        }
+      ]
+    },
+    {
+      "catalog_name": "코리아C.C",
+      "match_type": "probable_match",
+      "public_name": "뉴코리아 컨트리클럽",
+      "similarity": 0.9091,
+      "public_address": "경기도 고양시 덕양구 신원2로 57, 뉴코리아컨트리클럽 (신원동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "블루원용인",
+      "match_type": "probable_match",
+      "public_name": "블루원용인CC",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 원삼면 보개원삼로1534번길 40",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "파인리조트",
+      "match_type": "exact_match",
+      "public_name": "파인리조트",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 양지면 남평로 112",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "프라자C.C",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "한원",
+      "match_type": "probable_match",
+      "public_name": "(주)한원컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 남사읍 전나무골길2번길 94, 한원C.C",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "화산",
+      "match_type": "probable_match",
+      "public_name": "화산CC",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 이동읍 화산로 239",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "글렌로스골프클럽",
+      "match_type": "exact_match",
+      "public_name": "글렌로스골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 포곡읍 에버랜드로 199, 삼성에버랜드",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "하이스트(JS강서)C.C",
+      "match_type": "probable_match",
+      "public_name": "하이스트컨트리클럽(JS강서)",
+      "similarity": 0.8889,
+      "public_address": "부산광역시 강서구 과학산단1로 172 (지사동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "석천CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "용인CC",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "지산",
+      "match_type": "ambiguous",
+      "public_name": "",
+      "similarity": 1.0,
+      "public_address": "",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "지산골프장",
+          "address": "경기도 이천시 마장면 지산로 267"
+        },
+        {
+          "name": "지산골프장",
+          "address": "경기도 용인시 처인구 원삼면 죽양대로2000번길 60, 지산C.C"
+        }
+      ]
+    },
+    {
+      "catalog_name": "써닝포인트",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "해솔리아CC",
+      "match_type": "exact_match",
+      "public_name": "해솔리아컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 이동읍 백자로 369, 해솔리아컨트리클럽",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "선봉대",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "처인체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "88컨트리클럽",
+      "match_type": "probable_match",
+      "public_name": "88",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 기흥구 석성로521번길 169 (청덕동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "지사컨트리클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "골드",
+      "match_type": "probable_match",
+      "public_name": "골드컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 기흥구 기흥단지로 406 (고매동, 골드훼미리콘도)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "남부",
+      "match_type": "exact_match",
+      "public_name": "남부",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 기흥구 사은로 163 (보라동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "수원",
+      "match_type": "probable_match",
+      "public_name": "수원CC",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 기흥구 중부대로 495, 수원컨트리클럽 (구갈동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "태광",
+      "match_type": "probable_match",
+      "public_name": "태광컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 기흥구 흥덕4로 77 (영덕동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "한성",
+      "match_type": "exact_match",
+      "public_name": "한성",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 기흥구 구교동로 151 (마북동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "코리아퍼브릭",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "경찰대학체력단련장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "서서울골프장",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "라비에벨 듄스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "힐드로사이",
+      "match_type": "probable_match",
+      "public_name": "힐드로사이 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 홍천군 남면 한서로 2840",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "휘슬링락CC",
+      "match_type": "exact_match",
+      "public_name": "휘슬링 락 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 남산면 동촌로 501",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "휘닉스평창",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "플라자CC 설악",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "카스카디아",
+      "match_type": "probable_match",
+      "public_name": "카스카디아 골프클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 홍천군 북방면 팔봉산로 1759-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "웰리힐리",
+      "match_type": "probable_match",
+      "public_name": "웰리힐리 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 횡성군 둔내면 고원로 451",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "용평",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "올데이 옥스필드",
+      "match_type": "exact_match",
+      "public_name": "올데이 옥스필드",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 횡성군 서원면 경강로유현6길 28",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "오크밸리CC",
+      "match_type": "probable_match",
+      "public_name": "오크밸리골프장",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 원주시 지정면 월송리 산 171",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "엘리시안강촌",
+      "match_type": "probable_match",
+      "public_name": "엘리시안 강촌 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 남산면 북한강변길 688",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "세이지우드 홍천",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "설해원",
+      "match_type": "exact_match",
+      "public_name": "설해원",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 양양군 손양면 공항로 230",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "벨라45오너스클럽",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "베어크리크 춘천",
+      "match_type": "exact_match",
+      "public_name": "베어크리크 춘천",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 신동면 김유정로 730-0",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "라비에벨 올드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "샴발라",
+      "match_type": "probable_match",
+      "public_name": "샴발라 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 포천시 군내면 청군로 2856-93",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "해비치(서울)",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "프리스틴밸리",
+      "match_type": "probable_match",
+      "public_name": "프리스틴밸리G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 설악면 유명로 1243-199 (프리스틴밸리)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "푸른솔포천",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "크리스탈밸리",
+      "match_type": "ambiguous",
+      "public_name": "크리스탈밸리C.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 상면 대보간선로 602-111 (크리스탈밸리)",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "크리스탈밸리C.C",
+          "address": "경기도 가평군 상면 대보간선로 602-111 (크리스탈밸리)",
+          "similarity": 1.0
+        },
+        {
+          "name": "크리스밸리CC",
+          "address": "경기도 안성시 일죽면 일생로 212-41",
+          "similarity": 0.9091
+        }
+      ]
+    },
+    {
+      "catalog_name": "잭니클라우스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "인천국제",
+      "match_type": "probable_match",
+      "public_name": "인천국제컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "인천광역시 서해구 도요지로 37 (경서동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아난티클럽서울",
+      "match_type": "exact_match",
+      "public_name": "아난티클럽서울(주)",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 설악면 유명로 961-34",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "썬힐",
+      "match_type": "probable_match",
+      "public_name": "썬힐G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 조종면 운악청계로 809 (썬힐골프클럽)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "서원밸리",
+      "match_type": "probable_match",
+      "public_name": "서원밸리골프클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 파주시 광탄면 서원길 333, 서원밸리G.C클럽",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "서서울",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "마이다스밸리 청평",
+      "match_type": "probable_match",
+      "public_name": "마이다스밸리 청평 골프 클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 가평군 설악면 다락재로 73-111 (청평마이다스골프클럽)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "노스팜",
+      "match_type": "probable_match",
+      "public_name": "노스팜 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 파주시 광탄면 쇠장이길 265, 노스팜 컨트리클럽",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "김포씨사이드",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "더 시에나 서울",
+      "match_type": "probable_match",
+      "public_name": "더 시에나 서울 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 광주시 곤지암읍 경충대로 451, 제 16동 1호(중부씨씨)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "페럼",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "크리스밸리",
+      "match_type": "ambiguous",
+      "public_name": "크리스밸리CC",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 일죽면 일생로 212-41",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "크리스밸리CC",
+          "address": "경기도 안성시 일죽면 일생로 212-41",
+          "similarity": 1.0
+        },
+        {
+          "name": "크리스탈밸리C.C",
+          "address": "경기도 가평군 상면 대보간선로 602-111 (크리스탈밸리)",
+          "similarity": 0.9091
+        }
+      ]
+    },
+    {
+      "catalog_name": "웰링턴",
+      "match_type": "probable_match",
+      "public_name": "웰링턴컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 이천시 모가면 사실로725번길 119-73",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "여주클래식",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "H1 CLUB",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "안성베네스트",
+      "match_type": "probable_match",
+      "public_name": "안성베네스트G.C",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 금광면 삼흥로 660",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "신안",
+      "match_type": "probable_match",
+      "public_name": "신안컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 고삼면 개울말길 149",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "사우스스프링스CC",
+      "match_type": "probable_match",
+      "public_name": "사우스스프링스C.C(대중형)",
+      "similarity": 0.9071,
+      "public_address": "경기도 이천시 모가면 공원로 64",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "비에이비스타",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "블랙스톤 이천",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "마이다스레이크 이천",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "ROUTE52",
+      "match_type": "probable_match",
+      "public_name": "ROUTE 52CC",
+      "similarity": 1.0,
+      "public_address": "경기도 여주시 북내면 중암1길 36",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "더스타휴",
+      "match_type": "probable_match",
+      "public_name": "더 스타 휴 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 양평군 양동면 양동로 756",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "남서울",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "플라자CC 용인",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "코리아",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "제일",
+      "match_type": "probable_match",
+      "public_name": "제일C.C",
+      "similarity": 1.0,
+      "public_address": "경기도 안산시 상록구 태마당로 28 (부곡동)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "양지파인",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "안양",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "안성",
+      "match_type": "probable_match",
+      "public_name": "안성컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 죽산면 장계길 134",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아시아나",
+      "match_type": "probable_match",
+      "public_name": "아시아나CC",
+      "similarity": 1.0,
+      "public_address": "경기도 용인시 처인구 양지읍 양대로 290",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "신원",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "골프클럽Q",
+      "match_type": "exact_match",
+      "public_name": "골프클럽  Q",
+      "similarity": 1.0,
+      "public_address": "경기도 안성시 죽산면 장계길 20-229",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "예미지",
+      "match_type": "probable_match",
+      "public_name": "예미지CC",
+      "similarity": 1.0,
+      "public_address": "충청남도 청양군 대치면 주정리 44번지 1호",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "포웰CC 프린세스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "킹즈락",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "천안상록",
+      "match_type": "exact_match",
+      "public_name": "천안상록골프장",
+      "similarity": 1.0,
+      "public_address": "충청남도 천안시 동남구 수신면 수신로 576",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "천룡",
+      "match_type": "probable_match",
+      "public_name": "천룡컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청북도 진천군 이월면 신계리 산 77",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "우정힐스",
+      "match_type": "ambiguous",
+      "public_name": "우정힐스컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 천안시 동남구 목천읍 충절로 1048-68",
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "name": "우정힐스컨트리클럽",
+          "address": "충청남도 천안시 동남구 목천읍 충절로 1048-68",
+          "similarity": 1.0
+        },
+        {
+          "name": "우정힐스컨트리클럽",
+          "address": "충청남도 천안시 동남구 목천읍 운전리 29",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "올데이 임페리얼레이크",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "올데이 로얄포레",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "SG아름다운",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "에딘버러",
+      "match_type": "probable_match",
+      "public_name": "에딘버러 컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 금산군 진산면 살구정길 167",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "아난티중앙",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "세레니티",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "서산수",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "마론",
+      "match_type": "ambiguous",
+      "public_name": "마론컨트리클럽",
+      "similarity": 1.0,
+      "public_address": "충청남도 천안시 동남구 북면 납안5길 74 (뉴데이컨트리클럽)",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "name": "마론컨트리클럽",
+          "address": "충청남도 천안시 동남구 북면 납안5길 74 (뉴데이컨트리클럽)",
+          "similarity": 1.0
+        },
+        {
+          "name": "마론컨트리클럽",
+          "address": "충청남도 천안시 동남구 북면 납안5길 74, 클럽하우스",
+          "similarity": 1.0
+        },
+        {
+          "name": "마론컨트리클럽",
+          "address": "충청남도 천안시 동남구 북면 납안5길 74",
+          "similarity": 1.0
+        }
+      ]
+    },
+    {
+      "catalog_name": "롯데스카이힐 부여",
+      "match_type": "probable_match",
+      "public_name": "(주)호텔롯데 스카이힐 부여 CC",
+      "similarity": 0.8889,
+      "public_address": "충청남도 부여군 규암면 백제문로 400",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "도고",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "골든베이",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "계룡대",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "감곡",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "클럽디 더플레이어스",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "클럽72",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "클럽디 보은",
+      "match_type": "probable_match",
+      "public_name": "클럽디보은CC",
+      "similarity": 1.0,
+      "public_address": "충청북도 보은군 보은읍 장속중초로 386-0 (클럽디보은)",
+      "candidate_count": 1
+    },
+    {
+      "catalog_name": "청주 세레니티",
+      "match_type": "unmatched",
+      "public_name": "",
+      "similarity": 0.0,
+      "public_address": "",
+      "candidate_count": 0
+    },
+    {
+      "catalog_name": "라비에벨CC",
+      "match_type": "exact_match",
+      "public_name": "라비에벨CC",
+      "similarity": 1.0,
+      "public_address": "강원특별자치도 춘천시 동산면 종자리로 436-0, 1동 1층 1호 (라비에벨컨트리클럽)",
+      "candidate_count": 1
+    }
+  ]
+}

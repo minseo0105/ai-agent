@@ -7,9 +7,9 @@ PUBLIC_GOLF_DATASET_ID = "15154978"
 PUBLIC_GOLF_DATASET_PAGE = "https://www.data.go.kr/data/15154978/openapi.do"
 
 # 사용자 secrets에는 URL을 저장하지 않는다.
-# 실제 REST operation endpoint는 공공데이터포털 활용명세에서 확인한 뒤
-# 이 파일 한 곳에만 고정한다. 확인되지 않은 URL을 임의 추정하지 않는다.
-PUBLIC_GOLF_API_ENDPOINT = None
+# 공공데이터포털 15154978의 Swagger /info 명세에서 확인한 조회 경로.
+# 페이지당 최대 100건, returnType=json. 원본 TM 좌표는 WGS84에 덮어쓰지 않는다.
+PUBLIC_GOLF_API_ENDPOINT = "https://apis.data.go.kr/1741000/golf_courses/info"
 
 def _norm(s):
     s = re.sub(r"\s+", "", str(s or "")).lower()
@@ -46,95 +46,180 @@ def _pick(d, names):
         if v not in (None,""): return str(v).strip()
     return ""
 
-def fetch_public_golf_records(service_key, page_size=1000, timeout=15):
-    """사용자가 승인받은 공공데이터포털 API에서 JSON 레코드를 읽는다."""
+def fetch_public_golf_records(service_key, page_size=100, timeout=15):
+    """Official /info contract: 100 rows/page; never expose a keyed URL in errors."""
     if not service_key:
         return []
-    api_url = PUBLIC_GOLF_API_ENDPOINT
-    if not api_url:
-        raise RuntimeError(
-            "공공데이터 인증키는 설정되어 있지만 골프장 API의 실제 REST 요청주소가 "
-            "아직 소스에 확정되지 않았습니다."
-        )
-    params={
-        "serviceKey": service_key,
-        "pageNo": 1,
-        "numOfRows": page_size,
-        "type": "json",
-        "_type": "json",
-        "resultType": "json",
+    from urllib.parse import unquote
+    records = []
+    for page in range(1, 101):
+        try:
+            response = requests.get(PUBLIC_GOLF_API_ENDPOINT, params={
+                "serviceKey": unquote(service_key), "pageNo": page,
+                "numOfRows": min(100, max(1, page_size)), "returnType": "json",
+            }, timeout=timeout, allow_redirects=False)
+            if response.status_code != 200:
+                raise ValueError("HTTP failure")
+            payload = response.json()
+            head = (payload.get("response") or {}).get("header") or {}
+            if str(head.get("resultCode", "")) not in ("00", "0", "INFO-000"):
+                raise ValueError("API failure")
+            body = payload["response"]["body"]
+            total = int(body["totalCount"])
+            items = _walk_items(payload)
+            if not items and len(records) < total:
+                raise ValueError("Incomplete response")
+            records.extend(items)
+            if len(records) >= total:
+                return records
+        except Exception:
+            raise RuntimeError("공공데이터 조회 실패: 인증·응답 형식·연결 상태 확인 필요") from None
+    raise RuntimeError("공공데이터 조회 한도 도달: 불완전한 결과는 적용하지 않습니다.")
+
+
+def _record_name(record: dict) -> str:
+    if not isinstance(record, dict):
+        return ""
+
+    return str(record.get("BPLC_NM") or "").strip()
+def _record_phone(record: dict) -> str:
+    if not isinstance(record, dict):
+        return ""
+
+    return str(record.get("TELNO") or "").strip()
+
+
+def _record_business_status(record: dict) -> dict:
+    """
+    공공데이터의 영업상태를 원문 그대로 보존한다.
+    '영업/정상'이라고 해서 예약 가능을 의미하지 않는다.
+    """
+    if not isinstance(record, dict):
+        return {}
+
+    return {
+        "status": str(record.get("SALS_STTS_NM") or "").strip(),
+        "detail_status": str(record.get("DTL_SALS_STTS_NM") or "").strip(),
+        "closed_date": str(record.get("CLSBIZ_YMD") or "").strip(),
+        "data_updated_at": str(record.get("DAT_UPDT_PNT") or "").strip(),
+        "last_modified_at": str(record.get("LAST_MDFCN_PNT") or "").strip(),
+        "business_type": str(record.get("DTIL_TPBIZ_NM") or "").strip(),
+        "management_no": str(record.get("MNG_NO") or "").strip(),
     }
-    r=requests.get(api_url, params=params, timeout=timeout)
-    r.raise_for_status()
-    try:
-        payload=r.json()
-    except Exception as exc:
-        raise RuntimeError("공공데이터 API 응답이 JSON이 아닙니다. 활용신청한 API의 응답형식을 확인하세요.") from exc
-    return _walk_items(payload)
 
-def _record_name(rec):
-    return _pick(rec, [
-        "사업장명","업소명","시설명","체육시설명","골프장명","개방시설명","개방장소명",
-        "bplcnm","facltnm","name"
-    ])
 
-def _record_address(rec):
-    return _pick(rec, [
-        "소재지도로명주소","도로명주소","소재지주소","소재지전체주소","주소",
-        "rdnwhladdr","sitewhladdr","address"
-    ])
+def _public_record_is_operating(record: dict) -> bool:
+    """
+    공공데이터상 영업 상태인지 판별.
+    실제 티타임/예약 가능 여부와는 무관하다.
+    """
+    if not isinstance(record, dict):
+        return False
 
-def _record_status(rec):
-    return _pick(rec, [
-        "영업상태명","영업상태","상세영업상태명","상태","trdstatenm","dtlstatenm","status"
-    ])
+    status = str(record.get("SALS_STTS_NM") or "").strip()
+    detail = str(record.get("DTL_SALS_STTS_NM") or "").strip()
+    closed_date = str(record.get("CLSBIZ_YMD") or "").strip()
+
+    if closed_date:
+        return False
+
+    return (
+        status in {"영업/정상", "영업"}
+        or detail == "영업"
+    )
+
+def _record_address(record: dict) -> str:
+    """공공데이터 골프장 주소 추출 - 도로명주소 우선."""
+    if not isinstance(record, dict):
+        return ""
+    road = str(record.get("ROAD_NM_ADDR") or "").strip()
+    lot = str(record.get("LOTNO_ADDR") or "").strip()
+    return road or lot
+
+
+def _record_status(record: dict) -> str:
+    if not isinstance(record, dict):
+        return ""
+    return (
+        str(record.get("SALS_STTS_NM") or "").strip()
+        or str(record.get("DTL_SALS_STTS_NM") or "").strip()
+    )
+
 
 def match_public_records(clubs, records):
-    """이름 중심으로 보수적 매칭. 공공데이터에 없는 정보는 만들어내지 않는다."""
-    idx={}
+    """정규화 이름이 유일하게 1건 매칭될 때만 공공데이터를 보강한다."""
+    idx = {}
     for rec in records:
-        name=_record_name(rec)
-        key=_norm(name)
+        name = _record_name(rec)
+        key = _norm(name)
         if key:
             idx.setdefault(key, []).append(rec)
 
-    matched=0
+    matched = 0
     for club in clubs:
-        key=_norm(club.get("name"))
-        candidates=idx.get(key, [])
-        # 긴 포함관계만 보조 허용
-        if not candidates and len(key)>=5:
-            for rk, vals in idx.items():
-                if len(rk)>=5 and (key in rk or rk in key):
-                    candidates=vals
-                    break
-        if not candidates:
-            club.setdefault("verification", {})
-            club["verification"]["public_data"] = {
-                "matched": False, "checked_at": date.today().isoformat()
+        if not isinstance(club, dict):
+            continue
+
+        key = _norm(club.get("name"))
+        candidates = idx.get(key, [])
+        verification = club.setdefault("verification", {})
+
+        if len(candidates) != 1:
+            verification.setdefault("public_data", {"matched": False})
+            verification["public_data_last_attempt"] = {
+                "matched": False,
+                "checked_at": date.today().isoformat(),
+                "reason": "ambiguous" if candidates else "not_found",
             }
             continue
-        rec=candidates[0]
-        status=_record_status(rec)
-        address=_record_address(rec)
-        club.setdefault("verification", {})
-        club["verification"]["public_data"]={
+
+        rec = candidates[0]
+        public_name = _record_name(rec)
+        address = _record_address(rec)
+        phone = _record_phone(rec)
+        business = _record_business_status(rec)
+
+        verification["public_data"] = {
             "matched": True,
             "checked_at": date.today().isoformat(),
-            "status": status or "등록정보 확인",
+            "dataset_id": PUBLIC_GOLF_DATASET_ID,
+            "source_name": "행정안전부_생활_골프장 조회서비스",
+            "public_name": public_name,
+            "status": business.get("status") or "등록정보 확인",
+            "detail_status": business.get("detail_status", ""),
+            "closed_date": business.get("closed_date", ""),
+            "data_updated_at": business.get("data_updated_at", ""),
+            "last_modified_at": business.get("last_modified_at", ""),
+            "business_type": business.get("business_type", ""),
+            "management_no": business.get("management_no", ""),
             "address": address,
+            "operating_in_public_data": _public_record_is_operating(rec),
         }
-        # 기존 주소가 없을 때만 공공데이터 주소 보강
+
+        if public_name and not club.get("public_data_name"):
+            club["public_data_name"] = public_name
         if address and not club.get("address"):
-            club["address"]=address
+            club["address"] = address
+        if phone and not club.get("phone"):
+            club["phone"] = phone
+
         matched += 1
+
     return clubs, matched
 
+
 def dual_verification_summary(club):
-    """VWorld + 공공데이터의 기본 검증상태."""
-    vw=bool(club.get("vworld_x") is not None or club.get("pool_source","").startswith("VWorld"))
-    pub=((club.get("verification") or {}).get("public_data") or {}).get("matched") is True
-    if vw and pub: return "공공데이터 2중 확인"
-    if vw: return "VWorld 확인"
-    if pub: return "공공데이터 확인"
+    """데이터 출처 확인 요약. 운영/예약 가능 판정은 아니다."""
+    verification = club.get("verification") or {}
+    pub = ((verification.get("public_data") or {}).get("matched") is True)
+    vw = bool(
+        club.get("vworld_x") is not None
+        or str(club.get("pool_source") or "").startswith("VWorld")
+    )
+    if vw and pub:
+        return "공공데이터 2중 확인"
+    if vw:
+        return "VWorld 확인"
+    if pub:
+        return "공공데이터 확인"
     return "기본정보 확인 필요"

@@ -1,0 +1,300 @@
+{
+  "generated_at": "2026-09-20T15:32:05",
+  "stats": {
+    "catalog_total": 555,
+    "public_total": 652,
+    "matched": 274,
+    "exact": 183,
+    "normalized_1_00": 91,
+    "address_added": 265,
+    "phone_added": 63,
+    "region_corrected": 139,
+    "public_operating": 271,
+    "public_not_operating": 3,
+    "held": 281
+  },
+  "region_examples": [
+    {
+      "name": "해라컨트리클럽",
+      "before": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "경남"
+      },
+      "after": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "부산"
+      },
+      "address": "부산광역시 강서구 과학산단로306번길 77 (지사동)"
+    },
+    {
+      "name": "아시아드C.C",
+      "before": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "경남"
+      },
+      "after": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "부산"
+      },
+      "address": "부산광역시 기장군 일광면 차양길 26"
+    },
+    {
+      "name": "해운대C.C",
+      "before": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "경남"
+      },
+      "after": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "부산"
+      },
+      "address": "부산광역시 기장군 정관면 병산2로 265"
+    },
+    {
+      "name": "골프존카운티 안성H",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "안성"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 안성시 보개면 보삼로 302"
+    },
+    {
+      "name": "김포SEASIDE컨트리클럽",
+      "before": {
+        "area": "수도권",
+        "subregion": "인천",
+        "city": "인천"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 김포시 월곶면 김포대로2801번길 219"
+    },
+    {
+      "name": "베이사이드골프클럽",
+      "before": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "경남"
+      },
+      "after": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "부산"
+      },
+      "address": "부산광역시 기장군 일광면 이천8길 100"
+    },
+    {
+      "name": "화성상록",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "화성"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 화성시 동탄구 풀무골로60번길 80 (중동)"
+    },
+    {
+      "name": "강남300",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "광주"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 광주시 새말길 353 (목동)"
+    },
+    {
+      "name": "곤지암",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "광주"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 광주시 도척면 도척윗로 280"
+    },
+    {
+      "name": "그린힐",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "광주"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 광주시 곤지암읍 내선길 176"
+    },
+    {
+      "name": "이스트밸리",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "광주"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 광주시 곤지암읍 건업길 195"
+    },
+    {
+      "name": "해운대비치 골프앤리조트",
+      "before": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "경남"
+      },
+      "after": {
+        "area": "영남권",
+        "subregion": "경남",
+        "city": "부산"
+      },
+      "address": "부산광역시 기장군 기장읍 대변로 74"
+    },
+    {
+      "name": "몽베르",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "포천"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "경기북부"
+      },
+      "address": "경기도 포천시 영북면 산정호수로 359-12"
+    },
+    {
+      "name": "일동레이크",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "포천"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "경기북부"
+      },
+      "address": "경기도 포천시 일동면 화동로 738"
+    },
+    {
+      "name": "포천아도니스",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "포천"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "경기북부"
+      },
+      "address": "경기도 포천시 신북면 포천로 2499"
+    },
+    {
+      "name": "팔공컨트리클럽",
+      "before": {
+        "area": "영남권",
+        "subregion": "경북",
+        "city": "경북"
+      },
+      "after": {
+        "area": "영남권",
+        "subregion": "경북",
+        "city": "대구"
+      },
+      "address": "대구광역시 동구 팔공산로237길 186 (도학동)"
+    },
+    {
+      "name": "일동레이크",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "포천"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "경기북부"
+      },
+      "address": "경기도 포천시 일동면 화동로 738"
+    },
+    {
+      "name": "블루헤런GC",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "여주"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 여주시 대신면 고달사로 67"
+    },
+    {
+      "name": "스카이밸리",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "여주"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 여주시 북내면 운촌길 254"
+    },
+    {
+      "name": "신라CC",
+      "before": {
+        "area": "수도권",
+        "subregion": "경기북부",
+        "city": "경기북부"
+      },
+      "after": {
+        "area": "수도권",
+        "subregion": "경기남부",
+        "city": "경기남부"
+      },
+      "address": "경기도 여주시 북내면 신라그린길 84"
+    }
+  ],
+  "backup": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\backups\\catalog_before_public_enrichment_20260920_153205.json",
+  "catalog": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\catalog.json"
+}
