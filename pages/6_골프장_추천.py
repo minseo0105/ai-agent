@@ -784,9 +784,9 @@ def _kga_rating_summary(club):
     if not ratings:
         return None
 
-    # 현재 UI는 성별 입력이 없으므로 남자 rating을 우선 사용하고, 없으면 전체를 사용.
-    male = [r for r in ratings if str(r.get("gender") or "").strip() in ("남자", "M", "Male")]
-    rows = male or ratings
+    # 사용자가 성별/티를 선택하지 않았으므로 특정 성별을 임의 우선하지 않는다.
+    # 현재 개인화 검색은 KGA 등록 Slope의 전체 범위를 참고용으로만 사용한다.
+    rows = ratings
 
     slopes = [_kga_num(r.get("slope_rating")) for r in rows]
     lengths = [_kga_num(r.get("length_yds")) for r in rows]
@@ -854,7 +854,7 @@ def _skill_fit(club, avg_score, challenge):
         bits.append(f"전장 {yards:,.0f}yd ({meters:,.0f}m)")
 
     # 숫자는 해석의 근거로 뒤에 작게 남긴다.
-    bits.append(f"KGA Slope {slope:.0f}")
+    bits.append(f"KGA 등록 Slope 참고값 {slope:.0f}")
     bits.append(f"평균 {int(avg_score)}타 · {challenge} 선택 기준 참고")
 
     return {
@@ -863,6 +863,105 @@ def _skill_fit(club, avg_score, challenge):
         "label": label,
         "detail": " · ".join(bits),
     }
+
+
+
+def _operation_type_text(club):
+    """저장된 명시적 운영형태만 표시. 없으면 추정하지 않는다."""
+    candidates = [
+        club.get("operation_type"),
+        club.get("membership_type"),
+        club.get("business_type"),
+        club.get("club_type"),
+        club.get("golf_type"),
+    ]
+    raw = next((str(x).strip() for x in candidates if x and str(x).strip()), "")
+    if not raw:
+        return "운영형태 확인 필요"
+    compact = raw.replace(" ", "")
+    if "회원" in compact and any(x in compact for x in ("대중", "퍼블릭", "병설", "혼합")):
+        return "회원제 · 대중제 혼합"
+    if "회원" in compact:
+        return "회원제"
+    if any(x in compact for x in ("대중", "퍼블릭", "Public", "public")):
+        return "대중제(퍼블릭)"
+    return raw
+
+
+def _course_labels(club):
+    """기존 catalog 코스와 KGA 코스조합에서 표시 가능한 코스명을 모은다."""
+    labels = []
+
+    for item in (club.get("courses") or []):
+        if isinstance(item, dict):
+            name = str(item.get("name") or "").strip()
+            holes = item.get("holes")
+            if name:
+                label = f"{name} {holes}H" if holes else name
+                labels.append(label)
+        elif item:
+            labels.append(str(item).strip())
+
+    # catalog 코스가 부족하면 KGA 안전 매칭 결과를 보조로 사용
+    if not labels:
+        for item in ((club.get("kga") or {}).get("course_combinations") or []):
+            if isinstance(item, dict):
+                names = [
+                    str(item.get(k) or "").strip()
+                    for k in ("course", "course_name", "combination", "name")
+                    if item.get(k)
+                ]
+                if names:
+                    labels.append(names[0])
+            elif item:
+                labels.append(str(item).strip())
+
+    out = []
+    seen = set()
+    for x in labels:
+        x = re.sub(r"\s+", " ", str(x)).strip()
+        if x and x not in seen:
+            seen.add(x)
+            out.append(x)
+    return out[:8]
+
+
+def _fact_based_intro(club):
+    """확보된 사실만 조합해 2문장 이내 소개를 만든다."""
+    location = " ".join(
+        str(x).strip() for x in (club.get("region"), club.get("city"))
+        if x and str(x).strip()
+    )
+    holes = club.get("holes")
+    op = _operation_type_text(club)
+    courses = _course_labels(club)
+
+    first = []
+    if location:
+        first.append(f"{location}에 위치")
+    if holes:
+        first.append(f"{holes}홀 규모")
+    if op != "운영형태 확인 필요":
+        first.append(op)
+
+    sentences = []
+    if first:
+        sentences.append(" · ".join(first) + " 골프장입니다.")
+    else:
+        sentences.append("현재 확보된 공식·공공 데이터를 기준으로 기본정보를 제공하고 있습니다.")
+
+    if courses:
+        shown = ", ".join(courses[:4])
+        sentences.append(f"확인된 코스 구성은 {shown}입니다.")
+    elif (club.get("kga") or {}).get("matched"):
+        sentences.append("KGA 코스정보가 연결된 골프장입니다.")
+
+    return " ".join(sentences[:2])
+
+
+def _overview_trait_badges(club):
+    """저장된 후기/특징 값만 사용. 없는 특징은 만들지 않는다."""
+    return _descriptive_badges(club)
 
 
 def _descriptive_badges(club):
@@ -1756,6 +1855,43 @@ with st.container(key="golf"):
         """
     )
 
+    # =====================================================
+    # GOLF COURSE AT A GLANCE
+    # =====================================================
+
+    operation_type = _operation_type_text(club)
+    course_labels = _course_labels(club)
+    intro_text = _fact_based_intro(club)
+
+    overview_bits = []
+    loc_text = " ".join(
+        str(x).strip() for x in (club.get("region"), club.get("city"))
+        if x and str(x).strip()
+    )
+    if loc_text:
+        overview_bits.append("📍 " + loc_text)
+    overview_bits.append("🏷 " + operation_type)
+    overview_bits.append("⛳ " + (f"{club.get('holes')}홀" if club.get("holes") else "홀 수 확인 필요"))
+
+    st.markdown("### 한눈에 보기")
+    st.caption(" · ".join(overview_bits))
+
+    st.markdown("**골프장 소개**")
+    st.write(intro_text)
+    st.caption("확보된 공식·공공·KGA 정보만 조합한 설명입니다.")
+
+    if course_labels:
+        st.markdown("**코스 구성**")
+        st.markdown("　".join(f"`{x}`" for x in course_labels))
+    else:
+        st.caption("코스 구성 · 확인 가능한 상세정보가 아직 없습니다.")
+
+    trait_badges = _overview_trait_badges(club)
+    if trait_badges:
+        st.markdown("**라운드 특징**")
+        st.markdown("　".join(f"`{x}`" for x in trait_badges))
+        st.caption("저장된 후기/검증 데이터 기반 · 정보가 있는 항목만 표시")
+
     # KGA 공인 코스정보
     render_kga_course_intelligence(club)
 
@@ -2039,7 +2175,7 @@ with st.container(key="golf"):
     # COURSE INFORMATION
     # =====================================================
 
-    st.markdown("### 코스 정보")
+    st.markdown("### 코스 상세")
 
     if club.get("courses"):
 
