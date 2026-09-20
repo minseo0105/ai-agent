@@ -1,6 +1,7 @@
 """Tavily multi-query golf review search. No NAVER dependency."""
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import re
 import requests
 
@@ -46,15 +47,15 @@ def _usable(url, title, content, club_name):
 
 def _one(api_key, query, max_results=20):
     payload = {
-        "query": query, "topic":"general", "search_depth":"advanced",
-        "max_results": min(max(int(max_results),5),20),
+        "query": query, "topic":"general", "search_depth":"basic",
+        "max_results": min(max(int(max_results),5),12),
         "include_answer": False, "include_raw_content":"markdown",
         "start_date": _five_year_start(),
     }
     try:
         r = requests.post(TAVILY_SEARCH_URL,
             headers={"Authorization":f"Bearer {api_key}","Content-Type":"application/json"},
-            json=payload, timeout=40)
+            json=payload, timeout=18)
     except requests.RequestException as e:
         raise TavilyGolfError(f"Tavily 연결 실패: {e}") from e
     if r.status_code != 200:
@@ -83,19 +84,21 @@ def _normalize(items, query, club_name):
 def search_golf_review_bundle(api_key, club_name="레이크사이드CC"):
     """One user action -> four focused Tavily searches, deduped."""
     if not api_key: raise TavilyGolfError("TAVILY_API_KEY가 설정되어 있지 않습니다.")
+    # 모바일 체감속도 우선: 2개 검색을 병렬 실행.
     queries = [
-        f"{club_name} 라운딩 후기",
-        f"{club_name} 코스 라운딩 후기",
-        f"{club_name} 페어웨이 그린 난이도 티샷 후기",
-        f"{club_name} 잔디 코스관리 시설 클럽하우스 후기",
+        f"{club_name} 라운딩 후기 코스 페어웨이 그린",
+        f"{club_name} 라운딩 후기 잔디 관리 시설 클럽하우스",
     ]
     by_url, raw_count = {}, 0
-    for q in queries:
-        items = _one(api_key, q, 20); raw_count += len(items)
-        for rec in _normalize(items, q, club_name):
-            # Prefer richer copy for same URL.
-            if rec["url"] not in by_url or len(rec["description"]) > len(by_url[rec["url"]]["description"]):
-                by_url[rec["url"]] = rec
+    with ThreadPoolExecutor(max_workers=2) as ex:
+        future_map = {ex.submit(_one, api_key, q, 12): q for q in queries}
+        for future in as_completed(future_map):
+            q = future_map[future]
+            items = future.result()
+            raw_count += len(items)
+            for rec in _normalize(items, q, club_name):
+                if rec["url"] not in by_url or len(rec["description"]) > len(by_url[rec["url"]]["description"]):
+                    by_url[rec["url"]] = rec
     records = list(by_url.values())
     records.sort(key=lambda x: x.get("published_at") or "", reverse=True)
     return records, {"queries":len(queries), "raw":raw_count, "unique_valid":len(records)}

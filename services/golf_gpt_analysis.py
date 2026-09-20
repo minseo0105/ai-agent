@@ -17,7 +17,7 @@ VALID={
 "facilities":{"positive","negative","mixed","unknown"}}
 CACHE_DIR=Path("data/golf/gpt_cache")
 CACHE_TTL=24*60*60
-MAX_REVIEWS=15
+MAX_REVIEWS=10
 BATCH_SIZE=5
 MAX_CONTEXT_CHARS=2200
 

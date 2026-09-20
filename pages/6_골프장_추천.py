@@ -4,6 +4,7 @@ import datetime
 import re
 
 import streamlit as st
+import streamlit.components.v1 as components
 from urllib.parse import quote_plus
 from datetime import date, timedelta
 
@@ -654,13 +655,7 @@ def _condition_evidence(course, cond):
     if cond.get("areas") or (cond.get("area") not in (None, "", "전체")):
         confirmed.append("지역")
 
-    players = int(cond.get("players") or 4)
-    if players <= 3:
-        three = (course.get("play") or {}).get("three_person")
-        if three in (True, "가능", "yes", "Y"):
-            confirmed.append("3인")
-        elif three not in (False, "불가", "no", "N"):
-            pending.append("3인 여부")
+    players = 4  # 요금 추정 기본값. 2인/3인 플레이는 아래 객관조건에서 별도 판정.
 
     if cond.get("budget"):
         try:
@@ -730,7 +725,7 @@ def _objective_feature_status(club, key):
         "3인 플레이": play.get("three_person"),
         "9홀×2 라운드": play.get("nine_hole_twice"),
         "PAR3 연습장": facilities.get("par3"),
-        "드라이빙레인지": facilities.get("driving_range"),
+        "야외 연습장": facilities.get("driving_range"),
         "야간 라운드": play.get("night_round"),
     }
     value = sources.get(key)
@@ -911,7 +906,7 @@ with st.container(key="golf"):
             st.markdown("##### 추가 조건 <span style='font-size:.72rem;font-weight:500;opacity:.55'>선택사항</span>", unsafe_allow_html=True)
             objective_choice = mobile_multi_choice(
                 "시설 · 운영 조건",
-                ["2인 플레이", "3인 플레이", "9홀×2 라운드", "PAR3 연습장", "드라이빙레인지", "야간 라운드"],
+                ["2인 플레이", "3인 플레이", "9홀×2 라운드", "PAR3 연습장", "야외 연습장", "야간 라운드"],
                 key="golf_objective_multi",
                 help_text="선택사항입니다. 확인된 곳을 우선 구분해 보여줍니다.",
             )
@@ -938,8 +933,9 @@ with st.container(key="golf"):
                     "subregions": detail_places,
                     "weekend": is_weekend,
                                         "budget": budgets[budget_label],
-                    "objective_features": objective_choice,
-                    "players": 2 if "2인 플레이" in objective_choice else (3 if "3인 플레이" in objective_choice else 4),
+                    "objective_features": list(objective_choice),
+                    # 인원은 별도 상단 조건이 없다. 2인/3인은 objective_features에서 독립 판정한다.
+                    "players": 4,
                 }
                 st.session_state.golf_rec_conditions = cond
 
@@ -968,13 +964,6 @@ with st.container(key="golf"):
                 for club in search_clubs:
                     ok = True
 
-                    # 3인 조건:
-                    # 가능/불가가 확인된 곳은 판정하고, 정보가 없으면 검색에서 제거하지 않는다.
-                    if int(cond.get("players") or 4) <= 3:
-                        three = (club.get("play") or {}).get("three_person")
-                        if three in (False, "불가", "no", "N"):
-                            ok = False
-
                     # 예산:
                     # 금액이 확인된 곳만 상한을 적용하고, 금액 미확인 골프장은 남겨둔다.
                     if ok and cond.get("budget"):
@@ -996,8 +985,14 @@ with st.container(key="golf"):
 
                 final_count = len(filtered)
 
-                # 추천점수로 순서를 왜곡하지 않고 이름순으로 안정적으로 표시
-                filtered = sorted(filtered, key=lambda x: str(x.get("name") or ""))
+                # 선택한 추가조건이 실제 화면에 즉시 체감되도록
+                # '모든 선택조건이 확인된 곳'을 먼저, '정보 미확인'을 뒤에 표시한다.
+                # 추천점수/랭킹은 사용하지 않고 각 그룹 안에서는 이름순이다.
+                def _condition_sort_key(club):
+                    _status, _confirmed, _pending = _result_confidence(club, cond)
+                    return (0 if _status == "confirmed" else 1, str(club.get("name") or ""))
+
+                filtered = sorted(filtered, key=_condition_sort_key)
                 start_idx = st.session_state.golf_rec_offset
                 page_clubs = filtered[start_idx:start_idx + 12]
 
@@ -1125,9 +1120,11 @@ with st.container(key="golf"):
                     chips.append(" / ".join(cond["subregions"]))
                 elif cond.get("city"):
                     chips.append(str(cond["city"]))
-                chips += [daytxt, f'{cond["players"]}인']
+                chips.append(daytxt)
                 if cond.get("budget"):
                     chips.append(f'{cond["budget"] // 10000}만원 이하')
+                if cond.get("objective_features"):
+                    chips.extend(cond["objective_features"])
                 st.success("검색 적용: " + " · ".join(chips))
 
             st.markdown("### 검색 결과")
@@ -1142,7 +1139,7 @@ with st.container(key="golf"):
                         f"검색결과 {trace.get('final', 0)}개"
                     )
                     st.caption(
-                        "3인·예산은 확인된 정보가 있으면 필터링하고, 정보가 없으면 결과에 남겨 "
+                        "선택조건은 명확한 불가만 제외하고, 정보가 없으면 결과에 남겨 "
                         "‘확인 필요’로 구분합니다."
                     )
 
@@ -1189,7 +1186,12 @@ with st.container(key="golf"):
                                 facts.append(f"예상 1인 {won(est)}")
                             elif cond and cond.get("budget"):
                                 facts.append("요금 확인 필요")
-                            if cond and int(cond.get("players", 4) or 4) <= 3:
+                            selected_features = (cond or {}).get("objective_features", [])
+                            if "2인 플레이" in selected_features:
+                                two_raw = (course.get("play") or {}).get("two_person")
+                                two_text = "가능" if two_raw in (True, "가능", "yes", "Y") else "확인 필요"
+                                facts.append(f"2인 {two_text}")
+                            if "3인 플레이" in selected_features:
                                 facts.append(f"3인 {three_text}")
 
                             if pending_group:
@@ -1224,13 +1226,13 @@ with st.container(key="golf"):
             _render_result_group(
                 confirmed_recs,
                 f"조건 확인됨 · {len(confirmed_recs)}개",
-                "선택한 3인·예산 조건을 현재 보유 데이터로 확인할 수 있는 골프장입니다.",
+                "선택한 조건을 현재 보유 데이터로 확인할 수 있는 골프장입니다.",
                 False,
             )
             _render_result_group(
                 pending_recs,
                 f"정보 확인 필요 · {len(pending_recs)}개",
-                "지역에는 맞지만 3인 또는 요금 정보가 없어 방문 전 확인이 필요한 골프장입니다.",
+                "지역에는 맞지만 선택조건 일부 정보가 없어 방문 전 확인이 필요한 골프장입니다.",
                 True,
             )
 
@@ -1517,83 +1519,59 @@ with st.container(key="golf"):
         st.caption(" · ".join(snapshot_bits))
 
     # =====================================================
-    # MAP / NEARBY COURSES
-    # catalog에 WGS84 위경도가 있을 때만 지도 표시.
-    # 좌표가 없거나 VWorld 원좌표계가 WGS84가 아니면 임의 표시하지 않음.
+    # NAVER MAP
+    # 모바일 스크롤을 줄이기 위해 선택 골프장 지도 1개만 표시.
+    # NAVER Maps JavaScript API의 ncpKeyId가 있으면 앱 안에 표시하고,
+    # 없으면 네이버지도 외부 열기 버튼만 제공한다.
     # =====================================================
 
     st.markdown("### 위치")
-
     selected_coord = club_lat_lon(club)
+    naver_map_key = str(st.secrets.get("NAVER_MAP_NCP_KEY_ID", "") or "").strip()
 
     if selected_coord:
-        nearby = []
-        for other in clubs:
-            if other.get("id") == club.get("id"):
-                continue
-            coord = club_lat_lon(other)
-            if not coord:
-                continue
-            km = distance_km(selected_coord, coord)
-            if km <= 40:
-                nearby.append((km, other, coord))
-        nearby.sort(key=lambda x: x[0])
-        nearby = nearby[:12]
-
-        import pandas as pd
-        import pydeck as pdk
-
         selected_lat, selected_lon = selected_coord
-        selected_df = pd.DataFrame([{
-            "lat": float(selected_lat),
-            "lon": float(selected_lon),
-            "name": club["name"],
-            "label": "★ " + club["name"],
-        }])
-        nearby_df = pd.DataFrame([
-            {"lat": float(coord[0]), "lon": float(coord[1]), "name": other["name"], "distance": f"{km:.1f}km"}
-            for km, other, coord in nearby[:5]
-        ])
 
-        layers = [
-            pdk.Layer("ScatterplotLayer", data=selected_df,
-                      get_position="[lon, lat]", get_radius=150, pickable=True),
-            pdk.Layer("TextLayer", data=selected_df,
-                      get_position="[lon, lat]", get_text="label",
-                      get_size=11, get_alignment_baseline="'bottom'",
-                      get_pixel_offset=[0, -7]),
-        ]
-        if not nearby_df.empty:
-            layers.append(
-                pdk.Layer("ScatterplotLayer", data=nearby_df,
-                          get_position="[lon, lat]", get_radius=55, pickable=True)
-            )
+        if naver_map_key:
+            safe_name = str(club.get("name") or "골프장").replace("\\", "\\\\").replace("'", "\\'")
+            map_html = f"""
+            <!doctype html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+              <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={naver_map_key}"></script>
+              <style>
+                html,body,#map{{margin:0;width:100%;height:100%;overflow:hidden}}
+                #map{{border-radius:14px}}
+              </style>
+            </head>
+            <body>
+              <div id="map"></div>
+              <script>
+                const pos = new naver.maps.LatLng({float(selected_lat)}, {float(selected_lon)});
+                const map = new naver.maps.Map('map', {{
+                  center: pos, zoom: 14, zoomControl: false, mapTypeControl: false
+                }});
+                const marker = new naver.maps.Marker({{position: pos, map: map}});
+                const info = new naver.maps.InfoWindow({{
+                  content: "<div style='padding:7px 9px;font-size:12px;font-weight:700;white-space:nowrap'>{safe_name}</div>"
+                }});
+                naver.maps.Event.addListener(marker, 'click', function() {{
+                  if (info.getMap()) info.close(); else info.open(map, marker);
+                }});
+              </script>
+            </body>
+            </html>
+            """
+            components.html(map_html, height=180, scrolling=False)
+        else:
+            st.caption("네이버 지도 앱/웹에서 위치를 바로 확인할 수 있습니다.")
 
-        deck = pdk.Deck(
-            map_style=None,
-            initial_view_state=pdk.ViewState(
-                latitude=float(selected_lat), longitude=float(selected_lon),
-                zoom=13.0, pitch=0,
-            ),
-            layers=layers,
-            tooltip={"html": "<b>{name}</b><br/>{distance}"},
-        )
-        st.pydeck_chart(deck, use_container_width=True, height=210)
-        st.caption("지도는 위치 확인용입니다. 정확한 길찾기·업체정보는 네이버지도 버튼을 이용하세요.")
-
-        if nearby:
-            with st.expander(f"근처 골프장 {min(3, len(nearby))}곳", expanded=False):
-                for idx, (km, other, _) in enumerate(nearby[:3]):
-                    cinfo, cbtn = st.columns([3.2, 1])
-                    with cinfo:
-                        st.markdown(f"**{other['name']}** · {km:.1f}km")
-                    with cbtn:
-                        if st.button("보기", key=f"nearby_{club['id']}_{other['id']}_{idx}", width="stretch"):
-                            st.session_state.golf_selected_id = other["id"]
-                            st.session_state.golf_v14 = {}
-                            st.rerun()
+        st.link_button("네이버지도에서 크게 보기 ↗", naver_nav, width="stretch")
     else:
         st.caption("📍 위치정보 확인 필요")
+        st.link_button("네이버지도에서 검색 ↗", naver_nav, width="stretch")
 
     # =====================================================
     # PRICE
@@ -1812,8 +1790,17 @@ with st.container(key="golf"):
     # =====================================================
 
     st.markdown(
-        "### 최근 후기 요약"
+        "### 최근 후기"
     )
+
+    # 원문 연결은 AI 분석 여부와 무관하게 항상 제공한다.
+    review_query = quote_plus(f"{club['name']} 라운딩 후기")
+    naver_review_search = f"https://search.naver.com/search.naver?query={review_query}"
+    c_review1, c_review2 = st.columns(2)
+    with c_review1:
+        st.link_button("네이버 후기 찾기 ↗", naver_review_search, width="stretch")
+    with c_review2:
+        st.caption("AI 요약은 저장본 우선 · 필요할 때만 최신화")
 
     # -----------------------------------------------------
     # IMPORTANT
@@ -1970,7 +1957,11 @@ with st.container(key="golf"):
     source_reviews = (
         live_reviews
         if live_reviews
-        else state.get("reviews", [])
+        else (
+            (saved_summary or {}).get("reviews", [])
+            if isinstance(saved_summary, dict)
+            else []
+        )
     )
 
     current_year = (
@@ -2122,7 +2113,7 @@ with st.container(key="golf"):
             )
 
         analyze_clicked = st.button(
-            "최근 5년 후기 분석/새로고침",
+            "후기 빠른 최신화",
             type="primary",
             width="stretch",
             disabled=not can_analyze,
@@ -2188,6 +2179,7 @@ with st.container(key="golf"):
                         save_runtime_summary(
                             club["id"],
                             agg_new,
+                            reviews=reviews,
                         )
 
                 st.rerun()
