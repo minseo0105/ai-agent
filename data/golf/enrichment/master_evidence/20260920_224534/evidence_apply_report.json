@@ -1,0 +1,17 @@
+{
+  "created_at": "2026-09-20T22:45:34.432705+09:00",
+  "catalog_count": 553,
+  "source": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\b_supported_dryrun_v1\\20260920_224107\\KEEP_AS_EVIDENCE.json",
+  "input_evidence_count": 454,
+  "added": 454,
+  "replaced": 0,
+  "unchanged": 0,
+  "clubs_touched": 365,
+  "catalog_total_evidence_fields": 454,
+  "catalog_clubs_with_evidence": 365,
+  "field_counts": {
+    "holes": 173,
+    "phone": 281
+  },
+  "backup": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\backups\\catalog_before_master_evidence_20260920_224534.json"
+}
