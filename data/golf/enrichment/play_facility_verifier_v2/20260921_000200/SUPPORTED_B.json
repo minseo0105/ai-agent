@@ -1,0 +1,96 @@
+[
+  {
+    "id": "vworld_세인트포",
+    "name": "세인트포",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "class": "SUPPORTED_B",
+    "detail": {
+      "reason": "two_or_more_nonweak_identity_domains",
+      "domain_count": 2
+    },
+    "evidence": [
+      {
+        "url": "https://blog.naver.com/alecyber/223216846850",
+        "domain": "blog.naver.com",
+        "title": "Just enjoy playing GOLF : 네이버 블로그",
+        "snippet": "Just enjoy playing GOLF : 네이버 블로그 시작되기 때문에 앞쪽에 10팀이 있을 경우 예상 대기시간은 1시간 정도입니다. 예약 시스템이 없는 것이 아쉽습니다. 1인 플레이는 불가하고 2인 플레이를 원칙으로 한다는 안내문이 있습니다만 이른 시간에는 1인 플레이도 가능하다고 하니, 관리과로 문의를 해보시는 것도 좋을 것 같습니다. 캐슬렉스 퍼블릭 내에는 실외 연습장인 드라이빙 레인지가 있지만 별도 요금이 추가됩니다. 2. 플라자CC 제주 ◆ 주소 : 제주 제주시 명림로 575-107 ◆ 연락처 : 064-727-9000 ​ 플라자CC 제주 제주특별자치도 제주시 명림로 575-107 ◆ 노캐디 라운딩 그린피 정보 주중 06:40~09:00 도",
+        "identity_match": false,
+        "weak_source": true,
+        "negative_signal": true,
+        "conditional_signal": true,
+        "search_score": 0.6625569
+      },
+      {
+        "url": "https://www.tjeju.com/CS/Goods/Golf/index.aspx?eng=2p",
+        "domain": "tjeju.com",
+        "title": "제주도2인 라운딩 가능한 골프장",
+        "snippet": "제주도2인 라운딩 가능한 골프장 ~금 09:00~17:00까지만 ・ 제주골프장 9홀 ・ 각 제주도골프장 그린피는 18홀기준 요금이며, 보통 3인~4인 기준으로 이용가능하고 2인가능한곳은 별도있습니다. 세인트포",
+        "identity_match": true,
+        "weak_source": false,
+        "negative_signal": false,
+        "conditional_signal": false,
+        "search_score": 0.6501347
+      },
+      {
+        "url": "https://www.jejugolfinfo.com/56",
+        "domain": "jejugolfinfo.com",
+        "title": "2023년 1월 2인플레이 가능 제주도 골프장",
+        "snippet": "2023년 1월 2인플레이 가능 제주도 골프장 *3인요금: 3인요금 지불 조건으로 2인플레이 가능 주 중 그린필드 라온 (객실이용 조건, 8시09분이전 또는 12시42분 이후) 라헨느 세인트포 (3인요금)",
+        "identity_match": true,
+        "weak_source": false,
+        "negative_signal": false,
+        "conditional_signal": false,
+        "search_score": 0.5376489
+      },
+      {
+        "url": "https://m.blog.naver.com/PostView.nhn?isHttpsRedirect=true&blogId=sue21&logNo=222330887897&proxyReferer=",
+        "domain": "m.blog.naver.com",
+        "title": "파3 골프장 이용방법 연습방법 (남부 파3 골프장) : 네이버 블로그",
+        "snippet": "하면서 자연스럽게 운동이 됩니다. ​ ​ 복장은 편안한 복장을 하면 되니 반바지에 라운드 티를 입고 편안한 운동화를 신고 라운드를 해도 돼요. ​ ​ 편안한 복장을 하고 캐주얼하게 숏게임 연습을 하면 됩니다. 보통 레인지 연습을 하고 오기 때문에 레인지(연습장) 복장으로 많이들 파3를 즐깁니다. ​ 2인 플레이도 가능 파3는 4명이 모이지 않아도 돼요. 2인 플레이도 되고 심지어 1인 플레이도 돼요. ​ ​ 캐주얼하게 연습을 할 수 있다는 것이 좋아요. 짧은 코스지만 여러 가지 어프로치도 연습을 하게 되고 러프에서도 샷도 하고 벙커샷도 연습을 합니다. ​ ​ 자연스럽게 운동도 되면서 말이죠. [...] # 블로그 ## 카테고리 이동 버디천재의 골프와 여행 파3 골프장 이용방법 연습방법 (남부 파3 골프장) 프로필 2021. 5. 1. 19:",
+        "identity_match": false,
+        "weak_source": true,
+        "negative_signal": false,
+        "conditional_signal": false,
+        "search_score": 0.40882006
+      }
+    ],
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_세이지우드_홍천",
+    "name": "세이지우드 홍천",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "class": "SUPPORTED_B",
+    "detail": {
+      "reason": "two_or_more_nonweak_identity_domains",
+      "domain_count": 2
+    },
+    "evidence": [
+      {
+        "url": "https://www.sagewood.co.kr/hongcheon/special-offer",
+        "domain": "sagewood.co.kr",
+        "title": "세이지우드 홍천. | Sagewood Hongcheon",
+        "snippet": "세이지우드 홍천. | Sagewood Hongcheon 세이지우드 홍천에서 예약하기, Junior Suite Overview Dream Course Vision Course Challenge Course ・ 2박 + 중식 1회 ・ 2026 DOUBLE UP 26년 2인 플레이 프로모션",
+        "identity_match": true,
+        "weak_source": false,
+        "negative_signal": false,
+        "conditional_signal": false,
+        "search_score": 0.57837737
+      },
+      {
+        "url": "https://kimcaddie.com/post/gangwon-2Players-round-golf-course-recommendation",
+        "domain": "kimcaddie.com",
+        "title": "여유롭게 골프를 즐기고 싶다면? 2인 플레이(라운드) 가능한 ...",
+        "snippet": "여유롭게 골프를 즐기고 싶다면? 2인 플레이(라운드) 가능한 ... 여유롭게 골프를 즐기고 싶다면? 2인 플레이(라운드) 가능한 강원도 골프장 TOP 4 추천! · 더플레이어스CC (춘천) · 세이지우드 홍천 (홍천) · 라비에벨 듄스코스 (춘천)",
+        "identity_match": true,
+        "weak_source": false,
+        "negative_signal": false,
+        "conditional_signal": false,
+        "search_score": 0.53181785
+      }
+    ],
+    "auto_apply": false
+  }
+]
