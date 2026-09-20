@@ -811,6 +811,20 @@ with st.container(key="golf"):
             label_visibility="collapsed",
         )
 
+        previous_mode = st.session_state.get("golf_last_search_mode")
+        if previous_mode is not None and previous_mode != search_mode:
+            for key in (
+                "golf_recs",
+                "golf_rec_conditions",
+                "golf_filter_trace",
+                "golf_region_pool_count",
+                "golf_verified_pool_count",
+                "golf_ai_parsed",
+            ):
+                st.session_state.pop(key, None)
+            st.session_state.golf_rec_offset = 0
+        st.session_state["golf_last_search_mode"] = search_mode
+
         # 1) 골프장명/지역 직접 검색
         if search_mode == "골프장 직접 찾기":
             q = st.text_input(
@@ -924,7 +938,7 @@ with st.container(key="golf"):
                 if find_clicked:
                     st.session_state.golf_rec_offset = 0
                 else:
-                    st.session_state.golf_rec_offset = st.session_state.get("golf_rec_offset", 0) + 6
+                    st.session_state.golf_rec_offset = st.session_state.get("golf_rec_offset", 0) + 12
 
                 cond = {
                     "area": area,
@@ -932,7 +946,7 @@ with st.container(key="golf"):
                     "city": None,
                     "subregions": detail_places,
                     "weekend": is_weekend,
-                                        "budget": budgets[budget_label],
+                    "budget": budgets[budget_label],
                     "objective_features": list(objective_choice),
                     # 인원은 별도 상단 조건이 없다. 2인/3인은 objective_features에서 독립 판정한다.
                     "players": 4,
@@ -993,7 +1007,23 @@ with st.container(key="golf"):
                     return (0 if _status == "confirmed" else 1, str(club.get("name") or ""))
 
                 filtered = sorted(filtered, key=_condition_sort_key)
+                confirmed_count = 0
+                pending_count = 0
+                for result_club in filtered:
+                    status, confirmed_fields, pending_fields = _result_confidence(
+                        result_club,
+                        cond,
+                    )
+                    if status == "confirmed":
+                        confirmed_count += 1
+                    else:
+                        pending_count += 1
+                excluded_count = max(subregion_count - final_count, 0)
+
                 start_idx = st.session_state.golf_rec_offset
+                if final_count and start_idx >= final_count:
+                    start_idx = 0
+                    st.session_state.golf_rec_offset = 0
                 page_clubs = filtered[start_idx:start_idx + 12]
 
                 # 기존 카드 렌더러 호환용 tuple
@@ -1005,6 +1035,9 @@ with st.container(key="golf"):
                     "area": area_count,
                     "subregion": subregion_count,
                     "final": final_count,
+                    "confirmed": confirmed_count,
+                    "pending": pending_count,
+                    "excluded": excluded_count,
                 }
                 st.session_state.golf_region_pool_count = subregion_count
                 st.session_state.golf_verified_pool_count = final_count
@@ -1138,6 +1171,12 @@ with st.container(key="golf"):
                         f"세부지역 {trace.get('subregion', 0)}개 → "
                         f"검색결과 {trace.get('final', 0)}개"
                     )
+                    if "confirmed" in trace:
+                        st.caption(
+                            f"조건 확인 {trace.get('confirmed', 0)}개 · "
+                            f"정보 확인 필요 {trace.get('pending', 0)}개 · "
+                            f"명확한 불일치 제외 {trace.get('excluded', 0)}개"
+                        )
                     st.caption(
                         "선택조건은 명확한 불가만 제외하고, 정보가 없으면 결과에 남겨 "
                         "‘확인 필요’로 구분합니다."
