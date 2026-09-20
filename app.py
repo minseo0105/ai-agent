@@ -1114,6 +1114,35 @@ st.markdown("""
         font-size: 1rem;
     }
 
+
+    /* NEW SERVICE · Golf */
+    .new-service-wrap {
+        margin: .15rem 0 1.05rem 0;
+        padding: 1.2rem 1.3rem;
+        border-radius: 22px;
+        border: 1px solid #D7E5E0;
+        background: radial-gradient(circle at 94% 12%, rgba(34,197,94,.12), transparent 27%),
+                    linear-gradient(135deg, #F8FAFC 0%, #F0FDF4 100%);
+        box-shadow: 0 10px 28px rgba(15,23,42,.055);
+    }
+    .new-service-top { display:flex; align-items:center; gap:.5rem; margin-bottom:.55rem; }
+    .new-service-badge {
+        padding:.27rem .55rem; border-radius:999px; background:#DCFCE7;
+        color:#166534; border:1px solid #BBF7D0; font-size:.69rem;
+        font-weight:850; letter-spacing:.05em;
+    }
+    .new-service-eyebrow { font-size:.73rem; font-weight:800; color:#64748B; }
+    .new-service-title {
+        font-size:1.28rem; line-height:1.25; font-weight:850;
+        letter-spacing:-.035em; color:#0F172A; margin-bottom:.35rem;
+    }
+    .new-service-desc { color:#475569; font-size:.87rem; line-height:1.55; margin-bottom:.7rem; }
+    .new-service-tags { display:flex; flex-wrap:wrap; gap:.38rem; }
+    .new-service-tag {
+        padding:.3rem .55rem; border-radius:999px; background:rgba(255,255,255,.86);
+        border:1px solid #DDE7E4; color:#334155; font-size:.69rem; font-weight:750;
+    }
+
     /* 모바일 */
     @media (max-width: 768px) {
         .block-container {
@@ -1249,6 +1278,18 @@ st.markdown("""
             border-radius: 18px;
         }
     }
+
+@media (max-width: 768px) {
+    .new-service-wrap { margin:.05rem 0 .65rem 0; padding:.85rem .9rem; border-radius:16px; box-shadow:none; }
+    .new-service-top { margin-bottom:.35rem; }
+    .new-service-badge { font-size:.61rem; padding:.2rem .42rem; }
+    .new-service-eyebrow { font-size:.64rem; }
+    .new-service-title { font-size:1.04rem; margin-bottom:.22rem; }
+    .new-service-desc { font-size:.75rem; line-height:1.4; margin-bottom:.45rem; }
+    .new-service-tags { gap:.25rem; }
+    .new-service-tag { font-size:.6rem; padding:.2rem .4rem; }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1361,7 +1402,37 @@ st.markdown("""
 
 # 서비스 허브
 st.markdown("### 내가 만든 서비스")
-st.caption("서비스를 선택하면 바로 이동합니다.")
+st.caption("새로운 서비스와 직접 만든 AI Prototype을 둘러보세요.")
+
+st.markdown("""
+<div class="new-service-wrap">
+    <div class="new-service-top">
+        <span class="new-service-badge">NEW</span>
+        <span class="new-service-eyebrow">GOLF INTELLIGENCE</span>
+    </div>
+    <div class="new-service-title">⛳ 나에게 맞는 골프장 찾기</div>
+    <div class="new-service-desc">
+        전국 골프장을 조건이나 AI 문장으로 탐색하고,
+        KGA 코스정보와 실제 후기까지 한 곳에서 살펴봅니다.
+    </div>
+    <div class="new-service-tags">
+        <span class="new-service-tag">전국 골프장</span>
+        <span class="new-service-tag">KGA 코스정보</span>
+        <span class="new-service-tag">AI 문장검색</span>
+        <span class="new-service-tag">실제 후기</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+if st.button(
+    "⛳  새 골프 서비스 둘러보기 →",
+    key="golf_open_service",
+    type="primary",
+    use_container_width=True,
+):
+    st.switch_page("pages/6_골프장_추천.py")
+
+st.markdown("#### 다른 서비스")
 
 if st.button(
     "🚙  내차에서 드림카까지  ·  내 차 시세 → 다음 차량 탐색·추천",
@@ -1391,26 +1462,11 @@ if st.button(
 ):
     st.switch_page("pages/saju.py")
 
-if st.button(
-    "⛳  골프장 추천  ·  실제 후기 근거로 살펴보는 골프장",
-    key="golf_open_service",
-    width="stretch",
-):
-    st.switch_page("pages/6_골프장_추천.py")
-
 with st.expander("기타 도구"):
-    if st.button(
-        "🚗 차량 선택기",
-        key="open_car_selector",
-        use_container_width=True,
-    ):
+    if st.button("🚗 차량 선택기", key="open_car_selector", use_container_width=True):
         st.switch_page("pages/4_차량_선택기.py")
 
-    if st.button(
-        "🎞️ GIF 변환기",
-        key="open_gif",
-        use_container_width=True,
-    ):
+    if st.button("🎞️ GIF 변환기", key="open_gif", use_container_width=True):
         st.switch_page("pages/5_GIF_변환기.py")
 
 st.markdown("<div style='height:.1rem'></div>", unsafe_allow_html=True)
