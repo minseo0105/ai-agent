@@ -1,0 +1,46 @@
+{
+  "count": 553,
+  "verifier": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\play_facility_verifier_v2\\20260921_000200\\verifier_result.json",
+  "backup": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\master\\backups\\golf_master_before_final_20260921_000900.json",
+  "additional_tavily": 0,
+  "additional_llm": 0,
+  "catalog_unchanged": true,
+  "stats": {
+    "two_person": {
+      "confirmed": 2,
+      "conditional": 37,
+      "unavailable": 18,
+      "needs_check": 496
+    },
+    "three_person": {
+      "confirmed": 0,
+      "conditional": 22,
+      "unavailable": 22,
+      "needs_check": 509
+    },
+    "nine_hole_twice": {
+      "confirmed": 0,
+      "conditional": 16,
+      "unavailable": 5,
+      "needs_check": 532
+    },
+    "night_round": {
+      "confirmed": 0,
+      "conditional": 14,
+      "unavailable": 2,
+      "needs_check": 537
+    },
+    "par3": {
+      "confirmed": 0,
+      "conditional": 6,
+      "unavailable": 0,
+      "needs_check": 547
+    },
+    "driving_range": {
+      "confirmed": 0,
+      "conditional": 7,
+      "unavailable": 1,
+      "needs_check": 545
+    }
+  }
+}
