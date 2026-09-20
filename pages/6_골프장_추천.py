@@ -999,12 +999,77 @@ with st.container(key="golf"):
 
                 final_count = len(filtered)
 
-                # 선택한 추가조건이 실제 화면에 즉시 체감되도록
-                # '모든 선택조건이 확인된 곳'을 먼저, '정보 미확인'을 뒤에 표시한다.
-                # 추천점수/랭킹은 사용하지 않고 각 그룹 안에서는 이름순이다.
+                # 확인된 선택조건 수 → 미확인 수 → 요금 확인 → 정보 충실도 → 이름순.
+                # 내부 정렬에만 사용하며 기존 조건 확인 구분과 필터는 변경하지 않는다.
                 def _condition_sort_key(club):
-                    _status, _confirmed, _pending = _result_confidence(club, cond)
-                    return (0 if _status == "confirmed" else 1, str(club.get("name") or ""))
+                    import math
+
+                    def _has_value(value):
+                        if value is None:
+                            return False
+                        if isinstance(value, str):
+                            return bool(value.strip())
+                        if isinstance(value, dict):
+                            return any(_has_value(item) for item in value.values())
+                        if isinstance(value, (list, tuple, set)):
+                            return any(_has_value(item) for item in value)
+                        if isinstance(value, (int, float)):
+                            return math.isfinite(value)
+                        return False
+
+                    def _has_amount(value):
+                        if isinstance(value, bool) or not _has_value(value):
+                            return False
+                        try:
+                            amount = float(str(value).replace(",", "").replace("원", "").strip())
+                        except (TypeError, ValueError):
+                            return False
+                        return math.isfinite(amount) and amount >= 0
+
+                    confirmed_features = sum(
+                        _objective_feature_status(club, feature) is True
+                        for feature in set(cond.get("objective_features") or [])
+                    )
+                    _status, _confirmed, pending = _result_confidence(club, cond)
+                    price_missing = 0
+                    if cond.get("budget"):
+                        try:
+                            estimated = estimate_per_person(
+                                club, bool(cond.get("weekend")), int(cond.get("players") or 4)
+                            )
+                        except Exception:
+                            estimated = None
+                        price_missing = 0 if _has_amount(estimated) else 1
+
+                    fee = club.get("fee") or {}
+                    fee_known = isinstance(fee, dict) and (
+                        fee.get("verified") is True
+                        or any(_has_amount(fee.get(key)) for key in (
+                            "weekday_green", "weekend_green", "weekday", "weekend",
+                            "cart_team", "caddie_team", "three_person_weekday_extra",
+                            "three_person_weekend_extra",
+                        ))
+                    )
+                    information_count = sum((
+                        _has_value(club.get("holes")),
+                        any(_has_value(club.get(key)) for key in ("official_url", "website", "homepage")),
+                        any(_has_value(club.get(key)) for key in ("booking_url", "reservation_url", "reserve_url")),
+                        _has_value(club.get("phone")),
+                        _has_value(club.get("address")),
+                        club_lat_lon(club) is not None,
+                        fee_known,
+                        _has_value(club.get("courses")),
+                        _has_value(club.get("play")),
+                        _has_value(club.get("facilities")),
+                        _has_value(club.get("data_checked")),
+                    ))
+                    return (
+                        -confirmed_features,
+                        len(pending),
+                        price_missing,
+                        -information_count,
+                        str(club.get("name") or ""),
+                    )
 
                 filtered = sorted(filtered, key=_condition_sort_key)
                 confirmed_count = 0
