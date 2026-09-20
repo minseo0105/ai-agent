@@ -1,0 +1,9 @@
+{
+  "source": "https://www.kgagolf.or.kr/infor/infor_data/AllRatings_24.pdf",
+  "source_date": "2024-07-15",
+  "parsed_rows": 1795,
+  "matched_clubs": 136,
+  "ratings_saved": 1182,
+  "unmatched_parsed_rows": 613,
+  "backup": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\backups\\catalog_before_kga_ratings_20260920_160533.json"
+}

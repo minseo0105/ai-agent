@@ -30,7 +30,6 @@ from services.golf_pool_updater import (
     test_vworld_connection,
 )
 from services.golf_public_data import dual_verification_summary
-from services.golf_kga_ui import render_kga_course_intelligence
 
 from services.golf_review_store import (
     load_runtime_summary,
@@ -745,87 +744,6 @@ def _objective_feature_status(club, key):
     return None
 
 
-def _kga_num(value):
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def _kga_rating_summary(club):
-    """KGA 저장 rating에서 대표 난이도 값을 만든다. 임의 rating 생성 없음."""
-    ratings = ((club.get("kga") or {}).get("ratings") or [])
-    if not ratings:
-        return None
-
-    # 현재 UI는 성별 입력이 없으므로 남자 rating을 우선 사용하고, 없으면 전체를 사용.
-    male = [r for r in ratings if str(r.get("gender") or "").strip() in ("남자", "M", "Male")]
-    rows = male or ratings
-
-    slopes = [_kga_num(r.get("slope_rating")) for r in rows]
-    lengths = [_kga_num(r.get("length_yds")) for r in rows]
-    slopes = [x for x in slopes if x is not None]
-    lengths = [x for x in lengths if x is not None]
-
-    if not slopes:
-        return None
-
-    return {
-        "slope": sum(slopes) / len(slopes),
-        "length_yds": (sum(lengths) / len(lengths)) if lengths else None,
-    }
-
-
-def _skill_target_slope(avg_score, challenge):
-    """
-    평균타수는 Handicap Index가 아니므로 공식 핸디캡 계산에 쓰지 않는다.
-    아래 값은 검색 정렬용 '참고 목표 난이도'일 뿐이다.
-    """
-    score = int(avg_score or 100)
-    if score >= 110:
-        base = 118
-    elif score >= 100:
-        base = 123
-    elif score >= 90:
-        base = 128
-    else:
-        base = 133
-    return base + {"편하게": -7, "적당히": 0, "도전": 8}.get(challenge, 0)
-
-
-def _skill_fit(club, avg_score, challenge):
-    summary = _kga_rating_summary(club)
-    if not summary:
-        return {
-            "known": False,
-            "distance": 999.0,
-            "label": "KGA 공인 난이도 확인 필요",
-            "detail": "KGA Course/Slope 상세값 없음",
-        }
-
-    slope = summary["slope"]
-    target = _skill_target_slope(avg_score, challenge)
-    distance = abs(slope - target)
-
-    if distance <= 5:
-        label = "내 설정과 비슷한 난이도"
-    elif slope < target:
-        label = "내 설정보다 편한 편"
-    else:
-        label = "내 설정보다 도전적인 편"
-
-    bits = [f"KGA 평균 Slope {slope:.0f}"]
-    if summary.get("length_yds"):
-        bits.append(f"평균 전장 {summary['length_yds']:,.0f}yd")
-    bits.append(f"평균 {int(avg_score)}타 · {challenge} 기준 참고")
-    return {
-        "known": True,
-        "distance": distance,
-        "label": label,
-        "detail": " · ".join(bits),
-    }
-
-
 def _descriptive_badges(club):
     """카드에 표시할 주관적 특징은 필터가 아니라 참고 배지로만 사용."""
     badges = []
@@ -1031,29 +949,6 @@ with st.container(key="golf"):
                 st.caption("요일")
             is_weekend = day_type == "주말/공휴일"
 
-            st.markdown("##### 내 실력 · 원하는 난이도 <span style='font-size:.72rem;font-weight:500;opacity:.55'>선택사항</span>", unsafe_allow_html=True)
-            c_skill, c_challenge = st.columns(2)
-            with c_skill:
-                avg_score_label = st.selectbox(
-                    "내 평균타수",
-                    ["미선택", "80타대", "90타대", "100타대", "110타 이상"],
-                    index=0,
-                    key="golf_avg_score",
-                )
-            with c_challenge:
-                challenge = st.segmented_control(
-                    "원하는 난이도",
-                    ["편하게", "적당히", "도전"],
-                    default="적당히",
-                    key="golf_challenge",
-                )
-            avg_score = {
-                "80타대": 85,
-                "90타대": 95,
-                "100타대": 105,
-                "110타 이상": 115,
-            }.get(avg_score_label)
-
             st.markdown("##### 추가 조건 <span style='font-size:.72rem;font-weight:500;opacity:.55'>선택사항</span>", unsafe_allow_html=True)
             objective_choice = mobile_multi_choice(
                 "시설 · 운영 조건",
@@ -1087,8 +982,6 @@ with st.container(key="golf"):
                     "objective_features": list(objective_choice),
                     # 인원은 별도 상단 조건이 없다. 2인/3인은 objective_features에서 독립 판정한다.
                     "players": 4,
-                    "avg_score": avg_score,
-                    "challenge": challenge or "적당히",
                 }
                 st.session_state.golf_rec_conditions = cond
 
@@ -1211,20 +1104,6 @@ with st.container(key="golf"):
                     )
 
                 filtered = sorted(filtered, key=_condition_sort_key)
-
-                # 평균타수를 선택한 경우, 기존 조건 품질 순서를 유지하면서
-                # KGA 공인 Slope가 사용자 설정과 가까운 골프장을 우선 표시.
-                if cond.get("avg_score"):
-                    filtered = sorted(
-                        filtered,
-                        key=lambda c: (
-                            _condition_sort_key(c)[:-1],
-                            0 if _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히")["known"] else 1,
-                            _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히")["distance"],
-                            str(c.get("name") or ""),
-                        ),
-                    )
-
                 confirmed_count = 0
                 pending_count = 0
                 for result_club in filtered:
@@ -1376,9 +1255,6 @@ with st.container(key="golf"):
                     chips.append(f'{cond["budget"] // 10000}만원 이하')
                 if cond.get("objective_features"):
                     chips.extend(cond["objective_features"])
-                if cond.get("avg_score"):
-                    chips.append(f'평균 {cond["avg_score"]}타 참고')
-                    chips.append(cond.get("challenge") or "적당히")
                 st.success("검색 적용: " + " · ".join(chips))
 
             st.markdown("### 검색 결과")
@@ -1464,20 +1340,6 @@ with st.container(key="golf"):
                             fact_text = " · ".join(facts) if facts else "세부 이용정보는 상세에서 확인"
                             descriptive = _descriptive_badges(course)
                             badge_text = " · ".join(descriptive)
-
-                            skill_html = ""
-                            if cond and cond.get("avg_score"):
-                                skill = _skill_fit(
-                                    course,
-                                    cond["avg_score"],
-                                    cond.get("challenge") or "적당히",
-                                )
-                                skill_html = (
-                                    f'<div class="why" style="margin-top:6px">'
-                                    f'<b>🎯 {escape(skill["label"])}</b><br>'
-                                    f'{escape(skill["detail"])}</div>'
-                                )
-
                             st.html(f"""
                             <div class="decision-card">
                                 <div class="sm">{escape(badge)}</div>
@@ -1487,7 +1349,6 @@ with st.container(key="golf"):
                                 <div class="why"><b>{escape(evidence)}</b></div>
                                 <div class="sm">{escape(fact_text)}</div>
                                 {f'<div class="sm">{escape(badge_text)}</div>' if badge_text else ''}
-                                {skill_html}
                             </div>
                             """)
                             if st.button("상세보기",
@@ -1591,6 +1452,7 @@ with st.container(key="golf"):
                     )
                 st.session_state["vworld_test_result"] = result
             except Exception as ex:
+                st.session_state["golf_pool_refresh_result"] = updated
                 st.session_state.pop("vworld_test_result", None)
                 st.error(f"VWorld 연결 테스트 실패: {ex}")
 
@@ -1716,9 +1578,6 @@ with st.container(key="golf"):
         </div>
         """
     )
-
-    # KGA 공인 코스정보
-    render_kga_course_intelligence(club)
 
     # =====================================================
     # CONTACT / NAVIGATION
