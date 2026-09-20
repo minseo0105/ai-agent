@@ -1,0 +1,7342 @@
+{
+  "catalog_count": 553,
+  "complete_basic_count": 0,
+  "missing_by_field": {
+    "operation_type": 459,
+    "holes": 537,
+    "courses": 344,
+    "official_url": 534,
+    "booking_url": 550,
+    "phone": 475
+  },
+  "web_target_count": 553,
+  "previous_result_reuse_count": 50,
+  "new_web_target_count": 503,
+  "estimated_min_calls": 503,
+  "estimated_max_calls": 1004,
+  "targets": [
+    {
+      "position": 1,
+      "id": "vworld_태릉골프장",
+      "name": "태릉골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 2,
+      "id": "vworld_해라",
+      "name": "해라컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 3,
+      "id": "vworld_스마트ku골프파빌리온",
+      "name": "스마트KU골프파빌리온",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 4,
+      "id": "vworld_서원밸리g_c",
+      "name": "서원밸리G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 5,
+      "id": "vworld_제이퍼블릭",
+      "name": "제이퍼블릭",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 6,
+      "id": "vworld_베스트밸리",
+      "name": "베스트밸리골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 7,
+      "id": "vworld_주_파주",
+      "name": "(주)파주컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 8,
+      "id": "vworld_파주프리스틴밸리",
+      "name": "파주프리스틴밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 9,
+      "id": "vworld_타이거",
+      "name": "타이거CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 10,
+      "id": "kgba_뉴스프링빌",
+      "name": "뉴스프링빌",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 11,
+      "id": "vworld_덕평c_c",
+      "name": "덕평C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 12,
+      "id": "vworld_ba비스타c_c",
+      "name": "BA비스타C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 13,
+      "id": "vworld_은마골프장",
+      "name": "은마골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 14,
+      "id": "vworld_휘닉스스프링스",
+      "name": "휘닉스스프링스CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 15,
+      "id": "vworld_블랙스톤",
+      "name": "블랙스톤",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 16,
+      "id": "vworld_더반",
+      "name": "더반골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 17,
+      "id": "vworld_비승대체력단련장",
+      "name": "비승대체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 18,
+      "id": "vworld_신안c_c",
+      "name": "신안C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 19,
+      "id": "vworld_안성c_c",
+      "name": "안성C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 20,
+      "id": "vworld_안성베네스트g_c",
+      "name": "안성베네스트G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 21,
+      "id": "vworld_아시아드c_c",
+      "name": "아시아드C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 22,
+      "id": "vworld_윈체스트",
+      "name": "윈체스트골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 23,
+      "id": "vworld_파인크리크c_c",
+      "name": "파인크리크C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 24,
+      "id": "vworld_에덴블루c_c",
+      "name": "에덴블루 C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 25,
+      "id": "vworld_마에스트로c_c",
+      "name": "마에스트로C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 26,
+      "id": "vworld_q안성",
+      "name": "골프클럽Q안성",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 27,
+      "id": "vworld_레이크힐스안성퍼블릭",
+      "name": "레이크힐스안성퍼블릭",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 28,
+      "id": "vworld_신안퍼블릭c_c",
+      "name": "신안퍼블릭C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 29,
+      "id": "vworld_웨스트파인골프코스",
+      "name": "웨스트파인골프코스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 30,
+      "id": "vworld_파인크리크c_c대중",
+      "name": "파인크리크C.C대중",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 31,
+      "id": "vworld_해운대c_c",
+      "name": "해운대C.C",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 32,
+      "id": "kgba_골프존카운티_안성h",
+      "name": "골프존카운티 안성H",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 33,
+      "id": "vworld_김포seaside",
+      "name": "김포SEASIDE컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 34,
+      "id": "kgba_기흥",
+      "name": "기흥",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 35,
+      "id": "kgba_리베라",
+      "name": "리베라",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 36,
+      "id": "kgba_발리오스",
+      "name": "발리오스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 37,
+      "id": "vworld_라비돌",
+      "name": "라비돌CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 38,
+      "id": "vworld_링크나인",
+      "name": "링크나인골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 39,
+      "id": "vworld_화성",
+      "name": "화성골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 40,
+      "id": "vworld_베이사이드",
+      "name": "베이사이드골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 41,
+      "id": "kgba_화성상록",
+      "name": "화성상록",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 42,
+      "id": "vworld_남수원체력단련장",
+      "name": "남수원체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 43,
+      "id": "vworld_덕산대체력단련장",
+      "name": "덕산대체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 44,
+      "id": "kgba_강남300",
+      "name": "강남300",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 45,
+      "id": "vworld_블루버드",
+      "name": "블루버드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 46,
+      "id": "kgba_곤지암",
+      "name": "곤지암",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 47,
+      "id": "kgba_그린힐",
+      "name": "그린힐",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 48,
+      "id": "kgba_남촌",
+      "name": "남촌",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 49,
+      "id": "kgba_뉴서울",
+      "name": "뉴서울",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 50,
+      "id": "kgba_이스트밸리",
+      "name": "이스트밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 51,
+      "id": "vworld_해운대비치골프앤리조트",
+      "name": "해운대비치 골프앤리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 52,
+      "id": "vworld_중부",
+      "name": "중부CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 53,
+      "id": "kgba_레이크우드",
+      "name": "레이크우드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 54,
+      "id": "kgba_송추",
+      "name": "송추",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 55,
+      "id": "kgba_몽베르",
+      "name": "몽베르",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 56,
+      "id": "kgba_일동레이크",
+      "name": "일동레이크",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 57,
+      "id": "kgba_포천아도니스",
+      "name": "포천아도니스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 58,
+      "id": "vworld_필로스",
+      "name": "필로스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 59,
+      "id": "vworld_팔공",
+      "name": "팔공컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 60,
+      "id": "vworld_푸른솔",
+      "name": "푸른솔GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 61,
+      "id": "vworld_베어스타운",
+      "name": "베어스타운",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 62,
+      "id": "vworld_베어크리크",
+      "name": "베어크리크",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 63,
+      "id": "kgba_일동레이크_2",
+      "name": "일동레이크",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 64,
+      "id": "vworld_포천힐스",
+      "name": "포천 힐스 컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 65,
+      "id": "vworld_포레스트힐",
+      "name": "포레스트힐 컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 66,
+      "id": "vworld_참밸리c_c",
+      "name": "참밸리C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 67,
+      "id": "kgba_금강",
+      "name": "금강",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 68,
+      "id": "kgba_렉스필드",
+      "name": "렉스필드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 69,
+      "id": "vworld_냉천",
+      "name": "냉천컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 70,
+      "id": "blueheron",
+      "name": "블루헤런GC",
+      "missing_fields": [
+        "operation_type"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 71,
+      "id": "kgba_솔모로",
+      "name": "솔모로",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 72,
+      "id": "kgba_스카이밸리",
+      "name": "스카이밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 73,
+      "id": "vworld_신라",
+      "name": "신라CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 74,
+      "id": "vworld_여주",
+      "name": "여주CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 75,
+      "id": "kgba_이포",
+      "name": "이포",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 76,
+      "id": "kgba_자유",
+      "name": "자유",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 77,
+      "id": "vworld_캐슬파인",
+      "name": "캐슬파인GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 78,
+      "id": "vworld_세라지오",
+      "name": "세라지오",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 79,
+      "id": "kgba_해슬리나인브릿지",
+      "name": "해슬리나인브릿지",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 80,
+      "id": "vworld_sky72",
+      "name": "Sky72",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 81,
+      "id": "kgba_남여주",
+      "name": "남여주",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 82,
+      "id": "vworld_빅토리아",
+      "name": "빅토리아GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 83,
+      "id": "kgba_소피아그린",
+      "name": "소피아그린",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 84,
+      "id": "vworld_아리지",
+      "name": "아리지CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 85,
+      "id": "vworld_360도",
+      "name": "360도",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 86,
+      "id": "vworld_여주썬밸리",
+      "name": "여주썬밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 87,
+      "id": "vworld_페럼클럽",
+      "name": "페럼클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 88,
+      "id": "vworld_잭니클라우스코리아",
+      "name": "잭니클라우스 골프클럽 코리아",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 89,
+      "id": "vworld_동여주체력단련장",
+      "name": "동여주체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 90,
+      "id": "vworld_노스폴",
+      "name": "노스폴컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 91,
+      "id": "vworld_가평베네스트g_c",
+      "name": "가평베네스트G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 92,
+      "id": "vworld_아난티클럽_구_리츠칼튼c_c",
+      "name": "아난티클럽CC(구,리츠칼튼C.C)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 93,
+      "id": "vworld_마이다스밸리g_c",
+      "name": "마이다스밸리G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 94,
+      "id": "vworld_썬힐g_c",
+      "name": "썬힐G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 95,
+      "id": "vworld_크리스탈밸리g_c",
+      "name": "크리스탈밸리G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 96,
+      "id": "vworld_프리스틴밸리g_c",
+      "name": "프리스틴밸리G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 97,
+      "id": "kgba_가평베네스트",
+      "name": "가평베네스트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 98,
+      "id": "vworld_인서울27_주",
+      "name": "인서울27골프클럽(주)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 99,
+      "id": "vworld_주_송도골프",
+      "name": "(주)송도골프",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 100,
+      "id": "vworld_리앤리",
+      "name": "리앤리CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": true
+    },
+    {
+      "position": 101,
+      "id": "kgba_베뉴지",
+      "name": "베뉴지",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 102,
+      "id": "vworld_더스타휴골프장",
+      "name": "더스타 휴 골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 103,
+      "id": "jade",
+      "name": "제이드팰리스GC",
+      "missing_fields": [
+        "holes",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 104,
+      "id": "vworld_남춘천c_c",
+      "name": "남춘천 C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 105,
+      "id": "vworld_휘슬링락c_c",
+      "name": "휘슬링 락C.C",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 106,
+      "id": "vworld_파가니카c_c",
+      "name": "파가니카 C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 107,
+      "id": "vworld_강촌",
+      "name": "강촌CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 108,
+      "id": "kgba_라데나",
+      "name": "라데나",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 109,
+      "id": "vworld_오너스g_c",
+      "name": "오너스 G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 110,
+      "id": "vworld_인천오렌지듄스",
+      "name": "인천오렌지듄스골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 111,
+      "id": "vworld_스프링베일리조트",
+      "name": "스프링베일리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 112,
+      "id": "vworld_로드힐스",
+      "name": "로드힐스골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 113,
+      "id": "vworld_강촌리조트대중제골프장",
+      "name": "강촌리조트대중제골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 114,
+      "id": "vworld_베어크리크_2",
+      "name": "베어크리크CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 115,
+      "id": "vworld_오크밸리회원제골프장",
+      "name": "오크밸리회원제골프장",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 116,
+      "id": "kgba_오크힐스",
+      "name": "오크힐스",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 117,
+      "id": "kgba_센추리21",
+      "name": "센추리21",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 118,
+      "id": "vworld_센추리21",
+      "name": "센추리21CC-Ⅱ",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 119,
+      "id": "vworld_센추리21대중제",
+      "name": "센추리21대중제",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 120,
+      "id": "vworld_인천국제c_c",
+      "name": "인천국제C.C",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 121,
+      "id": "vworld_파크밸리",
+      "name": "파크밸리GC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 122,
+      "id": "vworld_인터불고원주g_c",
+      "name": "인터불고 원주 G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 123,
+      "id": "vworld_동서울레스피아",
+      "name": "동서울레스피아",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 124,
+      "id": "vworld_원주공군체력단련장_구",
+      "name": "원주공군체력단련장(구)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 125,
+      "id": "vworld_원주공군체력단련장_신",
+      "name": "원주공군체력단련장(신)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 126,
+      "id": "kgba_샌드파인",
+      "name": "샌드파인",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 127,
+      "id": "vworld_메이플비치골프_리조트",
+      "name": "메이플비치골프＆리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 128,
+      "id": "vworld_강릉공군체력단련장",
+      "name": "강릉공군체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 129,
+      "id": "vworld_동해해군체력단련장",
+      "name": "동해해군체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 130,
+      "id": "vworld_o2리조트회원제",
+      "name": "O2리조트회원제",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 131,
+      "id": "vworld_인천그랜드c_c",
+      "name": "인천그랜드C.C",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 132,
+      "id": "vworld_o2리조트대중제",
+      "name": "O2리조트대중제",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 133,
+      "id": "vworld_설악프라자",
+      "name": "설악프라자CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 134,
+      "id": "vworld_영랑호",
+      "name": "영랑호CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 135,
+      "id": "vworld_파인밸리",
+      "name": "파인밸리CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 136,
+      "id": "kgba_블랙밸리",
+      "name": "블랙밸리",
+      "missing_fields": [
+        "holes",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 137,
+      "id": "vworld_힐드로사이c_c",
+      "name": "힐드로사이 C.C",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 138,
+      "id": "vworld_클럽모우골프_라이프스타일",
+      "name": "클럽모우 골프&라이프 스타일",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 139,
+      "id": "vworld_비발디파크",
+      "name": "비발디파크CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 140,
+      "id": "vworld_홍천c_c",
+      "name": "홍천 C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 141,
+      "id": "kgba_소노펠리체",
+      "name": "소노펠리체",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 142,
+      "id": "vworld_드림파크골프장",
+      "name": "드림파크골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 143,
+      "id": "vworld_대명비발디파크골프장",
+      "name": "대명비발디파크골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 144,
+      "id": "vworld_오스타",
+      "name": "오스타CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 145,
+      "id": "vworld_청우",
+      "name": "청우GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 146,
+      "id": "vworld_옥스필드c_c",
+      "name": "옥스필드 C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 147,
+      "id": "kgba_동원썬밸리",
+      "name": "동원썬밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 148,
+      "id": "vworld_오스타퍼블릭",
+      "name": "오스타퍼블릭",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 149,
+      "id": "vworld_섬강벨라스톤",
+      "name": "섬강벨라스톤",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 150,
+      "id": "vworld_동강시스타",
+      "name": "동강시스타",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 151,
+      "id": "kgba_알펜시아",
+      "name": "알펜시아",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 152,
+      "id": "vworld_베어즈베스트청라",
+      "name": "베어즈베스트청라골프클럽",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 153,
+      "id": "vworld_용평2차_버찌힐",
+      "name": "용평2차(버찌힐)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 154,
+      "id": "vworld_용평리조트",
+      "name": "용평리조트GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 155,
+      "id": "vworld_휘닉스파크",
+      "name": "휘닉스파크GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 156,
+      "id": "vworld_알펜시아700",
+      "name": "알펜시아700골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 157,
+      "id": "vworld_용평나인",
+      "name": "용평나인GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 158,
+      "id": "vworld_휘닉스파크대중제골프장",
+      "name": "휘닉스파크대중제골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 159,
+      "id": "kgba_하이원",
+      "name": "하이원",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 160,
+      "id": "vworld_에콜리안정선",
+      "name": "에콜리안 정선CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 161,
+      "id": "vworld_한탄강",
+      "name": "한탄강CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 162,
+      "id": "pineridge",
+      "name": "파인리즈CC",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 163,
+      "id": "vworld_빛고을",
+      "name": "빛고을컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 164,
+      "id": "vworld_델피노c_c",
+      "name": "델피노C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 165,
+      "id": "vworld_알프스퍼블릭",
+      "name": "알프스퍼블릭",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 166,
+      "id": "vworld_대명설악",
+      "name": "대명설악컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 167,
+      "id": "vworld_설악썬밸리",
+      "name": "설악썬밸리CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 168,
+      "id": "vworld_골든비치",
+      "name": "골든비치",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 169,
+      "id": "vworld_이븐데일",
+      "name": "이븐데일CC",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 170,
+      "id": "vworld_공군사관학교",
+      "name": "공군사관학교",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 171,
+      "id": "vworld_실크리버",
+      "name": "실크리버CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 172,
+      "id": "vworld_떼제베",
+      "name": "떼제베CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 173,
+      "id": "vworld_떼제베_2",
+      "name": "떼제베CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 174,
+      "id": "vworld_어등산",
+      "name": "어등산CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 175,
+      "id": "kgba_그랜드",
+      "name": "그랜드",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 176,
+      "id": "vworld_상떼힐",
+      "name": "상떼힐CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 177,
+      "id": "kgba_센테리움",
+      "name": "센테리움",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 178,
+      "id": "vworld_시그너스",
+      "name": "시그너스CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 179,
+      "id": "vworld_임페리얼레이크",
+      "name": "임페리얼레이크CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 180,
+      "id": "vworld_로얄포레",
+      "name": "로얄포레CC",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 181,
+      "id": "vworld_동촌",
+      "name": "동촌골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 182,
+      "id": "vworld_중원",
+      "name": "중원골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 183,
+      "id": "vworld_대영베이스",
+      "name": "대영베이스CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 184,
+      "id": "vworld_에콜리안광산골프장",
+      "name": "에콜리안광산 골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 185,
+      "id": "kingsdale",
+      "name": "킹스데일GC",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 186,
+      "id": "vworld_대영힐스",
+      "name": "대영힐스CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 187,
+      "id": "vworld_세일",
+      "name": "세일컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 188,
+      "id": "vworld_공군제19전투비행단",
+      "name": "공군제19전투비행단",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 189,
+      "id": "vworld_힐데스하임",
+      "name": "힐데스하임CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 190,
+      "id": "vworld_에콜리안제천골프장",
+      "name": "에콜리안 제천골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 191,
+      "id": "vworld_아리솔",
+      "name": "아리솔CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 192,
+      "id": "vworld_클럽디속리산",
+      "name": "클럽디속리산CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 193,
+      "id": "vworld_벨포레",
+      "name": "벨포레CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 194,
+      "id": "vworld_theemersongoldclub",
+      "name": "THE EMERSON GoldClub",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 195,
+      "id": "vworld_천룡골프장",
+      "name": "천룡골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 196,
+      "id": "vworld_아트밸리",
+      "name": "아트밸리컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 197,
+      "id": "vworld_천룡골프장_2",
+      "name": "천룡골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 198,
+      "id": "vworld_히든밸리",
+      "name": "히든밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 199,
+      "id": "vworld_크리스탈카운티",
+      "name": "크리스탈카운티CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 200,
+      "id": "rainbow",
+      "name": "레인보우힐스CC",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 201,
+      "id": "kgba_썬밸리",
+      "name": "썬밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 202,
+      "id": "vworld_젠스필드",
+      "name": "젠스필드CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 203,
+      "id": "kgba_코스카",
+      "name": "코스카",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 204,
+      "id": "vworld_남성대체력단련장",
+      "name": "남성대체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 205,
+      "id": "vworld_광주체력단련장",
+      "name": "광주체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 206,
+      "id": "vworld_진양밸리",
+      "name": "진양밸리CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 207,
+      "id": "vworld_대호단양",
+      "name": "대호단양CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 208,
+      "id": "vworld_버드우드g_c",
+      "name": "버드우드G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 209,
+      "id": "vworld_우정힐스c_c",
+      "name": "우정힐스C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 210,
+      "id": "vworld_마론뉴데이",
+      "name": "마론뉴데이cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 211,
+      "id": "vworld_상록c_c",
+      "name": "상록C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 212,
+      "id": "vworld_골드힐골프연습장",
+      "name": "골드힐골프연습장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 213,
+      "id": "vworld_천안",
+      "name": "천안골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 214,
+      "id": "kgba_유성",
+      "name": "유성",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 215,
+      "id": "vworld_프린세스c_c",
+      "name": "프린세스C.C",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 216,
+      "id": "vworld_골드리버",
+      "name": "골드리버CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 217,
+      "id": "vworld_웨스토피아",
+      "name": "웨스토피아CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 218,
+      "id": "vworld_도고c_c",
+      "name": "도고C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 219,
+      "id": "vworld_아름다운c_c",
+      "name": "아름다운C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 220,
+      "id": "vworld_윈체스트서산",
+      "name": "윈체스트CC 서산",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 221,
+      "id": "vworld_더힐",
+      "name": "더힐컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 222,
+      "id": "vworld_육군항공학교체력단련장",
+      "name": "육군항공학교체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 223,
+      "id": "vworld_파나시아골프장",
+      "name": "파나시아골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 224,
+      "id": "vworld_석문체육공원",
+      "name": "석문체육공원",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 225,
+      "id": "vworld_금실대덕밸리",
+      "name": "금실대덕밸리cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 226,
+      "id": "vworld_에딘버러c_c",
+      "name": "에딘버러C.C",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 227,
+      "id": "vworld_백제",
+      "name": "백제컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 228,
+      "id": "vworld_태안비치c_c",
+      "name": "태안비치C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 229,
+      "id": "vworld_골든베이골프_리조트",
+      "name": "골든베이 골프&리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 230,
+      "id": "vworld_파인스톤c_c",
+      "name": "파인스톤C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 231,
+      "id": "vworld_전주월드컵",
+      "name": "전주월드컵컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 232,
+      "id": "vworld_군산",
+      "name": "군산컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 233,
+      "id": "vworld_베어리버골프리조트",
+      "name": "베어리버골프리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 234,
+      "id": "vworld_대덕개발특구복지센터",
+      "name": "대덕개발특구복지센터",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 235,
+      "id": "vworld_상떼힐익산",
+      "name": "상떼힐 익산CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 236,
+      "id": "vworld_상데힐",
+      "name": "상데힐 CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 237,
+      "id": "vworld_베어리버골프리조트_2",
+      "name": "베어리버골프리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 238,
+      "id": "vworld_태인",
+      "name": "태인컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 239,
+      "id": "vworld_내장산골프_리조트",
+      "name": "내장산골프&리조트",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 240,
+      "id": "vworld_드라곤레이크",
+      "name": "드라곤레이크CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 241,
+      "id": "vworld_남원상록골프장",
+      "name": "남원상록골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 242,
+      "id": "vworld_스파힐스",
+      "name": "스파힐스컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 243,
+      "id": "vworld_자운대체력단련장",
+      "name": "자운대체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 244,
+      "id": "vworld_아네스빌",
+      "name": "아네스빌컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 245,
+      "id": "vworld_에스페란사",
+      "name": "에스페란사컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 246,
+      "id": "vworld_오케이",
+      "name": "오케이컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 247,
+      "id": "vworld_운선",
+      "name": "운선컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 248,
+      "id": "vworld_써미트",
+      "name": "써미트CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 249,
+      "id": "vworld_무주",
+      "name": "무주컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 250,
+      "id": "vworld_무주안성",
+      "name": "무주안성cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 251,
+      "id": "vworld_장수골프_리조트",
+      "name": "장수골프&리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 252,
+      "id": "vworld_전주샹그릴라",
+      "name": "전주샹그릴라컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 253,
+      "id": "vworld_순창",
+      "name": "순창CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 254,
+      "id": "vworld_보라",
+      "name": "보라컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 255,
+      "id": "vworld_금과간이골프장",
+      "name": "금과간이골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 256,
+      "id": "vworld_고창",
+      "name": "고창컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 257,
+      "id": "vworld_골프존카운티선운",
+      "name": "골프존카운티선운",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 258,
+      "id": "vworld_석정힐",
+      "name": "석정힐CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 259,
+      "id": "vworld_여수경도",
+      "name": "여수경도",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 260,
+      "id": "vworld_시티파크리조트",
+      "name": "시티파크리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 261,
+      "id": "vworld_디오션",
+      "name": "디오션CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 262,
+      "id": "vworld_승주",
+      "name": "승주",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 263,
+      "id": "vworld_파인힐스",
+      "name": "파인힐스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 264,
+      "id": "vworld_레이크힐스순천",
+      "name": "레이크힐스순천",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 265,
+      "id": "vworld_울산",
+      "name": "울산컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 266,
+      "id": "vworld_힐사이드",
+      "name": "힐사이드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 267,
+      "id": "vworld_순천부영c_c",
+      "name": "순천부영C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 268,
+      "id": "vworld_레이크힐스",
+      "name": "레이크힐스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 269,
+      "id": "vworld_골드레이크",
+      "name": "골드레이크",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 270,
+      "id": "vworld_해피니스",
+      "name": "해피니스컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 271,
+      "id": "vworld_골드그린",
+      "name": "골드그린",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 272,
+      "id": "vworld_나주",
+      "name": "나주",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 273,
+      "id": "vworld_나주힐스",
+      "name": "나주힐스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 274,
+      "id": "vworld_나주휴튼",
+      "name": "나주휴튼",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 275,
+      "id": "vworld_담양다이너스티",
+      "name": "담양다이너스티",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 276,
+      "id": "vworld_창평",
+      "name": "창평",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 277,
+      "id": "vworld_광주",
+      "name": "광주",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 278,
+      "id": "vworld_보성",
+      "name": "보성",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 279,
+      "id": "vworld_남광주",
+      "name": "남광주",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 280,
+      "id": "vworld_화순",
+      "name": "화순CC",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 281,
+      "id": "vworld_골드그린골프장",
+      "name": "골드그린골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 282,
+      "id": "vworld_무등산",
+      "name": "무등산",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 283,
+      "id": "vworld_조아벨리",
+      "name": "조아벨리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 284,
+      "id": "vworld_jnj골프리조트",
+      "name": "JNJ골프리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 285,
+      "id": "vworld_다산베아채",
+      "name": "다산베아채",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 286,
+      "id": "vworld_파인비치",
+      "name": "파인비치",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 287,
+      "id": "vworld_오시아노",
+      "name": "오시아노",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 288,
+      "id": "vworld_아크로",
+      "name": "아크로",
+      "missing_fields": [
+        "holes",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 289,
+      "id": "vworld_사우스링스영암",
+      "name": "사우스링스 영암CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 290,
+      "id": "vworld_무안클린밸리",
+      "name": "무안클린밸리cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 291,
+      "id": "vworld_스타스콥c_c",
+      "name": "스타스콥C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 292,
+      "id": "vworld_무안",
+      "name": "무안",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 293,
+      "id": "vworld_함평다이너스티",
+      "name": "함평다이너스티",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 294,
+      "id": "vworld_영광c_c",
+      "name": "영광 C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 295,
+      "id": "vworld_백양우리",
+      "name": "백양우리컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 296,
+      "id": "vworld_푸른솔_2",
+      "name": "푸른솔GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 297,
+      "id": "vworld_상무대",
+      "name": "상무대",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 298,
+      "id": "vworld_포항체력단련장_해병대",
+      "name": "포항체력단련장(해병대)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 299,
+      "id": "vworld_오션힐스포항",
+      "name": "오션힐스포항",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 300,
+      "id": "vworld_송라제니스",
+      "name": "송라제니스CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 301,
+      "id": "vworld_오션힐스포항_2",
+      "name": "오션힐스포항",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 302,
+      "id": "vworld_남성대퍼블릭체력단련장",
+      "name": "남성대퍼블릭체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 303,
+      "id": "kgba_세종에머슨",
+      "name": "세종에머슨",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 304,
+      "id": "vworld_청하이스턴",
+      "name": "청하이스턴CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 305,
+      "id": "vworld_경주신라",
+      "name": "경주신라",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 306,
+      "id": "vworld_블루원보문",
+      "name": "블루원보문CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 307,
+      "id": "vworld_마우나오션",
+      "name": "마우나오션CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 308,
+      "id": "vworld_서라벌",
+      "name": "서라벌",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 309,
+      "id": "vworld_경주",
+      "name": "경주CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 310,
+      "id": "vworld_레전드",
+      "name": "레전드CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 311,
+      "id": "vworld_보문",
+      "name": "보문GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 312,
+      "id": "vworld_선리치",
+      "name": "선리치CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 313,
+      "id": "kgba_세종필드",
+      "name": "세종필드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 314,
+      "id": "vworld_우리",
+      "name": "우리GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 315,
+      "id": "vworld_제이스시사이드",
+      "name": "제이스시사이드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 316,
+      "id": "vworld_코오롱호텔가든",
+      "name": "코오롱호텔가든",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 317,
+      "id": "vworld_이스트힐",
+      "name": "이스트힐cc",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 318,
+      "id": "vworld_베네치아",
+      "name": "베네치아cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 319,
+      "id": "vworld_김천포도",
+      "name": "김천포도CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 320,
+      "id": "vworld_남안동",
+      "name": "남안동CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 321,
+      "id": "vworld_탑블리스",
+      "name": "탑블리스CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 322,
+      "id": "vworld_휴그린",
+      "name": "휴그린 골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 323,
+      "id": "vworld_선산",
+      "name": "선산CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 324,
+      "id": "vworld_세종레이캐슬",
+      "name": "세종레이캐슬GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 325,
+      "id": "vworld_구미",
+      "name": "구미컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 326,
+      "id": "vworld_제이스",
+      "name": "제이스CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 327,
+      "id": "vworld_구미_2",
+      "name": "구미CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 328,
+      "id": "vworld_오펠",
+      "name": "오펠GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 329,
+      "id": "vworld_영천",
+      "name": "영천CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 330,
+      "id": "vworld_영천체력단련장_충성대",
+      "name": "영천체력단련장(충성대)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 331,
+      "id": "vworld_뉴스프링빌2",
+      "name": "뉴스프링빌2",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 332,
+      "id": "vworld_블루원상주골프리조트",
+      "name": "블루원상주 골프리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 333,
+      "id": "vworld_문경",
+      "name": "문경GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 334,
+      "id": "vworld_수원공군체력단련장",
+      "name": "수원공군체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 335,
+      "id": "vworld_경산인터불고",
+      "name": "경산인터불고",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 336,
+      "id": "vworld_대구",
+      "name": "대구CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 337,
+      "id": "vworld_꽃담c_c",
+      "name": "꽃담C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 338,
+      "id": "vworld_군위오펠g_c",
+      "name": "군위오펠G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 339,
+      "id": "vworld_엠스클럽의성_9홀",
+      "name": "엠스클럽의성(9홀)",
+      "missing_fields": [
+        "operation_type",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 340,
+      "id": "vworld_엠스클럽의성_18홀",
+      "name": "엠스클럽의성(18홀)",
+      "missing_fields": [
+        "operation_type",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 341,
+      "id": "vworld_오션뷰",
+      "name": "오션뷰CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 342,
+      "id": "vworld_그레이스",
+      "name": "그레이스CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 343,
+      "id": "vworld_오션힐스청도",
+      "name": "오션힐스청도CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 344,
+      "id": "vworld_성남공군체력단련장",
+      "name": "성남공군체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 345,
+      "id": "vworld_유니벨리",
+      "name": "유니벨리CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 346,
+      "id": "vworld_대가야",
+      "name": "대가야CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 347,
+      "id": "vworld_롯데스카이힐성주",
+      "name": "롯데스카이힐성주CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 348,
+      "id": "vworld_세븐밸리",
+      "name": "세븐밸리CC",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 349,
+      "id": "vworld_파미힐스_남",
+      "name": "파미힐스CC(남)",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 350,
+      "id": "vworld_파미힐스_동",
+      "name": "파미힐스CC(동)",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 351,
+      "id": "vworld_파미힐스",
+      "name": "파미힐스",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 352,
+      "id": "vworld_가산",
+      "name": "가산CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 353,
+      "id": "vworld_한맥",
+      "name": "한맥CC",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 354,
+      "id": "vworld_주_창원",
+      "name": "(주)창원컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 355,
+      "id": "vworld_남서울골프장",
+      "name": "남서울골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 356,
+      "id": "vworld_용원",
+      "name": "용원",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 357,
+      "id": "vworld_진해해군체력단련장",
+      "name": "진해해군체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 358,
+      "id": "vworld_진주",
+      "name": "진주",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 359,
+      "id": "vworld_타니",
+      "name": "타니",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 360,
+      "id": "vworld_삼삼",
+      "name": "삼삼컨트리클럽",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 361,
+      "id": "vworld_사천",
+      "name": "사천컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 362,
+      "id": "vworld_사천공군체력단련장",
+      "name": "사천공군체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 363,
+      "id": "vworld_가야",
+      "name": "가야",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 364,
+      "id": "vworld_롯데스카이힐김해",
+      "name": "롯데스카이힐김해CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 365,
+      "id": "vworld_해군2함대",
+      "name": "해군2함대",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 366,
+      "id": "vworld_정산",
+      "name": "정산",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 367,
+      "id": "vworld_가야_2",
+      "name": "가야CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 368,
+      "id": "vworld_김해상록g_c",
+      "name": "김해상록 G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 369,
+      "id": "vworld_리더스",
+      "name": "리더스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 370,
+      "id": "vworld_밀양노벨",
+      "name": "밀양노벨컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 371,
+      "id": "vworld_드비치g_c",
+      "name": "드비치G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 372,
+      "id": "vworld_거제뷰",
+      "name": "거제뷰CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 373,
+      "id": "vworld_동부산",
+      "name": "동부산CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 374,
+      "id": "vworld_에덴밸리",
+      "name": "에덴밸리",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 375,
+      "id": "vworld_에이원",
+      "name": "에이원",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 376,
+      "id": "kgba_티클라우드",
+      "name": "티클라우드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 377,
+      "id": "vworld_통도",
+      "name": "통도",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 378,
+      "id": "vworld_양산",
+      "name": "양산컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 379,
+      "id": "vworld_다이아몬드c_c",
+      "name": "다이아몬드C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 380,
+      "id": "vworld_의령친환경골프장",
+      "name": "의령친환경골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 381,
+      "id": "vworld_주_레이크힐스경남",
+      "name": "(주)레이크힐스경남",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 382,
+      "id": "vworld_부곡",
+      "name": "부곡",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 383,
+      "id": "vworld_힐마루",
+      "name": "힐마루CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 384,
+      "id": "vworld_노벨",
+      "name": "노벨CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 385,
+      "id": "vworld_고성",
+      "name": "고성CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 386,
+      "id": "vworld_제일스포츠센타",
+      "name": "제일스포츠센타",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 387,
+      "id": "vworld_힐튼남해c_c",
+      "name": "힐튼남해C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 388,
+      "id": "vworld_힐튼남해g_c",
+      "name": "힐튼남해G.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 389,
+      "id": "vworld_사우스케이프오너스클럽",
+      "name": "사우스케이프오너스클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 390,
+      "id": "vworld_사우스케이프오너스",
+      "name": "사우스케이프오너스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 391,
+      "id": "vworld_함양리조트",
+      "name": "함양리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 392,
+      "id": "vworld_아델스코트c_c",
+      "name": "아델스코트C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 393,
+      "id": "vworld_라온",
+      "name": "라온",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 394,
+      "id": "vworld_타미우스",
+      "name": "타미우스CC",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 395,
+      "id": "vworld_블랙스톤제주",
+      "name": "블랙스톤제주",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 396,
+      "id": "vworld_세인트포",
+      "name": "세인트포",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 397,
+      "id": "vworld_아일랜드_회원",
+      "name": "아일랜드(회원)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 398,
+      "id": "vworld_에버리스",
+      "name": "에버리스",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 399,
+      "id": "vworld_엘리시안",
+      "name": "엘리시안CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 400,
+      "id": "vworld_오라",
+      "name": "오라",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 401,
+      "id": "vworld_제주",
+      "name": "제주",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 402,
+      "id": "vworld_제주라헨느",
+      "name": "제주라헨느",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 403,
+      "id": "vworld_제피로스",
+      "name": "제피로스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 404,
+      "id": "vworld_크라운",
+      "name": "크라운",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 405,
+      "id": "vworld_한라산",
+      "name": "한라산CC",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 406,
+      "id": "vworld_에코랜드",
+      "name": "에코랜드",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 407,
+      "id": "vworld_아덴힐",
+      "name": "아덴힐",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 408,
+      "id": "vworld_동래베네스트",
+      "name": "동래베네스트골프클럽",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 409,
+      "id": "vworld_아일랜드_대중",
+      "name": "아일랜드(대중)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 410,
+      "id": "vworld_봉개프라자",
+      "name": "봉개프라자",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 411,
+      "id": "vworld_제주_2",
+      "name": "제주",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 412,
+      "id": "vworld_제주힐",
+      "name": "제주힐CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 413,
+      "id": "vworld_플라자제주",
+      "name": "플라자CC제주",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 414,
+      "id": "vworld_나인브릿지",
+      "name": "나인브릿지",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 415,
+      "id": "vworld_더클래식",
+      "name": "더클래식",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 416,
+      "id": "kgba_뉴코리아",
+      "name": "뉴코리아",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 417,
+      "id": "vworld_제주레이크",
+      "name": "제주레이크CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 418,
+      "id": "vworld_부영",
+      "name": "부영cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 419,
+      "id": "vworld_사이프러스",
+      "name": "사이프러스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 420,
+      "id": "vworld_우리들매디컬",
+      "name": "우리들매디컬",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 421,
+      "id": "vworld_제주스카이힐",
+      "name": "제주스카이힐",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 422,
+      "id": "kgba_캐슬렉스",
+      "name": "캐슬렉스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 423,
+      "id": "vworld_테디벨리",
+      "name": "테디벨리",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 424,
+      "id": "vworld_핀크스",
+      "name": "핀크스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 425,
+      "id": "vworld_해비치",
+      "name": "해비치",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 426,
+      "id": "vworld_스프링데일골프_리조트",
+      "name": "스프링데일 골프&리조트",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 427,
+      "id": "kgba_한양",
+      "name": "한양",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 428,
+      "id": "vworld_샤인빌",
+      "name": "샤인빌CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 429,
+      "id": "vworld_중문",
+      "name": "중문",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 430,
+      "id": "vworld_핀크스_2",
+      "name": "핀크스GC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 431,
+      "id": "vworld_올림픽",
+      "name": "올림픽컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 432,
+      "id": "vworld_일산스프링힐스",
+      "name": "일산스프링힐스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 433,
+      "id": "vworld_1_2_3",
+      "name": "1.2.3골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 434,
+      "id": "vworld_고양컨트리",
+      "name": "고양컨트리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 435,
+      "id": "vworld_고양",
+      "name": "고양컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 436,
+      "id": "vworld_광릉",
+      "name": "광릉cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 437,
+      "id": "kgba_양주",
+      "name": "양주",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 438,
+      "id": "vworld_부산",
+      "name": "부산컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 439,
+      "id": "kgba_비전힐스",
+      "name": "비전힐스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 440,
+      "id": "vworld_해비치_2",
+      "name": "해비치cc",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 441,
+      "id": "vworld_남양주",
+      "name": "남양주CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 442,
+      "id": "vworld_솔트베이_대중",
+      "name": "솔트베이(대중)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 443,
+      "id": "vworld_안양베네스트",
+      "name": "안양베네스트골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 444,
+      "id": "kgba_캐슬렉스_2",
+      "name": "캐슬렉스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 445,
+      "id": "lakeside",
+      "name": "레이크사이드CC",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 446,
+      "id": "vworld_레이크힐스용인",
+      "name": "레이크힐스용인컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 447,
+      "id": "vworld_신원c_c",
+      "name": "신원C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 448,
+      "id": "vworld_동래베네스트par3",
+      "name": "동래베네스트 Par3 골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 449,
+      "id": "vworld_아시아나c_c",
+      "name": "아시아나C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 450,
+      "id": "kgba_은화삼",
+      "name": "은화삼",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 451,
+      "id": "kgba_지산",
+      "name": "지산",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 452,
+      "id": "vworld_코리아c_c",
+      "name": "코리아C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 453,
+      "id": "kgba_블루원용인",
+      "name": "블루원용인",
+      "missing_fields": [
+        "operation_type",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 454,
+      "id": "vworld_파인리조트",
+      "name": "파인리조트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 455,
+      "id": "vworld_프라자c_c",
+      "name": "프라자C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 456,
+      "id": "kgba_한원",
+      "name": "한원",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 457,
+      "id": "kgba_화산",
+      "name": "화산",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 458,
+      "id": "vworld_글렌로스",
+      "name": "글렌로스골프클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 459,
+      "id": "vworld_하이스트_js강서_c_c",
+      "name": "하이스트(JS강서)C.C",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 460,
+      "id": "vworld_석천",
+      "name": "석천CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 461,
+      "id": "vworld_용인",
+      "name": "용인CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 462,
+      "id": "kgba_지산_2",
+      "name": "지산",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 463,
+      "id": "kgba_써닝포인트",
+      "name": "써닝포인트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 464,
+      "id": "vworld_해솔리아",
+      "name": "해솔리아CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 465,
+      "id": "vworld_선봉대",
+      "name": "선봉대",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 466,
+      "id": "vworld_처인체력단련장",
+      "name": "처인체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 467,
+      "id": "88cc",
+      "name": "88컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "courses"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 468,
+      "id": "vworld_지사",
+      "name": "지사컨트리클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 469,
+      "id": "kgba_골드",
+      "name": "골드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 470,
+      "id": "kgba_남부",
+      "name": "남부",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 471,
+      "id": "kgba_수원",
+      "name": "수원",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 472,
+      "id": "kgba_태광",
+      "name": "태광",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 473,
+      "id": "kgba_한성",
+      "name": "한성",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 474,
+      "id": "vworld_코리아퍼브릭",
+      "name": "코리아퍼브릭",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 475,
+      "id": "vworld_경찰대학체력단련장",
+      "name": "경찰대학체력단련장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 476,
+      "id": "vworld_서서울골프장",
+      "name": "서서울골프장",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 477,
+      "id": "kgba_라비에벨_듄스",
+      "name": "라비에벨 듄스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 478,
+      "id": "kgba_힐드로사이",
+      "name": "힐드로사이",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 479,
+      "id": "whistling",
+      "name": "휘슬링락CC",
+      "missing_fields": [
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 480,
+      "id": "kgba_휘닉스평창",
+      "name": "휘닉스평창",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 481,
+      "id": "kgba_플라자cc_설악",
+      "name": "플라자CC 설악",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 482,
+      "id": "kgba_카스카디아",
+      "name": "카스카디아",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 483,
+      "id": "kgba_웰리힐리",
+      "name": "웰리힐리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 484,
+      "id": "kgba_용평",
+      "name": "용평",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 485,
+      "id": "kgba_올데이_옥스필드",
+      "name": "올데이 옥스필드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 486,
+      "id": "oak",
+      "name": "오크밸리CC",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 487,
+      "id": "kgba_엘리시안강촌",
+      "name": "엘리시안강촌",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 488,
+      "id": "kgba_세이지우드_홍천",
+      "name": "세이지우드 홍천",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 489,
+      "id": "kgba_설해원",
+      "name": "설해원",
+      "missing_fields": [
+        "holes",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 490,
+      "id": "kgba_벨라45오너스클럽",
+      "name": "벨라45오너스클럽",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 491,
+      "id": "kgba_베어크리크_춘천",
+      "name": "베어크리크 춘천",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 492,
+      "id": "kgba_라비에벨_올드",
+      "name": "라비에벨 올드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 493,
+      "id": "kgba_샴발라",
+      "name": "샴발라",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 494,
+      "id": "kgba_해비치_서울",
+      "name": "해비치(서울)",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 495,
+      "id": "kgba_프리스틴밸리",
+      "name": "프리스틴밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 496,
+      "id": "kgba_푸른솔포천",
+      "name": "푸른솔포천",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 497,
+      "id": "kgba_크리스탈밸리",
+      "name": "크리스탈밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 498,
+      "id": "kgba_잭니클라우스",
+      "name": "잭니클라우스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 499,
+      "id": "kgba_인천국제",
+      "name": "인천국제",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 500,
+      "id": "kgba_아난티클럽서울",
+      "name": "아난티클럽서울",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 501,
+      "id": "kgba_썬힐",
+      "name": "썬힐",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 502,
+      "id": "kgba_서원밸리",
+      "name": "서원밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 503,
+      "id": "kgba_서서울",
+      "name": "서서울",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 504,
+      "id": "kgba_마이다스밸리_청평",
+      "name": "마이다스밸리 청평",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 505,
+      "id": "kgba_노스팜",
+      "name": "노스팜",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 506,
+      "id": "kgba_김포씨사이드",
+      "name": "김포씨사이드",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 507,
+      "id": "kgba_더_시에나_서울",
+      "name": "더 시에나 서울",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 508,
+      "id": "kgba_페럼",
+      "name": "페럼",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 509,
+      "id": "kgba_크리스밸리",
+      "name": "크리스밸리",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 510,
+      "id": "kgba_웰링턴",
+      "name": "웰링턴",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 511,
+      "id": "kgba_여주클래식",
+      "name": "여주클래식",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 512,
+      "id": "kgba_h1_club",
+      "name": "H1 CLUB",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 513,
+      "id": "kgba_안성베네스트",
+      "name": "안성베네스트",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 514,
+      "id": "kgba_신안",
+      "name": "신안",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 515,
+      "id": "southsprings",
+      "name": "사우스스프링스CC",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 516,
+      "id": "kgba_비에이비스타",
+      "name": "비에이비스타",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 517,
+      "id": "blackstone",
+      "name": "블랙스톤 이천",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 518,
+      "id": "kgba_마이다스레이크_이천",
+      "name": "마이다스레이크 이천",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 519,
+      "id": "kgba_route52",
+      "name": "ROUTE52",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 520,
+      "id": "kgba_더스타휴",
+      "name": "더스타휴",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 521,
+      "id": "kgba_남서울",
+      "name": "남서울",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 522,
+      "id": "kgba_플라자cc_용인",
+      "name": "플라자CC 용인",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 523,
+      "id": "kgba_코리아",
+      "name": "코리아",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 524,
+      "id": "kgba_제일",
+      "name": "제일",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 525,
+      "id": "kgba_양지파인",
+      "name": "양지파인",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 526,
+      "id": "kgba_안양",
+      "name": "안양",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 527,
+      "id": "kgba_안성",
+      "name": "안성",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 528,
+      "id": "kgba_아시아나",
+      "name": "아시아나",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 529,
+      "id": "kgba_신원",
+      "name": "신원",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 530,
+      "id": "kgba_골프클럽q",
+      "name": "골프클럽Q",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 531,
+      "id": "kgba_예미지",
+      "name": "예미지",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 532,
+      "id": "kgba_포웰cc_프린세스",
+      "name": "포웰CC 프린세스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 533,
+      "id": "kgba_킹즈락",
+      "name": "킹즈락",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 534,
+      "id": "kgba_천안상록",
+      "name": "천안상록",
+      "missing_fields": [
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 535,
+      "id": "kgba_천룡",
+      "name": "천룡",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 536,
+      "id": "kgba_우정힐스",
+      "name": "우정힐스",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 537,
+      "id": "kgba_올데이_임페리얼레이크",
+      "name": "올데이 임페리얼레이크",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 538,
+      "id": "kgba_올데이_로얄포레",
+      "name": "올데이 로얄포레",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 539,
+      "id": "kgba_sg아름다운",
+      "name": "SG아름다운",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 540,
+      "id": "kgba_에딘버러",
+      "name": "에딘버러",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 541,
+      "id": "kgba_아난티중앙",
+      "name": "아난티중앙",
+      "missing_fields": [
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 542,
+      "id": "kgba_서산수",
+      "name": "서산수",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 543,
+      "id": "kgba_마론",
+      "name": "마론",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 544,
+      "id": "kgba_롯데스카이힐_부여",
+      "name": "롯데스카이힐 부여",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 545,
+      "id": "kgba_도고",
+      "name": "도고",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 546,
+      "id": "kgba_골든베이",
+      "name": "골든베이",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 547,
+      "id": "kgba_계룡대",
+      "name": "계룡대",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "courses",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 548,
+      "id": "kgba_감곡",
+      "name": "감곡",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "official_url",
+        "booking_url",
+        "phone"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 549,
+      "id": "clubd_theplayers",
+      "name": "클럽디 더플레이어스",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 550,
+      "id": "club72",
+      "name": "클럽72",
+      "missing_fields": [
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 551,
+      "id": "clubd_boeun",
+      "name": "클럽디 보은",
+      "missing_fields": [
+        "operation_type",
+        "holes",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 552,
+      "id": "silkriver",
+      "name": "청주 세레니티",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    },
+    {
+      "position": 553,
+      "id": "lavie",
+      "name": "라비에벨CC",
+      "missing_fields": [
+        "operation_type",
+        "booking_url"
+      ],
+      "previous_web_result": false
+    }
+  ]
+}

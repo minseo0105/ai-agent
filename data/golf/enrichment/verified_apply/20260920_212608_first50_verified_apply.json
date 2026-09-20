@@ -1,0 +1,337 @@
+{
+  "mode": "FIRST50_VERIFIED_SAFE_APPLY",
+  "created_at": "2026-09-20T21:26:08.727357+09:00",
+  "source_result": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\master_first50_web\\20260920_211029\\result.json",
+  "catalog_count_before": 553,
+  "catalog_count_after": 553,
+  "source_search_calls": 54,
+  "additional_search_calls": 0,
+  "changes_count": 46,
+  "hold_count": 7,
+  "changes": [
+    {
+      "id": "clubd_theplayers",
+      "name": "클럽디 더플레이어스",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "pineridge",
+      "name": "파인리즈CC",
+      "field": "booking_url",
+      "new": "http://www.pineridge.co.kr"
+    },
+    {
+      "id": "pineridge",
+      "name": "파인리즈CC",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "southsprings",
+      "name": "사우스스프링스CC",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "blueheron",
+      "name": "블루헤런GC",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "whistling",
+      "name": "휘슬링락CC",
+      "field": "booking_url",
+      "new": "https://www.whistlingrockcc.com/Board/NewsEventList"
+    },
+    {
+      "id": "club72",
+      "name": "클럽72",
+      "field": "booking_url",
+      "new": "https://www.onetheclub.com/mo/golfInfo/main?selectCompany=J5A&bookgCourse=&workDate=20260605"
+    },
+    {
+      "id": "lakeside",
+      "name": "레이크사이드CC",
+      "field": "booking_url",
+      "new": "https://www.lakeside.kr/club/guide.do"
+    },
+    {
+      "id": "lakeside",
+      "name": "레이크사이드CC",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "rainbow",
+      "name": "레인보우힐스CC",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "blackstone",
+      "name": "블랙스톤 이천",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "kingsdale",
+      "name": "킹스데일GC",
+      "field": "booking_url",
+      "new": "https://www.kingsdale.co.kr"
+    },
+    {
+      "id": "lavie",
+      "name": "라비에벨CC",
+      "field": "booking_url",
+      "new": "https://www.lavieestbellegolfnresort.com/dunescourse/multi_board/site/board/view.asp?cmd=view&cmval=0&cmkind=&calltype=AJAX&gonexturl=.%2Flist.asp&groupcode=PGALLERY&kind=0&bbsno=65&seq=0&depth=0&open_state=1&search_mode=%7B%7Cpage_name%7C%3A%7C.%2Flist.asp%7C%2C%7Cpage_num%7C%3A%7C1%7C%2C%7Cpage_size%7C%3A20%2C%7Cgroupcode%7C%3A%7CPGALLERY%7C%2C%7Ckind%7C%3A%7C0%7C%2C%7Ctype%7C%3A%7C0%7C%2C%7Csortstr%7C%3A%7C%7C%2C%7Csearch%7C%3A%7C%7C%2C%7Ckeyword%7C%3A%7C%7C%2C%7Csdate%7C%3A%7C%7C%2C%7Cedate%7C%3A%7C%7C%2C%7Copen_state%7C%3A%7C1%7C%7D"
+    },
+    {
+      "id": "jade",
+      "name": "제이드팰리스GC",
+      "field": "booking_url",
+      "new": "https://m.jadepalacegc.com/kr/info/guide.do"
+    },
+    {
+      "id": "vworld_주_창원",
+      "name": "(주)창원컨트리클럽",
+      "field": "official_url",
+      "new": "https://msg1.co.kr/membership_view.php?mbs_idx=278"
+    },
+    {
+      "id": "vworld_가평베네스트g_c",
+      "name": "가평베네스트G.C",
+      "field": "official_url",
+      "new": "https://golf.sbs.co.kr/review/course/692988eed4774316ae4b0a5a"
+    },
+    {
+      "id": "vworld_골든베이골프_리조트",
+      "name": "골든베이 골프&리조트",
+      "field": "official_url",
+      "new": "https://golf.sbs.co.kr/review/course/692988eed47743d0c31a7b24"
+    },
+    {
+      "id": "vworld_골든베이골프_리조트",
+      "name": "골든베이 골프&리조트",
+      "field": "booking_url",
+      "new": "https://golf.sbs.co.kr/review/course/692988eed47743d0c31a7b24"
+    },
+    {
+      "id": "kgba_골프존카운티_안성h",
+      "name": "골프존카운티 안성H",
+      "field": "official_url",
+      "new": "https://dbegl.com/golf-courses/391-%EA%B3%A8%ED%94%84%EC%A1%B4%EC%B9%B4%EC%9A%B4%ED%8B%B0%EC%95%88%EC%84%B1H"
+    },
+    {
+      "id": "kgba_골프존카운티_안성h",
+      "name": "골프존카운티 안성H",
+      "field": "booking_url",
+      "new": "https://dbegl.com/golf-courses/391-%EA%B3%A8%ED%94%84%EC%A1%B4%EC%B9%B4%EC%9A%B4%ED%8B%B0%EC%95%88%EC%84%B1H"
+    },
+    {
+      "id": "kgba_뉴코리아",
+      "name": "뉴코리아",
+      "field": "holes",
+      "new": 18
+    },
+    {
+      "id": "vworld_다이아몬드c_c",
+      "name": "다이아몬드C.C",
+      "field": "phone",
+      "new": "055-392-0700"
+    },
+    {
+      "id": "vworld_동래베네스트",
+      "name": "동래베네스트골프클럽",
+      "field": "official_url",
+      "new": "https://busan.grandculture.net/Contents/Index?contents_id=GC04215770"
+    },
+    {
+      "id": "vworld_동래베네스트",
+      "name": "동래베네스트골프클럽",
+      "field": "phone",
+      "new": "051-580-0300"
+    },
+    {
+      "id": "vworld_동촌",
+      "name": "동촌골프클럽",
+      "field": "holes",
+      "new": 18
+    },
+    {
+      "id": "vworld_마우나오션",
+      "name": "마우나오션CC",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "kgba_몽베르",
+      "name": "몽베르",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "vworld_무등산",
+      "name": "무등산",
+      "field": "official_url",
+      "new": "https://mudeung.knps.or.kr/front/portal/visit/visitCourseMain.do?parkId=122000&menuNo=7020090"
+    },
+    {
+      "id": "vworld_무등산",
+      "name": "무등산",
+      "field": "booking_url",
+      "new": "https://mudeung.knps.or.kr/front/portal/visit/visitCourseMain.do?parkId=122000&menuNo=7020090"
+    },
+    {
+      "id": "vworld_베어즈베스트청라",
+      "name": "베어즈베스트청라골프클럽",
+      "field": "official_url",
+      "new": "https://dbegl.com/golf-courses/306-%EB%B2%A0%EC%96%B4%EC%A6%88%EB%B2%A0%EC%8A%A4%ED%8A%B8%EC%B2%AD%EB%9D%BCGC"
+    },
+    {
+      "id": "vworld_베어즈베스트청라",
+      "name": "베어즈베스트청라골프클럽",
+      "field": "booking_url",
+      "new": "https://dbegl.com/golf-courses/306-%EB%B2%A0%EC%96%B4%EC%A6%88%EB%B2%A0%EC%8A%A4%ED%8A%B8%EC%B2%AD%EB%9D%BCGC"
+    },
+    {
+      "id": "kgba_베어크리크_춘천",
+      "name": "베어크리크 춘천",
+      "field": "phone",
+      "new": "031-539-5700"
+    },
+    {
+      "id": "vworld_보라",
+      "name": "보라컨트리클럽",
+      "field": "official_url",
+      "new": "http://210.114.239.194/info/date.asp"
+    },
+    {
+      "id": "kgba_블랙밸리",
+      "name": "블랙밸리",
+      "field": "official_url",
+      "new": "https://www.blackcc.co.kr/club/intro"
+    },
+    {
+      "id": "vworld_블랙스톤제주",
+      "name": "블랙스톤제주",
+      "field": "phone",
+      "new": "064-795-2121"
+    },
+    {
+      "id": "vworld_블랙스톤제주",
+      "name": "블랙스톤제주",
+      "field": "operation_type",
+      "old": "회원제",
+      "new": "혼합"
+    },
+    {
+      "id": "vworld_블루원상주골프리조트",
+      "name": "블루원상주 골프리조트",
+      "field": "official_url",
+      "new": "https://golf.sbs.co.kr/review/course/692988f1d47743eeaf4cae42"
+    },
+    {
+      "id": "vworld_블루원상주골프리조트",
+      "name": "블루원상주 골프리조트",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "kgba_세종에머슨",
+      "name": "세종에머슨",
+      "field": "official_url",
+      "new": "http://www.ksmgolf.com/main/gmb_board_view.php?no=112&page_no=26&SN=2"
+    },
+    {
+      "id": "kgba_세종에머슨",
+      "name": "세종에머슨",
+      "field": "operation_type",
+      "new": "혼합"
+    },
+    {
+      "id": "kgba_센추리21",
+      "name": "센추리21",
+      "field": "holes",
+      "new": 45
+    },
+    {
+      "id": "vworld_스프링데일골프_리조트",
+      "name": "스프링데일 골프&리조트",
+      "field": "official_url",
+      "new": "https://www.springdale.co.kr/html/customer/customer_01_list.asp"
+    },
+    {
+      "id": "vworld_아크로",
+      "name": "아크로",
+      "field": "official_url",
+      "new": "http://www.acrogolf.co.kr"
+    },
+    {
+      "id": "vworld_아크로",
+      "name": "아크로",
+      "field": "booking_url",
+      "new": "http://www.acrogolf.co.kr"
+    },
+    {
+      "id": "vworld_안성c_c",
+      "name": "안성C.C",
+      "field": "official_url",
+      "new": "https://golf.sbs.co.kr/review/course/692988ecd47743ed3e09e89b?scrollTo=reviews"
+    },
+    {
+      "id": "vworld_안성c_c",
+      "name": "안성C.C",
+      "field": "booking_url",
+      "new": "https://golf.sbs.co.kr/review/course/692988ecd47743ed3e09e89b?scrollTo=reviews"
+    }
+  ],
+  "holds": [
+    {
+      "id": "silkriver",
+      "name": "청주 세레니티",
+      "field": "operation_type",
+      "reason": "웹=혼합 / 공공데이터=회원제 충돌"
+    },
+    {
+      "id": "vworld_무등산",
+      "name": "무등산",
+      "field": "address",
+      "reason": "행정주소 문자열 이상 - 자동 수정 금지"
+    },
+    {
+      "id": "vworld_무안",
+      "name": "무안",
+      "field": "address",
+      "reason": "행정주소 문자열 이상 - 자동 수정 금지"
+    },
+    {
+      "id": "kgba_블랙밸리",
+      "name": "블랙밸리",
+      "field": "operation_type",
+      "reason": "충돌: catalog=회원제 / public=비회원제"
+    },
+    {
+      "id": "kgba_설해원",
+      "name": "설해원",
+      "field": "operation_type",
+      "reason": "충돌: catalog=회원제 / public=비회원제"
+    },
+    {
+      "id": "vworld_스프링데일골프_리조트",
+      "name": "스프링데일 골프&리조트",
+      "field": "operation_type",
+      "reason": "충돌: catalog=회원제 / public=비회원제"
+    },
+    {
+      "id": "vworld_아크로",
+      "name": "아크로",
+      "field": "address",
+      "reason": "행정주소 문자열 이상 - 자동 수정 금지"
+    }
+  ],
+  "backup": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\backups\\catalog_before_first50_verified_apply_20260920_212608.json",
+  "catalog_hash_before": "8f0dffa030fba45dbd0048372c238d9cae685084d8ba254bbe09b46af8424fc2",
+  "catalog_hash_after": "b96a5af4dad0604e02a29064d50bb14f20826b6784a77b06d6e6c2fc0bdd4262"
+}

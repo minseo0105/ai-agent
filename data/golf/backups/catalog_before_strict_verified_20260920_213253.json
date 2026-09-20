@@ -11547,7 +11547,7 @@
     },
     "phone": "",
     "address": "강원특별자치도 삼척시 도계읍 도상로 307-84, 1동 (블랙밸리골프장)",
-    "official_url": "https://www.blackcc.co.kr/club/intro",
+    "official_url": "",
     "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
     "course_source": "KGBA",
     "pool_source": "VWorld LT_P_SGISGOLF",
@@ -11634,16 +11634,7 @@
     },
     "operation_type": "회원제",
     "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations",
-    "verified_basic_info": {
-      "official_url": {
-        "value": "https://www.blackcc.co.kr/club/intro",
-        "confidence": "A",
-        "checked_at": "2026-09-20T21:32:53.594576",
-        "verification_method": "manual_strict_whitelist",
-        "note": "FIRST 50 웹검색 결과를 필드별 재검토 후 확정"
-      }
-    }
+    "courses_source": "KGA course_combinations"
   },
   {
     "id": "vworld_힐드로사이c_c",
@@ -23588,7 +23579,7 @@
     },
     "phone": "",
     "address": "전남광주통합특별시 영암군 금정면 안적동길 403",
-    "official_url": "http://www.acrogolf.co.kr",
+    "official_url": "",
     "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
     "course_source": "vworld",
     "pool_source": "VWorld LT_P_SGISGOLF",
@@ -23788,16 +23779,7 @@
     },
     "operation_type": "대중제(퍼블릭)",
     "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations",
-    "verified_basic_info": {
-      "official_url": {
-        "value": "http://www.acrogolf.co.kr",
-        "confidence": "A",
-        "checked_at": "2026-09-20T21:32:53.595576",
-        "verification_method": "manual_strict_whitelist",
-        "note": "FIRST 50 웹검색 결과를 필드별 재검토 후 확정"
-      }
-    }
+    "courses_source": "KGA course_combinations"
   },
   {
     "id": "vworld_사우스링스영암",
@@ -39425,7 +39407,7 @@
     },
     "phone": "",
     "address": "강원특별자치도 양양군 손양면 공항로 230",
-    "official_url": "https://www.seolhaeone.com/home.do",
+    "official_url": "",
     "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
     "course_source": "KGBA",
     "pool_source": "KGBA 회원사 지역별 골프장",
@@ -39696,24 +39678,7 @@
     },
     "operation_type": "회원제",
     "operation_type_source": "행정안전부_생활_골프장 조회서비스",
-    "courses_source": "KGA course_combinations",
-    "verified_basic_info": {
-      "official_url": {
-        "value": "https://www.seolhaeone.com/home.do",
-        "confidence": "A",
-        "checked_at": "2026-09-20T21:32:53.594576",
-        "verification_method": "manual_strict_whitelist",
-        "note": "FIRST 50 웹검색 결과를 필드별 재검토 후 확정"
-      },
-      "booking_url": {
-        "value": "https://www.seolhaeone.com/mobile/reservation/golf-wait-day_new.do",
-        "confidence": "A",
-        "checked_at": "2026-09-20T21:32:53.594576",
-        "verification_method": "manual_strict_whitelist",
-        "note": "FIRST 50 웹검색 결과를 필드별 재검토 후 확정"
-      }
-    },
-    "booking_url": "https://www.seolhaeone.com/mobile/reservation/golf-wait-day_new.do"
+    "courses_source": "KGA course_combinations"
   },
   {
     "id": "kgba_벨라45오너스클럽",
