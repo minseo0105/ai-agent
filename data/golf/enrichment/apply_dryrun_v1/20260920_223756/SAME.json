@@ -1,0 +1,1442 @@
+[
+  {
+    "id": "vworld_해라",
+    "name": "해라컨트리클럽",
+    "field": "phone",
+    "current": "051-712-3900",
+    "candidate": "051-712-3900",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_스마트ku골프파빌리온",
+    "name": "스마트KU골프파빌리온",
+    "field": "phone",
+    "current": "031-958-5961",
+    "candidate": "031-958-5961",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_베스트밸리",
+    "name": "베스트밸리골프클럽",
+    "field": "phone",
+    "current": "031-950-7700",
+    "candidate": "031-950-7700",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_주_파주",
+    "name": "(주)파주컨트리클럽",
+    "field": "phone",
+    "current": "031-959-9999",
+    "candidate": "031-959-9999",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_안성c_c",
+    "name": "안성C.C",
+    "field": "phone",
+    "current": "031-674-9111",
+    "candidate": "031-674-9111",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_파인크리크c_c",
+    "name": "파인크리크C.C",
+    "field": "phone",
+    "current": "031-672-0071",
+    "candidate": "031-672-0071",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_마에스트로c_c",
+    "name": "마에스트로C.C",
+    "field": "phone",
+    "current": "031-676-4555",
+    "candidate": "031-676-4555",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_해운대c_c",
+    "name": "해운대C.C",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_골프존카운티_안성h",
+    "name": "골프존카운티 안성H",
+    "field": "phone",
+    "current": "070-8056-0700",
+    "candidate": "070-8056-0700",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_김포seaside",
+    "name": "김포SEASIDE컨트리클럽",
+    "field": "phone",
+    "current": "031-987-9992",
+    "candidate": "031-987-9992",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_화성",
+    "name": "화성골프클럽",
+    "field": "phone",
+    "current": "031-369-8921",
+    "candidate": "031-369-8921",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_베이사이드",
+    "name": "베이사이드골프클럽",
+    "field": "phone",
+    "current": "051-642-5100",
+    "candidate": "051-642-5100",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_곤지암",
+    "name": "곤지암",
+    "field": "phone",
+    "current": "031-760-3421",
+    "candidate": "031-760-3421",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_그린힐",
+    "name": "그린힐",
+    "field": "phone",
+    "current": "031-762-3114",
+    "candidate": "031-762-3114",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_이스트밸리",
+    "name": "이스트밸리",
+    "field": "phone",
+    "current": "031-760-3806",
+    "candidate": "031-760-3806",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_몽베르",
+    "name": "몽베르",
+    "field": "phone",
+    "current": "031-531-3841",
+    "candidate": "031-531-3841",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_일동레이크",
+    "name": "일동레이크",
+    "field": "phone",
+    "current": "031-539-5900",
+    "candidate": "031-539-5900",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_필로스",
+    "name": "필로스",
+    "field": "phone",
+    "current": "031-531-2003",
+    "candidate": "031-531-2003",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_팔공",
+    "name": "팔공컨트리클럽",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_일동레이크_2",
+    "name": "일동레이크",
+    "field": "phone",
+    "current": "031-539-5900",
+    "candidate": "031-539-5900",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_포레스트힐",
+    "name": "포레스트힐 컨트리클럽",
+    "field": "phone",
+    "current": "031-530-8000",
+    "candidate": "031-530-8000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "blueheron",
+    "name": "블루헤런GC",
+    "field": "official_url",
+    "current": "https://blueheron.co.kr/",
+    "candidate": "https://blueheron.co.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "blueheron",
+    "name": "블루헤런GC",
+    "field": "booking_url",
+    "current": "https://blueheron.co.kr/reservation/golf",
+    "candidate": "https://blueheron.co.kr/reservation/golf",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_booking_on_official_domain"
+  },
+  {
+    "id": "blueheron",
+    "name": "블루헤런GC",
+    "field": "phone",
+    "current": "031-884-0701",
+    "candidate": "031-884-0701",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_자유",
+    "name": "자유",
+    "field": "phone",
+    "current": "031-884-8400",
+    "candidate": "031-884-8400",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_아리지",
+    "name": "아리지CC",
+    "field": "phone",
+    "current": "031-882-9202",
+    "candidate": "031-882-9202",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_잭니클라우스코리아",
+    "name": "잭니클라우스 골프클럽 코리아",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_노스폴",
+    "name": "노스폴컨트리클럽",
+    "field": "phone",
+    "current": "1577-3510",
+    "candidate": "1577-3510",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_가평베네스트g_c",
+    "name": "가평베네스트G.C",
+    "field": "phone",
+    "current": "1577-9727",
+    "candidate": "1577-9727",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_크리스탈밸리g_c",
+    "name": "크리스탈밸리G.C",
+    "field": "phone",
+    "current": "031-589-5000",
+    "candidate": "031-589-5000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_프리스틴밸리g_c",
+    "name": "프리스틴밸리G.C",
+    "field": "phone",
+    "current": "031-589-2130",
+    "candidate": "031-589-2130",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_가평베네스트",
+    "name": "가평베네스트",
+    "field": "phone",
+    "current": "1577-9727",
+    "candidate": "1577-9727",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_인서울27_주",
+    "name": "인서울27골프클럽(주)",
+    "field": "phone",
+    "current": "02-6395-8714",
+    "candidate": "02-6395-8714",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_베뉴지",
+    "name": "베뉴지",
+    "field": "phone",
+    "current": "031-582-5999",
+    "candidate": "031-582-5999",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_더스타휴골프장",
+    "name": "더스타 휴 골프장",
+    "field": "phone",
+    "current": "031-770-9975",
+    "candidate": "031-770-9975",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "jade",
+    "name": "제이드팰리스GC",
+    "field": "official_url",
+    "current": "https://www.jadepalacegc.com/",
+    "candidate": "https://www.jadepalacegc.com/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "jade",
+    "name": "제이드팰리스GC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "jade",
+    "name": "제이드팰리스GC",
+    "field": "phone",
+    "current": "033-260-8000",
+    "candidate": "033-260-8000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_phone_supported_by_web"
+  },
+  {
+    "id": "vworld_남춘천c_c",
+    "name": "남춘천 C.C",
+    "field": "phone",
+    "current": "033-261-2999",
+    "candidate": "033-261-2999",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_휘슬링락c_c",
+    "name": "휘슬링 락C.C",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_라데나",
+    "name": "라데나",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_오크밸리회원제골프장",
+    "name": "오크밸리회원제골프장",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_오크힐스",
+    "name": "오크힐스",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_센추리21",
+    "name": "센추리21",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_센추리21",
+    "name": "센추리21CC-Ⅱ",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_인천국제c_c",
+    "name": "인천국제C.C",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_샌드파인",
+    "name": "샌드파인",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_설악프라자",
+    "name": "설악프라자CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_블랙밸리",
+    "name": "블랙밸리",
+    "field": "official_url",
+    "current": "https://www.blackcc.co.kr/club/intro",
+    "candidate": "https://www.blackcc.co.kr/club/intro",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_verified_basic_info"
+  },
+  {
+    "id": "pineridge",
+    "name": "파인리즈CC",
+    "field": "official_url",
+    "current": "http://www.pineridge.co.kr/",
+    "candidate": "http://www.pineridge.co.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "vworld_이븐데일",
+    "name": "이븐데일CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_떼제베",
+    "name": "떼제베CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_떼제베_2",
+    "name": "떼제베CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_그랜드",
+    "name": "그랜드",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_로얄포레",
+    "name": "로얄포레CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kingsdale",
+    "name": "킹스데일GC",
+    "field": "phone",
+    "current": "043-870-4100",
+    "candidate": "043-870-4100",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_phone_supported_by_web"
+  },
+  {
+    "id": "vworld_아리솔",
+    "name": "아리솔CC",
+    "field": "phone",
+    "current": "043-544-9500",
+    "candidate": "043-544-9500",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "rainbow",
+    "name": "레인보우힐스CC",
+    "field": "official_url",
+    "current": "https://www.rainbowhills.co.kr/",
+    "candidate": "https://www.rainbowhills.co.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "rainbow",
+    "name": "레인보우힐스CC",
+    "field": "holes",
+    "current": 27,
+    "candidate": 27,
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_holes_supported_by_total_holes_expression"
+  },
+  {
+    "id": "rainbow",
+    "name": "레인보우힐스CC",
+    "field": "phone",
+    "current": "043-879-7950",
+    "candidate": "043-879-7950",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_phone_supported_by_web"
+  },
+  {
+    "id": "kgba_유성",
+    "name": "유성",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_더힐",
+    "name": "더힐컨트리클럽",
+    "field": "phone",
+    "current": "041-736-2580",
+    "candidate": "041-736-2580",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_에딘버러c_c",
+    "name": "에딘버러C.C",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_골든베이골프_리조트",
+    "name": "골든베이 골프&리조트",
+    "field": "phone",
+    "current": "041-671-8000",
+    "candidate": "041-671-8000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_전주샹그릴라",
+    "name": "전주샹그릴라컨트리클럽",
+    "field": "phone",
+    "current": "063-643-1000",
+    "candidate": "063-643-1000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_보라",
+    "name": "보라컨트리클럽",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_금과간이골프장",
+    "name": "금과간이골프장",
+    "field": "phone",
+    "current": "063-652-4828",
+    "candidate": "063-652-4828",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_울산",
+    "name": "울산컨트리클럽",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_광주",
+    "name": "광주",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_보성",
+    "name": "보성",
+    "field": "phone",
+    "current": "061-804-1000",
+    "candidate": "061-804-1000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_화순",
+    "name": "화순CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_아크로",
+    "name": "아크로",
+    "field": "official_url",
+    "current": "http://www.acrogolf.co.kr",
+    "candidate": "http://www.acrogolf.co.kr",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_verified_basic_info"
+  },
+  {
+    "id": "vworld_무안클린밸리",
+    "name": "무안클린밸리cc",
+    "field": "phone",
+    "current": "061-452-8100",
+    "candidate": "061-452-8100",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_세종에머슨",
+    "name": "세종에머슨",
+    "field": "phone",
+    "current": "044-862-9715",
+    "candidate": "044-862-9715",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_경주신라",
+    "name": "경주신라",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_블루원보문",
+    "name": "블루원보문CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_마우나오션",
+    "name": "마우나오션CC",
+    "field": "phone",
+    "current": "054-771-0900",
+    "candidate": "054-771-0900",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_베네치아",
+    "name": "베네치아cc",
+    "field": "phone",
+    "current": "054-420-0201",
+    "candidate": "054-420-0201",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_남안동",
+    "name": "남안동CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_대구",
+    "name": "대구CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_오션뷰",
+    "name": "오션뷰CC",
+    "field": "phone",
+    "current": "054-730-9090",
+    "candidate": "054-730-9090",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_오션힐스청도",
+    "name": "오션힐스청도CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_대가야",
+    "name": "대가야CC",
+    "field": "phone",
+    "current": "054-950-5300",
+    "candidate": "054-950-5300",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_롯데스카이힐성주",
+    "name": "롯데스카이힐성주CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_세븐밸리",
+    "name": "세븐밸리CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_파미힐스_남",
+    "name": "파미힐스CC(남)",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_파미힐스_동",
+    "name": "파미힐스CC(동)",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_파미힐스",
+    "name": "파미힐스",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_주_창원",
+    "name": "(주)창원컨트리클럽",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_진주",
+    "name": "진주",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_동부산",
+    "name": "동부산CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_에덴밸리",
+    "name": "에덴밸리",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_에이원",
+    "name": "에이원",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_통도",
+    "name": "통도",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_주_레이크힐스경남",
+    "name": "(주)레이크힐스경남",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_부곡",
+    "name": "부곡",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_타미우스",
+    "name": "타미우스CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_아일랜드_회원",
+    "name": "아일랜드(회원)",
+    "field": "phone",
+    "current": "032-885-1004",
+    "candidate": "032-885-1004",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_에버리스",
+    "name": "에버리스",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_엘리시안",
+    "name": "엘리시안CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_동래베네스트",
+    "name": "동래베네스트골프클럽",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_아일랜드_대중",
+    "name": "아일랜드(대중)",
+    "field": "phone",
+    "current": "032-885-1004",
+    "candidate": "032-885-1004",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_나인브릿지",
+    "name": "나인브릿지",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_뉴코리아",
+    "name": "뉴코리아",
+    "field": "phone",
+    "current": "02-353-0091",
+    "candidate": "02-353-0091",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_테디벨리",
+    "name": "테디벨리",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_핀크스",
+    "name": "핀크스",
+    "field": "phone",
+    "current": "064-793-5007",
+    "candidate": "064-793-5007",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_한양",
+    "name": "한양",
+    "field": "phone",
+    "current": "031-969-0810",
+    "candidate": "031-969-0810",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_올림픽",
+    "name": "올림픽컨트리클럽",
+    "field": "phone",
+    "current": "031-962-0101",
+    "candidate": "031-962-0101",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_1_2_3",
+    "name": "1.2.3골프클럽",
+    "field": "phone",
+    "current": "02-359-0123",
+    "candidate": "02-359-0123",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_고양",
+    "name": "고양컨트리클럽",
+    "field": "phone",
+    "current": "031-964-8868",
+    "candidate": "031-964-8868",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_양주",
+    "name": "양주",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "lakeside",
+    "name": "레이크사이드CC",
+    "field": "official_url",
+    "current": "https://www.lakeside.kr/",
+    "candidate": "https://www.lakeside.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "lakeside",
+    "name": "레이크사이드CC",
+    "field": "holes",
+    "current": 54,
+    "candidate": 54,
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_holes_supported_by_total_holes_expression"
+  },
+  {
+    "id": "lakeside",
+    "name": "레이크사이드CC",
+    "field": "phone",
+    "current": "031-334-2111",
+    "candidate": "031-334-2111",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_phone_supported_by_web"
+  },
+  {
+    "id": "vworld_코리아c_c",
+    "name": "코리아C.C",
+    "field": "phone",
+    "current": "031-334-7111",
+    "candidate": "031-334-7111",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_글렌로스",
+    "name": "글렌로스골프클럽",
+    "field": "phone",
+    "current": "031-320-8344",
+    "candidate": "031-320-8344",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "vworld_하이스트_js강서_c_c",
+    "name": "하이스트(JS강서)C.C",
+    "field": "phone",
+    "current": "051-941-7791",
+    "candidate": "051-941-7791",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "88cc",
+    "name": "88컨트리클럽",
+    "field": "official_url",
+    "current": "https://www.88countryclub.co.kr/",
+    "candidate": "https://www.88countryclub.co.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "88cc",
+    "name": "88컨트리클럽",
+    "field": "booking_url",
+    "current": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
+    "candidate": "https://88countryclub.co.kr/Reservation/Reservation.aspx",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_booking_on_official_domain"
+  },
+  {
+    "id": "88cc",
+    "name": "88컨트리클럽",
+    "field": "phone",
+    "current": "031-287-8811",
+    "candidate": "031-287-8811",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_phone_supported_by_web"
+  },
+  {
+    "id": "kgba_골드",
+    "name": "골드",
+    "field": "phone",
+    "current": "031-286-8111",
+    "candidate": "031-286-8111",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "whistling",
+    "name": "휘슬링락CC",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "oak",
+    "name": "오크밸리CC",
+    "field": "official_url",
+    "current": "https://oakvalley.co.kr/",
+    "candidate": "https://oakvalley.co.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "kgba_엘리시안강촌",
+    "name": "엘리시안강촌",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_설해원",
+    "name": "설해원",
+    "field": "official_url",
+    "current": "https://www.seolhaeone.com/home.do",
+    "candidate": "https://www.seolhaeone.com/home.do",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_verified_basic_info"
+  },
+  {
+    "id": "kgba_설해원",
+    "name": "설해원",
+    "field": "booking_url",
+    "current": "https://www.seolhaeone.com/mobile/reservation/golf-wait-day_new.do",
+    "candidate": "https://www.seolhaeone.com/mobile/reservation/golf-wait-day_new.do",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_verified_booking"
+  },
+  {
+    "id": "kgba_프리스틴밸리",
+    "name": "프리스틴밸리",
+    "field": "phone",
+    "current": "031-589-2130",
+    "candidate": "031-589-2130",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_크리스탈밸리",
+    "name": "크리스탈밸리",
+    "field": "phone",
+    "current": "031-589-5000",
+    "candidate": "031-589-5000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_인천국제",
+    "name": "인천국제",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_아난티클럽서울",
+    "name": "아난티클럽서울",
+    "field": "phone",
+    "current": "031-589-3000",
+    "candidate": "031-589-3000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_노스팜",
+    "name": "노스팜",
+    "field": "phone",
+    "current": "031-941-4277",
+    "candidate": "031-941-4277",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_크리스밸리",
+    "name": "크리스밸리",
+    "field": "phone",
+    "current": "031-671-6633",
+    "candidate": "031-671-6633",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "southsprings",
+    "name": "사우스스프링스CC",
+    "field": "official_url",
+    "current": "https://www.sscc.co.kr/",
+    "candidate": "https://www.sscc.co.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "blackstone",
+    "name": "블랙스톤 이천",
+    "field": "official_url",
+    "current": "https://www.blackstoneresort.com/ic/",
+    "candidate": "https://www.blackstoneresort.com/ic/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "blackstone",
+    "name": "블랙스톤 이천",
+    "field": "holes",
+    "current": 27,
+    "candidate": 27,
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_holes_supported_by_total_holes_expression"
+  },
+  {
+    "id": "blackstone",
+    "name": "블랙스톤 이천",
+    "field": "phone",
+    "current": "031-643-2000",
+    "candidate": "031-643-2000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_phone_supported_by_web"
+  },
+  {
+    "id": "kgba_더스타휴",
+    "name": "더스타휴",
+    "field": "phone",
+    "current": "031-770-9975",
+    "candidate": "031-770-9975",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_코리아",
+    "name": "코리아",
+    "field": "phone",
+    "current": "031-334-7111",
+    "candidate": "031-334-7111",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_안성",
+    "name": "안성",
+    "field": "phone",
+    "current": "031-674-9111",
+    "candidate": "031-674-9111",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_에딘버러",
+    "name": "에딘버러",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "kgba_아난티중앙",
+    "name": "아난티중앙",
+    "field": "operation_type",
+    "current": "회원제",
+    "candidate": "회원제",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_and_public_data_agree"
+  },
+  {
+    "id": "clubd_boeun",
+    "name": "클럽디 보은",
+    "field": "official_url",
+    "current": "https://www.clubd.com/boeun/",
+    "candidate": "https://www.clubd.com/boeun/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "lavie",
+    "name": "라비에벨CC",
+    "field": "official_url",
+    "current": "https://www.lavieestbellegolfnresort.com/",
+    "candidate": "https://www.lavieestbellegolfnresort.com/",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "existing_domain_supported_by_search"
+  },
+  {
+    "id": "lavie",
+    "name": "라비에벨CC",
+    "field": "phone",
+    "current": "033-245-7000",
+    "candidate": "033-245-7000",
+    "status": "SAME",
+    "reason": "catalog_and_A_verified_agree",
+    "verification_reason": "catalog_phone_supported_by_web"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "southsprings",
+    "name": "사우스스프링스CC",
+    "field": "phone",
+    "current": "031-630-7000",
+    "candidate": "031-630-7014",
+    "status": "CONFLICT",
+    "reason": "existing_catalog_value_differs_from_B_supported",
+    "verification_reason": "exact_public_data_phone",
+    "detail": {
+      "status": "B_SUPPORTED",
+      "value": "031-630-7014",
+      "reason": "exact_public_data_phone"
+    }
+  },
+  {
+    "id": "clubd_boeun",
+    "name": "클럽디 보은",
+    "field": "phone",
+    "current": "043-540-8888",
+    "candidate": "043-543-0537",
+    "status": "CONFLICT",
+    "reason": "existing_catalog_value_differs_from_B_supported",
+    "verification_reason": "exact_public_data_phone",
+    "detail": {
+      "status": "B_SUPPORTED",
+      "value": "043-543-0537",
+      "reason": "exact_public_data_phone"
+    }
+  }
+]

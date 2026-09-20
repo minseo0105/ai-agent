@@ -1,0 +1,30 @@
+{
+  "created_at": "2026-09-20T22:37:56.569190+09:00",
+  "mode": "DRY_RUN_ONLY",
+  "catalog_count": 553,
+  "catalog_sha256": "460c76fa09b202b1e1c8975905b657f0551a66495e82f4c2713bafd538d58585",
+  "catalog_modified": false,
+  "source_A_VERIFIED": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\verifier_v2\\20260920_223554\\A_VERIFIED.json",
+  "A_VERIFIED_input": 144,
+  "SAME": 144,
+  "NEW": 0,
+  "CONFLICT": 0,
+  "MISSING": 0,
+  "field_counts": {
+    "phone": {
+      "SAME": 70
+    },
+    "operation_type": {
+      "SAME": 54
+    },
+    "official_url": {
+      "SAME": 14
+    },
+    "booking_url": {
+      "SAME": 3
+    },
+    "holes": {
+      "SAME": 3
+    }
+  }
+}

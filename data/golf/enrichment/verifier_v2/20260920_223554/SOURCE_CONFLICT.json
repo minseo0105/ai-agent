@@ -1,0 +1,229 @@
+[
+  {
+    "id": "vworld_파크밸리",
+    "name": "파크밸리GC",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "kgba_블랙밸리",
+    "name": "블랙밸리",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 2
+      }
+    }
+  },
+  {
+    "id": "vworld_클럽모우골프_라이프스타일",
+    "name": "클럽모우 골프&라이프 스타일",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 2
+      }
+    }
+  },
+  {
+    "id": "vworld_라온",
+    "name": "라온",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_블랙스톤제주",
+    "name": "블랙스톤제주",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_크라운",
+    "name": "크라운",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_한라산",
+    "name": "한라산CC",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 2,
+        "대중제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_에코랜드",
+    "name": "에코랜드",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "vworld_아덴힐",
+    "name": "아덴힐",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_스프링데일골프_리조트",
+    "name": "스프링데일 골프&리조트",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "vworld_중문",
+    "name": "중문",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "kgba_카스카디아",
+    "name": "카스카디아",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_설해원",
+    "name": "설해원",
+    "field": "operation_type",
+    "value": "회원제",
+    "status": "SOURCE_CONFLICT",
+    "reason": "catalog_vs_public_data",
+    "detail": {
+      "status": "SOURCE_CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_vs_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  }
+]

@@ -1,0 +1,252 @@
+[
+  {
+    "id": "blueheron",
+    "name": "블루헤런GC",
+    "field": "holes",
+    "current": 18,
+    "candidate": 18,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "pineridge",
+    "name": "파인리즈CC",
+    "field": "holes",
+    "current": 27,
+    "candidate": 27,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "pineridge",
+    "name": "파인리즈CC",
+    "field": "phone",
+    "current": "1577-6399",
+    "candidate": "1577-6399",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_phone"
+  },
+  {
+    "id": "kingsdale",
+    "name": "킹스데일GC",
+    "field": "official_url",
+    "current": "https://www.kingsdale.co.kr/",
+    "candidate": "https://www.kingsdale.co.kr/",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_non_third_party_domain"
+  },
+  {
+    "id": "kingsdale",
+    "name": "킹스데일GC",
+    "field": "holes",
+    "current": 18,
+    "candidate": 18,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "vworld_엠스클럽의성_9홀",
+    "name": "엠스클럽의성(9홀)",
+    "field": "holes",
+    "current": 9,
+    "candidate": 9,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "vworld_엠스클럽의성_18홀",
+    "name": "엠스클럽의성(18홀)",
+    "field": "holes",
+    "current": 18,
+    "candidate": 18,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "kgba_블루원용인",
+    "name": "블루원용인",
+    "field": "holes",
+    "current": 18,
+    "candidate": 18,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "88cc",
+    "name": "88컨트리클럽",
+    "field": "holes",
+    "current": 36,
+    "candidate": 36,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "whistling",
+    "name": "휘슬링락CC",
+    "field": "official_url",
+    "current": "http://www.whistlingrockcc.com/",
+    "candidate": "http://www.whistlingrockcc.com/",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_non_third_party_domain"
+  },
+  {
+    "id": "whistling",
+    "name": "휘슬링락CC",
+    "field": "holes",
+    "current": 27,
+    "candidate": 27,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "whistling",
+    "name": "휘슬링락CC",
+    "field": "phone",
+    "current": "070-8121-0100",
+    "candidate": "070-8121-0100",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_phone"
+  },
+  {
+    "id": "oak",
+    "name": "오크밸리CC",
+    "field": "phone",
+    "current": "1588-7676",
+    "candidate": "1588-7676",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_phone"
+  },
+  {
+    "id": "southsprings",
+    "name": "사우스스프링스CC",
+    "field": "holes",
+    "current": 18,
+    "candidate": 18,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "clubd_theplayers",
+    "name": "클럽디 더플레이어스",
+    "field": "official_url",
+    "current": "https://www.playersgc.com/",
+    "candidate": "https://www.playersgc.com/",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_non_third_party_domain"
+  },
+  {
+    "id": "clubd_theplayers",
+    "name": "클럽디 더플레이어스",
+    "field": "holes",
+    "current": 27,
+    "candidate": 27,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "clubd_theplayers",
+    "name": "클럽디 더플레이어스",
+    "field": "phone",
+    "current": "033-250-5000",
+    "candidate": "033-250-5000",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_phone"
+  },
+  {
+    "id": "club72",
+    "name": "클럽72",
+    "field": "official_url",
+    "current": "https://www.onetheclub.com/club72/",
+    "candidate": "https://www.onetheclub.com/club72/",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_non_third_party_domain"
+  },
+  {
+    "id": "club72",
+    "name": "클럽72",
+    "field": "holes",
+    "current": 72,
+    "candidate": 72,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "club72",
+    "name": "클럽72",
+    "field": "operation_type",
+    "current": "대중제",
+    "candidate": "대중제",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_operation"
+  },
+  {
+    "id": "club72",
+    "name": "클럽72",
+    "field": "phone",
+    "current": "1599-0072",
+    "candidate": "1599-0072",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_phone"
+  },
+  {
+    "id": "silkriver",
+    "name": "청주 세레니티",
+    "field": "official_url",
+    "current": "https://www.serenitygolfresort.com/cheongju/",
+    "candidate": "https://www.serenitygolfresort.com/cheongju/",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_non_third_party_domain"
+  },
+  {
+    "id": "silkriver",
+    "name": "청주 세레니티",
+    "field": "holes",
+    "current": 27,
+    "candidate": 27,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  },
+  {
+    "id": "silkriver",
+    "name": "청주 세레니티",
+    "field": "phone",
+    "current": "043-277-5000",
+    "candidate": "043-277-5000",
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_phone"
+  },
+  {
+    "id": "lavie",
+    "name": "라비에벨CC",
+    "field": "holes",
+    "current": 36,
+    "candidate": 36,
+    "status": "SAME",
+    "reason": "catalog_and_B_supported_agree",
+    "verification_reason": "existing_catalog_holes"
+  }
+]

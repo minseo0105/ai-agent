@@ -1,0 +1,5805 @@
+[
+  {
+    "id": "vworld_해라",
+    "name": "해라컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.band.us/@haeracc",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.band.us/@haeracc",
+          "domain": "band.us",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.haeracc.co.kr/customer/notice?page=3",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.haeracc.co.kr/customer/notice?page=3",
+          "domain": "haeracc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_제이퍼블릭",
+    "name": "제이퍼블릭",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_베스트밸리",
+    "name": "베스트밸리골프클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/f9ce891c-c08b-4e24-a17d-418ea50548ab",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/f9ce891c-c08b-4e24-a17d-418ea50548ab",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=2756065",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=2756065",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_뉴스프링빌",
+    "name": "뉴스프링빌",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_ba비스타c_c",
+    "name": "BA비스타C.C",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "54": 1,
+        "63": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_블랙스톤",
+    "name": "블랙스톤",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_신안c_c",
+    "name": "신안C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.shinan.co.kr/business/golf/shinancc",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+          "domain": "shinan.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=87",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=87",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "http://stc.shinangolf.com/info/guide",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://stc.shinangolf.com/info/guide",
+          "domain": "stc.shinangolf.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_안성c_c",
+    "name": "안성C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://localview.co.kr/store/local.asp?CATE1=%EB%A0%88%EC%A0%80%EC%98%A4%EB%9D%BD&CATE2=%EA%B3%A8%ED%94%84",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://localview.co.kr/store/local.asp?CATE1=%EB%A0%88%EC%A0%80%EC%98%A4%EB%9D%BD&CATE2=%EA%B3%A8%ED%94%84",
+          "domain": "localview.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://tipsight.co.kr/안성-골프장-추천-18홀",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://tipsight.co.kr/안성-골프장-추천-18홀",
+          "domain": "tipsight.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_안성c_c",
+    "name": "안성C.C",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_안성c_c",
+    "name": "안성C.C",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_에덴블루c_c",
+    "name": "에덴블루 C.C",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_마에스트로c_c",
+    "name": "마에스트로C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tigerbooking.com/kr/golf-course/Maestro-Country-Club-TAKR0155",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tigerbooking.com/kr/golf-course/Maestro-Country-Club-TAKR0155",
+          "domain": "tigerbooking.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://theshinvia.com/maestro-cc-golf-review-difficulty-restaurant",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://theshinvia.com/maestro-cc-golf-review-difficulty-restaurant",
+          "domain": "theshinvia.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_마에스트로c_c",
+    "name": "마에스트로C.C",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_신안퍼블릭c_c",
+    "name": "신안퍼블릭C.C",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_신안퍼블릭c_c",
+    "name": "신안퍼블릭C.C",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_웨스트파인골프코스",
+    "name": "웨스트파인골프코스",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "36": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_웨스트파인골프코스",
+    "name": "웨스트파인골프코스",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_해운대c_c",
+    "name": "해운대C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.haeundaecc.co.kr/Member/JoinStep1.aspx",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.haeundaecc.co.kr/Member/JoinStep1.aspx",
+          "domain": "haeundaecc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://topgolfmembers.co.kr/membership/262",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://topgolfmembers.co.kr/membership/262",
+          "domain": "topgolfmembers.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_골프존카운티_안성h",
+    "name": "골프존카운티 안성H",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/569eba84-cbd8-4e35-95ad-ebd9fb15791f",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/569eba84-cbd8-4e35-95ad-ebd9fb15791f",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://m.golfzoncounty.com/policy/detail?policySeq=127&policyType=GOLFCLUB",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.golfzoncounty.com/policy/detail?policySeq=127&policyType=GOLFCLUB",
+          "domain": "m.golfzoncounty.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_링크나인",
+    "name": "링크나인골프클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/11424114-742e-4dd5-a904-e756aefdeb61",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/11424114-742e-4dd5-a904-e756aefdeb61",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.linknine.co.kr/html/members/private.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.linknine.co.kr/html/members/private.asp",
+          "domain": "linknine.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_화성",
+    "name": "화성골프클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.hwaseonggc.com",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.hwaseonggc.com",
+          "domain": "hwaseonggc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://golfmembership.co.kr/화성cc",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://golfmembership.co.kr/화성cc",
+          "domain": "golfmembership.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.kpgca.co.kr/sub03/sub02.php?selcity=GG&memcode=148",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.kpgca.co.kr/sub03/sub02.php?selcity=GG&memcode=148",
+          "domain": "kpgca.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_베이사이드",
+    "name": "베이사이드골프클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "54": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_곤지암",
+    "name": "곤지암",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://didim-golf.vercel.app/course/%EA%B2%BD%EA%B8%B0-%EA%B3%A4%EC%A7%80%EC%95%94",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://didim-golf.vercel.app/course/%EA%B2%BD%EA%B8%B0-%EA%B3%A4%EC%A7%80%EC%95%94",
+          "domain": "didim-golf.vercel.app",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=13",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=13",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_그린힐",
+    "name": "그린힐",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=577646",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=577646",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "https://www.shinan.co.kr/business/golf/greenhillcc",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.shinan.co.kr/business/golf/greenhillcc",
+          "domain": "shinan.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.ksmgolf.com/mobile/zm_golf_v.php?page_no=55&no=10",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ksmgolf.com/mobile/zm_golf_v.php?page_no=55&no=10",
+          "domain": "ksmgolf.com",
+          "identity_score": 9
+        },
+        {
+          "value": "https://m.dongagolf.co.kr/products/golf/10012/1134",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.dongagolf.co.kr/products/golf/10012/1134",
+          "domain": "m.dongagolf.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_남촌",
+    "name": "남촌",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_일동레이크",
+    "name": "일동레이크",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=125&page=2",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=125&page=2",
+          "domain": "swgolfcondo.com",
+          "identity_score": 13
+        },
+        {
+          "value": "https://www.rockgarden.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.rockgarden.kr",
+          "domain": "rockgarden.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131669",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131669",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ildonglakes.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ildonglakes.co.kr",
+          "domain": "ildonglakes.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "https://letsgrip.com/detail?clubCd=64",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://letsgrip.com/detail?clubCd=64",
+          "domain": "letsgrip.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_일동레이크",
+    "name": "일동레이크",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_팔공",
+    "name": "팔공컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131571",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131571",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.mship114.co.kr/sub6/01141001",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.mship114.co.kr/sub6/01141001",
+          "domain": "mship114.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_푸른솔",
+    "name": "푸른솔GC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_베어스타운",
+    "name": "베어스타운",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "36": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_베어크리크",
+    "name": "베어크리크",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://glassjane.com/entry/베어크리크-포천-골프클럽-GC-CC-코스공략도-홈페이지-부킹-예약-날씨-소개",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://glassjane.com/entry/베어크리크-포천-골프클럽-GC-CC-코스공략도-홈페이지-부킹-예약-날씨-소개",
+          "domain": "glassjane.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://good.informationwifi.com/entry/베어크리크-CC-포천-코스-후기-맛집-알아보자",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://good.informationwifi.com/entry/베어크리크-CC-포천-코스-후기-맛집-알아보자",
+          "domain": "good.informationwifi.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_일동레이크_2",
+    "name": "일동레이크",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.kyeonggi.com/article/201601140829789",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.kyeonggi.com/article/201601140829789",
+          "domain": "kyeonggi.com",
+          "identity_score": 13
+        },
+        {
+          "value": "https://www.rockgarden.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.rockgarden.kr",
+          "domain": "rockgarden.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ildonglakes.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ildonglakes.co.kr",
+          "domain": "ildonglakes.co.kr",
+          "identity_score": 13
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_일동레이크_2",
+    "name": "일동레이크",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_일동레이크_2",
+    "name": "일동레이크",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "blueheron",
+    "name": "블루헤런GC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": 18,
+    "reason": "current_holes_conflicts_with_web",
+    "detail": {
+      "status": "CONFLICT",
+      "value": 18,
+      "reason": "current_holes_conflicts_with_web",
+      "source": "catalog",
+      "candidate_counts": {
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_솔모로",
+    "name": "솔모로",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=81",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=81",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.mship114.co.kr/sub6/01151001",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.mship114.co.kr/sub6/01151001",
+          "domain": "mship114.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.ksmgolf.com/main/gmb_board_view.php?no=941&page_no=27&SN=2",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ksmgolf.com/main/gmb_board_view.php?no=941&page_no=27&SN=2",
+          "domain": "ksmgolf.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_이포",
+    "name": "이포",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://bizno.net?query=%EC%9D%B4%ED%8F%AC",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://bizno.net?query=%EC%9D%B4%ED%8F%AC",
+          "domain": "bizno.net",
+          "identity_score": 8
+        },
+        {
+          "value": "https://allthatcompany.com/districts/%EA%B2%BD%EA%B8%B0%EB%8F%84/%EC%97%AC%EC%A3%BC%EC%8B%9C/%EA%B8%88%EC%82%AC%EB%A9%B4",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://allthatcompany.com/districts/%EA%B2%BD%EA%B8%B0%EB%8F%84/%EC%97%AC%EC%A3%BC%EC%8B%9C/%EA%B8%88%EC%82%AC%EB%A9%B4",
+          "domain": "allthatcompany.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.114.co.kr/search/detail?comp_id=2650221&comp_tp_cd=GOV&godata_tp_cd=LOCALDATA&upjong_cd=",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.114.co.kr/search/detail?comp_id=2650221&comp_tp_cd=GOV&godata_tp_cd=LOCALDATA&upjong_cd=",
+          "domain": "114.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_페럼클럽",
+    "name": "페럼클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://leports.blogsailing.com/492",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://leports.blogsailing.com/492",
+          "domain": "leports.blogsailing.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://ferrumclub.com/information/notice_view.asp?idx=221&GotoPage=1&search_key=&search_value=",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://ferrumclub.com/information/notice_view.asp?idx=221&GotoPage=1&search_key=&search_value=",
+          "domain": "ferrumclub.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_잭니클라우스코리아",
+    "name": "잭니클라우스 골프클럽 코리아",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.poscowide.com/biz/golf_leisure_7.do",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.poscowide.com/biz/golf_leisure_7.do",
+          "domain": "poscowide.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.thefirstteekorea.org/thefirstteek020501.php",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.thefirstteekorea.org/thefirstteek020501.php",
+          "domain": "thefirstteekorea.org",
+          "identity_score": 8
+        },
+        {
+          "value": "https://golfhankook.hankooki.com/news/articleView.html?idxno=10188140",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://golfhankook.hankooki.com/news/articleView.html?idxno=10188140",
+          "domain": "golfhankook.hankooki.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ifez.go.kr/main/tour/view.do?tour_fclt_sn=12",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ifez.go.kr/main/tour/view.do?tour_fclt_sn=12",
+          "domain": "ifez.go.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_마이다스밸리g_c",
+    "name": "마이다스밸리G.C",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_더스타휴골프장",
+    "name": "더스타 휴 골프장",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "jade",
+    "name": "제이드팰리스GC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_휘슬링락c_c",
+    "name": "휘슬링 락C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.whistlingrockcc.com/Booking/Guide",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.whistlingrockcc.com/Booking/Guide",
+          "domain": "whistlingrockcc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://bizno.net/article/6598500814",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://bizno.net/article/6598500814",
+          "domain": "bizno.net",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_오너스g_c",
+    "name": "오너스 G.C",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_스프링베일리조트",
+    "name": "스프링베일리조트",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/2f498b08-72e0-44a1-a91d-67ef57f3415a",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/2f498b08-72e0-44a1-a91d-67ef57f3415a",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://state.gwd.go.kr/portal/partinfo/culturePhysical/physical/registration",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://state.gwd.go.kr/portal/partinfo/culturePhysical/physical/registration",
+          "domain": "state.gwd.go.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_로드힐스",
+    "name": "로드힐스골프클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tigerbooking.com/kr/golf-course/Lordhills-Golf-&-Resort-TAKR0126",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tigerbooking.com/kr/golf-course/Lordhills-Golf-&-Resort-TAKR0126",
+          "domain": "tigerbooking.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://lordhills.co.kr/_mobile/subContents/club/club_intro.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://lordhills.co.kr/_mobile/subContents/club/club_intro.asp",
+          "domain": "lordhills.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://222.113.232.125/joinRoom/list.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://222.113.232.125/joinRoom/list.asp",
+          "domain": "222.113.232.125",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_강촌리조트대중제골프장",
+    "name": "강촌리조트대중제골프장",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_베어크리크_2",
+    "name": "베어크리크CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=465",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=465",
+          "domain": "ivyleisure.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://comp4u.oopy.io/1c1fd07d-7f33-4cef-aac7-1799f96effe0",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/1c1fd07d-7f33-4cef-aac7-1799f96effe0",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://golfhankook.hankooki.com/news/articleView.html?idxno=10137399",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://golfhankook.hankooki.com/news/articleView.html?idxno=10137399",
+          "domain": "golfhankook.hankooki.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_센추리21",
+    "name": "센추리21",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=79",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=79",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.century21cc.co.kr/intro",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.century21cc.co.kr/intro",
+          "domain": "century21cc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_센추리21",
+    "name": "센추리21CC-Ⅱ",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=79",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=79",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.century21cc.co.kr/intro",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.century21cc.co.kr/intro",
+          "domain": "century21cc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_센추리21대중제",
+    "name": "센추리21대중제",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_파크밸리",
+    "name": "파크밸리GC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131367",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131367",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://kor.clubrichtour.co.kr/bbs/board.php?bo_table=datagokr_Kor&wr_id=19610",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://kor.clubrichtour.co.kr/bbs/board.php?bo_table=datagokr_Kor&wr_id=19610",
+          "domain": "kor.clubrichtour.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_파크밸리",
+    "name": "파크밸리GC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "vworld_인천그랜드c_c",
+    "name": "인천그랜드C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.grandgolf.co.kr/html/company/company_03_01.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.grandgolf.co.kr/html/company/company_03_01.asp",
+          "domain": "grandgolf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://itour.incheon.go.kr/ssst/ssst/detail.do?cotId=APD21121010002446170",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://itour.incheon.go.kr/ssst/ssst/detail.do?cotId=APD21121010002446170",
+          "domain": "itour.incheon.go.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.kpgca.co.kr/bbs/board.php?tbl=bbs51&mode=VIEW&num=2491",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.kpgca.co.kr/bbs/board.php?tbl=bbs51&mode=VIEW&num=2491",
+          "domain": "kpgca.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_o2리조트대중제",
+    "name": "O2리조트대중제",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "90": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_블랙밸리",
+    "name": "블랙밸리",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_블랙밸리",
+    "name": "블랙밸리",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_힐드로사이c_c",
+    "name": "힐드로사이 C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.hilldeloci.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.hilldeloci.co.kr",
+          "domain": "hilldeloci.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://kiwoomens.co.kr/bbs/board.php?bo_table=golf&wr_id=1",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://kiwoomens.co.kr/bbs/board.php?bo_table=golf&wr_id=1",
+          "domain": "kiwoomens.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_클럽모우골프_라이프스타일",
+    "name": "클럽모우 골프&라이프 스타일",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_청우",
+    "name": "청우GC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_동원썬밸리",
+    "name": "동원썬밸리",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.sunvalley.co.kr/dongwon/golf/intro",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.sunvalley.co.kr/dongwon/golf/intro",
+          "domain": "sunvalley.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://savetour.co.kr/travel/view.html?no=385",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://savetour.co.kr/travel/view.html?no=385",
+          "domain": "savetour.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_오스타퍼블릭",
+    "name": "오스타퍼블릭",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_섬강벨라스톤",
+    "name": "섬강벨라스톤",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "45": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_섬강벨라스톤",
+    "name": "섬강벨라스톤",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_알펜시아",
+    "name": "알펜시아",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://xn--zb0b41e28b37h9rto1a.com/include/travel.php?biz_code=P202105015&menutree_idx=4568139",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://xn--zb0b41e28b37h9rto1a.com/include/travel.php?biz_code=P202105015&menutree_idx=4568139",
+          "domain": "xn--zb0b41e28b37h9rto1a.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://state.gwd.go.kr/portal/partinfo/culturePhysical/physical/registration",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://state.gwd.go.kr/portal/partinfo/culturePhysical/physical/registration",
+          "domain": "state.gwd.go.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ihg.com/intercontinental/hotels/kr/ko/gangwon-do/kagha/hoteldetail",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ihg.com/intercontinental/hotels/kr/ko/gangwon-do/kagha/hoteldetail",
+          "domain": "ihg.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_알펜시아",
+    "name": "알펜시아",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_용평2차_버찌힐",
+    "name": "용평2차(버찌힐)",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_알펜시아700",
+    "name": "알펜시아700골프클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_하이원",
+    "name": "하이원",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.high1.com/golf/sub.do?key=757",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.high1.com/golf/sub.do?key=757",
+          "domain": "high1.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.kangwonland.com/www/tnmberinfo/loginView.do?key=896",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.kangwonland.com/www/tnmberinfo/loginView.do?key=896",
+          "domain": "kangwonland.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_한탄강",
+    "name": "한탄강CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tigerbooking.com/kr/golf-course/Hantan-River-Country-Club-TAKR0114",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tigerbooking.com/kr/golf-course/Hantan-River-Country-Club-TAKR0114",
+          "domain": "tigerbooking.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://greenfeeguide.co.kr/course/gc-0249",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://greenfeeguide.co.kr/course/gc-0249",
+          "domain": "greenfeeguide.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://hantancc.co.kr/m11.php",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://hantancc.co.kr/m11.php",
+          "domain": "hantancc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_한탄강",
+    "name": "한탄강CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "pineridge",
+    "name": "파인리즈CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_대명설악",
+    "name": "대명설악컨트리클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_설악썬밸리",
+    "name": "설악썬밸리CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/91d62d62-d5a2-4a9c-b21a-f3e867fcbe77",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/91d62d62-d5a2-4a9c-b21a-f3e867fcbe77",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.agoda.com/ko-kr/sorak-sunvalley-golf-resort/hotel/sokcho-si-kr.html",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.agoda.com/ko-kr/sorak-sunvalley-golf-resort/hotel/sokcho-si-kr.html",
+          "domain": "agoda.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://xn--ob0ba993juzkbna821e.com/playgrounds/place/656430/%EC%84%A4%EC%95%85%EC%8D%AC%EB%B0%B8%EB%A6%AC%EA%B3%A8%ED%94%84%EB%A6%AC%EC%A1%B0%ED%8A%B8-%EB%86%80%EC%9D%B4%ED%84%B0",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://xn--ob0ba993juzkbna821e.com/playgrounds/place/656430/%EC%84%A4%EC%95%85%EC%8D%AC%EB%B0%B8%EB%A6%AC%EA%B3%A8%ED%94%84%EB%A6%AC%EC%A1%B0%ED%8A%B8-%EB%86%80%EC%9D%B4%ED%84%B0",
+          "domain": "xn--ob0ba993juzkbna821e.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_골든비치",
+    "name": "골든비치",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_이븐데일",
+    "name": "이븐데일CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=113&sca=%EC%B6%A9%EC%B2%AD%EB%8F%84",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=113&sca=%EC%B6%A9%EC%B2%AD%EB%8F%84",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.evendale.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.evendale.co.kr",
+          "domain": "evendale.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_그랜드",
+    "name": "그랜드",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.chungbuk.go.kr/www/contents.do?key=517",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.chungbuk.go.kr/www/contents.do?key=517",
+          "domain": "chungbuk.go.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ktriptips.com/kor/leisure/2769560",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ktriptips.com/kor/leisure/2769560",
+          "domain": "ktriptips.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_시그너스",
+    "name": "시그너스CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_임페리얼레이크",
+    "name": "임페리얼레이크CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "36": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_로얄포레",
+    "name": "로얄포레CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "public_data_conflicts_with_web",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "public_data_conflicts_with_web",
+      "public_value": "회원제",
+      "web_counts": {
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_동촌",
+    "name": "동촌골프클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.dongchongc.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.dongchongc.co.kr",
+          "domain": "dongchongc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://m.teescanner.com/booking/detail?tab=blogReview&golfclub_seq=487",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.teescanner.com/booking/detail?tab=blogReview&golfclub_seq=487",
+          "domain": "m.teescanner.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://comp4u.oopy.io/912f6e05-127a-45cf-b892-34db384c46bd",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/912f6e05-127a-45cf-b892-34db384c46bd",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_중원",
+    "name": "중원골프클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_대영힐스",
+    "name": "대영힐스CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://dyhills.basecc.co.kr/Mobile/Main/Main.aspx",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://dyhills.basecc.co.kr/Mobile/Main/Main.aspx",
+          "domain": "dyhills.basecc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://goltou.kr/main?page=golfjang_homepage&no=1361",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://goltou.kr/main?page=golfjang_homepage&no=1361",
+          "domain": "goltou.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://eugenegolf.co.kr/main/z_golf_v.php?page_no=53&no=196",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://eugenegolf.co.kr/main/z_golf_v.php?page_no=53&no=196",
+          "domain": "eugenegolf.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_대영힐스",
+    "name": "대영힐스CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_세일",
+    "name": "세일컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/4d76e8e5-2480-4b95-b052-e7e5ce322a51",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/4d76e8e5-2480-4b95-b052-e7e5ce322a51",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.golfjournal.co.kr/news/articleView.html?idxno=553",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.golfjournal.co.kr/news/articleView.html?idxno=553",
+          "domain": "golfjournal.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=2761694",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=2761694",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_힐데스하임",
+    "name": "힐데스하임CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://tour.jecheon.go.kr/tour/base/tour/contents/view?clturCntntsNo=3266&menuLevel=3&menuNo=23",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://tour.jecheon.go.kr/tour/base/tour/contents/view?clturCntntsNo=3266&menuLevel=3&menuNo=23",
+          "domain": "tour.jecheon.go.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.gongtour.com/travel/view.html?no=345&pid=190",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.gongtour.com/travel/view.html?no=345&pid=190",
+          "domain": "gongtour.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://savetour.co.kr/travel/view.html?no=387",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://savetour.co.kr/travel/view.html?no=387",
+          "domain": "savetour.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_theemersongoldclub",
+    "name": "THE EMERSON GoldClub",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_천룡골프장",
+    "name": "천룡골프장",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_아트밸리",
+    "name": "아트밸리컨트리클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "90": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_천룡골프장_2",
+    "name": "천룡골프장",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_젠스필드",
+    "name": "젠스필드CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_진양밸리",
+    "name": "진양밸리CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_진양밸리",
+    "name": "진양밸리CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_버드우드g_c",
+    "name": "버드우드G.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=56",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=56",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=105",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=105",
+          "domain": "ivyleisure.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.1night2day.com/golf/detail.html?goods_no=177",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.1night2day.com/golf/detail.html?goods_no=177",
+          "domain": "1night2day.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_버드우드g_c",
+    "name": "버드우드G.C",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_천안",
+    "name": "천안골프클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "36": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_천안",
+    "name": "천안골프클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_프린세스c_c",
+    "name": "프린세스C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://m.uspgf.co.kr/bbs/board7/562536",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://m.uspgf.co.kr/bbs/board7/562536",
+          "domain": "m.uspgf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ktriptips.com/kor/leisure/2770232",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ktriptips.com/kor/leisure/2770232",
+          "domain": "ktriptips.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_골드리버",
+    "name": "골드리버CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_백제",
+    "name": "백제컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/99b85b5a-c126-4493-9730-d64ee1f9d403",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/99b85b5a-c126-4493-9730-d64ee1f9d403",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tournews21.com/news/articleView.html?idxno=92030",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tournews21.com/news/articleView.html?idxno=92030",
+          "domain": "tournews21.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ktriptips.com/kor/leisure/2769576",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ktriptips.com/kor/leisure/2769576",
+          "domain": "ktriptips.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_백제",
+    "name": "백제컨트리클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_태안비치c_c",
+    "name": "태안비치C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://savetour.co.kr/travel/view.html?no=287",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://savetour.co.kr/travel/view.html?no=287",
+          "domain": "savetour.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://tel.nett.kr/%EC%97%85%EC%B2%B4%EC%A0%95%EB%B3%B4/1585530/%ED%83%9C%EC%95%88%EB%B9%84%EC%B9%98%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BD(%EA%B3%A8%ED%94%84%EC%9E%A5)",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://tel.nett.kr/%EC%97%85%EC%B2%B4%EC%A0%95%EB%B3%B4/1585530/%ED%83%9C%EC%95%88%EB%B9%84%EC%B9%98%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BD(%EA%B3%A8%ED%94%84%EC%9E%A5)",
+          "domain": "tel.nett.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=145",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=145",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_골든베이골프_리조트",
+    "name": "골든베이 골프&리조트",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=193",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=193",
+          "domain": "ivyleisure.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.goldenbay.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.goldenbay.kr",
+          "domain": "goldenbay.kr",
+          "identity_score": 13
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_상데힐",
+    "name": "상데힐 CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_드라곤레이크",
+    "name": "드라곤레이크CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "54": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_드라곤레이크",
+    "name": "드라곤레이크CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_에스페란사",
+    "name": "에스페란사컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.114.co.kr/search/detail?comp_id=5286964&comp_tp_cd=TEL&upjong_cd=892209",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.114.co.kr/search/detail?comp_id=5286964&comp_tp_cd=TEL&upjong_cd=892209",
+          "domain": "114.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://localmap.co.kr/web/splus/kmap/view.php?sigun=6450000&gugun=4710000&keyno=448&keyname=%EC%97%90%EC%8A%A4%ED%8E%98%EB%9E%80%EC%82%AC%EA%B3%A8%ED%94%84%EC%97%B0%EC%8A%B5%EC%9E%A5&keylink=CDFH3301052001000002",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://localmap.co.kr/web/splus/kmap/view.php?sigun=6450000&gugun=4710000&keyno=448&keyname=%EC%97%90%EC%8A%A4%ED%8E%98%EB%9E%80%EC%82%AC%EA%B3%A8%ED%94%84%EC%97%B0%EC%8A%B5%EC%9E%A5&keylink=CDFH3301052001000002",
+          "domain": "localmap.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.daangn.com/kr/local-profile/%EC%97%90%EC%8A%A4%ED%8E%98%EB%9E%80%EC%82%AC%EA%B3%A8%ED%94%84%ED%81%B4%EB%9F%BD-hzm61r8sz9pj",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.daangn.com/kr/local-profile/%EC%97%90%EC%8A%A4%ED%8E%98%EB%9E%80%EC%82%AC%EA%B3%A8%ED%94%84%ED%81%B4%EB%9F%BD-hzm61r8sz9pj",
+          "domain": "daangn.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_장수골프_리조트",
+    "name": "장수골프&리조트",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.jangsugolf.com",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.jangsugolf.com",
+          "domain": "jangsugolf.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.jangsu.go.kr/tour/index.jangsu?menuCd=DOM_000000402006002000",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.jangsu.go.kr/tour/index.jangsu?menuCd=DOM_000000402006002000",
+          "domain": "jangsu.go.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_전주샹그릴라",
+    "name": "전주샹그릴라컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=2778930",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=2778930",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "https://www.gongtour.com/travel/print.html?no=327",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.gongtour.com/travel/print.html?no=327",
+          "domain": "gongtour.com",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.jeonjucc.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.jeonjucc.co.kr",
+          "domain": "jeonjucc.co.kr",
+          "identity_score": 13
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_전주샹그릴라",
+    "name": "전주샹그릴라컨트리클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_보라",
+    "name": "보라컨트리클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_고창",
+    "name": "고창컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=777164",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=777164",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.gochangcc.co.kr/html/notice_view.asp?id=375",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.gochangcc.co.kr/html/notice_view.asp?id=375",
+          "domain": "gochangcc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.gochang.go.kr/board/view.gochang?boardId=BBS_0000400&menuCd=DOM_000000403002000000&dataSid=773072",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.gochang.go.kr/board/view.gochang?boardId=BBS_0000400&menuCd=DOM_000000403002000000&dataSid=773072",
+          "domain": "gochang.go.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_석정힐",
+    "name": "석정힐CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_울산",
+    "name": "울산컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://world-golf.co.kr/201.htm?tblid=23&j=e1e&smallview=1",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://world-golf.co.kr/201.htm?tblid=23&j=e1e&smallview=1",
+          "domain": "world-golf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.ksmgolf.com/main/gmb_board_view.php?no=1041&page_no=30&SN=2",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ksmgolf.com/main/gmb_board_view.php?no=1041&page_no=30&SN=2",
+          "domain": "ksmgolf.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_레이크힐스",
+    "name": "레이크힐스",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_해피니스",
+    "name": "해피니스컨트리클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_나주힐스",
+    "name": "나주힐스",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/88fe9fdf-a1bc-41b1-b3ea-2f87d1569eb7",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/88fe9fdf-a1bc-41b1-b3ea-2f87d1569eb7",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://namdokorea.com/tour/info/thema/etc/leisureList.do?menuCd=T002003005002&category1=leisureActivity&category2=golf",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://namdokorea.com/tour/info/thema/etc/leisureList.do?menuCd=T002003005002&category1=leisureActivity&category2=golf",
+          "domain": "namdokorea.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_나주휴튼",
+    "name": "나주휴튼",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "45": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_jnj골프리조트",
+    "name": "JNJ골프리조트",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_아크로",
+    "name": "아크로",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_무안클린밸리",
+    "name": "무안클린밸리cc",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/8316aef6-ffcc-4445-b311-f5c0c9789e25",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/8316aef6-ffcc-4445-b311-f5c0c9789e25",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://muancleanvalley.com",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://muancleanvalley.com",
+          "domain": "muancleanvalley.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_스타스콥c_c",
+    "name": "스타스콥C.C",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_백양우리",
+    "name": "백양우리컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/283d7c60-629e-4961-8de2-3076a30b089e",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/283d7c60-629e-4961-8de2-3076a30b089e",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://woori-cc.co.kr/intro/map",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://woori-cc.co.kr/intro/map",
+          "domain": "woori-cc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://kpgca.co.kr/sub03_new/sub02.php?selcity=JN&memcode=80",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://kpgca.co.kr/sub03_new/sub02.php?selcity=JN&memcode=80",
+          "domain": "kpgca.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_푸른솔_2",
+    "name": "푸른솔GC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_상무대",
+    "name": "상무대",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_오션힐스포항",
+    "name": "오션힐스포항",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_오션힐스포항_2",
+    "name": "오션힐스포항",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_세종에머슨",
+    "name": "세종에머슨",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "90": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_경주신라",
+    "name": "경주신라",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=12",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=12",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://topgolfmembers.co.kr/membership/361",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://topgolfmembers.co.kr/membership/361",
+          "domain": "topgolfmembers.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://sillacc.co.kr/swp/club",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://sillacc.co.kr/swp/club",
+          "domain": "sillacc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_경주",
+    "name": "경주CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_레전드",
+    "name": "레전드CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_우리",
+    "name": "우리GC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_베네치아",
+    "name": "베네치아cc",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_베네치아",
+    "name": "베네치아cc",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_탑블리스",
+    "name": "탑블리스CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_휴그린",
+    "name": "휴그린 골프클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_휴그린",
+    "name": "휴그린 골프클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_구미_2",
+    "name": "구미CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_영천",
+    "name": "영천CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://msg1.co.kr/membership_view.php?mbs_idx=831",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://msg1.co.kr/membership_view.php?mbs_idx=831",
+          "domain": "msg1.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.oceanhills.com/agree?tab=2",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.oceanhills.com/agree?tab=2",
+          "domain": "oceanhills.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://goldyougolfre.gabia.io/bbs/board.php?bo_table=w2_1&wr_id=178&sca=%EA%B2%BD%EC%83%81%EA%B6%8C",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://goldyougolfre.gabia.io/bbs/board.php?bo_table=w2_1&wr_id=178&sca=%EA%B2%BD%EC%83%81%EA%B6%8C",
+          "domain": "goldyougolfre.gabia.io",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_엠스클럽의성_9홀",
+    "name": "엠스클럽의성(9홀)",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": 9,
+    "reason": "current_holes_conflicts_with_web",
+    "detail": {
+      "status": "CONFLICT",
+      "value": 9,
+      "reason": "current_holes_conflicts_with_web",
+      "source": "catalog",
+      "candidate_counts": {
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_엠스클럽의성_18홀",
+    "name": "엠스클럽의성(18홀)",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": 18,
+    "reason": "current_holes_conflicts_with_web",
+    "detail": {
+      "status": "CONFLICT",
+      "value": 18,
+      "reason": "current_holes_conflicts_with_web",
+      "source": "catalog",
+      "candidate_counts": {
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_그레이스",
+    "name": "그레이스CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_유니벨리",
+    "name": "유니벨리CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "36": 1,
+        "90": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_대가야",
+    "name": "대가야CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/9fbc1b22-dcd3-41b6-8375-82bf52b40fa7",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/9fbc1b22-dcd3-41b6-8375-82bf52b40fa7",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tigerbooking.com/kr/golf-course/Daegaya-Country-Club-TAKR0018",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tigerbooking.com/kr/golf-course/Daegaya-Country-Club-TAKR0018",
+          "domain": "tigerbooking.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://sports.goryeong.go.kr/grParkgolf/facility/parkgolf/10",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://sports.goryeong.go.kr/grParkgolf/facility/parkgolf/10",
+          "domain": "sports.goryeong.go.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_용원",
+    "name": "용원",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://allthatcompany.com/districts/%EA%B2%BD%EC%83%81%EB%82%A8%EB%8F%84/%EC%B0%BD%EC%9B%90%EC%8B%9C/%EC%A7%84%ED%95%B4%EA%B5%AC/%EC%9A%A9%EC%9B%90%EB%8F%99",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://allthatcompany.com/districts/%EA%B2%BD%EC%83%81%EB%82%A8%EB%8F%84/%EC%B0%BD%EC%9B%90%EC%8B%9C/%EC%A7%84%ED%95%B4%EA%B5%AC/%EC%9A%A9%EC%9B%90%EB%8F%99",
+          "domain": "allthatcompany.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.daangn.com/kr/local-profile/%ED%8C%80%EC%99%80%ED%94%84-%EC%9A%A9%EC%9B%90-xzxsv37znmb1",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.daangn.com/kr/local-profile/%ED%8C%80%EC%99%80%ED%94%84-%EC%9A%A9%EC%9B%90-xzxsv37znmb1",
+          "domain": "daangn.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://place.udanax.org/p/4004758/%EB%B1%83%EB%A8%B8%EB%A6%AC",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://place.udanax.org/p/4004758/%EB%B1%83%EB%A8%B8%EB%A6%AC",
+          "domain": "place.udanax.org",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_용원",
+    "name": "용원",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_진주",
+    "name": "진주",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=144",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=144",
+          "domain": "ivyleisure.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.clovergolf.co.kr:52683/main/z_golf_v.php?page_no=2&no=144",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.clovergolf.co.kr:52683/main/z_golf_v.php?page_no=2&no=144",
+          "domain": "clovergolf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.jinju.go.kr/here/03630.web?amode=view&idx=860",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.jinju.go.kr/here/03630.web?amode=view&idx=860",
+          "domain": "jinju.go.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.chinjucc.co.kr/Guide/Fees.aspx",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.chinjucc.co.kr/Guide/Fees.aspx",
+          "domain": "chinjucc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://duli.co.kr/web/splus/kmap/view.php?sigun=6480000&gugun=5310000&keyno=data_local_23-02-01-P&keyname=%EC%A7%84%EC%A3%BC+CC",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://duli.co.kr/web/splus/kmap/view.php?sigun=6480000&gugun=5310000&keyno=data_local_23-02-01-P&keyname=%EC%A7%84%EC%A3%BC+CC",
+          "domain": "duli.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_진주",
+    "name": "진주",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "public_data_conflicts_with_web",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "public_data_conflicts_with_web",
+      "public_value": "회원제",
+      "web_counts": {
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_삼삼",
+    "name": "삼삼컨트리클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_가야",
+    "name": "가야",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_정산",
+    "name": "정산",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_가야_2",
+    "name": "가야CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "54": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_거제뷰",
+    "name": "거제뷰CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://mts.oopy.io/0c984fbd-8142-4f73-929d-9eb8ac85a8cd",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://mts.oopy.io/0c984fbd-8142-4f73-929d-9eb8ac85a8cd",
+          "domain": "mts.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.geojenews.co.kr/news/articleView.html?idxno=35629",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.geojenews.co.kr/news/articleView.html?idxno=35629",
+          "domain": "geojenews.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_에덴밸리",
+    "name": "에덴밸리",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://msg1.co.kr/membership_view.php?mbs_idx=607",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://msg1.co.kr/membership_view.php?mbs_idx=607",
+          "domain": "msg1.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://golf.edenvalley.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://golf.edenvalley.co.kr",
+          "domain": "golf.edenvalley.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_에이원",
+    "name": "에이원",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.kygolf.co.kr/mobile/golf_v.php?page_no=27&no=137",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.kygolf.co.kr/mobile/golf_v.php?page_no=27&no=137",
+          "domain": "kygolf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://msg1.co.kr/membership_view.php?mbs_idx=945",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://msg1.co.kr/membership_view.php?mbs_idx=945",
+          "domain": "msg1.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://a-onecc.co.kr/info_newnoticeView.asp?Bid=125&page=14&searchStr=",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://a-onecc.co.kr/info_newnoticeView.asp?Bid=125&page=14&searchStr=",
+          "domain": "a-onecc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_양산",
+    "name": "양산컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://grandmship.com/mobile/z_golf_v.php?page_no=138&no=197&area=%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://grandmship.com/mobile/z_golf_v.php?page_no=138&no=197&area=%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD",
+          "domain": "grandmship.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=97",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=97",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_부곡",
+    "name": "부곡",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=61",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=61",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.bkcc.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.bkcc.co.kr",
+          "domain": "bkcc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_힐마루",
+    "name": "힐마루CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_노벨",
+    "name": "노벨CC",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_노벨",
+    "name": "노벨CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_고성",
+    "name": "고성CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://gosungcc.com/mobile/04course/course.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://gosungcc.com/mobile/04course/course.asp",
+          "domain": "gosungcc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://goltou.kr/main?page=golfjang_homepage&no=1132",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://goltou.kr/main?page=golfjang_homepage&no=1132",
+          "domain": "goltou.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_아델스코트c_c",
+    "name": "아델스코트C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tigerbooking.com/kr/golf-course/Adelscott-Country-Club-TAKR0086",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tigerbooking.com/kr/golf-course/Adelscott-Country-Club-TAKR0086",
+          "domain": "tigerbooking.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://irumtour.net/renew/detailview.html?tid=31014",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://irumtour.net/renew/detailview.html?tid=31014",
+          "domain": "irumtour.net",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_라온",
+    "name": "라온",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.jejuhub.com/mall/m_mall_detail.php?ps_goid=736",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.jejuhub.com/mall/m_mall_detail.php?ps_goid=736",
+          "domain": "jejuhub.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://m.jejugolf.co.kr/tel/view.php?p_no=511",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.jejugolf.co.kr/tel/view.php?p_no=511",
+          "domain": "m.jejugolf.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_라온",
+    "name": "라온",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_타미우스",
+    "name": "타미우스CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://tameuscc.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://tameuscc.co.kr",
+          "domain": "tameuscc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://m.jejudo-golf.com/tel/view.php?p_no=496",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.jejudo-golf.com/tel/view.php?p_no=496",
+          "domain": "m.jejudo-golf.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_블랙스톤제주",
+    "name": "블랙스톤제주",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_세인트포",
+    "name": "세인트포",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_에버리스",
+    "name": "에버리스",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://m.qjeju.com/golf/view.php?no=9",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.qjeju.com/golf/view.php?no=9",
+          "domain": "m.qjeju.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://m.7jeju.com/tel/view.php?p_no=489",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.7jeju.com/tel/view.php?p_no=489",
+          "domain": "m.7jeju.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_엘리시안",
+    "name": "엘리시안CC",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://jejugolf.co.kr/golf/view.php?no=55",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://jejugolf.co.kr/golf/view.php?no=55",
+          "domain": "jejugolf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.elysian.co.kr/about-jeju/golf",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.elysian.co.kr/about-jeju/golf",
+          "domain": "elysian.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_오라",
+    "name": "오라",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "27": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_제주",
+    "name": "제주",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_제피로스",
+    "name": "제피로스",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_크라운",
+    "name": "크라운",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_한라산",
+    "name": "한라산CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_에코랜드",
+    "name": "에코랜드",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.ecolandjeju.co.kr/view/join_01.do",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ecolandjeju.co.kr/view/join_01.do",
+          "domain": "ecolandjeju.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://m.qjeju.com/golf/view.php?no=58",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.qjeju.com/golf/view.php?no=58",
+          "domain": "m.qjeju.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_에코랜드",
+    "name": "에코랜드",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "vworld_아덴힐",
+    "name": "아덴힐",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://ardenhillcc.com/swp/wangime08",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://ardenhillcc.com/swp/wangime08",
+          "domain": "ardenhillcc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tamnao.com/web/ad/detailPrdt.do?corpId=CADO240047",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tamnao.com/web/ad/detailPrdt.do?corpId=CADO240047",
+          "domain": "tamnao.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://palmyhillscc.co.kr/mobile/affiliate/ardenhill_resort.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://palmyhillscc.co.kr/mobile/affiliate/ardenhill_resort.asp",
+          "domain": "palmyhillscc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.jejusea.com/golf/view.html?id=21",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.jejusea.com/golf/view.html?id=21",
+          "domain": "jejusea.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_아덴힐",
+    "name": "아덴힐",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_제주_2",
+    "name": "제주",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_더클래식",
+    "name": "더클래식",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=292",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=292",
+          "domain": "ivyleisure.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=38",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=38",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.theclassicresort.com/pagesite/course/guide.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.theclassicresort.com/pagesite/course/guide.asp",
+          "domain": "theclassicresort.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_뉴코리아",
+    "name": "뉴코리아",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://kumkanggolf.com/bbs/board.php?bo_table=golf&wr_id=3",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://kumkanggolf.com/bbs/board.php?bo_table=golf&wr_id=3",
+          "domain": "kumkanggolf.com",
+          "identity_score": 13
+        },
+        {
+          "value": "http://www.newkoreacc.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.newkoreacc.co.kr",
+          "domain": "newkoreacc.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "https://m.dongagolf.co.kr/products/golf/10030/1024",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.dongagolf.co.kr/products/golf/10030/1024",
+          "domain": "m.dongagolf.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_제주레이크",
+    "name": "제주레이크CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_우리들매디컬",
+    "name": "우리들매디컬",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_제주스카이힐",
+    "name": "제주스카이힐",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_핀크스",
+    "name": "핀크스",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://got-tee.com/list",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://got-tee.com/list",
+          "domain": "got-tee.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://brunch.co.kr/@mytriplog/2096",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://brunch.co.kr/@mytriplog/2096",
+          "domain": "brunch.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_핀크스",
+    "name": "핀크스",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "27": 1,
+        "18": 1,
+        "36": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_핀크스",
+    "name": "핀크스",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_스프링데일골프_리조트",
+    "name": "스프링데일 골프&리조트",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "kgba_한양",
+    "name": "한양",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.hanyangcc.com/club/greeting.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.hanyangcc.com/club/greeting.asp",
+          "domain": "hanyangcc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://hypine.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://hypine.co.kr",
+          "domain": "hypine.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_중문",
+    "name": "중문",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131708",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131708",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://jungmungolf.visitkorea.or.kr/swp/qna",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://jungmungolf.visitkorea.or.kr/swp/qna",
+          "domain": "jungmungolf.visitkorea.or.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://yhtour.kr/place/golf-info/14",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://yhtour.kr/place/golf-info/14",
+          "domain": "yhtour.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_중문",
+    "name": "중문",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "vworld_올림픽",
+    "name": "올림픽컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131609",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131609",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "https://www.olympicsports.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.olympicsports.co.kr",
+          "domain": "olympicsports.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "https://thecommunitya.co.kr/olympiccc",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://thecommunitya.co.kr/olympiccc",
+          "domain": "thecommunitya.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_1_2_3",
+    "name": "1.2.3골프클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.123golfclub.co.kr/sub/sub0102.php",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.123golfclub.co.kr/sub/sub0102.php",
+          "domain": "123golfclub.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "http://www.golfissue.com/news/articleView.html?idxno=20397",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.golfissue.com/news/articleView.html?idxno=20397",
+          "domain": "golfissue.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_고양",
+    "name": "고양컨트리클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/2b37c118-8aec-4711-aab3-1808abfa2b5f",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/2b37c118-8aec-4711-aab3-1808abfa2b5f",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.hanyangcc.com/guide/guide.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.hanyangcc.com/guide/guide.asp",
+          "domain": "hanyangcc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.goyangcc.com/club/club",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.goyangcc.com/club/club",
+          "domain": "goyangcc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://hypine.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://hypine.co.kr",
+          "domain": "hypine.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_광릉",
+    "name": "광릉cc",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_비전힐스",
+    "name": "비전힐스",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.ydgolf.co.kr/m2/modules/catalogue/cg_view.html?no=59&cc=1010",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ydgolf.co.kr/m2/modules/catalogue/cg_view.html?no=59&cc=1010",
+          "domain": "ydgolf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131671",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131671",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_해비치_2",
+    "name": "해비치cc",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.threads.com/@juwoohyun2509/post/DcxAj5QGeAm/%EB%82%A8%EC%96%91%EC%A3%BC-%ED%95%B4%EB%B9%84%EC%B9%98cc-%ED%9A%8C%EC%9B%90%EA%B6%8C%EC%A0%9C%EC%A3%BC%EC%99%80-%EC%84%9C%EC%9A%B8-%EB%91%90-%EA%B3%B3%EC%9D%84-%EB%88%84%EB%A6%AC%EB%8A%94-%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84-%ED%9A%8C%EC%9B%90-%ED%98%9C%ED%83%9D-%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94-%EA%B3%A8%ED%94%84%ED%9A%8C%EC%9B%90%EA%B6%8C-%EC%A0%84%EB%AC%B8-%EC%BB%A8%EC%84%A4%ED%84%B4%ED%8A%B8-%EC%9E%AC%EC%9D%B4%EA%B3%A8%ED%94%84-%EC%A3%BC%EC%9A%B0%ED%98%84-%EB%8C%80%ED%91%9C%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%84%9C%EC%9A%B8%EC%97%90%EC%84%9C-",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.threads.com/@juwoohyun2509/post/DcxAj5QGeAm/%EB%82%A8%EC%96%91%EC%A3%BC-%ED%95%B4%EB%B9%84%EC%B9%98cc-%ED%9A%8C%EC%9B%90%EA%B6%8C%EC%A0%9C%EC%A3%BC%EC%99%80-%EC%84%9C%EC%9A%B8-%EB%91%90-%EA%B3%B3%EC%9D%84-%EB%88%84%EB%A6%AC%EB%8A%94-%ED%94%84%EB%A6%AC%EB%AF%B8%EC%97%84-%ED%9A%8C%EC%9B%90-%ED%98%9C%ED%83%9D-%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94-%EA%B3%A8%ED%94%84%ED%9A%8C%EC%9B%90%EA%B6%8C-%EC%A0%84%EB%AC%B8-%EC%BB%A8%EC%84%A4%ED%84%B4%ED%8A%B8-%EC%9E%AC%EC%9D%B4%EA%B3%A8%ED%94%84-%EC%A3%BC%EC%9A%B0%ED%98%84-%EB%8C%80%ED%91%9C%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%84%9C%EC%9A%B8%EC%97%90%EC%84%9C-",
+          "domain": "threads.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.haevichi.com/ccseoul/ko/club-guide/booking-guide",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.haevichi.com/ccseoul/ko/club-guide/booking-guide",
+          "domain": "haevichi.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_남양주",
+    "name": "남양주CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "lakeside",
+    "name": "레이크사이드CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_레이크힐스용인",
+    "name": "레이크힐스용인컨트리클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_동래베네스트par3",
+    "name": "동래베네스트 Par3 골프클럽",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "9": 1,
+        "45": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_아시아나c_c",
+    "name": "아시아나C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=577433",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=577433",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.mship114.co.kr/sub6/01082001",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.mship114.co.kr/sub6/01082001",
+          "domain": "mship114.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://namu.wiki/w/%EC%95%84%EC%8B%9C%EC%95%84%EB%82%98CC",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://namu.wiki/w/%EC%95%84%EC%8B%9C%EC%95%84%EB%82%98CC",
+          "domain": "namu.wiki",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_은화삼",
+    "name": "은화삼",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.yongin.go.kr/tour/exTrv/exTrvLeisu/exTrvLeisu01/exTrvLeisu01_14.jsp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.yongin.go.kr/tour/exTrv/exTrvLeisu/exTrvLeisu01/exTrvLeisu01_14.jsp",
+          "domain": "yongin.go.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://ob.memebro.kr/934",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://ob.memebro.kr/934",
+          "domain": "ob.memebro.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://twinpapa1.com/은화삼cc-예약-그린피-18홀-코스난이도-공략-날씨-후기",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://twinpapa1.com/은화삼cc-예약-그린피-18홀-코스난이도-공략-날씨-후기",
+          "domain": "twinpapa1.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=680b6925-c191-4ef5-91a6-8f71fddf9c70",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=680b6925-c191-4ef5-91a6-8f71fddf9c70",
+          "domain": "korean.visitkorea.or.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_코리아c_c",
+    "name": "코리아C.C",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131657",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131657",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.gakorea.com",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.gakorea.com",
+          "domain": "gakorea.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_파인리조트",
+    "name": "파인리조트",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tigerbooking.com/kr/golf-course/Yangji-Pine-Resort-TAKR0142",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tigerbooking.com/kr/golf-course/Yangji-Pine-Resort-TAKR0142",
+          "domain": "tigerbooking.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=98",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=98",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://namu.wiki/w/%EC%96%91%EC%A7%80%ED%8C%8C%EC%9D%B8%EB%A6%AC%EC%A1%B0%ED%8A%B8",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://namu.wiki/w/%EC%96%91%EC%A7%80%ED%8C%8C%EC%9D%B8%EB%A6%AC%EC%A1%B0%ED%8A%B8",
+          "domain": "namu.wiki",
+          "identity_score": 8
+        },
+        {
+          "value": "http://shinhanleisure.com/resort/3262",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://shinhanleisure.com/resort/3262",
+          "domain": "shinhanleisure.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.pineresort.com/Condo/Contact.aspx",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.pineresort.com/Condo/Contact.aspx",
+          "domain": "pineresort.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_프라자c_c",
+    "name": "프라자C.C",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "36": 1,
+        "18": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_글렌로스",
+    "name": "글렌로스골프클럽",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.yongin.go.kr/tour/exTrv/exTrvLeisu/exTrvLeisu01/exTrvLeisu01_24.jsp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.yongin.go.kr/tour/exTrv/exTrvLeisu/exTrvLeisu01/exTrvLeisu01_24.jsp",
+          "domain": "yongin.go.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=780311",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=780311",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://comp4u.oopy.io/7a1ff113-cac6-4597-8aab-ee8f3af6649d",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/7a1ff113-cac6-4597-8aab-ee8f3af6649d",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_석천",
+    "name": "석천CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_해솔리아",
+    "name": "해솔리아CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_골드",
+    "name": "골드",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131761",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=131761",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 13
+        },
+        {
+          "value": "https://m.dongagolf.co.kr/products/golf/10013/1009",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://m.dongagolf.co.kr/products/golf/10013/1009",
+          "domain": "m.dongagolf.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.ksmgolf.com/main/z2_golf_v.php?page_no=55&no=9",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ksmgolf.com/main/z2_golf_v.php?page_no=55&no=9",
+          "domain": "ksmgolf.com",
+          "identity_score": 9
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_남부",
+    "name": "남부",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.namboocc.co.kr/reservation/guide/reservation.do",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.namboocc.co.kr/reservation/guide/reservation.do",
+          "domain": "namboocc.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.ksmgolf.com/main/gmb_board_view.php?page_no=27&no=957",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ksmgolf.com/main/gmb_board_view.php?page_no=27&no=957",
+          "domain": "ksmgolf.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_태광",
+    "name": "태광",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_한성",
+    "name": "한성",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://grandmship.com/mobile/z_golf_v.php?page_no=138&no=53&title=%EF%BF%BD%D1%BC%EF%BF%BD",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://grandmship.com/mobile/z_golf_v.php?page_no=138&no=53&title=%EF%BF%BD%D1%BC%EF%BF%BD",
+          "domain": "grandmship.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.t-golf.co.kr/yc/shop/item.php?it_id=1585702254",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.t-golf.co.kr/yc/shop/item.php?it_id=1585702254",
+          "domain": "t-golf.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "vworld_코리아퍼브릭",
+    "name": "코리아퍼브릭",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "vworld_서서울골프장",
+    "name": "서서울골프장",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_플라자cc_설악",
+    "name": "플라자CC 설악",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_카스카디아",
+    "name": "카스카디아",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_웰리힐리",
+    "name": "웰리힐리",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.wellihillipark.com",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.wellihillipark.com",
+          "domain": "wellihillipark.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.agoda.com/ko-kr/welli-hilli-park-resort/hotel/hoengseong-gun-kr.html",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.agoda.com/ko-kr/welli-hilli-park-resort/hotel/hoengseong-gun-kr.html",
+          "domain": "agoda.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_엘리시안강촌",
+    "name": "엘리시안강촌",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://elysian.co.kr/about-gangchon/golf",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://elysian.co.kr/about-gangchon/golf",
+          "domain": "elysian.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.tripinfo.co.kr/info.html?content_type_id=12&content_id=127654",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.tripinfo.co.kr/info.html?content_type_id=12&content_id=127654",
+          "domain": "tripinfo.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.gangwon.to/gwtour/only/attraction?articleSeq=138",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.gangwon.to/gwtour/only/attraction?articleSeq=138",
+          "domain": "gangwon.to",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_세이지우드_홍천",
+    "name": "세이지우드 홍천",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_설해원",
+    "name": "설해원",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": "회원제",
+    "reason": "catalog_conflicts_with_public_data",
+    "detail": {
+      "status": "CONFLICT",
+      "value": "회원제",
+      "reason": "catalog_conflicts_with_public_data",
+      "catalog_value": "회원제",
+      "public_value": "대중제",
+      "web_counts": {}
+    }
+  },
+  {
+    "id": "kgba_벨라45오너스클럽",
+    "name": "벨라45오너스클럽",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "혼합": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_라비에벨_올드",
+    "name": "라비에벨 올드",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_크리스탈밸리",
+    "name": "크리스탈밸리",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_아난티클럽서울",
+    "name": "아난티클럽서울",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://goltou.kr/main?page=golfjang_homepage&no=831",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://goltou.kr/main?page=golfjang_homepage&no=831",
+          "domain": "goltou.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://greenfeeguide.co.kr/course/gc-0150",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://greenfeeguide.co.kr/course/gc-0150",
+          "domain": "greenfeeguide.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_서원밸리",
+    "name": "서원밸리",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_노스팜",
+    "name": "노스팜",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/fb549652-b754-4858-b21d-e1a2724ee96a",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/fb549652-b754-4858-b21d-e1a2724ee96a",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.npcc.co.kr",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.npcc.co.kr",
+          "domain": "npcc.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_더_시에나_서울",
+    "name": "더 시에나 서울",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://thesiena.co.kr/content/seoulcc",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://thesiena.co.kr/content/seoulcc",
+          "domain": "thesiena.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://thesiena.org/%EC%86%8C%EA%B0%9C",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://thesiena.org/%EC%86%8C%EA%B0%9C",
+          "domain": "thesiena.org",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.thesiena.net",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.thesiena.net",
+          "domain": "thesiena.net",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_페럼",
+    "name": "페럼",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_크리스밸리",
+    "name": "크리스밸리",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://creasvalley.com/booking/real-time",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://creasvalley.com/booking/real-time",
+          "domain": "creasvalley.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.ljlarchitects.com/%ED%81%AC%EB%A6%AC%EC%8A%A4%EB%B0%B8%EB%A6%ACcc%ED%81%B4%EB%9F%BD%ED%95%98%EC%9A%B0%EC%8A%A4",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ljlarchitects.com/%ED%81%AC%EB%A6%AC%EC%8A%A4%EB%B0%B8%EB%A6%ACcc%ED%81%B4%EB%9F%BD%ED%95%98%EC%9A%B0%EC%8A%A4",
+          "domain": "ljlarchitects.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_신안",
+    "name": "신안",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.shinan.co.kr/business/golf/shinancc",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+          "domain": "shinan.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=87",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=87",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "southsprings",
+    "name": "사우스스프링스CC",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_마이다스레이크_이천",
+    "name": "마이다스레이크 이천",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "회원제": 1,
+        "대중제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_route52",
+    "name": "ROUTE52",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.route52cc.com",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.route52cc.com",
+          "domain": "route52cc.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://fga.purpleo.co.kr/view/212",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://fga.purpleo.co.kr/view/212",
+          "domain": "fga.purpleo.co.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_더스타휴",
+    "name": "더스타휴",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.ks-membership.co.kr/html/sub11_view.php?mode=1&no=27&page=&level_state22=&sword=",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.ks-membership.co.kr/html/sub11_view.php?mode=1&no=27&page=&level_state22=&sword=",
+          "domain": "ks-membership.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.seoulgolf.kr/mobile/z_golf_v.php?page_no=138&no=18",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.seoulgolf.kr/mobile/z_golf_v.php?page_no=138&no=18",
+          "domain": "seoulgolf.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://tour.yp21.go.kr/www/selectTourCntntsWebView.do?tourNo=343&ctgry=21&key=132",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://tour.yp21.go.kr/www/selectTourCntntsWebView.do?tourNo=343&ctgry=21&key=132",
+          "domain": "tour.yp21.go.kr",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_더스타휴",
+    "name": "더스타휴",
+    "field": "holes",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_holes_values",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_holes_values",
+      "candidate_counts": {
+        "18": 1,
+        "9": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_남서울",
+    "name": "남서울",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1,
+        "혼합": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_안성",
+    "name": "안성",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "http://www.ksmgolf.com/main/z2_golf_v.php?page_no=55&no=35",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ksmgolf.com/main/z2_golf_v.php?page_no=55&no=35",
+          "domain": "ksmgolf.com",
+          "identity_score": 13
+        },
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=19",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=19",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.golfclubq.com/facil/facil04.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.golfclubq.com/facil/facil04.asp",
+          "domain": "golfclubq.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_아시아나",
+    "name": "아시아나",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.mship114.co.kr/sub6/01082001",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.mship114.co.kr/sub6/01082001",
+          "domain": "mship114.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.threads.com/@juwoohyun2509/post/DXfv7hzGYF_/%EC%95%84%EC%8B%9C%EC%95%84%EB%82%98%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BDasiana-cc-%EB%AA%A8%EA%B8%B0%EC%97%85-%EA%B8%88%ED%98%B8%EB%A6%AC%EC%A1%B0%ED%8A%B8%EC%A3%BC-%ED%98%84%EC%9E%AC-%EA%B8%88%ED%98%B8%EC%84%9D%EC%9C%A0%ED%99%94%ED%95%99%EA%B7%B8%EB%A3%B9-%EA%B3%84%EC%97%B4-%EA%B0%9C%EC%9E%A5%EC%9D%BC-1993%EB%85%84-6%EC%9B%94-1%EC%9D%BC-%EC%86%8C%EC%9E%AC%EC%A7%80-%EA%B2%BD%EA%B8%B0%EB%8F%84-%EC%9A%A9%EC%9D%B8%EC%8B%9C-%EC%B2%98%EC%9D%B8%EA%B5%AC-%EC%96%91%EC%A7%80%EB%A9%B4",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.threads.com/@juwoohyun2509/post/DXfv7hzGYF_/%EC%95%84%EC%8B%9C%EC%95%84%EB%82%98%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BDasiana-cc-%EB%AA%A8%EA%B8%B0%EC%97%85-%EA%B8%88%ED%98%B8%EB%A6%AC%EC%A1%B0%ED%8A%B8%EC%A3%BC-%ED%98%84%EC%9E%AC-%EA%B8%88%ED%98%B8%EC%84%9D%EC%9C%A0%ED%99%94%ED%95%99%EA%B7%B8%EB%A3%B9-%EA%B3%84%EC%97%B4-%EA%B0%9C%EC%9E%A5%EC%9D%BC-1993%EB%85%84-6%EC%9B%94-1%EC%9D%BC-%EC%86%8C%EC%9E%AC%EC%A7%80-%EA%B2%BD%EA%B8%B0%EB%8F%84-%EC%9A%A9%EC%9D%B8%EC%8B%9C-%EC%B2%98%EC%9D%B8%EA%B5%AC-%EC%96%91%EC%A7%80%EB%A9%B4",
+          "domain": "threads.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_골프클럽q",
+    "name": "골프클럽Q",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://comp4u.oopy.io/319f436e-c57e-4324-9b14-b9084975e32c",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://comp4u.oopy.io/319f436e-c57e-4324-9b14-b9084975e32c",
+          "domain": "comp4u.oopy.io",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=19",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=19",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "https://www.golfclubq.com/guide/charge.asp",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.golfclubq.com/guide/charge.asp",
+          "domain": "golfclubq.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_예미지",
+    "name": "예미지",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://www.nocutnews.co.kr/news/6576567",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://www.nocutnews.co.kr/news/6576567",
+          "domain": "nocutnews.co.kr",
+          "identity_score": 8
+        },
+        {
+          "value": "https://news.nate.com/view/20260911n07054",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://news.nate.com/view/20260911n07054",
+          "domain": "news.nate.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "kgba_천룡",
+    "name": "천룡",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "혼합": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_올데이_임페리얼레이크",
+    "name": "올데이 임페리얼레이크",
+    "field": "operation_type",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_operation_types",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_operation_types",
+      "web_counts": {
+        "대중제": 1,
+        "회원제": 1
+      }
+    }
+  },
+  {
+    "id": "kgba_에딘버러",
+    "name": "에딘버러",
+    "field": "official_url",
+    "status": "CONFLICT",
+    "value": null,
+    "reason": "multiple_official_domain_candidates",
+    "detail": {
+      "status": "CONFLICT",
+      "value": null,
+      "reason": "multiple_official_domain_candidates",
+      "candidates": [
+        {
+          "value": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=100",
+          "confidence": "A_CANDIDATE",
+          "source_url": "https://swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=100",
+          "domain": "swgolfcondo.com",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=110&pno=251",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.ivyleisure.com/main/z_golf_v.php?page_no=30&no=110&pno=251",
+          "domain": "ivyleisure.com",
+          "identity_score": 8
+        },
+        {
+          "value": "http://www.gj-cc.com/page/s12",
+          "confidence": "A_CANDIDATE",
+          "source_url": "http://www.gj-cc.com/page/s12",
+          "domain": "gj-cc.com",
+          "identity_score": 8
+        }
+      ]
+    }
+  }
+]

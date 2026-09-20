@@ -1,0 +1,60 @@
+# Golf Master B_SUPPORTED DRY RUN
+
+- B_SUPPORTED 입력: 779
+- SAME: 25
+- NEW: 752
+- CONFLICT: 2
+- MISSING: 0
+
+## NEW 재분류
+
+- PROMOTE: 4
+- KEEP_AS_EVIDENCE: 454
+- REVIEW: 294
+
+## 필드별
+
+### official_url
+- SAME: 5
+- NEW: 198
+- CONFLICT: 0
+- MISSING: 0
+- PROMOTE: 0
+- KEEP_AS_EVIDENCE: 0
+- REVIEW: 198
+
+### booking_url
+- SAME: 0
+- NEW: 98
+- CONFLICT: 0
+- MISSING: 0
+- PROMOTE: 2
+- KEEP_AS_EVIDENCE: 0
+- REVIEW: 96
+
+### holes
+- SAME: 13
+- NEW: 173
+- CONFLICT: 0
+- MISSING: 0
+- PROMOTE: 0
+- KEEP_AS_EVIDENCE: 173
+- REVIEW: 0
+
+### operation_type
+- SAME: 1
+- NEW: 2
+- CONFLICT: 0
+- MISSING: 0
+- PROMOTE: 2
+- KEEP_AS_EVIDENCE: 0
+- REVIEW: 0
+
+### phone
+- SAME: 6
+- NEW: 281
+- CONFLICT: 2
+- MISSING: 0
+- PROMOTE: 0
+- KEEP_AS_EVIDENCE: 281
+- REVIEW: 0
