@@ -494,6 +494,32 @@ st.html(
 }
 </style>
 
+<style>
+@media (max-width: 640px) {
+  /* 검색방식 3개를 한 줄에서 명확하게 구분 */
+  div[data-testid="stSegmentedControl"] button {
+    min-height: 38px !important;
+    padding: 4px 5px !important;
+    font-size: .70rem !important;
+    line-height: 1.08 !important;
+  }
+  /* 권역/세부권역/추가조건 버튼의 세로 길이 축소 */
+  div[data-testid="stButton"] button {
+    min-height: 35px !important;
+    padding: 4px 6px !important;
+  }
+  /* 접힌 추가조건은 검색 버튼과 시각적으로 분리 */
+  div[data-testid="stExpander"] {
+    margin-top: .15rem !important;
+    margin-bottom: .35rem !important;
+  }
+  div[data-testid="stExpander"] details summary {
+    min-height: 36px !important;
+    font-weight: 700 !important;
+  }
+}
+</style>
+
 """
 )
 
@@ -794,30 +820,43 @@ def _skill_target_slope(avg_score, challenge):
 
 
 def _skill_fit(club, avg_score, challenge):
+    """
+    KGA 공식 Slope/전장 수치는 근거로 유지하되,
+    화면의 첫 문장은 사용자가 이해하기 쉬운 개인화 해석으로 표시한다.
+    평균타수는 Handicap Index로 환산하지 않는다.
+    """
     summary = _kga_rating_summary(club)
     if not summary:
         return {
             "known": False,
             "distance": 999.0,
-            "label": "KGA 공인 난이도 확인 필요",
-            "detail": "KGA Course/Slope 상세값 없음",
+            "label": "내게 맞는 난이도 판단에 정보가 더 필요해요",
+            "detail": "KGA 공인 난이도 상세값 확인 필요",
         }
 
     slope = summary["slope"]
     target = _skill_target_slope(avg_score, challenge)
     distance = abs(slope - target)
 
+    # 아래 문구는 KGA의 공식 난이도 등급이 아니라
+    # 사용자가 선택한 평균타수/라운드 목적과 KGA 수치를 비교한 서비스 해석이다.
     if distance <= 5:
-        label = "내 설정과 비슷한 난이도"
+        label = "내가 원하는 난이도와 비슷해요"
     elif slope < target:
-        label = "내 설정보다 편한 편"
+        label = "내 설정에서는 비교적 편하게 즐길 후보예요"
     else:
-        label = "내 설정보다 도전적인 편"
+        label = "내 설정에서는 도전적인 코스예요"
 
-    bits = [f"KGA 평균 Slope {slope:.0f}"]
+    bits = []
     if summary.get("length_yds"):
-        bits.append(f"평균 전장 {summary['length_yds']:,.0f}yd")
-    bits.append(f"평균 {int(avg_score)}타 · {challenge} 기준 참고")
+        yards = summary["length_yds"]
+        meters = yards * 0.9144
+        bits.append(f"전장 {yards:,.0f}yd ({meters:,.0f}m)")
+
+    # 숫자는 해석의 근거로 뒤에 작게 남긴다.
+    bits.append(f"KGA Slope {slope:.0f}")
+    bits.append(f"평균 {int(avg_score)}타 · {challenge} 선택 기준 참고")
+
     return {
         "known": True,
         "distance": distance,
@@ -920,8 +959,8 @@ with st.container(key="golf"):
 
         search_mode = st.segmented_control(
             "찾는 방법",
-            ["골프장 직접 찾기", "조건 검색", "✨ AI 문장검색 · 선택사항"],
-            default="골프장 직접 찾기",
+            ["조건 검색", "✨ AI 문장검색", "골프장 직접 찾기"],
+            default="조건 검색",
             label_visibility="collapsed",
         )
 
@@ -966,12 +1005,12 @@ with st.container(key="golf"):
 
         # 2) 카테고리/상세조건 검색
         elif search_mode == "조건 검색":
-            area_options = ["수도권", "충청권", "강원권", "영남권", "호남권", "제주권"]
+            area_options = ["수도권", "호남권", "강원권", "충청권", "영남권", "제주권"]
             selected_areas = mobile_multi_choice(
                 "권역",
                 area_options,
                 key="golf_area_multi",
-                help_text="여러 권역 선택 가능 · 선택하지 않으면 전국",
+                help_text="복수 선택 가능 · 미선택 시 전국",
             )
             # 기존 추천함수 호환용. 복수 권역은 후단에서 필터링한다.
             area = selected_areas[0] if len(selected_areas) == 1 else "전체"
@@ -1054,19 +1093,19 @@ with st.container(key="golf"):
                 "110타 이상": 115,
             }.get(avg_score_label)
 
-            st.markdown("##### 추가 조건 <span style='font-size:.72rem;font-weight:500;opacity:.55'>선택사항</span>", unsafe_allow_html=True)
-            objective_choice = mobile_multi_choice(
-                "시설 · 운영 조건",
-                ["2인 플레이", "3인 플레이", "9홀×2 라운드", "PAR3 연습장", "야외 연습장", "야간 라운드"],
-                key="golf_objective_multi",
-                help_text="선택사항입니다. 확인된 곳을 우선 구분해 보여줍니다.",
-            )
+            with st.expander("＋ 추가 조건 · 인원 / 연습장 / 야간", expanded=False):
+                objective_choice = mobile_multi_choice(
+                    "시설 · 운영 조건",
+                    ["2인 플레이", "3인 플레이", "9홀×2 라운드", "PAR3 연습장", "야외 연습장", "야간 라운드"],
+                    key="golf_objective_multi",
+                    help_text="필요한 조건만 선택하세요.",
+                )
 
-            cfind, cmore = st.columns([2.2, 1])
+            cfind, cmore = st.columns([3.2, 1])
             with cfind:
-                find_clicked = st.button("조건으로 검색", type="primary", width="stretch")
+                find_clicked = st.button("🔎 이 조건으로 찾기", type="primary", width="stretch")
             with cmore:
-                more_clicked = st.button("다음 결과", width="stretch")
+                more_clicked = st.button("다음 12개 →", width="stretch")
 
             if find_clicked or more_clicked:
                 st.session_state.pop("golf_selected_id", None)
