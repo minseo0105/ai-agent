@@ -1,0 +1,2709 @@
+[
+  {
+    "id": "vworld_해라",
+    "name": "해라컨트리클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "7; (구)부산광역시 강서구 지사동 산 11   haeracc.co.kr   name_match   address_strong   부산 강서구 2인 플레이 가능, 해라CC 그늘집 후기   https://blog.naver.com/udini_1031/224019079739   해라CC 부산광역시 강서구 과학산단로306번길 77 저장 예약 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_제이퍼블릭",
+    "name": "제이퍼블릭",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ion/golfResv/public_reserv01.asp   예약일 선택시 요금확인 가능 · 예약 및 플레이는 3인이상 가능합니다. · 주중 2인플레이 가능(1인 65,000원) · 주말 2인 플레이시 3인예약 현장3인결제시 가능합니다. · 노   jisanresort.co.kr   미국 골프 소개  _ 골프장 소개와 예약 방법   ",
+      "ion/golfResv/public_reserv01.asp   예약일 선택시 요금확인 가능 · 예약 및 플레이는 3인이상 가능합니다. · 주중 2인플레이 가능(1인 65,000원) · 주말 2인 플레이시 3인예약 현장3인결제시 가능합니다. · 노   jisanresort.co.kr   미국 골프 소개  _ 골프장 소개와 예약 방법   "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_뉴스프링빌",
+    "name": "뉴스프링빌",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "BC%EB%B8%94%EB%A6%AD   뉴스프링빌 퍼블릭 예약, 프장 예약 문의031-630-7500 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 고객센터: 1877-7619. Amazon Web Services, Inc. 릭 전화번호: 031-   dbegl.com   name_match   031-630-7500   "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_안성베네스트g_c",
+    "name": "안성베네스트G.C",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "00)  -정회원 1+가족 1    -정회원 주중 8만, 가족회원 주중 13만    -가족회원 대신 타인지정 가능    -주중 7:30분 이전 2인 플레이 가능    -회원제+대중제 이용시 그린피 1만원 할인        \\분양가 2500만원, 3500만원, 4500만원 주중회원권만 거래 가능    \\개인-법인간 교차거래 불가(시세다름)",
+      "9만    -가족회원 주중 13만, 주말 17만    -회원제+대중제 이용시 그린피 1만원 할인    -주말 예약 월 1회 가능        \\2인 플레이 가능여부는 시즌별 상이     \\명의개서 1개월 소요    \\개인-법인간 교차거래 불가(시세다름) [...] ##### 일반(分1억,1.3억,1.5억)  -정회원 1+ 가족 1    ",
+      "중 13만, 주말 17만    -가족회원 대신 타인지정 가능    -주말 예약 2회 보장(토/일, 코스 순환배정)    -주중 7:30분 이전 2인 플레이 가능    -회원제+대중제 이용시 그린피 1만원 할인        \\分1.5억 회원권 특전: 가족회원 주중 한정 정회원 대우    \\개인-법인간 교차거래 불가(시세다름)    \\명의개"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_레이크힐스안성퍼블릭",
+    "name": "레이크힐스안성퍼블릭",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "76-8388/671-2881-674-8366   acegolf.com   031-676-8388   노캐디 퍼블릭 9홀 레이크힐스안성GC / 2인플레이 가능 (feat ...   https://blog.naver.com/b_irene/221707460671   #레이크힐스안성CC ・ 크힐스 는 셀프로 골프백을 내려야해요 :) 골프백내",
+      "76-8388/671-2881-674-8366   acegolf.com   031-676-8388   노캐디 퍼블릭 9홀 레이크힐스안성GC / 2인플레이 가능 (feat ...   https://blog.naver.com/b_irene/221707460671   #레이크힐스안성CC ・ 크힐스 는 셀프로 골프백을 내려야해요 :) 골프백내"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_남촌",
+    "name": "남촌",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 부항길 135-38 홈페이지 ・ kr 규모 18홀 회원수 199명 회원권정보 ・ 월 예약횟수: 주말 3~4회(3개월 ・ 라운딩 가능 - 주중 2인 플레이 가능 ・   czgolf.kr   name_match   address_strong   남촌 골프클럽 | BaiGolf-골프 코스 예약, 골프 투어, 일본 ...   https://w"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_포천아도니스",
+    "name": "포천아도니스",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "기도 포천시 신북면 포천로 2499   slgolf03.tistory.com   name_match   address_strong   노 캐디 2인 플레이 가능한 포천 아도니스CC의 모든 것   https://www.youtube.com/watch?v=gHFMJAnZQ6g&xstg=CAMSBhUD_LL2Hw%3D%3D   유용한 정보를 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_이포",
+    "name": "이포",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "태 | 회원제 18홀 + 퍼블릭 9홀 (노캐디골프장 운영) | | 퍼블릭 코스명 | 동코스 (9홀, Par 36) | | 플레이 가능 인원 | 2인 플레이 가능 (단, 조인될 수 있음) | | 카트 운영 | 셀프 카트 / 버튼식 조작 시스템 | | 예약 방식 | 블루원 공식 홈페이지 및 전화 예약 | | 잔디 상태 | 페어웨이·러프 모두",
+      "​  요즘 많은 골프장이 3~4인 기준으로만 예약을 받는데  블루원용인CC는 2인 플레이가 가능하다는 점이 정말 큽니다. ​    주중엔 단독 2인 플레이 가능  주말엔 조인 시스템으로 운영 (다른 팀과 매칭될 수 있음)  ​  저는 지인들과 4안 라운드로 다녀왔는데,  다른 팀들은 조인으로 방문하신 팀들도 있더라고요. ​  페어웨이: "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_자유",
+    "name": "자유",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "3위 골프장 · 경기 여주시 가남읍 자유그린길 69. 골프장 예약 문의031-887-7700 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디. 자유CC   dbegl.com   name_match   address_strong   031-887-7700   파크골프장 | 기타 체육시설 | 시설안내 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_sky72",
+    "name": "Sky72",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "al_step01_pkg.jsp   스카이72 골프클럽 / 드림듄스코스 / 드림골프연습장 · 18홀 실시간예약 · 선결제 할인 예약 · 18홀 2인 예약 · 짱가예약 시즌2 · MVP 전용 할인예약 · 드림듄스코스 드림골프   sky72.com   name_match   SKY72 골프장 예약 홈페이지 사용법과 예약 규정 - 데일"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_남여주",
+    "name": "남여주",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "수도권 32위 골프장 · 경기 여주시 가여로 532. 골프장 예약 문의031-880-6700 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노   dbegl.com   name_match   031-880-6700   남여주cc 골프클럽(gc) 코스/그린피/예약/위치 - 피치에그   https://peachegg."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_아리지",
+    "name": "아리지CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%80CC   골프장 경기 여주시 가남읍 아리지그린길 68 골프장 예약 문의031-887-5678 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 한국잔디 3인가능 … 고객센터: 1877-7619   dbegl.com   name_match   address_strong   031-887-5678   아리지cc (2026"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_페럼클럽",
+    "name": "페럼클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "도권 8위 골프장  경기 여주시 점동면 점동로 181  골프장 예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (",
+      "예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (9/24~9/27)  Post thumbnail  1주 전 더블",
+      "- 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (9/24~9/27)  Post thumbnail  1주 전 더블이글팀  조회 208  ### 이벤트 ~12/31페럼CC 레이디스데이  시니어/여성 그린피 만원 할인 (2/23~"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_썬힐g_c",
+    "name": "썬힐G.C",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "위 골프장 · 경기 가평군 조종면 운악청계로 809. 골프장 예약 문의031-585-7900 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디.   dbegl.com   name_match   address_strong   031-585-7900   썬힐GC (2026) | 전국 필드 골프장, CC 후기/가격"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_리앤리",
+    "name": "리앤리CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ".com/golf-courses/447-%EB%A6%AC%EC%95%A4%EB%A6%ACCC   골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디. 3인가능 ... 리앤리CC 전화번호: 031-580-9000 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_match   031-58"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_남춘천c_c",
+    "name": "남춘천 C.C",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ", 골프장, 숙박 ; 포함사항. * 17평 침대형(2인 1실)변경시 20,000원/팀추가 * 1팀 3인 패키지 이용시 추가요금 발생됩니다. * 2인라운딩 가능(요금 별도문의).   1night2day.com   name_match   https://golf.sbs.co.kr/m/review/course/692988eed47743ed29"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_휘슬링락c_c",
+    "name": "휘슬링 락C.C",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "+ 준회원 3인  정회원 : 주중 / 주말 21,120원 준회원 : 주중 21,120원 / 주말 176,000원 주중 프리 / 주말 4회 주중 2인플레이가능 기명인 동반자 그린피 할인 -회원동반자 : 주중 220,500원 / 주말 268,500원 -준회원 동반자 : 주중 270,000원 / 주말 330,000원  \\비회원그린피 : 주",
+      "+ 준회원 3인  정회원 : 주중 / 주말 21,120원 준회원 : 주중 21,120원 / 주말 176,000원 주중 프리 / 주말 4회 주중 2인플레이가능 기명인 동반자 그린피 할인 -회원동반자 : 주중 220,500원 / 주말 268,500원 -준회원 동반자 : 주중 270,000원 / 주말 330,000원  \\비회원그린피 : 주"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_인천오렌지듄스",
+    "name": "인천오렌지듄스골프클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%8A%A4GC%EC%98%81%EC%A2%85   184 골프장 예약 문의032-745-3000 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 고객센터: 1877-7619 호스팅서비스. Amazon Web Services, Inc. 종 전화번호: 032-   dbegl.com   032-745-3000   오렌지듄스 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_인천국제c_c",
+    "name": "인천국제C.C",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "D%EC%A0%9CCC   인천 서구 도요지로 37. 골프장 예약 문의032-562-6666 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디. 인천국제CC 이벤트. 이벤트 ~9/30인천국제CC   dbegl.com   name_match   address_match   032-562-6666   인천국제cc"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_오스타",
+    "name": "오스타CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Post thu",
+      " 티타임이 있습니다. 앱에서 예약하러 가기   10/2(금) 06:35 · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### ",
+      " · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### 성원자유CC 25/12/3(수) 07:59  12월3일 자유cc 07시"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_빛고을",
+    "name": "빛고을컨트리클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "CC   전라도 6위 골프장 · 광주 남구 효우로 153. 골프장 예약 문의062-672-7400 · 골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   address_strong   062-672-7400   빛고을 cc   http"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_에콜리안제천골프장",
+    "name": "에콜리안 제천골프장",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "A6%AC%EC%95%88%EC%A0%9C%EC%B2%9CCC   프장 예약 문의043-642-9474 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디 3인가능 ・ com 고객센터: 1877-7619 ・ 전화번호: 043-642-9474   dbegl.com   043-642-9474   친환경 골프장 '에콜"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_천안",
+    "name": "천안골프클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "e   official_url   holes   operation_type   phone   NEW_TAVILY   골린이 PAR3 조인 없이 2인 플레이 가능한 천안골프클럽   https://blog.naver.com/dmstjs6691/223211700197   천안골프클럽 퍼블릭코스 9홀 전화 041-555-9500 … 전화로 예약"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_파인스톤c_c",
+    "name": "파인스톤C.C",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ", 골프장, 숙박 ; 포함사항. * 17평 침대형(2인 1실)변경시 20,000원/팀추가 * 1팀 3인 패키지 이용시 추가요금 발생됩니다. * 2인라운딩 가능(요금 별도문의).   1night2day.com   name_match   https://dbegl.com/golf-courses/538-%ED%8C%8C%EC%9D%B8%EC%"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_군산",
+    "name": "군산컨트리클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "프장 · 전북 군산시 옥서면 남군산로 1685-53. 골프장 예약 문의063-472-3355 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노캐디,   dbegl.com   name_match   address_strong   063-472-3355   군산컨트리클럽   https://www.tripinfo.co."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_드라곤레이크",
+    "name": "드라곤레이크CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "negative_candidate",
+    "snippets": [
+      "정회원1명 + 법인 지정회원 2명 등록  정회원 주중 7만원, 주말 9만원  가족회원 주중 13만원, 주말 비회원요금  레이크사이드CC 회원은 2인 플레이 불가합니다. 3인 플레이 이상   정회원이 예약 후 비회원 위임 불가합니다.   주중예약: 정회원은 4주전 09시 부터~  / 가족회원은 4주전 10시 부터~  주말 / 공휴일 예약:"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_순창",
+    "name": "순창CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Post thu",
+      " 티타임이 있습니다. 앱에서 예약하러 가기   10/2(금) 06:35 · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### ",
+      " · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### 성원자유CC 25/12/3(수) 07:59  12월3일 자유cc 07시"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_광주",
+    "name": "광주",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "negative_candidate",
+    "snippets": [
+      "내용보기  ### 골프장에서 알립니다!  ■ 최종 결제금액은 카트비 불포함 금액입니다.  (단, 카트비 포함 이벤트 진행 시 별도 표기)  ■ 2인 플레이 불가  ■ 이벤트 시 개별소비세 면제 대상자 금액할인 추가적용 불가입니다.  ■ 이벤트 상품 이용안내  - 특가 및 이벤트 상품은 18홀 라운드 종료 시 적용  (악천후로 인한 홀별정"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_탑블리스",
+    "name": "탑블리스CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Post thu",
+      " 티타임이 있습니다. 앱에서 예약하러 가기   10/2(금) 06:35 · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### ",
+      " · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### 성원자유CC 25/12/3(수) 07:59  12월3일 자유cc 07시"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_뉴스프링빌2",
+    "name": "뉴스프링빌2",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%B8%94%EB%A6%AD   골프장 전경 2 뉴스프링빌CC … 프장 예약 문의031-630-7500 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디,   dbegl.com   031-630-7500   뉴스프링빌Ⅱ 골프장 예약 전 알아둘 것, ...   https://www.instagram.com/p/D"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_대구",
+    "name": "대구CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "있습니다. 새 취소티가 등록되면 앱 푸시로 바로 알려드립니다. ## 대구CC 이벤트. [### 마감 이벤트대구CC [공지] 2인 라운드 안내. 2인 가능 (7/6~8/17). 1개월 전 더블이글팀  조회 187](/posts/cmregd9o30006761ldnz7f71r). 휴가차 부산을 가게 되서 간김에 정산cc에서 란딩을 계획"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_유니벨리",
+    "name": "유니벨리CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "courses/82055014   쿠폰쿠폰 등록  로그인/회원가입  ## 고령 유니밸리 CC  경북 고령군  3.7·9H  #노캐디#3인 가능#2인 가능#야간  지도 로딩 중  ### 코스 정보  퍼블릭 9H  #### 퍼블릭  ### 주간 날씨  금오늘  금 낮  금 밤  25.4° / 38°  55% / 25%  토7.25  "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_사천",
+    "name": "사천컨트리클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%ED%8B%B0%EC%82%AC%EC%B2%9C   골프장 예약 문의055-851-5000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디. 골프존카운티 사천 이벤트. 이벤트 ~10/30골프존카운티 사천 그린피 할인.   dbegl.com   name_match   055-851-5000   [골프존사천C"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_블랙스톤제주",
+    "name": "블랙스톤제주",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 정회원 1+지정회원 2)  - 월 8~10회 예약가능  - 회원동반자 주중,주말 그린피 20% 할인  - 호텔,골프텔 이용 시 할인적용  - 2인 플레이 가능  - 블랙스톤이천cc 이용시 정,지정회원 할인적용  - 개인 법인 간 교차거래 가능(법인 반구좌 가능) | | 세부사항 |  회원권 상세 내용 확인  #### 회원권시세정보  |"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_엘리시안",
+    "name": "엘리시안CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 별도 | |  |  |  |  |  --- | |  | ☏ 064-712-9961 엘리시안제주 | 제주골프장 무료부킹문의 고객센타  ※ 주중 2인 플레이 가능 ※ | |      |  |  |  --- | | |  |  | 엘리시안제주cc [회원제]  상품소개 | | | |  |  |  |  |  |  |  |  |  |  ---  -"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_봉개프라자",
+    "name": "봉개프라자",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "/524   ... 봉개에 위치한 한화 플라자 cc는 9홀 코스의 골프장인데요. 야간골프장으로 유명하고 9홀 혹은 9홀 2회 라운딩이 가능하고 2인 플레이 가능한 제주도 골프장입니다. 예약은   kakao.golf   name_match   제주도 9홀 골프장 플라자cc(구 봉개cc) - 탐색 : 네이버 블로그   https://m.bl"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_플라자제주",
+    "name": "플라자CC제주",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "kr/plzcc/irsweb/golf2/guideline/jeju/jeju_operationGuide_tab2.do   플라자CC 제주 > ・ 2인 플레이 예약 방법 : 주중 ・ 예약으로 가능합니다. 골프화 10,000원   plazacc.co.kr   name_match   #플라자CC제주 #제주골프 #2인예약 #당일예약 - Insta",
+      "법 : 주중 ・ 예약으로 가능합니다. 골프화 10,000원   plazacc.co.kr   name_match   #플라자CC제주 #제주골프 #2인예약 #당일예약 - Instagram   https://www.instagram.com/reel/Da6e47nzJiF   제주도 3색 GOLF 10월 ‍♂️ 2박3일54홀 10월 '월",
+      "...   https://www.instagram.com/p/CPCkgrJDbjq   10월 예약 오픈 안내입니다 ... * 26년 11월 및 2인 예약은 유선예약으로만 가능합니다. * 예약 상황에 따라 조기 마감 될 수 있으니 참고 부탁드립 니다.   instagram.com   https://www.tigerbooking.co"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_테디벨리",
+    "name": "테디벨리",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "4341   제주도 테디밸리 cc 골프장은 18홀 골프장이다. 064-712-9961) 단체골프/ 지 골프투어 전문 여행사 / 연휴,주말의 … 2인가능한곳은   tjeju.com   name_match   064-712-9961   제주 테디벨리cc - 제주도테디밸리CC   https://www.jeju.to/CS/Goods/G"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_핀크스",
+    "name": "핀크스",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 골프장 갯수 및 정보  프로파일 제주기사 박매니저   *・*  2020. (\\*제주도 전체 구장은 29곳입니다.)    제주 에코랜드 cc (2인 라운딩 가능)  캐디피 12  카트 2인 4 / 3인 6 /5인 8  주중 주말 노캐디 가능합니다. **에코랜드GC** 제주특별자치도 제주시 조천읍 번영로 1278-169    제주 오라 c",
+      "제주특별자치도 서귀포시 안덕면 산록남로 863  제주 해비치 골프클럽  총 36홀  SKY, PALM, LAKE, VALLEY 코스  노캐디, 2인 플레이 가능  해비치 CC 골프장 정보  페어웨이 언듈레이션 심하지 않아 시야가 넓은 편이며 오르막과 내리막이 좀 있음  **해비치CC** 제주특별자치도 서귀포시 남원읍 원님로399번길 31"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_중문",
+    "name": "중문",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "   제주특별자치도 서귀포시 중문관광로72번길 60. 골프장 예약 문의064-738-1202 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 양잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   address_strong   064-738-1202   중문골프클럽   https://ww"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_올림픽",
+    "name": "올림픽컨트리클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "reservation/information   골프예약은 정해진 예약일정에 따라 인터넷 또는 모바일, 전화예약이 가능합니다. · 주말,주중 1~2인 예약도 가능 합니다. · 3팀이상 단체팀 예약은 예약과로 문의바랍니다.   olympicgolf.co.kr   name_match   올림픽컨트리클럽   https://www.ktri"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_고양컨트리",
+    "name": "고양컨트리",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "8위 골프장 · 경기도 고양시 덕양구 흥도로 304-23. 골프장 예약 문의031-960-7700 · 골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국   dbegl.com   031-960-7700   고양 (2026) | 전국 필드 골프장, CC 후기/가격 비교는 ...   https://kimcaddie.c"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_고양",
+    "name": "고양컨트리클럽",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "EC%96%91CC   경기도 고양시 덕양구 흥도로 304-23 골프장 예약 문의031-960-7700 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디 3인가능 ・ com 고객센터: 1877-7619   dbegl.com   name_match   address_strong   031-960-7700   고양"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "lakeside",
+    "name": "레이크사이드CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "negative_candidate",
+    "snippets": [
+      "정회원1명 + 법인 지정회원 2명 등록  정회원 주중 7만원, 주말 9만원  가족회원 주중 13만원, 주말 비회원요금  레이크사이드CC 회원은 2인 플레이 불가합니다. 3인 플레이 이상   정회원이 예약 후 비회원 위임 불가합니다.   주중예약: 정회원은 4주전 09시 부터~  / 가족회원은 4주전 10시 부터~  주말 / 공휴일 예약:"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_지산",
+    "name": "지산",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "es/358-%EC%A7%80%EC%82%B0CC%ED%8D%BC%EB%B8%94%EB%A6%AD   골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국잔디. 3인가능 - 공식 ... 지산CC | 퍼블릭 전화번호: 031-330-1400 · 문의하기자주 묻는 질문이용약관   dbegl.com   name_match"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_석천",
+    "name": "석천CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Post thu",
+      " 티타임이 있습니다. 앱에서 예약하러 가기   10/2(금) 06:35 · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### ",
+      " · 18만원  10/7(수) 17:42 · 11만원 · 9홀 노캐디 · 2인가능  10/10(토) 17:28 · 14만원 · 9홀 노캐디 · 2인가능  10/5(월) 12:56 · 24만원    마감  티타임 더보기  취소티 알림 받기  ## 조인  ### 성원자유CC 25/12/3(수) 07:59  12월3일 자유cc 07시"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_지산_2",
+    "name": "지산",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "D%BC%EB%B8%94%EB%A6%AD   지산 퍼블릭 예약, 골프장 예약 문의031-330-1400 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, com 고객센터: 1877-7619 호스팅서비스 제공: Amazon Web Services, Inc.   dbegl.com   name_match   031-330-1400  "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_힐드로사이",
+    "name": "힐드로사이",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "EB%93%9C%EB%A1%9C%EC%82%AC%EC%9D%B4CC   문의033-439-3300 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 양잔디 3인가능. Amazon Web Services, Inc. 힐드로사이CC 전화번호: 033-439-3300   dbegl.com   name_match   033-439-"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_카스카디아",
+    "name": "카스카디아",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "위 골프장 · 강원 홍천군 북방면 팔봉산로 1759. 골프장 예약 문의033-430-0000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능,   dbegl.com   name_match   address_strong   033-430-0000   카스카디아CC - 그린피/캐디피/카트피 정보, 예약 방법, 보증금 .."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_베어크리크_춘천",
+    "name": "베어크리크 춘천",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "2위 골프장  강원특별자치도 춘천시 신동면 김유정로 730  골프장 예약 문의1899-0115  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 양잔디, 벤트그라스  3인가능 - 공식 홈페이지 확인 1년 전  2인가능 - 공식 홈페이지 확인 1년 전  ## 최근 취소티  최근 임박 티타임 468개   10/4(일) 06",
+      "의1899-0115  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 양잔디, 벤트그라스  3인가능 - 공식 홈페이지 확인 1년 전  2인가능 - 공식 홈페이지 확인 1년 전  ## 최근 취소티  최근 임박 티타임 468개   10/4(일) 06:43 · 29만원  9/27(일) 08:40 · 25만원    fair_n"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_인천국제",
+    "name": "인천국제",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "B5%AD%EC%A0%9CCC   인천 서구 도요지로 37 골프장 예약 문의032-562-6666 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 9/10~9/23, 9/25~9/25) com 고객센터: 1877-7619 … 인천국제CC   dbegl.com   name_match   address_match   032-"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_페럼",
+    "name": "페럼",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "도권 8위 골프장  경기 여주시 점동면 점동로 181  골프장 예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (",
+      "예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (9/24~9/27)  Post thumbnail  1주 전 더블",
+      "- 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (9/24~9/27)  Post thumbnail  1주 전 더블이글팀  조회 208  ### 이벤트 ~12/31페럼CC 레이디스데이  시니어/여성 그린피 만원 할인 (2/23~"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_안성베네스트",
+    "name": "안성베네스트",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "00)  -정회원 1+가족 1    -정회원 주중 8만, 가족회원 주중 13만    -가족회원 대신 타인지정 가능    -주중 7:30분 이전 2인 플레이 가능    -회원제+대중제 이용시 그린피 1만원 할인        \\분양가 2500만원, 3500만원, 4500만원 주중회원권만 거래 가능    \\개인-법인간 교차거래 불가(시세다름)",
+      "9만    -가족회원 주중 13만, 주말 17만    -회원제+대중제 이용시 그린피 1만원 할인    -주말 예약 월 1회 가능        \\2인 플레이 가능여부는 시즌별 상이     \\명의개서 1개월 소요    \\개인-법인간 교차거래 불가(시세다름) [...] ##### 일반(分1억,1.3억,1.5억)  -정회원 1+ 가족 1    ",
+      "중 13만, 주말 17만    -가족회원 대신 타인지정 가능    -주말 예약 2회 보장(토/일, 코스 순환배정)    -주중 7:30분 이전 2인 플레이 가능    -회원제+대중제 이용시 그린피 1만원 할인        \\分1.5억 회원권 특전: 가족회원 주중 한정 정회원 대우    \\개인-법인간 교차거래 불가(시세다름)    \\명의개"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_골프클럽q",
+    "name": "골프클럽Q",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "프장 · 경기도 안성시 죽산면 장계길 20-229. 골프장 예약 문의031-8046-7000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노   dbegl.com   name_match   address_strong   031-8046-7000   골프클럽Q안성 > 퍼블릭골프장   https://www.swgol"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_감곡",
+    "name": "감곡",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "A%B0%90%EA%B3%A1CC   감곡면 오갑길 195 골프장 예약 문의043-882-1600 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 감곡CC 전화번호: 043-882-1600   dbegl.com   name_match   043-882-1600   감곡 컨트리클럽 : 골프장 리뷰 - SBS골프   http"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "lavie",
+    "name": "라비에벨CC",
+    "field": "two_person",
+    "label": "2인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 3 위 골프장  강원 춘천시 동산면 종자리로 436  골프장 예약 문의033-245-7100  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 4일 전  2인가능 - 이벤트 공지 확인 4일 전  ## 라비에벨CC 듄스코스 이벤트 [...] ### 앱으로 간편하게 예약하기  원하",
+      "예약 문의033-245-7100  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 4일 전  2인가능 - 이벤트 공지 확인 4일 전  ## 라비에벨CC 듄스코스 이벤트 [...] ### 앱으로 간편하게 예약하기  원하는 골프장을 지금 바로 예약해보세요.  다운로드  앱스토어구글 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_태릉골프장",
+    "name": "태릉골프장",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_스마트ku골프파빌리온",
+    "name": "스마트KU골프파빌리온",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 수도권 35위 골프장 · 경기 파주시 법원읍 보광로 1616. 골프장 예약 문의031-930-1600 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 한국   dbegl.com   name_match   address_strong   031-930-1600   스마트 KU 골프 파빌리온   https://tour.paju.g"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_제이퍼블릭",
+    "name": "제이퍼블릭",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 예약일 선택시 요금확인 가능 · 예약 및 플레이는 3인이상 가능합니다. · 주중 2인플레이 가능(1인 65,000원) · 주말 2인 플레이시 3인예약 현장3인결제시 가능합니다. · 노   jisanresort.co.kr   미국 골프 소개  _ 골프장 소개와 예약 방법   https://www.youtube.com/watch?",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_뉴스프링빌",
+    "name": "뉴스프링빌",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ED%8D%BC%EB%B8%94%EB%A6%AD   뉴스프링빌 퍼블릭 예약, 프장 예약 문의031-630-7500 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 고객센터: 1877-7619. Amazon Web Services, Inc. 릭 전화번호: 031-   dbegl.com   name_match   031-630-7"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_기흥",
+    "name": "기흥",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_라비돌",
+    "name": "라비돌CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "m/popular/%EB%9D%BC%EB%B9%84%EB%8F%8Ccc   ... 퍼블릭 9홀이고 9홀 2번 도는 18홀 예약 가능해요! -2/3인 예약은 가능하나 조인 되어요! -코스마다 테마별로 나무들이 있어서 조경이 예쁜 것 같아요! -페어웨이는   instagram.com   name_match   신라CC   https:"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_몽베르",
+    "name": "몽베르",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "EB%A6%AD   골프장 경기 포천시 영북면 산정호수로 359-12 골프장 예약 문의031-531-1100 골프장 공식 홈페이지 정규18홀, 3인가능, 한국잔디 3인가능 ・ com 고객센터: 1877-7619 호   dbegl.com   name_match   address_strong   031-531-1100   몽베르 컨",
+      "골프장 경기 포천시 영북면 산정호수로 359-12 골프장 예약 문의031-531-1100 골프장 공식 홈페이지 정규18홀, 3인가능, 한국잔디 3인가능 ・ com 고객센터: 1877-7619 호   dbegl.com   name_match   address_strong   031-531-1100   몽베르 컨트리클럽 : 골프장 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_솔모로",
+    "name": "솔모로",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "EB%A1%9CCC   골프장 경기 여주시 가남읍 솔모로그린길 171 골프장 예약 문의031-880-7116 골프장 공식 홈페이지 정규18홀, 3인가능, 한국잔디 3인가능 - 공식 홈페이지 확인   dbegl.com   name_match   address_strong   031-880-7116   솔모로 > 회원제골프장   h",
+      "  골프장 경기 여주시 가남읍 솔모로그린길 171 골프장 예약 문의031-880-7116 골프장 공식 홈페이지 정규18홀, 3인가능, 한국잔디 3인가능 - 공식 홈페이지 확인   dbegl.com   name_match   address_strong   031-880-7116   솔모로 > 회원제골프장   https://swgo"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_자유",
+    "name": "자유",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 수도권 13위 골프장 · 경기 여주시 가남읍 자유그린길 69. 골프장 예약 문의031-887-7700 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디. 자유CC   dbegl.com   name_match   address_strong   031-887-7700   파크골프장 | 기타 체육시설 |"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_sky72",
+    "name": "Sky72",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "72CC 오션코스  수도권 41위 골프장  인천 중구 공항동로 392  골프장 예약 문의1599-0072  골프장 공식 홈페이지  정규18홀, 3인가능, 양잔디, 벤트그라스  3인가능 - 공식 홈페이지 확인 1년 전  ## 클럽72CC 오션코스 이벤트  [### 이벤트 ~9/30클럽72CC 오션코스 [클럽72] 오션 프리미코스 ",
+      " 골프장  인천 중구 공항동로 392  골프장 예약 문의1599-0072  골프장 공식 홈페이지  정규18홀, 3인가능, 양잔디, 벤트그라스  3인가능 - 공식 홈페이지 확인 1년 전  ## 클럽72CC 오션코스 이벤트  [### 이벤트 ~9/30클럽72CC 오션코스 [클럽72] 오션 프리미코스 이용 감사 이벤트  연습장 90분"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_남여주",
+    "name": "남여주",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 990. 수도권 32위 골프장 · 경기 여주시 가여로 532. 골프장 예약 문의031-880-6700 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노   dbegl.com   name_match   031-880-6700   남여주cc 골프클럽(gc) 코스/그린피/예약/위치 - 피치에그   https://pea"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_아리지",
+    "name": "아리지CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%EC%A7%80CC   골프장 경기 여주시 가남읍 아리지그린길 68 골프장 예약 문의031-887-5678 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 한국잔디 3인가능 … 고객센터: 1877-7619   dbegl.com   name_match   address_strong   031-887-5678   아리지cc",
+      " 경기 여주시 가남읍 아리지그린길 68 골프장 예약 문의031-887-5678 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 한국잔디 3인가능 … 고객센터: 1877-7619   dbegl.com   name_match   address_strong   031-887-5678   아리지cc (2026) | 전국 필드 골"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_페럼클럽",
+    "name": "페럼클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "럼CC  수도권 8위 골프장  경기 여주시 점동면 점동로 181  골프장 예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2",
+      "기 여주시 점동면 점동로 181  골프장 예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (9/24~9/27)  "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_가평베네스트g_c",
+    "name": "가평베네스트G.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "트GC  수도권 7위 골프장  경기 가평군 상면 둔덕말길 232  골프장 예약 문의031-589-8000  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  ## 가평베네스트GC 이벤트  [### 이벤트 ~11/30가평베네스트GC [GOURMET+] 라운드에 더해지는 맛있는 혜택!  F&B 2+2만원 이벤트 (4인 필수)"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_썬힐g_c",
+    "name": "썬힐G.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "수도권 96위 골프장 · 경기 가평군 조종면 운악청계로 809. 골프장 예약 문의031-585-7900 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디.   dbegl.com   name_match   address_strong   031-585-7900   썬힐GC (2026) | 전국 필드 골프장, CC"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_가평베네스트",
+    "name": "가평베네스트",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "트GC  수도권 7위 골프장  경기 가평군 상면 둔덕말길 232  골프장 예약 문의031-589-8000  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  ## 가평베네스트GC 이벤트  [### 이벤트 ~11/30가평베네스트GC [GOURMET+] 라운드에 더해지는 맛있는 혜택!  F&B 2+2만원 이벤트 (4인 필수)"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_리앤리",
+    "name": "리앤리CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "/dbegl.com/golf-courses/447-%EB%A6%AC%EC%95%A4%EB%A6%ACCC   골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디. 3인가능 ... 리앤리CC 전화번호: 031-580-9000 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_match   ",
+      "urses/447-%EB%A6%AC%EC%95%A4%EB%A6%ACCC   골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디. 3인가능 ... 리앤리CC 전화번호: 031-580-9000 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_match   031-580-9000   가평 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_베뉴지",
+    "name": "베뉴지",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "도권 93위 골프장  경기 가평군 가평읍 용추로171번길 100  골프장 예약 문의031-582-5999  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  3인가능 - 공식 홈페이지 확인 1주 전  ## 베뉴지CC 이벤트  ### 이벤트 ~9/30베뉴지CC 멀티라운드  27홀 17만원 · 36홀 22만원 (전화예약 필수",
+      "경기 가평군 가평읍 용추로171번길 100  골프장 예약 문의031-582-5999  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  3인가능 - 공식 홈페이지 확인 1주 전  ## 베뉴지CC 이벤트  ### 이벤트 ~9/30베뉴지CC 멀티라운드  27홀 17만원 · 36홀 22만원 (전화예약 필수) (9/1~9/30)"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_오너스g_c",
+    "name": "오너스 G.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "   강원도 18위 골프장 강원특별자치도 춘천시 남산면 동촌로 667 골프장 예약 문의033-260-1900 골프장 공식 홈페이지 정규18홀, 3인가능, 양잔디 3인가능 ・ com 고객센터:   dbegl.com   name_match   address_strong   033-260-1900   오너스 (2026) | 전국 필드",
+      " 골프장 강원특별자치도 춘천시 남산면 동촌로 667 골프장 예약 문의033-260-1900 골프장 공식 홈페이지 정규18홀, 3인가능, 양잔디 3인가능 ・ com 고객센터:   dbegl.com   name_match   address_strong   033-260-1900   오너스 (2026) | 전국 필드 골프장, CC 후"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_인천오렌지듄스",
+    "name": "인천오렌지듄스골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%84%EC%8A%A4GC%EC%98%81%EC%A2%85   184 골프장 예약 문의032-745-3000 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 고객센터: 1877-7619 호스팅서비스. Amazon Web Services, Inc. 종 전화번호: 032-   dbegl.com   032-745-3000   "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_인천국제c_c",
+    "name": "인천국제C.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "A%B5%AD%EC%A0%9CCC   인천 서구 도요지로 37. 골프장 예약 문의032-562-6666 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디. 인천국제CC 이벤트. 이벤트 ~9/30인천국제CC   dbegl.com   name_match   address_match   032-562-6666   "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_샌드파인",
+    "name": "샌드파인",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "인GC. 21. 강원도 43위 골프장 · 강원 강릉시 저동등길 53. 골프장 예약 문의1644-3001 · 골프장 공식 홈페이지. 정규18홀, 3인가능,   dbegl.com   name_match   address_strong   샌드파인CC 일반_회원권 - MSG   https://msg1.co.kr/membership_vi"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_클럽모우골프_라이프스타일",
+    "name": "클럽모우 골프&라이프 스타일",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "  강원도 16위 골프장 · 강원 홍천군 서면 모곡리 1533. 골프장 예약 문의033-439-9000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 양잔디. 3인가능 - 공식 홈페이지 확인   dbegl.com   address_match   033-439-9000   클럽모우   https://www.golfin.co.k",
+      "프장 · 강원 홍천군 서면 모곡리 1533. 골프장 예약 문의033-439-9000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 양잔디. 3인가능 - 공식 홈페이지 확인   dbegl.com   address_match   033-439-9000   클럽모우   https://www.golfin.co.kr/news/arti"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_오스타",
+    "name": "오스타CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C  수도권 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Po"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_청우",
+    "name": "청우GC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "니다 카카오 골프로 예약하는 법을 알려 드릴게요 카카오 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "니다 카카오 골프로 예약하는 법을 알려 드릴게요 카카오 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_오스타퍼블릭",
+    "name": "오스타퍼블릭",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_베어즈베스트청라",
+    "name": "베어즈베스트청라골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "  수도권 2위 골프장  인천광역시 서구 청라대로316번길 45  골프장 예약 문의032-560-2000  골프장 공식 홈페이지  정규18홀, 3인가능, 양잔디  3인가능 - 공식 홈페이지 확인 1년 전  ## 베어즈베스트 청라GC 이벤트  ### 이벤트 ~12/31베어즈베스트 청라GC 그린피 할인  가족 방문 시 그린피 30%",
+      "장  인천광역시 서구 청라대로316번길 45  골프장 예약 문의032-560-2000  골프장 공식 홈페이지  정규18홀, 3인가능, 양잔디  3인가능 - 공식 홈페이지 확인 1년 전  ## 베어즈베스트 청라GC 이벤트  ### 이벤트 ~12/31베어즈베스트 청라GC 그린피 할인  가족 방문 시 그린피 30% 할인 (3·4인 필"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_알펜시아700",
+    "name": "알펜시아700골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "인 1실 - 더블+온돌)   2일차 조식 + 커피         1-2. 불포함사항   전동카트   캐디피   포함 외 식사         ✔ 3인 라운드 예약시 4인 요금 적용.   ✔ 2일차 07:30 이전 타임 기준 요금이여, 07:30이후 배정시 1인 2만원 추가요금발생. [...] 예: 스코틀랜드 세인트앤드류스 올드 코스, 미국"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_빛고을",
+    "name": "빛고을컨트리클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%9D%84CC   전라도 6위 골프장 · 광주 남구 효우로 153. 골프장 예약 문의062-672-7400 · 골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   address_strong   062-672-7400   빛고을 cc ",
+      " 광주 남구 효우로 153. 골프장 예약 문의062-672-7400 · 골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   address_strong   062-672-7400   빛고을 cc   https://www.facebook."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_델피노c_c",
+    "name": "델피노C.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%B4CC%EB%8D%B8%ED%94%BC%EB%85%B8   체 델피노 예약, 가입과 ・ 강원도 19위 골프장 ・ 공식 홈페이지 정규18홀, 3인가능, 노캐디, 센터: 1877-7619. CC 델피노 전화번호: 1644-0063   dbegl.com   name_match   소노펠리체컨트리클럽 델피노 : 골프장 리뷰 - SB"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_골든비치",
+    "name": "골든비치",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "니다 카카오 골프로 예약하는 법을 알려 드릴게요 카카오 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "니다 카카오 골프로 예약하는 법을 알려 드릴게요 카카오 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_상떼힐",
+    "name": "상떼힐CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_센테리움",
+    "name": "센테리움",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_중원",
+    "name": "중원골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_에콜리안제천골프장",
+    "name": "에콜리안 제천골프장",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "9C%EB%A6%AC%EC%95%88%EC%A0%9C%EC%B2%9CCC   프장 예약 문의043-642-9474 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디 3인가능 ・ com 고객센터: 1877-7619 ・ 전화번호: 043-642-9474   dbegl.com   043-642-9474   친환경 골",
+      "C%A0%9C%EC%B2%9CCC   프장 예약 문의043-642-9474 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디 3인가능 ・ com 고객센터: 1877-7619 ・ 전화번호: 043-642-9474   dbegl.com   043-642-9474   친환경 골프장 '에콜리안 제천' 내달 1일 개장 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_천룡골프장",
+    "name": "천룡골프장",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ", 명절당일 , 혹한기 ; 카트, 전동카트 100,000원 ; 캐디, 150,000원.   gj-cc.com   4명이 아니어도 괜찮아! 2인 3인 라운드 가능한 골프장 가격 ...   https://kimcaddie.com/post/2022_two_member_round_field_chungcheongdo_Jeollado   천룡CC는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_천안",
+    "name": "천안골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_프린세스c_c",
+    "name": "프린세스C.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "A4GC   프린세스GC 골프장 ・ 공주시 정안면 방자들길 81-50 골프장 예약 문의041-851-6300 골프장 공식 홈페이지 정규18홀, 3인가능, 한국잔디 3인가능 ・ 프린세스GC 전화번호:   dbegl.com   name_match   address_strong   041-851-6300   프린세스GC   https",
+      "GC 골프장 ・ 공주시 정안면 방자들길 81-50 골프장 예약 문의041-851-6300 골프장 공식 홈페이지 정규18홀, 3인가능, 한국잔디 3인가능 ・ 프린세스GC 전화번호:   dbegl.com   name_match   address_strong   041-851-6300   프린세스GC   https://kor.club"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_도고c_c",
+    "name": "도고C.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "  https://dbegl.com/golf-courses/542-%EB%8F%84%EA%B3%A0CC   골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지 ... 도고CC 전화번호: 041-542-4411 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_match",
+      "egl.com/golf-courses/542-%EB%8F%84%EA%B3%A0CC   골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지 ... 도고CC 전화번호: 041-542-4411 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_match   041-542-4"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_에딘버러c_c",
+    "name": "에딘버러C.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 충청도 36위 골프장 · 충남 금산군 진산면 살구정길 167. 골프장 예약 문의043-210-1900 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디   dbegl.com   name_match   address_strong   043-210-1900   충남 금산에 위치한 에딘버러cc 회원권을 소개 합니다. - 블"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_군산",
+    "name": "군산컨트리클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 10위 골프장 · 전북 군산시 옥서면 남군산로 1685-53. 골프장 예약 문의063-472-3355 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노캐디,   dbegl.com   name_match   address_strong   063-472-3355   군산컨트리클럽   https://www.tripin"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_상데힐",
+    "name": "상데힐 CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C 예약 안내  해당 타임은 9홀 셀프라운드 타임입니다.    예약 희망시 유선 문의 부탁드립니다.        1부 : 06:35 이전, 2~3인 플레이 가능    2부 : 17:30 이후, 2~4인 플레이 가능  \\예약실 : 041-939-1700 (내선1)    자세히보기  ## 예약안내  해당 시간은 셀프라운드(노캐디)로 운영됩니"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_무주",
+    "name": "무주컨트리클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "day.com/golf/detail.html?goods_no=306   실시간 예약 가능. 입금계좌 : 농협 351-0741-8754-93 … 3인 예약시 상품가격이 변동됩니다.   1night2day.com   name_match   무주 덕유산CC 주중회원권과 정회원권, 차수별 차이 비교 ...   https://blog.na"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_순창",
+    "name": "순창CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C  수도권 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Po"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_디오션",
+    "name": "디오션CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "om/golf/detail.html?goods_no=46   예약 시 이름, 연락처, 이메일 입력 바랍니다. ※ 4인라운드만 가능한 상품으로, 3인 예약시 상품가격이 변동됩니다. ※ 일정 변경시 상품가 변동 됩니다.   1night2day.com   name_match   18홀 내내 바다가 보인다! 여수 디오션CC   https"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_승주",
+    "name": "승주",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "   승주CC 18홀 골프 + 파인힐스CC ・ 최저가 보장, 실시간 예약 가능. ~30 30~31 31~01 골프장명 승주CC 18홀 골프 ・ 3인 예약시 상품가격이 변동됩니다.   1night2day.com   name_match   송추cc   http://www.hanjingolf.com/main/gmb_board_view."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_레이크힐스순천",
+    "name": "레이크힐스순천",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "om/golf/detail.html?goods_no=48   예약 시 이름, 연락처, 이메일 입력 바랍니다. ※ 4인라운드만 가능한 상품으로, 3인 예약시 상품가격이 변동됩니다. ※ 일정 변경시 상품가 변동 됩니다.   1night2day.com   -õ-īƼõCC (,ũõcc) ũõƮŬ ũ īƼ :: ̺   https://sav"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_힐사이드",
+    "name": "힐사이드",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 수도권 1위 골프장  경기 용인시 처인구 모현읍 능원로 181  골프장 예약 문의031-334-2111  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  ## 최근 취소티  최근 임박 티타임 589개   9/24(목) 06:49 · 259,000원    cloudy16°  9/28(월) 06:42 · 199,000원 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_골드그린",
+    "name": "골드그린",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ry.com   name_match   055-372-0050   010-4540-9692   골드그린cc 부산 근교 가성비 9홀 골프장 2인 3인 플레이가능 ...   https://m.blog.naver.com/yestar143/223140323462   골드그린GC 울산광역시 울주군 삼남읍 방기가천로 179 저장 전화 거기다가 3"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_골드그린골프장",
+    "name": "골드그린골프장",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "스안내 · 코스공략도 · 스코어카드. FACILITIES.   goldgreen.co.kr   골드그린cc 부산 근교 가성비 9홀 골프장 2인 3인 플레이가능 ...   https://m.blog.naver.com/yestar143/223140323462   골드그린cc 부산 근교 가성비 9홀 골프장 2인 3인 플레이가능 퍼블릭골프장 ",
+      "   https://m.blog.naver.com/yestar143/223140323462   골드그린cc 부산 근교 가성비 9홀 골프장 2인 3인 플레이가능 퍼블릭골프장 코스소개 ... 부울경 퍼블릭 골프장 골드그린CC 골드그린GC 코스 알아   m.blog.naver.com   10분필드 | 골드그린CC(9홀) | 필드영상 | 꼬시"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_무등산",
+    "name": "무등산",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C%B4%EB%93%B1%EC%82%B0CC   무등산 예약, 전남 화순군 화순읍 문의061-379-1000 골프장 공식 홈페이지 정규18홀, 3인가능, (10/1~10/31) Services, Inc. 무등산CC 전화번호: 061-379-1000   dbegl.com   name_match   address_match   06"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_스타스콥c_c",
+    "name": "스타스콥C.C",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_백양우리",
+    "name": "백양우리컨트리클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "u.oopy.io   name_match   address_strong   061-392-2300   백양우리CC 컨트리클럽 후기(노캐디, 2~3인 플레이 가능)   https://blog.naver.com/jiye1990/223323349705   1 골프장 정보 주소 전남 장성군 북이면 봉암로 1574 전화 061-392-2300 홈"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_오션힐스포항_2",
+    "name": "오션힐스포항",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "션힐스CC ・ 경기 강원도 경상도 ・ 포항오션힐스CC ・ 그린피, 골프텔(4인실), 조식1회 * 1팀 3인 패키지 이용시 추가요금 발생됩니다. 3인 예약시 상품가격이 변   1night2day.com   http://world-golf.co.kr/201.htm?tblid=16&j=e1e&smallview=1   HOLD   htt"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_경주",
+    "name": "경주CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "f-courses/607-%EA%B2%BD%EC%A3%BCCC   경주CC 예약, 문의054-778-8900 골프장 공식 홈페이지 정규18홀, 3인가능, 고객센터: 1877-7619. Amazon Web Services, Inc. 경주CC 전화번호: 054-778-8900   dbegl.com   name_match   054-"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_우리",
+    "name": "우리GC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_탑블리스",
+    "name": "탑블리스CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C  수도권 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Po",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_휴그린",
+    "name": "휴그린 골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "ww.youtube.com/watch?v=q0VDb7wHFTQ   [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_세종레이캐슬",
+    "name": "세종레이캐슬GC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "m/golf-courses/322-%EB%A0%88%EC%9D%B4%EC%BA%90%EC%8A%ACCC   골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지 ... 레이캐슬CC 전화번호: 1577-3113 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   세종 레이캐슬cc 회",
+      "es/322-%EB%A0%88%EC%9D%B4%EC%BA%90%EC%8A%ACCC   골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지 ... 레이캐슬CC 전화번호: 1577-3113 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   세종 레이캐슬cc 회원권 가격 그린피 혜택"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_뉴스프링빌2",
+    "name": "뉴스프링빌2",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%BC%EB%B8%94%EB%A6%AD   골프장 전경 2 뉴스프링빌CC … 프장 예약 문의031-630-7500 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디,   dbegl.com   031-630-7500   뉴스프링빌Ⅱ 골프장 예약 전 알아둘 것, ...   https://www.instagram.c"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_유니벨리",
+    "name": "유니벨리CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "x.com/courses/82055014   쿠폰쿠폰 등록  로그인/회원가입  ## 고령 유니밸리 CC  경북 고령군  3.7·9H  #노캐디#3인 가능#2인 가능#야간  지도 로딩 중  ### 코스 정보  퍼블릭 9H  #### 퍼블릭  ### 주간 날씨  금오늘  금 낮  금 밤  25.4° / 38°  55% / 25%  토",
+      " 일 밤  24.4° / 36.4°  2% / 2%  날씨 제공사 : AccuWeather  ### 리뷰  2026. 7. 5 작성  노캐디, 3인플레이 가능해서 좋았어요 그런데 뒷팀 캐디플레이하셨는데 그린에 사람있는데 플레이하셔서 공이 제 옆 2미터에 떨어졌어요 그것만 빼곤 나쁘지않았습니다  코스 컨디션  캐디 만족도  -  그린 컨",
+      " 일 밤  24.4° / 36.4°  2% / 2%  날씨 제공사 : AccuWeather  ### 리뷰  2026. 7. 5 작성  노캐디, 3인플레이 가능해서 좋았어요 그런데 뒷팀 캐디플레이하셨는데 그린에 사람있는데 플레이하셔서 공이 제 옆 2미터에 떨어졌어요 그것만 빼곤 나쁘지않았습니다  코스 컨디션  캐디 만족도  -  그린 컨"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_사천",
+    "name": "사천컨트리클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%9A%B4%ED%8B%B0%EC%82%AC%EC%B2%9C   골프장 예약 문의055-851-5000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 한국잔디. 골프존카운티 사천 이벤트. 이벤트 ~10/30골프존카운티 사천 그린피 할인.   dbegl.com   name_match   055-851-5000   ["
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_정산",
+    "name": "정산",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "니다 카카오 골프로 예약하는 법을 알려 드릴게요 카카오 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "니다 카카오 골프로 예약하는 법을 알려 드릴게요 카카오 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_힐마루",
+    "name": "힐마루CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "urses/826-%ED%8F%AC%EC%B2%9C%ED%9E%90%EB%A7%88%EB%A3%A8CC   골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 최근 취소티. 최근 임박 ... 포천힐마루CC 전화번호: 1899-5800 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_match "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_동래베네스트",
+    "name": "동래베네스트골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "네스트GC  경상도 4위 골프장  부산 금정구 선동 산128-1  골프장 예약 문의051-580-0300  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  3인가능 - 운영자 문의 확인 2개월 전  ## 동래베네스트GC 이벤트  [### 이벤트 ~11/30동래베네스트GC [GOURMET+] 라운드에 더해지는 맛있는 혜택",
+      "위 골프장  부산 금정구 선동 산128-1  골프장 예약 문의051-580-0300  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  3인가능 - 운영자 문의 확인 2개월 전  ## 동래베네스트GC 이벤트  [### 이벤트 ~11/30동래베네스트GC [GOURMET+] 라운드에 더해지는 맛있는 혜택!  F&B 2+2만원"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_중문",
+    "name": "중문",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C%B8CC   제주특별자치도 서귀포시 중문관광로72번길 60. 골프장 예약 문의064-738-1202 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 양잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   address_strong   064-738-1202   중문골프클럽   http",
+      "서귀포시 중문관광로72번길 60. 골프장 예약 문의064-738-1202 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 양잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   address_strong   064-738-1202   중문골프클럽   https://www.tripinfo."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_고양컨트리",
+    "name": "고양컨트리",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 수도권 98위 골프장 · 경기도 고양시 덕양구 흥도로 304-23. 골프장 예약 문의031-960-7700 · 골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국   dbegl.com   031-960-7700   고양 (2026) | 전국 필드 골프장, CC 후기/가격 비교는 ...   https://kimca"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_고양",
+    "name": "고양컨트리클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "B3%A0%EC%96%91CC   경기도 고양시 덕양구 흥도로 304-23 골프장 예약 문의031-960-7700 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디 3인가능 ・ com 고객센터: 1877-7619   dbegl.com   name_match   address_strong   031-960-770",
+      " 고양시 덕양구 흥도로 304-23 골프장 예약 문의031-960-7700 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, 노캐디, 한국잔디 3인가능 ・ com 고객센터: 1877-7619   dbegl.com   name_match   address_strong   031-960-7700   고양 (2026) | 전국 필드 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "lakeside",
+    "name": "레이크사이드CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 수도권 1위 골프장  경기 용인시 처인구 모현읍 능원로 181  골프장 예약 문의031-334-2111  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  ## 최근 취소티  최근 임박 티타임 589개   9/24(목) 06:49 · 259,000원    cloudy16°  9/28(월) 06:42 · 199,000원 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_동래베네스트par3",
+    "name": "동래베네스트 Par3 골프클럽",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "네스트GC  경상도 4위 골프장  부산 금정구 선동 산128-1  골프장 예약 문의051-580-0300  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  3인가능 - 운영자 문의 확인 2개월 전  ## 동래베네스트GC 이벤트  [### 이벤트 ~11/30동래베네스트GC [GOURMET+] 라운드에 더해지는 맛있는 혜택",
+      "위 골프장  부산 금정구 선동 산128-1  골프장 예약 문의051-580-0300  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  3인가능 - 운영자 문의 확인 2개월 전  ## 동래베네스트GC 이벤트  [### 이벤트 ~11/30동래베네스트GC [GOURMET+] 라운드에 더해지는 맛있는 혜택!  F&B 2+2만원"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_지산",
+    "name": "지산",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "-courses/358-%EC%A7%80%EC%82%B0CC%ED%8D%BC%EB%B8%94%EB%A6%AD   골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국잔디. 3인가능 - 공식 ... 지산CC | 퍼블릭 전화번호: 031-330-1400 · 문의하기자주 묻는 질문이용약관   dbegl.com   name",
+      "EC%82%B0CC%ED%8D%BC%EB%B8%94%EB%A6%AD   골프장 공식 홈페이지. 9홀, 3인가능, 2인가능, 노캐디, 한국잔디. 3인가능 - 공식 ... 지산CC | 퍼블릭 전화번호: 031-330-1400 · 문의하기자주 묻는 질문이용약관   dbegl.com   name_match   031-330-1400  "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_한원",
+    "name": "한원",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "위 골프장 · 경기 용인시 처인구 남사읍 전나무골길2번길 94. 골프장 예약 문의031-379-8111 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 노캐디,   dbegl.com   name_match   address_strong   031-379-8111   골프회원권 한원 | 참존회원권 (참존골프공식홈페이지)   ht"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_석천",
+    "name": "석천CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C  수도권 13위 골프장  경기 여주시 가남읍 자유그린길 69  골프장 예약 문의031-887-7700  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 노캐디, 한국잔디  ## 자유CC 이벤트  ### 이벤트 ~10/31자유CC 레이디스데이  여성팀 그+카+식 팀 88만원 (4인 필수) (10/1~10/31)  Po"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_지산_2",
+    "name": "지산",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C%ED%8D%BC%EB%B8%94%EB%A6%AD   지산 퍼블릭 예약, 골프장 예약 문의031-330-1400 골프장 공식 홈페이지 9홀, 3인가능, 2인가능, com 고객센터: 1877-7619 호스팅서비스 제공: Amazon Web Services, Inc.   dbegl.com   name_match   031-330-"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_써닝포인트",
+    "name": "써닝포인트",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "%9D%ED%8F%AC%EC%9D%B8%ED%8A%B8CC   205 골프장 예약 문의031-329-0800 골프장 공식 홈페이지 정규18홀, 3인가능, 써닝포인트CC 전화번호: 031-329-0800   dbegl.com   name_match   031-329-0800   필독사항 - 4인/1팀 필수 - 골프장 최저가는 변동"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_남부",
+    "name": "남부",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는",
+      "여러 가지 뭐 36홀 뭐 다양한 28홀 리 골프장 이런 [...] [4:12] 예약을 하고 나서 전화를 하고 이제 어 저희 저 언제 계약했는데 3인플레이 가능하나요 확인하면 거의 대부분 골프장에서 어네 가능합니다 [4:20] 이렇게 얘기한다는 점 알고 계시면 좋을 것 같아요 골프장은 회원제 골프장 퍼블릭 골프장 이렇게 나눠볼 수가 있는"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_한성",
+    "name": "한성",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C%EC%84%B1CC   골프장 경기 용인시 기흥구 구교동로 151 골프장 예약 문의031-284-3831 골프장 공식 홈페이지 정규18홀, 3인가능, 고객센터: 1877-7619 서비스 제공: Amazon Web   dbegl.com   name_match   address_strong   031-284-3831   한성 -"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_힐드로사이",
+    "name": "힐드로사이",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "9E%90%EB%93%9C%EB%A1%9C%EC%82%AC%EC%9D%B4CC   문의033-439-3300 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 양잔디 3인가능. Amazon Web Services, Inc. 힐드로사이CC 전화번호: 033-439-3300   dbegl.com   name_match   03",
+      "B%A1%9C%EC%82%AC%EC%9D%B4CC   문의033-439-3300 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 양잔디 3인가능. Amazon Web Services, Inc. 힐드로사이CC 전화번호: 033-439-3300   dbegl.com   name_match   033-439-3300   힐드로"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_카스카디아",
+    "name": "카스카디아",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "강원도 11위 골프장 · 강원 홍천군 북방면 팔봉산로 1759. 골프장 예약 문의033-430-0000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능,   dbegl.com   name_match   address_strong   033-430-0000   카스카디아CC - 그린피/캐디피/카트피 정보, 예약 방법, "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_베어크리크_춘천",
+    "name": "베어크리크 춘천",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "  강원도 2위 골프장  강원특별자치도 춘천시 신동면 김유정로 730  골프장 예약 문의1899-0115  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 양잔디, 벤트그라스  3인가능 - 공식 홈페이지 확인 1년 전  2인가능 - 공식 홈페이지 확인 1년 전  ## 최근 취소티  최근 임박 티타임 468개   10/4",
+      "시 신동면 김유정로 730  골프장 예약 문의1899-0115  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 양잔디, 벤트그라스  3인가능 - 공식 홈페이지 확인 1년 전  2인가능 - 공식 홈페이지 확인 1년 전  ## 최근 취소티  최근 임박 티타임 468개   10/4(일) 06:43 · 29만원  9/27(일"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_인천국제",
+    "name": "인천국제",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "9C%EA%B5%AD%EC%A0%9CCC   인천 서구 도요지로 37 골프장 예약 문의032-562-6666 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 9/10~9/23, 9/25~9/25) com 고객센터: 1877-7619 … 인천국제CC   dbegl.com   name_match   address_match "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_서서울",
+    "name": "서서울",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "  수도권 11위 골프장 · 경기 파주시 광탄면 혜음로 324. 골프장 예약 문의031-943-0040 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   031-943-0040   서서울cc (2026) | 전국 필드 골프장, CC 후기/가격 ",
+      "장 · 경기 파주시 광탄면 혜음로 324. 골프장 예약 문의031-943-0040 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지   dbegl.com   name_match   031-943-0040   서서울cc (2026) | 전국 필드 골프장, CC 후기/가격 비교는 ...   ht"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_김포씨사이드",
+    "name": "김포씨사이드",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "9위 골프장 · 경기 김포시 월곶면 김포대로2801번길 219. 골프장 예약 문의031-987-9992 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 한국   dbegl.com   name_match   031-987-9992   김포씨사이드cc회원권종류,가격,혜택 총 정리(2026년최신)   https://slgolf03."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_페럼",
+    "name": "페럼",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "럼CC  수도권 8위 골프장  경기 여주시 점동면 점동로 181  골프장 예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2",
+      "기 여주시 점동면 점동로 181  골프장 예약 문의031-887-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 6일 전  2인가능 - 이벤트 공지 확인 6일 전  ## 페럼CC 이벤트  ### 이벤트 ~9/27페럼CC 2인 플레이  2인 가능 (9/24~9/27)  "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "southsprings",
+    "name": "사우스스프링스CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "스CC  수도권 12위 골프장  경기 이천시 모가면 공원로 64  골프장 예약 문의031-630-7000  골프장 공식 홈페이지  정규18홀, 3인가능, 한국잔디  ## 최근 취소티  최근 임박 티타임 303개   9/27(일) 08:30 · 23만원    partlycloudy_night18°  9/27(일) 08:37 · 2"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_골프클럽q",
+    "name": "골프클럽Q",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 95위 골프장 · 경기도 안성시 죽산면 장계길 20-229. 골프장 예약 문의031-8046-7000 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 2인가능, 노   dbegl.com   name_match   address_strong   031-8046-7000   골프클럽Q안성 > 퍼블릭골프장   https://www"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_천룡",
+    "name": "천룡",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "퍼블릭 9홀).   czgolf.kr   name_match   address_strong   혼합_홀수명시   4명이 아니어도 괜찮아! 2인 3인 라운드 가능한 골프장 가격 ...   https://kimcaddie.com/post/2022_two_member_round_field_chungcheongdo_Jeollado   천룡CC "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_아난티중앙",
+    "name": "아난티중앙",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "30위 골프장 · 충청북도 진천군 백곡면 배티로 818-105. 골프장 예약 문의043-533-6666 · 골프장 공식 홈페이지. 정규18홀, 3인가능, 노캐디,   dbegl.com   name_match   address_strong   043-533-6666   아난티중앙야간라운드 는 카카오골프에서 예약 가능! 너무 ..."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_서산수",
+    "name": "서산수",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "/dbegl.com/golf-courses/718-%EC%84%9C%EC%82%B0%EC%88%98CC   골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지 ... 서산수CC 전화번호: 041-689-7700 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_matc",
+      "olf-courses/718-%EC%84%9C%EC%82%B0%EC%88%98CC   골프장 공식 홈페이지. 정규18홀, 3인가능, 한국잔디. 3인가능 - 공식 홈페이지 ... 서산수CC 전화번호: 041-689-7700 · 문의하기자주 묻는 질문이용약관개인정보처리   dbegl.com   name_match   041-689-"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_롯데스카이힐_부여",
+    "name": "롯데스카이힐 부여",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "C 예약 안내  해당 타임은 9홀 셀프라운드 타임입니다.    예약 희망시 유선 문의 부탁드립니다.        1부 : 06:35 이전, 2~3인 플레이 가능    2부 : 17:30 이후, 2~4인 플레이 가능  \\예약실 : 041-939-1700 (내선1)    자세히보기  ## 예약안내  해당 시간은 셀프라운드(노캐디)로 운영됩니"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_도고",
+    "name": "도고",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "/542-%EB%8F%84%EA%B3%A0CC   도고CC 골프장 … 골프장 예약 문의041-542-4411 골프장 공식 홈페이지 정규18홀, 3인가능, 고객센터: 1877-7619 호스팅서비스 도고CC 전화번호: 041-542-4411 문의하기자주   dbegl.com   name_match   041-542-4411   편안"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_감곡",
+    "name": "감곡",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "774-%EA%B0%90%EA%B3%A1CC   감곡면 오갑길 195 골프장 예약 문의043-882-1600 골프장 공식 홈페이지 정규18홀, 3인가능, 2인가능, 감곡CC 전화번호: 043-882-1600   dbegl.com   name_match   043-882-1600   감곡 컨트리클럽 : 골프장 리뷰 - SBS골프 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "lavie",
+    "name": "라비에벨CC",
+    "field": "three_person",
+    "label": "3인 플레이",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "2  강원도 3 위 골프장  강원 춘천시 동산면 종자리로 436  골프장 예약 문의033-245-7100  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 4일 전  2인가능 - 이벤트 공지 확인 4일 전  ## 라비에벨CC 듄스코스 이벤트 [...] ### 앱으로 간편하게 예약",
+      " 춘천시 동산면 종자리로 436  골프장 예약 문의033-245-7100  골프장 공식 홈페이지  정규18홀, 3인가능, 2인가능, 한국잔디  3인가능 - 이벤트 공지 확인 4일 전  2인가능 - 이벤트 공지 확인 4일 전  ## 라비에벨CC 듄스코스 이벤트 [...] ### 앱으로 간편하게 예약하기  원하는 골프장을 지금 바로"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_신안c_c",
+    "name": "신안C.C",
+    "field": "nine_hole_twice",
+    "label": "9홀×2",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ype=pc   경기도 안성시 고삼면 … 신안CC 경기도 안성에 위치해 있어 서울 및 수도권에서 접근성이 좋은 골프장입니다 예전 가족들과 함께 9홀 X2 오렌지   blog.naver.com   name_match   address_strong   골프   https://www.elysian.co.kr/about-jeju/golf"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_이포",
+    "name": "이포",
+    "field": "nine_hole_twice",
+    "label": "9홀×2",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "준 우수 |  ​      ​  **🏌️ 퍼블릭 9홀, 부담 없이 즐기는 실속 코스**  ​  블루원용인CC의 퍼블릭 코스는 9홀 구성으로,  9홀 × 2바퀴로 18홀처럼 즐길 수도 있는 구조예요. ​    ​  초보자에게는: 부담 없는 입문형 코스  중상급자에게는: 짧지만 집중력과 방향성이 요구되는 코스  ​    ​  페어웨이와"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_여주썬밸리",
+    "name": "여주썬밸리",
+    "field": "nine_hole_twice",
+    "label": "9홀×2",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0   밸리CC는 경기도 여주시 강천면에 위치한 9홀 퍼블릭 골프장으로 9홀 * 2회 라운드 하게 되는 구장이다. 공식 홈페이지에서 발췌한 소개 글이다. 강천면   zezziz.tistory.com   name_match   address_strong   여주 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_남성대체력단련장",
+    "name": "남성대체력단련장",
+    "field": "nine_hole_twice",
+    "label": "9홀×2",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "라운딩 - 네이버 블로그   https://m.blog.naver.com/ghswkshfrl33/223193052956   남성대 체력단련장은 9홀 두바퀴로 노캐디 셀프 라운딩을 하는 곳입니다. 남성대 체력단련장 주소: 충북 영동군 전화번호: 043-745-1700 남성대 체력단련   m.blog.naver.com   name_ma"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_나주힐스",
+    "name": "나주힐스",
+    "field": "nine_hole_twice",
+    "label": "9홀×2",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "프클럽   https://www.instagram.com/explore/locations/220307518451596   나주힐스골프클럽 · #9홀⛳️ 두바퀴 #구장컨디션최고 #조인골프 ‍ · #간만에 모잉 참석#즐거운 라운딩#골프는 힘들어# 언니들이 너무 잘 · #비온다☔️ 전반은 더워서 땀   instagram.com   name_"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_성남공군체력단련장",
+    "name": "성남공군체력단련장",
+    "field": "nine_hole_twice",
+    "label": "9홀×2",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "체력단련장] #서울공항골프장 #한성대 ...   https://songlog96.tistory.com/69   코스안내. 성남공군체력단련장은. 9홀 두바퀴 코스입니다. 그린이 좌우에 하나씩. 있어 전후반이 완벽하게.   songlog96.tistory.com   name_match   성남 공군체력단련장 예약 그린피 코스 이용방법 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_봉개프라자",
+    "name": "봉개프라자",
+    "field": "nine_hole_twice",
+    "label": "9홀×2",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ".kakao.golf/golf/524   ... 봉개에 위치한 한화 플라자 cc는 9홀 코스의 골프장인데요. 야간골프장으로 유명하고 9홀 혹은 9홀 2회 라운딩이 가능하고 2인 플레이 가능한 제주도 골프장입니다. 예약은   kakao.golf   name_match   제주도 9홀 골프장 플라자cc(구 봉개cc) - 탐색 : 네이"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_안성c_c",
+    "name": "안성C.C",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "리클럽 회원수 : 약 1,300명 태광cc 전경 골프장 특징과 위치 #태광cc특징 도심에서 접근성이 좋고, 넓은 페어웨이, 안정된 코스 관리, 야간 라운드이 가능한점이 큰 특징입니다. ​ 회원... 2026.06.30•신라회원권거래소 골프/콘도/호텔#### 태광cc 무기명 회원권 혜택, 시세 안내 서비스를 제공하고 있어 회원들의 만"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_에덴블루c_c",
+    "name": "에덴블루 C.C",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "Y   에덴블루cc 컨트리클럽 위치, 예약, 코스, 날씨 :: 피치에그   https://peachegg.tistory.com/63   ### 야간 라운드  에덴블루cc에서 야간 라운딩도 가능한데요, 매일 가능한 건 아니고 1주일에 4일(수요일, 목요일, 금요일, 토요일)만 운영되고 있으며 4월 13일부터 시즌 종료일까지 라운딩 가능해",
+      "위치, 예약, 코스, 날씨 :: 피치에그   https://peachegg.tistory.com/63   ### 야간 라운드  에덴블루cc에서 야간 라운딩도 가능한데요, 매일 가능한 건 아니고 1주일에 4일(수요일, 목요일, 금요일, 토요일)만 운영되고 있으며 4월 13일부터 시즌 종료일까지 라운딩 가능해요.  에덴블루cc 야간  ",
+      " 소개 2. 코스 소개 (Lake코스, Valley코스, Mountain코스) 3. 요금 안내 4. 예약 안내 5. 예약 취소 위약 안내 6. 야간 라운드 7. 오시는 길 8. 안성시 죽산면 날씨  ---  ### 에덴블루cc 소개  에덴블루 cc는 27홀 회원제 골프장으로서 포시즌 자연의 다채로운 변화를 감상할 수 있는 뛰어난 조망",
+      "정지 or 위약 40만 원  - 1일 전 : 2개월 정지 or 위약 50만 원  - 당일 취소 및 no-show : 위약금 60만 원  ### 야간 라운드   peachegg.tistory.com   name_match   address_strong   031-678-7000   031-678-6908   회원제_명시   경기도 골프장 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_q안성",
+    "name": "골프클럽Q안성",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ")  유튜브영상  오늘하루 그만보기) 닫기;)  조인 게시판  7,8월이벤트  8월그린피  1,2부 셀프라운드  5,6월Q매니아이벤트결과  3부야간라운드  Q매니아이벤트  리무진 무료  오늘하루 그만보기) 닫기;)  사이트맵 l  인터넷 회원약관 l  개인정보처리방침 l  골프장 이용약관  카카오 페이스북;) 인스타 밴드 블로그  날"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_신안퍼블릭c_c",
+    "name": "신안퍼블릭C.C",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "리클럽 회원수 : 약 1,300명 태광cc 전경 골프장 특징과 위치 #태광cc특징 도심에서 접근성이 좋고, 넓은 페어웨이, 안정된 코스 관리, 야간 라운드이 가능한점이 큰 특징입니다. ​ 회원... 2026.06.30•신라회원권거래소 골프/콘도/호텔#### 태광cc 무기명 회원권 혜택, 시세 안내 서비스를 제공하고 있어 회원들의 만"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_그린힐",
+    "name": "그린힐",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 하나 였으나 대중제 전화 의사를   blog.naver.com   name_match   address_match   경기도 광주 그린힐cc 야간라운딩 후기 - 코레지 즐기는 생활   https://sbde37.tistory.com/76   그린힐CC. 위치도 경기도 광주여서 ・ 광주시 곤지암읍 도척로 58) 경기 광주시 곤지암읍"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_참밸리c_c",
+    "name": "참밸리C.C",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "8. 홈페이지, www.charmvalley.cc/. 전화번호, 1899-6200. 일반그린피요금, 주중1부 2부 야간 / 주말 1부 .2부 .야간 운영합니다   t-golf.co.kr   name_match   참밸리 컨트리클럽   https://letsgrip.com/detail?clubCd=293   참밸리 컨트리클럽은 경기"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_빅토리아",
+    "name": "빅토리아GC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "oles   operation_type   phone   9Hole   catalog   PREVIOUS_RESULT   여주 노캐디, 수도권 야간 라운딩 가능 빅토리아골프클럽 예약방법   https://monggu.minmong.com/entry/여주-노캐디-수도권-야간-라운딩-가능-빅토리아골프클럽-예약방법   April 26, 202"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_베뉴지",
+    "name": "베뉴지",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " HUE코스로!  (0) | 2022.06.10 | | 소노펠리체의 여름  (0) | 2022.06.02 | | 용인, 써닝포인트CC 02 - 야간라운딩 일몰 후 썬코스  (0) | 2022.05.24 | | 용인, 써닝포인트CC 01 - 야간라운딩 일몰 전 포인트코스  (0) | 2022.05.23 |  ## 태그  가평CC, 가",
+      "6.02 | | 용인, 써닝포인트CC 02 - 야간라운딩 일몰 후 썬코스  (0) | 2022.05.24 | | 용인, 써닝포인트CC 01 - 야간라운딩 일몰 전 포인트코스  (0) | 2022.05.23 |  ## 태그  가평CC, 가평베뉴지, 가평베뉴지CC, 베뉴지, 베뉴지CC, 베뉴지CCG코스, 베뉴지CC코스, 베뉴지G코스, ",
+      " 있으면 피해보시지    가평, 베뉴지CC 02 - 닭강정먹고 힘내서 HUE코스로!    소노펠리체의 여름    용인, 써닝포인트CC 02 - 야간라운딩 일몰 후 썬코스 [...] ## 티스토리툴바 [...] 본문 바로가기  # 따뜻한 공과 차가운 스윙  POWERED BY TISTORY  골프로그  # 가평, 베뉴지CC 01 - "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_강촌리조트대중제골프장",
+    "name": "강촌리조트대중제골프장",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "an/rsa_addition3.do   전화번호, 033) 260-2000 (내선 2005번). 영업시간, 09:00 ~ 21:30 (금, 토 야간운영은 22:00까지 입니다.) 위치, 엘리시안 강촌 > 콘도 앞. 퍼블릭 골프장 사진. prev   hanwharesort.co.kr   엘리시안강촌cc   https://www.p"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_블랙밸리",
+    "name": "블랙밸리",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "임을 반값에 구매할 수 있는 기회도!  ### 3. 시간대 공략 전략   오전 조조(6–7시대)와 오후 티타임 간 그린피 차이는 2–5만 원  야간 라운드는 낮보다 30–40% 저렴하고, 여름엔 시원하고 인기 많아 예약 어려움 주의!  ### 4. 공식 홈페이지 + 부킹 앱 병행 [...] 골프장 홈페이지 실시간 예약은 공식가 기준"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_오스타퍼블릭",
+    "name": "오스타퍼블릭",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "원제 골프장의 비회원 그린피는 성수기의 경우 30만원 전후 혹은 그 이상이다. 반면 퍼블릭 골프장 그린피는 회원제 대비 20~40% 저렴하며, 야간 라운드, 주중 할인, 모바일 부킹 이벤트 등으로 합리적인 비용에 수준 높은 서비스를 제공하고 있다. [...] ## 상단영역   매일경제  매일방송  매일경제TV  매경이코노미  매경L"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_델피노c_c",
+    "name": "델피노C.C",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 풍경과 동해 바다를 조망할 수 있는 자연 경관이 매우 뛰어난 곳으로 유명합니다.   일부 문헌에서는 전 코스에 조명 시설이 설치되어 일몰 후 야간 라운드 운영이 가능하다고 소개돼 있어 계절별 다양한 플레이 옵션이 마련되어 있습니다.      3-2. 특징 & 즐길 거리   자연 경관: 설악산 울산바위와 동해 바다를 배경으로 한 골프장으"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_대명설악",
+    "name": "대명설악컨트리클럽",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 풍경과 동해 바다를 조망할 수 있는 자연 경관이 매우 뛰어난 곳으로 유명합니다.   일부 문헌에서는 전 코스에 조명 시설이 설치되어 일몰 후 야간 라운드 운영이 가능하다고 소개돼 있어 계절별 다양한 플레이 옵션이 마련되어 있습니다.      3-2. 특징 & 즐길 거리   자연 경관: 설악산 울산바위와 동해 바다를 배경으로 한 골프장으"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_떼제베_2",
+    "name": "떼제베CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "--- | | 부킹 앱 | 푸시 알림 설정 & 쿠폰·특가 활용 | | 긴급양도 | 잔여티 1–2일 전 특가 노리기 | | 시간대 공략 | 조조·야간 라운드 전략적으로 이용 | | 병행 예약 | 공식가 + 앱 특가 챙기기 | | 오픈 타이밍 | 예약 개시 시간 정확히 파악 | | 속도 경쟁 | 모바일 앱 + 창 최소화 전략 | | 패키"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_어등산",
+    "name": "어등산CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "/Db5Xe4mPWmT   광주 시내 가까운 27홀 골프장, 어등산CC⛳️ 어등·송정·하남 3개 코스로 골라 즐기는 재미까지 ! · 27홀 & 야간라운드 — 여름엔 선선하게 즐기기 · 캐디   instagram.com   name_match   어등산CC   https://www.eodeungsancc.com   WELCOME TO"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_그랜드",
+    "name": "그랜드",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "일의 코스를 갖추고 있다. 자연 친화적인 골프장은 1989년 개장하여 울창한 수림을 자랑한다. 27홀 전 홀에 라이트 시설을 마련하여 환상적인 야간 라운딩이 가능하다. 예약실명제로 운영한다.  소개정보  영업시간 :   예약 시 확인  휴일 :   연중무휴        ※ 휴일은 홈페이지 별도 공지  주차 :   가능  유모차대여 ",
+      "홀의 정통 스코틀랜드 링크스 스타일의 코스입니다. 넓은 골프코스와 낮은 고도에 평탄하게 전개된 코스입니다. 27홀 전홀 라이트 시설로 환상적인 야간 라운딩을 선사   m.dongagolf.co.kr   name_match   ȸ   http://grandmship.com/mobile/z_golf_v.php?page_no=138&no"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_아트밸리",
+    "name": "아트밸리컨트리클럽",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " www.charmvalley.cc/ | | 전화번호 | 1899-6200 | | 일반그린피요금 | 주중1부 2부 야간 / 주말 1부 .2부 .야간 운영합니다 |  신청하기 문의하기  상세내용  불포함내역  예약시 그린피만적용되며    카트.캐디팁은 별도입니다  기타사항  2f7cc030359cbb55029a8a857b347974"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_진양밸리",
+    "name": "진양밸리CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "리클럽 회원수 : 약 1,300명 태광cc 전경 골프장 특징과 위치 #태광cc특징 도심에서 접근성이 좋고, 넓은 페어웨이, 안정된 코스 관리, 야간 라운드이 가능한점이 큰 특징입니다. ​ 회원... 2026.06.30•신라회원권거래소 골프/콘도/호텔#### 태광cc 무기명 회원권 혜택, 시세 안내 서비스를 제공하고 있어 회원들의 만",
+      "--- | | 부킹 앱 | 푸시 알림 설정 & 쿠폰·특가 활용 | | 긴급양도 | 잔여티 1–2일 전 특가 노리기 | | 시간대 공략 | 조조·야간 라운드 전략적으로 이용 | | 병행 예약 | 공식가 + 앱 특가 챙기기 | | 오픈 타이밍 | 예약 개시 시간 정확히 파악 | | 속도 경쟁 | 모바일 앱 + 창 최소화 전략 | | 패키"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_백제",
+    "name": "백제컨트리클럽",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "2년 클럽하우스 메뉴 안내 22년 클럽하우스 메뉴 안내 2022년 몬스타배 KYGA .. 22년 6월 그린피안내 캐디피 변경 안내 22년 5월 야간라운드 운영 .. BAEKJE Login Login 아이디 저장 Login 아이디ㆍ비밀번호 찾기 회원가입 SNS Login 2022.05 다음 1 2 3 4 5 6 7 8 9 10 11 12"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_써미트",
+    "name": "써미트CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "홀마다 전혀 다른 느낌의 라운드를 경험할 수 있는 특색 코스로   blog.naver.com   name_match   #주말골퍼 #가을골프 #야간라운딩 #동전주써미트CC #굿데이   https://www.instagram.com/reel/DdTHUwEOyAJ   세레니티CC 오랜만에 세레니티 두시간전에 급 부킹 코스상태는 실크/리"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_김천포도",
+    "name": "김천포도CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "도 CC의 구릉 코스  01  ### PODO CC Gimcheon  서로 다른 세 코스로 구성된 27홀 골프장, 샤인·포도·자두 코스와 시즌 야간 라운드로 다양한 플레이를 즐길 수 있습니다.   27홀  Shine · Podo · Jadu  도전형 코스  PODO CC Gimcheon  Course explorer  ## 코스를 ",
+      "린 청주의 늦은 오후  강촌 세레니티 클럽하우스강촌 클럽하우스의 목재 파사드  조명이 켜진 김천 포도 CC 야간 코스조명 아래 이어지는 김천의 야간 라운드  세레니티 리조트 전경라운드 뒤에 이어지는 하루  청주 세레니티의 소나무 숲페어웨이를 감싸는 소나무  청주 세레니티의 다이닝마지막 홀 다음의 한 상  청주 세레니티 코스 조감위에서 "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_오펠",
+    "name": "오펠GC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "만, 주말 7만 - 주말 예약 월 4회 가능   czgolf.kr   name_match   오펠CC프리미엄회원권 일반회원권 및 2025 3부 야간라운드 오픈   https://m.blog.naver.com/nice3274/223791242047   영천 오펠 골프클럽은 경북 영천시 고경면 동도리에 위치하고 있는 회원제 골프장으로, 2"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_대구",
+    "name": "대구CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "--- | | 부킹 앱 | 푸시 알림 설정 & 쿠폰·특가 활용 | | 긴급양도 | 잔여티 1–2일 전 특가 노리기 | | 시간대 공략 | 조조·야간 라운드 전략적으로 이용 | | 병행 예약 | 공식가 + 앱 특가 챙기기 | | 오픈 타이밍 | 예약 개시 시간 정확히 파악 | | 속도 경쟁 | 모바일 앱 + 창 최소화 전략 | | 패키"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_용원",
+    "name": "용원",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "임을 반값에 구매할 수 있는 기회도!  ### 3. 시간대 공략 전략   오전 조조(6–7시대)와 오후 티타임 간 그린피 차이는 2–5만 원  야간 라운드는 낮보다 30–40% 저렴하고, 여름엔 시원하고 인기 많아 예약 어려움 주의!  ### 4. 공식 홈페이지 + 부킹 앱 병행   journal2995.tistory.com   회"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_삼삼",
+    "name": "삼삼컨트리클럽",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "임을 반값에 구매할 수 있는 기회도!  ### 3. 시간대 공략 전략   오전 조조(6–7시대)와 오후 티타임 간 그린피 차이는 2–5만 원  야간 라운드는 낮보다 30–40% 저렴하고, 여름엔 시원하고 인기 많아 예약 어려움 주의!  ### 4. 공식 홈페이지 + 부킹 앱 병행 [...] 골프장 홈페이지 실시간 예약은 공식가 기준"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_거제뷰",
+    "name": "거제뷰CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "| |  | 거제뷰 컨트리클럽 | |  | 경상남도 거제시 거제면 두동로 259-80 | |  | 18홀 정규코스 | |  | 전 홀 오션뷰, 야간 라운딩 가능, 휴양형 골프장 |    ✅ 전 홀에서 바다가 보이는 탁 트인 뷰와 리조트급 시설로 인기 높은 클럽입니다. [...] | | 4인실 | 10 | 4 | 침대방1(더블1), 온돌방"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_제피로스",
+    "name": "제피로스",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "임을 반값에 구매할 수 있는 기회도!  ### 3. 시간대 공략 전략   오전 조조(6–7시대)와 오후 티타임 간 그린피 차이는 2–5만 원  야간 라운드는 낮보다 30–40% 저렴하고, 여름엔 시원하고 인기 많아 예약 어려움 주의!  ### 4. 공식 홈페이지 + 부킹 앱 병행   journal2995.tistory.com   회"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_한라산",
+    "name": "한라산CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "임을 반값에 구매할 수 있는 기회도!  ### 3. 시간대 공략 전략   오전 조조(6–7시대)와 오후 티타임 간 그린피 차이는 2–5만 원  야간 라운드는 낮보다 30–40% 저렴하고, 여름엔 시원하고 인기 많아 예약 어려움 주의!  ### 4. 공식 홈페이지 + 부킹 앱 병행 [...] 골프장 홈페이지 실시간 예약은 공식가 기준",
+      "--- | | 부킹 앱 | 푸시 알림 설정 & 쿠폰·특가 활용 | | 긴급양도 | 잔여티 1–2일 전 특가 노리기 | | 시간대 공략 | 조조·야간 라운드 전략적으로 이용 | | 병행 예약 | 공식가 + 앱 특가 챙기기 | | 오픈 타이밍 | 예약 개시 시간 정확히 파악 | | 속도 경쟁 | 모바일 앱 + 창 최소화 전략 | | 패키",
+      "리클럽 회원수 : 약 1,300명 태광cc 전경 골프장 특징과 위치 #태광cc특징 도심에서 접근성이 좋고, 넓은 페어웨이, 안정된 코스 관리, 야간 라운드이 가능한점이 큰 특징입니다. ​ 회원... 2026.06.30•신라회원권거래소 골프/콘도/호텔#### 태광cc 무기명 회원권 혜택, 시세 안내 서비스를 제공하고 있어 회원들의 만"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_우리들매디컬",
+    "name": "우리들매디컬",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "--- | | 부킹 앱 | 푸시 알림 설정 & 쿠폰·특가 활용 | | 긴급양도 | 잔여티 1–2일 전 특가 노리기 | | 시간대 공략 | 조조·야간 라운드 전략적으로 이용 | | 병행 예약 | 공식가 + 앱 특가 챙기기 | | 오픈 타이밍 | 예약 개시 시간 정확히 파악 | | 속도 경쟁 | 모바일 앱 + 창 최소화 전략 | | 패키"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_핀크스",
+    "name": "핀크스",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "* 제주특별자치도 서귀포시 남원읍 남조로 1105  제주 샤인빌파크 CC  총 18홀  RIVER , PALM 코스  캐디 12 / 카트 8  야간 라운딩 가능  샤인빌 파크 골프장 정보  코스가 넓은 편이고 해저드가 많지 않음  팜코스 5홀 그린 주위 호수 까다로운 편임  **샤인빌파크CC** 제주특별자치도 서귀포시 표선면 가시리 20"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_일산스프링힐스",
+    "name": "일산스프링힐스",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "웨이로 편안한 라운딩 환경 제공   + 아름다운 자연 경관과 쾌적한 공기   + 합리적인 그린피   + 노캐디 셀프 라운딩 시스템 운영   + 야간 라운딩 가능 (일부 홀)  2. 코스 안내:  일산 스프링힐스 컨트리클럽은 자연 지형을 최대한 활용하여 조성된 18홀 코스를 제공합니다. 전체적으로 넓고 평탄한 페어웨이를 가지고 있어 초보 ",
+      " 평탄한 페어웨이는 초보 골퍼에게 부담을 줄여주며, 노캐디 셀프 라운딩 시스템은 합리적인 가격으로 라운딩을 즐길 수 있는 기회를 제공합니다.  야간 라운딩이 가능한 홀이 있어 늦은 시간에도 골프를 즐길 수 있습니다.  정확한 그린피 및 예약 가능 여부는 방문 전에 반드시 홈페이지 또는 전화로 확인하는 것이 좋습니다.   rhdwn6"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_남양주",
+    "name": "남양주CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "리클럽 회원수 : 약 1,300명 태광cc 전경 골프장 특징과 위치 #태광cc특징 도심에서 접근성이 좋고, 넓은 페어웨이, 안정된 코스 관리, 야간 라운드이 가능한점이 큰 특징입니다. ​ 회원... 2026.06.30•신라회원권거래소 골프/콘도/호텔#### 태광cc 무기명 회원권 혜택, 시세 안내 서비스를 제공하고 있어 회원들의 만",
+      "--- | | 부킹 앱 | 푸시 알림 설정 & 쿠폰·특가 활용 | | 긴급양도 | 잔여티 1–2일 전 특가 노리기 | | 시간대 공략 | 조조·야간 라운드 전략적으로 이용 | | 병행 예약 | 공식가 + 앱 특가 챙기기 | | 오픈 타이밍 | 예약 개시 시간 정확히 파악 | | 속도 경쟁 | 모바일 앱 + 창 최소화 전략 | | 패키"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_레이크힐스용인",
+    "name": "레이크힐스용인컨트리클럽",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ".golfpang.com/web/round/special_list_view.do?idx=2531   # 스페셜 특가  | 한림용인(한강이남)ㅣ 야간라운드 5월 할인가ㅣ 주중 0원~ 주말 160,000원~ |  | 소수회원제 명문 프라이빗 골프클럽 | | 친절한 상담직원 골팡 신팀장ㅣ010-6730-2430 ㅣ 조회 9271 | : ",
+      " 국내.해외 골프투어 골팡 입니다      우수한 접근성, 소수회원제 명문 프라이빗 골프클럽으로 운영되었던 레이크힐스용인cc (한림용인cc)의 야간라운드 그린피할인 안내입니다      레이크힐스용인cc (한림용인cc)는 7400야드의 긴 전장과 국제대회를 치를 수 있도록 코스가 조성되어 있으며, 저수지를 낀 화려한 경관이 자랑인 골",
+      "로운 것으로 정평이 나있으며, 코스 기복이 심해 중, 상급자라도 결코 만만치 않은 도전적인 코스 레이아웃이 특징인 골프클럽입니다   다음 글  야간라운드 5월 할인가  이전 글  야간라운드 5월~6월 할인가   golfpang.com   name_match   010-6730-2430   레이크 힐스 용인 컨트리 클럽   https",
+      "기복이 심해 중, 상급자라도 결코 만만치 않은 도전적인 코스 레이아웃이 특징인 골프클럽입니다   다음 글  야간라운드 5월 할인가  이전 글  야간라운드 5월~6월 할인가   golfpang.com   name_match   010-6730-2430   레이크 힐스 용인 컨트리 클럽   https://blog.naver.com/k3"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_블루원용인",
+    "name": "블루원용인",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "· \" 블루원용인cc   slgolf03.tistory.com   name_match   혼합_홀수명시   경기도 용인 골프장 블루원 용인CC 야간 라운딩 노캐디 2인 ...   https://m.blog.naver.com/wkwmd81/223839835996   3부 야간라운딩의 경우 회원제는 주중 135,000~185,000원이고",
+      "블루원 용인CC 야간 라운딩 노캐디 2인 ...   https://m.blog.naver.com/wkwmd81/223839835996   3부 야간라운딩의 경우 회원제는 주중 135,000~185,000원이고 주말은 145,000원~210,000원 입니다. 대중형 퍼블릭코스는 주중 100,000원~125,000원 그리고   m.b"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_써닝포인트",
+    "name": "써닝포인트",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "88   써닝포인트 CC는 경기 용인시에 위치한 골프장으로, 18홀 파 73의 코스를 자랑합니다. 전홀 라이트가 LED로 교체되어 밝고 쾌적한 야간 라운딩을 즐길   kimcaddie.com   name_match   써닝 포인트 컨트리 클럽 - 네이버 블로그   https://m.blog.naver.com/k3565512/2206",
+      "리고 그린 라이도 비교적 어렵지 않게 조성되어 초보자나 상급자 모두 좋아하는 코스입니다      골퍼들의 즐겨찾기 골프장으로 라이트시설이 좋아 야간라운드도 인기 있는 골프클럽입니다   다음 글  야간라운드 6월 할인가  이전 글  7월 그린피할인   golfpang.com   name_match   010-6730-2430   h",
+      "나 상급자 모두 좋아하는 코스입니다      골퍼들의 즐겨찾기 골프장으로 라이트시설이 좋아 야간라운드도 인기 있는 골프클럽입니다   다음 글  야간라운드 6월 할인가  이전 글  7월 그린피할인   golfpang.com   name_match   010-6730-2430   https://dbegl.com/golf-courses/"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_해솔리아",
+    "name": "해솔리아CC",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "에 위치해 있어  ​  **서울 강남권에서도 1시간 이내로**  **​**  **도착할 수 있는 거리이고,**  **​**  **1부, 2부, 야간 라운딩까지 가능한**  **​**  **합리적인 대중제 골프장이에요.**  **​**    **👉****해솔리아cc 그린피 가격**  **야간 예약 바로가기>>**  **해솔리아CC 그",
+      "야간 라운딩까지 가능한**  **​**  **합리적인 대중제 골프장이에요.**  **​**    **👉****해솔리아cc 그린피 가격**  **야간 예약 바로가기>>**  **해솔리아CC 그린피 가격 야간 예약 코스정보 후기(경기도 용인시) - Golf Times** 해솔리아CC는 용인시에 위치해 있고 1부, 2부뿐 아니라 야간 라",
+      "제 골프장이에요.**  **​**    **👉****해솔리아cc 그린피 가격**  **야간 예약 바로가기>>**  **해솔리아CC 그린피 가격 야간 예약 코스정보 후기(경기도 용인시) - Golf Times** 해솔리아CC는 용인시에 위치해 있고 1부, 2부뿐 아니라 야간 라운딩도 가능해서 야간 라운딩 시 더 할인을 많이 받아서 그",
+      "CC 그린피 가격 야간 예약 코스정보 후기(경기도 용인시) - Golf Times** 해솔리아CC는 용인시에 위치해 있고 1부, 2부뿐 아니라 야간 라운딩도 가능해서 야간 라운딩 시 더 할인을 많이 받아서 그린피를 더 저렴하게 이용할 수 있는 골프장입니다. 오늘은 해솔리아CC 그린피 가격 야간 예약 코스정보 후기에 대해 알아보겠습니"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_플라자cc_설악",
+    "name": "플라자CC 설악",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "리클럽 회원수 : 약 1,300명 태광cc 전경 골프장 특징과 위치 #태광cc특징 도심에서 접근성이 좋고, 넓은 페어웨이, 안정된 코스 관리, 야간 라운드이 가능한점이 큰 특징입니다. ​ 회원... 2026.06.30•신라회원권거래소 골프/콘도/호텔#### 태광cc 무기명 회원권 혜택, 시세 안내 서비스를 제공하고 있어 회원들의 만"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_푸른솔포천",
+    "name": "푸른솔포천",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "612851   ​ · 오늘의 솔직후기☁️ · ​ · 오늘 방문했던 푸른솔포천은 · 서비스로는 최상등급이었습니다!! · 3부제로 운영하며, · 야간라운드가 가능한 골프장인데도.   blog.naver.com   name_match   푸른솔GC 포천에 오신 것을 환영합니다.   https://www.purunsol.co.kr/Ma"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_남서울",
+    "name": "남서울",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "리클럽 회원수 : 약 1,300명 태광cc 전경 골프장 특징과 위치 #태광cc특징 도심에서 접근성이 좋고, 넓은 페어웨이, 안정된 코스 관리, 야간 라운드이 가능한점이 큰 특징입니다. ​ 회원... 2026.06.30•신라회원권거래소 골프/콘도/호텔#### 태광cc 무기명 회원권 혜택, 시세 안내 서비스를 제공하고 있어 회원들의 만",
+      "임을 반값에 구매할 수 있는 기회도!  ### 3. 시간대 공략 전략   오전 조조(6–7시대)와 오후 티타임 간 그린피 차이는 2–5만 원  야간 라운드는 낮보다 30–40% 저렴하고, 여름엔 시원하고 인기 많아 예약 어려움 주의!  ### 4. 공식 홈페이지 + 부킹 앱 병행   journal2995.tistory.com   회"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_올데이_임페리얼레이크",
+    "name": "올데이 임페리얼레이크",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "임을 반값에 구매할 수 있는 기회도!  ### 3. 시간대 공략 전략   오전 조조(6–7시대)와 오후 티타임 간 그린피 차이는 2–5만 원  야간 라운드는 낮보다 30–40% 저렴하고, 여름엔 시원하고 인기 많아 예약 어려움 주의!  ### 4. 공식 홈페이지 + 부킹 앱 병행   journal2995.tistory.com   회"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_아난티중앙",
+    "name": "아난티중앙",
+    "field": "night_round",
+    "label": "야간 라운드",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "18홀, 3인가능, 노캐디,   dbegl.com   name_match   address_strong   043-533-6666   아난티중앙야간라운드 는 카카오골프에서 예약 가능! 너무 ...   https://www.instagram.com/p/C4uqlRlP8Yd   🗺️ 충청북도 진천군 백곡면 배티로 818-105 ⚫️ 잔"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_뉴스프링빌",
+    "name": "뉴스프링빌",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "ership_view.php?mbs_idx=1170   ➡️ 회원수 : 약 750명(소수 회원제 운영) ➡️규모 : 회원제 36홀,퍼블릭 9홀,파3 코스 9홀,총 54홀 규모의 복합 골프클럽 ⭐ 뉴스프링빌cc 회원권 안내   msg1.co.kr   name_match   혼합_홀수명시   Instagram   https://www"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_신안c_c",
+    "name": "신안C.C",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "규 모. 27홀 (회원제 18홀 + 대중 9홀) ; 개 장 일. 1999년 2월 ; 문의. 031)8046-0777 ; 부대시설. 골프연습장, PAR3코스, VVIP   shinan.co.kr   name_match   address_strong   031-8046-0777   신안CC   https://www.dongagolf.c"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_자유",
+    "name": "자유",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "     객실수:-    객실 타입:-    클럽하우스에서 이동 시간:-  #### 부대시설     퍼팅 연습장     드라이빙 레인지     파3 연습장     퍼팅 그린     어프로치 연습장   ### 예약   golf.sbs.co.kr   name_match   address_partial   031-839-1500   노캐"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_인서울27_주",
+    "name": "인서울27골프클럽(주)",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "om/sbj533/224020893191   서울 강서구 인서울27골프클럽은 대중제 27홀(EAST·WEST·SOUTH) 정규 코스예요. 전용 파3 코스는 없습니다(정규 내 파3 홀 존재).   blog.naver.com   address_match   인서울27 골프클럽   https://www.ktriptips.com/kor/"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_에스페란사",
+    "name": "에스페란사컨트리클럽",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "QEUdJvkmp4   에스페란사 #골프클럽 전북 김제시에 위치한 골프연습장 #에스페란사cc 주말 기준 이용요금이 4만원으로 가성비 최강 9홀 파3 연습장이다 !   instagram.com   name_match   address_partial   전북김제에 에스페란사 개장   https://www.golftimes.co.kr/n"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_무주",
+    "name": "무주컨트리클럽",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "4004967792   회원제인 덕유산CC는 회원제로 운영되고 있구요, 회원수는 약 400명입니다. 회원제 18홀의 정규코스 외에 그린밸리라는 파3연습장도 운영되고 있습니다. ​.   blog.naver.com   name_match   [전북]무주 덕유산CC 1박 2일   https://irumtour.net/m2/itemvie"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_뉴스프링빌2",
+    "name": "뉴스프링빌2",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "4   뉴스프링빌2 백화산컨트리클럽 대중형 18홀 경북 상주 골프장 예약 정보. 티타임 ... 코스 빅혼 코스 ( 총 18홀 ) / 로즈파크 (파3 연습장) 주의 : 경기도 이천에   kakao.golf   name_match   [경북 상주] 뉴스프링빌2CC 1박2일   https://www.barogolf.kr/mobile/go",
+      " 속 명품 라운드, 이천 36홀 프리미엄 리조트 클럽   https://golfmembership.tistory.com/40   퍼블릭 9홀, 파3 코스, 연습장 등 완벽한 골프 인프라. 회원과 비회원 모두를 위한 다양한 라운딩 옵션을 제공합니다. 리조트 패키지 : 54홀/90홀   golfmembership.tistory.com"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_동래베네스트par3",
+    "name": "동래베네스트 Par3 골프클럽",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "clubCd=106   동래 베네스트 BnBK 파3 골프클럽은 동래 베네스트 골프클럽에서 운영하는 9홀 규모의 파3 코스입니다. 코스로 퍼팅, Par3코스 중 하위 44%에 해당하는. Par3(~183m) 55 3   tuttolab.net   명문 멤버십클럽을 말하다   https://letsgrip.com/curationDeta",
+      "ttolab.net/detail?clubCd=106   동래 베네스트 BnBK 파3 골프클럽은 동래 베네스트 골프클럽에서 운영하는 9홀 규모의 파3 코스입니다. 코스로 퍼팅, Par3코스 중 하위 44%에 해당하는. Par3(~183m) 55 3   tuttolab.net   명문 멤버십클럽을 말하다   https://letsgr"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_제일",
+    "name": "제일",
+    "field": "par3",
+    "label": "PAR3 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      ".   blog.naver.com   name_match   address_strong   031-400-2500   제일cc 코스, 그린피, 파3코스 - 플라잉에그 - 티스토리   https://eggpeach.tistory.com/32   주소 : 경기도 안산시 상록구 태마당로 28(부곡동) · 대표전화 : 031-400-2",
+      "2   주소 : 경기도 안산시 상록구 태마당로 28(부곡동) · 대표전화 : 031-400-2500 · 예약전화 : 031-400-2516 · 파3 코스 프론트 : 031-400-2582.   eggpeach.tistory.com   name_match   address_strong   031-400-2500   031-400-2"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_서원밸리g_c",
+    "name": "서원밸리G.C",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "  -홀수: 회원제18홀. -소재지: 경기 파주시 광탄면 서원길 333. -부대시설: 클럽하우스, 프론트, 레스토랑, 그늘집,. 서원아트리움, 드라이빙레인지.   jihunsin1004.tistory.com   name_match   address_strong   서원밸리 / 힐스 CC   http://ksgolfacademy.co."
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_아시아드c_c",
+    "name": "아시아드C.C",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "s://blog.naver.com/lee12370/224169689341?viewType=pc   ... 골프연습장. ​. 아시아드컨트리클럽의 야외 골프연습장은. 총 47타석, 비거리 약 300m 규모의. 대형 드라이빙 레인지로 조성돼 있어요. ​. ​. 천연 잔디   blog.naver.com   name_match   https:/",
+      "41?viewType=pc   ... 골프연습장. ​. 아시아드컨트리클럽의 야외 골프연습장은. 총 47타석, 비거리 약 300m 규모의. 대형 드라이빙 레인지로 조성돼 있어요. ​. ​. 천연 잔디   blog.naver.com   name_match   https://www.asiadcc.co.kr   A_CANDIDATE   htt"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_해운대비치골프앤리조트",
+    "name": "해운대비치 골프앤리조트",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 객실에서 필드를 향해 공을 날릴 수 있는 야외 스크린골프 시설 등을 갖추고 있다. 해운대비치골프앤리조트 제공     골퍼를 위한 이곳의 전용 드라이빙레인지도 차별화 요소다. 이용객은 골프장 및 레스트필드 이용 과정에서 라운드 뿐 아니라 연습과 휴식을 자연스럽게 연결할 수 있다. '라운드→연습→휴식'이 자연스럽게 이어지는 구조로 기존"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_베어스타운",
+    "name": "베어스타운",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " Holes /  Par 108  ### Services and Amenities  Shower  Clubhouse  Banquet hall  Driving Range  Short game range  Putting Practice green  Club Fitting  ProShop  Golf Lessons  Restaurant  Changin"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_일동레이크_2",
+    "name": "일동레이크",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "을 점검할 수 있다. 또한 인공장애물인 망을 이용하지 않고 자연스럽게 마운드로 처리해 보는 이로 하여금 골프를 치고 싶도록 조성한 국내 최고의 Driving Range이다.  △프로샵= 엄선된 제품, 최고의 브랜드, 꼭 필요한 골프용품을 준비해 신뢰할 수 있는 정품과 만족할 수 있는 가격으로 상품을 구입할 수 있다. 또한 비지니스와 각종 행사를"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_포천힐스",
+    "name": "포천 힐스 컨트리클럽",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " Holes /  Par 108  ### Services and Amenities  Shower  Clubhouse  Banquet hall  Driving Range  Short game range  Putting Practice green  Club Fitting  ProShop  Golf Lessons  Restaurant  Changin"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_자유",
+    "name": "자유",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      " 편의점     ATM      객실수:-    객실 타입:-    클럽하우스에서 이동 시간:-  #### 부대시설     퍼팅 연습장     드라이빙 레인지     파3 연습장     퍼팅 그린     어프로치 연습장   ### 예약   golf.sbs.co.kr   name_match   address_partial   031-83"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_베어즈베스트청라",
+    "name": "베어즈베스트청라골프클럽",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "어즈베스트청라 골프연습장   https://play.google.com/store/apps/details?id=com.plang.cheongnadrivingrange&hl=ko   · 위치: 인천광역시 서구 청라대로 316번길 45 (경서동) · 운영 시간 및 요금은 앱 공지사항 또는 연습장 안내를 참고해 주세요. 베어즈베스트 청라   pla",
+      "C   namu.wiki   https://play.google.com/store/apps/details?id=com.plang.cheongnadrivingrange&hl=ko   B_CANDIDATE   https://play.google.com/store/apps/details?id=com.plang.cheongnadrivingrange&",
+      "  B_CANDIDATE   https://play.google.com/store/apps/details?id=com.plang.cheongnadrivingrange&hl=ko   play.google.com   https://m.blog.naver.com/cws4u/223873541931?rvid=2835429F3BAFE74CB74A2110"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "vworld_솔트베이_대중",
+    "name": "솔트베이(대중)",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "3-1224​. 카카오플친 문의링크 :   blog.naver.com   address_partial   010-3433-1224   솔트베이 드라이빙 레인지   https://saltbaydrivingrange.co.kr   솔트베이 드라이빙 레인지는 연습 타석과. AM 06:00 ~ PM 11:00. AM 07:00 ~ PM 10:",
+      "tial   010-3433-1224   솔트베이 드라이빙 레인지   https://saltbaydrivingrange.co.kr   솔트베이 드라이빙 레인지는 연습 타석과. AM 06:00 ~ PM 11:00. AM 07:00 ~ PM 10:00 문의전화 … 경기도 시흥시 마유로 987 T 031.400.0050 F 031.400.0",
+      "og.naver.com   address_partial   010-3433-1224   솔트베이 드라이빙 레인지   https://saltbaydrivingrange.co.kr   솔트베이 드라이빙 레인지는 연습 타석과. AM 06:00 ~ PM 11:00. AM 07:00 ~ PM 10:00 문의전화 … 경기도 시흥시 마유로 987 T 03",
+      "M 10:00 문의전화 … 경기도 시흥시 마유로 987 T 031.400.0050 F 031.400.0025 c SALTBAY   saltbaydrivingrange.co.kr   address_strong   클럽소개   https://www.saltbay.co.kr/Club/Info   긴 기다림 끝에 드디어 경기도 시흥 폐 염전부지 위에"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_잭니클라우스",
+    "name": "잭니클라우스",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "린의 마지막 퍼팅까지 플레이어 기량을 테스트할 수 있습니다.  4. 국내 최고의 골프 연습시설을 제공하고 있습니다.  5. 벤트그라스로 조성된 드라이빙 레인지는 300야드에 달하며 양방향 타석으로 운영됩니다.  6. 별도의 칩핑 그린과 퍼팅 그린, 벙커 연습장이 있어 필드 감각을 느낄 수 있습니다.  7. 인천 송도에 위치해 수도권에서"
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  },
+  {
+    "id": "kgba_신원",
+    "name": "신원",
+    "field": "driving_range",
+    "label": "야외 연습장",
+    "candidate_status": "positive_candidate",
+    "snippets": [
+      "된 로비 라운지와 조망이 탁월한 레스토랑,  깔끔한 락커룸과 사우나 시설 등은 라운딩 전후의 휴식을 보다 품격 있게 만들어 줍니다  ​  또한 드라이빙 레인지와 퍼팅 연습장 등도 잘 갖춰져 있어,  실력 향상을 위한 연습 공간으로도 손색이 없습니다  ​   chooo-oi.tistory.com   name_match   회원제_명시  "
+    ],
+    "source": "existing_pipeline_v3_1",
+    "auto_apply": false
+  }
+]

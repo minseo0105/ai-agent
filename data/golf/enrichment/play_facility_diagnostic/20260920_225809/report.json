@@ -1,0 +1,71 @@
+{
+  "created_at": "2026-09-20T22:58:09.852935+09:00",
+  "catalog_count": 553,
+  "pipeline_source": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\pipeline_v3_1\\20260920_215821\\result_20260920_222943.json",
+  "tavily_calls": 0,
+  "llm_calls": 0,
+  "catalog_modified": false,
+  "summary": {
+    "two_person": {
+      "label": "2인 플레이",
+      "known_true": 0,
+      "known_false": 0,
+      "missing": 553,
+      "existing_evidence_positive": 53,
+      "existing_evidence_negative": 3,
+      "existing_evidence_conflict": 0,
+      "still_needs_web_search": 497
+    },
+    "three_person": {
+      "label": "3인 플레이",
+      "known_true": 0,
+      "known_false": 0,
+      "missing": 553,
+      "existing_evidence_positive": 93,
+      "existing_evidence_negative": 0,
+      "existing_evidence_conflict": 0,
+      "still_needs_web_search": 460
+    },
+    "nine_hole_twice": {
+      "label": "9홀×2",
+      "known_true": 0,
+      "known_false": 0,
+      "missing": 553,
+      "existing_evidence_positive": 7,
+      "existing_evidence_negative": 0,
+      "existing_evidence_conflict": 0,
+      "still_needs_web_search": 546
+    },
+    "night_round": {
+      "label": "야간 라운드",
+      "known_true": 0,
+      "known_false": 0,
+      "missing": 553,
+      "existing_evidence_positive": 41,
+      "existing_evidence_negative": 0,
+      "existing_evidence_conflict": 0,
+      "still_needs_web_search": 512
+    },
+    "par3": {
+      "label": "PAR3 연습장",
+      "known_true": 0,
+      "known_false": 0,
+      "missing": 553,
+      "existing_evidence_positive": 9,
+      "existing_evidence_negative": 0,
+      "existing_evidence_conflict": 0,
+      "still_needs_web_search": 544
+    },
+    "driving_range": {
+      "label": "야외 연습장",
+      "known_true": 0,
+      "known_false": 0,
+      "missing": 553,
+      "existing_evidence_positive": 11,
+      "existing_evidence_negative": 0,
+      "existing_evidence_conflict": 0,
+      "still_needs_web_search": 542
+    }
+  },
+  "candidate_count": 217
+}
