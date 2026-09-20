@@ -1,0 +1,52 @@
+{
+  "built_at": "2026-09-20T23:06:22+09:00",
+  "catalog_count": 553,
+  "input_candidates": 217,
+  "candidate_source": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\play_facility_diagnostic\\20260920_225809\\existing_evidence_candidates.json",
+  "classification_counts": {
+    "CONTAMINATED_HOLD": 99,
+    "REFERENCE_ONLY": 72,
+    "CONDITIONAL": 43,
+    "NEGATIVE_EVIDENCE": 3
+  },
+  "field_counts": {
+    "two_person": {
+      "CONTAMINATED_HOLD": 24,
+      "REFERENCE_ONLY": 17,
+      "CONDITIONAL": 13,
+      "NEGATIVE_EVIDENCE": 2
+    },
+    "three_person": {
+      "CONTAMINATED_HOLD": 42,
+      "REFERENCE_ONLY": 34,
+      "CONDITIONAL": 17
+    },
+    "nine_hole_twice": {
+      "REFERENCE_ONLY": 5,
+      "CONTAMINATED_HOLD": 2
+    },
+    "night_round": {
+      "CONTAMINATED_HOLD": 22,
+      "NEGATIVE_EVIDENCE": 1,
+      "REFERENCE_ONLY": 9,
+      "CONDITIONAL": 9
+    },
+    "par3": {
+      "CONDITIONAL": 4,
+      "REFERENCE_ONLY": 2,
+      "CONTAMINATED_HOLD": 3
+    },
+    "driving_range": {
+      "REFERENCE_ONLY": 5,
+      "CONTAMINATED_HOLD": 6
+    }
+  },
+  "catalog_sha256_before": "9e18a217705f87794ebf933c47e479fb6f056ca50dd5dc29815979034775972b",
+  "catalog_sha256_after": "9e18a217705f87794ebf933c47e479fb6f056ca50dd5dc29815979034775972b",
+  "catalog_unchanged": true,
+  "outputs": {
+    "master": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\master\\golf_master.json",
+    "master_timestamped": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\master\\golf_master_20260920_230622.json",
+    "classified": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\master\\objective_evidence_classified_20260920_230622.json"
+  }
+}
