@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-09-20T23:21:20+09:00",
+  "catalog_count": 553,
+  "processed_count": 150,
+  "complete": false,
+  "this_run_tavily_calls": 150,
+  "field_course_hits": {
+    "two_person": 141,
+    "three_person": 114,
+    "nine_hole_twice": 79,
+    "night_round": 70,
+    "par3": 96,
+    "driving_range": 122
+  },
+  "field_course_stronger_identity_hits": {
+    "two_person": 19,
+    "three_person": 16,
+    "nine_hole_twice": 11,
+    "night_round": 8,
+    "par3": 2,
+    "driving_range": 2
+  },
+  "field_course_conditional_hits": {
+    "two_person": 127,
+    "three_person": 99,
+    "nine_hole_twice": 62,
+    "night_round": 37,
+    "par3": 62,
+    "driving_range": 101
+  },
+  "field_course_negative_hits": {
+    "two_person": 24,
+    "three_person": 15,
+    "nine_hole_twice": 7,
+    "night_round": 2,
+    "par3": 0,
+    "driving_range": 0
+  },
+  "catalog_sha256_before": "9e18a217705f87794ebf933c47e479fb6f056ca50dd5dc29815979034775972b",
+  "catalog_sha256_after": "9e18a217705f87794ebf933c47e479fb6f056ca50dd5dc29815979034775972b",
+  "catalog_unchanged": true,
+  "result": "C:\\Users\\user\\Desktop\\ai-agent\\data\\golf\\enrichment\\play_facility_web_v1\\result_20260920_232120.json"
+}
