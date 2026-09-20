@@ -1,0 +1,418 @@
+{
+  "lakeside": {
+    "updated": "2026-09-20",
+    "note": "저장된 최근 후기 분석",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "평가가 엇갈림",
+        "mentions": 2
+      },
+      "fairway": {
+        "verdict": "넓거나 티샷 부담이 적다는 의견",
+        "mentions": 3
+      },
+      "green": {
+        "verdict": "후기 더 필요",
+        "mentions": 1
+      },
+      "maintenance": {
+        "verdict": "관리 상태가 좋다는 의견",
+        "mentions": 3
+      },
+      "facilities": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      }
+    }
+  },
+  "clubd_theplayers": {
+    "updated": "2026-09-20",
+    "note": "공식 코스정보 기반 기본 안내",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "전략적·도전적 코스 구성",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "코스별 공략 차이 큼",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "최신 후기 분석 필요",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "최신 후기 분석 필요",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "최신 후기 분석 필요",
+        "mentions": 0
+      }
+    }
+  },
+  "88cc": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "southsprings": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "blackstone": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "blueheron": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "club72": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "clubd_boeun": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "rainbow": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "kingsdale": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "silkriver": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "jade": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "whistling": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "lavie": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "oak": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  },
+  "pineridge": {
+    "updated": "2026-09-20",
+    "note": "기본 저장 요약 · 최신 후기 분석 전",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 정보 부족",
+        "mentions": 0
+      }
+    }
+  }
+}

@@ -4,10 +4,14 @@
 # Local runtime data and Python build artifacts.
 realestate_monitor.db
 .venv/
+venv/
 .rembg/
 __pycache__/
 *.py[cod]
 *.bak
+
+# Golf runtime cache / live reports; reviewed seed data is versioned separately.
+data/golf/runtime/
 
 # Generated exports from local runs.
 *.pdf

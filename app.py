@@ -1391,6 +1391,13 @@ if st.button(
 ):
     st.switch_page("pages/saju.py")
 
+if st.button(
+    "⛳  골프장 추천  ·  실제 후기 근거로 살펴보는 골프장",
+    key="golf_open_service",
+    width="stretch",
+):
+    st.switch_page("pages/6_골프장_추천.py")
+
 with st.expander("기타 도구"):
     if st.button(
         "🚗 차량 선택기",

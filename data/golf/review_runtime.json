@@ -1,0 +1,210 @@
+{
+  "blueheron": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      }
+    }
+  },
+  "88cc": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "넓은 편",
+        "mentions": 1
+      },
+      "green": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      }
+    }
+  },
+  "blackstone": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "어려운 편",
+        "mentions": 3
+      },
+      "fairway": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "느린 편",
+        "mentions": 1
+      },
+      "maintenance": {
+        "verdict": "의견 엇갈림",
+        "mentions": 2
+      },
+      "facilities": {
+        "verdict": "시설 좋음",
+        "mentions": 2
+      }
+    }
+  },
+  "southsprings": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "어려운 편",
+        "mentions": 2
+      },
+      "fairway": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "빠른 편",
+        "mentions": 1
+      },
+      "maintenance": {
+        "verdict": "관리 좋음",
+        "mentions": 1
+      },
+      "facilities": {
+        "verdict": "시설 좋음",
+        "mentions": 3
+      }
+    }
+  },
+  "silkriver": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "fairway": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "관리 좋음",
+        "mentions": 1
+      },
+      "facilities": {
+        "verdict": "시설 좋음",
+        "mentions": 1
+      }
+    }
+  },
+  "kgba_sg아름다운": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "어려운 편",
+        "mentions": 1
+      },
+      "fairway": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "느린 편",
+        "mentions": 1
+      },
+      "maintenance": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "facilities": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      }
+    }
+  },
+  "kgba_h1_club": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "쉬운 편",
+        "mentions": 1
+      },
+      "fairway": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "green": {
+        "verdict": "후기 더 필요",
+        "mentions": 0
+      },
+      "maintenance": {
+        "verdict": "관리 좋음",
+        "mentions": 1
+      },
+      "facilities": {
+        "verdict": "시설 좋음",
+        "mentions": 1
+      }
+    }
+  },
+  "vworld_떼제베": {
+    "updated": "2026-09-20",
+    "note": "최근 실행한 AI 후기 분석 저장본",
+    "dimensions": {
+      "difficulty": {
+        "verdict": "어려운 편",
+        "mentions": 1
+      },
+      "fairway": {
+        "verdict": "넓은 편",
+        "mentions": 1
+      },
+      "green": {
+        "verdict": "느린 편",
+        "mentions": 1
+      },
+      "maintenance": {
+        "verdict": "관리 좋음",
+        "mentions": 4
+      },
+      "facilities": {
+        "verdict": "시설 좋음",
+        "mentions": 2
+      }
+    }
+  }
+}
