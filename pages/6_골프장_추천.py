@@ -819,7 +819,7 @@ def _skill_target_slope(avg_score, challenge):
     return base + {"편하게": -7, "적당히": 0, "도전": 8}.get(challenge, 0)
 
 
-def _skill_fit(club, avg_score, challenge):
+def _skill_fit(club, avg_score, challenge, avg_score_label=None):
     """
     KGA 공식 Slope/전장 수치는 근거로 유지하되,
     화면의 첫 문장은 사용자가 이해하기 쉬운 개인화 해석으로 표시한다.
@@ -855,7 +855,13 @@ def _skill_fit(club, avg_score, challenge):
 
     # 숫자는 해석의 근거로 뒤에 작게 남긴다.
     bits.append(f"KGA 등록 Slope 참고값 {slope:.0f}")
-    bits.append(f"평균 {int(avg_score)}타 · {challenge} 선택 기준 참고")
+    display_score = avg_score_label or (
+        "110타 이상" if int(avg_score) >= 110 else
+        "100타대" if int(avg_score) >= 100 else
+        "90타대" if int(avg_score) >= 90 else
+        "80타대"
+    )
+    bits.append(f"{display_score} · {challenge} 선택 기준 참고")
 
     return {
         "known": True,
@@ -866,14 +872,68 @@ def _skill_fit(club, avg_score, challenge):
 
 
 
+def _master_evidence(club, field):
+    """B_SUPPORTED 참고정보. 확정값을 덮어쓰지 않는다."""
+    item = ((club.get("evidence") or {}).get(field) or {})
+    if not isinstance(item, dict) or item.get("status") != "SUPPORTED":
+        return None
+    value = item.get("candidate")
+    return None if value in (None, "", "없음", "미확인", "확인 필요") else value
+
+
+def _master_value(club, field):
+    """확정 catalog 값 우선, 없을 때만 B_SUPPORTED evidence를 표시용으로 사용."""
+    value = club.get(field)
+    if value not in (None, "", "없음", "미확인", "확인 필요"):
+        return value, "confirmed"
+    value = _master_evidence(club, field)
+    if value is not None:
+        return value, "evidence"
+    return None, "missing"
+
+
+def _holes_display(club):
+    value, level = _master_value(club, "holes")
+    if value is None:
+        return "홀 수 확인 필요", level
+    try:
+        label = f"{int(float(str(value).replace('홀','').strip()))}홀"
+    except (TypeError, ValueError):
+        label = str(value)
+    if level == "evidence":
+        label += " · 참고정보"
+    return label, level
+
+
+def _phone_display(club):
+    return _master_value(club, "phone")
+
+
+def _avg_score_display(cond):
+    label = str((cond or {}).get("avg_score_label") or "").strip()
+    if label and label != "미선택":
+        return label
+    score = (cond or {}).get("avg_score")
+    if not score:
+        return ""
+    score = int(score)
+    if score >= 110: return "110타 이상"
+    if score >= 100: return "100타대"
+    if score >= 90: return "90타대"
+    return "80타대"
+
+
 def _operation_type_text(club):
     """저장된 명시적 운영형태만 표시. 없으면 추정하지 않는다."""
+    public = ((club.get("verification") or {}).get("public_data") or {})
     candidates = [
         club.get("operation_type"),
         club.get("membership_type"),
         club.get("business_type"),
         club.get("club_type"),
         club.get("golf_type"),
+        _master_evidence(club, "operation_type"),
+        public.get("business_type"),
     ]
     raw = next((str(x).strip() for x in candidates if x and str(x).strip()), "")
     if not raw:
@@ -932,7 +992,7 @@ def _fact_based_intro(club):
         str(x).strip() for x in (club.get("region"), club.get("city"))
         if x and str(x).strip()
     )
-    holes = club.get("holes")
+    holes, holes_level = _master_value(club, "holes")
     op = _operation_type_text(club)
     courses = _course_labels(club)
 
@@ -940,7 +1000,13 @@ def _fact_based_intro(club):
     if location:
         first.append(f"{location}에 위치")
     if holes:
-        first.append(f"{holes}홀 규모")
+        try:
+            holes_text = f"{int(float(str(holes).replace('홀','').strip()))}홀 규모"
+        except (TypeError, ValueError):
+            holes_text = f"{holes} 규모"
+        if holes_level == "evidence":
+            holes_text += "(참고정보)"
+        first.append(holes_text)
     if op != "운영형태 확인 필요":
         first.append(op)
 
@@ -1226,6 +1292,7 @@ with st.container(key="golf"):
                     # 인원은 별도 상단 조건이 없다. 2인/3인은 objective_features에서 독립 판정한다.
                     "players": 4,
                     "avg_score": avg_score,
+                    "avg_score_label": avg_score_label,
                     "challenge": challenge or "적당히",
                 }
                 st.session_state.golf_rec_conditions = cond
@@ -1357,8 +1424,8 @@ with st.container(key="golf"):
                         filtered,
                         key=lambda c: (
                             _condition_sort_key(c)[:-1],
-                            0 if _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히")["known"] else 1,
-                            _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히")["distance"],
+                            0 if _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히", cond.get("avg_score_label"))["known"] else 1,
+                            _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히", cond.get("avg_score_label"))["distance"],
                             str(c.get("name") or ""),
                         ),
                     )
@@ -1515,7 +1582,7 @@ with st.container(key="golf"):
                 if cond.get("objective_features"):
                     chips.extend(cond["objective_features"])
                 if cond.get("avg_score"):
-                    chips.append(f'평균 {cond["avg_score"]}타 참고')
+                    chips.append(f'{_avg_score_display(cond)} 참고')
                     chips.append(cond.get("challenge") or "적당히")
                 st.success("검색 적용: " + " · ".join(chips))
 
@@ -1576,10 +1643,8 @@ with st.container(key="golf"):
                             verify_text = dual_verification_summary(course)
 
                             facts = []
-                            if course.get("holes"):
-                                facts.append(f"{course.get('holes')}홀")
-                            else:
-                                facts.append("홀 수 확인 필요")
+                            result_holes_text, result_holes_level = _holes_display(course)
+                            facts.append(result_holes_text)
                             if est is not None:
                                 facts.append(f"예상 1인 {won(est)}")
                             elif cond and cond.get("budget"):
@@ -1609,6 +1674,7 @@ with st.container(key="golf"):
                                     course,
                                     cond["avg_score"],
                                     cond.get("challenge") or "적당히",
+                                    cond.get("avg_score_label"),
                                 )
                                 skill_html = (
                                     f'<div class="why" style="margin-top:6px">'
@@ -1835,11 +1901,9 @@ with st.container(key="golf"):
 
     st.divider()
 
-    holes = (
-        f'{club["holes"]}홀'
-        if club.get("holes")
-        else "세부정보 확인 중"
-    )
+    holes, holes_level = _holes_display(club)
+    if holes_level == "missing":
+        holes = "세부정보 확인 중"
 
     st.html(
         f"""
@@ -1871,10 +1935,13 @@ with st.container(key="golf"):
     if loc_text:
         overview_bits.append("📍 " + loc_text)
     overview_bits.append("🏷 " + operation_type)
-    overview_bits.append("⛳ " + (f"{club.get('holes')}홀" if club.get("holes") else "홀 수 확인 필요"))
+    overview_holes, overview_holes_level = _holes_display(club)
+    overview_bits.append("⛳ " + overview_holes)
 
     st.markdown("### 한눈에 보기")
     st.caption(" · ".join(overview_bits))
+    if overview_holes_level == "evidence":
+        st.caption("※ 참고정보는 복수 출처에서 지지되지만 아직 확정 필드로 승격하지 않은 정보입니다.")
 
     st.markdown("**골프장 소개**")
     st.write(intro_text)
@@ -1892,6 +1959,18 @@ with st.container(key="golf"):
         st.markdown("　".join(f"`{x}`" for x in trait_badges))
         st.caption("저장된 후기/검증 데이터 기반 · 정보가 있는 항목만 표시")
 
+    verified_info = club.get("verified_basic_info") or {}
+    evidence_info = club.get("evidence") or {}
+    verified_fields = [k for k, v in verified_info.items() if isinstance(v, dict) and v.get("verified") is True]
+    evidence_fields = [k for k, v in evidence_info.items() if not str(k).startswith("_") and isinstance(v, dict) and v.get("status") == "SUPPORTED"]
+    if verified_fields or evidence_fields:
+        with st.expander("정보 출처 · 검증 상태", expanded=False):
+            if verified_fields:
+                st.markdown("**확정 검증정보** · " + ", ".join(verified_fields))
+            if evidence_fields:
+                st.markdown("**참고정보(B_SUPPORTED)** · " + ", ".join(evidence_fields))
+                st.caption("참고정보는 화면 표시를 돕지만 확정정보를 덮어쓰지 않습니다.")
+
     # KGA 공인 코스정보
     render_kga_course_intelligence(club)
 
@@ -1899,10 +1978,8 @@ with st.container(key="golf"):
     # CONTACT / NAVIGATION
     # =====================================================
 
-    phone = (
-        club.get("phone")
-        or ""
-    ).strip()
+    phone_value, phone_level = _phone_display(club)
+    phone = str(phone_value or "").strip()
 
     official = (
         club.get("official_url")
@@ -1958,6 +2035,8 @@ with st.container(key="golf"):
         </div>
         """
     )
+    if phone and phone_level == "evidence":
+        st.caption("☎ 전화번호는 참고정보(B_SUPPORTED)입니다. 이용 전 공식 홈페이지에서 재확인해 주세요.")
 
     # =====================================================
     # ROUND DECISION SNAPSHOT
@@ -1981,8 +2060,9 @@ with st.container(key="golf"):
         snapshot_bits.append(f"예상 1인 {won(selected_est)}")
     if three_text and "확인 필요" not in three_text:
         snapshot_bits.append(f"3인 {three_text}")
-    if club.get("holes"):
-        snapshot_bits.append(f"{club.get('holes')}홀")
+    snapshot_holes, snapshot_holes_level = _holes_display(club)
+    if snapshot_holes_level != "missing":
+        snapshot_bits.append(snapshot_holes)
     if snapshot_bits:
         st.caption(" · ".join(snapshot_bits))
 
@@ -2182,19 +2262,23 @@ with st.container(key="golf"):
         course_cards = []
 
         for course in club["courses"]:
+            if isinstance(course, dict):
+                course_name = str(course.get("name") or "").strip()
+                course_holes = str(course.get("holes") or "").strip()
+                course_type = str(course.get("type") or "").strip()
+                title = course_name + (f" · {course_holes}H" if course_holes else "")
+            else:
+                title = str(course).strip()
+                course_type = ""
+
+            if not title:
+                continue
 
             course_cards.append(
                 f"""
                 <div class="course">
-                    <b>
-                        {escape(str(course.get("name","")))}
-                        ·
-                        {escape(str(course.get("holes","")))}H
-                    </b>
-
-                    <div class="sm">
-                        {escape(str(course.get("type","")))}
-                    </div>
+                    <b>{escape(title)}</b>
+                    <div class="sm">{escape(course_type)}</div>
                 </div>
                 """
             )
