@@ -1266,7 +1266,7 @@ with st.container(key="golf"):
             with cfind:
                 find_clicked = st.button("🔎 이 조건으로 찾기", type="primary", width="stretch")
             with cmore:
-                more_clicked = st.button("다음 6개 →", width="stretch")
+                more_clicked = st.button("다음 4개 →", width="stretch")
 
             if find_clicked or more_clicked:
                 st.session_state.pop("golf_selected_id", None)
@@ -1275,7 +1275,7 @@ with st.container(key="golf"):
                 if find_clicked:
                     st.session_state.golf_rec_offset = 0
                 else:
-                    st.session_state.golf_rec_offset = st.session_state.get("golf_rec_offset", 0) + 6
+                    st.session_state.golf_rec_offset = st.session_state.get("golf_rec_offset", 0) + 4
 
                 cond = {
                     "area": area,
@@ -1511,7 +1511,7 @@ with st.container(key="golf"):
                 if final_count and start_idx >= final_count:
                     start_idx = 0
                     st.session_state.golf_rec_offset = 0
-                page_clubs = filtered[start_idx:start_idx + 6]
+                page_clubs = filtered[start_idx:start_idx + 4]
 
                 # 기존 카드 렌더러 호환용 tuple
                 st.session_state.golf_recs = [
@@ -1598,7 +1598,7 @@ with st.container(key="golf"):
                 filtered = sorted(filtered, key=lambda x: str(x.get("name") or ""))
                 final_count = len(filtered)
                 st.session_state.golf_recs = [
-                    (club, ["문장 검색조건 충족"]) for club in filtered[:6]
+                    (club, ["문장 검색조건 충족"]) for club in filtered[:4]
                 ]
                 st.session_state.golf_rec_conditions = cond
                 st.session_state.golf_filter_trace = {
@@ -1687,12 +1687,10 @@ with st.container(key="golf"):
                     return
                 st.markdown(f"#### {title}")
                 st.caption(description)
-                for row_start in range(0, len(items), 2):
-                    row = items[row_start:row_start + 2]
-                    cols = st.columns(len(row))
-                    for col, item in zip(cols, row):
-                        course, reasons, confirmed_fields, pending_fields = item
-                        with col:
+                # 모바일 우선: 1열 컴팩트 카드. 좁은 화면에서 2열 카드가 길어지는 문제 방지.
+                for item in items:
+                    course, reasons, confirmed_fields, pending_fields = item
+                    with st.container():
                             weekend = bool(cond.get("weekend")) if cond else False
                             nplayers = int(cond.get("players", 4)) if cond else 4
                             est = estimate_per_person(course, weekend, nplayers)
@@ -1731,7 +1729,7 @@ with st.container(key="golf"):
                             if reasons:
                                 recommendation_html = (
                                     '<div class="why" style="margin-top:6px"><b>추천 근거</b><br>'
-                                    + escape(" · ".join(reasons[:4])) + '</div>'
+                                    + escape(" · ".join(reasons[:2])) + '</div>'
                                 )
 
                             skill_html = ""
@@ -1753,8 +1751,6 @@ with st.container(key="golf"):
                                 <div class="sm">{escape(badge)}</div>
                                 <div class="name">{escape(course["name"])}</div>
                                 <div class="sm">{escape(loc or course.get("area",""))}</div>
-                                <div class="sm">🛡 {escape(verify_text)}</div>
-                                <div class="why"><b>{escape(evidence)}</b></div>
                                 <div class="sm">{escape(fact_text)}</div>
                                 {f'<div class="sm">{escape(badge_text)}</div>' if badge_text else ''}
                                 {recommendation_html}
@@ -2010,50 +2006,47 @@ with st.container(key="golf"):
     if overview_holes_level == "evidence":
         st.caption("※ 참고정보는 복수 출처에서 지지되지만 아직 확정 필드로 승격하지 않은 정보입니다.")
 
-    st.markdown("**골프장 소개**")
-    st.write(intro_text)
-    st.caption("확보된 공식·공공·KGA 정보만 조합한 설명입니다.")
-
-    if course_labels:
-        st.markdown("**코스 구성**")
-        st.markdown("　".join(f"`{x}`" for x in course_labels))
-    else:
-        st.caption("코스 구성 · 확인 가능한 상세정보가 아직 없습니다.")
-
+    # 모바일에서는 핵심정보만 먼저 보여주고 긴 설명/검증근거는 접는다.
     trait_badges = _overview_trait_badges(club)
     if trait_badges:
-        st.markdown("**라운드 특징**")
-        st.markdown("　".join(f"`{x}`" for x in trait_badges))
-        st.caption("저장된 후기/검증 데이터 기반 · 정보가 있는 항목만 표시")
+        st.caption(" · ".join(trait_badges[:4]))
 
-    verified_info = club.get("verified_basic_info") or {}
-    evidence_info = club.get("evidence") or {}
-    verified_fields = [k for k, v in verified_info.items() if isinstance(v, dict) and v.get("verified") is True]
-    evidence_fields = [k for k, v in evidence_info.items() if not str(k).startswith("_") and isinstance(v, dict) and v.get("status") == "SUPPORTED"]
-    if verified_fields or evidence_fields:
-        with st.expander("정보 출처 · 검증 상태", expanded=False):
-            if verified_fields:
-                st.markdown("**확정 검증정보** · " + ", ".join(verified_fields))
-            if evidence_fields:
-                st.markdown("**참고정보(B_SUPPORTED)** · " + ", ".join(evidence_fields))
-                st.caption("참고정보는 화면 표시를 돕지만 확정정보를 덮어쓰지 않습니다.")
+    with st.expander("골프장 · 코스 정보 더보기", expanded=False):
+        st.write(intro_text)
+        if course_labels:
+            st.markdown("**코스 구성** · " + " · ".join(course_labels))
+        else:
+            st.caption("코스 구성 · 확인 가능한 상세정보가 아직 없습니다.")
 
-    st.markdown("### 이용 · 시설 조건")
+        verified_info = club.get("verified_basic_info") or {}
+        evidence_info = club.get("evidence") or {}
+        verified_fields = [k for k, v in verified_info.items() if isinstance(v, dict) and v.get("verified") is True]
+        evidence_fields = [k for k, v in evidence_info.items() if not str(k).startswith("_") and isinstance(v, dict) and v.get("status") == "SUPPORTED"]
+        if verified_fields:
+            st.caption("확정 검증 · " + ", ".join(verified_fields))
+        if evidence_fields:
+            st.caption("참고정보 · " + ", ".join(evidence_fields))
+
+    st.markdown("### 이용조건")
+    # 모든 항목을 세로로 펼치지 않고 상태를 한 줄 요약.
+    objective_summary = []
     for feature in FEATURES:
-        detail = get_objective_detail(club, feature)
-        st.write(f"**{feature}** · {_objective_display(club, feature)}")
-        with st.expander(f"{feature} 근거 보기"):
-            st.caption(f"검증 분류: {detail['verification_class']} · 확인일: {detail.get('checked_at') or '미확인'}")
-            if detail.get("conflict"):
-                st.caption("기존 정보와 근거가 충돌하여 확인이 필요합니다.")
-            for note in detail.get("condition_notes", []):
-                st.write(str(note))
-            for source in detail.get("sources", []):
-                if isinstance(source, dict) and str(source.get("url") or "").startswith(("https://", "http://")):
-                    st.link_button(str(source.get("title") or "출처"), source["url"])
+        label = _objective_display(club, feature)
+        if label and "확인 필요" not in str(label):
+            objective_summary.append(f"{feature} {label}")
+    if objective_summary:
+        st.caption(" · ".join(objective_summary[:6]))
+    else:
+        st.caption("확인된 이용조건이 아직 없습니다.")
 
-    # KGA 공인 코스정보
-    render_kga_course_intelligence(club)
+    with st.expander("이용조건 근거 · KGA 코스정보", expanded=False):
+        for feature in FEATURES:
+            detail = get_objective_detail(club, feature)
+            st.write(f"**{feature}** · {_objective_display(club, feature)}")
+            st.caption(f"{detail['verification_class']} · {detail.get('checked_at') or '미확인'}")
+            for note in detail.get("condition_notes", [])[:2]:
+                st.caption(str(note))
+        render_kga_course_intelligence(club)
 
     # =====================================================
     # CONTACT / NAVIGATION
@@ -2154,53 +2147,16 @@ with st.container(key="golf"):
     # 없으면 네이버지도 외부 열기 버튼만 제공한다.
     # =====================================================
 
-    st.markdown("### 위치")
     selected_coord = club_lat_lon(club)
     naver_map_key = str(st.secrets.get("NAVER_MAP_NCP_KEY_ID", "") or "").strip()
 
     if selected_coord:
         selected_lat, selected_lon = selected_coord
 
-        if naver_map_key:
-            safe_name = str(club.get("name") or "골프장").replace("\\", "\\\\").replace("'", "\\'")
-            map_html = f"""
-            <!doctype html>
-            <html>
-            <head>
-              <meta charset="utf-8">
-              <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-              <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={naver_map_key}"></script>
-              <style>
-                html,body,#map{{margin:0;width:100%;height:100%;overflow:hidden}}
-                #map{{border-radius:14px}}
-              </style>
-            </head>
-            <body>
-              <div id="map"></div>
-              <script>
-                const pos = new naver.maps.LatLng({float(selected_lat)}, {float(selected_lon)});
-                const map = new naver.maps.Map('map', {{
-                  center: pos, zoom: 14, zoomControl: false, mapTypeControl: false
-                }});
-                const marker = new naver.maps.Marker({{position: pos, map: map}});
-                const info = new naver.maps.InfoWindow({{
-                  content: "<div style='padding:7px 9px;font-size:12px;font-weight:700;white-space:nowrap'>{safe_name}</div>"
-                }});
-                naver.maps.Event.addListener(marker, 'click', function() {{
-                  if (info.getMap()) info.close(); else info.open(map, marker);
-                }});
-              </script>
-            </body>
-            </html>
-            """
-            components.html(map_html, height=180, scrolling=False)
-        else:
-            st.caption("네이버 지도 앱/웹에서 위치를 바로 확인할 수 있습니다.")
-
-        st.link_button("네이버지도에서 크게 보기 ↗", naver_nav, width="stretch")
+        st.link_button("📍 네이버지도에서 위치 보기 ↗", naver_nav, width="stretch")
     else:
         st.caption("📍 위치정보 확인 필요")
-        st.link_button("네이버지도에서 검색 ↗", naver_nav, width="stretch")
+        st.link_button("📍 네이버지도에서 위치 보기 ↗", naver_nav, width="stretch")
 
     # =====================================================
     # PRICE
