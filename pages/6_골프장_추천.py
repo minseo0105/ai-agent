@@ -1040,7 +1040,7 @@ def _descriptive_badges(club):
 all_clubs = load_service_catalog()
 golf_runtime_version = all_clubs[0].get("_golf_runtime", {}).get("version") if all_clubs else None
 if st.session_state.get("golf_runtime_version") != golf_runtime_version:
-    for key in ("golf_recs", "golf_rec_conditions", "golf_filter_trace", "golf_ai_parsed",
+    for key in ("golf_recs", "golf_all_recs", "golf_rec_conditions", "golf_filter_trace", "golf_ai_parsed",
                 "golf_region_pool_count", "golf_verified_pool_count"):
         st.session_state.pop(key, None)
     st.session_state.golf_rec_offset = 0
@@ -1536,11 +1536,13 @@ with st.container(key="golf"):
                     st.session_state.golf_rec_offset = 0
                 page_clubs = filtered[start_idx:start_idx + 4]
 
-                # 기존 카드 렌더러 호환용 tuple
-                st.session_state.golf_recs = [
+                # V8: 전체 검색결과를 보존하고, 추천 TOP과 전체 탐색을 분리한다.
+                st.session_state.golf_all_recs = [
                     (club, [f"추천점수 {_recommendation_score(club)[0]:.1f}"] + _recommendation_score(club)[1])
-                    for club in page_clubs
+                    for club in filtered
                 ]
+                st.session_state.golf_recs = st.session_state.golf_all_recs[:4]
+                st.session_state.golf_all_visible = 10
                 st.session_state.golf_filter_trace = {
                     "total": total_count,
                     "area": area_count,
@@ -1620,9 +1622,11 @@ with st.container(key="golf"):
 
                 filtered = sorted(filtered, key=lambda x: str(x.get("name") or ""))
                 final_count = len(filtered)
-                st.session_state.golf_recs = [
-                    (club, ["문장 검색조건 충족"]) for club in filtered[:4]
+                st.session_state.golf_all_recs = [
+                    (club, ["문장 검색조건 충족"]) for club in filtered
                 ]
+                st.session_state.golf_recs = st.session_state.golf_all_recs[:4]
+                st.session_state.golf_all_visible = 10
                 st.session_state.golf_rec_conditions = cond
                 st.session_state.golf_filter_trace = {
                     "total": total_count,
@@ -1698,117 +1702,130 @@ with st.container(key="golf"):
                             )
                         st.caption("명확한 불가만 제외하고 미확인 정보는 ‘확인 필요’로 남깁니다.")
 
-            normalized_recs = [_normalize_result_item(x) for x in recs]
-            confirmed_recs, pending_recs = [], []
-            for course, reasons in normalized_recs:
+            # V8 UX
+            # - 추천 TOP: 조건 확인도가 높은 결과를 최대 4개 강조
+            # - 전체 검색결과: 확인 필요 결과까지 숨기지 않고 10개씩 탐색
+            all_source = st.session_state.get("golf_all_recs") or recs
+            normalized_all = [_normalize_result_item(x) for x in all_source]
+
+            all_items = []
+            confirmed_items = []
+            for course, reasons in normalized_all:
                 status, confirmed_fields, pending_fields = _result_confidence(course, cond)
-                item = (course, reasons, confirmed_fields, pending_fields)
-                (pending_recs if status == "pending" else confirmed_recs).append(item)
+                item = (course, reasons, confirmed_fields, pending_fields, status)
+                all_items.append(item)
+                if status == "confirmed":
+                    confirmed_items.append(item)
 
-            def _render_result_group(items, title, description, pending_group=False):
-                if not items:
-                    return
-                st.markdown(f"#### {title}")
-                st.caption(description)
-                # 모바일 우선: 1열 컴팩트 카드. 좁은 화면에서 2열 카드가 길어지는 문제 방지.
-                for item in items:
-                    course, reasons, confirmed_fields, pending_fields = item
-                    with st.container():
-                            weekend = bool(cond.get("weekend")) if cond else False
-                            nplayers = int(cond.get("players", 4)) if cond else 4
-                            est = estimate_per_person(course, weekend, nplayers)
-                            three_text = get_objective_detail(course, "three_person")["label"]
+            # 확인된 결과가 부족하면 점수순 상위 결과로 TOP 4를 채운다.
+            top_items = confirmed_items[:4]
+            if len(top_items) < 4:
+                used = {item[0].get("id") for item in top_items}
+                for item in all_items:
+                    if item[0].get("id") not in used:
+                        top_items.append(item)
+                        used.add(item[0].get("id"))
+                    if len(top_items) >= 4:
+                        break
 
-                            loc = " ".join(str(x).strip() for x in
-                                [course.get("region"), course.get("city")]
-                                if x and str(x).strip())
-                            verify_text = dual_verification_summary(course)
+            def _render_v8_card(item, key_prefix):
+                course, reasons, confirmed_fields, pending_fields, status = item
+                weekend = bool(cond.get("weekend")) if cond else False
+                nplayers = int(cond.get("players", 4)) if cond else 4
+                est = estimate_per_person(course, weekend, nplayers)
 
-                            facts = []
-                            result_holes_text, result_holes_level = _holes_display(course)
-                            facts.append(result_holes_text)
-                            if est is not None:
-                                facts.append(f"예상 1인 {won(est)}")
-                            elif cond and cond.get("budget"):
-                                facts.append("요금 확인 필요")
-                            selected_features = (cond or {}).get("objective_features", [])
-                            if "2인 플레이" in selected_features:
-                                facts.append(f"2인 {_objective_display(course, '2인 플레이')}")
-                            if "3인 플레이" in selected_features:
-                                facts.append(f"3인 {_objective_display(course, '3인 플레이')}")
+                loc = " ".join(
+                    str(x).strip()
+                    for x in [course.get("region"), course.get("city")]
+                    if x and str(x).strip()
+                )
 
-                            if pending_group:
-                                badge = "△ 정보 확인 필요"
-                                evidence = "미확인: " + " · ".join(pending_fields)
-                            else:
-                                badge = "✓ 선택조건 확인됨"
-                                evidence = ("확인: " + " · ".join(confirmed_fields)) if confirmed_fields else "선택조건 확인"
+                facts = []
+                result_holes_text, _ = _holes_display(course)
+                facts.append(result_holes_text)
+                if est is not None:
+                    facts.append(f"예상 1인 {won(est)}")
+                elif cond and cond.get("budget"):
+                    facts.append("요금 확인 필요")
 
-                            fact_text = " · ".join(facts) if facts else "세부 이용정보는 상세에서 확인"
-                            descriptive = _descriptive_badges(course)
-                            badge_text = " · ".join(descriptive)
+                selected_features = (cond or {}).get("objective_features", [])
+                if "2인 플레이" in selected_features:
+                    facts.append(f"2인 {_objective_display(course, '2인 플레이')}")
+                if "3인 플레이" in selected_features:
+                    facts.append(f"3인 {_objective_display(course, '3인 플레이')}")
 
-                            recommendation_html = ""
-                            if reasons:
-                                recommendation_html = (
-                                    '<div class="why" style="margin-top:6px"><b>추천 근거</b><br>'
-                                    + escape(" · ".join(reasons[:2])) + '</div>'
-                                )
+                if status == "confirmed":
+                    badge = "✓ 선택조건 확인"
+                    evidence = ("확인: " + " · ".join(confirmed_fields)) if confirmed_fields else "선택조건 확인"
+                else:
+                    badge = "△ 일부정보 확인 필요"
+                    evidence = ("확인 필요: " + " · ".join(pending_fields[:3])) if pending_fields else "일부 정보 확인 필요"
 
-                            skill_html = ""
-                            if cond and cond.get("avg_score"):
-                                skill = _skill_fit(
-                                    course,
-                                    cond["avg_score"],
-                                    cond.get("challenge") or "적당히",
-                                    cond.get("avg_score_label"),
-                                )
-                                skill_html = (
-                                    f'<div class="why" style="margin-top:6px">'
-                                    f'<b>🎯 {escape(skill["label"])}</b><br>'
-                                    f'{escape(skill["detail"])}</div>'
-                                )
+                descriptive = _descriptive_badges(course)
+                badge_text = " · ".join(descriptive[:4])
+                reason_text = " · ".join(reasons[:2]) if reasons else ""
 
-                            st.html(f"""
-                            <div class="decision-card">
-                                <div class="sm">{escape(badge)}</div>
-                                <div class="name">{escape(course["name"])}</div>
-                                <div class="sm">{escape(loc or course.get("area",""))}</div>
-                                <div class="sm">{escape(fact_text)}</div>
-                                {f'<div class="sm">{escape(badge_text)}</div>' if badge_text else ''}
-                                {recommendation_html}
-                                {skill_html}
-                            </div>
-                            """)
-                            if st.button("상세보기",
-                                key=("pending_" if pending_group else "confirmed_") + course["id"],
-                                width="stretch"):
-                                st.session_state.golf_selected_id = course["id"]
-                                st.session_state.golf_v14 = {}
-                                st.session_state.golf_filters_open = False
-                                st.rerun()
-
-            _render_result_group(
-                confirmed_recs,
-                f"추천 TOP · 조건 확인 {len(confirmed_recs)}개",
-                "선택한 조건을 현재 보유 데이터로 확인한 골프장입니다.",
-                False,
-            )
-
-            if pending_recs:
-                with st.expander(
-                    f"조건 일부 미확인 골프장 보기 · {len(pending_recs)}개",
-                    expanded=False,
+                st.html(f"""
+                <div class="decision-card">
+                    <div class="sm">{escape(badge)}</div>
+                    <div class="name">{escape(course["name"])}</div>
+                    <div class="sm">{escape(loc or course.get("area",""))}</div>
+                    <div class="sm">{escape(" · ".join(facts))}</div>
+                    {f'<div class="sm">{escape(badge_text)}</div>' if badge_text else ''}
+                    {f'<div class="why" style="margin-top:6px"><b>추천 근거</b><br>{escape(reason_text)}</div>' if reason_text else ''}
+                    <div class="sm" style="margin-top:6px">{escape(evidence)}</div>
+                </div>
+                """)
+                if st.button(
+                    "상세보기",
+                    key=f"{key_prefix}_{course['id']}",
+                    width="stretch",
                 ):
-                    st.caption(
-                        "지역에는 맞지만 선택조건 일부 정보가 없어 방문 전 확인이 필요한 골프장입니다."
-                    )
-                    _render_result_group(
-                        pending_recs,
-                        "",
-                        "",
-                        True,
-                    )
+                    st.session_state.golf_selected_id = course["id"]
+                    st.session_state.golf_v14 = {}
+                    st.session_state.golf_filters_open = False
+                    st.rerun()
+
+            if top_items:
+                st.markdown("#### 🏆 조건에 잘 맞는 추천 TOP")
+                st.caption("조건 확인 결과와 보유 정보를 기준으로 먼저 볼 만한 골프장입니다.")
+                for item in top_items:
+                    _render_v8_card(item, "v8_top")
+
+            st.markdown("---")
+            st.markdown(f"#### 전체 검색결과 {len(all_items)}개")
+            st.caption("추천 TOP 외에도 검색조건에 맞는 골프장을 모두 볼 수 있습니다. 미확인 정보는 숨기지 않고 표시합니다.")
+
+            filter_choice = st.radio(
+                "결과 보기",
+                ["전체", "조건확인", "확인필요"],
+                horizontal=True,
+                key="golf_v8_result_filter",
+                label_visibility="collapsed",
+            )
+            if filter_choice == "조건확인":
+                visible_items = [x for x in all_items if x[4] == "confirmed"]
+            elif filter_choice == "확인필요":
+                visible_items = [x for x in all_items if x[4] != "confirmed"]
+            else:
+                visible_items = all_items
+
+            visible_count = int(st.session_state.get("golf_all_visible", 10))
+            visible_count = max(10, visible_count)
+            shown_items = visible_items[:visible_count]
+
+            st.caption(f"{filter_choice} {len(visible_items)}개 중 {len(shown_items)}개 표시")
+            for item in shown_items:
+                _render_v8_card(item, "v8_all")
+
+            if len(shown_items) < len(visible_items):
+                if st.button(
+                    f"10개 더보기 · 남은 {len(visible_items) - len(shown_items)}개",
+                    key="golf_v8_more",
+                    width="stretch",
+                ):
+                    st.session_state.golf_all_visible = visible_count + 10
+                    st.rerun()
 
         elif st.session_state.get("golf_rec_conditions"):
             st.warning(
