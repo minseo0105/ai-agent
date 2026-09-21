@@ -1,6 +1,7 @@
 import json
 import re
 from pathlib import Path
+from services.golf_master import attach_master, is_round_eligible, known_holes
 
 CATALOG_PATH = Path(__file__).resolve().parents[1] / "data" / "golf" / "catalog.json"
 
@@ -138,6 +139,13 @@ def enrich_public_address_regions(clubs):
 def load_catalog():
     clubs = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     return prepare_service_pool(clubs)
+
+
+def load_service_catalog(use_master=True, master_path=None):
+    """Runtime only: raw catalog stays the sole persistence source."""
+    clubs = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    kwargs = {} if master_path is None else {"path": master_path}
+    return prepare_service_pool(attach_master(clubs, enabled=use_master, **kwargs))
 
 
 def find_clubs(query, clubs=None):
@@ -386,18 +394,10 @@ def _has_information(value):
 def service_assessment(club):
     """Master Pool을 service / candidate / excluded로 보수적으로 분류한다."""
     import math
-    try:
-        holes = float(str(club.get("holes")).replace("홀", "").strip())
-        if not math.isfinite(holes) or holes <= 0:
-            holes = None
-    except (TypeError, ValueError):
-        holes = None
+    holes = known_holes(club)
 
-    play = club.get("play") or {}
-    twice = play.get("nine_hole_twice")
-    nine_twice = holes == 9 and twice in (True, "가능", "yes", "Y", "y")
-    round_confirmed = holes is not None and (holes >= 18 or nine_twice)
-    round_explicitly_bad = holes is not None and holes < 18 and not nine_twice
+    round_confirmed = holes is not None and is_round_eligible(club)
+    round_explicitly_bad = not is_round_eligible(club)
 
     fee = club.get("fee") or {}
     actual_fee = any(

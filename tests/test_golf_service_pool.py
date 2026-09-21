@@ -37,9 +37,9 @@ class ServicePoolTests(unittest.TestCase):
         self.assertEqual([c['id'] for c in find_clubs('골프',rows)], ['a'])
         verified=dict(name='검증CC',verification={'public_data':{'matched':True}})
         self.assertTrue(match_public_records([verified],[])[0][0]['verification']['public_data']['matched'])
-        record={'BPLC_NM':'검증CC','ROAD_NM_ADDR':'경기 용인','TELNO':'031-000-0000'}
+        record={'BPLC_NM':'검증CC','ROAD_NM_ADDR':'경기 용인','TELNO':'031-000-0000','SALS_STTS_NM':'영업/정상','DTL_SALS_STTS_NM':'영업'}
         club=match_public_records([{'name':'검증CC'}],[record])[0][0]
-        self.assertEqual(service_status(club),'service')
+        self.assertEqual(service_status(club),'candidate')
 
     def test_public_contract(self):
         response=Mock(status_code=200)
@@ -78,7 +78,7 @@ class ServicePoolTests(unittest.TestCase):
         prior=ast.parse(subprocess.check_output(['git','show','HEAD:pages/6_골프장_추천.py']).decode('utf-8'))
         function=lambda tree: next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='_condition_sort_key')
         self.assertEqual(ast.dump(function(current)),ast.dump(function(prior)))
-        self.assertEqual(text.count('search_clubs = list(service_clubs)'),2)
+        self.assertEqual(text.count('search_clubs = list(condition_search_clubs)'),2)
         self.assertIn('기본정보 확인 중',text)
         self.assertIn('page_clubs = filtered[start_idx:start_idx + 12]',text)
 

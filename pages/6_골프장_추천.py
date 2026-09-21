@@ -11,7 +11,7 @@ from datetime import date, timedelta
 from auth import require_page_auth
 from services.navigation import render_sidebar
 from services.golf_catalog import (
-    load_catalog,
+    load_service_catalog,
     find_clubs,
     estimate_per_person,
     parse_ai_conditions,
@@ -29,6 +29,8 @@ from services.golf_pool_updater import (
     refresh_pool_dual,
     test_vworld_connection,
 )
+from services.golf_master import (FEATURES, get_objective_detail, get_objective_status,
+    objective_filter_value, matches_objective_conditions, is_round_eligible, normalize_operation_type)
 from services.golf_public_data import dual_verification_summary
 from services.golf_kga_ui import render_kga_course_intelligence
 
@@ -700,7 +702,7 @@ def _condition_evidence(course, cond):
         if status is True:
             confirmed.append(feature)
         elif status is None:
-            pending.append(feature)
+            pending.append(feature + (" · 조건부 확인" if get_objective_status(course, feature) == "conditional" else ""))
     return confirmed, pending
 
 
@@ -720,27 +722,7 @@ def _result_confidence(course, cond):
 
 
 def _eligible_round_course(club):
-    """알려진 18홀 미만은 제외하되, 홀 수 미확인은 검색 Pool에 남긴다."""
-    raw = club.get("holes")
-    try:
-        holes = int(float(str(raw).replace("홀", "").strip()))
-    except (TypeError, ValueError):
-        holes = None
-    play = club.get("play") or {}
-    nine_twice = play.get("nine_hole_twice") in (True, "가능", "yes", "Y")
-
-    # 18홀 이상: 포함
-    if holes is not None and holes >= 18:
-        return True
-    # 9홀이라도 9홀×2가 명확히 확인된 경우: 포함
-    if holes == 9 and nine_twice:
-        return True
-    # 1~17홀이 확인됐고 위 예외가 아니면: 제외
-    if holes is not None and holes < 18:
-        return False
-    # 홀 수 데이터가 없는 기존 골프장은 검색결과 부족을 막기 위해 유지.
-    # 카드에서 '홀 수 확인 필요'로 명확히 표시한다.
-    return True
+    return is_round_eligible(club)
 
 
 def _over_18_holes_only(clubs):
@@ -754,21 +736,7 @@ def _truthy(value):
 
 
 def _objective_feature_status(club, key):
-    """객관적 운영/시설 정보: True/False/None(미확인)."""
-    play = club.get("play") or {}
-    facilities = club.get("facilities") or {}
-    sources = {
-        "2인 플레이": play.get("two_person"),
-        "3인 플레이": play.get("three_person"),
-        "9홀×2 라운드": play.get("nine_hole_twice"),
-        "PAR3 연습장": facilities.get("par3"),
-        "야외 연습장": facilities.get("driving_range"),
-        "야간 라운드": play.get("night_round"),
-    }
-    value = sources.get(key)
-    if value in (True, "가능", "있음", "yes", "Y"): return True
-    if value in (False, "불가", "없음", "no", "N"): return False
-    return None
+    return objective_filter_value(club, key)
 
 
 def _kga_num(value):
@@ -938,14 +906,7 @@ def _operation_type_text(club):
     raw = next((str(x).strip() for x in candidates if x and str(x).strip()), "")
     if not raw:
         return "운영형태 확인 필요"
-    compact = raw.replace(" ", "")
-    if "회원" in compact and any(x in compact for x in ("대중", "퍼블릭", "병설", "혼합")):
-        return "회원제 · 대중제 혼합"
-    if "회원" in compact:
-        return "회원제"
-    if any(x in compact for x in ("대중", "퍼블릭", "Public", "public")):
-        return "대중제(퍼블릭)"
-    return raw
+    return normalize_operation_type(raw)
 
 
 def _course_labels(club):
@@ -1053,7 +1014,16 @@ def _descriptive_badges(club):
 # LOAD DATA
 # =========================================================
 
-all_clubs = load_catalog()
+all_clubs = load_service_catalog()
+golf_runtime_version = all_clubs[0].get("_golf_runtime", {}).get("version") if all_clubs else None
+if st.session_state.get("golf_runtime_version") != golf_runtime_version:
+    for key in ("golf_recs", "golf_rec_conditions", "golf_filter_trace", "golf_ai_parsed",
+                "golf_region_pool_count", "golf_verified_pool_count"):
+        st.session_state.pop(key, None)
+    st.session_state.golf_rec_offset = 0
+st.session_state["golf_runtime_version"] = golf_runtime_version
+if all_clubs and all_clubs[0].get("_golf_runtime", {}).get("diagnostic") not in ("ok", "disabled"):
+    st.warning("Master 검증정보 일부를 읽지 못해 catalog 기준으로 표시합니다.")
 clubs = [c for c in all_clubs if c["service_status"] != "excluded"]
 service_clubs = [c for c in all_clubs if c["service_status"] == "service"]
 
@@ -1333,10 +1303,8 @@ with st.container(key="golf"):
                             ok = False
 
                     # 객관 필터: 명확한 불가/없음만 제외. 미확인은 결과에 남겨 별도 표시.
-                    for feature in cond.get("objective_features", []):
-                        if _objective_feature_status(club, feature) is False:
-                            ok = False
-                            break
+                    if not matches_objective_conditions(club, cond.get("objective_features", [])):
+                        ok = False
 
                     if ok:
                         filtered.append(club)
@@ -1432,7 +1400,10 @@ with st.container(key="golf"):
 
                 confirmed_count = 0
                 pending_count = 0
+                conditional_count = 0
                 for result_club in filtered:
+                    if any(get_objective_status(result_club, f) == "conditional" for f in cond.get("objective_features", [])):
+                        conditional_count += 1
                     status, confirmed_fields, pending_fields = _result_confidence(
                         result_club,
                         cond,
@@ -1458,6 +1429,7 @@ with st.container(key="golf"):
                     "area": area_count,
                     "subregion": subregion_count,
                     "final": final_count,
+                    "conditional": conditional_count,
                     "confirmed": confirmed_count,
                     "pending": pending_count,
                     "excluded": excluded_count,
@@ -1494,7 +1466,7 @@ with st.container(key="golf"):
                 cond["players"] = int(cond.get("players") or 4)
                 cond["areas"] = [] if cond.get("area") == "전체" else [cond.get("area")]
                 cond["subregions"] = []
-                cond["objective_features"] = []
+                cond["objective_features"] = ["3인 플레이"] if cond["players"] == 3 else []
 
                 total_count = len(condition_search_clubs)
                 search_clubs = list(condition_search_clubs)
@@ -1517,10 +1489,7 @@ with st.container(key="golf"):
                 for club in search_clubs:
                     ok = True
 
-                    if int(cond.get("players") or 4) == 3:
-                        three = (club.get("play") or {}).get("three_person")
-                        if three in (False, "불가", "no", "N"):
-                            ok = False
+                    ok = matches_objective_conditions(club, cond.get("objective_features", []))
 
                     if ok and cond.get("budget"):
                         est = estimate_per_person(club, bool(cond.get("weekend")), int(cond.get("players") or 4))
@@ -1600,7 +1569,7 @@ with st.container(key="golf"):
                     if "confirmed" in trace:
                         st.caption(
                             f"조건 확인 {trace.get('confirmed', 0)}개 · "
-                            f"정보 확인 필요 {trace.get('pending', 0)}개 · "
+                            f"정보 확인 필요 {trace.get('pending', 0)}개 (조건부 포함 {trace.get('conditional', 0)}개) · "
                             f"명확한 불일치 제외 {trace.get('excluded', 0)}개"
                         )
                     st.caption(
@@ -1629,13 +1598,7 @@ with st.container(key="golf"):
                             weekend = bool(cond.get("weekend")) if cond else False
                             nplayers = int(cond.get("players", 4)) if cond else 4
                             est = estimate_per_person(course, weekend, nplayers)
-                            three_raw = (course.get("play") or {}).get("three_person")
-                            if three_raw in (True, "가능", "yes", "Y"):
-                                three_text = "가능"
-                            elif three_raw in (False, "불가", "no", "N"):
-                                three_text = "불가"
-                            else:
-                                three_text = "확인 필요"
+                            three_text = get_objective_detail(course, "three_person")["label"]
 
                             loc = " ".join(str(x).strip() for x in
                                 [course.get("region"), course.get("city")]
@@ -1971,6 +1934,20 @@ with st.container(key="golf"):
                 st.markdown("**참고정보(B_SUPPORTED)** · " + ", ".join(evidence_fields))
                 st.caption("참고정보는 화면 표시를 돕지만 확정정보를 덮어쓰지 않습니다.")
 
+    st.markdown("### 이용조건 검증정보")
+    for feature in FEATURES:
+        detail = get_objective_detail(club, feature)
+        st.write(f"**{feature}** · {detail['label']}")
+        with st.expander(f"{feature} 근거 보기"):
+            st.caption(f"검증 분류: {detail['verification_class']} · 확인일: {detail.get('checked_at') or '미확인'}")
+            if detail.get("conflict"):
+                st.caption("기존 정보와 근거가 충돌하여 확인이 필요합니다.")
+            for note in detail.get("condition_notes", []):
+                st.write(str(note))
+            for source in detail.get("sources", []):
+                if isinstance(source, dict) and str(source.get("url") or "").startswith(("https://", "http://")):
+                    st.link_button(str(source.get("title") or "출처"), source["url"])
+
     # KGA 공인 코스정보
     render_kga_course_intelligence(club)
 
@@ -2052,7 +2029,7 @@ with st.container(key="golf"):
         club, selected_weekend, selected_players
     )
     three_text = str(
-        club.get("play", {}).get("three_person", "확인 필요")
+        get_objective_detail(club, "three_person")["label"]
     )
 
     snapshot_bits = []
