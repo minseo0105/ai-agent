@@ -477,6 +477,22 @@ st.html(
     gap: .35rem !important;
   }
 }
+
+</style>
+
+<style>
+/* v3 mobile-first compact */
+@media (max-width: 640px) {
+  .st-key-golf { max-width: 100% !important; }
+  .block-container { padding-left: .55rem !important; padding-right: .55rem !important; }
+  .hero { padding: 8px 10px !important; margin: 0 0 5px !important; }
+  .hero h1 { font-size: 1.12rem !important; }
+  .decision-card { padding: 8px 9px !important; margin-bottom: 3px !important; }
+  .decision-card .name { font-size: .98rem !important; margin-bottom: 2px !important; }
+  .decision-card .sm, .decision-card .why { font-size: .76rem !important; line-height: 1.22 !important; }
+  div[data-testid="stAlert"] { padding: .5rem .65rem !important; }
+  div[data-testid="stExpander"] { margin-top: .05rem !important; margin-bottom: .18rem !important; }
+}
 </style>
 
 <!-- 모바일 압축 레이아웃 -->
@@ -1041,9 +1057,15 @@ def _public_operating_candidate(club):
     public = ((club.get("verification") or {}).get("public_data") or {})
     return public.get("matched") is True and public.get("operating_in_public_data") is True
 
+SUPPORTED_GOLF_AREAS = {"수도권", "충청권", "강원권"}
+
+# 기존 catalog를 그대로 사용하고, 추천/조건검색 Pool만 서비스 대상 3개 권역으로 제한.
+# service + 공공데이터상 영업 확인 candidate를 함께 사용한다.
 condition_search_clubs = [
     c for c in all_clubs
-    if (c.get("service_status") == "service" or _public_operating_candidate(c)) and _eligible_round_course(c)
+    if c.get("area") in SUPPORTED_GOLF_AREAS
+    and (c.get("service_status") == "service" or _public_operating_candidate(c))
+    and _eligible_round_course(c)
 ]
 
 # 직접검색은 excluded만 제외한 전체 검색 가능 Pool을 사용.
@@ -1073,7 +1095,7 @@ with st.container(key="golf"):
         <div class="hero">
             <div class="sm">AI GOLF FINDER</div>
             <h1>골프장 찾기</h1>
-            <div>전국 골프장 · 조건검색 · AI 검색</div>
+            <div>수도권 · 충청권 · 강원권 · AI 맞춤추천</div>
         </div>
         """
     )
@@ -1147,7 +1169,7 @@ with st.container(key="golf"):
 
         # 2) 카테고리/상세조건 검색
         elif search_mode == "조건 검색":
-            area_options = ["수도권", "호남권", "강원권", "충청권", "영남권", "제주권"]
+            area_options = ["수도권", "충청권", "강원권"]
             selected_areas = mobile_multi_choice(
                 "권역",
                 area_options,
@@ -1162,9 +1184,6 @@ with st.container(key="golf"):
                 "수도권": ["서울", "인천", "경기남부", "경기북부"],
                 "충청권": ["충북", "충남"],
                 "강원권": ["강원영서", "강원영동"],
-                "영남권": ["경북", "경남"],
-                "호남권": ["전북", "전남"],
-                "제주권": ["제주"],
             }
 
             single_area = selected_areas[0] if len(selected_areas) == 1 else None
@@ -1247,7 +1266,7 @@ with st.container(key="golf"):
             with cfind:
                 find_clicked = st.button("🔎 이 조건으로 찾기", type="primary", width="stretch")
             with cmore:
-                more_clicked = st.button("다음 12개 →", width="stretch")
+                more_clicked = st.button("다음 6개 →", width="stretch")
 
             if find_clicked or more_clicked:
                 st.session_state.pop("golf_selected_id", None)
@@ -1256,7 +1275,7 @@ with st.container(key="golf"):
                 if find_clicked:
                     st.session_state.golf_rec_offset = 0
                 else:
-                    st.session_state.golf_rec_offset = st.session_state.get("golf_rec_offset", 0) + 12
+                    st.session_state.golf_rec_offset = st.session_state.get("golf_rec_offset", 0) + 6
 
                 cond = {
                     "area": area,
@@ -1390,20 +1409,87 @@ with st.container(key="golf"):
                         str(club.get("name") or ""),
                     )
 
-                filtered = sorted(filtered, key=_condition_sort_key)
+                # 추천 정밀도 점수: 조건 확인도 + 가격 근거 + 데이터 완성도 + KGA 난이도 적합도를
+                # 하나의 점수로 결합한다. 미확인 정보는 감점하되 검색 결과에서 임의로 제외하지 않는다.
+                def _recommendation_score(club):
+                    score = 0.0
+                    reasons = []
 
-                # 평균타수를 선택한 경우, 기존 조건 품질 순서를 유지하면서
-                # KGA 공인 Slope가 사용자 설정과 가까운 골프장을 우선 표시.
-                if cond.get("avg_score"):
-                    filtered = sorted(
-                        filtered,
-                        key=lambda c: (
-                            _condition_sort_key(c)[:-1],
-                            0 if _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히", cond.get("avg_score_label"))["known"] else 1,
-                            _skill_fit(c, cond["avg_score"], cond.get("challenge") or "적당히", cond.get("avg_score_label"))["distance"],
-                            str(c.get("name") or ""),
-                        ),
+                    selected_features = set(cond.get("objective_features") or [])
+                    confirmed_features = sum(
+                        _objective_feature_status(club, feature) is True
+                        for feature in selected_features
                     )
+                    conditional_features = sum(
+                        get_objective_status(club, feature) == "conditional"
+                        for feature in selected_features
+                    )
+                    score += confirmed_features * 14
+                    score += conditional_features * 4
+                    if confirmed_features:
+                        reasons.append(f"선택조건 {confirmed_features}개 확인")
+
+                    _status, confirmed_fields, pending_fields = _result_confidence(club, cond)
+                    score += min(len(confirmed_fields), 5) * 5
+                    score -= min(len(pending_fields), 5) * 3
+
+                    if cond.get("budget"):
+                        try:
+                            estimated = estimate_per_person(
+                                club, bool(cond.get("weekend")), int(cond.get("players") or 4)
+                            )
+                        except Exception:
+                            estimated = None
+                        if estimated is not None:
+                            score += 12
+                            if estimated <= cond["budget"]:
+                                # 예산 여유가 클수록 소폭 가점. 가격만으로 순위를 지배하지 않도록 상한을 둔다.
+                                margin = max(cond["budget"] - estimated, 0)
+                                score += min(margin / max(cond["budget"], 1) * 8, 8)
+                                reasons.append("예산 범위 확인")
+                        else:
+                            score -= 4
+
+                    # 실제 서비스에서 유용한 핵심 데이터의 완성도를 가점한다.
+                    info_fields = [
+                        club.get("holes"), club.get("phone"), club.get("address"),
+                        club.get("official_url") or club.get("website") or club.get("homepage"),
+                        club.get("booking_url") or club.get("reservation_url") or club.get("reserve_url"),
+                        club.get("courses"), club.get("facilities"), club.get("data_checked"),
+                    ]
+                    info_count = sum(bool(v) for v in info_fields)
+                    score += info_count * 1.5
+                    if info_count >= 6:
+                        reasons.append("기본정보 충실")
+
+                    # KGA Slope가 확인된 경우 사용자의 평균타수/선호 난이도와 가까울수록 가점.
+                    if cond.get("avg_score"):
+                        skill = _skill_fit(
+                            club, cond["avg_score"], cond.get("challenge") or "적당히", cond.get("avg_score_label")
+                        )
+                        if skill.get("known"):
+                            distance = float(skill.get("distance") or 0)
+                            score += max(18 - min(distance, 18), 0)
+                            reasons.append("난이도 적합도 확인")
+                        else:
+                            score -= 2
+
+                    # 공공데이터 영업 확인 레코드는 identity/운영 근거에 소폭 가점.
+                    public = club.get("public_data") or {}
+                    if public.get("matched") is True and public.get("operating_in_public_data") is True:
+                        score += 5
+                        reasons.append("공공데이터 영업 확인")
+
+                    return round(score, 1), reasons
+
+                filtered = sorted(
+                    filtered,
+                    key=lambda c: (
+                        -_recommendation_score(c)[0],
+                        _condition_sort_key(c),
+                        str(c.get("name") or ""),
+                    ),
+                )
 
                 confirmed_count = 0
                 pending_count = 0
@@ -1425,11 +1511,12 @@ with st.container(key="golf"):
                 if final_count and start_idx >= final_count:
                     start_idx = 0
                     st.session_state.golf_rec_offset = 0
-                page_clubs = filtered[start_idx:start_idx + 12]
+                page_clubs = filtered[start_idx:start_idx + 6]
 
                 # 기존 카드 렌더러 호환용 tuple
                 st.session_state.golf_recs = [
-                    (club, ["검색조건 충족"]) for club in page_clubs
+                    (club, [f"추천점수 {_recommendation_score(club)[0]:.1f}"] + _recommendation_score(club)[1])
+                    for club in page_clubs
                 ]
                 st.session_state.golf_filter_trace = {
                     "total": total_count,
@@ -1511,7 +1598,7 @@ with st.container(key="golf"):
                 filtered = sorted(filtered, key=lambda x: str(x.get("name") or ""))
                 final_count = len(filtered)
                 st.session_state.golf_recs = [
-                    (club, ["문장 검색조건 충족"]) for club in filtered[:12]
+                    (club, ["문장 검색조건 충족"]) for club in filtered[:6]
                 ]
                 st.session_state.golf_rec_conditions = cond
                 st.session_state.golf_filter_trace = {
@@ -1567,22 +1654,26 @@ with st.container(key="golf"):
             if region_count is not None:
                 trace = st.session_state.get("golf_filter_trace") or {}
                 if trace:
-                    st.info(
-                        f"검색 과정  |  전체 {trace.get('total', 0)}개 → "
-                        f"권역 {trace.get('area', 0)}개 → "
-                        f"세부지역 {trace.get('subregion', 0)}개 → "
-                        f"검색결과 {trace.get('final', 0)}개"
-                    )
-                    if "confirmed" in trace:
-                        st.caption(
-                            f"조건 확인 {trace.get('confirmed', 0)}개 · "
-                            f"정보 확인 필요 {trace.get('pending', 0)}개 (조건부 포함 {trace.get('conditional', 0)}개) · "
-                            f"명확한 불일치 제외 {trace.get('excluded', 0)}개"
-                        )
                     st.caption(
-                        "선택조건은 명확한 불가만 제외하고, 정보가 없으면 결과에 남겨 "
-                        "‘확인 필요’로 구분합니다."
+                        f"검색결과 {trace.get('final', 0)}개 · "
+                        f"조건확인 {trace.get('confirmed', 0)}개 · "
+                        f"확인필요 {trace.get('pending', 0)}개"
                     )
+                    with st.expander("검색 기준 · 데이터 상태", expanded=False):
+                        st.write(
+                            f"전체 Pool {trace.get('total', 0)}개 → "
+                            f"권역 {trace.get('area', 0)}개 → "
+                            f"세부지역 {trace.get('subregion', 0)}개 → "
+                            f"검색결과 {trace.get('final', 0)}개"
+                        )
+                        if "confirmed" in trace:
+                            st.caption(
+                                f"조건 확인 {trace.get('confirmed', 0)}개 · "
+                                f"정보 확인 필요 {trace.get('pending', 0)}개 "
+                                f"(조건부 {trace.get('conditional', 0)}개) · "
+                                f"불일치 제외 {trace.get('excluded', 0)}개"
+                            )
+                        st.caption("명확한 불가만 제외하고 미확인 정보는 ‘확인 필요’로 남깁니다.")
 
             normalized_recs = [_normalize_result_item(x) for x in recs]
             confirmed_recs, pending_recs = [], []
@@ -1596,8 +1687,8 @@ with st.container(key="golf"):
                     return
                 st.markdown(f"#### {title}")
                 st.caption(description)
-                for row_start in range(0, len(items), 3):
-                    row = items[row_start:row_start + 3]
+                for row_start in range(0, len(items), 2):
+                    row = items[row_start:row_start + 2]
                     cols = st.columns(len(row))
                     for col, item in zip(cols, row):
                         course, reasons, confirmed_fields, pending_fields = item
@@ -1636,6 +1727,13 @@ with st.container(key="golf"):
                             descriptive = _descriptive_badges(course)
                             badge_text = " · ".join(descriptive)
 
+                            recommendation_html = ""
+                            if reasons:
+                                recommendation_html = (
+                                    '<div class="why" style="margin-top:6px"><b>추천 근거</b><br>'
+                                    + escape(" · ".join(reasons[:4])) + '</div>'
+                                )
+
                             skill_html = ""
                             if cond and cond.get("avg_score"):
                                 skill = _skill_fit(
@@ -1659,6 +1757,7 @@ with st.container(key="golf"):
                                 <div class="why"><b>{escape(evidence)}</b></div>
                                 <div class="sm">{escape(fact_text)}</div>
                                 {f'<div class="sm">{escape(badge_text)}</div>' if badge_text else ''}
+                                {recommendation_html}
                                 {skill_html}
                             </div>
                             """)
