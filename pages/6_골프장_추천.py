@@ -1120,8 +1120,18 @@ with st.container(key="golf"):
     # -----------------------------------------------------
 
     if not st.session_state.golf_filters_open:
-
-        if st.button(
+        if st.session_state.get("golf_selected_id"):
+            if st.button(
+                "← 검색결과로",
+                width="stretch",
+                key="golf_back_to_results",
+            ):
+                st.session_state.pop("golf_selected_id", None)
+                st.session_state.golf_v14 = {}
+                # 검색조건/검색결과는 유지하고 목록만 다시 표시
+                st.session_state.golf_filters_open = True
+                st.rerun()
+        elif st.button(
             "⌄ 검색 조건 다시 열기",
             width="stretch",
         ):
@@ -1276,20 +1286,19 @@ with st.container(key="golf"):
                     help_text="필요한 조건만 선택하세요.",
                 )
 
-            cfind, cmore = st.columns([3.2, 1])
-            with cfind:
-                find_clicked = st.button("🔎 이 조건으로 찾기", type="primary", width="stretch")
-            with cmore:
-                more_clicked = st.button("다음 4개 →", width="stretch")
+            find_clicked = st.button(
+                "🔎 이 조건으로 찾기",
+                type="primary",
+                width="stretch",
+                key="golf_condition_find",
+            )
+            more_clicked = False
 
-            if find_clicked or more_clicked:
+            if find_clicked:
                 st.session_state.pop("golf_selected_id", None)
                 st.session_state.golf_v14 = {}
 
-                if find_clicked:
-                    st.session_state.golf_rec_offset = 0
-                else:
-                    st.session_state.golf_rec_offset = st.session_state.get("golf_rec_offset", 0) + 4
+                st.session_state.golf_rec_offset = 0
 
                 cond = {
                     "area": area,
@@ -1781,16 +1790,25 @@ with st.container(key="golf"):
 
             _render_result_group(
                 confirmed_recs,
-                f"조건 확인됨 · {len(confirmed_recs)}개",
-                "선택한 조건을 현재 보유 데이터로 확인할 수 있는 골프장입니다.",
+                f"추천 TOP · 조건 확인 {len(confirmed_recs)}개",
+                "선택한 조건을 현재 보유 데이터로 확인한 골프장입니다.",
                 False,
             )
-            _render_result_group(
-                pending_recs,
-                f"정보 확인 필요 · {len(pending_recs)}개",
-                "지역에는 맞지만 선택조건 일부 정보가 없어 방문 전 확인이 필요한 골프장입니다.",
-                True,
-            )
+
+            if pending_recs:
+                with st.expander(
+                    f"조건 일부 미확인 골프장 보기 · {len(pending_recs)}개",
+                    expanded=False,
+                ):
+                    st.caption(
+                        "지역에는 맞지만 선택조건 일부 정보가 없어 방문 전 확인이 필요한 골프장입니다."
+                    )
+                    _render_result_group(
+                        pending_recs,
+                        "",
+                        "",
+                        True,
+                    )
 
         elif st.session_state.get("golf_rec_conditions"):
             st.warning(
@@ -2306,61 +2324,62 @@ with st.container(key="golf"):
     # COURSE INFORMATION
     # =====================================================
 
-    st.markdown("### 코스 상세")
+    with st.expander("코스 상세 · 데이터 확인", expanded=False):
+        st.markdown("### 코스 상세")
 
-    if club.get("courses"):
+        if club.get("courses"):
 
-        course_cards = []
+            course_cards = []
 
-        for course in club["courses"]:
-            if isinstance(course, dict):
-                course_name = str(course.get("name") or "").strip()
-                course_holes = str(course.get("holes") or "").strip()
-                course_type = str(course.get("type") or "").strip()
-                title = course_name + (f" · {course_holes}H" if course_holes else "")
-            else:
-                title = str(course).strip()
-                course_type = ""
+            for course in club["courses"]:
+                if isinstance(course, dict):
+                    course_name = str(course.get("name") or "").strip()
+                    course_holes = str(course.get("holes") or "").strip()
+                    course_type = str(course.get("type") or "").strip()
+                    title = course_name + (f" · {course_holes}H" if course_holes else "")
+                else:
+                    title = str(course).strip()
+                    course_type = ""
 
-            if not title:
-                continue
+                if not title:
+                    continue
 
-            course_cards.append(
-                f"""
-                <div class="course">
-                    <b>{escape(title)}</b>
-                    <div class="sm">{escape(course_type)}</div>
-                </div>
-                """
+                course_cards.append(
+                    f"""
+                    <div class="course">
+                        <b>{escape(title)}</b>
+                        <div class="sm">{escape(course_type)}</div>
+                    </div>
+                    """
+                )
+
+            st.html(
+                '<div class="courses">'
+                + "".join(course_cards)
+                + "</div>"
             )
 
-        st.html(
-            '<div class="courses">'
-            + "".join(course_cards)
-            + "</div>"
+        overview = (
+            club.get("course_overview")
+            or
+            "상세 코스정보는 공식 홈페이지에서 "
+            "확인할 수 있습니다."
         )
 
-    overview = (
-        club.get("course_overview")
-        or
-        "상세 코스정보는 공식 홈페이지에서 "
-        "확인할 수 있습니다."
-    )
+        st.caption(overview)
 
-    st.caption(overview)
-
-    checked = club.get(
-        "data_checked"
-    )
-
-    if checked:
-        st.caption(
-            f"공식정보 확인 · {checked}"
+        checked = club.get(
+            "data_checked"
         )
-    else:
-        st.caption(
-            "공식정보 최신 확인 필요"
-        )
+
+        if checked:
+            st.caption(
+                f"공식정보 확인 · {checked}"
+            )
+        else:
+            st.caption(
+                "공식정보 최신 확인 필요"
+            )
 
     # =====================================================
     # REVIEW
@@ -2393,7 +2412,7 @@ with st.container(key="golf"):
     # =====================================================
 
     st.markdown(
-        "### 최근 후기"
+        "### 후기 · 상세정보"
     )
 
     # 원문 연결은 AI 분석 여부와 무관하게 항상 제공한다.
@@ -2674,12 +2693,12 @@ with st.container(key="golf"):
                 width="stretch",
             )
 
-        for idx, item in enumerate(unique_links[:3]):
+        for idx, item in enumerate(unique_links[:1]):
             render_review_link(item, idx)
 
-        if len(unique_links) > 3:
-            with st.expander(f"후기 {len(unique_links)-3}개 더 보기", expanded=False):
-                for idx, item in enumerate(unique_links[3:], start=3):
+        if len(unique_links) > 1:
+            with st.expander(f"후기 {len(unique_links)-1}개 더 보기", expanded=False):
+                for idx, item in enumerate(unique_links[1:], start=1):
                     render_review_link(item, idx)
 
     # =====================================================
