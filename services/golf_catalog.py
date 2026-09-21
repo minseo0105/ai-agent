@@ -509,10 +509,8 @@ def recommendation_pool(clubs, area="전체", text="", budget=None, players=4, w
         ]
 
     if players == 3:
-        pool = [
-            c for c in pool
-            if "불가" not in str(c.get("play", {}).get("three_person", ""))
-        ]
+        from services.golf_master import matches_objective_conditions
+        pool = [c for c in pool if matches_objective_conditions(c, ["3인 플레이"])]
 
     scored = []
     for c in pool:

@@ -738,6 +738,13 @@ def _truthy(value):
 def _objective_feature_status(club, key):
     return objective_filter_value(club, key)
 
+def _objective_display(club, feature):
+    detail = get_objective_detail(club, feature)
+    status = detail.get("status")
+    if status == "confirmed": return "확인됨"
+    if status == "conditional": return "조건부 확인"
+    return "확인 필요"
+
 
 def _kga_num(value):
     try:
@@ -1024,8 +1031,8 @@ if st.session_state.get("golf_runtime_version") != golf_runtime_version:
 st.session_state["golf_runtime_version"] = golf_runtime_version
 if all_clubs and all_clubs[0].get("_golf_runtime", {}).get("diagnostic") not in ("ok", "disabled"):
     st.warning("Master 검증정보 일부를 읽지 못해 catalog 기준으로 표시합니다.")
-clubs = [c for c in all_clubs if c["service_status"] != "excluded"]
-service_clubs = [c for c in all_clubs if c["service_status"] == "service"]
+clubs = [c for c in all_clubs if c["service_status"] != "excluded" and _eligible_round_course(c)]
+service_clubs = [c for c in all_clubs if c["service_status"] == "service" and _eligible_round_course(c)]
 
 def _public_operating_candidate(club):
     """공공데이터상 영업이 확인된 candidate를 조건/AI 검색 Pool에 포함."""
@@ -1036,7 +1043,7 @@ def _public_operating_candidate(club):
 
 condition_search_clubs = [
     c for c in all_clubs
-    if c.get("service_status") == "service" or _public_operating_candidate(c)
+    if (c.get("service_status") == "service" or _public_operating_candidate(c)) and _eligible_round_course(c)
 ]
 
 # 직접검색은 excluded만 제외한 전체 검색 가능 Pool을 사용.
@@ -1614,11 +1621,9 @@ with st.container(key="golf"):
                                 facts.append("요금 확인 필요")
                             selected_features = (cond or {}).get("objective_features", [])
                             if "2인 플레이" in selected_features:
-                                two_raw = (course.get("play") or {}).get("two_person")
-                                two_text = "가능" if two_raw in (True, "가능", "yes", "Y") else "확인 필요"
-                                facts.append(f"2인 {two_text}")
+                                facts.append(f"2인 {_objective_display(course, '2인 플레이')}")
                             if "3인 플레이" in selected_features:
-                                facts.append(f"3인 {three_text}")
+                                facts.append(f"3인 {_objective_display(course, '3인 플레이')}")
 
                             if pending_group:
                                 badge = "△ 정보 확인 필요"
@@ -1934,10 +1939,10 @@ with st.container(key="golf"):
                 st.markdown("**참고정보(B_SUPPORTED)** · " + ", ".join(evidence_fields))
                 st.caption("참고정보는 화면 표시를 돕지만 확정정보를 덮어쓰지 않습니다.")
 
-    st.markdown("### 이용조건 검증정보")
+    st.markdown("### 이용 · 시설 조건")
     for feature in FEATURES:
         detail = get_objective_detail(club, feature)
-        st.write(f"**{feature}** · {detail['label']}")
+        st.write(f"**{feature}** · {_objective_display(club, feature)}")
         with st.expander(f"{feature} 근거 보기"):
             st.caption(f"검증 분류: {detail['verification_class']} · 확인일: {detail.get('checked_at') or '미확인'}")
             if detail.get("conflict"):
