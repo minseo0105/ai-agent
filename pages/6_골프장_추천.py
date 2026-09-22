@@ -687,6 +687,70 @@ def distance_km(a, b):
 
 
 
+
+def _player_status(course, players):
+    ops=course.get("operations") or {}; p=ops.get("players") or {}; value=None
+    if isinstance(p,dict):
+        for k in [str(players),f"{players}인",f"{players}_person",f"{players}p"]:
+            if k in p: value=p.get(k); break
+    if value is None and players==3: value=(course.get("play") or {}).get("three_person")
+    if isinstance(value,dict): value=value.get("available") if "available" in value else value.get("status")
+    if isinstance(value,bool): return value
+    s=str(value or "").strip().lower()
+    if not s or s in {"unknown","none","null"} or "확인 필요" in s or "조건부" in s: return None
+    if any(x in s for x in ["불가","불가능","false","no"]): return False
+    if any(x in s for x in ["가능","true","yes"]): return True
+    return None
+
+def _night_status(course):
+    ops=course.get("operations") or {}
+    for value in [ops.get("night"),ops.get("night_round"),(course.get("play") or {}).get("night"),(course.get("play") or {}).get("night_round")]:
+        if isinstance(value,dict): value=value.get("available") if "available" in value else value.get("status")
+        if isinstance(value,bool): return value
+        s=str(value or "").strip().lower()
+        if not s or s in {"unknown","none","null"} or "확인 필요" in s: continue
+        if any(x in s for x in ["불가","미운영","false","no"]): return False
+        if any(x in s for x in ["가능","운영","true","yes"]): return True
+    return None
+
+def _eligibility(course,cond):
+    issues=[]; unknowns=[]
+    if (cond or {}).get("budget"):
+        rd=None
+        try: rd=date.fromisoformat(cond.get("round_date")) if cond.get("round_date") else None
+        except Exception: pass
+        fee=_pricing_fee_for_session(course,rd,cond.get("session"))
+        if fee is None: unknowns.append("그린피")
+        elif fee>cond["budget"]: issues.append("예산 초과")
+    cad=(cond or {}).get("caddie") or "전체"
+    if cad!="전체":
+        actual=_caddie_summary(course)
+        if actual=="확인 필요": unknowns.append("캐디")
+        elif actual!=cad: issues.append("캐디 불일치")
+    if int((cond or {}).get("players") or 4)==3:
+        ps=_player_status(course,3)
+        if ps is False: issues.append("3인 불가")
+        elif ps is None: unknowns.append("3인")
+    if (cond or {}).get("night"):
+        ns=_night_status(course)
+        if ns is False: issues.append("야간 불가")
+        elif ns is None: unknowns.append("야간")
+    return issues,unknowns
+
+def _useful_detail(course):
+    ops=course.get("operations") or {}; cad=ops.get("caddie") or {}; cart=ops.get("cart") or {}; ev=course.get("evaluation") or {}
+    def clean(v):
+        s=str(v or "").strip()
+        return None if not s or s.lower() in {"unknown","none","null"} or "확인 필요" in s else s
+    p3=_player_status(course,3)
+    return {"caddie_mode":_caddie_summary(course),
+      "caddie_fee":cad.get("fee_team") if isinstance(cad,dict) else None,
+      "cart_fee":cart.get("fee_team") if isinstance(cart,dict) else None,
+      "three_person":"가능" if p3 is True else ("불가" if p3 is False else "확인 필요"),
+      "summary":clean(ev.get("summary")),"difficulty":clean(ev.get("difficulty")),
+      "fairway":clean(ev.get("fairway_width")),"green":clean(ev.get("green_difficulty")),
+      "condition":clean(ev.get("course_condition")),"scenery":clean(ev.get("scenery"))}
+
 @st.cache_data(ttl=60 * 60 * 24, show_spinner=False)
 def naver_geocode(query, api_key_id, api_key):
     """NAVER Cloud Maps Geocoding으로 주소/장소 문자열을 좌표로 변환한다."""
@@ -1778,6 +1842,30 @@ with st.container(key="golf"):
 
                     return round(score, 1), reasons
 
+                # 선택한 예산/캐디/3인/야간은 확인된 골프장만 TOP 결과에 포함한다.
+                # 미확인 값을 조건충족으로 간주하지 않는다.
+                strict_filtered = []
+                unknown_condition = []
+                for _club in filtered:
+                    _issues, _unknowns = _eligibility(_club, cond)
+                    if _issues:
+                        continue
+                    if _unknowns:
+                        unknown_condition.append((_club, _unknowns))
+                    else:
+                        strict_filtered.append(_club)
+
+                has_strict_condition = bool(
+                    cond.get("budget")
+                    or cond.get("caddie") not in (None, "", "전체")
+                    or int(cond.get("players") or 4) == 3
+                    or cond.get("night")
+                )
+                if has_strict_condition:
+                    filtered = strict_filtered
+                st.session_state.golf_unknown_condition_recs = unknown_condition
+                final_count = len(filtered)
+
                 filtered = sorted(
                     filtered,
                     key=lambda c: (
@@ -2447,6 +2535,39 @@ with st.container(key="golf"):
                 st.caption("확정 검증 · " + ", ".join(verified_fields))
             if evidence_fields:
                 st.caption("참고정보 · " + ", ".join(evidence_fields))
+
+    useful = _useful_detail(club)
+    detail_cond = st.session_state.get("golf_rec_conditions") or {}
+    selected_session = detail_cond.get("session") or "선택 시간대"
+    selected_date = None
+    try:
+        selected_date = date.fromisoformat(detail_cond.get("round_date")) if detail_cond.get("round_date") else None
+    except Exception:
+        pass
+    selected_fee = _pricing_fee_for_session(club, selected_date, selected_session)
+
+    st.markdown("### 라운드 핵심정보")
+    d1, d2 = st.columns(2)
+    with d1:
+        st.metric(f"{selected_session} 그린피", f"{int(selected_fee):,}원" if selected_fee is not None else "확인 필요")
+        st.caption("3인 플레이 · " + useful["three_person"])
+    with d2:
+        st.metric("캐디", useful["caddie_mode"])
+        fee_bits=[]
+        if useful["caddie_fee"] not in (None,""):
+            try: fee_bits.append(f"캐디피 {int(useful['caddie_fee']):,}원/팀")
+            except Exception: fee_bits.append(f"캐디피 {useful['caddie_fee']}")
+        if useful["cart_fee"] not in (None,""):
+            try: fee_bits.append(f"카트 {int(useful['cart_fee']):,}원/팀")
+            except Exception: fee_bits.append(f"카트 {useful['cart_fee']}")
+        st.caption(" · ".join(fee_bits) if fee_bits else "캐디피 · 카트비 확인 필요")
+
+    if useful["summary"]:
+        st.info(useful["summary"])
+    eval_bits=[f"{label} {value}" for label,value in [
+        ("난이도",useful["difficulty"]),("페어웨이",useful["fairway"]),("그린",useful["green"]),
+        ("관리",useful["condition"]),("경관",useful["scenery"])] if value]
+    if eval_bits: st.caption(" · ".join(eval_bits))
 
     st.markdown("### 이용조건")
     # 모든 항목을 세로로 펼치지 않고 상태를 한 줄 요약.
