@@ -1,5 +1,8 @@
 from html import escape
 from urllib.parse import quote
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
+import json
 import datetime
 import re
 
@@ -683,6 +686,170 @@ def distance_km(a, b):
     return 2*r*math.asin(math.sqrt(h))
 
 
+
+@st.cache_data(ttl=60 * 60 * 24, show_spinner=False)
+def naver_geocode(query, api_key_id, api_key):
+    """NAVER Cloud Maps Geocoding으로 주소/장소 문자열을 좌표로 변환한다."""
+    query = str(query or "").strip()
+    if not query or not api_key_id or not api_key:
+        return None
+
+    endpoint = "https://maps.apigw.ntruss.com/map-geocode/v2/geocode?query=" + quote(query)
+    req = Request(
+        endpoint,
+        headers={
+            "Accept": "application/json",
+            "x-ncp-apigw-api-key-id": str(api_key_id),
+            "x-ncp-apigw-api-key": str(api_key),
+        },
+        method="GET",
+    )
+    try:
+        with urlopen(req, timeout=6) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return None
+
+    addresses = payload.get("addresses") or []
+    if not addresses:
+        return None
+
+    row = addresses[0]
+    try:
+        lon = float(row.get("x"))
+        lat = float(row.get("y"))
+    except (TypeError, ValueError):
+        return None
+
+    if not (33.0 <= lat <= 39.5 and 124.0 <= lon <= 132.5):
+        return None
+
+    return {
+        "lat": lat,
+        "lon": lon,
+        "road_address": row.get("roadAddress") or "",
+        "jibun_address": row.get("jibunAddress") or "",
+    }
+
+
+def _sort_price(course, cond):
+    """선택한 날짜/부 가격을 우선하고, 없으면 기존 1인 예상가를 사용."""
+    round_d = None
+    if cond and cond.get("round_date"):
+        try:
+            round_d = date.fromisoformat(cond["round_date"])
+        except Exception:
+            pass
+
+    session_fee = _pricing_fee_for_session(course, round_d, (cond or {}).get("session"))
+    if session_fee is not None:
+        return float(session_fee)
+
+    try:
+        est = estimate_per_person(
+            course,
+            bool((cond or {}).get("weekend")),
+            int((cond or {}).get("players") or 4),
+        )
+    except Exception:
+        est = None
+
+    return float(est) if est is not None else float("inf")
+
+
+def _distance_from_departure(course, departure_coord):
+    coord = club_lat_lon(course)
+    if not departure_coord or not coord:
+        return None
+    return distance_km(departure_coord, coord)
+
+
+
+@st.cache_data(ttl=60 * 10, show_spinner=False)
+def naver_driving_route(start_lat, start_lon, goal_lat, goal_lon, api_key_id, api_key):
+    """NAVER Directions 5의 실시간 최적 경로 요약(distance/duration/toll)를 반환."""
+    if not api_key_id or not api_key:
+        return None
+    try:
+        start_lat, start_lon = float(start_lat), float(start_lon)
+        goal_lat, goal_lon = float(goal_lat), float(goal_lon)
+    except (TypeError, ValueError):
+        return None
+
+    endpoint = (
+        "https://maps.apigw.ntruss.com/map-direction/v1/driving"
+        f"?start={start_lon},{start_lat}"
+        f"&goal={goal_lon},{goal_lat}"
+        "&option=traoptimal"
+    )
+    req = Request(
+        endpoint,
+        headers={
+            "Accept": "application/json",
+            "x-ncp-apigw-api-key-id": str(api_key_id),
+            "x-ncp-apigw-api-key": str(api_key),
+        },
+        method="GET",
+    )
+    try:
+        with urlopen(req, timeout=7) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return None
+
+    routes = ((payload.get("route") or {}).get("traoptimal") or [])
+    if not routes:
+        return None
+    summary = routes[0].get("summary") or {}
+    distance_m = summary.get("distance")
+    duration_ms = summary.get("duration")
+    toll = summary.get("tollFare")
+
+    try:
+        distance_km_value = float(distance_m) / 1000.0
+    except (TypeError, ValueError):
+        distance_km_value = None
+    try:
+        duration_min = int(round(float(duration_ms) / 60000.0))
+    except (TypeError, ValueError):
+        duration_min = None
+    try:
+        toll_value = int(toll) if toll is not None else None
+    except (TypeError, ValueError):
+        toll_value = None
+
+    return {
+        "distance_km": distance_km_value,
+        "duration_min": duration_min,
+        "toll_fare": toll_value,
+    }
+
+
+def _route_for_course(course, cond):
+    raw = (cond or {}).get("departure_coord")
+    goal = club_lat_lon(course)
+    if not (isinstance(raw, (list, tuple)) and len(raw) == 2 and goal):
+        return None
+    try:
+        start_lat, start_lon = float(raw[0]), float(raw[1])
+    except (TypeError, ValueError):
+        return None
+
+    key_id = str(
+        st.secrets.get("NAVER_MAP_NCP_KEY_ID", "")
+        or st.secrets.get("NAVER_MAP_CLIENT_ID", "")
+        or ""
+    ).strip()
+    key = str(
+        st.secrets.get("NAVER_MAP_NCP_KEY", "")
+        or st.secrets.get("NAVER_MAP_CLIENT_SECRET", "")
+        or ""
+    ).strip()
+    if not (key_id and key):
+        return None
+    return naver_driving_route(start_lat, start_lon, goal[0], goal[1], key_id, key)
+
+
 def has_meaningful_summary(summary):
     """
     실제 후기 근거가 있는 저장 요약인지 확인.
@@ -1262,7 +1429,7 @@ with st.container(key="golf"):
                 value=st.session_state.get("golf_departure", ""),
                 placeholder="예: 잠실역, 강동구",
                 key="golf_departure",
-                help="현재 DB에는 실시간 길찾기 API가 연결되지 않아 출발지는 검색조건 기록용입니다.",
+                help="NAVER Cloud Maps 키가 있으면 출발지를 좌표로 변환해 직선거리 기준 가까운순에 사용합니다.",
             )
 
             c_date, c_session = st.columns([1.15, 1])
@@ -1360,6 +1527,24 @@ with st.container(key="golf"):
                 st.session_state.golf_v14 = {}
 
                 st.session_state.golf_rec_offset = 0
+                st.session_state.pop("golf_route_cache", None)
+
+                # 출발지 좌표화: NAVER Cloud Maps 키가 있을 때만 실행.
+                # 실제 도로 주행시간이 아니라 WGS84 직선거리 기준으로 정렬한다.
+                naver_key_id = str(
+                    st.secrets.get("NAVER_MAP_NCP_KEY_ID", "")
+                    or st.secrets.get("NAVER_MAP_CLIENT_ID", "")
+                    or ""
+                ).strip()
+                naver_key = str(
+                    st.secrets.get("NAVER_MAP_NCP_KEY", "")
+                    or st.secrets.get("NAVER_MAP_CLIENT_SECRET", "")
+                    or ""
+                ).strip()
+
+                departure_geo = None
+                if departure.strip() and naver_key_id and naver_key:
+                    departure_geo = naver_geocode(departure.strip(), naver_key_id, naver_key)
 
                 cond = {
                     "area": area,
@@ -1370,6 +1555,14 @@ with st.container(key="golf"):
                     "round_date": round_date.isoformat() if round_date else None,
                     "session": session_name,
                     "departure": departure.strip(),
+                    "departure_coord": (
+                        [departure_geo["lat"], departure_geo["lon"]]
+                        if departure_geo else None
+                    ),
+                    "departure_address": (
+                        departure_geo.get("road_address") or departure_geo.get("jibun_address")
+                        if departure_geo else ""
+                    ),
                     "caddie": caddie_choice,
                     "budget": budgets[budget_label],
                     "objective_features": list(objective_choice),
@@ -1379,6 +1572,19 @@ with st.container(key="golf"):
                     "challenge": challenge or "적당히",
                 }
                 st.session_state.golf_rec_conditions = cond
+
+                if departure.strip():
+                    if departure_geo:
+                        st.session_state["golf_departure_status"] = (
+                            "출발지 확인 · "
+                            + (departure_geo.get("road_address") or departure_geo.get("jibun_address") or departure.strip())
+                        )
+                    elif not (naver_key_id and naver_key):
+                        st.session_state["golf_departure_status"] = "출발지 거리계산 미사용 · NAVER Cloud Maps 키 필요"
+                    else:
+                        st.session_state["golf_departure_status"] = "출발지 좌표 확인 실패 · 주소를 조금 더 구체적으로 입력해 주세요"
+                else:
+                    st.session_state.pop("golf_departure_status", None)
 
                 # 검증 가능한 필터 검색:
                 # 1) 전체 Pool -> 2) 권역 -> 3) 세부권역 -> 4) 확인 가능한 추가조건
@@ -1751,6 +1957,8 @@ with st.container(key="golf"):
                     chips.append(f'{_avg_score_display(cond)} 참고')
                     chips.append(cond.get("challenge") or "적당히")
                 st.success("검색 적용: " + " · ".join(chips))
+                if st.session_state.get("golf_departure_status"):
+                    st.caption(st.session_state["golf_departure_status"])
 
             st.markdown("### 검색 결과")
             region_count = st.session_state.get("golf_region_pool_count")
@@ -1783,6 +1991,62 @@ with st.container(key="golf"):
             # - 전체 검색결과: 확인 필요 결과까지 숨기지 않고 10개씩 탐색
             all_source = st.session_state.get("golf_all_recs") or recs
             normalized_all = [_normalize_result_item(x) for x in all_source]
+
+            sort_choice = st.segmented_control(
+                "정렬",
+                ["추천순", "가까운순", "가격순"],
+                default=st.session_state.get("golf_sort_choice", "추천순"),
+                key="golf_sort_choice",
+                label_visibility="collapsed",
+            )
+
+            departure_coord = None
+            raw_departure_coord = (cond or {}).get("departure_coord")
+            if isinstance(raw_departure_coord, (list, tuple)) and len(raw_departure_coord) == 2:
+                try:
+                    departure_coord = (float(raw_departure_coord[0]), float(raw_departure_coord[1]))
+                except (TypeError, ValueError):
+                    departure_coord = None
+
+            if sort_choice == "가까운순":
+                if departure_coord:
+                    # API 호출량을 줄이기 위해 먼저 직선거리로 후보를 정렬한 뒤,
+                    # 상위 후보에 대해서만 Directions 5 실주행 거리를 조회한다.
+                    pre_sorted = sorted(
+                        normalized_all,
+                        key=lambda x: (
+                            _distance_from_departure(x[0], departure_coord) is None,
+                            _distance_from_departure(x[0], departure_coord)
+                            if _distance_from_departure(x[0], departure_coord) is not None
+                            else float("inf"),
+                        ),
+                    )
+                    route_cache = {}
+                    for course, _reasons in pre_sorted[:20]:
+                        route_cache[course.get("id")] = _route_for_course(course, cond)
+                    normalized_all = sorted(
+                        pre_sorted,
+                        key=lambda x: (
+                            route_cache.get(x[0].get("id")) is None,
+                            (route_cache.get(x[0].get("id")) or {}).get("distance_km", float("inf")),
+                            _distance_from_departure(x[0], departure_coord)
+                            if _distance_from_departure(x[0], departure_coord) is not None
+                            else float("inf"),
+                            str(x[0].get("name") or ""),
+                        ),
+                    )
+                    st.session_state["golf_route_cache"] = route_cache
+                else:
+                    st.caption("가까운순은 출발지 좌표가 확인될 때 적용됩니다. 현재는 추천순을 유지합니다.")
+            elif sort_choice == "가격순":
+                normalized_all = sorted(
+                    normalized_all,
+                    key=lambda x: (
+                        _sort_price(x[0], cond) == float("inf"),
+                        _sort_price(x[0], cond),
+                        str(x[0].get("name") or ""),
+                    ),
+                )
 
             all_items = []
             confirmed_items = []
@@ -1817,6 +2081,24 @@ with st.container(key="golf"):
                 )
 
                 facts = []
+                raw_dep = (cond or {}).get("departure_coord")
+                dep_coord = None
+                if isinstance(raw_dep, (list, tuple)) and len(raw_dep) == 2:
+                    try:
+                        dep_coord = (float(raw_dep[0]), float(raw_dep[1]))
+                    except (TypeError, ValueError):
+                        dep_coord = None
+                km = _distance_from_departure(course, dep_coord)
+                route_cache = st.session_state.get("golf_route_cache") or {}
+                route = route_cache.get(course.get("id"))
+                if route and route.get("distance_km") is not None:
+                    route_text = f"차량 {route['distance_km']:.1f}km"
+                    if route.get("duration_min") is not None:
+                        route_text += f" · 약 {route['duration_min']}분"
+                    facts.append(route_text)
+                elif km is not None:
+                    facts.append(f"직선거리 {km:.1f}km")
+
                 result_holes_text, _ = _holes_display(course)
                 facts.append(result_holes_text)
                 round_d = None
@@ -1879,6 +2161,8 @@ with st.container(key="golf"):
             st.markdown("---")
             st.markdown(f"#### 전체 검색결과 {len(all_items)}개")
             st.caption("추천 TOP 외에도 검색조건에 맞는 골프장을 모두 볼 수 있습니다. 미확인 정보는 숨기지 않고 표시합니다.")
+            if (cond or {}).get("departure_coord"):
+                st.caption("가까운순에서는 NAVER Directions 사용 가능 시 실제 차량 경로 거리·시간을 우선 표시하고, 미조회 결과는 직선거리로 보조 표시합니다.")
 
             filter_choice = st.segmented_control(
                 "결과 보기",
@@ -2139,26 +2423,30 @@ with st.container(key="golf"):
     if overview_holes_level == "evidence":
         st.caption("※ 참고정보는 복수 출처에서 지지되지만 아직 확정 필드로 승격하지 않은 정보입니다.")
 
-    # 모바일에서는 핵심정보만 먼저 보여주고 긴 설명/검증근거는 접는다.
+    # 상세에 들어오면 골프장 소개와 코스 구성을 즉시 보여준다.
     trait_badges = _overview_trait_badges(club)
     if trait_badges:
         st.caption(" · ".join(trait_badges[:4]))
 
-    with st.expander("골프장 · 코스 정보 더보기", expanded=False):
-        st.write(intro_text)
-        if course_labels:
-            st.markdown("**코스 구성** · " + " · ".join(course_labels))
-        else:
-            st.caption("코스 구성 · 확인 가능한 상세정보가 아직 없습니다.")
+    st.markdown("#### 골프장 소개")
+    st.write(intro_text)
 
-        verified_info = club.get("verified_basic_info") or {}
-        evidence_info = club.get("evidence") or {}
-        verified_fields = [k for k, v in verified_info.items() if isinstance(v, dict) and v.get("verified") is True]
-        evidence_fields = [k for k, v in evidence_info.items() if not str(k).startswith("_") and isinstance(v, dict) and v.get("status") == "SUPPORTED"]
-        if verified_fields:
-            st.caption("확정 검증 · " + ", ".join(verified_fields))
-        if evidence_fields:
-            st.caption("참고정보 · " + ", ".join(evidence_fields))
+    if course_labels:
+        st.markdown("**코스 구성** · " + " · ".join(course_labels))
+    else:
+        st.caption("코스 구성 · 확인 가능한 상세정보가 아직 없습니다.")
+
+    # 검증 메타데이터만 보조정보로 접는다.
+    verified_info = club.get("verified_basic_info") or {}
+    evidence_info = club.get("evidence") or {}
+    verified_fields = [k for k, v in verified_info.items() if isinstance(v, dict) and v.get("verified") is True]
+    evidence_fields = [k for k, v in evidence_info.items() if not str(k).startswith("_") and isinstance(v, dict) and v.get("status") == "SUPPORTED"]
+    if verified_fields or evidence_fields:
+        with st.expander("정보 출처 · 검증상태", expanded=False):
+            if verified_fields:
+                st.caption("확정 검증 · " + ", ".join(verified_fields))
+            if evidence_fields:
+                st.caption("참고정보 · " + ", ".join(evidence_fields))
 
     st.markdown("### 이용조건")
     # 모든 항목을 세로로 펼치지 않고 상태를 한 줄 요약.
@@ -2272,6 +2560,20 @@ with st.container(key="golf"):
         snapshot_bits.append(snapshot_holes)
     if snapshot_bits:
         st.caption(" · ".join(snapshot_bits))
+
+    detail_cond = st.session_state.get("golf_rec_conditions") or {}
+    detail_route = _route_for_course(club, detail_cond)
+    detail_dep = detail_cond.get("departure")
+    if detail_dep and detail_route:
+        route_bits = []
+        if detail_route.get("distance_km") is not None:
+            route_bits.append(f"차량거리 {detail_route['distance_km']:.1f}km")
+        if detail_route.get("duration_min") is not None:
+            route_bits.append(f"예상 {detail_route['duration_min']}분")
+        if detail_route.get("toll_fare") not in (None, 0):
+            route_bits.append(f"통행료 약 {detail_route['toll_fare']:,}원")
+        if route_bits:
+            st.info(f"🚗 {detail_dep} 출발 · " + " · ".join(route_bits))
 
     # =====================================================
     # NAVER MAP
@@ -2422,65 +2724,161 @@ with st.container(key="golf"):
         )
 
     # =====================================================
-    # COURSE INFORMATION
+    # COURSE / HOLE INFORMATION
     # =====================================================
 
-    with st.expander("코스 상세 · 데이터 확인", expanded=False):
-        st.markdown("### 코스 상세")
+    st.markdown("### 코스 · 홀 정보")
 
-        if club.get("courses"):
-
-            course_cards = []
-
-            for course in club["courses"]:
-                if isinstance(course, dict):
-                    course_name = str(course.get("name") or "").strip()
-                    course_holes = str(course.get("holes") or "").strip()
-                    course_type = str(course.get("type") or "").strip()
-                    title = course_name + (f" · {course_holes}H" if course_holes else "")
-                else:
-                    title = str(course).strip()
-                    course_type = ""
-
-                if not title:
-                    continue
-
-                course_cards.append(
-                    f"""
-                    <div class="course">
-                        <b>{escape(title)}</b>
-                        <div class="sm">{escape(course_type)}</div>
-                    </div>
-                    """
-                )
-
-            st.html(
-                '<div class="courses">'
-                + "".join(course_cards)
-                + "</div>"
-            )
-
-        overview = (
-            club.get("course_overview")
-            or
-            "상세 코스정보는 공식 홈페이지에서 "
-            "확인할 수 있습니다."
+    course_details = club.get("course_details") or []
+    if isinstance(course_details, dict):
+        course_details = (
+            course_details.get("courses")
+            or course_details.get("course_list")
+            or course_details.get("items")
+            or []
         )
+    if not isinstance(course_details, list):
+        course_details = []
 
-        st.caption(overview)
+    display_courses = course_details if course_details else (club.get("courses") or [])
+    course_cards = []
 
-        checked = club.get(
-            "data_checked"
-        )
-
-        if checked:
-            st.caption(
-                f"공식정보 확인 · {checked}"
-            )
+    for course in display_courses:
+        if isinstance(course, dict):
+            course_name = str(
+                course.get("name") or course.get("course_name") or course.get("course") or ""
+            ).strip()
+            course_holes = course.get("holes")
+            if isinstance(course_holes, list):
+                course_hole_count = len(course_holes)
+            else:
+                course_hole_count = course.get("hole_count") or course_holes
+            course_type = str(
+                course.get("type") or course.get("course_type") or course.get("description") or ""
+            ).strip()
+            title = course_name or "코스"
+            if course_hole_count:
+                title += f" · {course_hole_count}H"
         else:
-            st.caption(
-                "공식정보 최신 확인 필요"
+            title = str(course).strip()
+            course_type = ""
+
+        if title:
+            course_cards.append(
+                f"""
+                <div class="course">
+                    <b>{escape(title)}</b>
+                    <div class="sm">{escape(course_type)}</div>
+                </div>
+                """
             )
+
+    if course_cards:
+        st.html('<div class="courses">' + "".join(course_cards) + "</div>")
+    else:
+        st.caption("코스 구성 · 확인 가능한 상세정보가 아직 없습니다.")
+
+    hole_rows = []
+    for course in course_details:
+        if not isinstance(course, dict):
+            continue
+
+        cname = str(
+            course.get("name") or course.get("course_name") or course.get("course") or ""
+        ).strip()
+
+        holes_data = (
+            course.get("holes")
+            or course.get("hole_details")
+            or course.get("hole_info")
+            or []
+        )
+        if isinstance(holes_data, dict):
+            holes_data = holes_data.get("items") or holes_data.get("holes") or []
+        if not isinstance(holes_data, list):
+            continue
+
+        for idx, hole in enumerate(holes_data, start=1):
+            if not isinstance(hole, dict):
+                continue
+
+            hole_no = hole.get("hole") or hole.get("hole_no") or hole.get("number") or idx
+            par = hole.get("par")
+            hdcp = hole.get("hdcp") or hole.get("handicap") or hole.get("hcp")
+            distances = (
+                hole.get("distances_m")
+                or hole.get("distance_m")
+                or hole.get("distance")
+                or hole.get("length_m")
+            )
+
+            if isinstance(distances, dict):
+                dist_text = " / ".join(
+                    f"{k} {v}m" for k, v in distances.items() if v not in (None, "")
+                )
+            elif isinstance(distances, list):
+                dist_text = " / ".join(str(v) for v in distances if v not in (None, ""))
+            elif distances not in (None, ""):
+                dist_text = str(distances)
+                if re.fullmatch(r"\d+(?:\.\d+)?", dist_text):
+                    dist_text += "m"
+            else:
+                dist_text = ""
+
+            hazards = hole.get("hazards") or hole.get("hazard") or ""
+            bunkers = hole.get("bunkers") or hole.get("bunker") or ""
+            strategy = (
+                hole.get("official_strategy_summary")
+                or hole.get("strategy")
+                or hole.get("summary")
+                or ""
+            )
+
+            facts = []
+            if par not in (None, ""):
+                facts.append(f"Par {par}")
+            if dist_text:
+                facts.append(dist_text)
+            if hdcp not in (None, ""):
+                facts.append(f"HDCP {hdcp}")
+            if hazards:
+                facts.append("해저드 " + str(hazards))
+            if bunkers:
+                facts.append("벙커 " + str(bunkers))
+
+            hole_rows.append({
+                "course": cname,
+                "hole": str(hole_no),
+                "facts": " · ".join(facts),
+                "strategy": str(strategy).strip(),
+            })
+
+    if hole_rows:
+        st.markdown("#### 홀별 정보")
+        for row in hole_rows:
+            title = (
+                f"{row['course']} · {row['hole']}번 홀"
+                if row["course"] else f"{row['hole']}번 홀"
+            )
+            st.markdown(f"**{title}**")
+            if row["facts"]:
+                st.caption(row["facts"])
+            if row["strategy"]:
+                st.caption("공략 · " + row["strategy"])
+    else:
+        st.caption("홀별 Par · 거리 · HDCP · 공략 정보는 확인된 골프장부터 표시됩니다.")
+
+    overview = (
+        club.get("course_overview")
+        or "상세 코스정보는 공식 홈페이지에서 확인할 수 있습니다."
+    )
+    st.caption(overview)
+
+    checked = club.get("data_checked")
+    if checked:
+        st.caption(f"공식정보 확인 · {checked}")
+    else:
+        st.caption("공식정보 최신 확인 필요")
 
     # =====================================================
     # REVIEW
