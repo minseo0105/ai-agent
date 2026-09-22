@@ -187,67 +187,6 @@ def mobile_multi_choice(label, options, key, disabled=False, help_text=None):
 
 
 
-def _pricing_fee_for_session(club, round_date=None, session_name=None):
-    """정밀 DB의 pricing.fee_records에서 날짜/부에 맞는 그린피를 보수적으로 찾는다."""
-    pricing = club.get("pricing") or {}
-    records = pricing.get("fee_records") or []
-    if not isinstance(records, list):
-        return None
-    weekend = _date_is_weekend(round_date) if round_date else None
-    session_tokens = {
-        "1부": ("1부", "morning", "first"),
-        "2부": ("2부", "afternoon", "second"),
-        "3부": ("3부", "night", "evening", "third"),
-    }.get(session_name, ())
-    candidates = []
-    for row in records:
-        if not isinstance(row, dict):
-            continue
-        blob = " ".join(str(v) for v in row.values() if v is not None).lower()
-        if session_tokens and not any(t.lower() in blob for t in session_tokens):
-            continue
-        if weekend is not None:
-            day_blob = blob
-            if weekend and any(t in day_blob for t in ("평일", "weekday")) and not any(t in day_blob for t in ("주말", "weekend", "토", "일")):
-                continue
-            if not weekend and any(t in day_blob for t in ("주말", "weekend")) and not any(t in day_blob for t in ("평일", "weekday")):
-                continue
-        amount = None
-        for key in ("green_fee", "greenfee", "price", "amount", "fee", "min_price"):
-            raw = row.get(key)
-            if isinstance(raw, (int, float)) and raw > 0:
-                amount = int(raw); break
-            if isinstance(raw, str):
-                nums = re.findall(r"\d+", raw.replace(",", ""))
-                if nums:
-                    val = int(nums[0])
-                    if val > 0:
-                        amount = val; break
-        if amount:
-            candidates.append(amount)
-    return min(candidates) if candidates else None
-
-
-def _caddie_summary(club):
-    op = club.get("operations") or {}
-    caddie = op.get("caddie") if isinstance(op, dict) else None
-    text = " ".join(str(x) for x in (caddie, club.get("caddie_type"), club.get("caddie")) if x).strip()
-    low = text.lower()
-    if any(x in low for x in ("노캐디", "no caddie", "self")):
-        return "노캐디"
-    if text and any(x in low for x in ("캐디", "caddie")):
-        return "캐디"
-    return "확인 필요"
-
-
-def _matches_caddie(club, choice):
-    if choice in (None, "", "전체"):
-        return True
-    status = _caddie_summary(club)
-    # 미확인은 거짓으로 단정하지 않고 결과에 남긴다.
-    return status == "확인 필요" or status == choice
-
-
 # =========================================================
 # PAGE
 # =========================================================
@@ -762,7 +701,7 @@ def _condition_evidence(course, cond):
     if cond.get("areas") or (cond.get("area") not in (None, "", "전체")):
         confirmed.append("지역")
 
-    players = 4  # 요금 추정 기본값. 3인 플레이는 아래 객관조건에서 별도 판정.
+    players = 4  # 요금 추정 기본값. 2인/3인 플레이는 아래 객관조건에서 별도 판정.
 
     if cond.get("budget"):
         try:
@@ -1252,103 +1191,103 @@ with st.container(key="golf"):
                 else:
                     st.info("현재 Pool에서 일치하는 골프장을 찾지 못했습니다.")
 
-        # 2) 모바일 우선 조건 검색
+        # 2) 카테고리/상세조건 검색
         elif search_mode == "조건 검색":
-            st.markdown("#### 빠르게 조건 선택")
-            st.caption("필수는 하나만 선택 · 선택조건은 전체로 두어도 검색됩니다.")
+            area_options = ["수도권", "충청권", "강원권"]
+            selected_areas = mobile_multi_choice(
+                "권역",
+                area_options,
+                key="golf_area_multi",
+                help_text="복수 선택 가능 · 미선택 시 전국",
+            )
+            # 기존 추천함수 호환용. 복수 권역은 후단에서 필터링한다.
+            area = selected_areas[0] if len(selected_areas) == 1 else "전체"
 
-            departure = st.text_input(
-                "출발지 · 선택",
-                value=st.session_state.get("golf_departure", ""),
-                placeholder="예: 잠실역, 강동구",
-                key="golf_departure",
-                help="현재 DB에는 실시간 길찾기 API가 연결되지 않아 출발지는 검색조건 기록용입니다.",
+            # 세부권역은 단일 권역을 선택했을 때만 다중선택 가능
+            subregion_map = {
+                "수도권": ["서울", "인천", "경기남부", "경기북부"],
+                "충청권": ["충북", "충남"],
+                "강원권": ["강원영서", "강원영동"],
+            }
+
+            single_area = selected_areas[0] if len(selected_areas) == 1 else None
+            # 권역이 바뀌면 이전 세부권역 선택이 남지 않도록 정리
+            previous_single_area = st.session_state.get("golf_previous_single_area")
+            if previous_single_area != single_area:
+                st.session_state["golf_subregion_multi_values"] = []
+                st.session_state["golf_previous_single_area"] = single_area
+
+            detail_places = mobile_multi_choice(
+                "세부권역",
+                subregion_map.get(single_area, []),
+                key="golf_subregion_multi",
+                disabled=not bool(single_area),
+                help_text=(
+                    "여러 세부권역 선택 가능"
+                    if single_area
+                    else "권역을 여러 개 선택하면 세부권역은 전체로 적용됩니다."
+                ),
             )
 
-            c_date, c_session = st.columns([1.15, 1])
-            with c_date:
-                round_date = st.date_input(
-                    "라운드 날짜 · 선택",
-                    value=st.session_state.get("golf_round_date", date.today()),
-                    min_value=date.today(),
-                    key="golf_round_date",
-                )
-            with c_session:
-                session_name = st.segmented_control(
-                    "희망 시간대 · 필수",
-                    ["1부", "2부", "3부"],
-                    default=st.session_state.get("golf_session", "2부"),
-                    key="golf_session",
-                )
-
             budgets = {
-                "전체": None, "10만 이하": 100000, "15만 이하": 150000,
-                "20만 이하": 200000, "25만 이하": 250000, "30만 이하": 300000,
+                "제한 없음": None,
+                "15만원 이하": 150000,
+                "20만원 이하": 200000,
+                "25만원 이하": 250000,
+                "30만원 이하": 300000,
+                "40만원 이하": 400000,
             }
-            c_budget, c_caddie = st.columns(2)
+            # 모바일에서는 예산과 요일을 한 줄에 배치해 세로 스크롤을 줄인다.
+            c_budget, c_day = st.columns([1.05, 1])
             with c_budget:
-                budget_label = st.selectbox("그린피 · 선택", list(budgets), key="golf_budget_mobile")
-            with c_caddie:
-                caddie_choice = st.segmented_control(
-                    "캐디 · 선택", ["전체", "캐디", "노캐디"], default="전체", key="golf_caddie_mobile"
+                budget_label = st.selectbox(
+                    "1인 예상예산",
+                    list(budgets.keys()),
+                    label_visibility="collapsed",
+                )
+                st.caption("예산")
+            with c_day:
+                day_type = st.selectbox(
+                    "요일",
+                    ["주중", "주말/공휴일"],
+                    label_visibility="collapsed",
+                )
+                st.caption("요일")
+            is_weekend = day_type == "주말/공휴일"
+
+            st.markdown("##### 내 실력 · 원하는 난이도 <span style='font-size:.72rem;font-weight:500;opacity:.55'>선택사항</span>", unsafe_allow_html=True)
+            c_skill, c_challenge = st.columns(2)
+            with c_skill:
+                avg_score_label = st.selectbox(
+                    "내 평균타수",
+                    ["미선택", "80타대", "90타대", "100타대", "110타 이상"],
+                    index=0,
+                    key="golf_avg_score",
+                )
+            with c_challenge:
+                challenge = st.segmented_control(
+                    "원하는 난이도",
+                    ["편하게", "적당히", "도전"],
+                    default="적당히",
+                    key="golf_challenge",
+                )
+            avg_score = {
+                "80타대": 85,
+                "90타대": 95,
+                "100타대": 105,
+                "110타 이상": 115,
+            }.get(avg_score_label)
+
+            with st.expander("＋ 추가 조건 · 인원 / 연습장 / 야간", expanded=False):
+                objective_choice = mobile_multi_choice(
+                    "시설 · 운영 조건",
+                    ["2인 플레이", "3인 플레이", "9홀×2 라운드", "PAR3 연습장", "야외 연습장", "야간 라운드"],
+                    key="golf_objective_multi",
+                    help_text="필요한 조건만 선택하세요.",
                 )
 
-            is_weekend = _date_is_weekend(round_date) if round_date else False
-            area_options = ["수도권", "충청권", "강원권"]
-            selected_areas = []
-            detail_places = []
-            avg_score_label = "미선택"
-            avg_score = None
-            challenge = "적당히"
-            objective_choice = []
-            players_choice = "전체"
-
-            with st.expander("＋ 상세조건 · 지역 / 인원 / 야간 / 난이도", expanded=False):
-                selected_areas = mobile_multi_choice(
-                    "지역 · 선택", area_options, key="golf_area_multi",
-                    help_text="복수 선택 가능 · 미선택 시 전체 권역",
-                )
-                area = selected_areas[0] if len(selected_areas) == 1 else "전체"
-                subregion_map = {
-                    "수도권": ["서울", "인천", "경기남부", "경기북부"],
-                    "충청권": ["충북", "충남"],
-                    "강원권": ["강원영서", "강원영동"],
-                }
-                single_area = selected_areas[0] if len(selected_areas) == 1 else None
-                previous_single_area = st.session_state.get("golf_previous_single_area")
-                if previous_single_area != single_area:
-                    st.session_state["golf_subregion_multi_values"] = []
-                    st.session_state["golf_previous_single_area"] = single_area
-                detail_places = mobile_multi_choice(
-                    "세부지역 · 선택", subregion_map.get(single_area, []),
-                    key="golf_subregion_multi", disabled=not bool(single_area),
-                    help_text="권역 하나를 선택하면 세부지역을 고를 수 있습니다.",
-                )
-
-                players_choice = st.segmented_control(
-                    "인원 · 선택", ["전체", "3인", "4인"], default="전체", key="golf_players_mobile"
-                )
-                night_choice = st.toggle("야간 라운드만 보기", value=False, key="golf_night_mobile")
-                if players_choice == "3인":
-                    objective_choice.append("3인 플레이")
-                if night_choice:
-                    objective_choice.append("야간 라운드")
-
-                c_skill, c_challenge = st.columns(2)
-                with c_skill:
-                    avg_score_label = st.selectbox(
-                        "내 평균타수 · 선택", ["미선택", "80타대", "90타대", "100타대", "110타 이상"],
-                        index=0, key="golf_avg_score",
-                    )
-                with c_challenge:
-                    challenge = st.segmented_control(
-                        "난이도 · 선택", ["편하게", "적당히", "도전"], default="적당히", key="golf_challenge"
-                    )
-                avg_score = {"80타대":85,"90타대":95,"100타대":105,"110타 이상":115}.get(avg_score_label)
-
-            area = selected_areas[0] if len(selected_areas) == 1 else "전체"
             find_clicked = st.button(
-                "🔎 골프장 찾기",
+                "🔎 이 조건으로 찾기",
                 type="primary",
                 width="stretch",
                 key="golf_condition_find",
@@ -1367,13 +1306,10 @@ with st.container(key="golf"):
                     "city": None,
                     "subregions": detail_places,
                     "weekend": is_weekend,
-                    "round_date": round_date.isoformat() if round_date else None,
-                    "session": session_name,
-                    "departure": departure.strip(),
-                    "caddie": caddie_choice,
                     "budget": budgets[budget_label],
                     "objective_features": list(objective_choice),
-                    "players": 3 if players_choice == "3인" else 4,
+                    # 인원은 별도 상단 조건이 없다. 2인/3인은 objective_features에서 독립 판정한다.
+                    "players": 4,
                     "avg_score": avg_score,
                     "avg_score_label": avg_score_label,
                     "challenge": challenge or "적당히",
@@ -1404,9 +1340,6 @@ with st.container(key="golf"):
                 filtered = []
                 for club in search_clubs:
                     ok = True
-
-                    if not _matches_caddie(club, cond.get("caddie")):
-                        ok = False
 
                     # 예산:
                     # 금액이 확인된 곳만 상한을 적용하고, 금액 미확인 골프장은 남겨둔다.
@@ -1609,7 +1542,7 @@ with st.container(key="golf"):
                     for club in filtered
                 ]
                 st.session_state.golf_recs = st.session_state.golf_all_recs[:4]
-                st.session_state.golf_all_visible = 6
+                st.session_state.golf_all_visible = 10
                 st.session_state.golf_filter_trace = {
                     "total": total_count,
                     "area": area_count,
@@ -1693,7 +1626,7 @@ with st.container(key="golf"):
                     (club, ["문장 검색조건 충족"]) for club in filtered
                 ]
                 st.session_state.golf_recs = st.session_state.golf_all_recs[:4]
-                st.session_state.golf_all_visible = 6
+                st.session_state.golf_all_visible = 10
                 st.session_state.golf_rec_conditions = cond
                 st.session_state.golf_filter_trace = {
                     "total": total_count,
@@ -1733,15 +1666,6 @@ with st.container(key="golf"):
                     chips.append(" / ".join(cond["subregions"]))
                 elif cond.get("city"):
                     chips.append(str(cond["city"]))
-                if cond.get("round_date"):
-                    try:
-                        chips.append(_round_date_label(date.fromisoformat(cond["round_date"])))
-                    except Exception:
-                        pass
-                if cond.get("session"):
-                    chips.append(cond["session"])
-                if cond.get("caddie") and cond.get("caddie") != "전체":
-                    chips.append(cond["caddie"])
                 chips.append(daytxt)
                 if cond.get("budget"):
                     chips.append(f'{cond["budget"] // 10000}만원 이하')
@@ -1819,22 +1743,14 @@ with st.container(key="golf"):
                 facts = []
                 result_holes_text, _ = _holes_display(course)
                 facts.append(result_holes_text)
-                round_d = None
-                if cond and cond.get("round_date"):
-                    try:
-                        round_d = date.fromisoformat(cond["round_date"])
-                    except Exception:
-                        pass
-                session_fee = _pricing_fee_for_session(course, round_d, (cond or {}).get("session"))
-                if session_fee is not None:
-                    facts.append(f"{(cond or {}).get('session','')} 그린피 {won(session_fee)}")
-                elif est is not None:
+                if est is not None:
                     facts.append(f"예상 1인 {won(est)}")
-                else:
+                elif cond and cond.get("budget"):
                     facts.append("요금 확인 필요")
-                facts.append(f"캐디 {_caddie_summary(course)}")
 
                 selected_features = (cond or {}).get("objective_features", [])
+                if "2인 플레이" in selected_features:
+                    facts.append(f"2인 {_objective_display(course, '2인 플레이')}")
                 if "3인 플레이" in selected_features:
                     facts.append(f"3인 {_objective_display(course, '3인 플레이')}")
 
@@ -1880,10 +1796,10 @@ with st.container(key="golf"):
             st.markdown(f"#### 전체 검색결과 {len(all_items)}개")
             st.caption("추천 TOP 외에도 검색조건에 맞는 골프장을 모두 볼 수 있습니다. 미확인 정보는 숨기지 않고 표시합니다.")
 
-            filter_choice = st.segmented_control(
+            filter_choice = st.radio(
                 "결과 보기",
                 ["전체", "조건확인", "확인필요"],
-                default="전체",
+                horizontal=True,
                 key="golf_v8_result_filter",
                 label_visibility="collapsed",
             )
@@ -1894,8 +1810,8 @@ with st.container(key="golf"):
             else:
                 visible_items = all_items
 
-            visible_count = int(st.session_state.get("golf_all_visible", 6))
-            visible_count = max(6, visible_count)
+            visible_count = int(st.session_state.get("golf_all_visible", 10))
+            visible_count = max(10, visible_count)
             shown_items = visible_items[:visible_count]
 
             st.caption(f"{filter_choice} {len(visible_items)}개 중 {len(shown_items)}개 표시")
@@ -1904,11 +1820,11 @@ with st.container(key="golf"):
 
             if len(shown_items) < len(visible_items):
                 if st.button(
-                    f"6개 더보기 · 남은 {len(visible_items) - len(shown_items)}개",
+                    f"10개 더보기 · 남은 {len(visible_items) - len(shown_items)}개",
                     key="golf_v8_more",
                     width="stretch",
                 ):
-                    st.session_state.golf_all_visible = visible_count + 6
+                    st.session_state.golf_all_visible = visible_count + 10
                     st.rerun()
 
         elif st.session_state.get("golf_rec_conditions"):
