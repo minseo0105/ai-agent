@@ -27,7 +27,7 @@ API 키는 지금처럼 `.streamlit/secrets.toml`에서 읽습니다.
 | 골프장 추천 | ✅ Next.js 완료 (`/golf`, `/api/golf/*`) · Pool 관리(VWorld 갱신)는 Streamlit에 남음 |
 | 내차에서 드림카까지 | ⏳ |
 | 부동산 모니터 | ✅ Next.js 완료 (`/realestate`, `/api/realestate/*`) |
-| 보고서 작성기 | ⏳ |
+| 보고서 작성기 | ✅ Next.js 완료 (`/report`, `/api/report/*`) |
 | AI 사주 | ⏳ |
 | 차량 선택기 · GIF 변환기 | ⏳ |
 

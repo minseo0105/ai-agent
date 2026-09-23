@@ -15,12 +15,14 @@ from pydantic import BaseModel, Field
 
 from api.golf import router as golf_router
 from api.realestate import router as realestate_router
+from api.report import router as report_router
 from services.agent import PROVIDERS, SEARCH_MODES, run_agent
 from services.config import get_secret
 
 app = FastAPI(title="AI Lab API", version="0.1.0")
 app.include_router(golf_router)
 app.include_router(realestate_router)
+app.include_router(report_router)
 
 # 프론트엔드 주소. 배포 시 FRONTEND_ORIGINS="https://my-site.vercel.app" 처럼 쉼표로 지정
 _origins = os.environ.get("FRONTEND_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")

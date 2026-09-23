@@ -316,9 +316,15 @@ def _tool_event(name, tool_input):
 # ==========================================
 # 모델 루프 (진행 이벤트 generator)
 # ==========================================
-def _limits(search_mode, quick_tokens):
+# Claude Sonnet 5 / GPT-5.x 모두 생각(추론) 토큰이 출력 한도에 포함된다.
+# 한도가 낮으면 답변이 잘리므로 넉넉히 둔다(실제 사용한 만큼만 과금).
+MAX_OUTPUT_TOKENS = 16000
+TRUNCATED_NOTE = "\n\n※ 응답 길이 한도에 도달해 답변이 잘렸을 수 있어요."
+
+
+def _limits(search_mode, quick_tokens=None):
     deep = search_mode == "심층 검색"
-    return (3000 if deep else quick_tokens), (5 if deep else 4)
+    return MAX_OUTPUT_TOKENS, (5 if deep else 4)
 
 
 def _run_claude(messages, search_mode):
@@ -354,7 +360,9 @@ def _run_claude(messages, search_mode):
                 model=CLAUDE_MODEL, max_tokens=answer_tokens, tools=TOOLS, messages=messages,
             )
 
-        text = next((b.text for b in response.content if b.type == "text"), "")
+        text = "\n".join(b.text for b in response.content if b.type == "text").strip()
+        if response.stop_reason == "max_tokens":
+            text += TRUNCATED_NOTE
         yield {"type": "answer", "text": text or "응답을 생성하지 못했어요."}
 
     except Exception as e:

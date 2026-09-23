@@ -43,7 +43,7 @@ export const SERVICES: Service[] = [
     icon: "📄",
     title: "보고서 작성기",
     desc: "업무 내용을 경영진 보고 구조로 정리합니다.",
-    streamlitPath: "보고서_작성기",
+    href: "/report",
   },
   {
     id: "saju",
