@@ -48,6 +48,14 @@ jobs:
             echo "::error::GitHub Secrets에 ANTHROPIC_API_KEY를 등록해 주세요 (Settings → Secrets and variables → Actions)."
             exit 1
           fi
+          # 키 형식만 확인 (값은 출력하지 않음): 앞뒤 공백/따옴표/줄바꿈이 섞이면 401이 난다
+          case "$ANTHROPIC_API_KEY" in
+            sk-ant-*) ;;
+            *) echo "::error::ANTHROPIC_API_KEY는 'sk-ant-'로 시작해야 합니다. 앞뒤 공백·따옴표 없이 다시 등록해 주세요."; exit 1 ;;
+          esac
+          if printf '%s' "$ANTHROPIC_API_KEY" | grep -q '[[:space:]"]'; then
+            echo "::error::ANTHROPIC_API_KEY에 공백·줄바꿈·따옴표가 섞여 있습니다. 키 값만 다시 등록해 주세요."; exit 1
+          fi
 
       - name: Run quarterly refresh
         run: |
@@ -67,6 +75,7 @@ jobs:
           if [ -n "$REPORT" ]; then cat "$REPORT" >> "$GITHUB_STEP_SUMMARY"; fi
 
       - name: Commit updated DB and report
+        if: github.event.inputs.dry_run != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

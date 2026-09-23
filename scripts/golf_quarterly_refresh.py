@@ -81,6 +81,16 @@ def main():
     report, cost = write_report(review_path, applied)
     print(f"[quarterly] 반영 {applied['changed']}곳 · 추정 비용 ${cost:.2f} · 보고서 {report}", flush=True)
 
+    # API 키 오류이거나 전부 실패하면 워크플로가 '실패'로 보이도록 종료 코드 1
+    results = json.loads(Path(review_path).read_text(encoding="utf-8"))["results"]
+    errors = [r.get("error", "") for r in results if r["status"] == "error"]
+    if any("AuthenticationError" in e or "authentication_error" in e for e in errors):
+        print("[quarterly] ANTHROPIC_API_KEY가 유효하지 않습니다. GitHub Secrets 값을 확인하세요.", flush=True)
+        sys.exit(1)
+    if results and all(r["status"] != "pending_review" for r in results):
+        print("[quarterly] 모든 골프장 수집이 실패했습니다.", flush=True)
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     OUT_DIR.mkdir(parents=True, exist_ok=True)
