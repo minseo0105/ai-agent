@@ -29,7 +29,7 @@ export const SERVICES: Service[] = [
     icon: "🚙",
     title: "내차에서 드림카까지",
     desc: "내 차 시세를 확인하고 다음 차량을 탐색·추천받습니다.",
-    streamlitPath: "내차에서_드림카까지",
+    href: "/dreamcar",
   },
   {
     id: "realestate",
