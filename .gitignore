@@ -10,6 +10,18 @@ __pycache__/
 *.py[cod]
 *.bak
 
+# Retired scripts, intermediate pipeline outputs and backups (kept locally only).
+_archive/
+
+# Next.js frontend build output and dependencies.
+web/node_modules/
+web/.next/
+web/.env.local
+
+# Golf DB backups and local run logs (the DB itself and review reports are versioned).
+data/golf/backups/
+data/golf/enrichment_review/logs/
+
 # Golf runtime cache / live reports; reviewed seed data is versioned separately.
 data/golf/runtime/
 

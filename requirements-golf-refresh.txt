@@ -1,0 +1,8 @@
+# 골프 DB 분기 갱신(scripts/golf_quarterly_refresh.py) 전용 의존성 — GitHub Actions에서 사용
+anthropic==1.0.0
+openai==3.13.0
+requests==2.34.2
+beautifulsoup4==4.15.0
+lxml==6.1.3
+pydantic==2.13.5
+playwright==1.63.0

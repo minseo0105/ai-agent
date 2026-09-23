@@ -36,11 +36,24 @@ def _date(value, text=""):
     m = re.search(r"\b(20(?:2[1-9]|3[0-9]))[.\-/년 ]\s*(0?[1-9]|1[0-2])[.\-/월 ]\s*(0?[1-9]|[12][0-9]|3[01])", text[:5000])
     return f"{int(m.group(1)):04d}{int(m.group(2)):02d}{int(m.group(3)):02d}" if m else ""
 
+NAME_SUFFIX = re.compile(r"(컨트리클럽|골프클럽|골프리조트|골프장|퍼블릭|클럽|cc|gc|c\.c\.?|g\.c\.?)$", re.I)
+
+def _name_keys(club_name):
+    """공백 제거한 전체 이름 + 'CC/컨트리클럽' 등을 뗀 핵심 이름(3글자 이상일 때만)."""
+    full = re.sub(r"\s+", "", club_name or "").lower()
+    core = full
+    while True:
+        stripped = NAME_SUFFIX.sub("", core)
+        if stripped == core: break
+        core = stripped
+    return {full, core} if len(core) >= 3 else {full}
+
 def _usable(url, title, content, club_name):
     host = (urlsplit(url).hostname or "").lower()
     if any(x in host for x in BLOCKED_HOSTS): return False
     sample = f"{title} {content[:5000]}"
-    if re.sub(r"\\s+","",club_name).lower() not in re.sub(r"\\s+","",sample).lower() or not ROUND.search(sample): return False
+    compact = re.sub(r"\s+", "", sample).lower()
+    if not any(k in compact for k in _name_keys(club_name)) or not ROUND.search(sample): return False
     if BAD.search(sample) and not re.search(r"(라운딩|라운드).{0,16}(후기|리뷰)|(?:후기|리뷰).{0,16}(라운딩|라운드)", title, re.I):
         return False
     return True
