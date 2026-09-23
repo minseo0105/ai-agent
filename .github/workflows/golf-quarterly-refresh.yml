@@ -2,6 +2,8 @@ name: Golf DB quarterly refresh
 
 # 분기마다 골프장 공식 홈페이지를 다시 읽어 요금·캐디/카트비를 갱신하고 결과를 커밋한다.
 # 매년 1·4·7·10월 1일 18:00 UTC (= 한국시간 2일 03:00). 수동 실행은 Actions 탭 → Run workflow.
+# 2026-09-23 전체 수집을 마쳤으므로 2026년 10월 예약 실행은 건너뛰고 2027년 1월부터 자동 실행한다
+# (아래 SCHEDULE_START_DATE. 수동 실행은 날짜와 관계없이 항상 동작).
 on:
   schedule:
     - cron: "0 18 1 1,4,7,10 *"
@@ -21,8 +23,28 @@ concurrency:
   group: golf-quarterly-refresh
   cancel-in-progress: false
 
+env:
+  SCHEDULE_START_DATE: "2027-01-01"
+
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - id: check
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          if [ "${{ github.event_name }}" = "schedule" ] && [[ "$TODAY" < "$SCHEDULE_START_DATE" ]]; then
+            echo "예약 실행 시작일($SCHEDULE_START_DATE) 전이라 이번 분기는 건너뜁니다."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
   refresh:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
