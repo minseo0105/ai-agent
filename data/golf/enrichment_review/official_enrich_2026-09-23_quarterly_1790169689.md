@@ -1,0 +1,142 @@
+# 골프 DB 분기 갱신 보고서 · 2026-09-23
+
+- 대상 131곳 · 수집 성공 130곳 · 실패 1곳
+- DB 반영 61곳 · 확인 필요 47곳
+- DB 파일: golf_master_precision_checkpoint_2026-09-23_filled.json · 백업: golf_master_precision_checkpoint_2026-09-23_filled_before_review_20260923_223654.json
+- 모델 claude-opus-5 · 토큰 입력 1,952,548 / 출력 207,687 · 추정 비용 $14.95
+- 수집 원본: official_enrich_2026-09-23_quarterly_1790169689.json
+
+## 반영된 변경
+- 우정힐스 컨트리클럽: green_fee x2, caddie_fee, cart_fee
+- 일동레이크 골프클럽: cart_fee
+- 잭 니클라우스 골프클럽 코리아: green_fee x2, caddie_fee, cart_fee
+- 지산 컨트리클럽: caddie_mode
+- 자유 컨트리클럽: green_fee x2, caddie_fee
+- 캐슬렉스 서울 골프클럽: cart_fee
+- 킹즈락 컨트리클럽: night_round
+- 천안상록 컨트리클럽: green_fee x2
+- 코리아컨트리클럽: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 한성컨트리클럽: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 서울·한양컨트리클럽: caddie_fee, cart_fee
+- 하이원 컨트리클럽: caddie_fee, cart_fee
+- 레이크사이드 컨트리클럽: green_fee x2, caddie_mode
+- 라비에벨CC: green_fee x12, caddie_fee, cart_fee
+- 골든베이 골프&리조트: caddie_fee
+- 포도 컨트리클럽: night_round
+- THE EMERSON GoldClub: cart_fee
+- 가평베네스트 골프클럽: caddie_fee
+- 글렌로스골프클럽: caddie_fee, cart_fee
+- 김포SEASIDE컨트리클럽: caddie_fee, cart_fee
+- 도고 컨트리클럽: caddie_fee, cart_fee, caddie_mode
+- 더스타 휴 골프장: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 더힐 컨트리클럽: caddie_fee, cart_fee, caddie_mode, night_round
+- 동서울레스피아CC: caddie_fee, cart_fee, caddie_mode
+- 대호단양 컨트리클럽: caddie_fee, cart_fee
+- 청주떼제베: caddie_fee, cart_fee
+- 동촌골프클럽: caddie_fee, cart_fee, caddie_mode
+- 로드힐스 골프&리조트: caddie_fee, cart_fee
+- 드림파크골프장: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 리앤리CC: green_fee x2, caddie_fee, cart_fee
+- 마에스트로 컨트리클럽: caddie_fee, cart_fee
+- 베스트밸리골프클럽: caddie_fee, cart_fee, night_round
+- 서서울 컨트리클럽: green_fee x2, caddie_mode
+- 석천CC: caddie_fee, cart_fee
+- 섬강벨라스톤: caddie_fee, cart_fee, caddie_mode
+- 메이플비치 골프&리조트: green_fee x2 (갱신), night_round
+- 솔트베이(대중): caddie_fee, cart_fee, caddie_mode, night_round
+- 세종레이캐슬GC: green_fee x2, caddie_fee, cart_fee
+- 스프링베일 골프클럽: cart_fee, caddie_mode
+- 안양컨트리클럽: green_fee x2, caddie_fee, cart_fee
+- 알펜시아 700 G.C: caddie_fee, caddie_mode
+- 에딘버러 컨트리클럽: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 오너스 골프클럽: caddie_fee, cart_fee, caddie_mode
+- 우정힐스 컨트리클럽: green_fee x2, caddie_fee, cart_fee
+- 올림픽CC: caddie_fee, cart_fee
+- 호텔인터불고 원주 골프클럽: cart_fee, night_round
+- 이븐데일: caddie_fee, caddie_mode, night_round
+- 인천국제C.C: green_fee x2, caddie_fee
+- 잭니클라우스 골프클럽 코리아: caddie_fee
+- 천룡컨트리클럽: green_fee x5, caddie_fee, cart_fee, caddie_mode
+- 타이거CC: cart_fee
+- 캐슬파인GC: caddie_fee, cart_fee, caddie_mode, night_round
+- 파크밸리 골프클럽: caddie_fee, cart_fee
+- 파인스톤컨트리클럽: caddie_fee, cart_fee, caddie_mode, night_round
+- 파주프리스틴밸리: caddie_fee, cart_fee
+- 포레스트힐 컨트리클럽: caddie_fee, cart_fee
+- 포천힐스 컨트리클럽: night_round
+- 한탄강 컨트리클럽: caddie_fee, cart_fee, caddie_mode
+- 해솔리아CC: caddie_fee, cart_fee
+- 휘슬링락CC: green_fee x2, caddie_fee, caddie_mode
+- 힐드로사이 컨트리클럽: caddie_fee, cart_fee, caddie_mode
+
+## 확인 필요 (정밀 DB 값과 공식 홈페이지 값이 다름 · 덮어쓰지 않음)
+- 유성 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 185,000', 'weekend all 235,000'] · https://www.yscc.co.kr/guide/charge.asp
+- 은화삼 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 210,000', 'weekend all 260,000'] · https://ehscc.co.kr/Guide/Fee
+- 은화삼 컨트리클럽 · two_person: DB=unknown / 홈페이지=False · https://ehscc.co.kr/Guide/OnlineInfo
+- 은화삼 컨트리클럽 · three_person: DB=unknown / 홈페이지=False · https://ehscc.co.kr/Guide/OnlineInfo
+- 이스트밸리 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 240,000'] · https://www.eastvalley.co.kr/pagesite/use/charge.asp
+- 지산 컨트리클럽 · two_person: DB=unknown / 홈페이지=True · https://www.jisanresort.co.kr/w/reservation/golfResv/public_reserv01.asp
+- 지산 컨트리클럽 · three_person: DB=unknown / 홈페이지=True · https://www.jisanresort.co.kr/w/reservation/golfResv/public_reserv01.asp
+- 캐슬렉스 서울 골프클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 280,000'] · https://www.castlexseoul.com/html/guide/guide04.asp
+- 한원 컨트리클럽 · two_person: DB=unknown / 홈페이지=False · https://www.hanwoncc.co.kr/use/useinfo.asp
+- 한원 컨트리클럽 · three_person: DB=unknown / 홈페이지=True · https://www.hanwoncc.co.kr/use/useinfo.asp
+- 서울·한양컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 280,000'] · https://www.seoulcc.co.kr/guide/fee.asp
+- 서울·한양컨트리클럽 · two_person: DB=unknown / 홈페이지=False · https://www.seoulcc.co.kr/guide/reserGuide.asp
+- 화성상록 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 170,000', 'weekend all 220,000'] · https://www.sangnokresort.co.kr/M050201
+- 레이크사이드 컨트리클럽 · two_person: DB=미확인 / 홈페이지=False · https://www.lakesidecc.co.kr/club/guide_1.do
+- 레이크사이드 컨트리클럽 · three_person: DB=미확인 / 홈페이지=False · https://www.lakesidecc.co.kr/club/guide_1.do
+- 레인보우힐스CC · two_person: DB=미확인 / 홈페이지=False · https://www.rainbowhills.co.kr/pagesite/use/guide.asp
+- 골든베이 골프&리조트 · three_person: DB=미확인 / 홈페이지=True · https://www.goldenbay.kr/about/guide.asp
+- THE EMERSON GoldClub · two_person: DB=미확인 / 홈페이지=True · https://www.sejongemerson.co.kr/reservation/member_guide.asp
+- THE EMERSON GoldClub · three_person: DB=미확인 / 홈페이지=True · https://www.sejongemerson.co.kr/reservation/member_guide.asp
+- 가평베네스트 골프클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 250,000', 'weekend all 310,000'] · https://www.benestgolf.com/reve/pc/gp-club-info/green-fee.do
+- 김포SEASIDE컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 220,000'] · https://www.gimpocc.co.kr/Guide/Fees.aspx
+- 김포SEASIDE컨트리클럽 · two_person: DB=미확인 / 홈페이지=False · https://www.gimpocc.co.kr/Guide/ReservationGuide.aspx
+- 김포SEASIDE컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.gimpocc.co.kr/Guide/ReservationGuide.aspx
+- 도고 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.dogocc.co.kr/Guide/Fee
+- 더스타 휴 골프장 · two_person: DB=미확인 / 홈페이지=True · https://www.thestarhue.com/sginfo.asp
+- 더힐 컨트리클럽 · two_person: DB=미확인 / 홈페이지=True · https://www.thehill.co.kr/Guide/Fees.aspx
+- 더힐 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.thehill.co.kr/Guide/Fees.aspx
+- 동서울레스피아CC · two_person: DB=미확인 / 홈페이지=True · https://dongseoulcc.kr/guide/guide02
+- 대호단양 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.daehocc.co.kr/GolfRes/onepage/real_reservation.asp#pointdate=20260923&courseid=0&openyn=1&dategbn=4&choice_time=0&settype=T&prevDate=202608&nowDate=202609&nextDate=202610
+- 청주떼제베 · two_person: DB=미확인 / 홈페이지=False · https://www.alldaygolf.co.kr/reservation/reserGuide.asp
+- 청주떼제베 · three_person: DB=미확인 / 홈페이지=True · https://www.alldaygolf.co.kr/reservation/reserGuide.asp
+- 동촌골프클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.dongchongc.co.kr:442/Guide/Fee
+- 로드힐스 골프&리조트 · three_person: DB=미확인 / 홈페이지=True · https://lordhills.co.kr/use/reservation.asp
+- 드림파크골프장 · two_person: DB=미확인 / 홈페이지=True · https://www.dreamparkcc.or.kr/05guide/guide01.asp
+- 베스트밸리골프클럽 · two_person: DB=unknown / 홈페이지=True · https://www.bestvalleygc.com/Reservation/ReservCalendar
+- 서서울 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.seoseoul.co.kr/html/guide/guide_02.asp
+- 섬강벨라스톤 · two_person: DB=미확인 / 홈페이지=False · https://www.bellastonecc.com/stone/swp/use_guide
+- 세종레이캐슬GC · three_person: DB=미확인 / 홈페이지=True · https://www.sjraycastle.com/Golf/Use/ChargeInfo.aspx
+- 신라CC · three_person: DB=미확인 / 홈페이지=True · https://www.onetheclub.com/shilla/charge
+- 스프링베일 골프클럽 · two_person: DB=미확인 / 홈페이지=True · https://www.springvale.co.kr/02guide/03charge.asp
+- 스프링베일 골프클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.springvale.co.kr/02guide/01guide.asp
+- 신원 컨트리클럽 · two_person: DB=unknown / 홈페이지=True · https://www.swcc.co.kr/swp/use_guide
+- 신원 컨트리클럽 · three_person: DB=unknown / 홈페이지=True · https://www.swcc.co.kr/swp/use_guide
+- 안성CC · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 220,000', 'weekend all 280,000'] · https://www.ansungcc.co.kr/Guide/Fees.aspx
+- 알펜시아 700 G.C · two_person: DB=미확인 / 홈페이지=False · https://www.alpensia.com/golf/gc700/use-info.do
+- 아시아나 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 290,000', 'weekday all 240,000', 'weekend all 300,000'] · https://www.asianacc.co.kr/about_us/fee.asp
+- 오너스 골프클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.ownersgc.co.kr/html/news/news_03_01.asp
+- 인서울27골프클럽(주) · three_person: DB=미확인 / 홈페이지=True · https://inseoul27.co.kr/m65.php
+- 올림픽CC · two_person: DB=미확인 / 홈페이지=True · https://www.olympicgolf.co.kr/reservation/information
+- 올림픽CC · three_person: DB=미확인 / 홈페이지=True · https://www.olympicgolf.co.kr/reservation/information
+- 중원골프클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.joongwongolf.co.kr/booking/real-time
+- 크리스탈밸리 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 290,000'] · https://www.crystalvalley.co.kr/html/guide/guide03.asp
+- 캐슬파인GC · two_person: DB=미확인 / 홈페이지=False · https://www.castlepine.co.kr/pagesite/use/reservation.asp
+- 캐슬파인GC · three_person: DB=미확인 / 홈페이지=True · https://www.castlepine.co.kr/pagesite/use/reservation.asp
+- 파크밸리 골프클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.parkvalley.co.kr/Guide/ChargeInfo.aspx
+- 파인스톤컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.pinestonecc.com/info/price
+- 파주프리스틴밸리 · three_person: DB=미확인 / 홈페이지=True · https://www.npcc.co.kr/reservation/reservation.asp
+- 한탄강 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://new.hantancc.co.kr/m44.php
+- 필로스 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 210,000', 'weekend all 280,000'] · https://www.philosgc.com/Guide/Fees.aspx
+- 필로스 · three_person: DB=미확인 / 홈페이지=True · https://www.philosgc.com/Guide/Fees.aspx
+- 화성골프클럽 · caddie_fee: DB=80000 / 홈페이지=150000 · https://www.hwaseonggc.com/reservation/fee.asp
+- 화성골프클럽 · cart_fee: DB=50000 / 홈페이지=100000 · https://www.hwaseonggc.com/reservation/fee.asp
+- 해솔리아CC · two_person: DB=미확인 / 홈페이지=False · https://www.haesoliacc.co.kr/guide/guide.asp
+- 해솔리아CC · three_person: DB=미확인 / 홈페이지=False · https://www.haesoliacc.co.kr/guide/guide.asp
+- 힐드로사이 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 199,000', 'weekend all 259,000'] · https://www.hilldeloci.co.kr/guide/fee
+- 힐드로사이 컨트리클럽 · two_person: DB=미확인 / 홈페이지=True · https://www.hilldeloci.co.kr/guide/fee
+- 힐드로사이 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.hilldeloci.co.kr/guide/fee
+
+## 수집 실패
+- 아리지CC (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
