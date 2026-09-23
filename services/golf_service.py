@@ -8,6 +8,7 @@ import json
 import math
 import re
 import time
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from functools import wraps
@@ -23,6 +24,7 @@ from services.golf_master import (
     get_objective_detail,
     get_objective_status,
     is_round_eligible,
+    known_holes,
     normalize_operation_type,
     objective_filter_value,
 )
@@ -947,6 +949,24 @@ def _apply_official_players(club):
         club["_golf_runtime"] = runtime
 
 
+def _apply_official_night(club):
+    """operations.night(공식 홈페이지 확인)를 이용조건 '야간 라운드'에 반영한다."""
+    night = (club.get("operations") or {}).get("night")
+    if not isinstance(night, dict) or night.get("available") is not True or not night.get("source_url"):
+        return
+    runtime = dict(club.get("_golf_runtime") or {})
+    features = dict(runtime.get("features") or {})
+    if (features.get("night_round") or {}).get("status") == "confirmed":
+        return
+    features["night_round"] = dict(
+        status="confirmed", label="확인됨", verification_class="OFFICIAL_SOURCE",
+        checked_at=night.get("checked_at"), sources=[night["source_url"]],
+        condition_notes=[str(night["condition"])] if night.get("condition") else [], conflict=False,
+    )
+    runtime["features"] = features
+    club["_golf_runtime"] = runtime
+
+
 _db_mtime = {}
 
 
@@ -964,19 +984,63 @@ def _refresh_if_db_changed():
     _db_mtime.update(path=path, mtime=mtime)
 
 
+_RESTRICTED_NAME = re.compile(r"체력단련장|군\s*골프|공군|육군|해군|비행단|사령부")
+
+
+def _identity(club):
+    return club.get("identity_resolution") or {}
+
+
+def _public_operating(club):
+    public = ((club.get("verification") or {}).get("public_data") or {})
+    return public.get("matched") is True and public.get("operating_in_public_data") is True
+
+
+def _hard_excluded(club):
+    """어디에도 보여주지 않을 레코드: 중복·폐업·대상 외."""
+    ident = _identity(club)
+    public = ((club.get("verification") or {}).get("public_data") or {})
+    if club.get("duplicate_of") or ident.get("duplicate_of_id"):
+        return True
+    if ident.get("operating") == "closed" or ident.get("is_golf_course") is False:
+        return True
+    if public.get("matched") and public.get("operating_in_public_data") is False:
+        return True
+    # 18홀 미만이라 excluded가 된 영업 중 코스(9홀 등)는 살린다.
+    return club.get("service_status") == "excluded" and not _public_operating(club)
+
+
+def _playable(club):
+    """9홀 이상 정규 코스(9홀 코스 포함). 홀 수를 모르면 허용."""
+    if club.get("entity_type") == "short_course_golf_facility":
+        return False
+    holes = known_holes(club)
+    return holes is None or holes >= 9
+
+
+def _restricted(club):
+    return bool(_RESTRICTED_NAME.search(str(club.get("name") or ""))) or \
+        _identity(club).get("public_access") in ("military", "member_only")
+
+
+def _in_pool(club):
+    """조건/AI 검색 대상: 3권역 · 일반 이용 가능 · 영업 근거(서비스/공공데이터/웹 신원확인)."""
+    if club.get("area") not in SUPPORTED_GOLF_AREAS or _hard_excluded(club) or not _playable(club) or _restricted(club):
+        return False
+    ident = _identity(club)
+    return (club.get("service_status") == "service" or _public_operating(club)
+            or (ident.get("operating") == "operating" and ident.get("is_golf_course") is True))
+
+
 def load_pools():
     """(전체 원장, 직접검색 Pool, 조건/AI 검색 Pool)"""
     _refresh_if_db_changed()
     all_clubs = load_service_catalog()
     for club in all_clubs:
         _apply_official_players(club)
-    clubs = [c for c in all_clubs if c["service_status"] != "excluded" and _eligible_round_course(c)]
-    condition_search_clubs = [
-        c for c in all_clubs
-        if c.get("area") in SUPPORTED_GOLF_AREAS
-        and (c.get("service_status") == "service" or _public_operating_candidate(c))
-        and _eligible_round_course(c)
-    ]
+        _apply_official_night(club)
+    clubs = [c for c in all_clubs if not _hard_excluded(c) and _playable(c)]
+    condition_search_clubs = [c for c in all_clubs if _in_pool(c)]
     return all_clubs, clubs, condition_search_clubs
 
 
@@ -993,17 +1057,37 @@ def search_options():
         "avg_scores": ["미선택", *AVG_SCORES],
         "challenges": CHALLENGES,
         "sorts": SORTS,
-        "counts": {"all": len(all_clubs), "searchable": len(clubs), "pool": len(pool)},
+        "counts": {"all": len(all_clubs), "searchable": len(clubs), "pool": len(pool),
+                   "by_area": {a: sum(1 for c in pool if c.get("area") == a) for a in AREA_OPTIONS}},
+        # 조건별로 데이터가 확인된 골프장 수 (화면에서 '데이터 준비 중' 안내에 사용)
+        "data_coverage": {
+            "night": sum(1 for c in pool if get_objective_status(c, "야간 라운드") == "confirmed"),
+            "three_person": sum(1 for c in pool if _player_status(c, 3) is not None),
+            "caddie": sum(1 for c in pool if _caddie_summary(c) != "확인 필요"),
+            "green_fee": sum(1 for c in pool if fee_summary(c)),
+        },
         "runtime_ok": runtime.get("diagnostic") in ("ok", "disabled"),
         "naver_enabled": all(_naver_keys()),
     }
 
 
 def find_by_name(query, limit=20):
+    """이름·별칭·도시·주소로 찾는다. find_clubs 결과에 9홀 코스·별칭 일치를 보강."""
     _, clubs, _ = load_pools()
+    found = list(find_clubs(query, clubs) or [])
+    q = re.sub(r"\s+", "", str(query or "")).lower()
+    seen = {c["id"] for c in found}
+    for c in clubs:
+        if c["id"] in seen or not q:
+            continue
+        hay = " ".join(str(x) for x in [c.get("name"), c.get("official_name"), c.get("city"), c.get("address"),
+                                        *(c.get("aliases") or [])])
+        if q in re.sub(r"\s+", "", hay).lower():
+            found.append(c)
+            seen.add(c["id"])
     return [
         {"id": x["id"], "name": x["name"], "region": x.get("region", ""), "city": x.get("city", "")}
-        for x in (find_clubs(query, clubs) or [])[:limit]
+        for x in found[:limit]
     ]
 
 
@@ -1056,6 +1140,8 @@ def build_condition(params):
         "avg_score": AVG_SCORES.get(avg_score_label),
         "avg_score_label": avg_score_label,
         "challenge": params.get("challenge") or "적당히",
+        "night": bool(params.get("night")),
+        "include_unknown": bool(params.get("include_unknown")),
     }
 
     status = None
@@ -1196,6 +1282,11 @@ def _recommendation_score(club, cond):
 
 def condition_search(params, sort="추천순"):
     cond, departure_status = build_condition(params)
+    return _run_search(cond, sort, departure_status)
+
+
+def _run_search(cond, sort="추천순", departure_status=None, city=None):
+    """조건 검색과 AI 문장검색이 공유하는 검색 엔진."""
     _, _, pool = load_pools()
 
     total_count = len(pool)
@@ -1206,6 +1297,10 @@ def condition_search(params, sort="추천순"):
 
     if cond["subregions"]:
         search_clubs = [c for c in search_clubs if any(_subregion_match(c, sub) for sub in cond["subregions"])]
+    if city:
+        # 도시명: city/address/name에 실제 문자열이 있는 레코드만
+        search_clubs = [c for c in search_clubs
+                        if city in " ".join(str(c.get(k) or "") for k in ("city", "address", "name", "subregion"))]
     subregion_count = len(search_clubs)
 
     # 추가조건은 정보가 확인된 레코드에 대해서만 판정한다. 정보가 없으면 '충족'으로 추정하지 않는다.
@@ -1227,11 +1322,17 @@ def condition_search(params, sort="추천순"):
         if ok:
             filtered.append(club)
 
-    # 선택한 예산/캐디/3인/야간은 확인된 골프장만 결과에 포함한다.
-    strict_filtered = []
+    # 선택한 예산/캐디/3인/야간은 기본적으로 '확인된' 골프장만 결과에 포함한다.
+    # include_unknown=True 면 명확히 불일치한 곳만 빼고 미확인은 '확인 필요'로 남긴다.
+    strict_filtered, kept, unknown_reasons = [], [], Counter()
     for club in filtered:
         issues, unknowns = _eligibility(club, cond)
-        if not issues and not unknowns:
+        if issues:
+            continue
+        kept.append(club)
+        if unknowns:
+            unknown_reasons.update(unknowns)
+        else:
             strict_filtered.append(club)
     has_strict_condition = bool(
         cond.get("budget")
@@ -1239,8 +1340,10 @@ def condition_search(params, sort="추천순"):
         or int(cond.get("players") or 4) == 3
         or cond.get("night")
     )
+    unknown_excluded = 0
     if has_strict_condition:
-        filtered = strict_filtered
+        unknown_excluded = len(kept) - len(strict_filtered)
+        filtered = kept if cond.get("include_unknown") else strict_filtered
     final_count = len(filtered)
 
     scored = {c["id"]: _recommendation_score(c, cond) for c in filtered}
@@ -1272,17 +1375,34 @@ def condition_search(params, sort="추천순"):
         "confirmed": confirmed_count,
         "pending": pending_count,
         "excluded": max(subregion_count - final_count, 0),
+        "unknown_excluded": 0 if cond.get("include_unknown") else unknown_excluded,
+        "unknown_included": unknown_excluded if cond.get("include_unknown") else 0,
+        "unknown_reasons": dict(unknown_reasons),
     }
-    return _build_results(all_recs, cond, trace, sort, departure_status)
+    result = _build_results(all_recs, cond, trace, sort, departure_status)
+    result["include_unknown"] = bool(cond.get("include_unknown"))
+    return result
 
 
 def ai_condition(text):
+    """문장 → cond. 기존 파서(지역·도시·요일·인원·예산)에 캐디/야간/시간대 키워드를 보강한다."""
     cond = parse_ai_conditions(text, "전체", False, 4, None)
+    compact = re.sub(r"\s+", "", str(text or ""))
     cond["players_specified"] = cond.get("players") is not None
-    cond["players"] = int(cond.get("players") or 4)
+    players = int(cond.get("players") or 4)
+    if re.search(r"3인|세\s*명|셋이|3명", text or ""):
+        players = 3
+    cond["players"] = players
     cond["areas"] = [] if cond.get("area") == "전체" else [cond.get("area")]
     cond["subregions"] = []
-    cond["objective_features"] = ["3인 플레이"] if cond["players"] == 3 else []
+    cond["caddie"] = "노캐디" if re.search(r"노캐디|셀프라운드|캐디\s*없", compact) else (
+        "캐디" if "캐디" in compact else "전체")
+    cond["night"] = bool(re.search(r"야간|나이트|저녁\s*라운", text or ""))
+    session = re.search(r"([123])\s*부", text or "")
+    cond["session"] = f"{session.group(1)}부" if session else None
+    cond["objective_features"] = (["3인 플레이"] if players == 3 else []) + (["야간 라운드"] if cond["night"] else [])
+    cond.setdefault("include_unknown", False)
+    cond.setdefault("challenge", "적당히")
     return cond
 
 
@@ -1295,48 +1415,22 @@ def condition_from_request(search):
     return build_condition(search.get("params") or {})[0]
 
 
-def ai_search(text, sort="추천순"):
+def ai_search(text, sort="추천순", include_unknown=False):
+    """AI 문장검색: 문장을 조건으로 해석한 뒤 조건 검색과 같은 엔진·같은 기준으로 찾는다."""
     cond = ai_condition(text)
-
-    _, _, pool = load_pools()
-    total_count = len(pool)
-    search_clubs = list(pool)
-
-    if cond.get("area") and cond["area"] != "전체":
-        search_clubs = [c for c in search_clubs if c.get("area") == cond["area"]]
-    area_count = len(search_clubs)
-
-    # 도시명: city/address/name에 실제 문자열이 있는 레코드만
-    if cond.get("city"):
-        city = str(cond["city"])
-        search_clubs = [
-            c for c in search_clubs
-            if city in " ".join(str(c.get(k) or "") for k in ("city", "address", "name", "subregion"))
-        ]
-    city_count = len(search_clubs)
-
-    filtered = []
-    for club in search_clubs:
-        ok = matches_objective_conditions(club, cond.get("objective_features", []))
-        if ok and cond.get("budget"):
-            est = estimate_per_person(club, bool(cond.get("weekend")), int(cond.get("players") or 4))
-            if est is not None and est > cond["budget"]:
-                ok = False
-        if ok:
-            filtered.append(club)
-
-    filtered = sorted(filtered, key=lambda x: str(x.get("name") or ""))
-    trace = {"total": total_count, "area": area_count, "subregion": city_count, "final": len(filtered)}
-    parsed = {
+    cond["include_unknown"] = include_unknown
+    result = _run_search(cond, sort, None, city=str(cond["city"]) if cond.get("city") else None)
+    result["parsed"] = {
         "area": cond.get("area") or "전체",
         "city": cond.get("city") or "전체",
         "day": "주말/공휴일" if cond.get("weekend") else "주중",
         "players": f"{cond.get('players', 4)}인",
         "budget": f"{cond['budget'] // 10000}만원 이하" if cond.get("budget") else "제한 없음",
+        "caddie": cond.get("caddie") if cond.get("caddie") != "전체" else "",
+        "night": "야간" if cond.get("night") else "",
+        "session": cond.get("session") or "",
         "traits": ", ".join(cond.get("traits") or []) or "없음",
     }
-    result = _build_results([(c, ["문장 검색조건 충족"]) for c in filtered], cond, trace, sort, None)
-    result["parsed"] = parsed
     return result
 
 

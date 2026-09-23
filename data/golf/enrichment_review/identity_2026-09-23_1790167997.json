@@ -1,0 +1,3610 @@
+{
+ "created_at": "2026-09-23",
+ "model": "claude-opus-5",
+ "usage": {
+  "input_tokens": 616097,
+  "output_tokens": 68935
+ },
+ "results": [
+  {
+   "id": "vworld_태릉골프장",
+   "name": "태릉골프장",
+   "area": "수도권",
+   "city": "서울",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "태릉 체력단련장 (태릉CC)",
+    "official_url": "https://www.welfare.mil.kr/health/content/content.do?m_code=251",
+    "address": "서울시 노원구 화랑로 682",
+    "sido": "서울특별시",
+    "holes": 18,
+    "public_access": "military",
+    "evidence_urls": [
+     "https://www.welfare.mil.kr/health/content/content.do?m_code=251",
+     "https://kimcaddie.com/golfcourse/%ED%83%9C%EB%A6%89p-%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C-%EB%85%B8%EC%9B%90%EA%B5%AC-%ED%99%94%EB%9E%91%EB%A1%9C-574-%EA%B3%B5%EB%A6%89%EB%8F%99",
+     "https://www.youtube.com/watch?v=bS2h0GJgTGI",
+     "https://www.newspim.com/news/view/20260813001329"
+    ],
+    "note": "1966년 박정희 대통령 지시로 개장한 군 체력단련장(국군복지단 운영, 화랑코스·을지코스 18홀). 서울 노원구 공릉동 소재로 VWorld의 '서울' 표기와 일치. 김캐디는 주소를 '서울특별시 노원구 화랑로 574(공릉동)', 공식 국군복지포털은 '화랑로 682'로 표기. 주택공급(6800가구) 개발 계획이 추진 중이나 현재까지는 운영 중. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6441,
+    "out": 594
+   }
+  },
+  {
+   "id": "vworld_제이퍼블릭",
+   "name": "제이퍼블릭",
+   "area": "수도권",
+   "city": "인천",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "제이퍼블릭컨트리클럽",
+    "official_url": "http://www.jpublic.co.kr",
+    "address": null,
+    "sido": "경기도",
+    "holes": 6,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.jpublic.co.kr",
+     "https://m.blog.naver.com/tangdori778/222293649118",
+     "https://goldenhands.tistory.com/120"
+    ],
+    "note": "VWorld상 인천으로 표기되어 있으나 실제로는 경기도 파주시 소재 대중제(퍼블릭) 골프장 '제이퍼블릭CC(제이퍼블릭컨트리클럽)'. 검색 결과상 6홀 코스(파3 1, 파4 4, 파5 1)로 2회전 시 12홀·3회전 18홀 형태로 운영. 기존 후보 목록에 동일 골프장 없음. 상세 주소는 검색 결과에 명시되지 않아 null."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5239,
+    "out": 570
+   }
+  },
+  {
+   "id": "vworld_파주프리스틴밸리",
+   "name": "파주프리스틴밸리",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "노스팜 컨트리클럽",
+    "official_url": "https://www.npcc.co.kr",
+    "address": "경기도 파주시 광탄면 쇠장이길 265",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.golfin.co.kr/news/articleView.html?idxno=1149",
+     "https://www.thegolftimes.co.kr/news/articleView.html?idxno=23567",
+     "https://www.npcc.co.kr",
+     "https://peachegg.tistory.com/tag/%ED%94%84%EB%A6%AC%EC%8A%A4%ED%8B%B4%EB%B0%B8%EB%A6%ACcc"
+    ],
+    "note": "2011년 12월 개장한 파주프리스틴밸리GC(파주시 광탄면, 대중제 18홀, 파72·7120야드)가 경주김씨 북일공파종회에 인수되어 2016년 1월부터 '노스팜컨트리클럽'으로 명칭 변경. 가평의 '프리스틴밸리'(경기도 가평군 설악면 유명로 1243-199, 회원제)와는 이름만 유사한 별개 골프장이므로 기존 후보와 중복 아님. EAST 9홀/WEST 9홀, 퍼블릭 운영."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6697,
+    "out": 630
+   }
+  },
+  {
+   "id": "vworld_덕평c_c",
+   "name": "덕평C.C",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "H1 클럽 (에이치원 컨트리클럽, 구 덕평CC)",
+    "official_url": null,
+    "address": "경기도 이천시 호법면 장자터로 115",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://golfmember.tistory.com/82",
+     "https://www.youtube.com/watch?v=-wzEewVDSK8",
+     "https://m.blog.naver.com/kin1584/223370244081",
+     "https://golf.sbs.co.kr/m/review/course/692988ecd47743d0c31a7b23"
+    ],
+    "note": "덕평CC는 1986년 개장한 회원제 18홀 골프장으로, 2019년 호반건설에 인수·리노베이션 후 'H1클럽(에이치원CC)'으로 명칭 변경됨. 소재지는 경기도 이천시 호법면. 기존 후보 목록에 동일 골프장 없음. 회원제(정회원 약 1,900명)로 표기되어 member_only로 판정."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5367,
+    "out": 382
+   }
+  },
+  {
+   "id": "vworld_ba비스타c_c",
+   "name": "BA비스타C.C",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_비에이비스타",
+    "official_name": "비에이비스타 컨트리클럽 (B.A. VISTA CC)",
+    "official_url": null,
+    "address": "경기도 이천시 모가면 어농로 272",
+    "sido": "경기도",
+    "holes": 54,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://blog.naver.com/mong_family/223643619702?viewType=pc",
+     "https://www.premiumgolf.co.kr/product/view.html?idx=7",
+     "https://v.daum.net/v/bRf5Cug13J",
+     "https://www.youtube.com/watch?v=89Xb0xgjVtg"
+    ],
+    "note": "'BA비스타C.C'는 경기 이천시 모가면 어농로 272 소재 비에이비스타CC(B.A. VISTA CC)와 동일. 회원제 36홀+퍼블릭 18홀 총 54홀(일부 자료는 63~72홀 언급)로 퍼블릭 코스 일반 이용 가능. 기존 후보 kgba_비에이비스타와 주소 일치하여 중복 처리. 공식 홈페이지 URL은 검색 결과에 없어 null(premiumgolf.co.kr은 예약대행)."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 7876,
+    "out": 438
+   }
+  },
+  {
+   "id": "vworld_휘닉스스프링스",
+   "name": "휘닉스스프링스CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "unknown",
+    "duplicate_of_id": "southsprings",
+    "official_name": "휘닉스스프링스CC",
+    "official_url": null,
+    "address": null,
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [],
+    "note": "제공된 웹 검색 결과에는 '휘닉스스프링스CC'에 대한 직접적인 언급이 전혀 없어 주소·홀수·운영형태·공식 URL은 확인 불가(null/unknown). 다만 명칭 및 표시 위치(경기남부)로 볼 때 경기 이천 모가면 소재 '사우스스프링스 컨트리클럽'(구 휘닉스스프링스CC)과 동일 골프장일 가능성이 높아 duplicate_of_id를 southsprings로 잠정 판정함. 이 동일성 판단을 뒷받침하는 검색 결과 근거는 없으므로 추가 확인 필요."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 8281,
+    "out": 889
+   }
+  },
+  {
+   "id": "vworld_비승대체력단련장",
+   "name": "비승대체력단련장",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_윈체스트",
+   "name": "윈체스트골프클럽",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "윈체스트골프클럽",
+    "official_url": null,
+    "address": "경기도 안성시 서운면 오촌리 130-3",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.kakao.golf/golf/98",
+     "https://m.blog.naver.com/justice997/222420252307",
+     "https://m.blog.naver.com/soram/222039401679"
+    ],
+    "note": "경기 안성 서운면 소재 18홀 대중형 골프장. 과거 회원제였으나 매각 후 퍼블릭으로 전환(블로그 후기). 기존 후보 목록의 안성 소재 마에스트로CC·안성베네스트와는 다른 별개 골프장. 공식 홈페이지 URL은 검색 결과에 링크 텍스트만 있어 확인 불가."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5635,
+    "out": 315
+   }
+  },
+  {
+   "id": "vworld_q안성",
+   "name": "골프클럽Q안성",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_골프클럽q",
+    "official_name": "골프클럽Q 안성",
+    "official_url": null,
+    "address": null,
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.golfjournal.co.kr/news/articleView.html?idxno=122"
+    ],
+    "note": "골프저널 기사에 따르면 골프클럽Q안성은 2013년 골프존-케이스톤파트너스 컨소시엄이 인수하며 회생계획을 통해 대중제(퍼블릭) 골프장으로 전환, 2014년 2심 및 2016년 대법원에서 퍼블릭 전환이 확정됨. 기존 후보 중 'kgba_골프클럽q'(경기도 안성시 죽산면 장계길 20-229)와 동일 골프장으로 판단. 주소·홀수·공식 URL은 제공된 검색 결과에 없어 null 처리."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 8323,
+    "out": 731
+   }
+  },
+  {
+   "id": "vworld_레이크힐스안성퍼블릭",
+   "name": "레이크힐스안성퍼블릭",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "레이크힐스안성 골프클럽",
+    "official_url": "http://www.lakehillsanseonggc.co.kr",
+    "address": "경기 안성시 양성면 양성로 349-61",
+    "sido": "경기도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.ksmgolf.com/main/z_golf_v.php?page_no=25&no=315",
+     "https://sports.khan.co.kr/article/200508312136261",
+     "https://comp4u.oopy.io/e7f17dfa-a0a6-4b7a-b7bb-7f9be9fa2070",
+     "https://blog.naver.com/b_irene/221707460671"
+    ],
+    "note": "경기 안성시 양성면에 위치한 9홀(파36) 대중제(퍼블릭) 골프장으로 2001년 5월 개장. 기존 후보 중 안성CC(죽산면), 안성(죽산면) 등과는 위치·운영주체가 다르며 전남·경남 레이크힐스와도 별개 시설이므로 중복 없음. 공식 사이트는 블로그에 언급된 www.lakehillsanseonggc.co.kr (과거 www.lakehills.co.kr)."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5655,
+    "out": 436
+   }
+  },
+  {
+   "id": "vworld_웨스트파인골프코스",
+   "name": "웨스트파인골프코스",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "웨스트파인골프코스",
+    "official_url": null,
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [],
+    "note": "제공된 검색 결과에는 '웨스트파인골프코스'에 대한 직접적인 정보가 전혀 없습니다. 검색 결과는 경기도 파3 골프장 목록, 영천 웨스트우드 파크골프장 기사 등으로 본 레코드와 무관합니다. 따라서 소재지·홀수·운영 여부·공식 홈페이지를 확인할 수 없으며, 기존 후보 목록(파인밸리, 파인리즈, 파인스톤, 파인힐스, 파인비치, 파인크리크, 양지파인 등)과 동일 골프장이라는 근거도 찾지 못해 중복 판정은 보류합니다. 명칭상 골프코스로 추정하나 실제 정규 코스인지, 파3·연습장 성격인지도 확인 불가입니다."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6121,
+    "out": 848
+   }
+  },
+  {
+   "id": "vworld_파인크리크c_c대중",
+   "name": "파인크리크C.C대중",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_파인크리크c_c",
+    "official_name": "파인크리크 컨트리클럽",
+    "official_url": null,
+    "address": null,
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://mad4golf.tistory.com/310",
+     "https://m.monthly.chosun.com/client/news/viw.asp?ctcd=&nNewsNumb=200605100048",
+     "https://m.blog.naver.com/kin1584/222912256089"
+    ],
+    "note": "경기도 안성 소재 파인크리크CC(27홀: 파인/크리크/밸리). 기존 회원제에서 퍼블릭(대중제)으로 전환되어 '파인크리크C.C대중' 표기로 추정되며, 기존 레코드 vworld_파인크리크c_c와 동일 골프장."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4845,
+    "out": 305
+   }
+  },
+  {
+   "id": "vworld_라비돌",
+   "name": "라비돌CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "라비돌CC",
+    "official_url": "https://www.laviedor.com",
+    "address": "경기도 화성시 정남면 세자로 286 (지번: 경기도 화성시 정남면 보통리 141-39)",
+    "sido": "경기도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://blog.naver.com/PostView.naver?blogId=ooolaa&logNo=224317584620&redirect=Dlog",
+     "https://www.youtube.com/watch?v=_8KY8rEE5pI",
+     "https://www.youtube.com/watch?v=wkVWHqq2AzU",
+     "https://www.instagram.com/reel/DVBIp7OiZKQ",
+     "https://www.laviedor.com/la_cc6.asp"
+    ],
+    "note": "경기도 화성시 정남면에 위치한 9홀 퍼블릭 정규 코스(파3 아님). 라비돌리조트 내 골프장으로 수원과학대학교 인근에 위치. 온라인 예약 운영 중이며 2인 플레이·당일 예약 가능. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5369,
+    "out": 480
+   }
+  },
+  {
+   "id": "vworld_남수원체력단련장",
+   "name": "남수원체력단련장",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_덕산대체력단련장",
+   "name": "덕산대체력단련장",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_블루버드",
+   "name": "블루버드",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "큐로컨트리클럽(구 블루버드CC, 구 경기CC)",
+    "official_url": null,
+    "address": "경기도 광주시 곤지암읍 오향길 180",
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://m.cafe.daum.net/t.o.mgolf/VU5z/78?svc=AXZ",
+     "https://blog.naver.com/youngim80/221063014247"
+    ],
+    "note": "검색 결과에 따르면 경기남부(경기 광주 곤지암)의 '블루버드CC'는 옛 '경기CC'였다가 이후 '큐로컨트리클럽(큐로CC)'으로 명칭이 변경되어 운영 중인 것으로 보임(주소: 경기도 광주시 곤지암읍 오향길 180). 기존 후보 목록에는 동일 골프장이 없어 duplicate_of_id는 null. 홀 수, 회원제/대중제 여부, 공식 홈페이지는 검색 결과에서 확인되지 않음. 동명의 'Bluebird Club'은 미국 콜로라도 소재 별개 골프장."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4189,
+    "out": 665
+   }
+  },
+  {
+   "id": "vworld_중부",
+   "name": "중부CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "더 시에나 서울 컨트리클럽 (구 중부CC)",
+    "official_url": "https://thesiena.co.kr/content/seoulcc",
+    "address": "경기도 광주시 곤지암읍 경충대로 451",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://realty.chosun.com/site/data/html_dir/2025/05/20/2025052000908.html",
+     "https://czgolf.kr/bbs/board.php?bo_table=ms_recom&wr_id=26",
+     "https://thesiena.co.kr/content/seoulcc",
+     "https://kimcaddie.com/golfcourse/%EC%A4%91%EB%B6%80-%EA%B2%BD%EA%B8%B0%EB%8F%84-%EA%B4%91%EC%A3%BC%EC%8B%9C-%EA%B3%A4%EC%A7%80%EC%95%94%EC%9D%8D-%EA%B2%BD%EC%B6%A9%EB%8C%80%EB%A1%9C-451"
+    ],
+    "note": "1987년 개장한 18홀 회원제 골프장로 경기도 광주시 곤지암읍 소재. 애경개발(주)이 운영하던 '애경중부CC(중부CC)'가 2025년 8월 30일 운영사 변경(애경그룹→더시에나그룹)으로 '더 시에나 서울CC'로 개칭됨. 정회원 약 840명의 회원제이나 비회원 요금도 운영(평일 19만원/휴일 25만원). 후보 목록 중 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7292,
+    "out": 811
+   }
+  },
+  {
+   "id": "vworld_베어스타운",
+   "name": "베어스타운",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "베어스타운 골프장(베어스타운리조트)",
+    "official_url": null,
+    "address": "경기도 포천시 내촌면 금강로2536번길 27 (내촌면)",
+    "sido": "경기도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.joongang.co.kr/article/601957",
+     "https://m.cafe.daum.net/csgagocmt/OLBC/17020?svc=AXZ",
+     "https://blog.naver.com/neopomme/220844202999",
+     "https://namu.wiki/w/%EB%B2%A0%EC%96%B4%EC%8A%A4%ED%83%80%EC%9A%B4"
+    ],
+    "note": "경기도 포천시 내촌면 소재 베어스타운리조트 부설 골프장. 스키슬로프를 개조해 9홀(약 3,214야드) 규모로 개장했고, 노캐디 퍼블릭 운영 및 온라인 티업 예약 가능하다는 언급이 있음. 후보 목록의 베어크리크(포천 화현면)와는 위치·운영주체가 달라 중복 아님. 리조트 내 실외 골프연습장도 별도 존재하나 본 레코드는 골프코스로 판단. 현재 영업 지속 여부는 검색 결과로 확인 불가하여 unknown, 공식 홈페이지 URL도 검색 결과에 없어 null 처리."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 3818,
+    "out": 837
+   }
+  },
+  {
+   "id": "vworld_참밸리c_c",
+   "name": "참밸리C.C",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "코브스윙CC (구 참밸리 컨트리클럽)",
+    "official_url": "http://www.charmvalley.cc/",
+    "address": "경기도 포천시 설운동 산38",
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://t-golf.co.kr/yc/shop/item.php?it_id=1585618969",
+     "https://blog.naver.com/annasui714/224281363776?viewType=pc",
+     "https://www.instagram.com/p/DYeaLZFkw4Q",
+     "https://www.youtube.com/watch?v=Q5LEFjzsqHA"
+    ],
+    "note": "경기도 포천시 설운동 산38 소재 대중제 골프장(해룡산 자락). 현재는 '코브스윙CC'로 명칭이 변경되어 운영 중(구 참밸리CC). 홈페이지는 제휴업체 페이지에 기재된 www.charmvalley.cc 기준이며, 개명 이후 공식 사이트 주소는 검색 결과로 확인되지 않음. 홀 수는 검색 결과에 없음. 후보 목록 중 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5700,
+    "out": 735
+   }
+  },
+  {
+   "id": "vworld_냉천",
+   "name": "냉천컨트리클럽",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "냉천컨트리클럽",
+    "official_url": null,
+    "address": "대구광역시 달성군 가창면 가창로 1037-9",
+    "sido": "대구광역시",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://kimcaddie.com/golfcourse/%EB%83%89%EC%B2%9Cp-%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C-%EB%8B%AC%EC%84%B1%EA%B5%B0-%EA%B0%80%EC%B0%BD%EB%A9%B4-%EA%B0%80%EC%B0%BD%EB%A1%9C-1037-9",
+     "https://rhdwn6363.tistory.com/1395",
+     "https://blog.naver.com/zzjworld/223900558545",
+     "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=30"
+    ],
+    "note": "VWorld에는 충북으로 표기되어 있으나 실제로는 대구광역시 달성군 가창면에 위치한 9홀 비회원제(퍼블릭) 골프장. 전화 053-768-5511, 노캐디 운영. (주)신원레저산업 운영. 공식 사이트는 검색 결과에 'www.nc-golf...'로 일부만 표시되어 전체 URL 확인 불가. 기존 후보 중 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4983,
+    "out": 735
+   }
+  },
+  {
+   "id": "vworld_여주",
+   "name": "여주CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "YJC골프클럽(여주CC)",
+    "official_url": "https://www.yeojoocc.co.kr",
+    "address": null,
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.yeojoocc.co.kr",
+     "https://blog.naver.com/oneputter/223859924115"
+    ],
+    "note": "공식 사이트(yeojoocc.co.kr)상 'Yeo Ju Classic Golf Club | YJC골프클럽 | 여주cc'로 확인되는 경기 남부(여주) 소재 골프장. 블로그 자료에 27홀, 1975.10.03 개장으로 기재. 인스타 게시물에 '남여주CC' 해시태그가 함께 쓰였으나 후보 kgba_남여주(여주시 가여로 532)와 동일 시설이라는 확정 근거는 검색 결과에 없어 중복 처리하지 않음. 회원권 시세(8,750만원) 언급으로 회원제 가능성이 있으나 일반인 이용 제한 여부는 불명확. 주소는 검색 결과에 명시되지 않음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4465,
+    "out": 1822
+   }
+  },
+  {
+   "id": "vworld_캐슬파인",
+   "name": "캐슬파인GC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "캐슬파인 골프클럽",
+    "official_url": "https://www.castlepine.co.kr",
+    "address": "경기 여주시 강천면 부평로 580",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.castlepine.co.kr",
+     "https://golf.sbs.co.kr/m/review/course/692988f3d47743d0c31a7b33?scrollTo=reviews",
+     "https://dbegl.com/golf-courses/712-%EC%BA%90%EC%8A%AC%ED%8C%8C%EC%9D%B8GC",
+     "https://handa3328.tistory.com/741"
+    ],
+    "note": "경기 여주시 강천면 소재 대중제 18홀(레이크·밸리 코스) 골프장. 과거 회원제였으나 퍼블릭으로 전환되어 인터넷 예약 가능. VWorld 표기(경기남부)와 달리 실제는 경기 여주. 후보 목록의 파인 계열·캐슬렉스 등과는 별개 골프장."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6677,
+    "out": 471
+   }
+  },
+  {
+   "id": "vworld_세라지오",
+   "name": "세라지오",
+   "area": "수도권",
+   "city": "서울",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "세라지오 골프클럽 (세라지오GC)",
+    "official_url": null,
+    "address": "경기도 여주시 여양로 530",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://m.blog.naver.com/sjemanse/223546211139",
+     "https://kimcaddie.com/golfcourse/%EC%84%B8%EB%9D%BC%EC%A7%80%EC%98%A4-%EA%B2%BD%EA%B8%B0%EB%8F%84-%EC%97%AC%EC%A3%BC%EA%B5%B0-%EC%97%AC%EC%A3%BC%EC%9D%8D-%EC%97%AC%EC%96%91%EB%A1%9C-530",
+     "https://www.hankyung.com/article/202511293177i",
+     "https://www.ytn.co.kr/_ln/0938_201103142304593003"
+    ],
+    "note": "VWorld 표기(수도권 서울)와 달리 실제 위치는 경기도 여주시 여양로 530. 김캐디 정보상 18홀/파72 퍼블릭(대중제)이나, 블로그·영상에서 세라코스·지오코스·오코스 등 복수 코스가 언급돼 홀 수는 추가 확인 필요. 2025년 더 시에나 그룹이 인수 완료해 '더 시에나 벨루토' 등으로 브랜드 변경이 진행 중인 것으로 보도됨(현재 운영 중). 기존 후보 목록에 동일 골프장 없음. 공식 홈페이지 URL은 검색 결과에 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4717,
+    "out": 840
+   }
+  },
+  {
+   "id": "vworld_sky72",
+   "name": "Sky72",
+   "area": "수도권",
+   "city": "인천",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "club72",
+    "official_name": "스카이72 골프 앤 리조트 (SKY72 Golf & Resort)",
+    "official_url": "http://www.sky72.com",
+    "address": "인천광역시 중구 운서동 2029-1",
+    "sido": "인천광역시",
+    "holes": 72,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://m.blog.naver.com/quintkorea/220064416167",
+     "http://www.sky72.com/kr/info/pay0101.jsp",
+     "http://www.sky72.com/kr/dream/introduction.jsp",
+     "https://www.onetheclub.com/club72/main"
+    ],
+    "note": "인천 중구 운서동(영종도) 소재 72홀 규모 골프장으로 하늘·레이크·클래식·오션 코스 및 드림골프연습장(드림듄스코스)을 운영. 검색 결과상 공식 사이트(sky72.com)가 확인되며, 동일 부지의 코스(하늘코스·듄스코스 등)를 현재 '클럽72CC'(원더클럽, 인천 중구 공항동로 392)가 운영하는 것으로 나타나 기존 레코드 club72와 동일 장소로 판단. 폐업 여부에 대한 직접 근거는 검색 결과에 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7210,
+    "out": 948
+   }
+  },
+  {
+   "id": "vworld_동여주체력단련장",
+   "name": "동여주체력단련장",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_아난티클럽_구_리츠칼튼c_c",
+   "name": "아난티클럽CC(구,리츠칼튼C.C)",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_아난티클럽서울",
+    "official_name": "아난티 코드 골프 클럽",
+    "official_url": null,
+    "address": "경기 가평군 설악면 방일리 산90-2",
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://cafe.daum.net/t.o.mgolf/VU5y/74",
+     "https://golf79.tistory.com/entry/%EA%B3%A8%ED%94%84-%EC%95%84%EB%82%9C%ED%8B%B0%EC%BD%94%EB%93%9C-CC-%EC%BD%94%EC%8A%A4-%EB%A7%A4%EB%8B%88%EC%A7%80%EB%A8%BC%ED%8A%B8",
+     "https://m.blog.naver.com/ficokr515/221280217664"
+    ],
+    "note": "유명산CC → 리츠칼튼CC → 아난티CC → 아난티 클럽 서울 → 아난티 코드 CC로 명칭 변경된 동일 골프장. 경기 가평군 설악면 소재, 자작나무·느티나무·잣나무 3개 코스 27홀 회원제. 기존 후보 kgba_아난티클럽서울(아난티 코드 골프 클럽, 경기 가평)과 동일."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5845,
+    "out": 473
+   }
+  },
+  {
+   "id": "vworld_마이다스밸리g_c",
+   "name": "마이다스밸리G.C",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "마이다스밸리 청평 골프클럽",
+    "official_url": "https://www.midasgolf.co.kr",
+    "address": "경기 가평군 설악면 다락재로 73-111(이천리 산2-1)",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://www.midasgolf.co.kr",
+     "https://golf.sbs.co.kr/m/review/course/692988f1d47743ed241e8d5a",
+     "https://dbegl.com/golf-courses/741-%EB%A7%88%EC%9D%B4%EB%8B%A4%EC%8A%A4%EB%B0%B8%EB%A6%AC%EC%B2%AD%ED%8F%89GC"
+    ],
+    "note": "VWorld의 '마이다스밸리G.C'는 경기 가평군 설악면에 위치한 '마이다스밸리 청평 골프클럽'으로 판단됨(수도권 경기북부 표기와 부합). 회원제 Par72 정규 18홀. 동일 운영사(마이다스골프)가 청평·이천 합계 45홀을 운영하나, 후보의 '마이다스레이크 이천'(경기 이천시 설성면)은 위치가 다른 별개 골프장이므로 중복 아님. 블로그에는 비회원 그린피 언급이 있으나 공식 분류는 회원제."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4719,
+    "out": 741
+   }
+  },
+  {
+   "id": "vworld_리앤리",
+   "name": "리앤리CC",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "리앤리 컨트리클럽",
+    "official_url": "https://www.leenleecc.co.kr",
+    "address": "경기 가평군 조종면 운악청계로 702-24",
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.leenleecc.co.kr",
+     "https://the-dust.tistory.com/entry/%EB%A7%88%EC%A7%80%EB%A7%89-%EA%B2%A8%EC%9A%B8-%EA%B3%A8%ED%94%84-%EB%A6%AC%EC%95%A4%EB%A6%AC-%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BD",
+     "https://cafe.daum.net/t.o.mgolf/VU5y/54",
+     "https://blog.naver.com/shy9854/223643050956?viewType=pc"
+    ],
+    "note": "경기도 가평군 조종면에 위치한 실제 골프장(운악산 인근). VWorld의 '경기북부' 표기는 가평(경기북부권)과 부합. 공식 홈페이지 leenleecc.co.kr에서 주소·대표번호 확인. 블로그 태그 및 후기에서 27홀 규모로 언급되며, 대중제(퍼블릭) 골프장으로 소개됨. 기존 후보 목록에 동일 골프장 없음(크리스탈밸리·프리스틴밸리는 가평 내 다른 골프장).; 동계 휴장 후 재개장 등 정상 운영 중"
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4715,
+    "out": 697
+   }
+  },
+  {
+   "id": "vworld_파가니카c_c",
+   "name": "파가니카 C.C",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "파가니카 컨트리클럽 (2025년 10월 세레니티 강촌CC로 명칭 변경 예정)",
+    "official_url": null,
+    "address": "강원 춘천시 남면 소주고개로 145-10",
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.bloter.net/news/articleView.html?idxno=644584",
+     "https://www.golfin.co.kr/news/articleView.html?idxno=7338",
+     "https://kimcaddie.com/golfcourse/%EA%B0%95%EC%9B%90-%EC%B6%98%EC%B2%9C%EC%8B%9C-%EB%82%A8%EB%A9%B4-%EC%86%8C%EC%A3%BC%EA%B3%A0%EA%B0%9C%EB%A1%9C-145-10",
+     "https://tommy-life2.tistory.com/103"
+    ],
+    "note": "VWorld 표기(경기북부)는 부정확. 실제 위치는 강원특별자치도 춘천시 남면(소주고개로 145-10, 후동리 일대), 서울-춘천고속도로 강촌IC 인근. 힐·포레스트 코스로 구성된 18홀 대중제(퍼블릭) 골프장. 2025년 8~9월 비피자산운용에 1350억원에 매각 계약이 체결됐고, 10월 1일 딜클로징 후 '세레니티 강촌CC'로 명칭 변경 예정(운영사 다옴홀딩스). 김캐디에는 이용구분이 '회원제'로 적혀 있으나 언론 보도는 대중제 18홀로 명시하여 public으로 판단. 검색 결과에 공식 홈페이지 URL은 확인되지 않음. 후보 목록 중 동일 골프장 없음(파인밸리·파미힐스·파인리조트 등은 별개)."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 7511,
+    "out": 925
+   }
+  },
+  {
+   "id": "vworld_강촌",
+   "name": "강촌CC",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_엘리시안강촌",
+    "official_name": "엘리시안 강촌 컨트리클럽",
+    "official_url": "https://elysian.co.kr/about-gangchon/golf",
+    "address": "강원도 춘천시 남산면 경춘로 451",
+    "sido": "강원특별자치도",
+    "holes": 27,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://elysian.co.kr/about-gangchon/golf",
+     "https://m.blog.naver.com/kangbe2000/223747377821",
+     "https://www.youtube.com/watch?v=dJrztCEXGG8"
+    ],
+    "note": "'강촌CC'는 강원 춘천 남산면의 엘리시안 강촌 컨트리클럽으로 판단됨. 공식 사이트에 27홀 108파, 밸리·레이크·힐 코스로 명시. 회원제 운영 언급(블로그/인스타). 기존 후보 kgba_엘리시안강촌과 동일 골프장. VWorld의 경기북부 좌표 표기는 부정확한 것으로 보임."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5433,
+    "out": 387
+   }
+  },
+  {
+   "id": "vworld_인천오렌지듄스",
+   "name": "인천오렌지듄스골프클럽",
+   "area": "수도권",
+   "city": "인천",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "오렌지듄스 영종 골프클럽",
+    "official_url": "https://www.orangedunesyj.com",
+    "address": "인천광역시 영종구 영종해안남로321번길 184",
+    "sido": "인천광역시",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.orangedunesyj.com",
+     "https://golf.sbs.co.kr/m/review/course/699eac00546a19b0ba5ddcc3",
+     "https://www.orangedunesyj.com/tariff"
+    ],
+    "note": "검색 결과상 인천 소재 '오렌지듄스'는 영종(인천 중구/영종구 영종해안남로321번길 184, 대중제 18홀, par72)으로 확인됨. 다만 인천 연수구 송도동에 '오렌지듄스 송도'(032-830-8888, 18홀)도 별도로 존재하여 해당 레코드가 송도 사업장을 가리킬 가능성도 배제할 수 없음. 기존 후보 목록에 동일 골프장은 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4666,
+    "out": 661
+   }
+  },
+  {
+   "id": "vworld_강촌리조트대중제골프장",
+   "name": "강촌리조트대중제골프장",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_엘리시안강촌",
+    "official_name": "엘리시안 강촌 컨트리클럽",
+    "official_url": "https://elysian.co.kr/about-gangchon/golf",
+    "address": "강원도 춘천시 남산면 북한강변길 688",
+    "sido": "강원특별자치도",
+    "holes": 27,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf01&wr_id=106",
+     "https://elysian.co.kr/about-gangchon/golf"
+    ],
+    "note": "'강촌리조트대중제골프장'은 강원 춘천 남산면의 엘리시안 강촌 리조트 골프장(27홀)으로 판단되며, 기존 레코드 kgba_엘리시안강촌과 동일 장소·동일 운영 주체로 중복. VWorld 표기 지역(경기북부)은 부정확. 검색결과 [0]은 '회원제골프장' 게시판이나 대중제/회원제 구분 정보는 불충분하여 public_access는 unknown."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5912,
+    "out": 399
+   }
+  },
+  {
+   "id": "vworld_센추리21대중제",
+   "name": "센추리21대중제",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_센추리21",
+    "official_name": "센추리21 컨트리클럽 (퍼블릭 마운틴 코스)",
+    "official_url": "http://member.century21cc.co.kr/html/member/join_new.asp",
+    "address": "강원도 원주시 문막읍 궁말길",
+    "sido": "강원특별자치도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golfhankook.hankooki.com/news/articleView.html?idxno=10167184",
+     "http://www.topgolfm.kr/1374",
+     "http://member.century21cc.co.kr/html/member/join_new.asp"
+    ],
+    "note": "VWorld가 '경기남부'로 표시했으나 실제는 강원 원주시 문막읍 궁말길에 위치한 센추리21CC의 대중제(퍼블릭 마운틴 코스 9홀). 회원제 36홀 + 퍼블릭 9홀 총 45홀로 동일 운영주체이므로 기존 레코드 kgba_센추리21(강원 원주 문막읍 궁말길 193)과 동일 골프장으로 판정. 좌표·지역 표기 부정확."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7059,
+    "out": 667
+   }
+  },
+  {
+   "id": "vworld_원주공군체력단련장_구",
+   "name": "원주공군체력단련장(구)",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_원주공군체력단련장_신",
+   "name": "원주공군체력단련장(신)",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_강릉공군체력단련장",
+   "name": "강릉공군체력단련장",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_동해해군체력단련장",
+   "name": "동해해군체력단련장",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_o2리조트회원제",
+   "name": "O2리조트회원제",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "오투리조트 컨트리클럽 (O2 Resort CC)",
+    "official_url": "https://www.o2resort.com",
+    "address": "강원도 태백시 서학로 861 (황지동)",
+    "sido": "강원특별자치도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://premiumgolf.tistory.com/entry/%ED%83%9C%EB%B0%B1-%EC%98%A4%ED%88%ACCC-1%EB%B0%952%EC%9D%BC-%EA%B3%A8%ED%94%84-46%EC%9B%94-%ED%8A%B9%EA%B0%80-1%EB%B0%95-2%EC%9D%BC-%EA%B0%80%EC%84%B1%EB%B9%84-%ED%8C%A8%ED%82%A4%EC%A7%80-%EA%B0%95%EC%9B%90%EB%8F%84%EA%B3%A8%ED%94%84%EC%97%AC%ED%96%89",
+     "https://www.o2resort.com/GLF/totalfeeGuide_golf.jsp",
+     "https://www.youtube.com/watch?v=z3IzKQuIVFI"
+    ],
+    "note": "VWorld의 'O2리조트회원제'는 강원 태백시 함백산 자락의 오투리조트 골프장(태백관광개발공사 운영, 백두·함백·태백 3개 코스 27홀)으로 판단됨. 표시 지역은 강원영동으로 되어 있으나 실제는 태백시. 검색 결과상 현재 구분은 대중제 27홀로 기재되어 있어 public으로 판정(회원제 표기는 과거 구분으로 추정). 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7059,
+    "out": 867
+   }
+  },
+  {
+   "id": "vworld_o2리조트대중제",
+   "name": "O2리조트대중제",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "오투리조트 골프장",
+    "official_url": "https://www.o2resort.com",
+    "address": "강원특별자치도 태백시 서학로 739 (황지동)",
+    "sido": "강원특별자치도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://access.visitkorea.or.kr/ms/detail.do?cotId=263b83b8-0248-497d-88ec-577e171cc9ed",
+     "https://www.o2resort.com",
+     "https://m.blog.naver.com/itl1133/222259094788"
+    ],
+    "note": "강원 태백시 소재 오투리조트(O2리조트) 내 대중제 골프장으로, 백두·함백·태백SKY 27홀 규모. 기존 후보 목록에 동일 골프장 없음. VWorld의 '강원영동' 표기와 달리 실제는 태백시(강원 남부 내륙)."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6171,
+    "out": 330
+   }
+  },
+  {
+   "id": "vworld_비발디파크",
+   "name": "비발디파크CC",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "소노펠리체 컨트리클럽(비발디파크)",
+    "official_url": "https://www.sonofelicecc.com/",
+    "address": null,
+    "sido": "강원특별자치도",
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.sonofelicecc.com/course.sonoParkGolfInfo.dp/dmparse.dm",
+     "https://www.industrynews.co.kr/news/articleView.html?idxno=80604",
+     "https://www.sonohotelsresorts.com/village_vp/featured/detail/ADD00132581"
+    ],
+    "note": "VWorld의 '비발디파크CC'는 경기북부가 아니라 강원 홍천 비발디파크 내 정규 골프장(소노인터내셔널 운영 소노펠리체CC)으로 판단됨. 공식 사이트 코스안내에 '비발디파크 EAST/WEST, 델피노, 소노펠리체 Par3, 비발디파크 파크골프'가 함께 표기되어 동일 운영주체·동일 예약체계임. 검색 결과에 나온 파크골프장(18홀, 매봉산 정상)은 정규 코스와 별개 시설이며, 정규 코스의 홀 수·주소·회원제 여부는 검색 결과에 명시되지 않아 미상. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6072,
+    "out": 979
+   }
+  },
+  {
+   "id": "vworld_홍천c_c",
+   "name": "홍천 C.C",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "비콘힐스CC (구 홍천CC)",
+    "official_url": null,
+    "address": null,
+    "sido": "강원특별자치도",
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://apps.apple.com/es/app/%EA%B3%A8%ED%94%84%EB%9D%BD/id1531818517",
+     "http://mobile.weatheri.co.kr/leisure/leisure04.php?gid=LS04030750"
+    ],
+    "note": "검색 결과(골프락 골프장 목록)에 '비콘힐스cc(구:홍천cc)'로 표기되어 있어, '홍천 C.C'는 강원 홍천 소재 옛 홍천CC(현 비콘힐스CC)로 추정됨. VWorld의 '경기북부' 지역 표기는 부정확한 것으로 보임. 후보 목록의 세이지우드CC 홍천(강원 홍천군 두촌면)과는 다른 골프장이라 중복 아님. 주소·홀수·공식 홈페이지는 검색 결과에 없어 미상."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6144,
+    "out": 695
+   }
+  },
+  {
+   "id": "kgba_소노펠리체",
+   "name": "소노펠리체",
+   "area": "강원권",
+   "city": "홍천",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "소노펠리체 컨트리클럽",
+    "official_url": "https://www.sonofelicecc.com/",
+    "address": "강원특별자치도 홍천군 서면 한치골길 262",
+    "sido": "강원특별자치도",
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.sonofelicecc.com/main.dp/dmparse.dm",
+     "https://www.sonofelicecc.com/rsv.choice.dp/dmparse.dm",
+     "https://www.sonohotelsresort.com/activities/golf",
+     "https://namu.wiki/w/%EC%86%8C%EB%85%B8%ED%8E%A0%EB%A6%AC%EC%B2%B4"
+    ],
+    "note": "(주)소노인터내셔널이 운영하는 소노펠리체 컨트리클럽으로, 홍천 비발디파크에 위치(주소: 강원특별자치도 홍천군 서면 한치골길 262). 소노펠리체CC는 비발디파크 EAST, WEST, 델피노, 소노펠리체 Par3 등 총 63홀(18홀 3개+9홀 1개)을 운영. 후보 중 'vworld_대명설악(소노펠리체 CC 델피노)'는 동일 브랜드·동일 예약체계지만 고성 소재의 물리적으로 다른 코스여서 중복 처리하지 않음. 홍천 소재 코스의 홀 수 및 회원제/대중제 구분은 검색 결과에서 명확히 확인되지 않아 null/unknown."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5793,
+    "out": 1265
+   }
+  },
+  {
+   "id": "vworld_대명비발디파크골프장",
+   "name": "대명비발디파크골프장",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "소노펠리체CC 비발디파크 (구 대명 비발디파크 골프장)",
+    "official_url": "https://www.sonofelicecc.com/",
+    "address": "강원특별자치도 홍천군 서면 한치골길 262",
+    "sido": "강원특별자치도",
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.sonofelicecc.com/course.sonoParkGolfInfo.dp/dmparse.dm",
+     "https://www.sonohotelsresorts.com/belle_vp/featured/detail/ADD00132581",
+     "https://www.industrynews.co.kr/news/articleView.html?idxno=80604"
+    ],
+    "note": "VWorld 표기(수도권 경기북부)와 달리 실제 위치는 강원특별자치도 홍천군 서면 한치골길 262(비발디파크 리조트)로 확인됨. (주)소노인터내셔널(구 대명레저산업) 운영 소노펠리체CC의 코스안내에 '비발디파크 EAST/WEST' 코스가 존재하여 정규 골프코스로 판단. 검색 결과 상당수는 동일 리조트 내 '비발디파크 파크골프장'(산 정상 곤돌라 연계, 별도 시설) 관련 내용이며, 홀 수·회원제 여부는 검색 결과에 명시되지 않아 null/unknown 처리. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6014,
+    "out": 1056
+   }
+  },
+  {
+   "id": "vworld_오스타",
+   "name": "오스타CC",
+   "area": "강원권",
+   "city": "강원영서",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "오스타 컨트리클럽",
+    "official_url": "http://www.ostar.co.kr",
+    "address": "강원도 횡성군 둔내면 우용리 166번지",
+    "sido": "강원특별자치도",
+    "holes": 36,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.ytn.co.kr/_ln/0938_201107050040386231",
+     "https://www.kado.net/news/articleView.html?idxno=412412",
+     "https://www.joongang.co.kr/article/2869282",
+     "https://m.ktri.or.kr/caddie_view.asp?id=67063&page=178"
+    ],
+    "note": "강원도 횡성군 둔내면 우용리에 위치한 현대성우 오스타 골프리조트(성우리조트 인접). 로버트 트렌트 존스 주니어 설계 36홀(남코스 18홀·북코스 18홀) 규모. VWorld의 '강원영서' 표기와 부합하며, 기존 후보 목록에 동일 골프장은 없음. 공식 사이트는 캐디 모집 공고에 명시된 www.ostar.co.kr. 회원제/대중제 여부는 검색 결과에 없어 unknown."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 3557,
+    "out": 918
+   }
+  },
+  {
+   "id": "vworld_청우",
+   "name": "청우GC",
+   "area": "강원권",
+   "city": "강원영서",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "알프스대영컨트리클럽 (구 청우골프클럽)",
+    "official_url": null,
+    "address": "강원도 횡성군 우천면 하대리 300번지",
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://youp95.tistory.com/234",
+     "http://www.golftimes.co.kr/news/articleView.html?idxno=115991",
+     "http://2039golf.co.kr/zbxe/golf4/13135",
+     "https://www.kado.net/news/articleView.html?idxno=385588"
+    ],
+    "note": "강원 횡성군 우천면 소재 18홀 골프장(2008년 8월 개장, 청우컨트리클럽/청우골프클럽). 회생절차를 거쳐 ㈜대영베이스가 인수, '알프스대영컨트리클럽'으로 명칭 변경 후 영업 중. 회원제이나 비회원 그린피(주중 15만원/주말 20만원)가 명시되어 일반 이용 가능. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4727,
+    "out": 399
+   }
+  },
+  {
+   "id": "vworld_옥스필드c_c",
+   "name": "옥스필드 C.C",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_올데이_옥스필드",
+    "official_name": "올데이 옥스필드CC",
+    "official_url": "http://www.ilcc.co.kr",
+    "address": "강원 횡성군 서원면 유현리 산61",
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.youtube.com/watch?v=qBqgln0RR4A&vl=ko",
+     "https://100golfstory.tistory.com/entry/%EC%98%A5%EC%8A%A4%ED%95%84%EB%93%9CCC-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-%EA%B7%B8%EB%A6%B0%ED%94%BC%EC%BA%90%EB%94%94%ED%94%BC%EC%B9%B4%ED%8A%B8%EB%B9%84-%EC%A0%95%EB%B3%B4",
+     "https://m.blog.naver.com/total_feel/223816300847",
+     "https://good-couple.tistory.com/78"
+    ],
+    "note": "VWorld에 '수도권 경기남부'로 표기되었으나 실제로는 강원 횡성군 서원면 소재 18홀 대중제 골프장. 옥스코스·힐드(필드)코스 구성. 에스엘세레스가 인수해 '올데이' 브랜드(임페리얼레이크·로얄포레·옥스필드·올데이 골프&리조트)로 운영 중이므로 기존 후보 kgba_올데이_옥스필드와 동일 골프장. 블로그 등에서 '서울에서 1시간 10분 거리 수도권 골프장'으로 홍보되어 지역 표기 오류가 발생한 것으로 보임. 공식 사이트는 올데이골프레저그룹 ilcc.co.kr."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 7679,
+    "out": 847
+   }
+  },
+  {
+   "id": "vworld_오스타퍼블릭",
+   "name": "오스타퍼블릭",
+   "area": "강원권",
+   "city": "강원영서",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "오스타 골프리조트(오스타CC)",
+    "official_url": null,
+    "address": null,
+    "sido": "강원특별자치도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.ytn.co.kr/_ln/0938_201107050040386231",
+     "https://www.kado.net/news/articleView.html?idxno=412412",
+     "https://m.blog.naver.com/lcyyong5/80126543812"
+    ],
+    "note": "검색 결과상 '오스타'는 강원도 횡성에 위치한 오스타 골프리조트(오스타CC)로, 현대시멘트가 조성한 회원제 36홀(남코스 18홀 + 북코스 18홀, 해발 630m 고원지대) 골프장. 레코드명 '오스타퍼블릭'은 동일 리조트 내 대중제 운영 부분으로 추정되나, 검색 결과에는 퍼블릭 코스의 홀 수·주소·공식 홈페이지 정보가 없어 null 처리. 기존 후보 목록에 동일 골프장은 없음. 표기된 '강원영서'는 횡성(강원 영서권)과 대체로 부합."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 7769,
+    "out": 1013
+   }
+  },
+  {
+   "id": "vworld_섬강벨라스톤",
+   "name": "섬강벨라스톤",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "벨라스톤CC",
+    "official_url": "https://www.bellastonecc.com",
+    "address": null,
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.kado.net/news/curationView.html?idxno=508001",
+     "https://golfhankook.hankooki.com/news/articleView.html?idxno=10104406",
+     "https://www.youtube.com/watch?v=mNwq-qsWNYE",
+     "https://www.bellastonecc.com"
+    ],
+    "note": "강원 횡성 소재 섬강 벨라스톤CC(벨라코스+스톤코스, 18홀). 회원제로 조성했으나 대중제로 개장한 퍼블릭 골프장. VWorld의 경기남부 표기는 부정확하며 실제는 강원특별자치도 횡성군. 검색 결과에 상세 주소는 없음. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7342,
+    "out": 353
+   }
+  },
+  {
+   "id": "vworld_동강시스타",
+   "name": "동강시스타",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "탑스텐 리조트 동강시스타 C.C",
+    "official_url": "https://www.cistar.co.kr",
+    "address": "강원도 영월군 영월읍 사지막길 160",
+    "sido": "강원특별자치도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.tops10.co.kr/tops10_04_03.html",
+     "https://golf.sbs.co.kr/m/review/course/692988ecd47743e5220da7c2",
+     "https://www.instagram.com/tops10.cistar",
+     "https://www.smgroup.co.kr/business/view.do?IDX=59",
+     "https://www.ktriptips.com/kor/leisure/2702454"
+    ],
+    "note": "강원 영월군 영월읍 소재 퍼블릭(대중제) 골프장으로, SM그룹 탑스텐 리조트가 운영. VWorld의 '강원영동' 표기와 달리 실제 위치는 강원 영월(영서권). 홀수는 자료가 엇갈림: 공식 사이트는 '1코스, 9홀'(9홀을 2회 돌아 18홀 라운딩), SBS골프는 '대중제 par72/18홀'로 기재. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 3917,
+    "out": 626
+   }
+  },
+  {
+   "id": "vworld_용평2차_버찌힐",
+   "name": "용평2차(버찌힐)",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_용평",
+    "official_name": "버치힐컨트리클럽 (모나용평)",
+    "official_url": "https://www.yongpyong.co.kr",
+    "address": null,
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.yongpyong.co.kr/kor/golf/appointment/priceInfo.do",
+     "https://www.golftimes.co.kr/news/articleView.html?idxno=200911",
+     "https://www.kado.net/news/curationView.html?idxno=510003",
+     "https://namu.wiki/w/%EB%AA%A8%EB%82%98%EC%9A%A9%ED%8F%89"
+    ],
+    "note": "'용평2차(버찌힐)'은 모나용평(용평리조트) 내 버치힐CC(18홀)로 판단됨. 용평CC·용평9와 함께 모나용평이 동일하게 운영·예약(공식 사이트 예약/요금 페이지에 버치힐·용평CC 통합 안내)하므로 기존 레코드 kgba_용평과 동일 골프장(같은 리조트 동일 운영주체)으로 처리. 과거 정통 회원제였으나 2025년(기사 기준) 6월 30일 회원제 종료 후 대중형 골프장으로 전환. 주소는 검색 결과에 명시되지 않아 null."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5157,
+    "out": 636
+   }
+  },
+  {
+   "id": "vworld_용평나인",
+   "name": "용평나인GC",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_용평",
+    "official_name": "용평9 골프코스 (용평 나인 골프클럽)",
+    "official_url": "https://www.yongpyong.co.kr/kor/golf/course/yongpyong9/fullMap.do",
+    "address": "강원특별자치도 평창군 대관령면 올림픽로 715(구 용산리 130) 용평리조트",
+    "sido": "강원특별자치도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.yongpyong.co.kr/mobile/kor/golf/yongpyong9Info.do",
+     "https://www.yongpyong.co.kr/kor/golf/appointment/priceInfo.do",
+     "https://jane-story27.tistory.com/36",
+     "https://m.blog.naver.com/hyolheej/222905624415"
+    ],
+    "note": "모나용평(구 용평리조트) 내 9홀 퍼블릭 코스인 '용평9 골프코스'(용평 나인 골프클럽). 주소(평창군 대관령면 올림픽로 715)와 운영주체(모나용평 주식회사), 예약창구(1522-3111/모나용평 홈페이지)가 용평컨트리클럽과 동일해 kgba_용평과 같은 골프장으로 판단. 5,146야드 파36, 대중제로 일반인 예약 가능(최소 2인). 영업기간 4월~11월."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 8132,
+    "out": 705
+   }
+  },
+  {
+   "id": "vworld_휘닉스파크대중제골프장",
+   "name": "휘닉스파크대중제골프장",
+   "area": "강원권",
+   "city": "강원영서",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_휘닉스파크",
+    "official_name": "태기산 나인 CC (휘닉스 파크 대중제 골프장)",
+    "official_url": "https://phoenixhnr.co.kr/m/static/pyeongchang/golf/taegisan-intro",
+    "address": "강원도 평창군 면온리",
+    "sido": "강원특별자치도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://phoenixhnr.co.kr/m/static/pyeongchang/golf/taegisan-intro",
+     "https://phoenixhnr.co.kr/m/static/pyeongchang/golf/phoenix-guide",
+     "https://www.joongang.co.kr/article/5366520"
+    ],
+    "note": "휘닉스 파크(평창) 리조트 내 골프 시설은 회원제인 '휘닉스 CC'와 대중제 성격의 '태기산 나인 CC'로 구성되며, 공식 사이트(phoenixhnr.co.kr)에서 동일 운영주체·동일 예약 체계로 관리됨. 따라서 '휘닉스파크대중제골프장'은 기존 레코드 vworld_휘닉스파크(휘닉스 컨트리클럽, 평창)와 같은 골프장으로 판단. 중앙일보 기사에서도 회원제 외에 퍼블릭 골프장 할인 운영이 언급됨. 홀 수 및 상세 주소(지번/도로명)는 검색 결과에 명시되지 않아 null 처리."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 8282,
+    "out": 1039
+   }
+  },
+  {
+   "id": "vworld_델피노c_c",
+   "name": "델피노C.C",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_대명설악",
+    "official_name": "소노펠리체 컨트리클럽 델피노",
+    "official_url": "https://www.sonofelicecc.com/dp",
+    "address": "강원특별자치도 고성군 토성면 미시령옛길 1153",
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golfdigest.co.kr/news/articleView.html?idxno=3541",
+     "https://www.youtube.com/watch?v=PV_0MCbYaJM",
+     "https://www.sonofelicecc.com/dp",
+     "https://www.gongtour.com/travel/view.html?no=299&pid=132"
+    ],
+    "note": "강원 고성군 토성면 미시령옛길 1153에 위치한 옛 대명 설악(설악리조트) 골프장으로, 현재 소노펠리체 CC 델피노(델피노 골프&리조트)로 운영 중. 기존 레코드 vworld_대명설악(소노펠리체 CC 델피노, 고성)과 동일 골프장. 오션·마운틴 코스의 18홀이며 일반 예약 가능(콘도 회원 할인 있음). 검색결과 [4]의 홍천 주소는 운영사 (주)소노인터내셔널 본사 주소."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7401,
+    "out": 665
+   }
+  },
+  {
+   "id": "vworld_골든비치",
+   "name": "골든비치",
+   "area": "강원권",
+   "city": "강원영동",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": false,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "골든비치",
+    "official_url": null,
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://namu.wiki/w/%EB%82%A8%EC%B2%9C%20%EC%BD%94%EC%98%A4%EB%A1%B1%ED%95%98%EB%8A%98%EC%B1%84%20%EA%B3%A8%EB%93%A0%EB%B9%84%EC%B9%98",
+     "https://dorojuso.kr/2650010500101480022000003/",
+     "https://www.jobplanet.co.kr/companies/202253/job_postings/%EA%B3%A8%EB%93%A0%EB%B9%84%EC%B9%98"
+    ],
+    "note": "검색 결과에 '골든비치'라는 이름의 국내 골프장은 확인되지 않음. 부산 남천동 아파트(코오롱 하늘채 골든비치), 카지노 운영사 골든비치(주), 홍콩 지명 등만 검색됨. 강원영동 지역의 동명 골프장 근거 없음. 태안 '골든베이 골프&리조트' 또는 강릉 '메이플비치'와의 동일성 여부도 검색 결과로는 확인 불가하여 duplicate_of_id는 null로 둠."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6894,
+    "out": 579
+   }
+  },
+  {
+   "id": "vworld_공군사관학교",
+   "name": "공군사관학교",
+   "area": "충청권",
+   "city": "충북",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_실크리버",
+   "name": "실크리버CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "세레니티CC (구 실크리버CC / 세종실크리버CC)",
+    "official_url": null,
+    "address": "충청북도 청주시 서원구 남이면 문곡구절골길 235",
+    "sido": "충청북도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://incuriosity.tistory.com/21",
+     "https://m.blog.naver.com/ownergolf/222316067653",
+     "https://edaily.co.kr/News/Read?mediaCodeNo=258&newsId=01256246629277208",
+     "https://m.blog.naver.com/premiumgolf/223170463411?isInf=true"
+    ],
+    "note": "충북 청주 남이면 소재 18홀 회원제 골프장. 2020년 ㈜다옴이 인수 후 '세종실크리버CC'로 운영, 이후 '세레니티CC'로 명칭 변경(2023년 블로그에 '세레니티CC (구)실크리버CC' 표기). 기존 후보 목록에 동일 골프장 없음. 공식 홈페이지 URL은 검색 결과에 없어 null. 회원제 코스이나 잔여 티타임은 일반 예약 가능하다는 언급 있음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4285,
+    "out": 710
+   }
+  },
+  {
+   "id": "vworld_상떼힐",
+   "name": "상떼힐CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "익산컨트리클럽 (구 상떼힐익산CC)",
+    "official_url": "https://www.santehill.co.kr",
+    "address": "전북 익산시 무왕로38길 111",
+    "sido": "전북특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://dbegl.com/golf-courses/554-%EC%9D%B5%EC%82%B0%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BD%EA%B5%AC%EC%83%81%EB%96%BC%ED%9E%90%EC%9D%B5%EC%82%B0CC",
+     "https://www.santehill.co.kr/pagesite/reservation/live6.asp",
+     "https://www.kakao.golf/golf/531"
+    ],
+    "note": "VWorld의 '상떼힐CC'는 경기남부가 아니라 전북 익산 소재 '상떼힐익산CC'(현 익산컨트리클럽)로 확인됨. 카카오골프 기준 비회원제 18홀이며, 공식 사이트에 별도 6홀 퍼블릭 코스 예약 메뉴도 존재. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6333,
+    "out": 693
+   }
+  },
+  {
+   "id": "vworld_임페리얼레이크",
+   "name": "임페리얼레이크CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_올데이_임페리얼레이크",
+    "official_name": "올데이 임페리얼레이크 컨트리클럽",
+    "official_url": "https://www.alldaygolf.co.kr",
+    "address": "충북 충주시 금가면 다래울길 52",
+    "sido": "충청북도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://comp4u.oopy.io/b666f8b6-c840-4e39-97d0-951c26478dc3",
+     "https://www.alldaygolf.co.kr",
+     "https://www.jobkorea.co.kr/recruit/co_read/c/ilcc555",
+     "https://9manual.com/entry/%EC%9E%84%ED%8E%98%EB%A6%AC%EC%96%BC%EB%A0%88%EC%9D%B4%ED%81%ACcc-%EA%B3%A8%ED%94%84-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0"
+    ],
+    "note": "VWorld 표기 위치(경기남부)는 부정확. 실제로는 충북 충주시 금가면 탄금호변에 위치한 18홀 대중제 골프장으로, 올데이골프그룹이 운영하는 '올데이 임페리얼레이크'와 동일 골프장(기존 레코드 kgba_올데이_임페리얼레이크와 중복). 구분: 대중제, 전화 043-842-8000. 법인 소재지는 충북 충주시 금가면 월상리 산 95-1."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7523,
+    "out": 553
+   }
+  },
+  {
+   "id": "vworld_중원",
+   "name": "중원골프클럽",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "중원골프클럽",
+    "official_url": "https://www.joongwongolf.co.kr",
+    "address": "충청북도 충주시 산척면 인등로 392",
+    "sido": "충청북도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.poba.or.kr/wlf/wlf01/wlf0101/wlf010103",
+     "https://www.joongwongolf.co.kr",
+     "https://sports.khan.co.kr/article/200512072147153"
+    ],
+    "note": "충북 충주시 산척면 소재 대중제 27홀 골프장(중원GC). VWorld의 경기남부 표기는 부정확하며 실제는 충청북도 충주. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6057,
+    "out": 280
+   }
+  },
+  {
+   "id": "vworld_공군제19전투비행단",
+   "name": "공군제19전투비행단",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_에콜리안제천골프장",
+   "name": "에콜리안 제천골프장",
+   "area": "충청권",
+   "city": "제천",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "에콜리안 제천 골프장",
+    "official_url": "https://www.ecolian.or.kr",
+    "address": "충북 제천시 송학 주천로 102",
+    "sido": "충청북도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://tour.jecheon.go.kr/tour/base/tour/contents/view?clturCntntsNo=3267&menuLevel=3&menuNo=23",
+     "https://blog.naver.com/updoot/223392341560",
+     "https://kimcaddie.com/golfcourse/%EC%B6%A9%EB%B6%81-%EC%A0%9C%EC%B2%9C%EC%8B%9C-%EC%86%A1%ED%95%99-%EC%A3%BC%EC%B2%9C%EB%A1%9C-102",
+     "https://v.daum.net/v/20260701103631529?f=p",
+     "https://www.ecolian.or.kr"
+    ],
+    "note": "국민체육진흥공단이 제천시와 협약해 옛 쓰레기매립장·폐탄광 부지에 조성한 친환경 대중(퍼블릭) 골프장. 9홀 규모이며 공식 홈페이지(ecolian.or.kr)에서 온라인 예약 가능. 후보 목록의 '에콜리안광산 골프장'은 전남 광산 소재 별개 지점이므로 중복 아님."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 3685,
+    "out": 498
+   }
+  },
+  {
+   "id": "vworld_클럽디속리산",
+   "name": "클럽디속리산CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_아리솔",
+    "official_name": "클럽디 속리산CC",
+    "official_url": null,
+    "address": "충북 보은군 탄부면 평각상장로 230",
+    "sido": "충청북도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golf.sbs.co.kr/review/course/692988efd47743ed20578601",
+     "https://www.jbnews.com/news/articleView.html?idxno=1436590",
+     "http://www.golfin.co.kr/news/articleView.html?idxno=6561",
+     "https://bravo-golf.tistory.com/3819"
+    ],
+    "note": "충북 보은군 탄부면 평각상장로 230에 위치한 18홀 대중제(퍼블릭) 골프장. 2011년 아리솔CC로 개장 후 클럽디 속리산으로 명칭 변경되어 기존 후보 vworld_아리솔(클럽디 속리산, 보은, 동일 주소)과 동일 골프장. 웨스트·이스트 코스 18홀, 총면적 약 82만8500㎡. 공식 홈페이지 URL은 검색 결과에 없어 null 처리."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5389,
+    "out": 548
+   }
+  },
+  {
+   "id": "vworld_벨포레",
+   "name": "벨포레CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "블랙스톤 벨포레CC",
+    "official_url": null,
+    "address": null,
+    "sido": "충청북도",
+    "holes": 18,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.barogolf.kr/mobile/goods_view/goods_day.asp?strApart=A&strBpart=02&strCpart=1&goodsNum=573"
+    ],
+    "note": "검색 결과 [0]에서 '충북 증평' 소재 '블랙스톤 벨포레CC'로 확인됨. 18홀(마운틴뷰·레이크뷰 코스) 골프장이며 골프+숙박 패키지가 판매 중이어서 운영 중으로 판단. 기존 후보 목록에 동일 골프장 없음. 상세 주소, 공식 홈페이지, 회원제/대중제 구분은 검색 결과에 없어 null/unknown 처리."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 8869,
+    "out": 542
+   }
+  },
+  {
+   "id": "vworld_theemersongoldclub",
+   "name": "THE EMERSON GoldClub",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "세종에머슨컨트리클럽(Sejong Emerson Country Club)",
+    "official_url": "https://www.sejongemerson.co.kr",
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.sejongemerson.co.kr/mmobile/boad/bd_news/1/egoread.asp?bd=1&typ=0&val=0&itm=&txt=&pg=58&seq=309",
+     "https://www.golfpass.com/travel-advisor/courses/38762-sejong-emerson-country-club-valley-course"
+    ],
+    "note": "'THE EMERSON'이라는 명칭으로 국내에서 확인되는 골프장은 세종에머슨CC(공식 사이트 sejongemerson.co.kr, 에머슨 내셔널/밸리 코스)로 추정됨. 골프패스 자료상 소재지는 충청남도 연기군(현 세종특별자치시)으로 VWorld의 '경기남부' 표기와 불일치하므로 좌표/지역 표기는 부정확한 것으로 보임. 다만 검색 결과만으로는 동일 시설임을 확정할 수 없어 주소·시도·홀수·이용형태는 미확인으로 둠. 기존 후보 목록 중 동일 골프장은 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4618,
+    "out": 1359
+   }
+  },
+  {
+   "id": "vworld_아트밸리",
+   "name": "아트밸리컨트리클럽",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "골프존카운티 진천 (구 아트밸리CC)",
+    "official_url": "http://www.artvalleycc.net",
+    "address": "(27827)충북 진천군 진천읍 송강로 783-51",
+    "sido": "충청북도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.ksmgolf.com/main/z2_golf_v.php?page_no=55&no=109",
+     "https://www.114.co.kr/search/detail?comp_id=5539256&comp_tp_cd=TEL&upjong_cd=892209",
+     "https://www.dailyesports.com/view.php?ud=202002061014222559689a6d883f_19",
+     "http://www.ccnnews.co.kr/news/articleView.html?idxno=173391"
+    ],
+    "note": "충북 진천군 진천읍 소재 27홀(아트·밸리·마운틴 각 9홀) 골프장. 2020년 골프존카운티가 인수해 대중제로 전환, '골프존카운티 진천'으로 명칭 변경. 지번주소는 진천읍 지암리 372-1(지암3길 21-21). 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 3852,
+    "out": 578
+   }
+  },
+  {
+   "id": "vworld_크리스탈카운티",
+   "name": "크리스탈카운티CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "골프존카운티 화랑 (구 크리스탈카운티CC)",
+    "official_url": "https://www.golfzoncounty.com",
+    "address": null,
+    "sido": "충청북도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golfhankook.hankooki.com/news/articleView.html?idxno=10000831",
+     "https://www.joongang.co.kr/article/6414810",
+     "https://mad4golf.tistory.com/355",
+     "http://www.crystalvalley.co.kr/html/guide/guide01_view.asp?idx=557&page=10"
+    ],
+    "note": "충북 진천 소재 18홀 대중제(퍼블릭) 골프장으로 2011년 3월 정식 개장(파72·7254야드, 32만평). 가평 크리스탈밸리CC 홍광표 회장이 조성한 계열 골프장이었으나, 이후 매각되어 현재는 '골프존카운티 화랑'으로 운영된다는 자료가 있음. 가평 크리스탈밸리(vworld_크리스탈밸리g_c, kgba_크리스탈밸리)와는 소재지·운영이 다른 별개 골프장이며, 후보 목록의 골프존카운티 천안·선운·안성H와도 다른 코스임. 개장 당시 공식 사이트는 www.crystalcounty.co.kr로 소개되었으나 현재 유효 여부는 검색 결과로 확인 불가. 상세 주소는 검색 결과에 없음(중부고속도로 진천·증평IC에서 15분 거리라는 언급만 있음)."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6645,
+    "out": 983
+   }
+  },
+  {
+   "id": "vworld_남성대체력단련장",
+   "name": "남성대체력단련장",
+   "area": "수도권",
+   "city": "서울",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_진양밸리",
+   "name": "진양밸리CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "진양밸리 컨트리클럽",
+    "official_url": null,
+    "address": "충북 음성군 삼성면 금일로 1195",
+    "sido": "충청북도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golf.sbs.co.kr/review/course/692988f6d47743eeaf4cae5a",
+     "https://dbegl.com/golf-courses/525-%EC%A7%84%EC%96%91%EB%B0%B8%EB%A6%ACGC",
+     "https://heodj11.tistory.com/1050"
+    ],
+    "note": "VWorld에는 수도권 경기남부로 표기되었으나 실제 소재지는 충북 음성군 삼성면 금일로 1195(연락처 043-880-8000). SBS골프 기준 27홀 대중제이며, 예약 플랫폼에도 현재 티타임이 올라와 운영 중. 기존 후보 목록의 '밸리' 골프장들과는 위치·운영주체가 달라 중복 아님. 공식 홈페이지 URL은 검색 결과에 명시되지 않아 null 처리."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6090,
+    "out": 498
+   }
+  },
+  {
+   "id": "vworld_마론뉴데이",
+   "name": "마론뉴데이cc",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "마론CC (구 마론뉴데이CC)",
+    "official_url": "http://www.maronnewday.com",
+    "address": "충남 천안시 동남구 북면 납안5길 74",
+    "sido": "충청남도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.maronnewday.com",
+     "https://kimcaddie.com/golfcourse/%EB%A7%88%EB%A1%A0%EB%89%B4%EB%8D%B0%EC%9D%B4-%EC%B6%A9%EB%82%A8-%EC%B2%9C%EC%95%88%EC%8B%9C-%EB%8F%99%EB%82%A8%EA%B5%AC-%EB%B6%81%EB%A9%B4-%EB%82%A9%EC%95%88%EB%A6%AC-278-14",
+     "https://blog.naver.com/khuen0107/223499226479",
+     "https://www.golfjournal.co.kr/news/articleView.html?idxno=552"
+    ],
+    "note": "VWorld 표기는 '경기남부'지만 실제로는 충남 천안시 동남구 북면 소재. 2011년 개장, 18홀 파72. 과거 '마론 뉴데이CC'(회원제)에서 현재 '마론CC'로 명칭 변경되었고 김캐디 정보상 비회원제(대중형)로 운영 중. 기존 후보 목록에 동일 골프장 없음. 골프저널(2015)에는 지번주소 천안시 동남구 북면 운용리 489번지로 표기."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5425,
+    "out": 714
+   }
+  },
+  {
+   "id": "vworld_상록c_c",
+   "name": "상록C.C",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_천안상록",
+    "official_name": "천안상록C.C",
+    "official_url": "https://www.sangnokresort.co.kr/M040000",
+    "address": "충남 천안시 수신면 수신로 576",
+    "sido": "충청남도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.sangnokresort.co.kr/M040000",
+     "https://www.sangnokresort.co.kr",
+     "https://peachegg.tistory.com/69",
+     "https://blog.naver.com/juinewin/223093183188"
+    ],
+    "note": "충남 지역의 '상록C.C'는 공무원연금공단 자회사 (주)상록골프앤리조트가 운영하는 천안상록C.C로 판단됨. 27홀 정규 퍼블릭(대중제) 골프장이며 1997년 개장. 기존 후보 kgba_천안상록(충남 천안시 동남구 수신면 수신로 576)과 동일 골프장."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6187,
+    "out": 345
+   }
+  },
+  {
+   "id": "vworld_골드힐골프연습장",
+   "name": "골드힐골프연습장",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": false,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "골드힐골프연습장",
+    "official_url": null,
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [],
+    "note": "레코드명 자체가 '골프연습장'으로, 정규 골프코스가 아닌 연습장으로 판단됨. 검색 결과에서 경기남부 소재 '골드힐골프연습장'에 대한 직접적인 정보는 확인되지 않았고, 확인된 '골드힐CC'는 충남 천안에 신규 오픈한 별개 골프장(라미드그룹)으로 위치가 달라 동일 시설로 볼 근거가 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5877,
+    "out": 376
+   }
+  },
+  {
+   "id": "vworld_천안",
+   "name": "천안골프클럽",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "천안골프클럽",
+    "official_url": null,
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://blog.naver.com/dmstjs6691/223211700197"
+    ],
+    "note": "검색 결과 중 유일한 직접 언급은 네이버 블로그 글 제목('골린이 PAR3 조인 없이 2인 플레이 가능한 천안골프클럽')으로, 파3 형태의 소규모 골프코스로 보임. 공식 홈페이지·주소·홀수·운영 여부를 확인할 수 있는 자료는 검색 결과에 없음. VWorld 표기(경기남부)는 명칭상 천안(충청남도)과 불일치 가능성이 있으나 검색 결과로 확인되지 않아 sido는 null 처리. 기존 후보 중 골프존카운티 천안(버드우드)은 병천 소재 정규 코스로 성격이 달라 동일 골프장으로 보기 어려움."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6558,
+    "out": 812
+   }
+  },
+  {
+   "id": "vworld_골드리버",
+   "name": "골드리버CC",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "골드리버 컨트리클럽",
+    "official_url": "http://www.goldrivercc.com",
+    "address": "충남 공주시 의당면 신성말길 67-38 (의당면 청룡리 220-2)",
+    "sido": "충청남도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://songlog96.tistory.com/57",
+     "http://www.goldrivercc.com",
+     "https://comp4u.oopy.io/68de4d2b-b153-4e2c-9ad5-a8269d815377",
+     "https://storyplus.tistory.com/entry/%EA%B0%80%EC%84%B1%EB%B9%84-%EA%B0%91-%EA%B3%A8%ED%94%84%EC%9E%A5-%EA%B3%A8%EB%93%9C%EB%A6%AC%EB%B2%84-CC-%ED%9B%84%EA%B8%B0"
+    ],
+    "note": "충남 공주시 의당면 소재 9홀 대중제(퍼블릭) 노캐디 골프장. 전화 041-856-7100. 자료마다 주소 표기가 '의당면 신성말길 67-38(청룡리 220-2)', '신정말길 67-133(청룡리)', '청룡리 221-3'로 다소 상이. 2023년 기준 3홀 증설 공사 진행 언급. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5781,
+    "out": 509
+   }
+  },
+  {
+   "id": "vworld_웨스토피아",
+   "name": "웨스토피아CC",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "웨스토피아CC (대천웨스토피아 C.C)",
+    "official_url": "https://www.boryeongbase.co.kr",
+    "address": "충남 보령시 옥마벚길 10",
+    "sido": "충청남도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://m.blog.naver.com/juinewin/221704754308",
+     "https://view.asiae.co.kr/article/2011042117591915844",
+     "https://www.newsis.com/view/NISX20110421_0007992921",
+     "https://kr.pinterest.com/pin/307652218300665609",
+     "https://www.yna.co.kr/view/AKR20110408177600063",
+     "https://www.boryeongbase.co.kr"
+    ],
+    "note": "충남 보령시 옥마산 아래 웨스토피아 리조트((주)대천리조트 운영) 내 9홀 퍼블릭 골프장으로 2011년 5월 개장(보령 첫 골프장). VWorld의 '충남' 표기는 실제와 일치. 기존 후보 목록에 동일 골프장 없음. official_url은 (주)대천리조트가 운영하는 '보령베이스' 골프리조트 공식 홈페이지(검색결과에 동일 운영사·연락처 표기)로, 명칭 변경 여부는 검색결과만으로는 확정 불가. 현재 운영 여부는 공식 리조트 홈페이지 존재를 근거로 operating으로 판단."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 3701,
+    "out": 815
+   }
+  },
+  {
+   "id": "vworld_아름다운c_c",
+   "name": "아름다운C.C",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "아름다운CC (SG아름다운 골프&리조트)",
+    "official_url": null,
+    "address": "충남 아산시 영인면 영인산로 440",
+    "sido": "충청남도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://blog.naver.com/PostView.naver?blogId=c4850515&logNo=224227820808&redirect=Dlog",
+     "https://mementomoriwith.tistory.com/428",
+     "https://jjavis.tistory.com/entry/아름다운CC-코스-소개-및-공략법",
+     "https://premiumgolf.tistory.com/entry/충남-아산-SG-아름다운CC-1박2일-6월특가-충청도골프여행"
+    ],
+    "note": "충남 아산시 영인면 소재 27홀 퍼블릭(리조트형) 골프장. 정식명 'SG아름다운 골프&리조트'로 스크린골프 업체 SG골프가 인수 운영. 후보 목록에 동일 골프장 없음. 공식 홈페이지 URL은 검색 결과에 없어 null. 김캐디 페이지의 '4홀/16파' 표기는 오기로 보이며 다수 자료가 27홀(HILL·LAKE·ROCK)로 기재."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4649,
+    "out": 525
+   }
+  },
+  {
+   "id": "vworld_육군항공학교체력단련장",
+   "name": "육군항공학교체력단련장",
+   "area": "충청권",
+   "city": "충남",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_석문체육공원",
+   "name": "석문체육공원",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": false,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "석문체육공원",
+    "official_url": "http://www.sukmun.co.kr",
+    "address": "충청남도 당진시 석문면 교로길 30",
+    "sido": "충청남도",
+    "holes": 3,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.ktriptips.com/kor/leisure/3083557",
+     "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=e1f4bcb0-5b10-492d-8774-210741fd4346",
+     "https://m.blog.naver.com/dangjin2030/220870621142"
+    ],
+    "note": "당진화력(석문면 교로리) 인근에 조성된 체육시설 내 파3·파4·파5 각 1홀, 총 3홀 규모의 미니 골프장(부지 25,000평, 전장 991m). 정규 골프코스가 아닌 3홀 미니코스이므로 정식 골프장으로 보기 어려움. 직원/주민회원/일반회원 요금이 구분되어 있고 지역주민 및 일반인에게 개방, 홈페이지 예약·조인 가능. VWorld 표기 '경기남부'는 오류이며 실제 위치는 충청남도 당진시. 후보 목록과 중복 아님."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6098,
+    "out": 931
+   }
+  },
+  {
+   "id": "vworld_금실대덕밸리",
+   "name": "금실대덕밸리cc",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "한미르대덕CC (구 금실대덕밸리CC)",
+    "official_url": "https://www.hanmircc.com",
+    "address": "대전광역시 유성구 테크노중앙로 210",
+    "sido": "대전광역시",
+    "holes": 9,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.hanmircc.com",
+     "https://m.blog.naver.com/PostView.naver?blogId=cws4u&logNo=222546535957",
+     "https://www.daejonilbo.com/news/articleView.html?idxno=1479885",
+     "http://www.topgolfm.kr/1234",
+     "https://www.cctoday.co.kr/news/articleView.html?idxno=288433"
+    ],
+    "note": "2009년 대전 유성구 용산동 대덕테크노밸리 내 개장한 9홀 골프장으로, 2021년 청신레저(주)가 인수해 '한미르대덕CC'로 명칭 변경. VWorld의 '충북' 표기는 오류이며 실제 소재지는 대전광역시 유성구. 기존 후보 목록에 동일 골프장 없음. 회원제/대중제 구분은 검색 결과에 없어 unknown."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 3909,
+    "out": 543
+   }
+  },
+  {
+   "id": "vworld_전주월드컵",
+   "name": "전주월드컵컨트리클럽",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "전주월드컵골프장",
+    "official_url": "https://golf.jjss.or.kr",
+    "address": "전라북도 전주시 덕진구 온고을로 672 (여의동)",
+    "sido": "전북특별자치도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golf.jjss.or.kr",
+     "https://comp4u.oopy.io/498478e7-0d4a-4309-b75f-f2c31bfb7804",
+     "https://kimcaddie.com/golfcourse/%EC%A0%84%EC%A3%BC%EC%9B%94%EB%93%9C%EC%BB%B5p-%EC%A0%84%EB%9D%BC%EB%B6%81%EB%8F%84-%EC%A0%84%EC%A3%BC%EC%8B%9C-%EB%8D%95%EC%A7%84%EA%B5%AC-%EC%98%A8%EA%B3%A0%EC%9D%84%EB%A1%9C-672-%EC%97%AC%EC%9D%98%EB%8F%99"
+    ],
+    "note": "전주시시설관리공단이 운영하는 대중제(퍼블릭) 골프장. VWorld의 '충남' 표기는 오류로 보이며 실제 소재지는 전북 전주시 덕진구. 김캐디 기준 9홀/36파(18홀 요금은 2회전 기준으로 추정). 기존 후보 중 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4614,
+    "out": 530
+   }
+  },
+  {
+   "id": "vworld_베어리버골프리조트",
+   "name": "베어리버골프리조트",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "베어리버골프리조트(베어리버CC) — 현 웅포CC·클럽디금강CC로 분리 운영",
+    "official_url": null,
+    "address": "전라북도 익산시 웅포면 강변로 130",
+    "sido": "전라북도",
+    "holes": 36,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "http://www.ksmgolf.com/main/z_golf_v.php?page_no=25&no=159",
+     "https://m.blog.naver.com/solmiace/220862768068",
+     "https://www.jjan.kr/article/20060918200281",
+     "https://v.daum.net/v/UdgRG0SgWC",
+     "https://www.bearportcc.co.kr"
+    ],
+    "note": "VWorld 표기(충남)와 달리 실제 소재지는 전북 익산시 웅포면 강변로 130(금강 하구, 구 웅포골프장). 웅포관광개발이 2005년 착공·2006년 개장한 36홀(베어코스 18홀+리버코스 18홀) 골프리조트. 2012년 웅포관광개발 부도·2018년 파산 후 공매로 분할되어 18홀은 에메랄드CC→베어포트리조트 주주제→2021년 익산관광개발 인수 후 '웅포CC', 나머지 대중제 18홀은 2019년 금강산업개발 인수 후 '클럽디금강CC'로 운영 중. 따라서 '베어리버' 명칭은 현재 사용되지 않으나 코스 자체는 영업 중. 후보 목록의 베어크리크·베어즈베스트 등과는 무관(중복 아님). 공식 홈페이지는 검색결과에 블로그 인용(www.bearriver.co.kr)과 구 베어포트CC 사이트(bearportcc.co.kr)만 확인되어 현 운영사 공식 URL은 특정 불가. 홀수는 원래 36홀 기준."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6793,
+    "out": 1695
+   }
+  },
+  {
+   "id": "vworld_대덕개발특구복지센터",
+   "name": "대덕개발특구복지센터",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "사이언스대덕골프장",
+    "official_url": "http://www.ddgolf.co.kr",
+    "address": "대전시 유성구 유성대로1689번길 69",
+    "sido": "대전광역시",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://m.blog.naver.com/happysema/221268194263",
+     "https://www.diwc.or.kr",
+     "http://www.ddgolf.co.kr",
+     "https://www.instagram.com/diwc_official"
+    ],
+    "note": "VWorld의 '대덕개발특구복지센터'는 과학기술인공제회 부설 대덕복지센터가 운영하는 '사이언스대덕골프장'으로 판단됨. 충북이 아니라 대전 유성구 소재이며, 9홀 36파 대중제 골프장(인터넷 www.ddgolf.co.kr 예약). 공제회 회원 할인요금이 있으나 일반 예약이 가능한 대중골프장으로 표기됨. 부설 골프연습장(93타석)도 함께 운영. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5920,
+    "out": 523
+   }
+  },
+  {
+   "id": "vworld_상떼힐익산",
+   "name": "상떼힐 익산CC",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "익산컨트리클럽 (상떼힐 익산CC)",
+    "official_url": "http://www.santehill.co.kr",
+    "address": "전라북도 익산시 덕기동, 무왕로38길 111",
+    "sido": "전북특별자치도",
+    "holes": 24,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.santehill.co.kr",
+     "https://m.teescanner.com/booking/detail?tab=blogReview&golfclub_seq=198",
+     "https://hyanggyo.tistory.com/entry/%EC%9D%B5%EC%82%B0-%ED%8D%BC%EB%B8%94%EB%A6%AD-6%ED%99%80-%EB%85%B8%EC%BA%90%EB%94%94-%EA%B3%A8%ED%94%84%EC%9E%A5-%EC%9D%B5%EC%82%B0%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BD-%EC%83%81%EB%96%BC%ED%9E%90"
+    ],
+    "note": "VWorld상 충남으로 표기되었으나 실제는 전북 익산시 덕기동(무왕로38길 111) 소재. 공식 사이트에 18홀 예약과 6홀 예약 메뉴가 분리되어 있어 총 24홀(정규 18홀 + 퍼블릭 6홀)로 판단. 6홀 코스는 노캐디 퍼블릭으로 홈페이지 회원가입 후 예약 및 현장 조인 가능하여 일반인 이용 가능(public). 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6631,
+    "out": 825
+   }
+  },
+  {
+   "id": "vworld_상데힐",
+   "name": "상데힐 CC",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "익산컨트리클럽 (구 상떼힐익산CC)",
+    "official_url": "http://www.santehill.co.kr",
+    "address": null,
+    "sido": "전북특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.santehill.co.kr",
+     "https://www.santehill.co.kr/pagesite/reservation/live6.asp",
+     "https://hyanggyo.tistory.com/entry/%EC%9D%B5%EC%82%B0-%ED%8D%BC%EB%B8%94%EB%A6%AD-6%ED%99%80-%EB%85%B8%EC%BA%90%EB%94%94-%EA%B3%A8%ED%94%84%EC%9E%A5-%EC%9D%B5%EC%82%B0%EC%BB%A8%ED%8A%B8%EB%A6%AC%ED%81%B4%EB%9F%BD-%EC%83%81%EB%96%BC%ED%9E%90",
+     "https://dbegl.com/golf-courses/819-%EB%8D%94%EB%82%98%EC%9D%B8GC"
+    ],
+    "note": "'상데힐 CC'는 '상떼힐(Santehill)'의 오기로 보이며, 공식 사이트(santehill.co.kr)상 '상떼힐익산컨트리클럽'으로 확인됨. 예약 플랫폼에서는 '익산컨트리클럽 (구 상떼힐익산CC)'로 표기되어 명칭이 변경된 것으로 보임. 소재지는 충남이 아니라 전북 익산으로 추정되며(VWorld 지역 표기 부정확), 구체적 주소는 검색 결과에 없어 null. 18홀 코스와 별도 6홀 퍼블릭 코스를 운영하며 노캐디 퍼블릭 이용 가능. 기존 후보 중 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7263,
+    "out": 976
+   }
+  },
+  {
+   "id": "vworld_베어리버골프리조트_2",
+   "name": "베어리버골프리조트",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "closed",
+    "duplicate_of_id": null,
+    "official_name": "베어리버 골프리조트 (베어리버CC)",
+    "official_url": null,
+    "address": "전라북도 익산시 웅포면 강변로 130",
+    "sido": "전라북도",
+    "holes": 36,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=79038549-eca7-49d2-9a26-1e70eaaee968",
+     "https://m.blog.naver.com/solmiace/220862768068",
+     "https://www.donga.com/news/Economy/article/all/20090627/8748802/1",
+     "https://www.jjan.kr/article/20060918200281",
+     "https://v.daum.net/v/UdgRG0SgWC"
+    ],
+    "note": "VWorld에 충남으로 표기됐으나 실제 위치는 전북 익산시 웅포면(금강 하구)으로 지역 표기 오류. 웅포관광개발이 조성한 36홀(베어코스18+리버코스18) 리조트였으나 2012년 부도·2014년 공매로 분할되어, 18홀은 에메랄드CC→현 '웅포CC'(익산관광개발 인수, 2021~), 나머지 대중제 18홀은 2019년 '클럽디금강CC'로 운영 중. 따라서 '베어리버골프리조트'라는 명칭의 골프장은 현재 존재하지 않음(명칭 폐지·분할). 과거 홈페이지로 www.bearriver.co.kr가 블로그에 언급되나 현재 유효 여부 확인 불가하여 null 처리. 후보 목록 중 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 7965,
+    "out": 1068
+   }
+  },
+  {
+   "id": "vworld_스파힐스",
+   "name": "스파힐스컨트리클럽",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "김제스파힐스컨트리클럽",
+    "official_url": "https://www.spahillscc.co.kr",
+    "address": null,
+    "sido": "전북특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.spahillscc.co.kr",
+     "https://www.spahillscc.co.kr/info/booking",
+     "https://www.golfzon.com/course/detail/100000998"
+    ],
+    "note": "VWorld에 '충남'으로 표기됐으나 실제는 전북 김제시 소재 '김제스파힐스컨트리클럽'. 공식 홈페이지(spahillscc.co.kr) 및 골프존 코스 정보(김제, 18홀)로 확인. 온라인 예약 안내 페이지가 있어 일반 이용 가능한 것으로 보이나 회원제/대중제 구분은 검색결과에 명시 없음. 도로명 주소는 검색결과에 없음. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4443,
+    "out": 588
+   }
+  },
+  {
+   "id": "vworld_자운대체력단련장",
+   "name": "자운대체력단련장",
+   "area": "충청권",
+   "city": "충남",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_오케이",
+   "name": "오케이컨트리클럽",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "오케이컨트리클럽",
+    "official_url": null,
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [],
+    "note": "제공된 웹 검색 결과에는 '오케이컨트리클럽(OK CC)'에 관한 직접적인 정보가 전혀 없음. 검색 결과는 충남 태안 솔라고CC, 감곡CC, 더힐CC, 골든베이CC 등 무관한 충청권 골프장 목록뿐이며, '오케이'는 영상 대사 중 감탄사로만 등장함. 따라서 소재지·홀수·운영 여부·공식 홈페이지·중복 여부 모두 확인 불가. 명칭상 컨트리클럽으로 표기되어 골프장으로 추정할 뿐 근거 자료 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 8344,
+    "out": 559
+   }
+  },
+  {
+   "id": "vworld_무주",
+   "name": "무주컨트리클럽",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "무주컨트리클럽",
+    "official_url": null,
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [],
+    "note": "제공된 검색 결과(충북 진천 천룡CC, 청주 떼제베CC, 제천 킹즈락·에콜리안, 충주 중원CC, 음성 모나크CC 등)에는 '무주컨트리클럽'에 관한 내용이 전혀 없어 주소·홀수·운영여부·공식 홈페이지를 확인할 수 없음. VWorld의 '충북' 표기는 부정확할 가능성이 크며(무주는 통상 전북 무주군), 기존 후보 목록 중 동일 골프장으로 볼 근거도 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 8612,
+    "out": 415
+   }
+  },
+  {
+   "id": "vworld_무주안성",
+   "name": "무주안성cc",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "골프존카운티 무주 (구 무주안성CC)",
+    "official_url": "https://www.golfzoncounty.com",
+    "address": "전북 무주군 안성면 장무로 1537-21",
+    "sido": "전북특별자치도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://mad4golf.tistory.com/219",
+     "https://blog.naver.com/960720_/223493676894",
+     "https://www.golfin.co.kr/news/articleView.html?idxno=4447",
+     "https://www.golfzoncounty.com",
+     "https://www.youtube.com/watch?v=QWE2GVTlyd4"
+    ],
+    "note": "VWorld의 '무주안성cc'는 전북 무주군 안성면에 위치한 골프장으로, 지명(무주군 안성면)에서 이름이 유래해 경기 안성/충북과는 무관함. 현재 골프존카운티에 인수되어 '골프존카운티 무주'로 운영 중이며 김재열 설계 18홀 퍼블릭(대중제) 코스. VWorld 표기 지역(충북)은 부정확. 기존 후보 목록의 안성CC·안성베네스트 등과는 다른 골프장."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5770,
+    "out": 594
+   }
+  },
+  {
+   "id": "vworld_남성대퍼블릭체력단련장",
+   "name": "남성대퍼블릭체력단련장",
+   "area": "수도권",
+   "city": "서울",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "kgba_세종필드",
+   "name": "세종필드",
+   "area": "충청권",
+   "city": "세종",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "세종필드골프클럽",
+    "official_url": "https://www.sejongcc.com",
+    "address": "세종 정안세종로 1569",
+    "sido": "세종특별자치시",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.cgbest.co.kr/cgbest/business/sejong.do",
+     "https://www.sejongcc.com",
+     "https://kimcaddie.com/golfcourse/%EC%84%B8%EC%A2%85-%EC%A0%95%EC%95%88%EC%84%B8%EC%A2%85%EB%A1%9C-1569",
+     "https://www.sejonggc.com/club/guide"
+    ],
+    "note": "세종특별자치시 소재 18홀 퍼블릭(대중제) 골프장으로, 세종코스·행복코스로 구성. 운영사는 CG베스트(청구)로 표기됨. 기존 후보 중 세종에머슨(전의면 운주산로)과는 위치·운영주체가 달라 중복 아님. 공식 사이트로 sejongcc.com과 sejonggc.com 두 도메인이 검색결과에 나타남. 김캐디 페이지는 '회원제'로 표기했으나 공식 소개 및 다수 자료는 18H 퍼블릭으로 기재."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5181,
+    "out": 751
+   }
+  },
+  {
+   "id": "vworld_탑블리스",
+   "name": "탑블리스CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "탑블리스CC",
+    "official_url": null,
+    "address": "경북 안동시 풍천면 풍일로1572 (지번: 어담리 297-1)",
+    "sido": "경상북도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://www.imaeil.com/page/view/2013090908380567367",
+     "https://www.kbsm.net/news/view.php?idx=22453",
+     "https://m.blog.naver.com/0138kem/221633081026",
+     "https://www.mk.co.kr/news/sports/4665475"
+    ],
+    "note": "VWorld에는 충북(충청권)으로 표기됐으나 검색 결과상 실제 위치는 경북 안동시 풍천면 어담리 일대(풍일로 1572). 2005년 8월 개장, 18홀 정규코스, 600명 규모 회원제로 운영(회원권 일반 5800만원·프리미엄 9000만원 모집 기사). 기존 후보 목록에 동일 골프장 없음. 블로그 제목에 '고은CC 탑블리스CC'가 함께 언급되어 명칭 변경(고은CC) 가능성이 있으나 검색 결과만으로는 확인 불가. 공식 홈페이지 URL은 검색 결과에 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5969,
+    "out": 824
+   }
+  },
+  {
+   "id": "vworld_선산",
+   "name": "선산CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "골프존카운티 선산",
+    "official_url": "https://sunsan.golfzoncounty.com",
+    "address": "경북 구미시 산동읍 강동로 953-73",
+    "sido": "경상북도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://sunsan.golfzoncounty.com",
+     "https://dbegl.com/golf-courses/619-%EA%B3%A8%ED%94%84%EC%A1%B4%EC%B9%B4%EC%9A%B4%ED%8B%B0%EC%84%A0%EC%82%B0",
+     "https://www.dongagolf.co.kr/etc/onbid/onbid01.php?akey=&gkey=10065&scrkey=",
+     "https://blog.naver.com/haruki/224035075306?viewType=pc"
+    ],
+    "note": "충북이 아니라 경북 구미시 산동읍 소재 18홀 골프장. 옛 선산군 지명에서 유래한 이름이며 현재 골프존카운티 선산으로 운영 중. 동아회원권 정보상 회원제(회원수 718명)로 표기되어 public_access=member_only. 기존 후보 목록의 골프존카운티선운(전북 고창)과는 다른 골프장."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4321,
+    "out": 452
+   }
+  },
+  {
+   "id": "vworld_세종레이캐슬",
+   "name": "세종레이캐슬GC",
+   "area": "충청권",
+   "city": "충남",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "레이캐슬 골프&리조트 (레이캐슬CC)",
+    "official_url": "https://www.sjraycastle.com",
+    "address": "세종특별자치시 전의면 의당전의로 252",
+    "sido": "세종특별자치시",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.sjraycastle.com",
+     "https://www.mk.co.kr/news/sports/11359000",
+     "https://blog.naver.com/lyy982052/224194951033?viewType=pc",
+     "https://grfm.tistory.com/291",
+     "https://www.youtube.com/watch?v=cf96MwUWaFA"
+    ],
+    "note": "VWorld에 '충남'으로 표기되어 있으나 실제 소재지는 세종특별자치시 전의면 의당전의로 252. 2019년 개장, (주)자광홀딩스 계열. 매경 골프장 평가에서 충청권 대중제 1위로 소개되어 public으로 판정(회원권 R150/R250/R500도 분양). 코스는 세종·레이·캐슬 3개 코스로 언급되나 홀 수는 검색 결과에 명시되지 않아 null. 기존 후보 중 세종에머슨(전의면 운주산로 1510) 등과는 다른 골프장."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5297,
+    "out": 739
+   }
+  },
+  {
+   "id": "vworld_구미",
+   "name": "구미컨트리클럽",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "구미컨트리클럽",
+    "official_url": "https://www.gumicc.com",
+    "address": "구미시 장천면 송백로 229",
+    "sido": "경상북도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.gumicc.com/Mobile/Course/Info.aspx",
+     "https://www.instagram.com/gumicc__",
+     "https://sgh4609.tistory.com/3602"
+    ],
+    "note": "경북 구미시 장천면 소재 퍼블릭(대중제) 27홀 골프장(거북·백호·청룡 각 9홀). VWorld의 '충북' 표기는 오류로 보이며 실제는 경상북도 구미시. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6871,
+    "out": 283
+   }
+  },
+  {
+   "id": "vworld_제이스",
+   "name": "제이스CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "골프존카운티 구미 (구 제이스CC)",
+    "official_url": "https://golfzoncounty.com/golfclub/main?golfclubSeq=50",
+    "address": "경북 구미시 산동읍 강동로 953-74",
+    "sido": "경상북도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golfzoncounty.com/golfclub/main?golfclubSeq=50",
+     "http://www.dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=730045",
+     "https://www.swgolfcondo.com/sinwon/bbs/board.php?bo_table=golf02&wr_id=119"
+    ],
+    "note": "제이스CC는 현재 '골프존카운티 구미'로 운영 중인 18홀 퍼블릭 골프장. VWorld의 충북 표기는 오류이며 실제 소재지는 경북 구미시 산동읍 강동로 953-74. 인접한 선산CC(현 골프존카운티 선산)와 함께 운영된다는 언급이 있으나 후보 목록에는 동일 골프장이 없어 duplicate 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4199,
+    "out": 627
+   }
+  },
+  {
+   "id": "vworld_구미_2",
+   "name": "구미CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "구미컨트리클럽",
+    "official_url": "https://www.gumicc.com",
+    "address": "구미시 장천면 송백로 229",
+    "sido": "경상북도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.gumicc.com/Club/Info.aspx",
+     "https://comp4u.oopy.io/f1a92d36-5d54-45db-80ea-84dcdbb6a5ce",
+     "https://www.instagram.com/gumicc__",
+     "https://sgh4609.tistory.com/3602"
+    ],
+    "note": "VWorld에는 충북으로 표기되었으나 실제는 경북 구미시 장천면 소재 대중제(퍼블릭) 27홀 골프장(청룡·백호·거북 각 9홀). 공식 사이트 gumicc.com 운영 중이며, 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7735,
+    "out": 341
+   }
+  },
+  {
+   "id": "vworld_뉴스프링빌2",
+   "name": "뉴스프링빌2",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "뉴스프링빌2 백화산컨트리클럽",
+    "official_url": "https://sangju.newspring.co.kr",
+    "address": "경상북도상주시 모서면 백화로 40",
+    "sido": "경상북도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://savetour.co.kr/travel/view.html?no=312",
+     "https://www.kakao.golf/golf/254",
+     "https://sangju.newspring.co.kr/club/index",
+     "https://bravo-golf.tistory.com/5855"
+    ],
+    "note": "VWorld에는 충북으로 표기되어 있으나 실제로는 경북 상주시 모서면 백화로 40에 위치(충북 영동 접경, 영동IC 인근)하여 지역 표기가 부정확함. 18홀 대중제(퍼블릭) 골프장이며 '뉴스프링빌2 백화산CC'로 불림. 운영사는 ㈜동승레저. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5320,
+    "out": 478
+   }
+  },
+  {
+   "id": "vworld_수원공군체력단련장",
+   "name": "수원공군체력단련장",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_꽃담c_c",
+   "name": "꽃담C.C",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": false,
+    "operating": "unknown",
+    "duplicate_of_id": null,
+    "official_name": "꽃담C.C",
+    "official_url": null,
+    "address": null,
+    "sido": null,
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [],
+    "note": "제공된 검색 결과(충청북도 골프장 현황 목록 등)에서 '꽃담C.C'에 해당하는 골프장을 전혀 확인할 수 없음. 충북 골프장 목록에도 미등재. 실체 및 운영 여부, 주소, 홀 수 모두 확인 불가하여 골프장으로 확정할 근거 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5232,
+    "out": 224
+   }
+  },
+  {
+   "id": "vworld_군위오펠g_c",
+   "name": "군위오펠G.C",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "군위오펠GC",
+    "official_url": null,
+    "address": "경상북도 군위군 산성면 부흥로 227",
+    "sido": "경상북도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://dbegl.com/golf-courses/637-%EA%B5%B0%EC%9C%84%EC%98%A4%ED%8E%A0GC",
+     "https://comp4u.oopy.io/3a6d2463-faf3-4e26-aa74-31c009809b95",
+     "https://m.blog.naver.com/PostView.naver?blogId=jin03260326&logNo=224076489597",
+     "https://m.blog.naver.com/nice3274/223791242047"
+    ],
+    "note": "VWorld 표기(충북)는 오류로 보이며, 실제 위치는 경북 군위군 산성면 부흥로 227(지번: 산성면 운산리 900), 전화 054-380-8000. 전국골프장현황 자료상 '대중제'로 기재되어 public으로 판정. 오펠 브랜드는 영천(회원제)·군위·고령 3곳을 별도 운영하며, 기존 후보 'vworld_오펠(오펠GC, 경북)'은 주소가 없어 영천 오펠GC를 가리킬 가능성이 높아 동일 골프장으로 단정하지 않고 duplicate_of_id는 null 처리. 홀수는 검색 결과에 없음. 공식 홈페이지 URL도 검색 결과에 직접 제시되지 않음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4878,
+    "out": 1007
+   }
+  },
+  {
+   "id": "vworld_성남공군체력단련장",
+   "name": "성남공군체력단련장",
+   "area": "수도권",
+   "city": "서울",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_해군2함대",
+   "name": "해군2함대",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_제일스포츠센타",
+   "name": "제일스포츠센타",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_제일",
+    "official_name": "제일 컨트리클럽",
+    "official_url": null,
+    "address": "경기도 안산시 상록구 태마당로 28, 10동 (부곡동 587)",
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://letsgrip.com/detail?clubCd=41",
+     "https://tigerone74.tistory.com/75",
+     "https://www.kyeonggi.com/article/201601210831192"
+    ],
+    "note": "'제일스포츠센타'는 경기 안산 제일컨트리클럽의 운영 모기업(주식회사 제일스포츠센타) 명칭으로, 기존 레코드 kgba_제일(제일 컨트리클럽, 경기도 안산시 상록구 태마당로 28)과 동일 골프장. 27홀(자료에 따라 27/9홀) 규모이며 회원제(프라이비트) 골프장으로 소개됨. 공식 홈페이지는 검색 결과에 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5711,
+    "out": 369
+   }
+  },
+  {
+   "id": "kgba_캐슬렉스",
+   "name": "캐슬렉스",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_캐슬렉스_2",
+    "official_name": "캐슬렉스 서울 골프클럽",
+    "official_url": "https://www.castlexseoul.com",
+    "address": "경기도 하남시 감이로 317",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.castlexseoul.com",
+     "https://cafe.daum.net/t.o.mgolf/VU5z/66",
+     "https://dbegl.com/golf-courses/439-%EC%BA%90%EC%8A%AC%EB%A0%89%EC%8A%A4CC",
+     "https://m.blog.naver.com/orangegolf2444/223491394282"
+    ],
+    "note": "VWorld '캐슬렉스'(경기남부)는 경기도 하남시 감이로 317 소재 캐슬렉스 서울 골프클럽(구 동서울CC)으로 판단되어 기존 레코드 kgba_캐슬렉스_2와 동일. 공식 사이트 castlexseoul.com 확인. 동코스·서코스 18홀 언급(블로그). 회원제 여부는 회원권 관련 블로그 언급만 있어 unknown 처리."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 3812,
+    "out": 428
+   }
+  },
+  {
+   "id": "vworld_일산스프링힐스",
+   "name": "일산스프링힐스",
+   "area": "수도권",
+   "city": "인천",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "일산 스프링힐스 컨트리클럽",
+    "official_url": "https://www.springhills.co.kr",
+    "address": "경기 고양시 덕양구 주교동 1500",
+    "sido": "경기도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://kimcaddie.com/golfcourse/%EC%9D%BC%EC%82%B0%EC%8A%A4%ED%94%84%EB%A7%81%EC%8A%A4p-%EA%B2%BD%EA%B8%B0-%EA%B3%A0%EC%96%91%EC%8B%9C-%EB%8D%95%EC%96%91%EA%B5%AC-%EC%A3%BC%EA%B5%90%EB%8F%99-1500",
+     "https://www.springhills.co.kr",
+     "https://www.yna.co.kr/view/AKR20250619119700060"
+    ],
+    "note": "VWorld상 '수도권 인천' 표기는 오류로 보이며, 실제로는 경기 고양시 소재 9홀 퍼블릭 골프장(9홀 2회전 운영). 연습장(골프레인지)을 함께 운영하나 정규 필드 코스가 존재함. 2025년 기사에 따르면 고양시 일산동구 산황동 소재로 9홀→18홀 증설 사업 추진 중(2027년 준공 예정). 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5426,
+    "out": 628
+   }
+  },
+  {
+   "id": "vworld_고양컨트리",
+   "name": "고양컨트리",
+   "area": "수도권",
+   "city": "서울",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "고양컨트리클럽",
+    "official_url": "https://www.goyangcc.com",
+    "address": null,
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.goyangcc.com/club/club",
+     "https://play.google.com/store/apps/details?id=net.moonos.android.goyang&hl=ko",
+     "https://www.instagram.com/goyangcountryclub"
+    ],
+    "note": "공식 홈페이지(goyangcc.com) 및 인스타그램에서 '고양컨트리클럽(고양CC)' 운영 중 확인. 스스로 '대중골프장'으로 소개하여 public으로 판정. 검색 결과에 고양CC 자체의 주소·홀수는 명시되지 않아 null 처리(검색결과 [2] 서울한양CC, [4] 한양파인CC는 별개 골프장 주소). 서울·고양·일산 인근 위치 언급으로 경기도 고양시 소재로 추정. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4181,
+    "out": 572
+   }
+  },
+  {
+   "id": "vworld_광릉",
+   "name": "광릉cc",
+   "area": "수도권",
+   "city": "경기북부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "광릉컨트리클럽 (한림광릉CC)",
+    "official_url": "https://www.kwangneungcc.co.kr/",
+    "address": "경기 남양주시 진접읍 팔야로 280",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://golf.sbs.co.kr/m/review/course/692988f1d47743ec895b8934",
+     "https://www.kwangneungcc.co.kr/html/center/center02.asp",
+     "https://kimcaddie.com/golfcourse/%EA%B4%91%EB%A6%89%ED%8F%AC%EB%A0%88%EC%8A%A4%ED%8A%B8p-%EA%B2%BD%EA%B8%B0%EB%8F%84-%EB%82%A8%EC%96%91%EC%A3%BC%EC%8B%9C-%EC%A7%84%EC%A0%91%EC%9D%8D-%ED%8C%94%EC%95%BC%EB%A1%9C-280%EB%B2%88%EC%A7%80"
+    ],
+    "note": "경기 남양주시 진접읍 팔야로 280 소재 '광릉컨트리클럽(한림광릉CC)'로 판단됨. SBS골프 기준 회원제 18홀이며, 별도 PAR3 퍼블릭 9홀(30파) 코스도 운영 중(김캐디 표기). 기존 후보 목록(전남 광주 지역 골프장, 파주·안성·부산 소재 골프장)과는 다른 골프장으로 중복 아님."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4700,
+    "out": 815
+   }
+  },
+  {
+   "id": "vworld_레이크힐스용인",
+   "name": "레이크힐스용인컨트리클럽",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "한림용인CC (구 레이크힐스용인 컨트리클럽)",
+    "official_url": null,
+    "address": "경기도 용인시 처인구 남사면 경기동로 628",
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.yongin.go.kr/tour/exTrv/exTrvLeisu/exTrvLeisu01/exTrvLeisu01_23.jsp",
+     "https://www.golfpang.com/web/round/special_list_view.do?idx=2531",
+     "https://mad4golf.tistory.com/385",
+     "https://www.golfland.co.kr/web/preview/previewMain.php",
+     "http://www.eugenegolf.co.kr/main/z_golf_v.php?page_no=53&no=20"
+    ],
+    "note": "경기 용인 처인구 남사면 소재 27홀 골프장으로, 옛 레이크힐스 용인 컨트리클럽(일송개발㈜, 회원제)이 소유·운영 주체 변경 후 '한림용인CC'로 개칭되어 대중제(퍼블릭)로 운영 중(블로그·부킹사 기재). 기존 후보 중 레이크사이드(용인 모현읍) 등과는 다른 별개 골프장으로 중복 아님. 공식 홈페이지는 옛 주소(www.lakehillscc.co.kr)만 검색결과에 나타나 현행 공식 URL은 확인 불가."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 7891,
+    "out": 822
+   }
+  },
+  {
+   "id": "vworld_석천",
+   "name": "석천CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "용인컨트리클럽 석천코스",
+    "official_url": "https://www.yongincc.com",
+    "address": "경기 용인시 처인구 백암면 황새울로 255",
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.youtube.com/watch?v=LovnJUz43F8",
+     "https://blog.naver.com/PostView.naver?blogId=cys1422&logNo=224355257286",
+     "https://www.yongincc.com/Guide/Fees.aspx",
+     "https://www.youtube.com/watch?v=e4jXz6MPFos"
+    ],
+    "note": "'석천CC'는 독립 골프장이 아니라 경기도 용인시 처인구 백암면에 위치한 용인컨트리클럽의 '석천(石泉) 코스'로 확인됨. 기존 레코드 후보 중 용인CC는 없어 중복 아님. 공식 사이트(yongincc.com)에 그린피·캐디피 등 일반 이용요금이 공개되어 있고 노캐디·2인 플레이 등 일반인 이용 후기가 있어 public으로 판단. 홀 수는 검색 결과에 명시되지 않음(파6홀 최장거리 홀 보유 언급만 있음)."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5442,
+    "out": 765
+   }
+  },
+  {
+   "id": "vworld_용인",
+   "name": "용인CC",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "용인컨트리클럽",
+    "official_url": "https://www.yongincc.com",
+    "address": null,
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "unknown",
+    "evidence_urls": [
+     "https://www.yongincc.com"
+    ],
+    "note": "검색 결과 중 '용인CC'와 직접 일치하는 것은 공식 사이트 yongincc.com(용인컨트리클럽)으로, 경기 용인 소재 골프장으로 판단됨. 기존 후보 목록에는 동일 골프장이 없음(플라자CC·양지파인·써닝포인트 등은 별개 골프장). '블루원용인CC'(용인시 처인구 원삼면 보개원삼로1534번길 40)는 이름이 유사하나 별도 브랜드 골프장으로 동일 여부를 검색 결과만으로 확정할 수 없음. 공식 사이트에 주소·홀수·회원제 여부가 노출되지 않아 null/unknown 처리."
+   },
+   "checks": {
+    "address_in_results": false,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7519,
+    "out": 697
+   }
+  },
+  {
+   "id": "kgba_지산_2",
+   "name": "지산",
+   "area": "수도권",
+   "city": "용인",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_지산",
+    "official_name": "지산 컨트리클럽",
+    "official_url": "http://www.jisangolf.com",
+    "address": "경기도 용인시 처인구 원삼면 죽양대로2000번길 60",
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=130980",
+     "https://blog.naver.com/iwrfr1004/223416671042",
+     "https://kimcaddie.com/golfcourse/%EC%A7%80%EC%82%B0p-%EA%B2%BD%EA%B8%B0-%EC%9A%A9%EC%9D%B8%EC%8B%9C-%EC%B2%98%EC%9D%B8%EA%B5%AC-%EC%9B%90%EC%82%BC%EB%A9%B4-%EB%A7%B9%EB%A6%AC-%EC%82%B029-8"
+    ],
+    "note": "경기 용인 처인구 원삼면 소재 지산CC로, 기존 후보 kgba_지산(지산 컨트리클럽, 동일 주소)과 동일. 지산리조트가 운영하며 회원제 18홀 + 대중제 9홀(합계 27홀) 구성으로 보고됨. 회원제 중심이나 비회원 이용 요금도 존재."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 4880,
+    "out": 496
+   }
+  },
+  {
+   "id": "vworld_선봉대",
+   "name": "선봉대",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "선봉대 체력단련장",
+    "official_url": "https://www.armywelfaregolf.mil.kr",
+    "address": "경기 용인시 처인구 성산로 57",
+    "sido": "경기도",
+    "holes": 9,
+    "public_access": "military",
+    "evidence_urls": [
+     "https://headlee.tistory.com/208",
+     "https://kimcaddie.com/golfcourse/%EA%B2%BD%EA%B8%B0-%EC%9A%A9%EC%9D%B8%EC%8B%9C-%EC%B2%98%EC%9D%B8%EA%B5%AC-%EC%84%B1%EC%82%B0%EB%A1%9C-%EC%82%AC%EC%84%9C%ED%95%A8-505-2%ED%98%B8",
+     "https://blog.naver.com/tangdori778/222686899538",
+     "https://www.instagram.com/p/DI8kBBNyQB0"
+    ],
+    "note": "경기 용인시 처인구에 위치한 육군 체력단련장 골프장(선봉대CC). 9홀 코스(2회전 운영), 육군복지골프 사이트(armywelfaregolf.mil.kr)에서 예약. 군 체력단련장으로 현역·군 관련 할인이 적용되며 일반인 예약도 일부 가능하나 군 운영 시설이므로 military로 분류. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5115,
+    "out": 507
+   }
+  },
+  {
+   "id": "vworld_처인체력단련장",
+   "name": "처인체력단련장",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "vworld_코리아퍼브릭",
+   "name": "코리아퍼브릭",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "코리아퍼블릭GC",
+    "official_url": "https://www.gakorea.com/public/index.asp",
+    "address": "경기도 용인시 기흥구 기흥단지로 224(고매동)",
+    "sido": "경기도",
+    "holes": 9,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.gakorea.com/public/index.asp",
+     "http://www.localnaeil.com/News/View/651221",
+     "https://www.instagram.com/koreapublicgc.gakorea"
+    ],
+    "note": "(주)지에이코리아(GA KOREA)가 운영하는 9홀 대중제 골프장(총 전장 2,745야드). 같은 운영사의 코리아CC(용인 처인구 이동읍 기흥단지로 579)·골드CC와는 위치가 다른 별개 구장이므로 중복으로 보지 않음. 9홀/18홀 선택 및 노캐디 라운딩 가능, 일반 예약 가능한 퍼블릭 코스."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 7359,
+    "out": 640
+   }
+  },
+  {
+   "id": "vworld_경찰대학체력단련장",
+   "name": "경찰대학체력단련장",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "rule",
+   "identity": {
+    "public_access": "military",
+    "operating": "unknown"
+   }
+  },
+  {
+   "id": "kgba_휘닉스평창",
+   "name": "휘닉스평창",
+   "area": "강원권",
+   "city": "평창",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_휘닉스파크",
+    "official_name": "휘닉스 CC",
+    "official_url": "https://phoenixhnr.co.kr/m/static/pyeongchang/golf/phoenix-intro",
+    "address": "강원 평창군 봉평면 태기로 174",
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://phoenixhnr.co.kr/m/static/pyeongchang/golf/phoenix-intro",
+     "https://phoenixhnr.co.kr/m/static/pyeongchang/golf/phoenix-guide",
+     "https://forest-lim.tistory.com/216",
+     "https://m.blog.naver.com/hsp7007/223455121216"
+    ],
+    "note": "휘닉스 파크(리조트) 내 휘닉스 CC로, 기존 후보 '휘닉스 컨트리클럽(vworld_휘닉스파크)'과 동일 골프장으로 판단. 공식 사이트상 총 연장 6,338m, 마운틴·레이크 18홀 회원제(잭 니클라우스 설계). 2026년 3월 6일~12월 6일 운영 예정으로 정상 영업 중. 같은 리조트 내 '태기산 나인 CC'가 별도 존재하나 운영 주체는 동일."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6801,
+    "out": 655
+   }
+  },
+  {
+   "id": "kgba_벨라45오너스클럽",
+   "name": "벨라45오너스클럽",
+   "area": "강원권",
+   "city": "",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "벨라45 컨트리클럽 오너스클럽",
+    "official_url": "https://www.bella45.com",
+    "address": "강원 횡성군 서원면 창촌리 산132",
+    "sido": "강원특별자치도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://www.bella45.com",
+     "https://blog.naver.com/kiki5730/224029762773?viewType=pc",
+     "https://slgolf03.tistory.com/884",
+     "https://www.youtube.com/watch?v=DP7_OLwVx4Y"
+    ],
+    "note": "강원 횡성 벨라45CC(총 45홀) 중 회원제 18홀 코스인 '오너스클럽'(A,B코스). 대중제 27홀은 '마스터스클럽'. 기존 후보 목록에 동일 골프장 없음(오너스 골프클럽은 춘천 소재 별개, 사우스케이프오너스는 남해 소재)."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5094,
+    "out": 350
+   }
+  },
+  {
+   "id": "kgba_김포씨사이드",
+   "name": "김포씨사이드",
+   "area": "수도권",
+   "city": "김포",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_김포seaside",
+    "official_name": "김포SEASIDE컨트리클럽",
+    "official_url": "https://www.gimpocc.co.kr",
+    "address": "경기 김포시 월곶면 김포대로 2801번길 219",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "member_only",
+    "evidence_urls": [
+     "https://golf.sbs.co.kr/review/course/692988ebd47743ed241e8d43?scrollTo=reviews",
+     "https://www.gimpocc.co.kr",
+     "http://www.eugenegolf.co.kr/main/gmb_board_view.php?page_no=27&no=838"
+    ],
+    "note": "김포씨사이드CC는 김포SEASIDE컨트리클럽과 동일 골프장(경기 김포시 월곶면 김포대로2801번길 219). 회원제 18홀, par72로 기존 레코드 vworld_김포seaside와 중복."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 3631,
+    "out": 334
+   }
+  },
+  {
+   "id": "kgba_양지파인",
+   "name": "양지파인",
+   "area": "수도권",
+   "city": "용인",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_파인리조트",
+    "official_name": "양지파인CC (양지파인리조트)",
+    "official_url": "https://www.pineresort.com",
+    "address": "경기도 용인시 처인구 양지읍 남평로 112",
+    "sido": "경기도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.pineresort.com",
+     "https://m.blog.naver.com/goodjcs/224309066089",
+     "https://namu.wiki/w/%EC%96%91%EC%A7%80%ED%8C%8C%EC%9D%B8%EB%A6%AC%EC%A1%B0%ED%8A%B8"
+    ],
+    "note": "양지파인리조트 내 양지파인CC로, 기존 후보 vworld_파인리조트(양지파인 컨트리클럽, 동일 주소 남평로 112)와 동일 골프장. 서·남·동 27홀 퍼블릭 운영."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4370,
+    "out": 336
+   }
+  },
+  {
+   "id": "kgba_sg아름다운",
+   "name": "SG아름다운",
+   "area": "충청권",
+   "city": "",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "SG아름다운 골프&리조트 (아름다운CC)",
+    "official_url": "https://www.arumdaunresort.com",
+    "address": "충남 아산시 영인면 영인산로 440",
+    "sido": "충청남도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.arumdaunresort.com",
+     "https://mad4golf.tistory.com/221",
+     "https://kanigolf.tistory.com/444"
+    ],
+    "note": "충남 아산 영인산 소재 27홀(Hill-Lake-Rock) 골프장. SG그룹 소유 퍼블릭으로 운영 중이며 리조트 병설. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6561,
+    "out": 270
+   }
+  },
+  {
+   "id": "kgba_서산수",
+   "name": "서산수",
+   "area": "충청권",
+   "city": "서산",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "서산수 골프앤리조트",
+    "official_url": "https://www.seosansoo.com",
+    "address": "충남 서산시 대산읍 삼길포7로 6",
+    "sido": "충청남도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://golf.sbs.co.kr/review/course/692988ecd47743ed3e09e89f",
+     "https://kimcaddie.com/golfcourse/%EC%9C%88%EC%B2%B4%EC%8A%A4%ED%8A%B8%EC%84%9C%EC%82%B0-%EC%B6%A9%EB%82%A8-%EC%84%9C%EC%82%B0%EC%8B%9C-%EB%8C%80%EC%82%B0%EC%9D%8D-%ED%99%94%EA%B3%A1%EB%A6%AC-%EC%82%B0-4-1",
+     "https://www.seosansoo.com"
+    ],
+    "note": "충남 서산시 대산읍 소재 서산수 골프앤리조트(서산수CC). 18홀 대중제(비회원제) 운영으로 확인되며, 리조트 숙박도 함께 운영. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 3699,
+    "out": 446
+   }
+  },
+  {
+   "id": "kgba_마론",
+   "name": "마론",
+   "area": "충청권",
+   "city": "천안",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "마론컨트리클럽 (마론CC, 구 마론뉴데이CC)",
+    "official_url": "http://www.maronnewday.com",
+    "address": "충남 천안시 동남구 북면 납안5길 74",
+    "sido": "충청남도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "http://www.maronnewday.com",
+     "https://kimcaddie.com/golfcourse/%EB%A7%88%EB%A1%A0%EB%89%B4%EB%8D%B0%EC%9D%B4-%EC%B6%A9%EB%82%A8-%EC%B2%9C%EC%95%88%EC%8B%9C-%EB%8F%99%EB%82%A8%EA%B5%AC-%EB%B6%81%EB%A9%B4-%EB%82%A9%EC%95%88%EB%A6%AC-278-14",
+     "https://blog.naver.com/khuen0107/223499226479",
+     "https://czgolf.kr/bbs/board.php?bo_table=ms2_golf&wr_id=70",
+     "https://www.premiumgolf.co.kr/product/view.html?idx=12"
+    ],
+    "note": "충남 천안시 동남구 북면 납안5길 74 소재 18홀(드림코스·비전코스 각 9홀) 골프장. 2011년 회원제로 개장했다가 2022년 회생 이후 대중제(퍼블릭)로 전환하며 마론뉴데이CC에서 마론CC로 명칭 변경. 무기명회원권은 별도 존재하나 일반인 이용 가능한 퍼블릭. 기존 후보 목록에 동일 골프장 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 6864,
+    "out": 594
+   }
+  },
+  {
+   "id": "kgba_계룡대",
+   "name": "계룡대",
+   "area": "충청권",
+   "city": "계룡",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": null,
+    "official_name": "계룡대체력단련장 골프클럽",
+    "official_url": null,
+    "address": "충남 계룡시 신도안면 계룡대로 976",
+    "sido": "충청남도",
+    "holes": 18,
+    "public_access": "military",
+    "evidence_urls": [
+     "https://www.instagram.com/p/C2vuLxmSObR",
+     "https://kimcaddie.com/golfcourse/%EC%B6%A9%EB%82%A8-%EA%B3%84%EB%A3%A1%EC%8B%9C-%EC%8B%A0%EB%8F%84%EC%95%88%EB%A9%B4-%EA%B3%84%EB%A3%A1%EB%8C%80%EB%A1%9C-976%EA%B8%B8",
+     "https://blog.naver.com/sunyoungsunyoung/223929886623",
+     "https://blog.naver.com/hhsea01/223442497272"
+    ],
+    "note": "충남 계룡시 신도안면에 위치한 육군 체력단련장(계룡대체력단련장) 골프장으로 18홀(백호·천룡 코스) 규모. 예약은 육군체력단련장 홈페이지에서 회원가입 후 가능해 일반인 이용이 제한되는 군 골프장으로 판단. 기존 후보 중 동일 골프장 없음(천룡컨트리클럽은 충북 진천 소재로 별개)."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 5282,
+    "out": 496
+   }
+  }
+ ]
+}

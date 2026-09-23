@@ -27,9 +27,14 @@ from services import golf_service as gs  # noqa: E402
 PRICE_IN, PRICE_OUT = 5.0, 25.0
 
 
-def targets(limit=None):
+def targets(limit=None, retry_from=None):
     _, _, pool = gs.load_pools()
     clubs = sorted((c for c in pool if str(c.get("official_url") or "").startswith("http")), key=lambda c: c["id"])
+    if retry_from:
+        # 이전 실행에서 오류(크레딧 부족·일시 장애 등)로 실패한 곳만 다시 수집
+        prev = json.loads(Path(retry_from).read_text(encoding="utf-8"))["results"]
+        failed = {r["id"] for r in prev if r["status"] == "error"}
+        clubs = [c for c in clubs if c["id"] in failed]
     return clubs[:limit] if limit else clubs
 
 
@@ -72,9 +77,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--retry-from", default="", help="이전 수집 원본(json)에서 오류난 곳만 다시 수집")
     args = ap.parse_args()
 
-    clubs = targets(args.limit or None)
+    clubs = targets(args.limit or None, args.retry_from or None)
     print(f"[quarterly] 대상 {len(clubs)}곳", flush=True)
     review_path = run(clubs, label="quarterly")
     applied = apply_review(review_path, refresh=True, dry_run=args.dry_run)
@@ -86,6 +92,10 @@ def main():
     errors = [r.get("error", "") for r in results if r["status"] == "error"]
     if any("AuthenticationError" in e or "authentication_error" in e for e in errors):
         print("[quarterly] ANTHROPIC_API_KEY가 유효하지 않습니다. GitHub Secrets 값을 확인하세요.", flush=True)
+        sys.exit(1)
+    if any("credit balance is too low" in e for e in errors):
+        print(f"[quarterly] Anthropic 크레딧 부족으로 {len(errors)}곳 실패. 충전 후 "
+              f"--retry-from {Path(review_path).as_posix()} 로 실패한 곳만 다시 실행하세요.", flush=True)
         sys.exit(1)
     if results and all(r["status"] != "pending_review" for r in results):
         print("[quarterly] 모든 골프장 수집이 실패했습니다.", flush=True)

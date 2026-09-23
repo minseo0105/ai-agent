@@ -24,6 +24,7 @@ class ConditionParams(BaseModel):
     subregions: list[str] = Field(default_factory=list, max_length=4)
     players: Literal["전체", "3인", "4인"] = "전체"
     night: bool = False
+    include_unknown: bool = False
     avg_score_label: str = "미선택"
     challenge: Literal["편하게", "적당히", "도전"] = "적당히"
 
@@ -36,6 +37,7 @@ class ConditionSearch(BaseModel):
 class TextSearch(BaseModel):
     text: str = Field(min_length=1, max_length=300)
     sort: Sort = "추천순"
+    include_unknown: bool = False
 
 
 class DetailRequest(BaseModel):
@@ -61,7 +63,7 @@ async def search(req: ConditionSearch):
 
 @router.post("/search/text")
 async def search_text(req: TextSearch):
-    return await run_in_threadpool(gs.ai_search, req.text, req.sort)
+    return await run_in_threadpool(gs.ai_search, req.text, req.sort, req.include_unknown)
 
 
 @router.post("/clubs/{club_id}")

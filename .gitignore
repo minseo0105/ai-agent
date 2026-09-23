@@ -17,6 +17,7 @@ _archive/
 web/node_modules/
 web/.next/
 web/.env.local
+*.tsbuildinfo
 
 # Golf DB backups and local run logs (the DB itself and review reports are versioned).
 data/golf/backups/

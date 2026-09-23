@@ -41,11 +41,13 @@ export function ChoiceChips({
   selected,
   onToggle,
   disabled,
+  labels,
 }: {
   options: string[];
   selected: string[];
   onToggle: (v: string) => void;
   disabled?: boolean;
+  labels?: Record<string, number>;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -64,6 +66,7 @@ export function ChoiceChips({
           >
             {active ? "✓ " : ""}
             {o}
+            {labels?.[o] != null && <span className="ml-1 text-[11px] font-medium opacity-70">{labels[o]}</span>}
           </button>
         );
       })}

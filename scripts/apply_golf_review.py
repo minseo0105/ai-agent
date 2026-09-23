@@ -103,6 +103,17 @@ def apply_item(record, item, today, refresh=False, apply_players=False):
         caddie.setdefault("evidence_quote", ex["caddie_mode_quote"])
         changes.append("caddie_mode")
 
+    # 야간 라운드: 인용에 '야간/나이트/조명'이 실제로 있을 때만(verified_quote) 반영
+    night = ex.get("night_round")
+    current_night = ops.get("night") if isinstance(ops.get("night"), dict) else {}
+    if night and night.get("verified_quote"):
+        if current_night.get("available") in (None, "unknown") or (refresh and _ours(current_night)
+                                                                     and current_night.get("available") != night["available"]):
+            ops["night"] = {"available": night["available"], "condition": night.get("condition") or "",
+                            "source_url": night["source_url"], "evidence_quote": night["quote"],
+                            "checked_at": today, "confidence": CONFIDENCE}
+            changes.append("night_round")
+
     # 2인 / 3인
     players = ops.setdefault("players", {})
     for key in ("two_person", "three_person"):

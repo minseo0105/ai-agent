@@ -1,0 +1,253 @@
+# 골프 DB 분기 갱신 보고서 · 2026-09-23
+
+- 대상 226곳 · 수집 성공 72곳 · 실패 154곳
+- DB 반영 36곳 · 확인 필요 33곳
+- DB 파일: golf_master_precision_checkpoint_2026-09-23_filled.json · 백업: golf_master_precision_checkpoint_2026-09-23_filled_before_review_20260923_221631.json
+- 모델 claude-opus-5 · 토큰 입력 1,587,286 / 출력 159,649 · 추정 비용 $11.93
+- 수집 원본: official_enrich_2026-09-23_quarterly_1790168414.json
+
+## 반영된 변경
+- 88컨트리클럽: caddie_fee
+- 골든베이 골프&리조트: caddie_fee, cart_fee, caddie_mode
+- 곤지암: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 골드컨트리클럽: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- SG아름다운: green_fee x4, caddie_fee, cart_fee, caddie_mode
+- 그린힐: green_fee x1, night_round
+- 금강 컨트리클럽: caddie_fee, cart_fee
+- 남촌: green_fee x2
+- 도고 컨트리클럽: caddie_fee, cart_fee, caddie_mode
+- 라비에벨CC 올드코스: caddie_fee, cart_fee
+- 라비에벨CC 듄스코스: caddie_fee, cart_fee
+- 렉스필드: green_fee x1, cart_fee
+- 롯데스카이힐CC 부여: cart_fee, caddie_mode
+- 마이다스레이크 이천: caddie_fee, caddie_mode
+- 베뉴지 컨트리클럽: caddie_fee, cart_fee
+- 발리오스 컨트리클럽: caddie_fee
+- 블랙밸리: caddie_mode, night_round
+- 세종필드: caddie_fee, cart_fee, caddie_mode
+- 세이지우드CC 홍천: caddie_fee, cart_fee, caddie_mode
+- 세종에머슨: cart_fee
+- 센추리21 컨트리클럽: green_fee x2, cart_fee, caddie_mode
+- 소노펠리체: caddie_fee, cart_fee
+- 센테리움 컨트리클럽: caddie_fee, cart_fee, caddie_mode
+- 소피아그린: caddie_fee, cart_fee
+- 신원 컨트리클럽: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 썬힐골프클럽: cart_fee, caddie_mode
+- 송추 컨트리클럽: caddie_fee, cart_fee, caddie_mode
+- 아난티 코드 골프 클럽: caddie_fee, cart_fee
+- 아난티 중앙 골프클럽: green_fee x2, cart_fee, caddie_mode, night_round
+- 안양 컨트리클럽: green_fee x2, caddie_fee, cart_fee, caddie_mode
+- 안성베네스트 골프클럽: caddie_fee, cart_fee
+- 알펜시아 컨트리클럽: caddie_fee, caddie_mode
+- 예미지 컨트리클럽: caddie_fee, cart_fee, night_round
+- 올데이 옥스필드: caddie_fee, cart_fee
+- 올데이 로얄포레: caddie_fee, cart_fee, caddie_mode
+- 올데이 임페리얼레이크: caddie_fee, cart_fee, caddie_mode
+
+## 확인 필요 (정밀 DB 값과 공식 홈페이지 값이 다름 · 덮어쓰지 않음)
+- 제이드팰리스GC · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 250,000', 'weekend all 300,000'] · https://m.jadepalacegc.com/kr/info/guide.do
+- 제이드팰리스GC · two_person: DB=미확인 / 홈페이지=True · https://m.jadepalacegc.com/kr/info/guide.do
+- 제이드팰리스GC · three_person: DB=미확인 / 홈페이지=True · https://m.jadepalacegc.com/kr/info/guide.do
+- 88컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 210,000', 'weekend all 260,000'] · https://88countryclub.co.kr/Guide/Fees.aspx
+- ROUTE52 컨트리클럽 · two_person: DB=미확인 / 홈페이지=False · https://route52cc.com/guide/guide.asp
+- ROUTE52 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://route52cc.com/guide/companion.asp
+- H1 CLUB · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 310,000'] · https://www.h1club.co.kr/html/guide02.asp
+- H1 CLUB · three_person: DB=미확인 / 홈페이지=True · https://www.h1club.co.kr/html/guide05.asp
+- 골든베이 골프&리조트 · two_person: DB=미확인 / 홈페이지=False · https://www.goldenbay.kr/about/guide.asp
+- 골든베이 골프&리조트 · three_person: DB=미확인 / 홈페이지=True · https://www.goldenbay.kr/about/guide.asp
+- 곤지암 · two_person: DB=미확인 / 홈페이지=False · https://www.konjiamgolfclub.co.kr/operate/game.dev
+- 곤지암 · three_person: DB=미확인 / 홈페이지=True · https://www.konjiamgolfclub.co.kr/operate/game.dev
+- 골프클럽Q · two_person: DB=unknown / 홈페이지=False · https://www.golfclubq.com/reservation/reservation.asp
+- 골프클럽Q · three_person: DB=unknown / 홈페이지=False · https://www.golfclubq.com/reservation/reservation.asp
+- 그랜드 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 220,000', 'weekend all 260,000'] · https://www.grandgolf.co.kr/html/guide/guide_02.asp
+- SG아름다운 · three_person: DB=미확인 / 홈페이지=True · https://www.arumdaunresort.com/html/guide04.asp
+- 남부 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 260,000', 'weekend all 320,000'] · https://www.namboocc.co.kr/reservation/usingCharge.do
+- 도고 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.dogocc.co.kr/Guide/Fee
+- 뉴코리아 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 280,000'] · https://www.newkoreacc.co.kr/guide/guide02.asp
+- 뉴코리아 컨트리클럽 · cart_fee: DB=100000 / 홈페이지=120000 · https://www.newkoreacc.co.kr/guide/guide02.asp
+- 뉴서울 · two_person: DB=미확인 / 홈페이지=False · https://www.newseoulgolf.co.kr/guide/reserInfo.asp
+- 뉴서울 · three_person: DB=미확인 / 홈페이지=True · https://www.newseoulgolf.co.kr/guide/reserInfo.asp
+- 더 시에나 서울 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 250,000', 'weekend all 320,000'] · https://cc.thesiena.co.kr/content/seoulcc_operation_2
+- 더 시에나 서울 · three_person: DB=미확인 / 홈페이지=True · https://cc.thesiena.co.kr/content/seoulcc_operation_1
+- 발리오스 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 300,000'] · https://balioscc.co.kr/balioscc/guide.asp
+- 블랙밸리 · two_person: DB=미확인 / 홈페이지=False · https://www.blackcc.co.kr/guide/guide
+- 블랙밸리 · three_person: DB=미확인 / 홈페이지=True · https://www.blackcc.co.kr/guide/guide
+- 샴발라 컨트리클럽 · three_person: DB=unknown / 홈페이지=True · https://www.shambhalacc.co.kr/guide/charge.asp
+- 비전힐스 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 220,000', 'weekend all 290,000'] · https://www.visionhillscc.co.kr/guide/guide02.asp
+- 서서울 컨트리클럽 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 230,000', 'weekend all 310,000'] · https://www.seoseoul.co.kr/html/reservation/reservation_03.asp
+- 서서울 컨트리클럽 · three_person: DB=unknown / 홈페이지=True · https://www.seoseoul.co.kr/html/guide/guide_02.asp
+- 설해원 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 198,000', 'weekend all 258,000'] · https://www.seolhaeone.com/reservation/guide.do
+- 세이지우드CC 홍천 · three_person: DB=미확인 / 홈페이지=True · https://www.sagewood.co.kr/hongcheon/reservation/golf
+- 세종에머슨 · two_person: DB=미확인 / 홈페이지=False · https://www.sejongemerson.co.kr/reservation/member_guide.asp
+- 세종에머슨 · three_person: DB=미확인 / 홈페이지=True · https://www.sejongemerson.co.kr/reservation/member_guide.asp
+- 센추리21 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.century21cc.co.kr:443/guide_operation
+- 소노펠리체 · three_person: DB=미확인 / 홈페이지=True · https://www.sonofelicecc.com/rsvguide.rsvGuide.dp/dmparse.dm
+- 솔모로 · green_fee: DB=정밀 DB 요금표 유지 / 홈페이지=['weekday all 200,000', 'weekend all 270,000'] · https://www.solmoro.com/Guide/UsageFee
+- 신원 컨트리클럽 · two_person: DB=미확인 / 홈페이지=True · https://www.swcc.co.kr/swp/use_guide
+- 신원 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.swcc.co.kr/swp/use_guide
+- 썬힐골프클럽 · three_person: DB=unknown / 홈페이지=True · https://www.sunhillgolf.co.kr/HomePage/views/guide/game
+- 송추 컨트리클럽 · two_person: DB=미확인 / 홈페이지=True · https://www.songchoo.co.kr/use-information/user-guide
+- 알펜시아 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.alpensia.com/golf/trooncc/use-info.do
+- 예미지 컨트리클럽 · three_person: DB=미확인 / 홈페이지=True · https://www.yemizicc.co.kr/guide/guide
+- 올데이 옥스필드 · two_person: DB=미확인 / 홈페이지=False · https://www.alldaygolf.co.kr/reservation/reserGuide.asp
+- 올데이 옥스필드 · three_person: DB=미확인 / 홈페이지=True · https://www.alldaygolf.co.kr/reservation/reserGuide.asp
+- 올데이 로얄포레 · two_person: DB=미확인 / 홈페이지=False · https://www.royalforet.com/reservation/reserGuide.asp
+- 올데이 로얄포레 · three_person: DB=미확인 / 홈페이지=True · https://www.royalforet.com/reservation/reserGuide.asp
+- 올데이 임페리얼레이크 · two_person: DB=미확인 / 홈페이지=False · https://www.ilcc.co.kr/reservation/reserGuide.asp
+- 올데이 임페리얼레이크 · three_person: DB=미확인 / 홈페이지=True · https://www.ilcc.co.kr/reservation/reserGuide.asp
+
+## 수집 실패
+- 원더클럽 클럽72CC (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 클럽디 보은 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 클럽디 더플레이어스 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 몽베르컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 베어크리크 골프클럽 춘천 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 샌드파인 골프클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 용평 컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 웰리힐리 컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 우정힐스 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRg7UGBPr8psgwtUpA5'}
+- 은화삼 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRgnGPLmdz6hNwVhAbC'}
+- 웰링턴 컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 유성 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRfnFN1eUpVYRCq73kt'}
+- 이포 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRhMXdP1i2qZPSqQo4H'}
+- 이스트밸리 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRhdiDanufy6V5GoQ9b'}
+- 잭 니클라우스 골프클럽 코리아 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRiVPS1XK8ExwooKRFR'}
+- 엘리시안 강촌 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRiWc6z1c4CnVyzSuCH'}
+- 일동레이크 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRj148gSKqdaBpocN5e'}
+- 지산 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRjY1imsRF3tHwgu6c2'}
+- 카스카디아 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRjidwQzKaFgw3vHfkE'}
+- 캐슬렉스 서울 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRk4FQ6yuyFeUJyrQFH'}
+- 제일 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRkCQHjxtnuXCABepTn'}
+- 코리아컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRkJTAtqpGJtHXAzBWs'}
+- 자유 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRkbAFgGt42vrMjMgE1'}
+- 코스카 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRkgkcF3wG38EsFMhsG'}
+- 킹즈락 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRm8pWkEgnDy42ciTPv'}
+- 크리스밸리 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRmMew9T6rsTBTL1ops'}
+- 천안상록 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRmQBV9vEMJiWcnGwnL'}
+- 포웰CC 프린세스 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRmTrVjEfNMZwAtxdQW'}
+- 포천아도니스컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRmVHp9nmmLM7Se4nCK'}
+- 푸른솔GC 포천 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRmmiY4P41h4rmiHzVt'}
+- 페럼클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRmzfeabQ6gCq9vyPFD'}
+- 플라자CC 설악 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRn5GUDhcMfiCESfnRT'}
+- 티클라우드 컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 플라자CC 용인 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnEiVVMJZebD1JfaeY'}
+- 하이원 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnL9frgryrAPJ8zW6o'}
+- 서울·한양컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnMcEKPKUjtnnTArZ1'}
+- 해비치 컨트리클럽 서울 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnQsBe45XsQmrK11Ak'}
+- 해슬리나인브릿지 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnTE58Mp6xrEBNTHRx'}
+- 한원 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnhMNmbRQ9T9JbQKcy'}
+- 화성상록 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnpkNoy5LAfn9vCw7H'}
+- 화산 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRnyRGXQWMyvLtDHFB3'}
+- 한성컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRo3Vb7txY9Pqhg9BhK'}
+- 레이크사이드 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRoJwGtx2jwUYC3A1Nf'}
+- 라비에벨CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRoVEtpKPdqEQ7h6XSN'}
+- 파인리즈CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRoo4Ckz5EUoda8EvJw'}
+- 킹스데일GC (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 오크밸리CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRotzeQ5qeBNvxXZ5bJ'}
+- 사우스스프링스 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRp1khEXX81ZbbwU59D'}
+- 360도 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRpLVZvgRGkj8yMsyhs'}
+- 청주 세레니티 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRpM53WWPQHxaSqbeeB'}
+- O2리조트대중제 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRpQsz9xfLpd6p5Y69t'}
+- 레인보우힐스CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRpU8hHFxYAD9jP5RJJ'}
+- O2리조트회원제 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRpeiw585ivS8Y5zG3V'}
+- 고양컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 고양컨트리 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 골든베이 골프&리조트 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRq5d8d5Sm9hzpYpcqs'}
+- THE EMERSON GoldClub (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRqPCK7vn3gPYKmNfPe'}
+- 포도 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRqb5Bx3eWxCwwArUw4'}
+- 가평베네스트 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRqoTa9VHLveyZNT2pT'}
+- 남서울 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRqs9KsYkb7A5nEmDzi'}
+- 글렌로스골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRr9U6LStAnSHg272zY'}
+- 대영힐스 컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 소노펠리체 CC 델피노 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRrWCmtmrfPZTAeYYeQ'}
+- 김포SEASIDE컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRrYvybkjx35y2ZDedn'}
+- 더힐 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRrn7jj7aeLRzdDm1LW'}
+- 도고 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRs3RUsFaVrq86nk7qD'}
+- 더스타 휴 골프장 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRs9W71W7agz9aAoSuE'}
+- 남춘천 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRsbfiCJ4DG3MehzhM4'}
+- 드림파크골프장 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRsrD55NvHVNEkaFS5V'}
+- 동서울레스피아CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRsvV3kwrUggdg2vV4M'}
+- 청주떼제베 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRt6w6nv6shDauhHBGE'}
+- 로드힐스 골프&리조트 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRtECuSkneYTGzjgPfM'}
+- 올데이 로얄포레 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRtPvYqFq8ccJnLfLpp'}
+- 동촌골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRtYZTs3qjvH88qFfo9'}
+- 링크나인골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRteti6GGHrD7rBEeyS'}
+- 대호단양 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRtqxUG6g4yqTRZDvsL'}
+- 리앤리CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRtss4snSbqDeKg46pL'}
+- 문경 골프클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 마에스트로 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRu5RbCfSPxRgKh1xKG'}
+- 골프존카운티 천안 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRuJarjRSvrcvjK7XMf'}
+- 백제컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRuMLoYCno9VAfxVfPR'}
+- 베어즈베스트청라골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRujmBjX7eKzvjW8pJM'}
+- 베스트밸리골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRuwWs4fKyPK3uLa7EN'}
+- 베어크리크골프클럽 포천 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 서원밸리 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRvEzqFL7PbhnQSLhfg'}
+- 마론뉴데이cc (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 설악썬밸리 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRvfGbA3wrKchyrJ7j5'}
+- 메이플비치 골프&리조트 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRw4VqLDTz2G2p4fp8t'}
+- 서서울 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwD52QR5eKkBuubzDb'}
+- 석천CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwDUqGd5dY9pziQPSZ'}
+- 플라자CC 설악 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwF9njg2RkpbWzqU7x'}
+- 섬강벨라스톤 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwPoh5gRp7i2SDHtSK'}
+- 세종레이캐슬GC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwQrCPX6YmbkoKBVHE'}
+- 솔트베이(대중) (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwVaxJaRxjipHHmeUU'}
+- 스마트KU골프파빌리온 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwW9vvMTiUK5YCgtfa'}
+- 신안 퍼블릭 CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwbfL137kqQPQJKCGm'}
+- 클럽디 속리산 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwfay5Z61F4TbS9qrW'}
+- 신라CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwgkfeRqpar3Qaojfo'}
+- 신원 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwm7bfQ2HFtDevGqMg'}
+- 스프링베일 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRwsu8iysoUL1dTTiWs'}
+- 더헤븐 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRxFwh9wo89LTgfiiuA'}
+- 안성CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRxZiXZbyhfHB29snE4'}
+- 아시아나 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRxy4xxPvKmVo2d3Gar'}
+- 알펜시아 700 G.C (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRy1DwdXVAuoRXbuGNu'}
+- 에콜리안 정선 골프장 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 에딘버러 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRyPKjA7G3HHX8BV6Uj'}
+- 안양컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRyTdSLKhDTipMyDrjV'}
+- 여주썬밸리 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRyczzvsvY7d3rkqHpX'}
+- 여주CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRydXk6V9ESVAb4apgZ'}
+- 오크밸리 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRz3dpzcJCKb5gWpdv1'}
+- 오너스 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRz49LUG62pCmJFpWw8'}
+- 이븐데일 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRzKgEMW5rhRdjnuu9P'}
+- 인서울27골프클럽(주) (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRzfCjUNnAscz5nr9pn'}
+- 아리지CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLRzpPdRDgeFadUFodHp'}
+- 인천그랜드 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS19mSy3EhgYHn1hcRq'}
+- 우정힐스 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS1B55wKDmQDnKnZn9t'}
+- 올림픽CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS1P4AEDYRmu2jE3zPj'}
+- 호텔인터불고 원주 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS1S1Wf49TCsdjMtAoA'}
+- 젠스필드 컨트리클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 인천오렌지듄스골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS1W55spYY33Yg7cZ39'}
+- (주)파주컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS1zTPVUF63SXQH3ce8'}
+- 잭니클라우스 골프클럽 코리아 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS28Rs8UMgeefYjM6Wt'}
+- 인천국제C.C (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS2ChLiuVVzdi7VDxSP'}
+- 중원골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS2M86u3KHh8VnvYhef'}
+- 천룡컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS2n9VpbDQWxWE15XXP'}
+- 클럽모우 골프&라이프스타일 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 캐슬파인GC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS2zQgwcQnPSLCY96so'}
+- 타이거CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS37sQLssfiVV4iwt7Q'}
+- 크리스탈카운티CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS3EosKmiC5sSdTcV6L'}
+- 파인밸리 C.C (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS3KgZgDv2YD49z95aJ'}
+- 스톤비치 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS3Qjfg2VAyEsirmauu'}
+- 파인크리크 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS3YHbNKEuY4qtxmCiU'}
+- 크리스탈밸리 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS3ZgS7jy6Vh8ydVgAH'}
+- 파주프리스틴밸리 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS3mGgpDZPg7Pf9TA32'}
+- 파크밸리 골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS3pEHn8RxNe2JadwSq'}
+- 양지파인 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS4WKYjDYskaHN5iebK'}
+- 포레스트힐 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS4XXEUy4WqjUjVY5ed'}
+- 푸른솔GC 장성 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS4qbAtUjxvF9WbRrUL'}
+- 파인스톤컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS4tgDDrk9Aq8d4CVVF'}
+- 플라자CC 용인 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 프리스틴밸리 골프클럽 (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 포웰CC 프린세스 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS5BgevMQBgzFjcwRMP'}
+- 페럼클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS5NneahgFdBeXAq9N7'}
+- 해비치 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS5TVRQKr86JMzAQmGQ'}
+- 해비치cc (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS5VyjqX5tSkCWf2jto'}
+- 포천힐스 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS5Weg5KYw2sqMbWDiz'}
+- 화성골프클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS5jR83th3dsvoCzu7v'}
+- 해솔리아CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS5kYLoDJzTRiCxszLa'}
+- 킹즈락CC (no_content): 홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)
+- 한탄강 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS6BYzkkXXWJ1o8w236'}
+- 필로스 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS6hM8jqPr5qYHqUB1j'}
+- 휘슬링락CC (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS7PY6jHxhuysaHLHgk'}
+- 힐드로사이 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS7Xekkv9VnurQzQZUU'}
+- 휘닉스 컨트리클럽 (error): BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfLS9duqn5CxGgj1LPTXD'}

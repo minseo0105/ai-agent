@@ -129,7 +129,10 @@ export default function GolfSearch() {
     setLoading(true);
     setError("");
     try {
-      const r = search.mode === "text" ? await golfApi.searchText(search.text, nextSort) : await golfApi.search(search.params, nextSort);
+      const r =
+        search.mode === "text"
+          ? await golfApi.searchText(search.text, nextSort, search.includeUnknown)
+          : await golfApi.search(search.params, nextSort);
       setResult(r);
       setLast(search);
       setSort(nextSort);
@@ -142,6 +145,18 @@ export default function GolfSearch() {
       setError((e as Error).message || "검색 중 오류가 발생했어요.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  // 예산·캐디·3인·야간 조건에서 정보가 없는 골프장을 포함/제외 전환
+  function toggleUnknown(include: boolean) {
+    if (!last) return;
+    if (last.mode === "text") {
+      run({ ...last, includeUnknown: include }, sort, false);
+    } else {
+      const nextParams = { ...last.params, include_unknown: include };
+      setParams((p) => ({ ...p, include_unknown: include }));
+      run({ mode: "condition", params: nextParams }, sort, false);
     }
   }
 
@@ -178,6 +193,7 @@ export default function GolfSearch() {
             <Field label="지역" hint="복수 선택 · 미선택 시 전체 권역">
               <ChoiceChips
                 options={options?.areas ?? []}
+                labels={options?.counts.by_area}
                 selected={params.areas}
                 onToggle={(v) => setParams((p) => ({ ...p, areas: toggle(p.areas, v), subregions: [] }))}
               />
@@ -227,9 +243,22 @@ export default function GolfSearch() {
                   <Field label="인원" hint="선택">
                     <Segmented value={params.players} options={["전체", "3인", "4인"] as const} onChange={(v) => set("players", v)} full />
                   </Field>
-                  <Field label="야간 라운드">
-                    <label className="flex h-[42px] cursor-pointer items-center gap-2.5 text-sm">
-                      <input type="checkbox" className="size-4 accent-[var(--golf)]" checked={params.night} onChange={(e) => set("night", e.target.checked)} />
+                  <Field
+                    label="야간 라운드"
+                    hint={options && options.data_coverage.night === 0 ? "데이터 준비 중" : options ? `확인 ${options.data_coverage.night}곳` : undefined}
+                  >
+                    <label
+                      className={`flex h-[42px] items-center gap-2.5 text-sm ${
+                        options && options.data_coverage.night === 0 ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="size-4 accent-[var(--golf)]"
+                        checked={params.night}
+                        disabled={!!options && options.data_coverage.night === 0}
+                        onChange={(e) => set("night", e.target.checked)}
+                      />
                       야간 라운드만 보기
                     </label>
                   </Field>
@@ -276,7 +305,18 @@ export default function GolfSearch() {
             {result?.parsed && (
               <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-golf-soft px-3 py-2.5 text-xs">
                 <b className="text-golf">AI 해석 조건</b>
-                {[result.parsed.area, result.parsed.city, result.parsed.day, result.parsed.players, result.parsed.budget].map((x, i) => (
+                {[
+                  result.parsed.area,
+                  result.parsed.city,
+                  result.parsed.day,
+                  result.parsed.session,
+                  result.parsed.players,
+                  result.parsed.budget,
+                  result.parsed.caddie,
+                  result.parsed.night,
+                ]
+                  .filter(Boolean)
+                  .map((x, i) => (
                   <Tag key={i}>{x}</Tag>
                 ))}
               </div>
@@ -331,9 +371,33 @@ export default function GolfSearch() {
             {result.departure_status && <p className="text-xs text-muted">{result.departure_status}</p>}
           </div>
 
+          {!!trace?.unknown_excluded && (
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm">
+              <span className="text-amber-800 dark:text-amber-300">
+                정보 미확인으로 {trace.unknown_excluded}곳 제외
+                {trace.unknown_reasons &&
+                  ` (${Object.entries(trace.unknown_reasons)
+                    .map(([k, v]) => `${k} ${v}`)
+                    .join(" · ")})`}
+              </span>
+              <button type="button" onClick={() => toggleUnknown(true)} className="rounded-lg bg-surface px-3 py-1.5 text-xs font-bold text-fg shadow-sm">
+                미확인 포함해서 보기
+              </button>
+            </div>
+          )}
+          {!!trace?.unknown_included && (
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border bg-surface-muted px-4 py-3 text-sm">
+              <span className="text-muted">정보 미확인 {trace.unknown_included}곳을 ‘확인 필요’로 포함해서 보여주고 있어요.</span>
+              <button type="button" onClick={() => toggleUnknown(false)} className="rounded-lg bg-surface px-3 py-1.5 text-xs font-bold text-fg shadow-sm">
+                확인된 곳만 보기
+              </button>
+            </div>
+          )}
+
           {items.length === 0 ? (
             <p className="rounded-2xl bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">
-              선택한 조건을 모두 확인할 수 있는 골프장이 없습니다. 지역이나 예산 조건을 넓혀 다시 검색해 보세요.
+              선택한 조건이 확인된 골프장이 없습니다.
+              {trace?.unknown_excluded ? " 위의 ‘미확인 포함해서 보기’로 정보가 아직 없는 곳까지 볼 수 있어요." : " 지역이나 예산 조건을 넓혀 다시 검색해 보세요."}
             </p>
           ) : (
             <>

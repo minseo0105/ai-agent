@@ -13,7 +13,9 @@ import argparse
 import json
 import re
 import sys
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 from pathlib import Path
 from typing import List, Literal, Optional
@@ -103,7 +105,7 @@ class Fetcher:
         if not page:
             return None
         try:
-            page.goto(url, wait_until="networkidle", timeout=25000)
+            page.goto(url, wait_until="networkidle", timeout=15000)
             page.wait_for_timeout(800)
             self.browser_used += 1
             return page.url, page.content()
@@ -224,6 +226,13 @@ class PlayerRule(BaseModel):
     quote: str
 
 
+class NightRule(BaseModel):
+    available: bool
+    condition: str = Field(description="운영 기간·시간대 등. 없으면 빈 문자열")
+    source_url: str
+    quote: str
+
+
 class Extraction(BaseModel):
     green_fees: List[FeeRow]
     caddie_fee: Optional[TeamFee]
@@ -232,6 +241,7 @@ class Extraction(BaseModel):
     caddie_mode_quote: str
     three_person: Optional[PlayerRule]
     two_person: Optional[PlayerRule]
+    night_round: Optional[NightRule] = Field(description="야간(나이트) 라운드 운영 여부가 명시된 경우만")
     notes: str = Field(description="요금 기준일, 시즌 구분 등 참고사항. 없으면 빈 문자열")
 
 
@@ -247,6 +257,7 @@ PROMPT = """아래는 골프장 '{name}'의 공식 홈페이지에서 가져온 
 - caddie_mode: 캐디 필수(caddie), 노캐디(no_caddie), 선택 가능(optional), 알 수 없음(unknown).
 - three_person / two_person: 정규 코스의 3인·2인 플레이(팀 인원) 허용 여부가 명시된 경우에만. 없으면 null.
   '투 볼 플레이'(한 사람이 공 2개로 치는 것) 자제 같은 경기 에티켓은 팀 인원 규정이 아니므로 제외하세요.
+- night_round: 야간(나이트) 라운드·조명 라운드 운영 여부가 명시된 경우에만. 단순히 '3부'가 있다는 것만으로는 야간으로 보지 마세요.
 - quote에는 해당 값이 들어 있는 원문을 **글자 그대로** 복사하세요(40~200자). source_url은 그 텍스트가 나온 페이지 URL.
 - 값을 찾지 못하면 빈 배열/null/unknown으로 두세요.
 
@@ -309,55 +320,98 @@ def pick_pilot(n):
     return picked[:n]
 
 
-def run(clubs, label="manual"):
-    client = anthropic.Anthropic(api_key=get_secret("ANTHROPIC_API_KEY"))
-    fetcher = Fetcher()
-    results, usage_in, usage_out = [], 0, 0
-    for club in clubs:
-        t0 = time.time()
-        item = {"id": club["id"], "name": club["name"], "area": club.get("area"),
-                "official_url": club.get("official_url"), "status": "pending_review"}
-        try:
-            before = fetcher.browser_used
-            pages = crawl(club["official_url"], fetcher)
-            item["browser_pages"] = fetcher.browser_used - before
-            item["pages"] = [{"url": p["url"], "chars": len(p["text"])} for p in pages]
-            if not pages or sum(len(p["text"]) for p in pages) < 200:
-                item["status"] = "no_content"
-                item["error"] = "홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)"
-            else:
-                data, usage = extract(client, club["name"], pages)
-                usage_in += usage.input_tokens
-                usage_out += usage.output_tokens
-                ex = data.model_dump()
-                for row in ex["green_fees"]:
-                    row["verified_quote"] = verify_quote(pages, row["source_url"], row["quote"], row["price_krw"])
-                for key in ("caddie_fee", "cart_fee"):
-                    if ex[key]:
-                        ex[key]["verified_quote"] = verify_quote(pages, ex[key]["source_url"], ex[key]["quote"], ex[key]["fee_team_krw"])
-                for key in ("three_person", "two_person"):
-                    if ex[key]:
-                        ex[key]["verified_quote"] = verify_quote(pages, ex[key]["source_url"], ex[key]["quote"])
-                item["extraction"] = ex
-                item["usage"] = {"input_tokens": usage.input_tokens, "output_tokens": usage.output_tokens}
-        except Exception as e:  # 한 곳 실패가 전체를 멈추지 않도록
-            item["status"] = "error"
-            item["error"] = f"{type(e).__name__}: {e}"[:300]
-        item["seconds"] = round(time.time() - t0, 1)
-        results.append(item)
-        fees = len((item.get("extraction") or {}).get("green_fees") or [])
-        print(f"- {club['name']}: {item['status']} pages={len(item.get('pages') or [])} "
-              f"browser={item.get('browser_pages', 0)} fees={fees} {item['seconds']}s", flush=True)
+_local = threading.local()
+_fetchers = []
+_lock = threading.Lock()
 
-    fetcher.close()
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    out = OUT_DIR / f"official_enrich_{date.today().isoformat()}_{label}_{int(time.time())}.json"
+
+def _thread_fetcher():
+    """Playwright sync API는 스레드별로 따로 띄워야 한다."""
+    if not hasattr(_local, "fetcher"):
+        _local.fetcher = Fetcher()
+        with _lock:
+            _fetchers.append(_local.fetcher)
+    return _local.fetcher
+
+
+def process_club(club, client):
+    fetcher = _thread_fetcher()
+    t0 = time.time()
+    item = {"id": club["id"], "name": club["name"], "area": club.get("area"),
+            "official_url": club.get("official_url"), "status": "pending_review"}
+    try:
+        before = fetcher.browser_used
+        pages = crawl(club["official_url"], fetcher)
+        item["browser_pages"] = fetcher.browser_used - before
+        item["pages"] = [{"url": p["url"], "chars": len(p["text"])} for p in pages]
+        if not pages or sum(len(p["text"]) for p in pages) < 200:
+            item["status"] = "no_content"
+            item["error"] = "홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)"
+        else:
+            data, usage = extract(client, club["name"], pages)
+            ex = data.model_dump()
+            for row in ex["green_fees"]:
+                row["verified_quote"] = verify_quote(pages, row["source_url"], row["quote"], row["price_krw"])
+            for key in ("caddie_fee", "cart_fee"):
+                if ex[key]:
+                    ex[key]["verified_quote"] = verify_quote(pages, ex[key]["source_url"], ex[key]["quote"], ex[key]["fee_team_krw"])
+            for key in ("three_person", "two_person"):
+                if ex[key]:
+                    ex[key]["verified_quote"] = verify_quote(pages, ex[key]["source_url"], ex[key]["quote"])
+            if ex.get("night_round"):
+                nr = ex["night_round"]
+                nr["verified_quote"] = verify_quote(pages, nr["source_url"], nr["quote"]) and \
+                    bool(re.search(r"야간|나이트|night|조명", nr["quote"], re.I))
+            item["extraction"] = ex
+            item["usage"] = {"input_tokens": usage.input_tokens, "output_tokens": usage.output_tokens}
+    except Exception as e:  # 한 곳 실패가 전체를 멈추지 않도록
+        item["status"] = "error"
+        item["error"] = f"{type(e).__name__}: {e}"[:300]
+    item["seconds"] = round(time.time() - t0, 1)
+    fees = len((item.get("extraction") or {}).get("green_fees") or [])
+    print(f"- {club['name']}: {item['status']} pages={len(item.get('pages') or [])} "
+          f"browser={item.get('browser_pages', 0)} fees={fees} {item['seconds']}s", flush=True)
+    return item
+
+
+def _write(out, label, results):
+    usage_in = sum((r.get("usage") or {}).get("input_tokens", 0) for r in results)
+    usage_out = sum((r.get("usage") or {}).get("output_tokens", 0) for r in results)
     payload = {"created_at": date.today().isoformat(), "model": MODEL, "label": label,
                "method": "official_homepage_crawl(v2: static+edge)+llm_extract+quote_verify",
                "usage": {"input_tokens": usage_in, "output_tokens": usage_out}, "results": results}
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
+    return usage_in, usage_out
+
+
+def run(clubs, label="manual", workers=4):
+    """골프장별 수집을 workers개 스레드로 동시에 처리하고 10곳마다 중간 저장한다."""
+    client = anthropic.Anthropic(api_key=get_secret("ANTHROPIC_API_KEY"))
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out = OUT_DIR / f"official_enrich_{date.today().isoformat()}_{label}_{int(time.time())}.json"
+    results = []
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futures = [ex.submit(process_club, club, client) for club in clubs]
+        for i, fut in enumerate(as_completed(futures), 1):
+            results.append(fut.result())
+            if i % 10 == 0:
+                _write(out, label, results)
+                print(f"[checkpoint] {i}/{len(clubs)} 저장", flush=True)
+        # 스레드 안에서 띄운 브라우저는 같은 스레드에서 닫아야 해서, 종료 작업도 각 스레드에 맡긴다.
+        list(ex.map(lambda _: _close_thread_fetcher(), range(workers)))
+    usage_in, usage_out = _write(out, label, results)
     print(f"saved {out} | tokens in={usage_in:,} out={usage_out:,}")
     return out
+
+
+def _close_thread_fetcher():
+    fetcher = getattr(_local, "fetcher", None)
+    if fetcher:
+        try:
+            fetcher.close()
+        except Exception:
+            pass
+        del _local.fetcher
 
 
 if __name__ == "__main__":

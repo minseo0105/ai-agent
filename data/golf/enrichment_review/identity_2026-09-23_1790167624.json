@@ -1,0 +1,140 @@
+{
+ "created_at": "2026-09-23",
+ "model": "claude-opus-5",
+ "usage": {
+  "input_tokens": 22101,
+  "output_tokens": 2461
+ },
+ "results": [
+  {
+   "id": "vworld_ba비스타c_c",
+   "name": "BA비스타C.C",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_비에이비스타",
+    "official_name": "비에이비스타 컨트리클럽",
+    "official_url": null,
+    "address": "경기 이천시 모가면 어농로 272",
+    "sido": "경기도",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://blog.naver.com/mong_family/223643619702?viewType=pc",
+     "https://v.daum.net/v/bRf5Cug13J",
+     "https://www.youtube.com/watch?v=89Xb0xgjVtg"
+    ],
+    "note": "'BA비스타C.C'는 경기 이천시 모가면 어농로 272에 위치한 비에이비스타CC(B.A. VISTA CC)로 판단되며 기존 레코드 kgba_비에이비스타와 동일. 회원제 코스와 퍼블릭 코스를 함께 운영하는 대규모 골프장(블로그·영상에서 63홀 또는 72홀로 언급되어 홀 수는 불확실하므로 null 처리). 퍼블릭 코스 이용 후기가 존재해 public_access=public. 공식 홈페이지 URL은 검색 결과에 없음."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": false
+   },
+   "usage": {
+    "in": 6556,
+    "out": 414
+   }
+  },
+  {
+   "id": "vworld_q안성",
+   "name": "골프클럽Q안성",
+   "area": "수도권",
+   "city": "경기남부",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "kgba_골프클럽q",
+    "official_name": "골프클럽Q",
+    "official_url": "https://www.golfclubq.com",
+    "address": "경기도 안성시 죽산면 장계길 20-229",
+    "sido": "경기도",
+    "holes": 18,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://kimcaddie.com/golfcourse/%EA%B3%A8%ED%94%84%ED%81%B4%EB%9F%BDq-%EA%B2%BD%EA%B8%B0-%EC%95%88%EC%84%B1%EC%8B%9C-%EC%A3%BD%EC%82%B0%EB%A9%B4-%EC%9E%A5%EA%B3%84%EB%A6%AC-711",
+     "https://www.golfclubq.com",
+     "https://www.instagram.com/golfclub_q"
+    ],
+    "note": "구 골프존카운티 안성Q(이전 삼성에버랜드 운영). 현재 명칭 골프클럽Q, 비회원제(대중제) 18홀 72파. 기존 후보 kgba_골프클럽q와 주소(안성시 죽산면 장계길 20-229) 동일하여 중복."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5598,
+    "out": 423
+   }
+  },
+  {
+   "id": "vworld_sky72",
+   "name": "Sky72",
+   "area": "수도권",
+   "city": "인천",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "club72",
+    "official_name": "스카이72 골프클럽 (SKY72 GOLF CLUB)",
+    "official_url": "http://www.sky72.com",
+    "address": "인천광역시 중구 영종해안남로 19-5 (운서동 2877)",
+    "sido": "인천광역시",
+    "holes": null,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://ko.wikipedia.org/wiki/%EC%8A%A4%EC%B9%B4%EC%9D%B472_%EA%B3%A8%ED%94%84%ED%81%B4%EB%9F%BD",
+     "http://www.sky72.com/kr/dream/introduction.jsp",
+     "https://www.sky72.com/kr/reservation/real_step01.jsp",
+     "https://www.onetheclub.com/club72/main"
+    ],
+    "note": "인천 중구 운서동 인천국제공항 부지 내 스카이72 골프클럽. 위키백과에 따르면 2023년 4월부터 운영사가 바뀌어 현재는 클럽72CC(원더클럽)로 운영되는 동일 장소의 골프장으로 판단되어 club72와 중복 처리. 다만 스카이72 공식 사이트는 드림골프연습장·드림듄스코스 안내로 여전히 운영 중이며, 홀 수는 검색 결과에 명시되지 않아 null. 골프매거진 '한국 10대 퍼블릭 코스' 언급으로 대중제(public)로 판단."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 4036,
+    "out": 1282
+   }
+  },
+  {
+   "id": "vworld_구미_2",
+   "name": "구미CC",
+   "area": "충청권",
+   "city": "충북",
+   "status": "resolved",
+   "identity": {
+    "is_golf_course": true,
+    "operating": "operating",
+    "duplicate_of_id": "vworld_구미",
+    "official_name": "구미컨트리클럽",
+    "official_url": "https://www.gumicc.com",
+    "address": "구미시 장천면 송백로 229",
+    "sido": "경상북도",
+    "holes": 27,
+    "public_access": "public",
+    "evidence_urls": [
+     "https://www.gumicc.com/Club/Info.aspx",
+     "https://comp4u.oopy.io/f1a92d36-5d54-45db-80ea-84dcdbb6a5ce",
+     "https://www.instagram.com/gumicc__",
+     "https://www.tripinfo.co.kr/info.html?content_type_id=28&content_id=2772306"
+    ],
+    "note": "VWorld상 충북으로 표기되었으나 실제는 경북 구미시 장천면 송백로 229 소재의 구미컨트리클럽으로, 기존 후보 vworld_구미(구미컨트리클럽)와 동일 골프장. 대중제(퍼블릭) 27홀."
+   },
+   "checks": {
+    "address_in_results": true,
+    "url_in_results": true
+   },
+   "usage": {
+    "in": 5911,
+    "out": 342
+   }
+  }
+ ]
+}

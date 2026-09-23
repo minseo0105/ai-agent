@@ -15,6 +15,7 @@ export type ConditionParams = {
   subregions: string[];
   players: "전체" | "3인" | "4인";
   night: boolean;
+  include_unknown: boolean;
   avg_score_label: string;
   challenge: "편하게" | "적당히" | "도전";
 };
@@ -24,7 +25,8 @@ export type GolfOptions = {
   subregions: Record<string, string[]>;
   budgets: string[];
   avg_scores: string[];
-  counts: { all: number; searchable: number; pool: number };
+  counts: { all: number; searchable: number; pool: number; by_area: Record<string, number> };
+  data_coverage: { night: number; three_person: number; caddie: number; green_fee: number };
   runtime_ok: boolean;
   naver_enabled: boolean;
 };
@@ -44,7 +46,8 @@ export type ResultCard = {
 export type SearchResult = {
   applied: string[];
   departure_status: string | null;
-  trace: Record<string, number>;
+  trace: Record<string, number> & { unknown_reasons?: Record<string, number> };
+  include_unknown?: boolean;
   sort: Sort;
   notice: string | null;
   top_ids: string[];
@@ -157,8 +160,11 @@ export const golfApi = {
   find: (q: string) => request<{ items: { id: string; name: string; region: string; city: string }[] }>(`/api/golf/find?q=${encodeURIComponent(q)}`),
   search: (params: ConditionParams, sort: Sort) =>
     request<SearchResult>("/api/golf/search", { method: "POST", body: JSON.stringify({ params, sort }) }),
-  searchText: (text: string, sort: Sort) =>
-    request<SearchResult>("/api/golf/search/text", { method: "POST", body: JSON.stringify({ text, sort }) }),
+  searchText: (text: string, sort: Sort, includeUnknown = false) =>
+    request<SearchResult>("/api/golf/search/text", {
+      method: "POST",
+      body: JSON.stringify({ text, sort, include_unknown: includeUnknown }),
+    }),
   detail: (id: string, search: LastSearch | null) =>
     request<ClubDetail>(`/api/golf/clubs/${encodeURIComponent(id)}`, {
       method: "POST",
@@ -182,13 +188,16 @@ export const DEFAULT_PARAMS: ConditionParams = {
   subregions: [],
   players: "전체",
   night: false,
+  include_unknown: false,
   avg_score_label: "미선택",
   challenge: "적당히",
 };
 
 // ---- 검색 화면 상태: 상세 → 뒤로가기 시 그대로 복원 ----
 
-export type LastSearch = { mode: "condition"; params: ConditionParams } | { mode: "text"; text: string };
+export type LastSearch =
+  | { mode: "condition"; params: ConditionParams }
+  | { mode: "text"; text: string; includeUnknown?: boolean };
 
 export type SavedState = {
   mode: SearchMode;
