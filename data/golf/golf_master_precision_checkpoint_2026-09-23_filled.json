@@ -1928,7 +1928,12 @@
    },
    "players": {
     "two_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "2인 플레이시 3인 요금 적용, 2인플레이는 전화예약 필수",
+     "source_url": "https://www.bestvalleygc.com/Reservation/ReservCalendar",
+     "evidence_quote": "4인 필수 3인시 1인 2만원 추가금 발생 2인 플레이시 3인 요금 적용(2인플레이 전화예약 필수)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "three_person": {
      "allowed": true,
@@ -2375,6 +2380,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_베스트밸리"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -2935,7 +2948,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 내장 시 주중 1인 3만원, 주말(공휴일) 1인 4만원 추가",
+     "source_url": "https://www.npcc.co.kr/reservation/reservation.asp",
+     "evidence_quote": "※ 3인 내장시 주중 1인 3만원 , 주말(공휴일) 1인 4만원 추가됩니다. ※ 관련 근거 : 공정거래위원회, 소비자분쟁해결기준",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -3083,6 +3105,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_파주프리스틴밸리"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -10275,7 +10305,24 @@
     "checked_at": "2026-09-23",
     "confidence": "confirmed"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 이상 가능, 예약회원 본인내장필수",
+     "source_url": "https://www.gimpocc.co.kr/Guide/ReservationGuide.aspx",
+     "evidence_quote": "내장기준 | - 3인 이상 가능 - 예약회원 본인내장필수 | 대기신청 | - 정회원, 법인회원 : 한달 전 - 주중회원, 가족회원 : 3주전",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "2인 내장 시 입장불가",
+     "source_url": "https://www.gimpocc.co.kr/Guide/ReservationGuide.aspx",
+     "evidence_quote": "2~3일전 취소 | - 1개월 예약정지 또는 위약금 20만원 | 2인 내장 | - 입장불가 | 위반(회원명의도용) | - 내장정지 및 회원권 박탈",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -10502,6 +10549,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_김포seaside"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -14169,7 +14232,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "한팀 3~4인 플레이 기준",
+     "source_url": "https://www.konjiamgolfclub.co.kr/operate/game.dev",
+     "evidence_quote": "팀구성 한팀 3~4인 플레이를 기준으로 합니다. (2人, 5人 플레이는 하실 수 없습니다.)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "2인, 5인 플레이 불가",
+     "source_url": "https://www.konjiamgolfclub.co.kr/operate/game.dev",
+     "evidence_quote": "팀구성 한팀 3~4인 플레이를 기준으로 합니다. (2人, 5人 플레이는 하실 수 없습니다.)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -14393,6 +14473,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_곤지암"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -15364,7 +15460,24 @@
     "checked_at": "2026-09-23",
     "confidence": "confirmed"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "최소 3인 이상 가능",
+     "source_url": "https://www.newseoulgolf.co.kr/guide/reserInfo.asp",
+     "evidence_quote": "내장 기준 | ① 최소 3인 이상 가능 | ① 예약회원 본인 내장 ② 정회원 간 교환내장 가능 ③ 최소 3인 이상 가능 ④ 월 1회 비회원 위임 가능 (위임장 제출 필수)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "내장 기준상 최소 3인 이상 가능",
+     "source_url": "https://www.newseoulgolf.co.kr/guide/reserInfo.asp",
+     "evidence_quote": "내장 기준 | ① 최소 3인 이상 가능 | ① 예약회원 본인 내장 ② 정회원 간 교환내장 가능 ③ 최소 3인 이상 가능 ④ 월 1회 비회원 위임 가능 (위임장 제출 필수)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -15657,7 +15770,25 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_이스트밸리",
@@ -17061,7 +17192,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "two_person": {
+     "allowed": true,
+     "condition": "주중 D-4일 전화예약, 토/일/공휴일·근로자의 날 D-2일 전화예약 (클럽 기여도에 따라 배정)",
+     "source_url": "https://www.songchoo.co.kr/use-information/user-guide",
+     "evidence_quote": "2인플레이 예약 | D-4일 전화예약 (클럽 기여도에 따라 배정) | D-2일 전화예약 (클럽 기여도에 따라 배정) |",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -17274,6 +17414,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_송추"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -18858,7 +19006,16 @@
     "confidence": "confirmed",
     "source_url": "https://www.philosgc.com/Reservation/Reservation.aspx"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 내장 시 추가 요금 발생 (1인 3만추가(팀9만)) / 3인 내장 시에도 4인 기준 팀요금이 적용",
+     "source_url": "https://www.philosgc.com/Guide/Fees.aspx",
+     "evidence_quote": "그린피는 4인기준이며 3인 내장 시 추가 요금 발생 (1인 3만추가(팀9만))",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -19075,7 +19232,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "vworld_팔공",
@@ -24524,7 +24691,16 @@
     "fee_team": null,
     "conditions": []
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인플레이 시 4인요금 적용",
+     "source_url": "https://www.onetheclub.com/shilla/charge",
+     "evidence_quote": "그린피 \n 통합예약 실시간 그린피 적용 \n 3인플레이 시 4인요금 적용 \n 개인사정으로 인한 중도 홀아웃 및 악천후, 천재지변으로 인한 홀아웃은 개정된 22. 12. 9.자 표준약관에 따른 요금 적용",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -24721,7 +24897,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "vworld_여주",
@@ -25928,7 +26114,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "주중에 한하여 3인 또는 4인 플레이 가능, 주말·공휴일은 4인플레이 필수(3인 내장 시 4인요금 적용)",
+     "source_url": "https://www.castlepine.co.kr/pagesite/use/reservation.asp",
+     "evidence_quote": "· 주중에 한하여 1팀 3인플레이 or 4인플레이 가능합니다. ※주말·공휴일은 4인플레이 필수(3인내장 시 4인요금적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "1팀 2인플레이 및 5인플레이 불가",
+     "source_url": "https://www.castlepine.co.kr/pagesite/use/reservation.asp",
+     "evidence_quote": "※주말·공휴일은 4인플레이 필수(3인내장 시 4인요금적용) · 1팀 2인플레이 & 5인플레이는 허용되지 않습니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -26078,6 +26281,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_캐슬파인"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -33476,7 +33695,16 @@
     "checked_at": "2026-09-23",
     "confidence": "confirmed"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "1팀 4인 필수, 3인 내장 시 1인당 2만원 추가 요금 발생",
+     "source_url": "https://inseoul27.co.kr/m65.php",
+     "evidence_quote": "모든 예약타임은 1팀 4인 필수 입니다. \n 3인 내장시, 1인당 2만원 추가 요금이 발생 됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -33685,7 +33913,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "vworld_주_송도골프",
@@ -35444,7 +35682,16 @@
     "checked_at": "2026-09-23",
     "confidence": "confirmed"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 이하 라운드 시 일반 카트로 예약 가능 (예약실 문의)",
+     "source_url": "https://m.jadepalacegc.com/kr/info/guide.do",
+     "evidence_quote": "· Senior 캐디는 예약 시 사전 요청 바랍니다. · 3인 이하 라운드 시 일반 카트로 예약 가능합니다. (예약실 문의)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -35621,7 +35868,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "vworld_남춘천c_c",
@@ -37322,7 +37579,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 내장시 1인 2만원 추가",
+     "source_url": "https://www.ownersgc.co.kr/html/news/news_03_01.asp",
+     "evidence_quote": "※ 1팀 4인 기준이며, 3인 내장시 1인 2만원 추가 ※ 할인요금 ( 이벤트 및 특가 ) 은 인터넷 회원에 한하여 적용되며, 18홀 라운드 종료시 적용됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -37478,6 +37744,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_오너스g_c"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -37844,7 +38118,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "요금안내 페이지: 3인 내장시 추가요금 없음 / 이용안내 페이지: 18홀 기준 3인 내장시 인원별 그린피 10,000원 추가적용(9홀 기준 5,000원 추가)",
+     "source_url": "https://www.springvale.co.kr/02guide/01guide.asp",
+     "evidence_quote": "9홀기준 3인 내장시 : 공지 그린피 포함 인원 별 그린피 5,000원 추가적용 18홀 기준 3인 내장시 : 공지 그린피 포함 인원 별 그린피 10,000원 추가적용",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": true,
+     "condition": "요금은 3인 내장 기준 그린피 적용(요금안내: 별도 추가금 없음 / 이용안내: 추가금 포함), 카트비는 팀당 요금 동일 적용",
+     "source_url": "https://www.springvale.co.kr/02guide/03charge.asp",
+     "evidence_quote": "2인 내장 가능. 요금은 상기 3인 내장 기준 그린피 적용 (별도 추가금 없음) *2인/3인 라운드 진행시, 카트비는 팀당 요금(18홀 기준 10만, 9홀 기준 5만) 동일 적용.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -37997,6 +38288,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_스프링베일리조트"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -38168,7 +38475,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 내장 시 1인당 그린피 2만원씩 추가 요금 발생 (실시간 요금은 4인 기준 인터넷 회원가)",
+     "source_url": "https://lordhills.co.kr/use/reservation.asp",
+     "evidence_quote": "- 예약 화면 상 실시간 요금은 4인 기준 인터넷 회원가이며, 3인 내장 시 1인당 그린피 2만원씩 추가 요금이 발생합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -38359,6 +38675,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_로드힐스"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -39907,7 +40231,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 플레이 시 주중 1만 원, 주말(공휴일) 2만 원(1인 기준) 추가 (4~6월, 9~11월 적용)",
+     "source_url": "https://www.century21cc.co.kr:443/guide_operation",
+     "evidence_quote": "플레이는 3인 이상 4인까지 가능합니다. 3인 플레이 시 주중 1만 원, 주말(공휴일) 2만 원(1인 기준)이 추가됩니다. (3인 플레이 추가요금은 4~6월, 9~11월 적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -40152,6 +40485,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_센추리21"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -41235,7 +41576,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3~11월 1인당 2만원 추가, 12~2월(동절기) 1인당 1만원 추가. 4인 플레이를 원칙으로 하며 부득이한 경우 적용, 추가요금은 홀별 정산 미적용",
+     "source_url": "https://www.parkvalley.co.kr/Guide/ChargeInfo.aspx",
+     "evidence_quote": "3인 플레이 그린피 안내 구분 | 3~11월 | 12~2월(동절기) | 3인 플레이 | 2만원 추가 (1인당) | 1만원 추가 (1인당) | ※ 4인 플레이를 원칙으로 하며, 부득이하게 3인 플레이 진행시 상기 규정이 적용됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -41389,6 +41739,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_파크밸리"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -41825,7 +42183,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "two_person": {
+     "allowed": true,
+     "condition": "2인 플레이 시 3인 그린피 적용(노캐디의 경우 카트비 별도)",
+     "source_url": "https://dongseoulcc.kr/guide/guide02",
+     "evidence_quote": "2인 플레이 진행하는 경우, 3인 그린피가 적용됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -41999,6 +42366,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_동서울레스피아"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -45302,7 +45677,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "1팀 기준 3인 이상 4인까지",
+     "source_url": "https://www.blackcc.co.kr/guide/guide",
+     "evidence_quote": "플레이 인원은 1팀기준 3인이상 4인까지 기준으로 합니다. 할인대상 고객은 반드시 본인확인을 위해 신분증을 제시하여 주시기 바랍니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "플레이 인원은 1팀기준 3인이상 4인까지 기준",
+     "source_url": "https://www.blackcc.co.kr/guide/guide",
+     "evidence_quote": "플레이 인원은 1팀기준 3인이상 4인까지 기준으로 합니다. 할인대상 고객은 반드시 본인확인을 위해 신분증을 제시하여 주시기 바랍니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -45474,6 +45866,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_블랙밸리"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -46692,7 +47100,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "골든타임 예약은 1팀 4인 플레이 필수, 3인 이하 내장시 추가요금 발생 (주중 10만원, 주말 15만원, 회원혜택 적용 불가)",
+     "source_url": "https://www.sonofelicecc.com/rsvguide.rsvGuide.dp/dmparse.dm",
+     "evidence_quote": "1팀 4인 플레이 필수 (3인 이하 내장시 추가요금 발생) \n [추가요금 주중 10만원 , 주말 15만원 , 회원혜택 적용 불가]",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -46838,6 +47255,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_소노펠리체"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -47043,7 +47468,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "two_person": {
+     "allowed": true,
+     "condition": "주중에 한해 가능, 3인의 입장료 납부, 주말 및 공휴일 불가",
+     "source_url": "https://www.dreamparkcc.or.kr/05guide/guide01.asp",
+     "evidence_quote": "1팀당 경기인원은 4인 기준, 전동카트 1대 및 코스매니저 1인 배치 \n 2인 경기는 주중에 한해 시행이 가능하나, 3인의 입장료 납부 (주말 및 공휴일 불가) \n 5인 동반 경기는 전동카트 2대 및 코스매니저 2인 배치 (내장일 전 사전 유선 협의)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -47290,6 +47724,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_드림파크골프장"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -48777,7 +49219,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "two_person": {
+     "allowed": false,
+     "condition": "1팀 4인 원칙, 1팀 2인 또는 5인 라운딩 불가 (동계시즌 가능)",
+     "source_url": "https://www.bellastonecc.com/stone/swp/use_guide",
+     "evidence_quote": "내장인원이 예약인원에 미달되는 경우는 입장이 불가 합니다.(1팀 4인 원칙) 1팀 4인 원칙이나, 1팀 2인 또는 5인은 라운딩을 하실 수 없습니다.(동계시즌 가능)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -48926,6 +49377,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_섬강벨라스톤"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -49281,7 +49740,16 @@
     "fee_team": null,
     "conditions": []
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "주중/주말 4인 플레이 기준, 3인 내장 시 1인 과금(정상가) 발생. 부득이한 경우(질병, 부고, 사고) 증빙 자료 제출 후 골프장 협의하여 과금 여부 확인",
+     "source_url": "https://www.alpensia.com/golf/trooncc/use-info.do",
+     "evidence_quote": "내장 기준 | - 주중/주말 4인 플레이 기준 · 3인 내장 시 1인 과금 (정상가) 발생 · 부득이한 경우(예:질병, 부고, 사고) 증빙 자료 제출 후, 골프장 협의하여 과금 여부 확인",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -49507,6 +49975,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_알펜시아"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -50790,7 +51266,16 @@
     "fee_team": null,
     "conditions": []
    },
-   "players": {}
+   "players": {
+    "two_person": {
+     "allowed": false,
+     "condition": "2~3인 플레이 불가(4인 팀 필수). 사전에 협의되지 않은 2~3인 팀은 과금이 적용됨",
+     "source_url": "https://www.alpensia.com/golf/gc700/use-info.do",
+     "evidence_quote": "※ 당 클럽의 예약은 4인 팀 필수로 진행합니다. (사전에 협의되지 않은 2~3인 팀은 과금이 적용됩니다)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -50996,6 +51481,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_알펜시아700"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -52267,7 +52760,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인내장시 주중 1인당 1만원, 주말(공휴일) 1인당 2만원 추가요금 발생",
+     "source_url": "https://new.hantancc.co.kr/m44.php",
+     "evidence_quote": "3인내장시, 주중 1인당 1만원, 주말(공휴일) 1인당 2만원 추가요금이 발생 됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -52434,6 +52936,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_한탄강"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -55667,7 +56177,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인시 4인요금이 적용됩니다",
+     "source_url": "https://www.alldaygolf.co.kr/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "2인플레이불가",
+     "source_url": "https://www.alldaygolf.co.kr/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -55866,6 +56393,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_떼제베"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -58568,7 +59111,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "주중 각 1만원, 주말/공휴일 각 2만원 추가 적용되며, 카트&캐디 요금은 4인요금",
+     "source_url": "https://www.dongchongc.co.kr:442/Guide/Fee",
+     "evidence_quote": "3인 라운드 : 주중 각 1만, 주말/공휴일 각2만 추가 적용되며, 카트&캐디 요금은 4인요금입니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -58753,6 +59305,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_동촌"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -58847,7 +59407,16 @@
     "fee_team": null,
     "conditions": []
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 라운드 시 4인 요금 적용 (팀 4인 내장 필수)",
+     "source_url": "https://www.joongwongolf.co.kr/booking/real-time",
+     "evidence_quote": "- 예약자 본인 내장 필수 (본인 미내장 시 페널티 적용) \n - 팀 4인 내장 필수 (3인 라운드 시 4인 요금 적용) \n - 내장 전 동반자 회원가입 필수 (미가입 시 웹회원 할인 적용불가, 정상가 적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -58985,6 +59554,14 @@
     "source": "web_search_identity",
     "method": "web_search+llm_identity_v1",
     "derived_at": "2026-09-23"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -61775,7 +62352,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "1팀 3인 또는 4인 플레이만 가능",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "evidence_quote": "※ 1팀 3인 또는 4인 플레이만 가능 (1인,2인,5인이상 플레이 불가) → 부득이한경우 2인 플레이시 비회원1명 그린피 부담후 가능 (일반, 무기명회원 동일적용 / 회원 동반, 위임 동일적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "원칙 불가 · 부득이한 경우 비회원 1명 그린피 부담 후 가능",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "evidence_quote": "※ 1팀 3인 또는 4인 플레이만 가능 (1인,2인,5인이상 플레이 불가) → 부득이한경우 2인 플레이시 비회원1명 그린피 부담후 가능 (일반, 무기명회원 동일적용 / 회원 동반, 위임 동일적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -61917,6 +62511,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_theemersongoldclub"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -63550,6 +64160,14 @@
      "source_url": "https://www.rainbowhills.co.kr/_mobile/PageSite/use/charge.asp",
      "checked_at": "2026-09-23",
      "confidence": "confirmed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "내장인원은 1팀 당 3~4인만 가능(2인, 5인플레이 불가)",
+     "source_url": "https://www.rainbowhills.co.kr/pagesite/use/guide.asp",
+     "evidence_quote": "⊙ 예약자가 반드시 내장하셔야 이용이 가능합니다. ⊙ 내장인원은 1팀 당 3~4인만 가능합니다.(2인, 5인플레이 불가)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     }
    }
   },
@@ -63749,7 +64367,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_썬밸리",
@@ -65472,7 +66100,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "5인플레이는 예약실로 문의",
+     "source_url": "https://www.daehocc.co.kr/GolfRes/onepage/real_reservation.asp#pointdate=20260923&courseid=0&openyn=1&dategbn=4&choice_time=0&settype=T&prevDate=202608&nowDate=202609&nextDate=202610",
+     "evidence_quote": "※ 사전위임없이 내장시 요금대우가 불가합니다. ※ 핸드폰 번호가 변경되신 경우 SMS가 전송되지 않습니다. 회원정보를 수정하시고 예약하여 주시기 바랍니다. ※ 3인 이상 내장가능하며 5인플레이는 예약실로 문의 바랍니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -65652,6 +66289,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_대호단양"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -68516,7 +69161,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 내장시 시가대비 그린피 1인당 1만원 추가",
+     "source_url": "https://www.dogocc.co.kr/Guide/Fee",
+     "evidence_quote": "3인 내장시 시가대비 그린피 1인당 1만원 추가됩니다. (2020년 12월 1일부터 적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -68698,6 +69352,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_도고c_c"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -69255,7 +69917,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "1인당 그린피 1만원 추가 (18홀 기준)",
+     "source_url": "https://www.thehill.co.kr/Guide/Fees.aspx",
+     "evidence_quote": "* 3인 플레이는 1인당 그린피 1만원을 추가합니다.(18홀 기준) * 2인 플레이는 3인 플레이와 동일하게 지불 시 이용 가능합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": true,
+     "condition": "3인 플레이와 동일하게 지불 시 이용 가능",
+     "source_url": "https://www.thehill.co.kr/Guide/Fees.aspx",
+     "evidence_quote": "* 3인 플레이는 1인당 그린피 1만원을 추가합니다.(18홀 기준) * 2인 플레이는 3인 플레이와 동일하게 지불 시 이용 가능합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -69428,6 +70107,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_더힐"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -71680,8 +72375,12 @@
      "allowed": false
     },
     "three_person": {
-     "weekday": "allowed_with_four_person_fee",
-     "weekend": "allowed_with_four_person_fee"
+     "allowed": true,
+     "condition": "주중 3인 플레이 가능하나 4인요금 부과, 주말 3인 내장 시에도 4인 요금 부과",
+     "source_url": "https://www.goldenbay.kr/about/guide.asp",
+     "evidence_quote": "• 주중 3인 플레이가능 4인요금 부과, 주말 4인 플레이 필수 (2인 예약불가) \n • 주말 3인 내장 시 4인 요금 부과",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": true
@@ -71881,6 +72580,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_골든베이골프_리조트"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -72090,7 +72797,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 플레이 진행 시 월별 운영 요금(3인 기준)과 별도로 1인 no-show에 따른 추가 요금 팀별 6만원 부과",
+     "source_url": "https://www.pinestonecc.com/info/price",
+     "evidence_quote": "※ 상기 골프요금은 4인 내장을 원칙으로 합니다. ※ 3인 플레이 진행 시 월별 운영 요금(3인 기준)과 별도로, 1인 no-show에 따른 추가 요금 “팀 별 6만원”이 부과됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -72330,6 +73046,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_파인스톤c_c"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -89542,7 +90266,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "1팀 3인 또는 4인 플레이만 가능 (1인, 2인, 5인 이상 플레이 불가)",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "evidence_quote": "※ 1팀 3인 또는 4인 플레이만 가능 (1인,2인,5인이상 플레이 불가) → 부득이한경우 2인 플레이시 비회원1명 그린피 부담후 가능 (일반, 무기명회원 동일적용 / 회원 동반, 위임 동일적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "원칙 불가 · 부득이한 경우 비회원 1명 그린피 부담 후 가능",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "evidence_quote": "※ 1팀 3인 또는 4인 플레이만 가능 (1인,2인,5인이상 플레이 불가) → 부득이한경우 2인 플레이시 비회원1명 그린피 부담후 가능 (일반, 무기명회원 동일적용 / 회원 동반, 위임 동일적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -89733,6 +90474,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_세종에머슨"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -94275,7 +95032,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 플레이 시 4인 요금 적용",
+     "source_url": "https://www.sjraycastle.com/Golf/Use/ChargeInfo.aspx",
+     "evidence_quote": "· 그린피는 1인 18홀 기준입니다. · 3인 플레이 시 4인 요금 적용됩니다. · 우천 등 기상악화로 인한 홀별 정산은 인터넷 미가입가에서 정산됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -94447,6 +95213,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_세종레이캐슬"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -118790,7 +119564,12 @@
      "allowed": true
     },
     "two_person": {
-     "allowed": "unknown"
+     "allowed": false,
+     "condition": "3인 또는 4인 플레이만 가능",
+     "source_url": "https://www.seoulcc.co.kr/guide/reserGuide.asp",
+     "evidence_quote": ". 예약시간 40분전에는 도착하여 프런트에 접수하셔야 합니다. . 3인 또는 4인 플레이만 가능 합니다. ※ 예약 및 경기진행에 지장이 있을 경우 내장 및 플레이를 거절 할 수 있습니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "source_url": "https://www.seoulcc.co.kr/guide/reserGuide.asp",
     "checked_at": "2026-09-22",
@@ -119146,6 +119925,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_한양"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -120050,11 +120837,20 @@
      "join_reservation_weekend_holiday": true
     },
     "two_person": {
-     "join_reservation_weekend_holiday": true
+     "allowed": true,
+     "condition": "주중·주말 1~2인 조인 예약 가능 (조인예약 시스템 운영)",
+     "source_url": "https://www.olympicgolf.co.kr/reservation/information",
+     "evidence_quote": "주말,주중 1~2인 예약도 가능 합니다. ( 당 골프장은 조인예약 시스템으로 운영합니다. )",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "three_person": {
-     "join_fee_schedule_exists": true,
-     "standalone_play_allowed": "unknown"
+     "allowed": true,
+     "condition": "3인 예약 시 1인 조인이 가능하며, 당일예약시까지 조인이 없을 경우 4인(팀) 캐디피 적용",
+     "source_url": "https://www.olympicgolf.co.kr/reservation/information",
+     "evidence_quote": "3인 예약시 1인 조인이 가능하며 당일예약시까지 조인이 없을 시 4인(팀) 캐디피 적용됩니다. \n 4인 예약 후 인원미달 시 4인 요금 적용됩니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "team_standard": true
@@ -120391,6 +121187,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_올림픽"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -125800,10 +126612,20 @@
    },
    "players": {
     "two_person": {
-     "allowed": "unknown"
+     "allowed": false,
+     "condition": "원칙 불가 · 주중 1~8월·12월 주주(정)회원 동반 시 등 예외적으로 허용",
+     "source_url": "https://www.swcc.co.kr/swp/use_guide",
+     "evidence_quote": "2인 이하 또는 5인 이상의 플레이는 금지합니다. ※ 예외사항 주중 1월~8월, 12월은 반드시 주주(정)회원 동반시 2인 플레이를 허용 합니다. 9월,10월,11월은 2일전 잔여팀에 한해 주주(정)회원 동반시 2인 플레이를 허용 합니다. 주말 2일전 잔여팀에 한해 주주(정)회원 동반시 2인 플레이를 허용 합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "three_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "2인 이하 또는 5인 이상의 플레이는 금지",
+     "source_url": "https://www.swcc.co.kr/swp/use_guide",
+     "evidence_quote": "13 기타 2인 이하 또는 5인 이상의 플레이는 금지합니다. ※ 예외사항 주중 1월~8월, 12월은 반드시 주주(정)회원 동반시 2인 플레이를 허용 합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": "unknown"
@@ -126060,7 +126882,25 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "vworld_동래베네스트par3",
@@ -126925,10 +127765,20 @@
    },
    "players": {
     "two_person": {
-     "allowed": "unknown"
+     "allowed": false,
+     "condition": "예약자본인내장 및 4인내장 기준, 1팀 4인 그린피 적용",
+     "source_url": "https://ehscc.co.kr/Guide/OnlineInfo",
+     "evidence_quote": "1. 예약자본인내장 및 4인내장 기준입니다. (2인,3인,5인 플레이 불가 / 1팀 4인 그린피 적용 / 미성년자는 보호자 동반 필수)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "three_person": {
-     "allowed": "unknown"
+     "allowed": false,
+     "condition": "예약자본인내장 및 4인내장 기준, 1팀 4인 그린피 적용",
+     "source_url": "https://ehscc.co.kr/Guide/OnlineInfo",
+     "evidence_quote": "1. 예약자본인내장 및 4인내장 기준입니다. (2인,3인,5인 플레이 불가 / 1팀 4인 그린피 적용 / 미성년자는 보호자 동반 필수)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": "unknown"
@@ -127172,7 +128022,25 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_지산",
@@ -127326,10 +128194,20 @@
    },
    "players": {
     "two_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "주중 2인플레이 가능(1인 65,000원/중복불가), 주말 2인 플레이시 3인예약 현장 3인결제시 가능",
+     "source_url": "https://www.jisanresort.co.kr/w/reservation/golfResv/public_reserv01.asp",
+     "evidence_quote": "예약 및 플레이는 3인이상 가능합니다. 주중 2인플레이 가능(1인 65,000원) 주말 2인 플레이시 3인예약 현장3인결제시 가능합니다. 노캐디,개인카트 셀프운영 입니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "three_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "주말·공휴일 예약은 3인 이상부터 가능(2인 예약시 3인요금 적용)",
+     "source_url": "https://www.jisanresort.co.kr/w/reservation/golfResv/public_reserv01.asp",
+     "evidence_quote": "예약 및 플레이는 3인이상 가능합니다. 주중 2인플레이 가능(1인 65,000원) 주말 2인 플레이시 3인예약 현장3인결제시 가능합니다. 노캐디,개인카트 셀프운영 입니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": "unknown"
@@ -127608,6 +128486,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_지산"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -129751,10 +130645,20 @@
    },
    "players": {
     "two_person": {
-     "allowed": "unknown"
+     "allowed": false,
+     "condition": "2인 & 5인 플레이 및 갤러리 입장불가",
+     "source_url": "https://www.hanwoncc.co.kr/use/useinfo.asp",
+     "evidence_quote": "3 ~ 4인 라운딩 필수. ( 2인 & 5인 플레이 및 갤러리 입장불가 ) - 3인 플레이 시 비회원에 한하여 1만원 추가 적용.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "three_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "3인 플레이 시 비회원에 한하여 1만원 추가 적용",
+     "source_url": "https://www.hanwoncc.co.kr/use/useinfo.asp",
+     "evidence_quote": "3 ~ 4인 라운딩 필수. ( 2인 & 5인 플레이 및 갤러리 입장불가 ) - 3인 플레이 시 비회원에 한하여 1만원 추가 적용.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": "unknown"
@@ -130416,7 +131320,25 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_화산",
@@ -136636,7 +137558,16 @@
     "fee_team": null,
     "conditions": []
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "",
+     "source_url": "https://www.seoseoul.co.kr/html/guide/guide_02.asp",
+     "evidence_quote": "플레이인원 주중/주말 4인 플레이를 원칙으로 합니다 (3인 플레이 가능)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -136842,6 +137773,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "vworld_서서울골프장"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -139513,7 +140452,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 플레이 시 4인 요금 적용",
+     "source_url": "https://www.alldaygolf.co.kr/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가) 3팀 이상 단체 예약 시 예약실을 통해 예약 신청가능",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "2인플레이불가",
+     "source_url": "https://www.alldaygolf.co.kr/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가) 3팀 이상 단체 예약 시 예약실을 통해 예약 신청가능",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -139706,6 +140662,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_올데이_옥스필드"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -142603,7 +143575,12 @@
    },
    "players": {
     "three_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "3인플레이 시 1인당 주중 1만원 / 주말 2만원 추가비용 발생",
+     "source_url": "https://www.shambhalacc.co.kr/guide/charge.asp",
+     "evidence_quote": "인터넷 회원 미가입시 3만원 추가되며, 구장상황에 따라 특가진행이 발생됩니다. 3인플레이 시 1인당 주중 1만원/주말2만원 추가비용 발생합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": "unknown"
@@ -143012,7 +143989,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_해비치_서울",
@@ -145801,7 +146788,12 @@
    },
    "players": {
     "three_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "3인 내장시 이벤트 불가 및 그린피 인당 5만원 추가 / 연단체는 팀별 3인 내장시 3인 위약금 15만원",
+     "source_url": "https://www.sunhillgolf.co.kr/HomePage/views/guide/game",
+     "evidence_quote": "경기 진행 한팀 3~4인 플레이를 기준으로 합니다. 1팀, 1카트, 1캐디 시스템으로 운영합니다. 카트는 전동 카트이며, 4백 탑재가 가능합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": "unknown"
@@ -146055,6 +147047,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_썬힐"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -146544,7 +147544,12 @@
      "allowed": "unknown"
     },
     "three_person": {
-     "allowed": "unknown"
+     "allowed": true,
+     "condition": "",
+     "source_url": "https://www.seoseoul.co.kr/html/guide/guide_02.asp",
+     "evidence_quote": "플레이인원 주중/주말 4인 플레이를 원칙으로 합니다 (3인 플레이 가능)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": "unknown"
@@ -147092,7 +148097,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_마이다스밸리_청평",
@@ -150500,7 +151515,16 @@
     "checked_at": "2026-09-22",
     "confidence": "confirmed"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "",
+     "source_url": "https://www.h1club.co.kr/html/guide05.asp",
+     "evidence_quote": "플레이인원 주중/주말 4인 플레이를 원칙으로 합니다. (3인 플레이 가능)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -150711,7 +151735,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_안성베네스트",
@@ -153350,7 +154384,16 @@
      "confidence": "supported"
     }
    },
-   "players": {}
+   "players": {
+    "two_person": {
+     "allowed": false,
+     "condition": "4인 플레이 원칙, 당 클럽에서 공지 또는 허용할 경우에만 가능",
+     "source_url": "https://route52cc.com/guide/guide.asp",
+     "evidence_quote": "예약 인원 | \n 4인 플레이 원칙 | \n 2인 플레이 불가, \n당 클럽에서 공지 또는 허용할 경우에만 가능",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -153537,7 +154580,17 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_더스타휴",
@@ -156579,7 +157632,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "2인 이하 또는 5인 이상의 플레이는 금지(즉 3~4인 플레이만 가능)",
+     "source_url": "https://www.swcc.co.kr/swp/use_guide",
+     "evidence_quote": "13 기타 2인 이하 또는 5인 이상의 플레이는 금지합니다. ※ 예외사항 주중 1월~8월, 12월은 반드시 주주(정)회원 동반시 2인 플레이를 허용 합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "원칙 불가 · 주중 1~8월·12월 주주(정)회원 동반 시 등 예외적으로 허용",
+     "source_url": "https://www.swcc.co.kr/swp/use_guide",
+     "evidence_quote": "2인 이하 또는 5인 이상의 플레이는 금지합니다. ※ 예외사항 주중 1월~8월, 12월은 반드시 주주(정)회원 동반시 2인 플레이를 허용 합니다. 9월,10월,11월은 2일전 잔여팀에 한해 주주(정)회원 동반시 2인 플레이를 허용 합니다. 주말 2일전 잔여팀에 한해 주주(정)회원 동반시 2인 플레이를 허용 합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -156787,6 +157857,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_신원"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -156923,10 +158009,20 @@
    },
    "players": {
     "two_person": {
-     "allowed": "unknown"
+     "allowed": false,
+     "condition": "4인 내장 필수",
+     "source_url": "https://www.golfclubq.com/reservation/reservation.asp",
+     "evidence_quote": "* 공지요금을 적용받으려면 반드시 인터넷 회원(무료가입) 가입해야 합니다. \n * 4인 내장 필수 입니다. \n * 예약 정상 취소 기간은 주중 3일 전 주말 4일 전입니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "three_person": {
-     "allowed": "unknown"
+     "allowed": false,
+     "condition": "4인 내장 필수",
+     "source_url": "https://www.golfclubq.com/reservation/reservation.asp",
+     "evidence_quote": "* 공지요금을 적용받으려면 반드시 인터넷 회원(무료가입) 가입해야 합니다. \n * 4인 내장 필수 입니다. \n * 예약 정상 취소 기간은 주중 3일 전 주말 4일 전입니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
     },
     "four_person": {
      "allowed": true,
@@ -157141,7 +158237,25 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   }
+  ]
  },
  {
   "id": "kgba_예미지",
@@ -157273,7 +158387,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 내장 시 4인 기준 요금으로 정산 (3인 플레이 시 4인 그린피 적용)",
+     "source_url": "https://www.yemizicc.co.kr/guide/guide",
+     "evidence_quote": "당 클럽은 4인 1팀 기준입니다. 3인 내장 시 4인 기준 요금으로 정산하여야 합니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -157438,6 +158561,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_예미지"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -159299,7 +160430,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 플레이 시 4인 요금 적용 (할인공시가는 1팀 4인 조건)",
+     "source_url": "https://www.ilcc.co.kr/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가) 3팀 이상 단체 예약 시 예약실을 통해 예약 신청가능",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "2인플레이불가",
+     "source_url": "https://www.ilcc.co.kr/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가) 3팀 이상 단체 예약 시 예약실을 통해 예약 신청가능",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -159483,6 +160631,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_올데이_임페리얼레이크"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -159605,7 +160769,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 플레이 시 4인 요금 적용",
+     "source_url": "https://www.royalforet.com/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가) 3팀 이상 단체 예약 시 예약실을 통해 예약 신청가능",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "2인플레이불가",
+     "source_url": "https://www.royalforet.com/reservation/reserGuide.asp",
+     "evidence_quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가) 3팀 이상 단체 예약 시 예약실을 통해 예약 신청가능",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -159779,6 +160960,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_올데이_로얄포레"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -159890,7 +161087,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "3인 내장 시 지역주민·사이버골드회원 등 할인혜택 적용 불가 (4인 내장 시에만 할인 가능)",
+     "source_url": "https://www.arumdaunresort.com/html/guide04.asp",
+     "evidence_quote": "1팀 4인 내장 시 할인가능 (3인 내장 시 할인 불가) 자사 홈페이지 예약 및 내장 시 할인가능합니다. 예치금을 납입하지 않은 온라인 회원은 그린피 할인 혜택을 받을 수 없습니다.",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -160085,6 +161291,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_sg아름다운"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -161557,7 +162771,16 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "시가대비 그린피 1인당 1만원 추가 (2020년 12월 1일부터 적용)",
+     "source_url": "https://www.dogocc.co.kr/Guide/Fee",
+     "evidence_quote": "3인 내장시 시가대비 그린피 1인당 1만원 추가됩니다. (2020년 12월 1일부터 적용)",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -161739,6 +162962,14 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_도고"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
@@ -161867,7 +163098,24 @@
     "checked_at": "2026-09-23",
     "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {
+    "three_person": {
+     "allowed": true,
+     "condition": "주중 3인 플레이 가능하나 4인요금 부과, 주말 3인 내장 시에도 4인 요금 부과",
+     "source_url": "https://www.goldenbay.kr/about/guide.asp",
+     "evidence_quote": "• 주중 3인 플레이가능 4인요금 부과, 주말 4인 플레이 필수 (2인 예약불가) \n • 주말 3인 내장 시 4인 요금 부과",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "주말 2인 예약 불가 (주중은 별도 안내 없음)",
+     "source_url": "https://www.goldenbay.kr/about/guide.asp",
+     "evidence_quote": "• 주중 3인 플레이가능 4인요금 부과, 주말 4인 플레이 필수 (2인 예약불가) \n • 주말 3인 내장 시 4인 요금 부과",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified_reviewed"
+    }
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -162050,6 +163298,22 @@
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
     "review_item": "kgba_골든베이"
+   },
+   {
+    "fields": [
+     "three_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "two_person"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2+manual_review",
+    "derived_at": "2026-09-24"
    }
   ]
  },
