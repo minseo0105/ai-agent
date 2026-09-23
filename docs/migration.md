@@ -28,7 +28,7 @@ API 키는 지금처럼 `.streamlit/secrets.toml`에서 읽습니다.
 | 내차에서 드림카까지 | ✅ `/dreamcar` (이미지는 FastAPI `/media/*` 정적 서빙) |
 | 부동산 모니터 | ✅ Next.js 완료 (`/realestate`, `/api/realestate/*`) |
 | 보고서 작성기 | ✅ Next.js 완료 (`/report`, `/api/report/*`) |
-| AI 사주 | ⏳ |
+| AI 사주 · 대운 분석 | ✅ `/saju` (`/api/saju/*`, GPT 해석은 SSE 스트리밍) |
 | 차량 선택기 · GIF 변환기 | ⏳ |
 
 ## 서비스 하나를 옮기는 순서

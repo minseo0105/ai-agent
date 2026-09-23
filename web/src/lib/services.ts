@@ -50,7 +50,7 @@ export const SERVICES: Service[] = [
     icon: "🔮",
     title: "AI 사주 · 대운 분석",
     desc: "사주팔자 · 오행 · 대운 흐름을 분석합니다.",
-    streamlitPath: "saju",
+    href: "/saju",
   },
   {
     id: "car-selector",

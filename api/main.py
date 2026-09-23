@@ -19,6 +19,7 @@ from api.dreamcar import router as dreamcar_router
 from api.golf import router as golf_router
 from api.realestate import router as realestate_router
 from api.report import router as report_router
+from api.saju import router as saju_router
 from services.agent import PROVIDERS, SEARCH_MODES, run_agent
 from services.config import get_secret
 from services.dreamcar import ASSET_DIR, IMAGE_DIR
@@ -28,6 +29,7 @@ app.include_router(golf_router)
 app.include_router(realestate_router)
 app.include_router(report_router)
 app.include_router(dreamcar_router)
+app.include_router(saju_router)
 
 # 드림카 차량 이미지 · 라이프스타일/페르소나 애니메이션 (base64 인라인 대신 파일로 서빙)
 # Windows 레지스트리에는 webp 매핑이 없어 octet-stream으로 나가므로 직접 등록
