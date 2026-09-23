@@ -58,7 +58,7 @@ export const SERVICES: Service[] = [
     title: "차량 선택기",
     desc: "조건에 맞는 차량을 골라봅니다.",
     secondary: true,
-    streamlitPath: "차량_선택기",
+    href: "/car-selector",
   },
   {
     id: "gif",
@@ -66,7 +66,7 @@ export const SERVICES: Service[] = [
     title: "GIF 변환기",
     desc: "이미지를 GIF로 변환합니다.",
     secondary: true,
-    streamlitPath: "GIF_변환기",
+    href: "/gif",
   },
 ];
 

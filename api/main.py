@@ -15,11 +15,14 @@ from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from api.car_selector import router as car_selector_router
 from api.dreamcar import router as dreamcar_router
+from api.gif import router as gif_router
 from api.golf import router as golf_router
 from api.realestate import router as realestate_router
 from api.report import router as report_router
 from api.saju import router as saju_router
+from services import car_selector
 from services.agent import PROVIDERS, SEARCH_MODES, run_agent
 from services.config import get_secret
 from services.dreamcar import ASSET_DIR, IMAGE_DIR
@@ -30,12 +33,16 @@ app.include_router(realestate_router)
 app.include_router(report_router)
 app.include_router(dreamcar_router)
 app.include_router(saju_router)
+app.include_router(car_selector_router)
+app.include_router(gif_router)
 
-# 드림카 차량 이미지 · 라이프스타일/페르소나 애니메이션 (base64 인라인 대신 파일로 서빙)
+# 드림카·차량 선택기 이미지 · 라이프스타일/페르소나 애니메이션 (base64 인라인 대신 파일로 서빙)
 # Windows 레지스트리에는 webp 매핑이 없어 octet-stream으로 나가므로 직접 등록
 mimetypes.add_type("image/webp", ".webp")
 app.mount("/media/cars", StaticFiles(directory=IMAGE_DIR), name="car-images")
 app.mount("/media/dreamcar", StaticFiles(directory=ASSET_DIR), name="dreamcar-assets")
+app.mount(car_selector.CUTOUT_MEDIA, StaticFiles(directory=car_selector.IMAGE_DIR), name="car-cutout")
+app.mount(car_selector.REAL_MEDIA, StaticFiles(directory=car_selector.FALLBACK_DIR), name="car-real")
 
 # 프론트엔드 주소. 배포 시 FRONTEND_ORIGINS="https://my-site.vercel.app" 처럼 쉼표로 지정
 _origins = os.environ.get("FRONTEND_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
@@ -44,6 +51,7 @@ app.add_middleware(
     allow_origins=[o.strip() for o in _origins.split(",") if o.strip()],
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
+    expose_headers=["X-Gif-Meta"],
 )
 
 
