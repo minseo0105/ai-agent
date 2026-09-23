@@ -36,7 +36,7 @@ export const SERVICES: Service[] = [
     icon: "🏠",
     title: "부동산 모니터",
     desc: "청약 · 실거래 · 관심지역을 모니터링합니다.",
-    streamlitPath: "부동산_모니터",
+    href: "/realestate",
   },
   {
     id: "report",

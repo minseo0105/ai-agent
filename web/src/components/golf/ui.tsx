@@ -42,13 +42,17 @@ export function ChoiceChips({
   onToggle,
   disabled,
   labels,
+  accent = "golf",
 }: {
   options: string[];
   selected: string[];
   onToggle: (v: string) => void;
   disabled?: boolean;
   labels?: Record<string, number>;
+  accent?: "golf" | "estate";
 }) {
+  const activeClass = accent === "estate" ? "border-estate bg-estate text-white" : "border-golf bg-golf text-white";
+  const hoverClass = accent === "estate" ? "hover:border-estate/50" : "hover:border-golf/50";
   return (
     <div className="flex flex-wrap gap-2">
       {options.map((o) => {
@@ -61,7 +65,7 @@ export function ChoiceChips({
             aria-pressed={active}
             onClick={() => onToggle(o)}
             className={`rounded-full border px-3.5 py-1.5 text-sm font-semibold transition disabled:opacity-40 ${
-              active ? "border-golf bg-golf text-white" : "border-border bg-surface text-muted hover:border-golf/50 hover:text-fg"
+              active ? activeClass : `border-border bg-surface text-muted ${hoverClass} hover:text-fg`
             }`}
           >
             {active ? "✓ " : ""}

@@ -11,7 +11,8 @@ from typing import Optional
 from urllib.parse import quote
 
 import requests
-import streamlit as st
+
+from services.config import get_secret
 
 
 DB_NAME = "realestate_monitor.db"
@@ -126,19 +127,20 @@ ALL_REGIONS = SEOUL_REGIONS + GYEONGGI_REGIONS
 
 
 def _secret(name: str, default: Optional[str] = None) -> Optional[str]:
-    # GitHub Actions uses environment secrets; Streamlit uses st.secrets.
-    environment_value = os.getenv(name)
-    if environment_value:
-        return environment_value.strip()
-    try:
-        if "realestate" in st.secrets and name in st.secrets["realestate"]:
-            value = st.secrets["realestate"][name]
-            if value is None:
-                return default
-            return str(value).strip()
-    except Exception:
-        pass
-    return default
+    # 환경변수(GitHub Actions·배포) → .streamlit/secrets.toml [realestate] 순. Streamlit 없이도 동작한다.
+    return get_secret(name, default=default, section="realestate") or default
+
+
+def safe_error(e) -> str:
+    """오류 문구에 섞인 요청 URL의 API 키(serviceKey 등)를 가리고, 흔한 HTTP 오류는 안내 문구로 바꾼다."""
+    import re as _re
+    text = _re.sub(r"(?i)(serviceKey|crtfc_key|api_?key)=[^&\s'\"]+", r"\1=***", str(e))
+    status = getattr(getattr(e, "response", None), "status_code", None)
+    if status == 403:
+        return "공공데이터포털 활용신청이 필요한 API입니다 (403)"
+    if status == 429:
+        return "공공데이터포털 일일 호출 한도를 초과했습니다 (429)"
+    return _re.sub(r"https?://\S+", "", text).strip() or text
 
 
 def get_public_data_key() -> str:
@@ -748,7 +750,7 @@ def fetch_trades_multi(
 
             except Exception as e:
                 errors.append(
-                    f"{region_label} · {property_type}: {e}"
+                    f"{region_label} · {property_type}: {safe_error(e)}"
                 )
 
     all_rows.sort(
@@ -1271,14 +1273,14 @@ def run_monitoring_once(base_dir: Path):
             apt_subscriptions = fetch_apt_subscriptions()
             report["fetched"]["subscriptions"] += len(apt_subscriptions)
         except Exception as e:
-            report["errors"].append(f"신규청약 조회 실패: {e}")
+            report["errors"].append(f"신규청약 조회 실패: {safe_error(e)}")
 
     if any(r["event_type"] == "무순위청약" for r in rules):
         try:
             unsold_subscriptions = fetch_unsold_subscriptions()
             report["fetched"]["subscriptions"] += len(unsold_subscriptions)
         except Exception as e:
-            report["errors"].append(f"무순위청약 조회 실패: {e}")
+            report["errors"].append(f"무순위청약 조회 실패: {safe_error(e)}")
 
     for rule in rules:
 
@@ -1344,7 +1346,7 @@ def run_monitoring_once(base_dir: Path):
 
             except Exception as e:
                 report["errors"].append(
-                    f"{rule['region']} · {property_type} 실거래 조회 실패: {e}"
+                    f"{rule['region']} · {property_type} 실거래 조회 실패: {safe_error(e)}"
                 )
                 continue
 

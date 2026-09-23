@@ -24,9 +24,15 @@ def _load_secrets_file():
         return {}
 
 
-def get_secret(name, default=""):
+def get_secret(name, default="", section=None):
+    """환경변수 → secrets.toml [section] → secrets.toml 최상위 순으로 찾는다."""
     value = os.environ.get(name)
     if value:
-        return value
-    value = _load_secrets_file().get(name)
-    return value if value not in (None, "") else default
+        return value.strip()
+    secrets = _load_secrets_file()
+    if section and isinstance(secrets.get(section), dict):
+        value = secrets[section].get(name)
+        if value not in (None, ""):
+            return str(value).strip()
+    value = secrets.get(name)
+    return str(value).strip() if value not in (None, "") else default

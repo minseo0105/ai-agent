@@ -14,6 +14,8 @@
   --accent-soft: #eff6ff;
   --golf: #16a34a;
   --golf-soft: #f0fdf4;
+  --estate: #a91f2d;
+  --estate-soft: #fbeaec;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,6 +32,8 @@
     --accent-soft: #172554;
     --golf: #4ade80;
     --golf-soft: #052e16;
+    --estate: #f87171;
+    --estate-soft: #3b0d12;
   }
 }
 
@@ -46,6 +50,8 @@
   --color-accent-soft: var(--accent-soft);
   --color-golf: var(--golf);
   --color-golf-soft: var(--golf-soft);
+  --color-estate: var(--estate);
+  --color-estate-soft: var(--estate-soft);
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
