@@ -287,6 +287,19 @@ def find_active_db() -> Path:
     같은 등급이면 수정 시간이 가장 최근인 파일을 사용한다.
     """
 
+    # Git checkout / Docker COPY may change mtimes. Pin the reviewed deployment
+    # database explicitly; invalid configuration must not silently select old data.
+    manifest = GOLF_DATA_DIR / "active_database.json"
+    if manifest.exists():
+        config = _read_json(manifest)
+        filename = config.get("filename") if isinstance(config, dict) else None
+        if not isinstance(filename, str) or Path(filename).name != filename or "/" in filename or "\\" in filename:
+            raise ValueError("active_database.json requires a local filename")
+        selected = GOLF_DATA_DIR / filename
+        if not _is_candidate_json(selected) or not _validate_db(selected)[0]:
+            raise ValueError(f"Configured golf DB is missing or invalid: {filename}")
+        return selected
+
     candidates = list_db_candidates()
 
     if candidates:
