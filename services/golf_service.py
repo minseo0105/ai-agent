@@ -1505,6 +1505,10 @@ def ai_condition(text):
     """문장 → cond. 기존 파서(지역·도시·요일·인원·예산)에 캐디/야간/시간대 키워드를 보강한다."""
     cond = parse_ai_conditions(text, "전체", False, 4, None)
     compact = re.sub(r"\s+", "", str(text or ""))
+    if re.search(r"전라도|전라남도|전라북도|전북특별자치도", compact):
+        cond['area'] = '호남권'
+    elif re.search(r"경상도|경상남도|경상북도", compact):
+        cond['area'] = '영남권'
     if not cond.get("city"):
         # 목록에 없는 시·군(예: 고양)도 DB에 있으면 도시 조건으로 인식한다.
         # 없으면 조건 없이 전체가 나와 엉뚱한 결과가 섞인다.
@@ -1543,8 +1547,10 @@ def ai_search(text, sort="추천순", include_unknown=False):
     cond = ai_condition(text)
     cond["include_unknown"] = include_unknown
     result = _run_search(cond, sort, None, city=str(cond["city"]) if cond.get("city") else None)
+    if cond.get('area') not in (None, '전체', *SUPPORTED_GOLF_AREAS):
+        result['notice'] = f"{cond['area']}은 현재 추천 지원 지역이 아닙니다. 조건·AI 문장검색은 수도권·충청권·강원권을 지원합니다. 등록된 골프장은 ‘직접 찾기’에서 이름으로 조회할 수 있습니다."
     result["parsed"] = {
-        "area": cond.get("area") or "전체",
+        "area": cond.get("area") if cond.get("area") not in (None, "전체") else "지원 지역 전체",
         "city": cond.get("city") or "전체",
         "day": "주말/공휴일" if cond.get("weekend") else "주중",
         "players": f"{cond.get('players', 4)}인",
@@ -1558,7 +1564,7 @@ def ai_search(text, sort="추천순", include_unknown=False):
 
 
 def _applied_chips(cond):
-    chips = [" · ".join(cond.get("areas") or ["전국"])]
+    chips = [" · ".join(cond.get("areas") or ["수도권·충청권·강원권"])]
     if cond.get("subregions"):
         chips.append(" / ".join(cond["subregions"]))
     elif cond.get("city"):

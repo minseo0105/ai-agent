@@ -188,6 +188,12 @@ export default function GolfSearch() {
     <div className="space-y-5">
       <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm sm:p-6">
         <Segmented value={mode} options={MODES} onChange={changeMode} full ariaLabel="찾는 방법" />
+        {mode !== "name" && (
+          <p className="mt-3 rounded-xl bg-golf-soft px-3 py-2 text-sm text-golf">
+            현재 추천 지역: 수도권 · 충청권 · 강원권<br />
+            조건 검색과 AI 문장검색에 동일하게 적용됩니다.
+          </p>
+        )}
 
         {options && !options.runtime_ok && (
           <p className="mt-3 rounded-xl bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
@@ -209,7 +215,7 @@ export default function GolfSearch() {
             {/* 1. 위치 — 결과를 가장 크게 좁히는 조건이라 맨 앞 */}
             <div className="space-y-3 rounded-2xl border border-border p-3.5 sm:space-y-4 sm:p-4">
               <div className="text-sm font-extrabold text-muted">어디서 치시나요</div>
-              <Field label="지역" hint="복수 선택 · 미선택 시 전체 권역">
+              <Field label="지역" hint="복수 선택 · 미선택 시 지원 지역 전체">
                 <ChoiceChips
                   options={options?.areas ?? []}
                   labels={options?.counts.by_area}
@@ -337,13 +343,17 @@ export default function GolfSearch() {
             }}
           >
             <textarea
+              aria-label="골프장 검색 조건 문장"
               className={`${inputClass} min-h-24 resize-y`}
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="예: 여주에서 주말 4인, 1인 30만원 이하 골프장 찾아줘"
             />
             <p className="text-xs text-subtle">
-              문장에서 지역 · 주중/주말 · 인원 · 예산을 읽습니다. 미확인 3인·요금 정보는 제외하지 않고 결과에서 확인 필요로 구분합니다.
+              지역 · 주중/주말 · 인원 · 예산 · 캐디 · 야간 조건을 읽습니다. 조건 충족 여부가 미확인인 곳은 기본 제외하며, 결과에서 ‘미확인 포함해서 보기’로 추가할 수 있습니다.
+            </p>
+            <p className="text-xs text-subtle">
+              ‘페어웨이 넓음’ 등 후기 기반 특징은 아직 확정 필터로 지원하지 않습니다. 지원 지역 밖의 등록 골프장은 ‘직접 찾기’를 이용해 주세요.
             </p>
             <button type="submit" disabled={loading || !text.trim()} className="w-full rounded-xl bg-golf py-3 text-sm font-extrabold text-white transition hover:brightness-110 disabled:opacity-40">
               문장으로 검색
@@ -372,6 +382,7 @@ export default function GolfSearch() {
 
         {mode === "name" && (
           <div className="mt-5 space-y-3">
+            <p className="text-xs text-subtle">추천 지원 지역 밖의 골프장도 DB에 등록되어 있으면 이름·지역으로 조회할 수 있습니다. 상세정보가 부족한 곳은 확인 필요로 표시합니다.</p>
             <input
               className={inputClass}
               value={nameQuery}
@@ -442,8 +453,8 @@ export default function GolfSearch() {
 
           {items.length === 0 ? (
             <p className="rounded-2xl bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">
-              선택한 조건이 확인된 골프장이 없습니다.
-              {trace?.unknown_excluded ? " 위의 ‘미확인 포함해서 보기’로 정보가 아직 없는 곳까지 볼 수 있어요." : " 지역이나 예산 조건을 넓혀 다시 검색해 보세요."}
+              {result.notice || "선택한 조건이 확인된 골프장이 없습니다."}
+              {!result.notice && (trace?.unknown_excluded ? " 위의 ‘미확인 포함해서 보기’로 정보가 아직 없는 곳까지 볼 수 있어요." : " 지원 지역 안에서 지역이나 예산 조건을 넓혀 다시 검색해 보세요.")}
             </p>
           ) : (
             <>
