@@ -537,12 +537,20 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://kugolf.co.kr/swp/charge",
+    "evidence_quote": "캐디피(팀) | 150,000원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://kugolf.co.kr/swp/charge",
+    "evidence_quote": "카트피(팀) | 100,000원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {}
   },
@@ -735,7 +743,19 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "caddie_fee",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_스마트ku골프파빌리온"
+   }
+  ]
  },
  {
   "id": "vworld_서원밸리g_c",
@@ -2967,8 +2987,98 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 190000,
+     "evidence_quote": "10월 전반 그린피 2026.09.28 ~ 2026.10.11 (단위:원) 이용료 구분 | 월~금요일 | 토요일,공휴일 | 일요일 | 1부 | 190,000 | 240,000 | 230,000",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "10월 전반 그린피 2026.09.28 ~ 2026.10.11 (단위:원) 이용료 구분 | 월~금요일 | 토요일,공휴일 | 일요일 | 1부 | 190,000 | 240,000 | 230,000",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 230000,
+     "evidence_quote": "10월 전반 그린피 2026.09.28 ~ 2026.10.11 (단위:원) 이용료 구분 | 월~금요일 | 토요일,공휴일 | 일요일 | 1부 | 190,000 | 240,000 | 230,000",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 220000,
+     "evidence_quote": "2부 | 220,000 | 3인 내장시 | 1인당 3만원 추가 | 1인당 4만원 추가",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 180000,
+     "evidence_quote": "9월 후반 그린피 2026.09.14 ~ 2026.09.27 (단위:원) 이용료 구분 | 월~금요일 | 토요일,공휴일 | 일요일 | 1부 | 180,000 | 230,000 | 220,000",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 230000,
+     "evidence_quote": "9월 후반 그린피 2026.09.14 ~ 2026.09.27 (단위:원) 이용료 구분 | 월~금요일 | 토요일,공휴일 | 일요일 | 1부 | 180,000 | 230,000 | 220,000",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 220000,
+     "evidence_quote": "9월 후반 그린피 2026.09.14 ~ 2026.09.27 (단위:원) 이용료 구분 | 월~금요일 | 토요일,공휴일 | 일요일 | 1부 | 180,000 | 230,000 | 220,000",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 210000,
+     "evidence_quote": "2부 | 210,000 | 3인 내장시 | 1인당 3만원 추가 | 1인당 4만원 추가",
+     "source_url": "https://www.npcc.co.kr/guide/fee.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.npcc.co.kr/guide/fee.asp"
   },
   "course_details": [],
   "evaluation": {
@@ -3119,6 +3229,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x8"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_파주프리스틴밸리"
    }
   ]
  },
@@ -16604,20 +16723,96 @@
     "3부": {}
    },
    "caddie": {
-    "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "mode": "caddie",
+    "fee_team": 160000,
+    "conditions": [],
+    "source_url": "https://lakewood.co.kr/swp/charge",
+    "evidence_quote": "기타 이용요금 구 분 | 18홀 | 카트료 | 100,000원 | 캐디피 | 160,000원 | 리무진 카트비 | 220,000원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://lakewood.co.kr/swp/charge",
+    "evidence_quote": "기타 이용요금 구 분 | 18홀 | 카트료 | 100,000원 | 캐디피 | 160,000원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {}
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "비회원/Web회원 | 18홀 | 240,000원 | 300,000원 |",
+     "source_url": "https://lakewood.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 300000,
+     "evidence_quote": "비회원/Web회원 | 18홀 | 240,000원 | 300,000원 |",
+     "source_url": "https://lakewood.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "비회원/Web회원 | 18홀 | 240,000원 | 300,000원 |",
+     "source_url": "https://lakewood.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 300000,
+     "evidence_quote": "비회원/Web회원 | 18홀 | 240,000원 | 300,000원 |",
+     "source_url": "https://lakewood.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 230000,
+     "evidence_quote": "비회원제 | 산길 ~ 산길 | 동일 코스 2회 18홀 | 230,000원 | 290,000원 | 부가세 포함 |",
+     "source_url": "https://lakewood.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 290000,
+     "evidence_quote": "비회원제 | 산길 ~ 산길 | 동일 코스 2회 18홀 | 230,000원 | 290,000원 | 부가세 포함 |",
+     "source_url": "https://lakewood.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://lakewood.co.kr/swp/charge"
   },
   "course_details": [
    {
@@ -16834,7 +17029,21 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "green_fee x6",
+     "caddie_fee",
+     "cart_fee",
+     "caddie_mode"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_레이크우드"
+   }
+  ]
  },
  {
   "id": "kgba_송추",
@@ -17007,8 +17216,32 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 230000,
+     "evidence_quote": "비 회 원 | 230,000원 | 290,000원 | 290,000원",
+     "source_url": "https://www.songchoo.co.kr/use-information/fee-info",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 290000,
+     "evidence_quote": "비 회 원 | 230,000원 | 290,000원 | 290,000원",
+     "source_url": "https://www.songchoo.co.kr/use-information/fee-info",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.songchoo.co.kr/use-information/fee-info"
   },
   "course_details": [
    {
@@ -17224,6 +17457,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x2"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_송추"
    }
   ]
  },
@@ -17964,11 +18206,34 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": "2026-09-22",
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 220000,
+     "evidence_quote": "비회원 | 220,000원 | 280,000원 |",
+     "source_url": "https://www.ildonglakes.co.kr/guide/fee",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 280000,
+     "evidence_quote": "비회원 | 220,000원 | 280,000원 |",
+     "source_url": "https://www.ildonglakes.co.kr/guide/fee",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
    "greenfee_value": null,
    "greenfee_value_status": "unknown_dynamic_or_not_machine_verified",
-   "source_url": "https://www.ildonglakes.co.kr/",
+   "source_url": "https://www.ildonglakes.co.kr/guide/fee",
    "confidence": "unknown"
   },
   "course_details": [
@@ -18208,6 +18473,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
+    "review_item": "kgba_일동레이크"
+   },
+   {
+    "fields": [
+     "green_fee x2"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
     "review_item": "kgba_일동레이크"
    }
   ],
@@ -21640,8 +21914,32 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 200000,
+     "evidence_quote": "비회원 | 200,000원 | 270,000원 |",
+     "source_url": "https://www.kccgolf.co.kr/common/operation/operation03.php",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 270000,
+     "evidence_quote": "비회원 | 200,000원 | 270,000원 |",
+     "source_url": "https://www.kccgolf.co.kr/common/operation/operation03.php",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.kccgolf.co.kr/common/operation/operation03.php"
   },
   "course_details": [
    {
@@ -21857,6 +22155,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
+    "review_item": "kgba_금강"
+   },
+   {
+    "fields": [
+     "green_fee x2"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
     "review_item": "kgba_금강"
    }
   ]
@@ -23789,19 +24096,51 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.skyvalley.co.kr/skyvalley/swp/charge",
+    "evidence_quote": "구분 | 1팀당 기준 | 카트 사용료 | 100,000 원 | 캐디피 | 150,000 원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://www.skyvalley.co.kr/skyvalley/swp/charge",
+    "evidence_quote": "구분 | 1팀당 기준 | 카트 사용료 | 100,000 원 | 캐디피 | 150,000 원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {}
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 210000,
+     "evidence_quote": "비회원 (동반) | 210,000원 | 270,000원 | ※ 회원 동반자(비회원)는 비회원요금 적용",
+     "source_url": "https://www.skyvalley.co.kr/skyvalley/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 270000,
+     "evidence_quote": "비회원 (동반) | 210,000원 | 270,000원 | ※ 회원 동반자(비회원)는 비회원요금 적용",
+     "source_url": "https://www.skyvalley.co.kr/skyvalley/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.skyvalley.co.kr/skyvalley/swp/charge"
   },
   "course_details": [
    {
@@ -24001,7 +24340,20 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "green_fee x2",
+     "caddie_fee",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_스카이밸리"
+   }
+  ]
  },
  {
   "id": "vworld_신라",
@@ -24270,8 +24622,12 @@
     "conditions": []
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://www.onetheclub.com/shilla/charge",
+    "evidence_quote": "카트비 골프장 | 신라 | 파주 | 클럽72(바다) | 9홀 | 50,000 | 18홀 | 100,000 | 신라CC : 리무진 카트비 200,000원",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {
     "three_person": {
@@ -24488,6 +24844,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_신라"
    }
   ]
  },
@@ -24575,19 +24940,51 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.yeojoocc.co.kr/swp/charge",
+    "evidence_quote": "캐디피-4백/팀당(18홀) | 150,000원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 120000,
+    "conditions": [],
+    "source_url": "https://www.yeojoocc.co.kr/swp/charge",
+    "evidence_quote": "5인승 카트-대당(18홀) | 120,000원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {}
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 210000,
+     "evidence_quote": "비회원 | 171,709 | 12,000 | 3,600 | 3,600 | 19,091 | 210,000 |",
+     "source_url": "https://www.yeojoocc.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 270000,
+     "evidence_quote": "비회원 | 226,255 | 12,000 | 3,600 | 3,600 | 24,545 | 270,000 |",
+     "source_url": "https://www.yeojoocc.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.yeojoocc.co.kr/swp/charge"
   },
   "course_details": [],
   "evaluation": {
@@ -24717,6 +25114,17 @@
     "source": "web_search_identity",
     "method": "web_search+llm_identity_v1",
     "derived_at": "2026-09-23"
+   },
+   {
+    "fields": [
+     "green_fee x2",
+     "caddie_fee",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_여주"
    }
   ]
  },
@@ -28439,7 +28847,8 @@
     "source_url": "https://www.ariji.co.kr/use-information/fee-information",
     "checked_at": "2026-09-23",
     "confidence": "confirmed"
-   }
+   },
+   "players": {}
   },
   "pricing": {
    "currency": "KRW",
@@ -28878,6 +29287,14 @@
      "checked_at": "2026-09-22",
      "confidence": "confirmed"
     }
+   },
+   "night": {
+    "available": true,
+    "condition": "조명시설이 설치된 골프장은 일출 60분전부터 일몰 90분까지 운영",
+    "source_url": "https://www.360cc.co.kr/use/clause_guide.do",
+    "evidence_quote": "이 골프장 이용시간은 일출 20분전부터 일몰 20분 후까지로 하되, 조명시설이 설치 된 골프장은 ( 일출 60분전부터 일몰 90분 )까지로 한다.",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    }
   },
   "pricing": {
@@ -29243,7 +29660,18 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "night_round"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_360도"
+   }
+  ]
  },
  {
   "id": "vworld_여주썬밸리",
@@ -34350,11 +34778,34 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": "2026-09-22",
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 199000,
+     "evidence_quote": "그린피 | 199,000 | 259,000",
+     "source_url": "https://www.venuegcc.com/Web/guide/chargeGuide.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 259000,
+     "evidence_quote": "그린피 | 199,000 | 259,000",
+     "source_url": "https://www.venuegcc.com/Web/guide/chargeGuide.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
    "greenfee_value": null,
    "greenfee_value_status": "unknown",
-   "source_url": "https://www.venuegcc.com/",
+   "source_url": "https://www.venuegcc.com/Web/guide/chargeGuide.asp",
    "confidence": "unknown"
   },
   "course_details": [
@@ -34570,6 +35021,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
+    "review_item": "kgba_베뉴지"
+   },
+   {
+    "fields": [
+     "green_fee x2"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
     "review_item": "kgba_베뉴지"
    }
   ]
@@ -37603,8 +38063,32 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 160000,
+     "evidence_quote": "그린피 요금 항목 | 주중 | 주말(공휴일) | 인터넷회원 기준 | 160,000 | 200,000",
+     "source_url": "https://lordhills.co.kr/use/charge.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 200000,
+     "evidence_quote": "그린피 요금 항목 | 주중 | 주말(공휴일) | 인터넷회원 기준 | 160,000 | 200,000",
+     "source_url": "https://lordhills.co.kr/use/charge.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://lordhills.co.kr/use/charge.asp"
   },
   "course_details": [
    {
@@ -37798,6 +38282,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x2"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_로드힐스"
    }
   ]
  },
@@ -55161,8 +55654,12 @@
     "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+    "evidence_quote": "구분 | 카트비 | 캐디피 | 대여채 | 금액 | (팀) 100,000원 | 1부,2부 : (팀) 150,000원 / 3부 : (팀)160,000원 | 풀세트 50,000원 / 단품 10,000원 |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "night": {
     "available": true,
@@ -55176,8 +55673,274 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 160000,
+     "evidence_quote": "1월 | 160,000원 | 210,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 210000,
+     "evidence_quote": "1월 | 160,000원 | 210,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 170000,
+     "evidence_quote": "2월 | 170,000원 | 220,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 220000,
+     "evidence_quote": "2월 | 170,000원 | 220,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "3월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "3월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "4월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "4월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "5월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "5월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "6월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "6월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 183000,
+     "evidence_quote": "7월 | 183,000원 | 240,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "7월 | 183,000원 | 240,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 183000,
+     "evidence_quote": "8월 | 183,000원 | 240,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "8월 | 183,000원 | 240,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "9월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "9월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "10월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "10월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "11월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "11월 | 188,000원 | 247,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 183000,
+     "evidence_quote": "12월 | 183,000원 | 240,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "12월 | 183,000원 | 240,000원 |",
+     "source_url": "https://evendale.co.kr/guide/userInfo.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://evendale.co.kr/guide/userInfo.asp"
   },
   "course_details": [
    {
@@ -55354,6 +56117,16 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
+    "review_item": "vworld_이븐데일"
+   },
+   {
+    "fields": [
+     "green_fee x24",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
     "review_item": "vworld_이븐데일"
    }
   ]
@@ -55903,7 +56676,7 @@
     "3부": {}
    },
    "caddie": {
-    "mode": "unknown",
+    "mode": "caddie",
     "fee_team": 160000,
     "conditions": [],
     "source_url": "https://www.alldaygolf.co.kr/guide/charge_tgv.asp",
@@ -56151,6 +56924,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "caddie_mode"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_떼제베"
    }
   ]
  },
@@ -62121,8 +62903,12 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+    "evidence_quote": "캐디피 1명당(팀당) | 150,000 | 1회 18홀 기준",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
     "fee_team": 100000,
@@ -62153,8 +62939,32 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 207000,
+     "evidence_quote": "비회원 | 207,000 | 249,000 | 1일 1회 18홀 기준",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 249000,
+     "evidence_quote": "비회원 | 207,000 | 249,000 | 1일 1회 18홀 기준",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp"
   },
   "course_details": [],
   "evaluation": {
@@ -62307,6 +63117,16 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x2",
+     "caddie_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_theemersongoldclub"
    }
   ]
  },
@@ -63547,15 +64367,31 @@
     "3부": {}
    },
    "caddie": {
-    "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "mode": "optional_caddie_or_self",
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.golfzoncounty.com/golfclub/resvGuide",
+    "evidence_quote": "캐디피 150,000원/팀",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://www.golfzoncounty.com/golfclub/resvGuide",
+    "evidence_quote": "카트 사용료 100,000원/팀",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
-   "players": {}
+   "players": {},
+   "night": {
+    "available": true,
+    "condition": "",
+    "source_url": "https://www.golfzoncounty.com/reserve/main",
+    "evidence_quote": "시간 새벽 오전 오후 야간",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
+   }
   },
   "pricing": {
    "currency": "KRW",
@@ -63692,6 +64528,18 @@
     "source": "web_search_identity",
     "method": "web_search+llm_identity_v1",
     "derived_at": "2026-09-23"
+   },
+   {
+    "fields": [
+     "caddie_fee",
+     "cart_fee",
+     "caddie_mode",
+     "night_round"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_크리스탈카운티"
    }
   ]
  },
@@ -66268,12 +67116,20 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+    "evidence_quote": "필독사항 • 카트피 : 100,000원 (별도요금) • 캐디피 : 150,000원 (별도요금)",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+    "evidence_quote": "필독사항 • 카트피 : 100,000원 (별도요금) • 캐디피 : 150,000원 (별도요금)",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {},
    "operation_type": {
@@ -66286,8 +67142,208 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 151000,
+     "evidence_quote": "월~목 | 1부 | 6시대 | 151,000 | 7시대 | 156,000 | 8시대 | 161,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 156000,
+     "evidence_quote": "월~목 | 1부 | 6시대 | 151,000 | 7시대 | 156,000 | 8시대 | 161,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 161000,
+     "evidence_quote": "월~목 | 1부 | 6시대 | 151,000 | 7시대 | 156,000 | 8시대 | 161,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 171000,
+     "evidence_quote": "2부 | 12~13시대 | 171,000 | 14시대 | 166,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 166000,
+     "evidence_quote": "2부 | 12~13시대 | 171,000 | 14시대 | 166,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 161000,
+     "evidence_quote": "금요일 | 1부 | 6시대 | 161,000 | 7시대 | 166,000 | 8시대 | 171,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 166000,
+     "evidence_quote": "금요일 | 1부 | 6시대 | 161,000 | 7시대 | 166,000 | 8시대 | 171,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 171000,
+     "evidence_quote": "금요일 | 1부 | 6시대 | 161,000 | 7시대 | 166,000 | 8시대 | 171,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 181000,
+     "evidence_quote": "2부 | 12~13시대 | 181,000 | 14시대 | 176,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 176000,
+     "evidence_quote": "2부 | 12~13시대 | 181,000 | 14시대 | 176,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 241000,
+     "evidence_quote": "토요일 | 1부 | 전타임 | 241,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 241000,
+     "evidence_quote": "2부 | 12시대 | 241,000 | 13시대 | 236,000 | 14시대 | 231,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 236000,
+     "evidence_quote": "2부 | 12시대 | 241,000 | 13시대 | 236,000 | 14시대 | 231,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 231000,
+     "evidence_quote": "2부 | 12시대 | 241,000 | 13시대 | 236,000 | 14시대 | 231,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "1부",
+     "member_type": "nonmember",
+     "greenfee": 231000,
+     "evidence_quote": "일요일 | 1부 | 전타임 | 231,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 231000,
+     "evidence_quote": "2부 | 12시대 | 231,000 | 13시대 | 226,000 | 14시대 | 221,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 226000,
+     "evidence_quote": "2부 | 12시대 | 231,000 | 13시대 | 226,000 | 14시대 | 221,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "2부",
+     "member_type": "nonmember",
+     "greenfee": 221000,
+     "evidence_quote": "2부 | 12시대 | 231,000 | 13시대 | 226,000 | 14시대 | 221,000 |",
+     "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.golfzoncounty.com/golfclub/monthGreenfeeInfo;jsessionid=BDF61420159BF6AC6479E63D1C4261F6?golfclubInfoTableSeq=573&golfclubSeq=47"
   },
   "course_details": [
    {
@@ -66444,7 +67500,20 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "green_fee x18",
+     "caddie_fee",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_버드우드g_c"
+   }
+  ]
  },
  {
   "id": "vworld_우정힐스c_c",
@@ -90044,8 +91113,12 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+    "evidence_quote": "캐디피 1명당(팀당) | 150,000 | 1회 18홀 기준",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
     "fee_team": 100000,
@@ -90076,8 +91149,32 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 207000,
+     "evidence_quote": "비회원 | 207,000 | 249,000 | 1일 1회 18홀 기준",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 249000,
+     "evidence_quote": "비회원 | 207,000 | 249,000 | 1일 1회 18홀 기준",
+     "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.sejongemerson.co.kr/reservation/member_guide.asp"
   },
   "course_details": [
    {
@@ -90279,6 +91376,16 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x2",
+     "caddie_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_세종에머슨"
    }
   ]
  },
@@ -102025,19 +103132,51 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://nscc.co.kr/swp/charge",
+    "evidence_quote": "캐디피 15만원 ※ 2022년 1월 부터 적용",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 120000,
+    "conditions": [],
+    "source_url": "https://nscc.co.kr/swp/charge",
+    "evidence_quote": "전동카 5인승 (자동) | 골프클럽 대여료 : 100,000원 | 120,000원 60,000원(9홀) |",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {}
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 270000,
+     "evidence_quote": "평일 | 100,000원 | 270,000원 |",
+     "source_url": "https://nscc.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 320000,
+     "evidence_quote": "공휴일 | 140,000원 | 320,000원 |",
+     "source_url": "https://nscc.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://nscc.co.kr/swp/charge"
   },
   "course_details": [
    {
@@ -102208,6 +103347,19 @@
   "pool_status": "vworld_match_pending",
   "merged_from": [
    "kgba_남서울"
+  ],
+  "_derived_fields": [
+   {
+    "fields": [
+     "green_fee x2",
+     "caddie_fee",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_남서울골프장"
+   }
   ]
  },
  {
@@ -139200,7 +140352,7 @@
     "3부": {}
    },
    "caddie": {
-    "mode": "unknown",
+    "mode": "optional_caddie_or_self",
     "fee_team": 160000,
     "conditions": [],
     "source_url": "https://www.alldaygolf.co.kr/guide/charge_ox.asp",
@@ -139442,6 +140594,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "caddie_mode"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_올데이_옥스필드"
    }
   ]
  },
@@ -142538,8 +143699,42 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": "2026-09-22",
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 180000,
+     "evidence_quote": "기본그린피 | 주중 - 18만 토요일 - 24만 일요일 - 23만",
+     "source_url": "https://www.shambhalacc.co.kr/guide/charge.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "기본그린피 | 주중 - 18만 토요일 - 24만 일요일 - 23만",
+     "source_url": "https://www.shambhalacc.co.kr/guide/charge.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 230000,
+     "evidence_quote": "기본그린피 | 주중 - 18만 토요일 - 24만 일요일 - 23만",
+     "source_url": "https://www.shambhalacc.co.kr/guide/charge.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
    "greenfee_status": "dynamic_by_date_time_climate",
    "greenfee_value": null,
    "greenfee_value_status": "dynamic_unknown",
@@ -142930,6 +144125,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x3"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_샴발라"
    }
   ]
  },
@@ -144653,11 +145857,34 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": "2026-09-22",
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 260000,
+     "evidence_quote": "비회원 | 260,000 | 290,000 |",
+     "source_url": "https://ananti.kr/ko/chord/golfclub/information",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 290000,
+     "evidence_quote": "비회원 | 260,000 | 290,000 |",
+     "source_url": "https://ananti.kr/ko/chord/golfclub/information",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
    "greenfee_value": null,
    "greenfee_value_status": "unknown_pending_official_fee_page",
-   "source_url": "https://ananti.kr/ko/chord",
+   "source_url": "https://ananti.kr/ko/chord/golfclub/information",
    "confidence": "unknown"
   },
   "course_details": [
@@ -144879,6 +146106,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
+    "review_item": "kgba_아난티클럽서울"
+   },
+   {
+    "fields": [
+     "green_fee x2"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
     "review_item": "kgba_아난티클럽서울"
    }
   ]
@@ -149232,19 +150468,51 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.yeojuclassic.co.kr/swp/charge",
+    "evidence_quote": "캐디피-4백/팀당(18홀) | 150,000원",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 120000,
+    "conditions": [],
+    "source_url": "https://www.yeojuclassic.co.kr/swp/charge",
+    "evidence_quote": "5인승 카트-대당(18홀) | 120,000원",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {}
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 210000,
+     "evidence_quote": "비회원 | 171,709 | 12,000 | 3,600 | 3,600 | 19,091 | 210,000 |",
+     "source_url": "https://www.yeojuclassic.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 270000,
+     "evidence_quote": "비회원 | 226,255 | 12,000 | 3,600 | 3,600 | 24,545 | 270,000 |",
+     "source_url": "https://www.yeojuclassic.co.kr/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.yeojuclassic.co.kr/swp/charge"
   },
   "course_details": [
    {
@@ -149409,7 +150677,20 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "green_fee x2",
+     "caddie_fee",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_여주클래식"
+   }
+  ]
  },
  {
   "id": "kgba_h1_club",
@@ -152044,15 +153325,43 @@
     "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://www.midasgolf.co.kr/Reservation/ReservPrice",
+    "evidence_quote": "카트료(1팀) | 18홀 | 100,000원 | 9홀 추가 | 50,000원 | 캐디선택제 팀 | 100,000원 | 퍼터 | 10,000원 | 드라이버 | 20,000원 | 풀세트 | 50,000원",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {}
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 110000,
+     "evidence_quote": "그린피 | 주중 | 55,000원 | 110,000원 | 주말 | 75,000원 | 150,000원 | 골프카 | 팀당 40,000원 | 팀당 80,000원",
+     "source_url": "https://www.midasgolf.co.kr/Reservation/ReservPrice",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 150000,
+     "evidence_quote": "그린피 | 주중 | 55,000원 | 110,000원 | 주말 | 75,000원 | 150,000원 | 골프카 | 팀당 40,000원 | 팀당 80,000원",
+     "source_url": "https://www.midasgolf.co.kr/Reservation/ReservPrice",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.midasgolf.co.kr/Reservation/ReservPrice"
   },
   "course_details": [
    {
@@ -152261,6 +153570,16 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2",
     "derived_at": "2026-09-23",
+    "review_item": "kgba_마이다스레이크_이천"
+   },
+   {
+    "fields": [
+     "green_fee x2",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
     "review_item": "kgba_마이다스레이크_이천"
    }
   ]
@@ -156392,8 +157711,21 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 100000,
+     "evidence_quote": "구분 | 입장료 | 카트비 | 캐디피(1부, 2부) | 캐디피(3부) | 이용요금 | 일자별 공지요금 | 100,000원 | 160,000원 | 새싹캐디:100,000원 실버캐디:120,000원 하우스캐디:160,000원",
+     "source_url": "https://www.ilcc.co.kr/guide/charge.asp",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.ilcc.co.kr/guide/charge.asp"
   },
   "course_details": [
    {
@@ -156588,6 +157920,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x1"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_올데이_임페리얼레이크"
    }
   ]
  },
