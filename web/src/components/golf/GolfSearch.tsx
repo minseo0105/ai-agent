@@ -204,39 +204,19 @@ export default function GolfSearch() {
               run({ mode: "condition", params }, params.departure.trim() ? "가까운순" : "추천순");
             }}
           >
-            <p className="text-xs text-subtle">필수는 시간대 하나만 · 선택조건은 전체로 두어도 검색됩니다.</p>
-            <Field label="지역" hint="복수 선택 · 미선택 시 전체 권역">
-              <ChoiceChips
-                options={options?.areas ?? []}
-                labels={options?.counts.by_area}
-                selected={params.areas}
-                onToggle={(v) => setParams((p) => ({ ...p, areas: toggle(p.areas, v), subregions: [] }))}
-              />
-            </Field>
-            {singleArea && (
-              <Field label="세부지역" hint="선택">
-                <ChoiceChips
-                  options={options?.subregions[singleArea] ?? []}
-                  selected={params.subregions}
-                  onToggle={(v) => set("subregions", toggle(params.subregions, v))}
-                />
-              </Field>
-            )}
-            <Field label="출발지" hint="선택 · 주소 또는 역·건물명">
-              <input
-                className={inputClass}
-                value={params.departure}
-                onChange={(e) => set("departure", e.target.value)}
-                placeholder="예: 잠실역, 강동구청, 서울 송파구 올림픽로 240"
-              />
-            </Field>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="라운드 요일">
-                <Segmented value={params.day} options={["주중", "주말"] as const} onChange={(v) => set("day", v)} full />
-              </Field>
-              <Field label="희망 시간대" hint="필수">
-                <Segmented value={params.session} options={["1부", "2부", "3부"] as const} onChange={(v) => set("session", v)} full />
-              </Field>
+            <p className="text-xs text-subtle">시간대만 고르면 검색됩니다 · 나머지는 비워두셔도 돼요.</p>
+
+            {/* 1. 티업 조건 — 요일·시간대가 가격과 예약 가능 여부를 가장 크게 좌우한다 */}
+            <div className="space-y-4 rounded-2xl border border-border p-4">
+              <div className="text-xs font-extrabold text-muted">티업 조건</div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Field label="라운드 요일">
+                  <Segmented value={params.day} options={["주중", "주말"] as const} onChange={(v) => set("day", v)} full />
+                </Field>
+                <Field label="희망 시간대" hint="필수">
+                  <Segmented value={params.session} options={["1부", "2부", "3부"] as const} onChange={(v) => set("session", v)} full />
+                </Field>
+              </div>
               <Field label="그린피" hint="선택">
                 <select className={inputClass} value={params.budget} onChange={(e) => set("budget", e.target.value)}>
                   {(options?.budgets ?? ["전체"]).map((b) => (
@@ -244,28 +224,69 @@ export default function GolfSearch() {
                   ))}
                 </select>
               </Field>
-              <Field label="캐디" hint="선택">
-                <Segmented value={params.caddie} options={["전체", "캐디", "노캐디"] as const} onChange={(v) => set("caddie", v)} full />
+            </div>
+
+            {/* 2. 위치 */}
+            <div className="space-y-4 rounded-2xl border border-border p-4">
+              <div className="text-xs font-extrabold text-muted">위치</div>
+              <Field label="지역" hint="복수 선택 · 미선택 시 전체 권역">
+                <ChoiceChips
+                  options={options?.areas ?? []}
+                  labels={options?.counts.by_area}
+                  selected={params.areas}
+                  onToggle={(v) => setParams((p) => ({ ...p, areas: toggle(p.areas, v), subregions: [] }))}
+                />
               </Field>
-              {/* KGA 공인 난이도로 맞춰주는 기능이라 접어두지 않고 바로 보여준다 */}
-              <Field label="내 평균타수" hint="선택 · KGA 난이도로 맞춰드려요">
-                <select className={inputClass} value={params.avg_score_label} onChange={(e) => set("avg_score_label", e.target.value)}>
-                  {(options?.avg_scores ?? ["미선택"]).map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
+              {singleArea && (
+                <Field label="세부지역" hint="선택">
+                  <ChoiceChips
+                    options={options?.subregions[singleArea] ?? []}
+                    selected={params.subregions}
+                    onToggle={(v) => set("subregions", toggle(params.subregions, v))}
+                  />
+                </Field>
+              )}
+              <Field label="출발지" hint="입력하면 가까운 순으로 보여드려요">
+                <input
+                  className={inputClass}
+                  value={params.departure}
+                  onChange={(e) => set("departure", e.target.value)}
+                  placeholder="예: 잠실역, 강동구청, 서울 송파구 올림픽로 240"
+                />
               </Field>
-              <Field label="원하는 난이도" hint="선택">
-                <Segmented value={params.challenge} options={["편하게", "적당히", "도전"] as const} onChange={(v) => set("challenge", v)} full />
-              </Field>
+            </div>
+
+            {/* 3. 이 서비스의 차별점이라 앞에 두고 눈에 띄게 둔다 */}
+            <div className="space-y-4 rounded-2xl border border-golf/30 bg-golf-soft/40 p-4">
+              <div>
+                <div className="text-xs font-extrabold text-golf">✨ 내 실력에 맞는 코스로</div>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-muted">
+                  대한골프협회(KGA) 공인 난이도(Slope)를 기준으로 내 평균타수에 맞는 코스를 먼저 보여드려요.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Field label="내 평균타수" hint="선택">
+                  <select className={inputClass} value={params.avg_score_label} onChange={(e) => set("avg_score_label", e.target.value)}>
+                    {(options?.avg_scores ?? ["미선택"]).map((s) => (
+                      <option key={s}>{s}</option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="원하는 난이도" hint="선택">
+                  <Segmented value={params.challenge} options={["편하게", "적당히", "도전"] as const} onChange={(v) => set("challenge", v)} full />
+                </Field>
+              </div>
             </div>
 
             <details open={showDetail} onToggle={(e) => setShowDetail((e.target as HTMLDetailsElement).open)} className="group rounded-2xl border border-border px-4 py-3">
               <summary className="cursor-pointer list-none text-sm font-bold text-muted">
-                <span className="inline-block transition group-open:rotate-45">＋</span> 상세조건 · 인원 / 야간
+                <span className="inline-block transition group-open:rotate-45">＋</span> 상세조건 · 캐디 / 인원 / 야간
               </summary>
               <div className="mt-4 space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field label="캐디" hint="선택">
+                    <Segmented value={params.caddie} options={["전체", "캐디", "노캐디"] as const} onChange={(v) => set("caddie", v)} full />
+                  </Field>
                   <Field label="인원" hint="선택">
                     <Segmented value={params.players} options={["전체", "3인", "4인"] as const} onChange={(v) => set("players", v)} full />
                   </Field>
