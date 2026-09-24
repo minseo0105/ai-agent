@@ -9,7 +9,8 @@ export type SearchMode = "condition" | "text" | "name";
 export type ConditionParams = {
   departure: string;
   day: "주중" | "주말";
-  session: "1부" | "2부" | "3부";
+  /** 시간대는 요금 표시용. 결과 목록을 좁히지 않으므로 '전체'가 기본 */
+  session: "전체" | "1부" | "2부" | "3부";
   budget: string;
   caddie: "전체" | "캐디" | "노캐디";
   areas: string[];
@@ -188,7 +189,7 @@ export function won(x: number | null | undefined) {
 export const DEFAULT_PARAMS: ConditionParams = {
   departure: "",
   day: "주중",
-  session: "2부",
+  session: "전체",
   budget: "전체",
   caddie: "전체",
   areas: [],

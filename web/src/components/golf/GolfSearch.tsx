@@ -204,31 +204,11 @@ export default function GolfSearch() {
               run({ mode: "condition", params }, params.departure.trim() ? "가까운순" : "추천순");
             }}
           >
-            <p className="text-xs text-subtle">시간대만 고르면 검색됩니다 · 나머지는 비워두셔도 돼요.</p>
+            <p className="text-xs text-subtle">모두 비워두고 찾아도 됩니다 · 고를수록 범위가 좁아져요.</p>
 
-            {/* 1. 티업 조건 — 요일·시간대가 가격과 예약 가능 여부를 가장 크게 좌우한다 */}
+            {/* 1. 위치 — 결과를 가장 크게 좁히는 조건이라 맨 앞 */}
             <div className="space-y-4 rounded-2xl border border-border p-4">
-              <div className="text-xs font-extrabold text-muted">티업 조건</div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field label="라운드 요일">
-                  <Segmented value={params.day} options={["주중", "주말"] as const} onChange={(v) => set("day", v)} full />
-                </Field>
-                <Field label="희망 시간대" hint="필수">
-                  <Segmented value={params.session} options={["1부", "2부", "3부"] as const} onChange={(v) => set("session", v)} full />
-                </Field>
-              </div>
-              <Field label="그린피" hint="선택">
-                <select className={inputClass} value={params.budget} onChange={(e) => set("budget", e.target.value)}>
-                  {(options?.budgets ?? ["전체"]).map((b) => (
-                    <option key={b}>{b}</option>
-                  ))}
-                </select>
-              </Field>
-            </div>
-
-            {/* 2. 위치 */}
-            <div className="space-y-4 rounded-2xl border border-border p-4">
-              <div className="text-xs font-extrabold text-muted">위치</div>
+              <div className="text-xs font-extrabold text-muted">어디서 치시나요</div>
               <Field label="지역" hint="복수 선택 · 미선택 시 전체 권역">
                 <ChoiceChips
                   options={options?.areas ?? []}
@@ -256,6 +236,23 @@ export default function GolfSearch() {
               </Field>
             </div>
 
+            {/* 2. 요금 — 주중/주말은 그린피와 함께 쓸 때만 결과가 달라진다(주중 59곳 vs 주말 18곳) */}
+            <div className="space-y-4 rounded-2xl border border-border p-4">
+              <div className="text-xs font-extrabold text-muted">얼마로 보시나요</div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <Field label="라운드 요일" hint="요금 기준">
+                  <Segmented value={params.day} options={["주중", "주말"] as const} onChange={(v) => set("day", v)} full />
+                </Field>
+                <Field label="그린피" hint="선택">
+                  <select className={inputClass} value={params.budget} onChange={(e) => set("budget", e.target.value)}>
+                    {(options?.budgets ?? ["전체"]).map((b) => (
+                      <option key={b}>{b}</option>
+                    ))}
+                  </select>
+                </Field>
+              </div>
+            </div>
+
             {/* 3. 이 서비스의 차별점이라 앞에 두고 눈에 띄게 둔다 */}
             <div className="space-y-4 rounded-2xl border border-golf/30 bg-golf-soft/40 p-4">
               <div>
@@ -280,10 +277,13 @@ export default function GolfSearch() {
 
             <details open={showDetail} onToggle={(e) => setShowDetail((e.target as HTMLDetailsElement).open)} className="group rounded-2xl border border-border px-4 py-3">
               <summary className="cursor-pointer list-none text-sm font-bold text-muted">
-                <span className="inline-block transition group-open:rotate-45">＋</span> 상세조건 · 캐디 / 인원 / 야간
+                <span className="inline-block transition group-open:rotate-45">＋</span> 상세조건 · 시간대 / 캐디 / 인원 / 야간
               </summary>
               <div className="mt-4 space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field label="희망 시간대" hint="요금 표시 기준">
+                    <Segmented value={params.session} options={["전체", "1부", "2부", "3부"] as const} onChange={(v) => set("session", v)} full />
+                  </Field>
                   <Field label="캐디" hint="선택">
                     <Segmented value={params.caddie} options={["전체", "캐디", "노캐디"] as const} onChange={(v) => set("caddie", v)} full />
                   </Field>

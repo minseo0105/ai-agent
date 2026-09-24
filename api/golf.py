@@ -17,7 +17,8 @@ class ConditionParams(BaseModel):
     departure: str = Field("", max_length=80)
     day: Literal["주중", "주말"] = "주중"
     round_date: Optional[str] = None  # 구버전 호환용. 화면에서는 day를 사용한다.
-    session: Optional[Literal["1부", "2부", "3부"]] = "2부"
+    # 시간대는 결과를 좁히지 않고 요금 표시 기준으로만 쓰인다. '전체'/미지정이면 시간대 구분 없이 본다.
+    session: Optional[Literal["전체", "1부", "2부", "3부"]] = "전체"
     budget: str = "전체"
     caddie: Literal["전체", "캐디", "노캐디"] = "전체"
     areas: list[str] = Field(default_factory=list, max_length=3)
