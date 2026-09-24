@@ -1,12 +1,11 @@
 import hmac
-import json
 
 import streamlit as st
 import streamlit.components.v1 as components
 
 from services.agent import call_selected_model
 from services.config import get_secret
-from services.navigation import new_site_button, new_site_url
+from services.site_link import new_site_button, new_site_url, redirect_script
 
 st.set_page_config(page_title="AI Workbench", page_icon="✦", layout="wide", initial_sidebar_state="expanded")
 
@@ -22,6 +21,9 @@ def redirect_to_new_site():
         return
 
     url = new_site_url()
+    if not url:
+        # 배포 환경에서 NEW_SITE_URL이 아직 없으면 이동하지 않고 기존 화면을 그대로 보여준다
+        return
     hold = st.query_params.get("stay") == "1"
     st.markdown("""
 <style>
@@ -49,17 +51,8 @@ def redirect_to_new_site():
     )
     st.link_button("새 AI LAB으로 이동 →", url, type="primary", use_container_width=True)
     if not hold:
-        # 컴포넌트 iframe은 sandbox라 상위 창을 직접 이동시킬 수 없다(allow-top-navigation 없음).
-        # 같은 출처(allow-same-origin)이므로 상위 문서에 스크립트를 넣어 상위 창이 스스로 이동하게 한다.
-        # 그래도 막히면 위의 이동 버튼을 누르면 된다.
-        target = json.dumps(url)
-        components.html(
-            "<script>setTimeout(function(){try{"
-            "var d=window.parent.document,s=d.createElement('script');"
-            f"s.textContent='window.location.replace('+JSON.stringify({target})+')';"
-            "d.head.appendChild(s);}catch(e){}},1500);</script>",
-            height=0,
-        )
+        # 자동 이동이 막히면 위의 이동 버튼을 누르면 된다
+        components.html(redirect_script(url), height=0)
 
     with st.expander("관리자 · 기존 화면 계속 사용", expanded=hold):
         admin_pw = get_secret("ADMIN_PASSWORD")

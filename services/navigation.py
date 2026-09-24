@@ -2,6 +2,8 @@ from pathlib import Path
 import re
 import streamlit as st
 
+from services.site_link import new_site_button
+
 
 # ---------------------------------------------------------
 # 기본 설정
@@ -109,17 +111,6 @@ def _nav_button(item, current_page=None):
             use_container_width=True,
         ):
             st.switch_page(item["page_path"])
-
-
-def new_site_url():
-    """새 Next.js 사이트 주소. 배포 시 NEW_SITE_URL(환경변수 또는 secrets.toml)로 지정."""
-    from services.config import get_secret
-
-    return (get_secret("NEW_SITE_URL") or "http://localhost:3000").rstrip("/")
-
-
-def new_site_button():
-    st.link_button("✨ 새 디지털전략부 AI LAB으로 이동", new_site_url(), type="primary", use_container_width=True)
 
 
 def render_sidebar(current_page=None):
