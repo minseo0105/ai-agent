@@ -1,0 +1,537 @@
+{
+ "created_at": "2026-09-23",
+ "model": "claude-opus-5",
+ "method": "official_homepage_crawl+llm_extract+quote_verify",
+ "usage": {
+  "input_tokens": 102532,
+  "output_tokens": 8009
+ },
+ "results": [
+  {
+   "id": "blackstone",
+   "name": "블랙스톤 이천",
+   "area": "수도권",
+   "official_url": "https://www.blackstoneresort.com/ic/",
+   "status": "pending_review",
+   "pages": [
+    {
+     "url": "https://www.blackstoneresort.com/ic/",
+     "chars": 1393
+    },
+    {
+     "url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+     "chars": 11112
+    },
+    {
+     "url": "https://www.blackstoneresort.com/ic/BSListViewFront?where=news_view&board_seq=1042&board_kind=notice",
+     "chars": 1537
+    },
+    {
+     "url": "https://www.blackstoneresort.com/ic/aboutList?section=membership",
+     "chars": 11112
+    },
+    {
+     "url": "https://www.blackstoneresort.com/ic/goToStatic?where=personal_info",
+     "chars": 8555
+    },
+    {
+     "url": "https://www.blackstoneresort.com/ic/BSListViewFront?where=news_view&board_seq=1035&board_kind=notice",
+     "chars": 1960
+    }
+   ],
+   "extraction": {
+    "green_fees": [
+     {
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 9,
+      "price_krw": 151500,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 회원제 [동코스(9H), 북코스(9H)] 구분 | 9H | 18H | 주중 | 151,500 | 250,000 | 주말 | 201,000 | 330,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 250000,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 회원제 [동코스(9H), 북코스(9H)] 구분 | 9H | 18H | 주중 | 151,500 | 250,000 | 주말 | 201,000 | 330,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekend",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 9,
+      "price_krw": 201000,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 회원제 [동코스(9H), 북코스(9H)] 구분 | 9H | 18H | 주중 | 151,500 | 250,000 | 주말 | 201,000 | 330,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekend",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 330000,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 회원제 [동코스(9H), 북코스(9H)] 구분 | 9H | 18H | 주중 | 151,500 | 250,000 | 주말 | 201,000 | 330,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 9,
+      "price_krw": 98500,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 비회원제(대중형) [서코스(9H)] 구분 | 9H | 18H | 주중 | 98,500 | 197,000 | 주말 | 129,000 | 258,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 197000,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 비회원제(대중형) [서코스(9H)] 구분 | 9H | 18H | 주중 | 98,500 | 197,000 | 주말 | 129,000 | 258,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekend",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 9,
+      "price_krw": 129000,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 비회원제(대중형) [서코스(9H)] 구분 | 9H | 18H | 주중 | 98,500 | 197,000 | 주말 | 129,000 | 258,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekend",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 258000,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "정상요금 ㅣ 비회원제(대중형) [서코스(9H)] 구분 | 9H | 18H | 주중 | 98,500 | 197,000 | 주말 | 129,000 | 258,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekday",
+      "session": "all",
+      "customer": "member",
+      "holes": 18,
+      "price_krw": 21120,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "회원요금(2023년 공지요금 기준) 구분 | 이천회원 | 제주회원 | 정회원 | 지정회원1 | 지정회원2 | 정회원 | 지정회원1 | 지정회원2 | 주중 | 21,120 | 21,120 | 21,120 | 51,120 | 136,000 | 182,000",
+      "verified_quote": true
+     },
+     {
+      "day": "weekend",
+      "session": "all",
+      "customer": "member",
+      "holes": 18,
+      "price_krw": 21120,
+      "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+      "quote": "회원요금(2023년 공지요금 기준) ... 주말 | 21,120 | 176,000 | 176,000 | 238,000 | 269,000 | 269,000",
+      "verified_quote": false
+     }
+    ],
+    "caddie_fee": {
+     "fee_team_krw": 160000,
+     "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+     "quote": "18 홀 기준 | 캐디피 (1캐디 4백) | 160,000 | 카트 (5인승 전동카) | 120,000 | 대여채 (Full Set) | 50,000 / 100,000 | 대여화 | 20,000",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "fee_team_krw": 120000,
+     "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+     "quote": "18 홀 기준 | 캐디피 (1캐디 4백) | 160,000 | 카트 (5인승 전동카) | 120,000 | 대여채 (Full Set) | 50,000 / 100,000 | 대여화 | 20,000",
+     "verified_quote": true
+    },
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "구분 | 캐디피 (1캐디 4백) | 카트 (5인승 전동카) | 대여채 (Full Set) | 대여화 | 18 홀 기준 | 160,000 | 120,000 | 50,000 / 100,000 | 20,000 / 클럽의 Local Rule 및 진행을 위하여 캐디의 안내에 적극 협조하여 주시기를 부탁 드립니다.",
+    "three_person": null,
+    "two_person": {
+     "allowed": false,
+     "condition": "투 볼 플레이 자제 요청(티잉그라운드 안내)",
+     "source_url": "https://www.blackstoneresort.com/ic/aboutList?section=fare",
+     "quote": "티잉그라운드 | 스코어 카드 작성, 벙커 고르기, 디보트 정리는 직접 하여 주시면 감사하겠습니다. 투 볼 플레이는 하지 않도록 양해 부탁드립니다. 플레이어 자신의 핸디캡에 맞는 T/G를 선택하여 주시길 바랍니다.",
+     "verified_quote": true
+    },
+    "notes": "회원요금은 '2023년 공지요금 기준'이며 이천회원(정회원·지정회원1·지정회원2: 주중 21,120 / 주말 21,120·176,000·176,000), 제주회원(정회원·지정회원1·지정회원2: 주중 51,120·136,000·182,000 / 주말 238,000·269,000·269,000)으로 구분됨(홀 수 명시 없음). 정상요금은 회원제[동·북코스]와 비회원제(대중형)[서코스]로 구분. 비회원제(대중형) 9홀 기준 캐디피 90,000원, 카트 60,000원, 대여채·대여화는 '문의'. ※ 회원제(동, 북코스): 제세금(개별소비세, 농어촌특별세, 부가세) 포함 / 비회원제(대중형, 서코스): 부가세 포함 금액. ※ 악천(우천등)으로 인한 홀별정산 시 시설이용료 10,000-30,000원 별도. 매주 월요일은 휴장일. 미성년자 동반 라운드 불가."
+   },
+   "usage": {
+    "input_tokens": 37109,
+    "output_tokens": 4278
+   },
+   "seconds": 56.0
+  },
+  {
+   "id": "kgba_비에이비스타",
+   "name": "비에이비스타",
+   "area": "수도권",
+   "official_url": "https://www.bavista.co.kr/",
+   "status": "pending_review",
+   "pages": [
+    {
+     "url": "https://www.bavista.co.kr/",
+     "chars": 214
+    }
+   ],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "notes": ""
+   },
+   "usage": {
+    "input_tokens": 2654,
+    "output_tokens": 74
+   },
+   "seconds": 6.8
+  },
+  {
+   "id": "kgba_제일",
+   "name": "제일 컨트리클럽",
+   "area": "수도권",
+   "official_url": "https://www.jaeil-cc.co.kr/",
+   "status": "pending_review",
+   "pages": [
+    {
+     "url": "https://www.jaeil-cc.co.kr/",
+     "chars": 15
+    },
+    {
+     "url": "https://www.jaeil-cc.co.kr/jaeil/dumy.html",
+     "chars": 0
+    },
+    {
+     "url": "https://www.jaeil-cc.co.kr/jaeil/index.asp",
+     "chars": 1241
+    }
+   ],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "notes": ""
+   },
+   "usage": {
+    "input_tokens": 3748,
+    "output_tokens": 74
+   },
+   "seconds": 4.6
+  },
+  {
+   "id": "vworld_베어크리크_2",
+   "name": "베어크리크골프클럽 포천",
+   "area": "수도권",
+   "official_url": "https://www.bearcreek.co.kr/",
+   "status": "no_content",
+   "pages": [],
+   "error": "홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)",
+   "seconds": 0.3
+  },
+  {
+   "id": "kgba_감곡",
+   "name": "감곡 컨트리클럽",
+   "area": "충청권",
+   "official_url": "https://www.gamgokcc.com/",
+   "status": "pending_review",
+   "pages": [
+    {
+     "url": "https://www.gamgokcc.com/",
+     "chars": 1434
+    },
+    {
+     "url": "https://www.gamgokcc.com/html/guide02.asp",
+     "chars": 1495
+    },
+    {
+     "url": "https://www.gamgokcc.com/html/guide03.asp",
+     "chars": 1606
+    },
+    {
+     "url": "https://www.gamgokcc.com/html/guide01.asp",
+     "chars": 2749
+    },
+    {
+     "url": "https://www.gamgokcc.com/html/reserve/reserve01.asp",
+     "chars": 1188
+    },
+    {
+     "url": "https://www.gamgokcc.com/html/reserve/reserve02.asp",
+     "chars": 4
+    },
+    {
+     "url": "https://www.gamgokcc.com/html/company02.asp",
+     "chars": 615
+    }
+   ],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": {
+     "fee_team_krw": 150000,
+     "source_url": "https://www.gamgokcc.com/html/guide02.asp",
+     "quote": "캐디피 | 일반카트 이용 시 150,000 / 팀 리무진카트 이용 시 160,000 / 팀",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "fee_team_krw": 100000,
+     "source_url": "https://www.gamgokcc.com/html/guide02.asp",
+     "quote": "카트피 | 일반카트 100,000 / 팀 리무진카트 200,000 / 팀 (이용시 예약실 문의)",
+     "verified_quote": true
+    },
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": {
+     "allowed": true,
+     "condition": "12월~2월은 3인 이상 가능(주중/주말 3인플레이시 3인 그린피 지불), 3월~11월은 4인 필수이며 3인플레이시 주중 3인 그린피+팀당 3만원, 주말 3인 그린피+팀당 6만원 추가",
+     "source_url": "https://www.gamgokcc.com/html/guide02.asp",
+     "quote": "12월~2월 | 3인 이상 | 주중/주말 3인플레이시 3인 그린피 지불 | 3월~11월 | 4인 필수 | 3인플레이시 추가요금 - 주중 : 3인 그린피 + 팀당 3만원 추가 - 주말 : 3인 그린피 + 팀당 6만원 추가",
+     "verified_quote": true
+    },
+    "two_person": null,
+    "notes": "그린피는 일자별·시간대별·기후별로 실시간 변동되어 홈페이지에 고정 금액이 명시되어 있지 않음. \"모든티타임 요금은 인터넷 회원가입 필수 조건입니다. 미가입시 현장에서 1만원이 추가됩니다.\" 악천후 시 홀별정산: 그린피 (18홀 그린피/18홀)X이용홀수, 카트피 2~9홀 50,000원·10~18홀 100,000원, 캐디피 1홀 40,000원·2~9홀 80,000원·10~18홀 150,000원."
+   },
+   "usage": {
+    "input_tokens": 11519,
+    "output_tokens": 1076
+   },
+   "seconds": 29.2
+  },
+  {
+   "id": "kgba_코스카",
+   "name": "코스카 컨트리클럽",
+   "area": "충청권",
+   "official_url": "https://www.koscacc.kr/",
+   "status": "pending_review",
+   "pages": [
+    {
+     "url": "https://www.koscacc.kr/index.asp",
+     "chars": 1110
+    },
+    {
+     "url": "https://www.koscacc.kr/pagesite/use/charge.asp",
+     "chars": 1718
+    },
+    {
+     "url": "https://www.koscacc.kr/pagesite/use/reservation.asp",
+     "chars": 1364
+    },
+    {
+     "url": "https://www.koscacc.kr/pagesite/use/guide.asp",
+     "chars": 2332
+    },
+    {
+     "url": "https://www.koscacc.kr/GolfRes/onepage/real_reservation.asp",
+     "chars": 1227
+    },
+    {
+     "url": "https://www.koscacc.kr/GolfRes/onepage/wait_reservation.asp",
+     "chars": 1133
+    },
+    {
+     "url": "https://www.koscacc.kr/pagesite/use/mobile.asp",
+     "chars": 1195
+    }
+   ],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": {
+     "fee_team_krw": 150000,
+     "source_url": "https://www.koscacc.kr/pagesite/use/charge.asp",
+     "quote": "카트비 | 캐디피 | 4인승 : 100,000 | 8인승 : 170,000 | 150,000 | ※ 8인승 카트는 선착순으로 사용가능합니다.",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "fee_team_krw": 100000,
+     "source_url": "https://www.koscacc.kr/pagesite/use/charge.asp",
+     "quote": "카트비 | 캐디피 | 4인승 : 100,000 | 8인승 : 170,000 | 150,000 | ※ 8인승 카트는 선착순으로 사용가능합니다.",
+     "verified_quote": true
+    },
+    "caddie_mode": "caddie",
+    "caddie_mode_quote": "경기보조원(캐디) \n 1팀(4명 기준) 1캐디 운영 \n 휴장일 \n 정기휴장 : 없음 \n 임시휴장 : 폭우 또는 폭설로 인하여 원활한 경기 진행에 지장이 있을 시",
+    "three_person": null,
+    "two_person": null,
+    "notes": "그린피 금액은 홈페이지에 명시되어 있지 않음. 실시간예약 페이지 안내: \"상기 요금은 인터넷회원 가입기준 요금입니다.(코스카CC 인터넷회원 미가입시 2만원 추가됩니다.)\" 8인승 카트는 선착순 사용 가능. 그린피와 카트료는 후불 정산."
+   },
+   "usage": {
+    "input_tokens": 12566,
+    "output_tokens": 903
+   },
+   "seconds": 26.2
+  },
+  {
+   "id": "vworld_로얄포레",
+   "name": "올데이 로얄포레",
+   "area": "충청권",
+   "official_url": "https://www.royalforet.com/",
+   "status": "pending_review",
+   "pages": [
+    {
+     "url": "https://www.royalforet.com/",
+     "chars": 379
+    },
+    {
+     "url": "https://www.royalforet.com/guide/charge.asp",
+     "chars": 2482
+    },
+    {
+     "url": "https://www.royalforet.com/reservation/reserGuide.asp",
+     "chars": 2613
+    },
+    {
+     "url": "https://www.royalforet.com/guide/guide.asp",
+     "chars": 2985
+    },
+    {
+     "url": "https://www.royalforet.com/reservation/reserCheck.asp",
+     "chars": 2649
+    },
+    {
+     "url": "https://www.royalforet.com/reservation/reservation.asp?gubun=2",
+     "chars": 2732
+    },
+    {
+     "url": "https://www.royalforet.com/reservation/joinReser.asp",
+     "chars": 1327
+    }
+   ],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": {
+     "fee_team_krw": 160000,
+     "source_url": "https://www.royalforet.com/guide/charge.asp",
+     "quote": "구분 | 입장료 | 카트비 | 캐디피(1부, 2부) | 캐디피(3부) | 이용요금 | 일자별 공지요금 | 100,000원 | 160,000원 | 새싹캐디:100,000원 실버캐디:120,000원 하우스캐디:160,000원",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "fee_team_krw": 100000,
+     "source_url": "https://www.royalforet.com/guide/charge.asp",
+     "quote": "구분 | 입장료 | 카트비 | 캐디피(1부, 2부) | 캐디피(3부) | 이용요금 | 일자별 공지요금 | 100,000원 | 160,000원 | 새싹캐디:100,000원 실버캐디:120,000원 하우스캐디:160,000원",
+     "verified_quote": true
+    },
+    "caddie_mode": "optional",
+    "caddie_mode_quote": "· 비고란의 노캐디 타임이 없을 경우 등급별 순번제입니다. · 캐디피경우 등급별로 나뉘어지며 지정은 불가합니다.",
+    "three_person": {
+     "allowed": true,
+     "condition": "3인시 4인요금 적용",
+     "source_url": "https://www.royalforet.com/reservation/reserGuide.asp",
+     "quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가)",
+     "verified_quote": true
+    },
+    "two_person": {
+     "allowed": false,
+     "condition": "2인플레이불가",
+     "source_url": "https://www.royalforet.com/reservation/reserGuide.asp",
+     "quote": "할인공시가는 1팀 4인 조건이며, 3인시 4인요금이 적용됩니다. (2인플레이불가)",
+     "verified_quote": true
+    },
+    "notes": "입장료(그린피)는 금액이 명시되지 않고 '일자별 공지요금'으로, 일자별 실시간 예약하기에서 확인. 캐디피 변동 안내: 26년 5월 1일부터 하우스캐디의 캐디피가 160,000원으로 변경될 예정. 3부는 새싹캐디 100,000원/실버캐디 120,000원/하우스캐디 160,000원. 실시간 예약 페이지의 캐디 안내에는 하우스캐디 캐디피 15만원으로 표기됨. 카트비는 표준약관준수로 9홀 이전, 이후 플레이로 요금적용."
+   },
+   "usage": {
+    "input_tokens": 17653,
+    "output_tokens": 1530
+   },
+   "seconds": 27.9
+  },
+  {
+   "id": "kgba_동원썬밸리",
+   "name": "동원썬밸리 컨트리클럽",
+   "area": "강원권",
+   "official_url": "https://sunvalley.co.kr/dongwon/golf/intro",
+   "status": "pending_review",
+   "pages": [
+    {
+     "url": "https://sunvalley.co.kr/dongwon/golf/intro",
+     "chars": 1830
+    },
+    {
+     "url": "https://sunvalley.co.kr/dongwon/golf/golf_use02",
+     "chars": 1295
+    },
+    {
+     "url": "https://sunvalley.co.kr/dongwon/golf/golf_use01",
+     "chars": 2614
+    },
+    {
+     "url": "https://sunvalley.co.kr/member/login?returnURL=/reservation/golf",
+     "chars": 1300
+    },
+    {
+     "url": "https://sunvalley.co.kr/member/login?returnURL=/reservation/resList",
+     "chars": 1300
+    },
+    {
+     "url": "https://sunvalley.co.kr/dongwon/golf/golf_use03",
+     "chars": 3033
+    },
+    {
+     "url": "https://sunvalley.co.kr/dongwon/golf/course_intro",
+     "chars": 4114
+    }
+   ],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "notes": ""
+   },
+   "usage": {
+    "input_tokens": 17283,
+    "output_tokens": 74
+   },
+   "seconds": 12.1
+  },
+  {
+   "id": "kgba_오크힐스",
+   "name": "오크힐스 컨트리클럽",
+   "area": "강원권",
+   "official_url": "https://oakvalley.co.kr/",
+   "status": "no_content",
+   "pages": [
+    {
+     "url": "https://oakvalley.co.kr/",
+     "chars": 17
+    }
+   ],
+   "error": "홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)",
+   "seconds": 0.4
+  },
+  {
+   "id": "vworld_메이플비치골프_리조트",
+   "name": "메이플비치 골프&리조트",
+   "area": "강원권",
+   "official_url": "https://www.maplebeach.co.kr/",
+   "status": "no_content",
+   "pages": [
+    {
+     "url": "https://www.maplebeach.co.kr/",
+     "chars": 0
+    }
+   ],
+   "error": "홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)",
+   "seconds": 0.5
+  }
+ ],
+ "reverified_at": "2026-09-24"
+}

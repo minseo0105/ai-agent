@@ -127,13 +127,16 @@ class Fetcher:
             return r.status_code, (r.url, _decode(r))
         return None, None
 
-    def rendered(self, url):
+    def rendered(self, url, wait_ms=800):
         page = self._browser_page()
         if not page:
             return None
         try:
-            page.goto(url, wait_until="networkidle", timeout=15000)
-            page.wait_for_timeout(800)
+            page.goto(url, wait_until="networkidle", timeout=20000)
+            page.wait_for_timeout(wait_ms)
+            # 인트로/리다이렉트 페이지는 본문이 거의 없다. 자바스크립트가 옮겨갈 시간을 더 준다.
+            if len(page_text(page.content())) < 300:
+                page.wait_for_timeout(2500)
             self.browser_used += 1
             return page.url, page.content()
         except Exception:
@@ -156,7 +159,21 @@ class Fetcher:
             # 렌더링 결과에 금액이 없고 정적 결과에는 있으면 정적 쪽을 쓴다
             if not MONEY_RE.search(page_text(rendered[1])) and MONEY_RE.search(page_text(got[1])):
                 return got
-        return rendered or (got if status == 200 else None)
+        result = rendered or (got if status == 200 else None)
+        # 본문이 거의 없으면 '이 주소로 이동' 한 줄짜리 인트로 페이지일 수 있다. 그 주소로 한 번 더 간다.
+        if result and len(page_text(result[1])) < 300:
+            target = self._redirect_target(result[0], result[1])
+            if target and target != url:
+                return self.get(target, want_amounts=want_amounts)
+        return result
+
+    @staticmethod
+    def _redirect_target(base_url, html):
+        """location.href="..." 또는 meta refresh 로 지정된 이동 주소."""
+        m = re.search(r"""location(?:\.href|\.replace)?\s*(?:=|\()\s*["']([^"']{2,300})["']""", html)
+        if not m:
+            m = re.search(r"""<meta[^>]+http-equiv=["']?refresh["']?[^>]+url=([^"'>\s]+)""", html, re.I)
+        return urljoin(base_url, m.group(1)) if m else None
 
 
 def page_text(html):
@@ -374,11 +391,17 @@ def _norm(s):
 
 
 def _amount_in_quote(quote, amount):
-    digits = str(amount)
-    q_digits = re.sub(r"\D", "", quote)
-    man = str(amount // 10000) if amount % 10000 == 0 else None
-    return digits in q_digits or (man is not None and re.search(rf"{man}\s*만", quote) is not None) \
-        or f"{amount:,}" in quote
+    """금액이 인용 안에 있는지. '190,000' 같은 숫자 표기와 '19만'·'18.8만' 같은 만원 표기를 모두 본다."""
+    if str(amount) in re.sub(r"\D", "", quote) or f"{amount:,}" in quote:
+        return True
+    # 18.8만 = 188,000 처럼 소수점이 붙는 만원 표기
+    for man in re.findall(r"(\d+(?:\.\d+)?)\s*만", quote):
+        try:
+            if round(float(man) * 10000) == amount:
+                return True
+        except ValueError:
+            continue
+    return False
 
 
 def verify_quote(pages, url, quote, amount=None):
@@ -396,11 +419,7 @@ def verify_quote(pages, url, quote, amount=None):
         return False
     if amount is None:
         return True
-    digits = str(amount)
-    q_digits = re.sub(r"\D", "", quote)
-    man = str(amount // 10000) if amount % 10000 == 0 else None
-    return digits in q_digits or (man is not None and re.search(rf"{man}\s*만", quote) is not None) \
-        or f"{amount:,}" in quote
+    return _amount_in_quote(quote, amount)
 
 
 # ---------------------------------------------------------------- main

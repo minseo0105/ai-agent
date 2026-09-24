@@ -17691,8 +17691,12 @@
     "confidence": "confirmed"
    },
    "cart": {
-    "fee_team": null,
-    "status": "unknown"
+    "fee_team": 100000,
+    "status": "unknown",
+    "source_url": "https://www.montvertcc.com/membership/swp/charge",
+    "evidence_quote": "카트이용료 | 일반 카트 | 100,000원 | 리뮤진 카트 유선 예약 필수 | 리무진 카트 | 160,000원",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "players": {
     "three_person": {
@@ -17739,11 +17743,34 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": "2026-09-22",
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 240000,
+     "evidence_quote": "비회원 | 240,000원 | 300,000원 |",
+     "source_url": "https://www.montvertcc.com/membership/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 300000,
+     "evidence_quote": "비회원 | 240,000원 | 300,000원 |",
+     "source_url": "https://www.montvertcc.com/membership/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
    "greenfee_value": null,
    "greenfee_value_status": "dynamic_unknown",
-   "source_url": "https://www.montvertcc.com/public/swp/charge",
+   "source_url": "https://www.montvertcc.com/membership/swp/charge",
    "confidence": "confirmed",
    "pricing_rule": "season/time-band differentiated"
   },
@@ -17993,7 +18020,19 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "green_fee x2",
+     "cart_fee"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_몽베르"
+   }
+  ]
  },
  {
   "id": "kgba_일동레이크",
@@ -42621,13 +42660,21 @@
     "3부": {}
    },
    "caddie": {
-    "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "mode": "optional_caddie_or_self",
+    "fee_team": 150000,
+    "conditions": [],
+    "source_url": "https://www.lakaisandpine.co.kr/golf/guide",
+    "evidence_quote": "캐디피 | 150,000",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "https://www.lakaisandpine.co.kr/golf/guide",
+    "evidence_quote": "카트료 | 100,000",
+    "checked_at": "2026-09-24",
+    "confidence": "official_homepage_extracted_quote_verified"
    },
    "operation_type": {
     "value": "회원제",
@@ -42635,12 +42682,26 @@
     "source": "공공데이터 행정안전부_생활_골프장",
     "checked_at": "2026-09-24",
     "confidence": "public_data"
-   }
+   },
+   "players": {}
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 200000,
+     "evidence_quote": "그린피 | 월 ~ 목 | 50,000 | 100,000 | 200,000",
+     "source_url": "https://www.lakaisandpine.co.kr/golf/guide",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.lakaisandpine.co.kr/golf/guide"
   },
   "course_details": [
    {
@@ -42808,7 +42869,21 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
-  }
+  },
+  "_derived_fields": [
+   {
+    "fields": [
+     "green_fee x1",
+     "caddie_fee",
+     "cart_fee",
+     "caddie_mode"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "kgba_샌드파인"
+   }
+  ]
  },
  {
   "id": "vworld_메이플비치골프_리조트",
@@ -49030,8 +49105,32 @@
   },
   "pricing": {
    "currency": "KRW",
-   "fee_records": [],
-   "last_checked": null
+   "fee_records": [
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekday",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 188000,
+     "evidence_quote": "주중 | 18.8만 | 10만 | 15만 |",
+     "source_url": "https://www.bellastonecc.com/stone/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    },
+    {
+     "record_type": "official_homepage_extract",
+     "day_type": "weekend",
+     "session": "all",
+     "member_type": "nonmember",
+     "greenfee": 247000,
+     "evidence_quote": "주말 | 24.7만 | 기상악화시 홀별 정산요금",
+     "source_url": "https://www.bellastonecc.com/stone/swp/charge",
+     "checked_at": "2026-09-24",
+     "confidence": "official_homepage_extracted_quote_verified"
+    }
+   ],
+   "last_checked": "2026-09-24",
+   "source_url": "https://www.bellastonecc.com/stone/swp/charge"
   },
   "course_details": [],
   "evaluation": {
@@ -49183,6 +49282,15 @@
     "source": "official_homepage",
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
+   },
+   {
+    "fields": [
+     "green_fee x2"
+    ],
+    "source": "official_homepage",
+    "method": "golf_official_enrich_v2",
+    "derived_at": "2026-09-24",
+    "review_item": "vworld_섬강벨라스톤"
    }
   ]
  },

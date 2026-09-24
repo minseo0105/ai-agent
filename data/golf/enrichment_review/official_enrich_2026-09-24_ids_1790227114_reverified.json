@@ -1,0 +1,285 @@
+{
+ "created_at": "2026-09-24",
+ "model": "claude-sonnet-5",
+ "label": "ids",
+ "method": "official_homepage_crawl(v3: static+encoding_fix+edge+fee_images)+llm_extract+quote_verify",
+ "usage": {
+  "input_tokens": 49887,
+  "output_tokens": 1656
+ },
+ "results": [
+  {
+   "id": "vworld_파인크리크c_c",
+   "name": "파인크리크 컨트리클럽",
+   "area": "수도권",
+   "official_url": "https://www.pinecreek.co.kr/",
+   "status": "pending_review",
+   "browser_pages": 0,
+   "pages": [
+    {
+     "url": "https://www.pinecreek.co.kr/",
+     "chars": 5055
+    }
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": ""
+   },
+   "usage": {
+    "input_tokens": 8065,
+    "output_tokens": 81
+   },
+   "seconds": 3.7
+  },
+  {
+   "id": "kgba_기흥",
+   "name": "기흥 컨트리클럽",
+   "area": "수도권",
+   "official_url": "https://ghcc.kr/",
+   "status": "pending_review",
+   "browser_pages": 1,
+   "pages": [
+    {
+     "url": "https://ghcc.kr/",
+     "chars": 36
+    },
+    {
+     "url": "https://ghcc.kr/main.asp",
+     "chars": 855
+    }
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": ""
+   },
+   "usage": {
+    "input_tokens": 4076,
+    "output_tokens": 81
+   },
+   "seconds": 14.4
+  },
+  {
+   "id": "kgba_몽베르",
+   "name": "몽베르컨트리클럽",
+   "area": "수도권",
+   "official_url": "https://www.montvertcc.com/",
+   "status": "no_content",
+   "browser_pages": 1,
+   "pages": [
+    {
+     "url": "https://www.montvertcc.com/",
+     "chars": 142
+    }
+   ],
+   "images": [],
+   "error": "홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)",
+   "seconds": 13.6
+  },
+  {
+   "id": "vworld_스마트ku골프파빌리온",
+   "name": "스마트KU골프파빌리온",
+   "area": "수도권",
+   "official_url": "https://kugolf.co.kr/index.asp",
+   "status": "pending_review",
+   "browser_pages": 1,
+   "pages": [
+    {
+     "url": "https://kugolf.co.kr/",
+     "chars": 1329
+    },
+    {
+     "url": "https://kugolf.co.kr/swp/charge",
+     "chars": 2459
+    },
+    {
+     "url": "https://kugolf.co.kr/swp/year_reserve",
+     "chars": 1563
+    },
+    {
+     "url": "https://kugolf.co.kr/swp/reserve",
+     "chars": 1666
+    },
+    {
+     "url": "https://kugolf.co.kr/swp/greet",
+     "chars": 1918
+    },
+    {
+     "url": "https://kugolf.co.kr/swp/facil_house",
+     "chars": 1423
+    },
+    {
+     "url": "https://kugolf.co.kr/swp/course",
+     "chars": 3626
+    },
+    {
+     "url": "https://kugolf.co.kr/swp/year_reserve2",
+     "chars": 4139
+    }
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": {
+     "fee_team_krw": 150000,
+     "source_url": "https://kugolf.co.kr/swp/charge",
+     "quote": "캐디피(팀) | 150,000원",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "fee_team_krw": 100000,
+     "source_url": "https://kugolf.co.kr/swp/charge",
+     "quote": "카트피(팀) | 100,000원",
+     "verified_quote": true
+    },
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": "그린피는 일자별,시간대별,기후별 등으로 구분되어 운영중입니다. 예약하시고자 하는 날 해당 시간 그린피는 공지사항을 통해 확인해 주시기 바랍니다."
+   },
+   "usage": {
+    "input_tokens": 20807,
+    "output_tokens": 863
+   },
+   "seconds": 23.9
+  },
+  {
+   "id": "vworld_페럼클럽",
+   "name": "페럼클럽",
+   "area": "수도권",
+   "official_url": "https://www.ferrumclub.com/",
+   "status": "pending_review",
+   "browser_pages": 8,
+   "pages": [
+    {
+     "url": "https://www.ferrumclub.com/",
+     "chars": 176
+    },
+    {
+     "url": "https://www.ferrumclub.com/user/charge.asp",
+     "chars": 78
+    },
+    {
+     "url": "https://www.ferrumclub.com/user/guide.asp",
+     "chars": 78
+    },
+    {
+     "url": "https://www.ferrumclub.com/reservation/guide.asp",
+     "chars": 79
+    },
+    {
+     "url": "https://www.ferrumclub.com/clause/info.asp",
+     "chars": 80
+    },
+    {
+     "url": "https://www.ferrumclub.com/information/club_view.asp?idx=2044&GotoPage=1&search_key=&search_value=",
+     "chars": 162
+    },
+    {
+     "url": "https://www.ferrumclub.com/information/club_view.asp?idx=2063&GotoPage=1&search_key=&search_value=",
+     "chars": 164
+    },
+    {
+     "url": "https://www.ferrumclub.com/information/weather.asp",
+     "chars": 146
+    }
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": ""
+   },
+   "usage": {
+    "input_tokens": 4395,
+    "output_tokens": 81
+   },
+   "seconds": 23.0
+  },
+  {
+   "id": "kgba_남여주",
+   "name": "남여주 골프클럽",
+   "area": "수도권",
+   "official_url": "https://www.namyeoju.co.kr/",
+   "status": "pending_review",
+   "browser_pages": 8,
+   "pages": [
+    {
+     "url": "https://www.namyeoju.co.kr/main/Default.aspx",
+     "chars": 1219
+    },
+    {
+     "url": "https://www.namyeoju.co.kr/Guide/Greenfee.aspx",
+     "chars": 1666
+    },
+    {
+     "url": "https://www.namyeoju.co.kr/Reservation/ReservationGuide.aspx",
+     "chars": 630
+    },
+    {
+     "url": "https://www.namyeoju.co.kr/Guide/ClubRule.aspx",
+     "chars": 1561
+    },
+    {
+     "url": "https://www.namyeoju.co.kr/Guide/Penalty.aspx",
+     "chars": 1291
+    },
+    {
+     "url": "https://www.namyeoju.co.kr/Course/CourseIntro.aspx",
+     "chars": 3398
+    }
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": {
+     "fee_team_krw": 150000,
+     "source_url": "https://www.namyeoju.co.kr/Guide/Greenfee.aspx",
+     "quote": "캐디봉사료 | 150,000원",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "fee_team_krw": 100000,
+     "source_url": "https://www.namyeoju.co.kr/Guide/Greenfee.aspx",
+     "quote": "카트 사용료 | 카트 1대당 100,000원",
+     "verified_quote": true
+    },
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": "기타요금표(18홀 기준) 금액단위 : 원 - 카트 사용료, 대여세트, 캐디봉사료, 우천시 캐디피 등 안내"
+   },
+   "usage": {
+    "input_tokens": 12544,
+    "output_tokens": 550
+   },
+   "seconds": 27.1
+  }
+ ],
+ "reverified_at": "2026-09-24"
+}
