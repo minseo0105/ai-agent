@@ -2000,7 +2000,11 @@ def _completeness_block(club):
 
 def get_club(club_id):
     _, clubs, _ = load_pools()
-    return next((x for x in clubs if x["id"] == club_id), None)
+    club = next((x for x in clubs if x["id"] == club_id), None)
+    if club is None:
+        # 중복 정리로 합쳐진 레코드의 옛 id(예전 링크·북마크)도 합쳐진 쪽으로 연결한다
+        club = next((x for x in clubs if club_id in (x.get("merged_from") or [])), None)
+    return club
 
 
 def club_detail(club_id, search=None):

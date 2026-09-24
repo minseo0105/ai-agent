@@ -578,11 +578,18 @@ def get_by_id(
     if not target:
         return None
 
-    for record in load_records():
+    records = load_records()
+
+    for record in records:
 
         if str(
             record.get("id") or ""
         ).strip() == target:
+            return record
+
+    # 중복 정리로 합쳐진 레코드의 옛 id로 들어와도 합쳐진 쪽을 보여준다
+    for record in records:
+        if target in (record.get("merged_from") or []):
             return record
 
     return None
