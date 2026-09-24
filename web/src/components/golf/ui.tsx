@@ -25,7 +25,7 @@ export function Segmented<T extends string>({
           role="radio"
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
-          className={`${full ? "flex-1" : ""} whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-bold transition ${
+          className={`${full ? "flex-1" : ""} whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition sm:py-1.5 ${
             value === o.value ? "bg-surface text-fg shadow-sm" : "text-muted hover:text-fg"
           }`}
         >
@@ -70,7 +70,7 @@ export function ChoiceChips({
           >
             {active ? "✓ " : ""}
             {o}
-            {labels?.[o] != null && <span className="ml-1 text-[11px] font-medium opacity-70">{labels[o]}</span>}
+            {labels?.[o] != null && <span className="ml-1 text-xs font-medium opacity-70">{labels[o]}</span>}
           </button>
         );
       })}
@@ -81,9 +81,10 @@ export function ChoiceChips({
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-xs font-bold text-muted">
+      {/* 라벨은 본문과 같은 크기로. 12px는 모바일에서 읽기 어려웠다 */}
+      <div className="text-sm font-bold text-muted">
         {label}
-        {hint && <span className="ml-1.5 font-medium text-subtle">{hint}</span>}
+        {hint && <span className="ml-1.5 text-xs font-medium text-subtle">{hint}</span>}
       </div>
       {children}
     </div>
@@ -91,7 +92,7 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
 }
 
 export const inputClass =
-  "w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm outline-none transition placeholder:text-subtle focus:border-golf/60";
+  "w-full rounded-xl border border-border bg-surface px-3 py-3 text-base outline-none transition placeholder:text-subtle focus:border-golf/60 sm:py-2.5 sm:text-sm";
 
 export function Tag({ children, tone = "default" }: { children: React.ReactNode; tone?: "default" | "golf" | "warn" }) {
   const tones = {
@@ -99,7 +100,7 @@ export function Tag({ children, tone = "default" }: { children: React.ReactNode;
     golf: "border-golf/25 bg-golf-soft text-golf",
     warn: "border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400",
   };
-  return <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${tones[tone]}`}>{children}</span>;
+  return <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${tones[tone]}`}>{children}</span>;
 }
 
 export function Spinner({ label }: { label: string }) {

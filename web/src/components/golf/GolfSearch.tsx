@@ -35,7 +35,7 @@ function Card({ card, highlight }: { card: ResultCard; highlight?: boolean }) {
       <Link href={`/golf/club?id=${encodeURIComponent(card.id)}`} className="block p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className={`text-[11px] font-bold ${card.status === "confirmed" ? "text-golf" : "text-amber-600 dark:text-amber-400"}`}>
+          <div className={`text-xs font-bold ${card.status === "confirmed" ? "text-golf" : "text-amber-600 dark:text-amber-400"}`}>
             {card.badge}
           </div>
           <div className="mt-0.5 truncate text-base font-extrabold tracking-tight">{card.name}</div>
@@ -58,7 +58,7 @@ function Card({ card, highlight }: { card: ResultCard; highlight?: boolean }) {
           <b className="text-fg">추천 근거</b> · {card.reasons.join(" · ")}
         </div>
       )}
-      <div className="mt-2 text-[11px] text-subtle">{card.evidence}</div>
+      <div className="mt-2 text-xs text-subtle">{card.evidence}</div>
       </Link>
       {card.fee_link && (
         <a
@@ -207,8 +207,8 @@ export default function GolfSearch() {
             <p className="text-xs text-subtle">모두 비워두고 찾아도 됩니다 · 고를수록 범위가 좁아져요.</p>
 
             {/* 1. 위치 — 결과를 가장 크게 좁히는 조건이라 맨 앞 */}
-            <div className="space-y-4 rounded-2xl border border-border p-4">
-              <div className="text-xs font-extrabold text-muted">어디서 치시나요</div>
+            <div className="space-y-3 rounded-2xl border border-border p-3.5 sm:space-y-4 sm:p-4">
+              <div className="text-sm font-extrabold text-muted">어디서 치시나요</div>
               <Field label="지역" hint="복수 선택 · 미선택 시 전체 권역">
                 <ChoiceChips
                   options={options?.areas ?? []}
@@ -237,9 +237,10 @@ export default function GolfSearch() {
             </div>
 
             {/* 2. 요금 — 주중/주말은 그린피와 함께 쓸 때만 결과가 달라진다(주중 59곳 vs 주말 18곳) */}
-            <div className="space-y-4 rounded-2xl border border-border p-4">
-              <div className="text-xs font-extrabold text-muted">얼마로 보시나요</div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-3 rounded-2xl border border-border p-3.5 sm:space-y-4 sm:p-4">
+              <div className="text-sm font-extrabold text-muted">얼마로 보시나요</div>
+              {/* 짧은 선택지라 모바일에서도 두 칸으로 두어 스크롤을 줄인다 */}
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <Field label="라운드 요일" hint="요금 기준">
                   <Segmented value={params.day} options={["주중", "주말"] as const} onChange={(v) => set("day", v)} full />
                 </Field>
@@ -254,14 +255,12 @@ export default function GolfSearch() {
             </div>
 
             {/* 3. 이 서비스의 차별점이라 앞에 두고 눈에 띄게 둔다 */}
-            <div className="space-y-4 rounded-2xl border border-golf/30 bg-golf-soft/40 p-4">
+            <div className="space-y-3 rounded-2xl border border-golf/30 bg-golf-soft/40 p-3.5 sm:space-y-4 sm:p-4">
               <div>
-                <div className="text-xs font-extrabold text-golf">✨ 내 실력에 맞는 코스로</div>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-muted">
-                  대한골프협회(KGA) 공인 난이도(Slope)를 기준으로 내 평균타수에 맞는 코스를 먼저 보여드려요.
-                </p>
+                <div className="text-sm font-extrabold text-golf">✨ 내 실력에 맞는 코스로</div>
+                <p className="mt-0.5 text-xs leading-relaxed text-muted">대한골프협회(KGA) 공인 난이도로 맞춰드려요.</p>
               </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <Field label="내 평균타수" hint="선택">
                   <select className={inputClass} value={params.avg_score_label} onChange={(e) => set("avg_score_label", e.target.value)}>
                     {(options?.avg_scores ?? ["미선택"]).map((s) => (
@@ -269,9 +268,12 @@ export default function GolfSearch() {
                     ))}
                   </select>
                 </Field>
-                <Field label="원하는 난이도" hint="선택">
-                  <Segmented value={params.challenge} options={["편하게", "적당히", "도전"] as const} onChange={(v) => set("challenge", v)} full />
-                </Field>
+                {/* 선택지가 3개라 모바일 반칸에는 좁다 */}
+                <div className="col-span-2 sm:col-span-1">
+                  <Field label="원하는 난이도" hint="선택">
+                    <Segmented value={params.challenge} options={["편하게", "적당히", "도전"] as const} onChange={(v) => set("challenge", v)} full />
+                  </Field>
+                </div>
               </div>
             </div>
 
@@ -313,9 +315,16 @@ export default function GolfSearch() {
               </div>
             </details>
 
-            <button type="submit" disabled={loading} className="w-full rounded-xl bg-golf py-3 text-sm font-extrabold text-white transition hover:brightness-110 disabled:opacity-50">
-              🔎 골프장 찾기
-            </button>
+            {/* 모바일에서 조건을 내려보는 동안에도 검색 버튼이 항상 닿게 한다 */}
+            <div className="sticky bottom-3 z-10">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-golf py-3.5 text-base font-extrabold text-white shadow-lg transition hover:brightness-110 disabled:opacity-50 sm:py-3 sm:text-sm sm:shadow-none"
+              >
+                🔎 골프장 찾기
+              </button>
+            </div>
           </form>
         )}
 
