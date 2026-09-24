@@ -349,7 +349,20 @@ export default function GolfDetail({ id }: { id: string }) {
               <p className="mt-2 text-xs text-subtle">{fee.note}</p>
             </>
           ) : (
-            <p className="rounded-2xl bg-surface-muted px-4 py-3 text-sm text-muted">{fee.text}</p>
+            <div className="space-y-2">
+              <p className="rounded-2xl bg-surface-muted px-4 py-3 text-sm text-muted">{fee.text}</p>
+              {fee.fee_link && (
+                <a
+                  href={fee.fee_link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between gap-2 rounded-2xl border border-golf/30 bg-golf-soft px-4 py-3 text-sm font-bold text-golf transition hover:brightness-95"
+                >
+                  <span>💰 {fee.fee_link.label}</span>
+                  <span aria-hidden>↗</span>
+                </a>
+              )}
+            </div>
           )}
         </div>
       </Section>

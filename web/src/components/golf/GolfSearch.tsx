@@ -26,12 +26,13 @@ type Filter = "전체" | "조건확인" | "확인필요";
 
 function Card({ card, highlight }: { card: ResultCard; highlight?: boolean }) {
   return (
-    <Link
-      href={`/golf/club?id=${encodeURIComponent(card.id)}`}
-      className={`group block rounded-2xl border bg-surface p-4 transition hover:-translate-y-0.5 hover:shadow-md ${
+    // 요금 확인 링크를 카드 안에 따로 두기 위해, 카드 전체가 아니라 본문만 Link로 감싼다
+    <div
+      className={`group rounded-2xl border bg-surface transition hover:-translate-y-0.5 hover:shadow-md ${
         highlight ? "border-golf/30" : "border-border"
       }`}
     >
+      <Link href={`/golf/club?id=${encodeURIComponent(card.id)}`} className="block p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className={`text-[11px] font-bold ${card.status === "confirmed" ? "text-golf" : "text-amber-600 dark:text-amber-400"}`}>
@@ -58,7 +59,19 @@ function Card({ card, highlight }: { card: ResultCard; highlight?: boolean }) {
         </div>
       )}
       <div className="mt-2 text-[11px] text-subtle">{card.evidence}</div>
-    </Link>
+      </Link>
+      {card.fee_link && (
+        <a
+          href={card.fee_link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between gap-2 border-t border-border px-4 py-2.5 text-xs font-bold text-golf transition hover:bg-golf-soft"
+        >
+          <span>💰 {card.fee_link.label}</span>
+          <span aria-hidden>↗</span>
+        </a>
+      )}
+    </div>
   );
 }
 

@@ -32,6 +32,9 @@ export type GolfOptions = {
   naver_enabled: boolean;
 };
 
+/** 그린피를 모를 때 바로 확인하러 갈 수 있는 링크 */
+export type FeeLink = { url: string; label: string; kind: "booking" | "official" | "search" };
+
 export type ResultCard = {
   id: string;
   name: string;
@@ -42,6 +45,7 @@ export type ResultCard = {
   badges: string[];
   reasons: string[];
   evidence: string;
+  fee_link: FeeLink | null;
 };
 
 export type SearchResult = {
@@ -121,7 +125,7 @@ export type ClubDetail = {
         note: string;
       }
     | { verified: true; kind: "legacy"; weekday_total: number | null; weekend_total: number | null; weekday_green: number; weekend_green: number; cart: number; caddie: number; note: string }
-    | { verified: false; text: string };
+    | { verified: false; text: string; fee_link: FeeLink | null };
   course_cards: { title: string; specs: string; type: string; source_url: string }[];
   profile: { official_name: string; facts: string[]; source_url: string } | null;
   operations: {

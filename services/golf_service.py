@@ -83,6 +83,24 @@ def _naver_booking_search_url(club, round_date=None):
     return "https://search.naver.com/search.naver?query=" + quote_plus(query)
 
 
+def fee_lookup_link(club):
+    """그린피를 확인할 수 있는 곳으로 보내는 링크.
+
+    국내 골프장의 절반 가까이는 홈페이지에 고정 그린피를 올리지 않고
+    예약 시점에만 가격이 정해진다(실시간 변동가). 그래서 요금을 모를 때는
+    '확인 필요'로만 두지 말고 바로 확인할 수 있는 곳을 함께 준다.
+
+    우선순위: 공식 예약페이지 > 공식 홈페이지 > 네이버 예약검색
+    """
+    booking = _booking_url(club)
+    if booking:
+        return {"url": booking, "label": "공식 예약페이지에서 요금 확인", "kind": "booking"}
+    official = str(club.get("official_url") or "").strip()
+    if official.startswith(("http://", "https://")):
+        return {"url": official, "label": "공식 홈페이지에서 요금 확인", "kind": "official"}
+    return {"url": _naver_booking_search_url(club), "label": "예약 사이트에서 요금 확인", "kind": "search"}
+
+
 def _date_is_weekend(d):
     """선택 날짜가 토/일인지 반환."""
     return d.weekday() >= 5
@@ -1533,12 +1551,15 @@ def _card(course, reasons, cond, route_cache):
 
     facts.append(_holes_display(course)[0])
     session_fee = _cond_session_fee(course, cond)
+    fee_link = None
     if session_fee is not None:
         facts.append(f"{cond.get('session') or ''} 그린피 {won(session_fee)}".strip())
     elif est is not None:
         facts.append(f"예상 1인 {won(est)}")
     else:
+        # 요금을 모르면 바로 확인할 수 있는 링크를 함께 준다
         facts.append("요금 확인 필요")
+        fee_link = fee_lookup_link(course)
     facts.append(f"캐디 {_caddie_summary(course)}")
     if "3인 플레이" in (cond.get("objective_features") or []):
         facts.append(f"3인 {_objective_display(course, '3인 플레이')}")
@@ -1561,6 +1582,7 @@ def _card(course, reasons, cond, route_cache):
         "badges": _descriptive_badges(course)[:4],
         "reasons": reasons[:2],
         "evidence": evidence,
+        "fee_link": fee_link,
     }
 
 
@@ -1790,7 +1812,10 @@ def _fee_block(club):
                      + ("" if summary["is_current"] else " · 현재 기간 요금표가 없어 가장 최근 공식 요금으로 표시")),
         }
     fee = club.get("fee", {}) or {}
-    if fee.get("verified"):
+    # 그린피 값이 실제로 없으면(예: '실시간 변동'이라 0으로 저장된 경우) 확인된 요금으로 보여주지 않는다.
+    # 그대로 두면 화면에 '그린피 0원'으로 나온다.
+    has_green = any(fee.get(k) for k in ("weekday_green", "weekday", "weekend_green", "weekend"))
+    if fee.get("verified") and has_green:
         three_person = (club.get("play", {}) or {}).get("three_person", "확인 필요")
         return {
             "verified": True,
@@ -1810,7 +1835,8 @@ def _fee_block(club):
     if caddie:
         extras.append(f'캐디 {won(caddie)} / 팀')
     detail = " · ".join(extras) if extras else "상세요금 공식 확인 필요"
-    return {"verified": False, "text": f'{fee.get("basis", "그린피 공식 확인 필요")} · {detail}'}
+    return {"verified": False, "text": f'{fee.get("basis", "그린피 공식 확인 필요")} · {detail}',
+            "fee_link": fee_lookup_link(club)}
 
 
 def _review_cards_from_saved(summary, label="저장 분석"):
