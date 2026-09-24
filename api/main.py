@@ -7,11 +7,12 @@
 import json
 import mimetypes
 import os
+from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -41,6 +42,7 @@ app.include_router(access_router)
 
 # 드림카·차량 선택기 이미지 · 라이프스타일/페르소나 애니메이션 (base64 인라인 대신 파일로 서빙)
 # Windows 레지스트리에는 webp 매핑이 없어 octet-stream으로 나가므로 직접 등록
+mimetypes.init()  # 레지스트리를 먼저 읽어 둬야 아래 등록이 나중에 덮어써지지 않는다
 mimetypes.add_type("image/webp", ".webp")
 app.mount("/media/cars", StaticFiles(directory=IMAGE_DIR), name="car-images")
 app.mount("/media/dreamcar", StaticFiles(directory=ASSET_DIR), name="dreamcar-assets")
@@ -113,3 +115,26 @@ def chat(req: ChatRequest):
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
+
+# ==========================================
+# 화면(Next.js 정적 빌드) 제공 - 배포용
+# STATIC_EXPORT=1 로 빌드한 web/out 이 있으면 API와 같은 주소에서 화면도 제공한다.
+# 반드시 파일 맨 끝(모든 API 라우트 뒤)에 둔다.
+# ==========================================
+WEB_DIST = Path(os.environ.get("WEB_DIST") or Path(__file__).resolve().parent.parent / "web" / "out").resolve()
+
+if (WEB_DIST / "index.html").is_file():
+    app.mount("/_next", StaticFiles(directory=WEB_DIST / "_next"), name="next-assets")
+
+    @app.get("/{path:path}", include_in_schema=False)
+    def web_page(path: str):
+        if path.startswith(("api/", "media/")):
+            raise HTTPException(404)
+        path = path.strip("/")
+        candidates = [WEB_DIST / "index.html"] if not path else [WEB_DIST / f"{path}.html", WEB_DIST / path / "index.html", WEB_DIST / path]
+        for c in candidates:
+            c = c.resolve()
+            if c.is_relative_to(WEB_DIST) and c.is_file():
+                return FileResponse(c)
+        return FileResponse(WEB_DIST / "404.html", status_code=404)

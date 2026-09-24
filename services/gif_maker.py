@@ -58,12 +58,14 @@ _BG_CACHE_SIZE = 16
 
 
 def _rembg_session():
+    """배경 제거 모델. u2net이 가장 정교하지만 메모리를 약 650MB 더 쓴다.
+    메모리가 작은 서버에서는 REMBG_MODEL=silueta(비슷한 품질, 가벼움) 또는 u2netp(가장 가벼움)."""
     global _session
     with _session_lock:
         if _session is None:
             from rembg import new_session
 
-            _session = new_session("u2net")
+            _session = new_session(os.environ.get("REMBG_MODEL", "u2net"))
         return _session
 
 

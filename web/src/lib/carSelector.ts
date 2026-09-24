@@ -1,7 +1,7 @@
 // FastAPI /api/car-selector 클라이언트
 import { apiFetch } from "@/lib/access";
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 export const media = (path: string | null | undefined) => (path ? `${API_URL}${path}` : "");
 
 /** art는 서버에 고정된 모션 SVG 마크업(사용자 입력 아님) */

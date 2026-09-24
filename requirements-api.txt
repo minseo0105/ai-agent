@@ -1,0 +1,15 @@
+# 배포 서버(FastAPI + 화면 제공)용 패키지. Streamlit 앱은 requirements.txt를 쓴다.
+fastapi==0.141.1
+uvicorn==0.53.0
+python-multipart==0.0.32
+anthropic==1.0.0
+openai==3.13.0
+requests==2.34.2
+pandas==3.0.5
+openpyxl==3.1.5
+Pillow==12.3.0
+reportlab==5.0.1
+matplotlib==3.11.1
+rembg==2.0.84
+onnxruntime==1.29.0
+lunar_python==1.4.8

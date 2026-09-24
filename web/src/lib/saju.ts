@@ -2,7 +2,7 @@
 import { apiFetch } from "@/lib/access";
 import { postSSE } from "@/lib/sse";
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 export type BirthInput = {
   birth: string; // YYYY-MM-DD (음력이면 음력 날짜)

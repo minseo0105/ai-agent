@@ -1,0 +1,58 @@
+name: Deploy to Hugging Face Space
+
+# main에 서버·화면 관련 변경이 올라오면 Hugging Face Space로 배포한다.
+# 필요한 설정 (GitHub 저장소 → Settings → Secrets and variables → Actions)
+#   Secrets   : HF_TOKEN  (Hugging Face 쓰기 토큰)
+#   Variables : HF_SPACE  (예: 사용자명/digital-ai-lab)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "services/**"
+      - "web/**"
+      - "data/golf/**"
+      - "Dockerfile"
+      - "requirements-api.txt"
+      - "deploy/**"
+      - "scripts/deploy_space.py"
+      - ".github/workflows/deploy-space.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-space
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check settings
+        id: check
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          if [ -z "$HF_TOKEN" ] || [ -z "$HF_SPACE" ]; then
+            echo "HF_TOKEN(Secret) 또는 HF_SPACE(Variable)가 없어 배포를 건너뜁니다."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ready == 'true'
+
+      - uses: actions/setup-python@v5
+        if: steps.check.outputs.ready == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Upload to Space
+        if: steps.check.outputs.ready == 'true'
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          pip install --quiet "huggingface_hub>=0.25"
+          python scripts/deploy_space.py

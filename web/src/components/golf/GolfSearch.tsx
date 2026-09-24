@@ -27,7 +27,7 @@ type Filter = "전체" | "조건확인" | "확인필요";
 function Card({ card, highlight }: { card: ResultCard; highlight?: boolean }) {
   return (
     <Link
-      href={`/golf/${encodeURIComponent(card.id)}`}
+      href={`/golf/club?id=${encodeURIComponent(card.id)}`}
       className={`group block rounded-2xl border bg-surface p-4 transition hover:-translate-y-0.5 hover:shadow-md ${
         highlight ? "border-golf/30" : "border-border"
       }`}
@@ -338,7 +338,7 @@ export default function GolfSearch() {
               <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border">
                 {nameResults.map((c) => (
                   <li key={c.id}>
-                    <Link href={`/golf/${encodeURIComponent(c.id)}`} className="flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-surface-muted">
+                    <Link href={`/golf/club?id=${encodeURIComponent(c.id)}`} className="flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-surface-muted">
                       <span className="font-bold">{c.name}</span>
                       <span className="shrink-0 text-xs text-muted">
                         {[c.region, c.city].filter(Boolean).join(" ")}

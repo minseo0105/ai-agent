@@ -1,7 +1,7 @@
 // FastAPI /api/golf 클라이언트 + 검색 상태 보관(sessionStorage)
 import { apiFetch } from "@/lib/access";
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 export type Sort = "추천순" | "가까운순" | "가격순";
 export type SearchMode = "condition" | "text" | "name";

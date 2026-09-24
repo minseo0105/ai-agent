@@ -1,7 +1,7 @@
 // FastAPI /api/dreamcar 클라이언트 + 할부 계산
 import { apiFetch } from "@/lib/access";
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 export const media = (path: string | null | undefined) => (path ? `${API_URL}${path}` : "");
 
 export type Question = { title: string; desc: string; options: { label: string; desc: string; art: string }[] };

@@ -33,3 +33,4 @@ data/golf/runtime/
 test.py
 dart_test.py
 law_test.py
+web/out/

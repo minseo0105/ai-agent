@@ -20,7 +20,7 @@ export const PROVIDER_LABELS: Record<Provider, string> = {
   gpt: "GPT-5.6 Terra",
 };
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 type Handlers = {
   onTool: (e: ToolEvent) => void;

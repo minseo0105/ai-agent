@@ -1,7 +1,7 @@
 // FastAPI /api/realestate 클라이언트
 import { apiFetch } from "@/lib/access";
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 export type EstateOptions = {
   regions: { 서울: string[]; 경기: string[] };

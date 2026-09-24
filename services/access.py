@@ -6,7 +6,8 @@
   발급 직후 한 번만 보여 주고, 잃어버리면 재발급한다(재발급 시 기존 로그인도 끊긴다).
 - 토큰: HMAC 서명된 짧은 문자열. 관리자 토큰은 12시간, 구성원 토큰은 설정한 일수만큼 유효.
 
-설정 파일(data/admin/)은 Git에 올리지 않는다.
+저장소: Supabase(SUPABASE_URL · SUPABASE_SERVICE_ROLE_KEY)가 설정되어 있으면 app_settings 테이블에,
+없으면 로컬 파일(data/admin/, Git 제외)에 저장한다. 배포 서버는 재시작하면 디스크가 초기화되므로 Supabase를 쓴다.
 """
 
 import base64
@@ -55,6 +56,10 @@ DEFAULT_SETTINGS = {
 }
 
 _lock = Lock()
+SETTINGS_KEY, SECRET_KEY_NAME = "access_settings", "access_secret"
+CACHE_SEC = 5  # 미들웨어가 요청마다 설정을 읽으므로 잠깐 캐시 (쓰기는 즉시 반영)
+_cache: dict = {"at": 0.0, "raw": None}
+_secret_cache: dict = {"value": None}
 
 
 class AccessError(Exception):
@@ -69,15 +74,77 @@ class AccessError(Exception):
 # 저장소
 # =========================================================
 
+def _supabase():
+    url, key = get_secret("SUPABASE_URL"), get_secret("SUPABASE_SERVICE_ROLE_KEY")
+    return (url.rstrip("/"), key) if url and key else None
+
+
+def _remote_get(name: str):
+    import requests
+
+    url, key = _supabase()
+    r = requests.get(f"{url}/rest/v1/app_settings", params={"key": f"eq.{name}", "select": "value"},
+                     headers={"apikey": key, "Authorization": f"Bearer {key}"}, timeout=10)
+    r.raise_for_status()
+    rows = r.json()
+    return rows[0]["value"] if rows else None
+
+
+def _remote_put(name: str, value: str):
+    import requests
+
+    url, key = _supabase()
+    r = requests.post(f"{url}/rest/v1/app_settings", json={"key": name, "value": value}, timeout=10,
+                      headers={"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json",
+                               "Prefer": "resolution=merge-duplicates,return=minimal"})
+    r.raise_for_status()
+
+
 def _secret_key() -> bytes:
+    """토큰 서명 · 접속 코드 해시용 키. 바뀌면 모든 로그인과 코드가 무효가 되므로 한 번 만들면 유지한다."""
     env = os.environ.get("ACCESS_SECRET")
     if env:
         return env.encode()
+    if _secret_cache["value"]:
+        return _secret_cache["value"]
     with _lock:
-        if not SECRET_PATH.exists():
-            ADMIN_DIR.mkdir(parents=True, exist_ok=True)
-            SECRET_PATH.write_text(secrets.token_hex(32), encoding="utf-8")
-        return SECRET_PATH.read_text(encoding="utf-8").strip().encode()
+        if _supabase():
+            value = _remote_get(SECRET_KEY_NAME)
+            if not value:
+                value = secrets.token_hex(32)
+                _remote_put(SECRET_KEY_NAME, value)
+                value = _remote_get(SECRET_KEY_NAME) or value  # 동시에 만든 경우 저장된 값을 따른다
+        else:
+            if not SECRET_PATH.exists():
+                ADMIN_DIR.mkdir(parents=True, exist_ok=True)
+                SECRET_PATH.write_text(secrets.token_hex(32), encoding="utf-8")
+            value = SECRET_PATH.read_text(encoding="utf-8").strip()
+        _secret_cache["value"] = value.encode()
+        return _secret_cache["value"]
+
+
+def _read_raw(fresh=False) -> dict:
+    if not fresh and _cache["raw"] is not None and time.time() - _cache["at"] < CACHE_SEC:
+        return _cache["raw"]
+    if _supabase():
+        value = _remote_get(SETTINGS_KEY)
+        raw = json.loads(value) if value else {}
+    else:
+        raw = json.loads(SETTINGS_PATH.read_text(encoding="utf-8")) if SETTINGS_PATH.exists() else {}
+    _cache.update(at=time.time(), raw=raw)
+    return raw
+
+
+def _write_raw(settings: dict):
+    text = json.dumps(settings, ensure_ascii=False, indent=2)
+    if _supabase():
+        _remote_put(SETTINGS_KEY, text)
+    else:
+        ADMIN_DIR.mkdir(parents=True, exist_ok=True)
+        tmp = SETTINGS_PATH.with_suffix(".tmp")
+        tmp.write_text(text, encoding="utf-8")
+        os.replace(tmp, SETTINGS_PATH)
+    _cache.update(at=time.time(), raw=deepcopy(settings))
 
 
 def _normalize(raw: dict) -> dict:
@@ -99,30 +166,24 @@ def _normalize(raw: dict) -> dict:
 
 
 def load_settings() -> dict:
+    """읽기 실패(파일 손상·Supabase 일시 오류) 시에는 마지막으로 읽은 값을 쓴다.
+    그것도 없으면 '점검 중'으로 닫는다(설정을 못 읽었다고 '모두 공개'로 열리지 않도록)."""
     with _lock:
-        if not SETTINGS_PATH.exists():
-            return deepcopy(DEFAULT_SETTINGS)
         try:
-            return _normalize(json.loads(SETTINGS_PATH.read_text(encoding="utf-8")))
+            return _normalize(_read_raw())
         except Exception:
-            return deepcopy(DEFAULT_SETTINGS)
-
-
-def _save(settings: dict):
-    settings["updated_at"] = int(time.time())
-    ADMIN_DIR.mkdir(parents=True, exist_ok=True)
-    tmp = SETTINGS_PATH.with_suffix(".tmp")
-    tmp.write_text(json.dumps(settings, ensure_ascii=False, indent=2), encoding="utf-8")
-    os.replace(tmp, SETTINGS_PATH)
+            if _cache["raw"] is not None:
+                return _normalize(_cache["raw"])
+            return _normalize({"site_mode": "closed"})
 
 
 def _mutate(fn):
-    """설정을 읽고 fn(settings)로 고친 뒤 저장. fn의 반환값을 돌려준다."""
+    """설정을 새로 읽고 fn(settings)로 고친 뒤 저장. fn의 반환값을 돌려준다."""
     with _lock:
-        raw = json.loads(SETTINGS_PATH.read_text(encoding="utf-8")) if SETTINGS_PATH.exists() else {}
-        settings = _normalize(raw)
+        settings = _normalize(_read_raw(fresh=True))
         result = fn(settings)
-        _save(settings)
+        settings["updated_at"] = int(time.time())
+        _write_raw(settings)
         return result
 
 
@@ -191,18 +252,25 @@ def identify(token: str | None, settings: dict | None = None):
 
 _failures: dict[str, list[float]] = {}
 MAX_FAILURES, WINDOW_SEC = 5, 600
+MAX_GLOBAL_FAILURES = 50  # 배포 프록시 뒤에서는 IP를 바꿔 가며 시도할 수 있으므로 전체 실패 횟수도 제한
+
+
+def _recent(key: str) -> list[float]:
+    now = time.time()
+    _failures[key] = [t for t in _failures.get(key, []) if now - t < WINDOW_SEC]
+    return _failures[key]
 
 
 def _check_rate(key: str):
-    now = time.time()
-    recent = [t for t in _failures.get(key, []) if now - t < WINDOW_SEC]
-    _failures[key] = recent
-    if len(recent) >= MAX_FAILURES:
+    kind = key.split(":", 1)[0]
+    if len(_recent(key)) >= MAX_FAILURES or len(_recent(f"{kind}:*")) >= MAX_GLOBAL_FAILURES:
         raise AccessError(429, "too_many_attempts", "시도가 너무 많아요. 10분 뒤에 다시 시도해 주세요.")
 
 
 def _fail(key: str):
-    _failures.setdefault(key, []).append(time.time())
+    kind = key.split(":", 1)[0]
+    for k in (key, f"{kind}:*"):
+        _failures.setdefault(k, []).append(time.time())
 
 
 def admin_configured() -> bool:

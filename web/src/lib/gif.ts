@@ -1,7 +1,7 @@
 // FastAPI /api/gif 클라이언트 (multipart 업로드 → 이미지 바이너리 응답)
 import { apiFetch } from "@/lib/access";
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 export const MAX_UPLOAD_MB = 15;
 
 export type GifOptions = {

@@ -3,7 +3,7 @@
 // 모든 서비스 API 호출은 apiFetch를 거쳐 로그인 토큰(Authorization 헤더)을 붙인다.
 // 권한 오류(401/403)가 오면 화면 게이트가 다시 상태를 확인하도록 이벤트를 보낸다.
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 const TOKEN_KEY = "ailab-access-token";
 export const ACCESS_EVENT = "ailab:access-changed";
 
