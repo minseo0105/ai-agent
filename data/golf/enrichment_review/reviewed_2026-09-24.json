@@ -1,0 +1,953 @@
+{
+  "created_at": "2026-09-24",
+  "results": [
+    {
+      "id": "kgba_기흥",
+      "name": "기흥 컨트리클럽",
+      "official_url": "https://ghcc.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+          "quote": "화성시 골프장 주소 옆 대표전화. 서울 본사 전화와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-376-4001"
+        },
+        "green_fees": [
+          {
+            "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+            "quote": "18홀 비회원 행의 평일 및 주말 입장료. 유효 종료일 미표기; 실시간 예약가 아님.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "day": "weekday",
+            "session": "all",
+            "customer": "nonmember",
+            "holes": 18,
+            "price_krw": 230000
+          },
+          {
+            "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+            "quote": "18홀 비회원 행의 평일 및 주말 입장료. 유효 종료일 미표기; 실시간 예약가 아님.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "day": "weekend",
+            "session": "all",
+            "customer": "nonmember",
+            "holes": 18,
+            "price_krw": 300000
+          }
+        ],
+        "caddie_fee": {
+          "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+          "quote": "18홀 도우미 봉사료 15만원.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "fee_team_krw": 150000
+        },
+        "cart_fee": {
+          "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+          "quote": "5인승 전동카트 한 대 이용료 10만원.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "fee_team_krw": 100000
+        }
+      }
+    },
+    {
+      "id": "vworld_파인크리크c_c",
+      "name": "파인크리크 컨트리클럽",
+      "official_url": "https://www.pinecreek.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "observations": [
+          {
+            "source_url": "https://www.pinecreek.co.kr/html_creek/board/notice_view.asp?b_idx=87",
+            "quote": "2026년 9월 공지 이미지의 14~30일 구간을 시각 확인.",
+            "reviewed": true,
+            "condition": "공휴일은 주말 요금, 9월 25일 휴장. 이전 기간 요금과 분리. 고객 구분 적용범위는 반영 전 재확인.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "green_fee",
+            "value": {
+              "period": "2026-09-14/2026-09-30",
+              "currency": "KRW",
+              "rows": [
+                {
+                  "time": "<=06:59",
+                  "mon_thu": 165000,
+                  "fri": 170000,
+                  "sat": 270000,
+                  "sun": 270000
+                },
+                {
+                  "time": "07:00-07:30",
+                  "mon_thu": 175000,
+                  "fri": 180000,
+                  "sat": 270000,
+                  "sun": 270000
+                },
+                {
+                  "time": "1부 07:31 이후",
+                  "mon_thu": 190000,
+                  "fri": 190000,
+                  "sat": 280000,
+                  "sun": 280000
+                },
+                {
+                  "time": "2부 13:30 이전",
+                  "mon_thu": 205000,
+                  "fri": 205000,
+                  "sat": 250000,
+                  "sun": 250000
+                },
+                {
+                  "time": "2부 13:31 이후",
+                  "mon_thu": 205000,
+                  "fri": 205000,
+                  "sat": 220000,
+                  "sun": 220000
+                }
+              ]
+            }
+          },
+          {
+            "source_url": "https://www.pinecreek.co.kr/html_creek/company02.asp",
+            "quote": "18홀 일반 및 지정 캐디 비용이 별도 표기.",
+            "reviewed": true,
+            "condition": "캐디 유형별 요금 분리 필요.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "caddie_fee",
+            "value": {
+              "general": 150000,
+              "designated": 170000
+            }
+          },
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.pinecreek.co.kr/",
+            "quote": "웹 검색 도구 403; 일반 브라우저는 정상 접근. 같은 도메인의 파인밸리 요금 혼입 주의.",
+            "condition": "collection diagnostic"
+          }
+        ],
+        "cart_fee": {
+          "source_url": "https://www.pinecreek.co.kr/html_creek/company02.asp",
+          "quote": "18홀 카트비 10만원. 월별 공지에서도 팀 카트비로 확인.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "fee_team_krw": 100000
+        },
+        "course_description": {
+          "value": "공식 코스 소개에 따르면 27홀은 파인·크리크·밸리 3개 코스로 구성됩니다. 파인은 자연지형, 크리크는 홀별 워터해저드 배치, 밸리는 능선 지형을 활용한 코스입니다.",
+          "source_url": "https://www.pinecreek.co.kr/html_creek/company01.asp",
+          "quote": "파인코스 / 워터해저드가 홀별로 적절히 배치된 서구적인 전략형 스타일의 크리크코스 / 능선의 모양을 그대로 유지",
+          "reviewed": true,
+          "condition": ""
+        }
+      }
+    },
+    {
+      "id": "kgba_라데나",
+      "name": "라데나 골프클럽",
+      "official_url": "https://www.ladena.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "green_fees": [
+          {
+            "source_url": "https://www.ladena.co.kr/guide/charge",
+            "quote": "비회원 공시요금 행. 근로자의 날 주말 적용. 실시간 예약가 아님.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "day": "weekday",
+            "session": "all",
+            "customer": "nonmember",
+            "holes": 18,
+            "price_krw": 220000
+          },
+          {
+            "source_url": "https://www.ladena.co.kr/guide/charge",
+            "quote": "비회원 공시요금 행. 근로자의 날 주말 적용. 실시간 예약가 아님.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "day": "weekend",
+            "session": "all",
+            "customer": "nonmember",
+            "holes": 18,
+            "price_krw": 270000
+          }
+        ],
+        "observations": [
+          {
+            "source_url": "https://www.ladena.co.kr/guide/charge",
+            "quote": "신입 및 경력 캐디의 요금 분리 표기.",
+            "reviewed": true,
+            "condition": "경력 구분 없이 단일 비용으로 저장하지 않음.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "caddie_fee",
+            "value": {
+              "new": 120000,
+              "experienced": 150000
+            }
+          },
+          {
+            "source_url": "https://www.ladena.co.kr/guide/charge",
+            "quote": "캐디 동반 및 셀프 카트비를 구분한 요금표.",
+            "reviewed": true,
+            "condition": "라운드 방식별 분리 필요.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "cart_fee",
+            "value": {
+              "with_caddie": 100000,
+              "self": 120000
+            }
+          },
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.ladena.co.kr/",
+            "quote": "웹 텍스트 추출 0줄; 브라우저 렌더링 후 이용요금 메뉴에서 확인.",
+            "condition": "collection diagnostic"
+          },
+          {
+            "field": "three_person",
+            "value": true,
+            "source_url": "https://www.ladena.co.kr/guide/use",
+            "quote": "공식 이용안내에 3~4인 플레이 가능 표시.",
+            "condition": "운영조건 검토 필요"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vworld_링크나인",
+      "name": "링크나인골프클럽",
+      "official_url": "https://www.linknine.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-831-0900",
+          "source_url": "https://www.linknine.co.kr/",
+          "quote": "자 : 김상두,김창영 | 사업자등록번호 : 124-86-12368 | Tel : 031-831-0900 | Fax : 031-831-0912 Copyright (c)",
+          "reviewed": true,
+          "condition": ""
+        },
+        "observations": [
+          {
+            "source_url": "https://www.linknine.co.kr/admin/board/news/img/26.9%EC%88%98.jpg",
+            "quote": "9월 공지 이미지의 후반 기간 표. 인터넷 회원 18홀(9홀 두 차례) 기준.",
+            "reviewed": true,
+            "condition": "시간대별 차등. 9월 24~25일 공휴일 요금 적용. 범위만으로 예산 충족 판정 금지.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "green_fee",
+            "value": {
+              "period": "2026-09-14/2026-09-30",
+              "holes": 18,
+              "round_format": "9x2",
+              "customer": "internet_member",
+              "currency": "KRW",
+              "weekday_range": [
+                95000,
+                115000
+              ],
+              "weekend_holiday_range": [
+                130000,
+                145000
+              ]
+            }
+          },
+          {
+            "source_url": "https://www.linknine.co.kr/admin/board/news/img/26.9%EC%88%98.jpg",
+            "quote": "9월 2인 이벤트 주석에 팀 캐디피 14만원 표기.",
+            "reviewed": true,
+            "condition": "해당 2인 이벤트에만 근거가 있음. 일반 4인 캐디피로 확대 적용 금지.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "caddie_fee",
+            "value": 140000
+          },
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.linknine.co.kr/",
+            "quote": "월별 공지 본문이 이미지. 캐디피는 이벤트 조건 한정.",
+            "condition": "collection diagnostic"
+          },
+          {
+            "field": "two_person",
+            "value": true,
+            "source_url": "https://www.linknine.co.kr/admin/board/news/img/26.9%EC%88%98.jpg",
+            "quote": "9월 한가위 이벤트에 2인 플레이 조건 명시.",
+            "condition": "일~목 14시 이후 3부; 추석 전 시간대는 선착순 5팀. 2026년 9월 이벤트로 한정하고 상세 이벤트 재확인 필요."
+          }
+        ],
+        "cart_fee": {
+          "source_url": "https://www.linknine.co.kr/admin/board/news/img/26.9%EC%88%98.jpg",
+          "quote": "이미지 하단에 카트 1대당 8만원 별도 표기.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "fee_team_krw": 80000
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_알펜시아700",
+      "name": "알펜시아 700 G.C",
+      "official_url": "https://www.alpensia.com/golf/gc700/use-info.do",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "observations": [
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.alpensia.com/golf/gc700/use-info.do",
+            "quote": "그린피는 통합예약 실시간 가격 적용; 정적 금액 확정 불가.",
+            "condition": "collection diagnostic"
+          },
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.alpensia.com/golf/gc700/use-info.do",
+            "quote": "추출 본문의 카트피 행이 공란. 이번 확인으로 금액을 확정하지 못함.",
+            "condition": "collection diagnostic"
+          },
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.alpensia.com/golf/gc700/use-info.do",
+            "quote": "같은 공식 페이지에 2~3인 불가와 3인 시 4인 요금 적용 문구가 함께 존재. 3인 허용은 충돌 검토 필요.",
+            "condition": "collection diagnostic"
+          },
+          {
+            "field": "three_person",
+            "value": null,
+            "source_url": "https://www.alpensia.com/golf/gc700/use-info.do",
+            "quote": "예약 안내는 2~3인 불가, 요금 안내는 3인 시 4인 요금 적용으로 상충.",
+            "condition": "운영조건 검토 필요"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vworld_젠스필드",
+      "name": "젠스필드 컨트리클럽",
+      "official_url": "https://www.zensfield.com/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "observations": [
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.zensfield.com/",
+            "quote": "웹 접근 502, 브라우저 ERR_SSL_VERSION_OR_CIPHER_MISMATCH. 보안 설정 변경 없이 조사 보류.",
+            "condition": "collection diagnostic"
+          },
+          {
+            "field": "collection_note",
+            "value": null,
+            "source_url": "https://www.zensfield.com/",
+            "quote": "제3자 요금은 공식 검증값으로 채택하지 않음. 정보가 없다는 의미는 아님.",
+            "condition": "collection diagnostic"
+          }
+        ]
+      }
+    },
+    {
+      "id": "vworld_태릉골프장",
+      "name": "태릉골프장",
+      "official_url": "https://www.welfare.mil.kr/health/content/content.do?m_code=251",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "02-970-7320",
+          "source_url": "https://www.welfare.mil.kr/health/content/content.do?m_code=251",
+          "quote": " 시설규모 25만평 주소 서울시 노원구 화랑로 682 (우)139-804 연락처 02-970-7320 코스안내 (18홀) 현장 스케치 6홀_쌍휴정 2022-07-2",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_제이퍼블릭",
+      "name": "제이퍼블릭",
+      "official_url": "http://www.jpublic.co.kr",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-8071-0808",
+          "source_url": "https://www.jpublic.co.kr/index.asp",
+          "quote": "보확인 영상정보처리기기운영 주소 : 경기도 파주시 조리읍 장곡로 100 전화 : 031.8071.0808~9 팩스 : 031.945.4560 E-mail : pem18",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_화성상록",
+      "name": "화성상록",
+      "official_url": "https://www.sangnokresort.co.kr/M050000",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-371-0100",
+          "source_url": "https://www.sangnokresort.co.kr/M050000",
+          "quote": "원격지원 화성상록골프클럽 경기도 화성시 동탄면 풀무골로 60번길 80 Tel : 031-371-0100 공무원연금공단 이용약관 개인정보 처리방침 영상정보기기 운영관리",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_뉴서울",
+      "name": "뉴서울",
+      "official_url": "https://www.newseoulgolf.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-760-8000",
+          "source_url": "https://www.newseoulgolf.co.kr/",
+          "quote": "럽 (12767) 경기 광주 삼지곡길 95(삼동1번지) 대표이사 정상윤 대표전화 031-760-8000 이메일 webmaster@newseoulgolf.co.kr 사",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_렉스필드",
+      "name": "렉스필드",
+      "official_url": "https://www.rexfield.com/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-880-8700",
+          "source_url": "https://www.rexfield.com/",
+          "quote": " 상호 : 렉스필드CC 주소 : 경기 여주시 산북면 광여로 1115 대표번호 : 031-880-8700 예약실 : 031-880-0300,0302 프론트 : 031-",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_신라",
+      "name": "신라CC",
+      "official_url": "https://www.onetheclub.com/shilla/main",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-886-3030",
+          "source_url": "https://www.onetheclub.com/shilla/main",
+          "quote": "여주시 북내면 신라그린길 84 TEL. 예약문의 010-5009-2984 프론트 031-886-3030 사업자 정보 확인하기 상호명 주식회사 신라레저 대표자 박형식 ",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_캐슬파인",
+      "name": "캐슬파인GC",
+      "official_url": "https://www.castlepine.co.kr",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-880-8656",
+          "source_url": "https://www.castlepine.co.kr/index.asp",
+          "quote": "주식회사 대표이사 정귀수 사업장주소 경기도 여주시 강천면 부평로 580 대표번호 031-880-8656 FAX 031-886-8658 예약신청 및 문의 031-880",
+          "reviewed": true,
+          "condition": ""
+        },
+        "official_features": [
+          {
+            "value": {
+              "available": true,
+              "bays": 5,
+              "length_yd": 135,
+              "practice": [
+                "putting",
+                "bunker_shot"
+              ],
+              "closed_weekday": "Wednesday"
+            },
+            "source_url": "https://www.castlepine.co.kr/pagesite/use/charge.asp",
+            "quote": "타석: 5개 , 거리: 135yd / 퍼팅, 벙커샷 연습 가능 / 수요일은 연습장정비로 인해 이용이 불가합니다.",
+            "reviewed": true,
+            "condition": "",
+            "field": "driving_range"
+          }
+        ]
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_해슬리나인브릿지",
+      "name": "해슬리나인브릿지",
+      "official_url": "https://www.haesley.com/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-887-9900",
+          "source_url": "https://www.haesley.com/global/login.asp",
+          "quote": "릿지 | 사업자등록번호:110-81-05034 | 대표자이름:신영수 | 고객센터:031-887-9900 | 대표연락처:031-887-9900 | 개인정보보호책임자:정",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_마이다스밸리g_c",
+      "name": "마이다스밸리G.C",
+      "official_url": "https://www.midasgolf.co.kr",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-589-9000",
+          "source_url": "https://www.midasgolf.co.kr/",
+          "quote": "평 골프클럽 경기 가평군 설악면 다락재로 73-111(이천리 산2-1) Tel. 031-589-9000 Fax. 031-589-9210 사업자등록번호 314-81-0",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_오너스g_c",
+      "name": "오너스 골프클럽",
+      "official_url": "https://www.ownersgc.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-260-1900",
+          "source_url": "https://www.ownersgc.co.kr/",
+          "quote": "시 남산면 동촌로 667 (강원도 춘천시 남산면 수동리 산 30번지) Tel : 033-260-1900 | Fax : 033-260-1901 Copyright © O",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_스프링베일리조트",
+      "name": "스프링베일 골프클럽",
+      "official_url": "https://www.springvale.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-254-7900",
+          "source_url": "https://www.springvale.co.kr/",
+          "quote": "21-81-21289 통신판매신고번호: 제2010-강원춘천-0140호 대표번호: 033-254-7900 COPYRIGHT ⓒ SPRINGVALE RESORT. ALL",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_센추리21",
+      "name": "센추리21 컨트리클럽",
+      "official_url": "http://www.century21cc.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-733-1000",
+          "source_url": "https://www.century21cc.co.kr:443/",
+          "quote": " 핀오크숲 커뮤니티 공지사항 이벤트 자료실 예약 및 조회 예약 및 조회 대표전화 033-733-1000 주소 강원 원주시 문막읍 궁말길 193 대자연과 조화를 이루는",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_인천국제c_c",
+      "name": "인천국제C.C",
+      "official_url": "https://www.incheoncc.com/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "032-562-6666",
+          "source_url": "https://www.incheoncc.com/index.asp",
+          "quote": "리방침 ㆍ 사업자정보확인 지번주소 : 인천광역시 서구 도요지로 37 대표번호 : 032-562-6666 예약 : 032-562-9991-2 상호 : 인천국제컨트리클럽",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_파크밸리",
+      "name": "파크밸리 골프클럽",
+      "official_url": "http://www.parkvalley.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-744-4000",
+          "source_url": "https://www.parkvalley.co.kr/",
+          "quote": "강원레저개발㈜ 파크밸리골프클럽 강원특별자치도 원주시 소초면 바우실길 281 T. 033.744.4000 F. 033.731.7956 통신판매업신고번호 : 제2020-",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_파인밸리",
+      "name": "파인밸리 C.C",
+      "official_url": "https://www.pinevalley.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-573-0874",
+          "source_url": "https://www.pinevalley.co.kr/",
+          "quote": " (삼척)파인밸리 (25933) 강원 삼척시 근덕면 미근로 1629 대표번호 : 033-573-0874 팩스 : 033-573-0876 통신판매업신고번호 : 2009",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_블랙밸리",
+      "name": "블랙밸리",
+      "official_url": "https://www.blackcc.co.kr/club/intro",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-540-5301",
+          "source_url": "https://www.blackcc.co.kr/club/intro",
+          "quote": "소 강원특별자치도 삼척시 도계읍 도상로 307-84 블랙밸리 컨트리클럽 대표전화 033.540.5301 팩스 033.540.5310 블랙밸리컨트리클럽(주) 대표자 :",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_섬강벨라스톤",
+      "name": "섬강벨라스톤",
+      "official_url": "https://www.bellastonecc.com",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-340-9000",
+          "source_url": "https://www.bellastonecc.com/stone/main",
+          "quote": "ERS CLUB 벨라스톤 C.C 강원도 횡성군 서원면 옥계9길 124 TEL : 033-340-9000 FAX : 033-340-9029 E-mail : bellas",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_동강시스타",
+      "name": "동강시스타",
+      "official_url": "https://cistar.kr/golf/golf-guide/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "033-371-3732",
+          "source_url": "https://cistar.kr/golf/golf-guide/",
+          "quote": "요금안내 이용약관 이용원칙 에티켓/로컬룰 분실물 처리 규정 예약접수 예약전화 : 033-371-3732 (예약 업무시간 : 주중 09시 ~ 18시 ) 인터넷예약(실시",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_버드우드g_c",
+      "name": "골프존카운티 천안",
+      "official_url": "https://www.golfzoncounty.com/golfclub/main?golfclubSeq=47",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "041-558-9900",
+          "source_url": "https://www.golfzoncounty.com/golfclub/main?golfclubSeq=47",
+          "quote": " 오시는 길 주소 충남 천안시 동남구 병천면 매성2길 103 주소 복사 전화번호 041-558-9900 골프장 선택 경기 이글몬트 안성H 안성W 송도 충청 천안 진천",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_마론뉴데이",
+      "name": "마론뉴데이cc",
+      "official_url": "http://www.maronnewday.com",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "041-623-5500",
+          "source_url": "http://www.maronnewday.com/",
+          "quote": "안5길 74 정동레저산업(주) 사업자등록번호 :156-86-01761 TEL : 041-623-5500 FAX : 041-623-5599 Copyright © 마론컨",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_전주월드컵",
+      "name": "전주월드컵컨트리클럽",
+      "official_url": "https://golf.jjss.or.kr",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "063-239-2997",
+          "source_url": "https://golf.jjss.or.kr/",
+          "quote": "관 개인정보처리방침 영상정보처리기기 관리운영 방침 전주시설관리공단 로고 Tel. 063-239-2997~9 Fax. 063-213-7070 (54809) 전북특별자치",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_세종필드",
+      "name": "세종필드",
+      "official_url": "https://www.sejongcc.com",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "044-861-5678",
+          "source_url": "https://www.sejongcc.com/",
+          "quote": "ATION 세종필드 골프클럽 세종특별자치시 정안세종로 1569(산울동) 대표전화 044-861-5678 COURSE FACILITY RESTAURANT MENU SE",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_세종레이캐슬",
+      "name": "세종레이캐슬GC",
+      "official_url": "https://www.sjraycastle.com",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "044-279-3300",
+          "source_url": "https://www.sjraycastle.com/",
+          "quote": "방침 영상정보 운영관리방침 세종특별자치시 전의면 의당전의로 252 / 대표번호: 044-279-3300/ 예약실 : 1577-3113 상호명: 주식회사 자광홀딩스 /",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_구미",
+      "name": "구미컨트리클럽",
+      "official_url": "https://www.gumicc.com",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "054-470-6800",
+          "source_url": "https://www.gumicc.com/",
+          "quote": " 그만 보기 오늘 하루 그만 보기 이용약관 개인정보처리방침 예약 및 이용 문의 :054-470-6800 경상북도 구미시 장천면 송백로 229 | 경상북도 구미시 장천",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_일산스프링힐스",
+      "name": "일산스프링힐스",
+      "official_url": "https://www.springhills.co.kr",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-969-2000",
+          "source_url": "https://www.springhills.co.kr/",
+          "quote": " Golf Healing Life 경기도 고양시 덕양구 산황로62 예약관련 문의 031.969.2000 24시간 운영중인 홈페이지 예약과 모바일 예약을 이용하시면 더",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_태광",
+      "name": "태광컨트리클럽",
+      "official_url": "https://www.taekwangcc.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "1877-6001",
+          "source_url": "https://taekwangcc.co.kr/",
+          "quote": "무단수집거부 경기도 용인시 기흥구 흥덕4로 77(신갈동)|446-599 대표전화:1877-6001 FAX : 070-8189-6019 대표자 : 이재석 | 사업",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_한성",
+      "name": "한성컨트리클럽",
+      "official_url": "https://www.hansung-cc.co.kr/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-284-3831",
+          "source_url": "https://www.hansung-cc.co.kr/",
+          "quote": "정보처리방침 인스타 경기도 용인시 기흥구 구교동로 151 (16901) TEL. 031-284-3831 | FAX. 031 - 283 -8847 대표: 전영자 | 상",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "vworld_코리아퍼브릭",
+      "name": "코리아퍼브릭",
+      "official_url": "https://www.gakorea.com/public/index.asp",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-286-9500",
+          "source_url": "https://www.gakorea.com/public/index.asp",
+          "quote": " 코리아퍼블릭 골프클럽 경기도 용인시 기흥구 기흥단지로 224(고매동) 전화번호 031-286-9500~3 팩스번호 031-286-9888 회사명 ㈜지에이코리아 통신",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_route52",
+      "name": "ROUTE52 컨트리클럽",
+      "official_url": "https://route52cc.com/",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "031-882-0052",
+          "source_url": "https://route52cc.com/",
+          "quote": "TE52 여주시 북내면 중암1길 36 루트52컨트리클럽 대표이사 유용승 전화번호 031-882-0052 팩스번호 031-770-9599 사업자등록 번호 474-81-",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_sg아름다운",
+      "name": "SG아름다운",
+      "official_url": "https://www.arumdaunresort.com",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "041-536-8000",
+          "source_url": "https://www.arumdaunresort.com/",
+          "quote": "골프앤리조트 골프예약 리조트예약 골프+리조트예약 이용안내 골프요금 닫기 대표전화 041-536-8000 예약실 1566-5855 COURSE HILL course V",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    },
+    {
+      "id": "kgba_아난티중앙",
+      "name": "아난티 중앙 골프클럽",
+      "official_url": "https://ananti.kr/ko/joongang",
+      "observed_at": "2026-09-24",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "value": "043-533-6666",
+          "source_url": "https://ananti.kr/ko/joongang",
+          "quote": "buk-do, Korea 사업자 등록번호 : 301-81-07467 대표전화 : 043-533-6666 Email : joongang@ananti.kr 아난티 중앙 ",
+          "reviewed": true,
+          "condition": ""
+        }
+      },
+      "review_note": "공식 페이지의 골프장 이름/주소와 연락처 문맥을 검토. 본사·팩스·다른 지점 번호 제외."
+    }
+  ]
+}

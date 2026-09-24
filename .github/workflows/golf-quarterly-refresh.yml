@@ -1,12 +1,13 @@
-name: Golf DB quarterly refresh
+name: Golf DB evidence refresh
 
-# 분기마다 골프장 공식 홈페이지를 다시 읽어 요금·캐디/카트비를 갱신하고 결과를 커밋한다.
-# 매년 1·4·7·10월 1일 18:00 UTC (= 한국시간 2일 03:00). 수동 실행은 Actions 탭 → Run workflow.
-# 2026-09-23 전체 수집을 마쳤으므로 2026년 10월 예약 실행은 건너뛰고 2027년 1월부터 자동 실행한다
+# 1·7월에는 전체 조사, 4·10월에는 검증된 요금 출처만 재확인한다.
+# 분기 첫달 1일 18:00 UTC (= 한국시간 2일 03:00). 변경값은 검토 후보로 저장한다.
+# 자동 실행은 2026년 10월부터. 실제 실행에는 원격 기본 브랜치 반영과 Secrets가 필요하다.
 # (아래 SCHEDULE_START_DATE. 수동 실행은 날짜와 관계없이 항상 동작).
 on:
   schedule:
-    - cron: "0 18 1 1,4,7,10 *"
+    - cron: "0 18 1 1,7 *" # 반기 전체 수집
+    - cron: "0 18 1 4,10 *" # 중간 분기는 검증된 요금 출처만 재확인
   workflow_dispatch:
     inputs:
       limit:
@@ -24,7 +25,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SCHEDULE_START_DATE: "2027-01-01"
+  SCHEDULE_START_DATE: "2026-10-01"
 
 jobs:
   gate:
@@ -79,16 +80,34 @@ jobs:
             echo "::error::ANTHROPIC_API_KEY에 공백·줄바꿈·따옴표가 섞여 있습니다. 키 값만 다시 등록해 주세요."; exit 1
           fi
 
-      - name: Run quarterly refresh
+      - name: Run evidence refresh
+        env:
+          INPUT_LIMIT: ${{ github.event.inputs.limit }}
+          INPUT_DRY_RUN: ${{ github.event.inputs.dry_run }}
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
-          ARGS=""
-          if [ "${{ github.event.inputs.limit }}" != "" ] && [ "${{ github.event.inputs.limit }}" != "0" ]; then
-            ARGS="$ARGS --limit ${{ github.event.inputs.limit }}"
+          ARGS=()
+          if [ -n "$INPUT_LIMIT" ]; then
+            [[ "$INPUT_LIMIT" =~ ^[0-9]+$ ]] || exit 1
+            ARGS+=(--limit "$INPUT_LIMIT")
           fi
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            ARGS="$ARGS --dry-run"
+          if [ "$INPUT_DRY_RUN" = "true" ]; then
+            ARGS+=(--dry-run)
           fi
-          python scripts/golf_quarterly_refresh.py $ARGS
+          if [ "$SCHEDULE" = "0 18 1 4,10 *" ]; then
+            ARGS+=(--prices-only)
+          fi
+          python scripts/golf_quarterly_refresh.py "${ARGS[@]}"
+
+      - name: Preserve audit and recovery files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golf-refresh-audit-${{ github.run_id }}
+          path: |
+            data/golf/enrichment_review/
+            data/golf/backups/
+          retention-days: 30
 
       - name: Show report
         if: always()
@@ -105,6 +124,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "변경 없음"
           else
-            git commit -m "chore(golf): 분기 DB 갱신 $(date -u +%Y-%m-%d)"
+            git commit -m "chore(golf): 근거 기반 DB 갱신 $(date -u +%Y-%m-%d)"
             git push
           fi

@@ -173,7 +173,7 @@ def green_fee(club, weekend=None, session=None):
     rows, _ = _current(normalize_fee_records(club))
     prices = [
         r["price"] for r in rows
-        if (weekend is None or r["weekend"] is None or r["weekend"] == weekend)
+        if r['tier'] == 0 and (weekend is None or r["weekend"] is None or r["weekend"] == weekend)
         and (session is None or r["session"] is None or r["session"] == session)
     ]
     return min(prices) if prices else None
@@ -222,6 +222,8 @@ def team_fee(club, kind):
     """operations.cart / operations.caddie의 팀당 요금(18홀 기준 우선)."""
     item = (club.get("operations") or {}).get(kind) or {}
     if not isinstance(item, dict):
+        return None
+    if item.get('fresh_until') and str(item['fresh_until']) < date.today().isoformat():
         return None
     for key in ("fee_team", "fee_team_18h", "18h_team", "fee_team_standard", "fee_team_standard_18h", "standard_team"):
         amounts = _amounts(item.get(key))

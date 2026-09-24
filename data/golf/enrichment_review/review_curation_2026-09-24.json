@@ -1,0 +1,47 @@
+[
+  {
+    "club_id": "kgba_남여주",
+    "source": "https://gravity0411.tistory.com/42",
+    "observation": {
+      "id": "99c777fd9afb14eb58fa7c48",
+      "dimension": "fairway",
+      "label": "narrow",
+      "evidence": "페어웨이 좁지만 칠만한 가성비 골프장 인정.",
+      "scope": "whole_course",
+      "status": "human_reviewed",
+      "confidence": "single_review_statement",
+      "reviewed_at": "2026-09-24",
+      "review_method": "source_context_read"
+    }
+  },
+  {
+    "club_id": "vworld_드림파크골프장",
+    "source": "https://blog.naver.com/seaoflover/224099814192",
+    "observation": {
+      "id": "00e943daf599aa72012b829a",
+      "dimension": "fairway",
+      "label": "wide",
+      "evidence": "전장이 길고 페어웨이는 넓은 편이지만 OB가 많았어요.",
+      "scope": "파크코스",
+      "status": "human_reviewed",
+      "confidence": "single_review_statement",
+      "reviewed_at": "2026-09-24",
+      "review_method": "source_context_read"
+    }
+  },
+  {
+    "club_id": "southsprings",
+    "source": "https://blog.naver.com/suckhong85/223927199876",
+    "observation": {
+      "id": "a5d3a123a683f3b7491851c9",
+      "dimension": "bunkers",
+      "label": "many",
+      "evidence": "벙커가 왜이렇게 많나요..",
+      "scope": "6번 홀",
+      "status": "human_reviewed",
+      "confidence": "single_review_statement",
+      "reviewed_at": "2026-09-24",
+      "review_method": "source_context_read"
+    }
+  }
+]

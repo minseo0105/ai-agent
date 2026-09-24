@@ -2,7 +2,7 @@
 
 - 대상: 추천 Pool 중 공식 홈페이지가 있는 골프장 (기본 전체, --limit 로 제한 가능)
 - 반영: scripts/apply_golf_review.py 의 규칙(--refresh)을 그대로 사용
-    빈칸 채움 / 자동수집 값은 갱신 / 정밀 작업 값과 다르면 덮어쓰지 않고 '확인 필요'로 보고
+    검증된 빈칸 채움 / 같은 값의 근거 재확인 / 기존 값과 다르면 검토 후보로 보존
 - 산출물: data/golf/enrichment_review/ 에 수집 원본(json)과 보고서(md)
 
 사용:
@@ -27,9 +27,12 @@ from services import golf_service as gs  # noqa: E402
 PRICE_IN, PRICE_OUT = 5.0, 25.0
 
 
-def targets(limit=None, retry_from=None):
+def targets(limit=None, retry_from=None, prices_only=False):
     _, _, pool = gs.load_pools()
     clubs = sorted((c for c in pool if str(c.get("official_url") or "").startswith("http")), key=lambda c: c["id"])
+    if prices_only:
+        clubs = [c for c in clubs if (c.get('enrichment') or {}).get('approved_source_urls')
+                 and any(k.startswith(('pricing.','operations.')) for k in (c.get('field_evidence') or {}))]
     if retry_from:
         # 이전 실행에서 오류(크레딧 부족·일시 장애 등)로 실패한 곳만 다시 수집
         prev = json.loads(Path(retry_from).read_text(encoding="utf-8"))["results"]
@@ -48,10 +51,11 @@ def write_report(review_path, applied):
     conflicts = [s for s in applied["items"] if s["conflicts"]]
 
     lines = [
-        f"# 골프 DB 분기 갱신 보고서 · {date.today().isoformat()}",
+        f"# 골프 DB 근거 기반 갱신 보고서 · {date.today().isoformat()}",
         "",
         f"- 대상 {len(results)}곳 · 수집 성공 {len(results) - len(failed)}곳 · 실패 {len(failed)}곳",
         f"- DB 반영 {applied['changed']}곳{' (dry-run: 저장 안 함)' if applied['dry_run'] else ''} · 확인 필요 {len(conflicts)}곳",
+        f"- 사실값 변경 {applied.get('facts_changed',0)}곳 (검토 후보만 저장한 곳과 구분)",
         f"- DB 파일: {applied['db']}" + (f" · 백업: {applied['backup']}" if applied["backup"] else ""),
         f"- 모델 {MODEL} · 토큰 입력 {usage['input_tokens']:,} / 출력 {usage['output_tokens']:,} · 추정 비용 ${cost:.2f}",
         f"- 수집 원본: {Path(review_path).name}",
@@ -77,12 +81,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument('--prices-only', action='store_true', help='검증된 요금 출처만 분기별 재확인')
+    ap.add_argument('--images', action='store_true', help='이미지 값은 검토 후보로만 수집')
     ap.add_argument("--retry-from", default="", help="이전 수집 원본(json)에서 오류난 곳만 다시 수집")
     args = ap.parse_args()
 
-    clubs = targets(args.limit or None, args.retry_from or None)
+    clubs = targets(args.limit or None, args.retry_from or None, args.prices_only)
     print(f"[quarterly] 대상 {len(clubs)}곳", flush=True)
-    review_path = run(clubs, label="quarterly")
+    review_path = run(clubs, label='quarterly_prices' if args.prices_only else 'semiannual',use_images=args.images)
     applied = apply_review(review_path, refresh=True, dry_run=args.dry_run)
     report, cost = write_report(review_path, applied)
     print(f"[quarterly] 반영 {applied['changed']}곳 · 추정 비용 ${cost:.2f} · 보고서 {report}", flush=True)

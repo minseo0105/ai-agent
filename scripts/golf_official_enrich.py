@@ -42,7 +42,7 @@ HEADERS = {
 }
 STRONG_WORDS = ("요금", "그린피", "이용요금", "요금안내", "greenfee", "green_fee", "fee", "price", "charge", "rate")
 LINK_WORDS = STRONG_WORDS + ("이용안내", "예약안내", "이용료", "예약", "안내", "guide", "reserv", "info", "use", "캐디", "카트")
-SKIP_WORDS = ("login", "join", "logout", "member/update", "board", "notice", "event", "popup", "hotel", "spa", "condo",
+SKIP_WORDS = ("login", "join", "logout", "member/update", "hotel", "spa", "condo",
               "room", "ski", "resort/", "waterpark", "restaurant", "menu", "map", "greeting", "history", "recruit",
               "terms", "privacy", "my-page", "mypage", ".css", ".js", ".png", ".jpg", ".pdf")
 MAX_PAGES = 8
@@ -195,14 +195,14 @@ def candidate_links(base_url, html):
     """같은 사이트 링크를 요금 관련도로 점수화. [(url, score, is_frame)]"""
     soup = BeautifulSoup(html, "lxml")
     host = urlsplit(base_url).hostname or ""
-    root = ".".join(host.split(".")[-2:])
+    root = host.removeprefix('www.')
     found = {}
 
     def add(href, label, is_frame=False):
         if not href or href.startswith(("javascript:", "mailto:", "tel:", "#")):
             return
         url = urljoin(base_url, href).split("#")[0]
-        if not (urlsplit(url).hostname or "").endswith(root):
+        if (urlsplit(url).hostname or "").removeprefix('www.') != root:
             return
         text = f"{label} {href}".lower()
         if not is_frame and any(w in text for w in SKIP_WORDS):
@@ -299,6 +299,9 @@ def crawl(start_url, fetcher, collect_images=False):
 # ---------------------------------------------------------------- extract
 
 class FeeRow(BaseModel):
+    condition: str = Field(default='', description='기간/시간/특가/인터넷회원/요일 세부조건. 조건이 있으면 반드시 기재')
+    valid_from: Optional[str] = None
+    valid_to: Optional[str] = None
     day: Literal["weekday", "weekend", "unspecified"]
     session: Literal["1부", "2부", "3부", "all"]
     customer: Literal["nonmember", "member", "unknown"] = Field(description="비회원/일반=nonmember, 회원가=member")
@@ -309,6 +312,7 @@ class FeeRow(BaseModel):
 
 
 class TeamFee(BaseModel):
+    condition: str = Field(default='',description='신입/지정캐디, 셀프, 이벤트 등 특정 조건이면 반드시 기재')
     fee_team_krw: int
     source_url: str
     quote: str
@@ -340,6 +344,18 @@ class Extraction(BaseModel):
     notes: str = Field(description="요금 기준일, 시즌 구분 등 참고사항. 없으면 빈 문자열")
 
 
+class BasicFact(BaseModel):
+    value: str
+    source_url: str
+    quote: str
+    condition: str = ''
+
+
+class EnrichmentExtraction(Extraction):
+    phone: Optional[BasicFact] = None
+    course_description: Optional[BasicFact] = None
+
+
 PROMPT = """아래는 골프장 '{name}'의 공식 홈페이지에서 가져온 페이지 텍스트입니다.
 여기에 **명시적으로 적힌 값만** 추출하세요. 추정하거나 일반 상식으로 채우지 마세요.
 
@@ -349,6 +365,9 @@ PROMPT = """아래는 골프장 '{name}'의 공식 홈페이지에서 가져온 
   지역주민·경로·단체·이벤트 할인처럼 조건부 요금은 unknown으로 표시하세요.
   요일은 주중(weekday)/주말·공휴일(weekend)/구분 없음(unspecified), 시간대는 1부/2부/3부/all.
 - caddie_fee / cart_fee: 팀당 요금. 없으면 null.
+- 기간/요일/시간/회원가입/캐디 유형/이벤트 조건은 각 행의 condition에 반드시 적으세요. 조건을 생략해 일반 가격으로 바꾸지 마세요.
+- phone: 대상 골프장 대표번호만. 본사·예약대행·다른 지점 전화는 제외.
+- course_description: 공식 코스 구성과 지형에 대한 짧은 요약만. 시설이 좋다/관리 우수 같은 평가를 객관적 사실로 만들지 마세요. 숫자나 폭을 추정하지 마세요.
 - caddie_mode: 캐디 필수(caddie), 노캐디(no_caddie), 선택 가능(optional), 알 수 없음(unknown).
 - three_person / two_person: 정규 코스의 3인·2인 플레이(팀 인원) 허용 여부가 명시된 경우에만. 없으면 null.
   '투 볼 플레이'(한 사람이 공 2개로 치는 것) 자제 같은 경기 에티켓은 팀 인원 규정이 아니므로 제외하세요.
@@ -377,7 +396,7 @@ def extract(client, name, pages, images=None, model=None):
         model=model or MODEL,
         max_tokens=16000,
         messages=[{"role": "user", "content": content}],
-        output_format=Extraction,
+        output_format=EnrichmentExtraction,
     )
     if response.stop_reason == "refusal":
         raise RuntimeError("model refusal")
@@ -392,7 +411,7 @@ def _norm(s):
 
 def _amount_in_quote(quote, amount):
     """금액이 인용 안에 있는지. '190,000' 같은 숫자 표기와 '19만'·'18.8만' 같은 만원 표기를 모두 본다."""
-    if str(amount) in re.sub(r"\D", "", quote) or f"{amount:,}" in quote:
+    if str(amount) in re.findall(r'(?<!\d)\d+(?!\d)',str(quote).replace(',','')):
         return True
     # 18.8만 = 188,000 처럼 소수점이 붙는 만원 표기
     for man in re.findall(r"(\d+(?:\.\d+)?)\s*만", quote):
@@ -412,8 +431,8 @@ def verify_quote(pages, url, quote, amount=None):
     if str(url or "").startswith("IMAGE:"):
         # 이미지에서 읽은 값은 대조할 본문이 없다. 금액과 인용이 서로 맞는지만 확인하고
         # from_image 표시를 남겨 반영 단계에서 따로 구분한다.
-        return amount is not None and _amount_in_quote(quote, amount)
-    texts = [p["text"] for p in pages if p["url"] == url] or [p["text"] for p in pages]
+        return False  # 이미지 판독은 후보로만 저장; 별도 시각 검토 필요
+    texts = [p["text"] for p in pages if p["url"] == url]
     found = any(q in _norm(t) for t in texts)
     if not found:
         return False
@@ -459,14 +478,28 @@ def process_club(club, client, use_images=False, model=None):
     fetcher = _thread_fetcher()
     t0 = time.time()
     item = {"id": club["id"], "name": club["name"], "area": club.get("area"),
-            "official_url": club.get("official_url"), "status": "pending_review"}
+            "official_url": club.get("official_url"), "status": "pending_review",
+            "observed_at": date.today().isoformat(), "schema_version": 2,
+            "identity_verified": False}
     try:
         before = fetcher.browser_used
-        crawled = crawl(club["official_url"], fetcher, collect_images=use_images)
-        pages, image_urls = crawled if use_images else (crawled, [])
+        scope = (club.get('enrichment') or {}).get('approved_source_urls') or []
+        if scope:
+            pages, image_urls = [], []
+            for url in scope[:MAX_PAGES]:
+                got = fetcher.get(url, want_amounts=True)
+                if got:
+                    pages.append({'url':got[0],'text':page_text(got[1])[:MAX_CHARS_PER_PAGE]})
+                    if use_images: image_urls.extend(fee_image_urls(got[0],got[1]))
+        else:
+            crawled = crawl(club["official_url"], fetcher, collect_images=use_images)
+            pages, image_urls = crawled if use_images else (crawled, [])
         images = download_images(fetcher, image_urls) if image_urls else []
         item["browser_pages"] = fetcher.browser_used - before
         item["pages"] = [{"url": p["url"], "chars": len(p["text"])} for p in pages]
+        item['page_evidence'] = pages
+        # Only a previously reviewed exact club/page scope can authorize automatic application.
+        item['approved_source_urls'] = scope
         item["images"] = [i["url"] for i in images]
         if not pages or sum(len(p["text"]) for p in pages) < 200:
             item["status"] = "no_content"
@@ -474,6 +507,12 @@ def process_club(club, client, use_images=False, model=None):
         else:
             data, usage = extract(client, club["name"], pages, images=images, model=model)
             ex = data.model_dump()
+            for key in ('phone','course_description'):
+                if ex.get(key):
+                    f=ex[key]
+                    f['verified_quote']=verify_quote(pages,f['source_url'],f['quote'])
+                    if key=='phone':
+                        f['verified_quote'] = f['verified_quote'] and re.sub(r'\D','',f['value']) in re.sub(r'\D','',f['quote'])
             for row in ex["green_fees"]:
                 row["verified_quote"] = verify_quote(pages, row["source_url"], row["quote"], row["price_krw"])
                 row["from_image"] = str(row.get("source_url") or "").startswith("IMAGE:")

@@ -4,7 +4,7 @@
   - verified_quote=True 인 값만 (인용이 실제 페이지에 있고 금액이 인용에 포함됨)
   - 그린피는 비회원 18홀 행만.
   - 빈 필드 → 채운다.
-  - 이 자동 수집(CONFIDENCE)으로 채웠던 값 → --refresh 일 때 새 값으로 갱신한다.
+  - --refresh는 새 근거로 동일한 값을 재확인한다. 다른 값은 검토 후보로 남긴다.
   - 다른 경로(정밀 작업)로 확정된 값과 다르면 → 덮어쓰지 않고 conflicts 로 보고한다.
   - 반영 전 활성 DB를 data/golf/backups/ 에 백업한다.
 
@@ -15,12 +15,16 @@
 import argparse
 import json
 import shutil
+import os
+import tempfile
+import hashlib
 import sys
 from datetime import date, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from services.golf_repository import find_active_db  # noqa: E402
+from services.golf_import_policy import apply_item
 
 CONFIDENCE = "official_homepage_extracted_quote_verified"
 MODE_MAP = {"caddie": "caddie", "no_caddie": "no_caddie", "optional": "optional_caddie_or_self"}
@@ -69,7 +73,7 @@ def _price_set(rows):
     return sorted((r.get("day_type"), r.get("session"), r.get("greenfee")) for r in rows)
 
 
-def apply_item(record, item, today, refresh=False, apply_players=False):
+def _legacy_apply_item(record, item, today, refresh=False, apply_players=False):
     """apply_players=False(기본): 2·3인 허용 여부는 해석 오류 위험이 있어 반영하지 않고 제안(conflicts)으로만 남긴다."""
     ex = item.get("extraction") or {}
     changes, conflicts = [], []
@@ -161,8 +165,14 @@ def apply_item(record, item, today, refresh=False, apply_players=False):
 def apply_review(review_path, ids=None, refresh=False, dry_run=False, apply_players=False):
     review = json.loads(Path(review_path).read_text(encoding="utf-8"))
     db_path = find_active_db()
-    records = json.loads(db_path.read_text(encoding="utf-8-sig"))
+    before = db_path.read_bytes()
+    payload = json.loads(before.decode('utf-8-sig'))
+    records = payload if isinstance(payload,list) else next((payload[k] for k in ('records','clubs','courses','items','data') if isinstance(payload.get(k),list)),None)
+    if not records:
+        raise ValueError('Unsupported or empty DB')
     index = {r["id"]: r for r in records}
+    if len(index) != len(records):
+        raise ValueError('Duplicate IDs: import aborted')
     today = date.today().isoformat()
 
     summary = []
@@ -177,12 +187,26 @@ def apply_review(review_path, ids=None, refresh=False, dry_run=False, apply_play
     changed = sum(1 for s in summary if s["changes"])
     backup = None
     if not dry_run and changed:
-        backup = db_path.parent / "backups" / f"{db_path.stem}_before_review_{datetime.now():%Y%m%d_%H%M%S}.json"
+        if db_path.read_bytes() != before:
+            raise RuntimeError('DB changed during import; retry required')
+        backup = db_path.parent / "backups" / f"{db_path.stem}_before_review_{datetime.now():%Y%m%d_%H%M%S_%f}.json"
         backup.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(db_path, backup)
-        db_path.write_text(json.dumps(records, ensure_ascii=False, indent=1), encoding="utf-8")
+        fd, temporary = tempfile.mkstemp(prefix='golf-review-',suffix='.tmp',dir=db_path.parent)
+        try:
+            with os.fdopen(fd,'w',encoding='utf-8') as stream:
+                json.dump(payload,stream,ensure_ascii=False,indent=1)
+                stream.flush()
+                os.fsync(stream.fileno())
+            if db_path.read_bytes() != before:
+                raise RuntimeError('DB changed before replace; retry required')
+            os.replace(temporary,db_path)
+        finally:
+            if os.path.exists(temporary): os.unlink(temporary)
     return {"db": db_path.name, "backup": backup.name if backup else None, "changed": changed,
-            "dry_run": dry_run, "items": summary}
+            "dry_run": dry_run, "items": summary,
+            "source_sha256": hashlib.sha256(before).hexdigest(),
+            "facts_changed": sum(any(c != 'evidence_only' for c in s['changes']) for s in summary)}
 
 
 def main():
@@ -191,7 +215,7 @@ def main():
     ap.add_argument("--ids", default="")
     ap.add_argument("--refresh", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--apply-players", action="store_true", help="2·3인 허용 여부까지 반영 (검토 후에만)")
+    ap.add_argument("--apply-players", action="store_true", help="호환 옵션: 인원 조건은 항상 검토 후보로 보존")
     args = ap.parse_args()
     result = apply_review(args.review, set(filter(None, args.ids.split(","))) or None, args.refresh, args.dry_run,
                           args.apply_players)

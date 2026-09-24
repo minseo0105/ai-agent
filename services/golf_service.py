@@ -1965,9 +1965,25 @@ def _reviews_block(club):
 
     source = (saved or {}).get("reviews", []) if isinstance(saved, dict) else []
     links, cutoff_year, current_year = _recent_links(source)
+    from services.golf_review_evidence import detail_block
+    evidence = detail_block(club['id'])
+    if evidence and evidence['source_count']:
+        cards=list((analysis or {}).get('cards',[]))
+        for dim in evidence['dimensions'].values():
+            if not dim['authors']:continue
+            card={'name':dim['name'],'verdict':dim['verdict'],'sub':f"근거 검토 완료 · 작성자 {dim['authors']}명 · 공식 제원 아님"}
+            cards=[c for c in cards if c['name']!=dim['name']]+[card]
+        cards.extend(evidence['scoped_cards'])
+        meta=(analysis or {}).get('meta','')
+        meta+=f" · 새 후기 후보 출처 {evidence['source_count']}건 / 특징 후보 {evidence['candidate_count']}건 · 미검토 후보는 판단에 미사용"
+        analysis={'cards':cards,'meta':meta.strip(' ·')}
+        seen={l['url'] for l in links}
+        links.extend(l for l in evidence['links'] if l['url'] not in seen)
+        links=sorted(links,key=lambda l:l['date'],reverse=True)[:8]
     return {
         "naver_search_url": "https://search.naver.com/search.naver?query=" + quote_plus(f"{club['name']} 라운딩 후기"),
         "analysis": analysis,
+        "evidence_review": evidence,
         "links": links,
         "cutoff_year": cutoff_year,
         "current_year": current_year,

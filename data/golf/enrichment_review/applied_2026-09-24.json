@@ -1,0 +1,20 @@
+{
+  "changed_records": 37,
+  "facts_changed_records": 35,
+  "field_changes": {
+    "phone": 33,
+    "operations.cart.fee_team": 3,
+    "operations.caddie.fee_team": 1,
+    "pricing.fee_records": 2,
+    "enrichment.facts.driving_range": 1
+  },
+  "total_records": 527,
+  "runtime_pool_sizes": [
+    527,
+    451,
+    243
+  ],
+  "idempotent": true,
+  "backup": "C:\\Users\\user\\Desktop\\ai-agent - 복사본\\data\\golf\\backups\\golf_master_precision_checkpoint_2026-09-23_filled_before_review_20260924_204808_381080.json",
+  "db_sha256": "d054415436246ed4ee6a41c42a4ec904422e973f9760bd2a89a443e8d3aabae0"
+}
