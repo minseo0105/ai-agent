@@ -3,6 +3,8 @@
 
 # Local runtime data and Python build artifacts.
 realestate_monitor.db
+# 관리자 설정(구성원·접속코드 해시)과 토큰 서명 키
+data/admin/
 .venv/
 venv/
 .rembg/

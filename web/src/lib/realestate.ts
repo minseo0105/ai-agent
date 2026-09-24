@@ -1,4 +1,5 @@
 // FastAPI /api/realestate 클라이언트
+import { apiFetch } from "@/lib/access";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
@@ -74,7 +75,7 @@ export type Notification = {
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_URL}/api/realestate${path}`, {
+  const res = await apiFetch(`${API_URL}/api/realestate${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
   });

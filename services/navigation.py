@@ -111,6 +111,17 @@ def _nav_button(item, current_page=None):
             st.switch_page(item["page_path"])
 
 
+def new_site_url():
+    """새 Next.js 사이트 주소. 배포 시 NEW_SITE_URL(환경변수 또는 secrets.toml)로 지정."""
+    from services.config import get_secret
+
+    return (get_secret("NEW_SITE_URL") or "http://localhost:3000").rstrip("/")
+
+
+def new_site_button():
+    st.link_button("✨ 새 디지털전략부 AI LAB으로 이동", new_site_url(), type="primary", use_container_width=True)
+
+
 def render_sidebar(current_page=None):
     """
     모든 서비스 페이지에서 동일한 왼쪽 메뉴를 출력합니다.
@@ -122,7 +133,8 @@ def render_sidebar(current_page=None):
 
     with st.sidebar:
         st.markdown("## ✦ AI WORKBENCH")
-        st.caption("민서의 AI Lab")
+        st.caption("디지털전략부 AI LAB · 기존 화면")
+        new_site_button()
 
         if st.button(
             "🏠  처음 화면",

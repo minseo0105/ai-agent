@@ -1,4 +1,5 @@
 // FastAPI /api/dreamcar 클라이언트 + 할부 계산
+import { apiFetch } from "@/lib/access";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 export const media = (path: string | null | undefined) => (path ? `${API_URL}${path}` : "");
@@ -33,7 +34,7 @@ export type Recommendation = {
 };
 
 async function request<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API_URL}/api/dreamcar${path}`, {
+  const res = await apiFetch(`${API_URL}/api/dreamcar${path}`, {
     method: body ? "POST" : "GET",
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,

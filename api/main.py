@@ -15,6 +15,8 @@ from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from api.access import AccessMiddleware
+from api.access import router as access_router
 from api.car_selector import router as car_selector_router
 from api.dreamcar import router as dreamcar_router
 from api.gif import router as gif_router
@@ -35,6 +37,7 @@ app.include_router(dreamcar_router)
 app.include_router(saju_router)
 app.include_router(car_selector_router)
 app.include_router(gif_router)
+app.include_router(access_router)
 
 # 드림카·차량 선택기 이미지 · 라이프스타일/페르소나 애니메이션 (base64 인라인 대신 파일로 서빙)
 # Windows 레지스트리에는 webp 매핑이 없어 octet-stream으로 나가므로 직접 등록
@@ -46,10 +49,12 @@ app.mount(car_selector.REAL_MEDIA, StaticFiles(directory=car_selector.FALLBACK_D
 
 # 프론트엔드 주소. 배포 시 FRONTEND_ORIGINS="https://my-site.vercel.app" 처럼 쉼표로 지정
 _origins = os.environ.get("FRONTEND_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+# 관리자 설정의 공개 범위를 서비스 API에 적용. CORS보다 먼저 추가해야(=안쪽) 차단 응답에도 CORS 헤더가 붙는다.
+app.add_middleware(AccessMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in _origins.split(",") if o.strip()],
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["*"],
     expose_headers=["X-Gif-Meta"],
 )

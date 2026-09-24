@@ -1,4 +1,5 @@
 // FastAPI /api/car-selector 클라이언트
+import { apiFetch } from "@/lib/access";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 export const media = (path: string | null | undefined) => (path ? `${API_URL}${path}` : "");
@@ -16,7 +17,7 @@ export type CarRecommendation = {
 };
 
 async function request<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API_URL}/api/car-selector${path}`, {
+  const res = await apiFetch(`${API_URL}/api/car-selector${path}`, {
     method: body ? "POST" : "GET",
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,

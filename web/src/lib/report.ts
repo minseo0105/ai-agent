@@ -1,4 +1,5 @@
 // FastAPI /api/report 클라이언트
+import { apiFetch } from "@/lib/access";
 import { postSSE } from "./sse";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
@@ -17,7 +18,7 @@ export type ReportResult = { text: string; chart: ReportChart };
 
 export const reportApi = {
   options: async (): Promise<ReportOptions> => {
-    const res = await fetch(`${API_URL}/api/report/options`);
+    const res = await apiFetch(`${API_URL}/api/report/options`);
     if (!res.ok) throw new Error(`서버 응답 오류 (${res.status})`);
     return res.json();
   },
@@ -45,7 +46,7 @@ export const reportApi = {
   },
 
   pdf: async (text: string, chart: ReportChart): Promise<Blob> => {
-    const res = await fetch(`${API_URL}/api/report/pdf`, {
+    const res = await apiFetch(`${API_URL}/api/report/pdf`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, chart: chart ? { company: chart.company, dates: chart.dates } : null }),

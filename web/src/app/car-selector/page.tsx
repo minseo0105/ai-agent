@@ -3,17 +3,17 @@ import Link from "next/link";
 import CarSelector from "@/components/car/CarSelector";
 
 export const metadata: Metadata = {
-  title: "차량 선택기 · 민서의 AI Lab",
+  title: "차량 선택기 · 디지털전략부 AI LAB",
   description: "세 번의 선택으로 이동 습관과 취향을 분석해 어울리는 차량과 이용 조건을 제안합니다.",
 };
 
 export default function CarSelectorPage() {
   return (
-    <main className="mx-auto max-w-4xl px-4 pb-20 pt-4 sm:px-6 sm:pt-8">
+    <main className="mx-auto max-w-4xl px-4 pb-10 pt-4 sm:px-6 sm:pt-8">
       <header className="mb-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-sm font-extrabold tracking-tight">
           <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-slate-900 to-blue-700 text-xs text-white">✦</span>
-          민서의 AI Lab
+          디지털전략부 AI LAB
         </Link>
         <span className="text-sm font-semibold text-muted">🚗 차량 선택기</span>
       </header>

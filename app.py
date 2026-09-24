@@ -1,8 +1,86 @@
+import hmac
+import json
+
 import streamlit as st
+import streamlit.components.v1 as components
 
 from services.agent import call_selected_model
+from services.config import get_secret
+from services.navigation import new_site_button, new_site_url
 
 st.set_page_config(page_title="AI Workbench", page_icon="✦", layout="wide", initial_sidebar_state="expanded")
+
+
+# ==========================================
+# 새 사이트로 자동 이동
+# 기존 화면(골프 Pool 관리 등)은 관리자 비밀번호(ADMIN_PASSWORD)를 입력해야 계속 쓸 수 있다.
+# 주소 끝에 ?stay=1 을 붙이면 자동 이동을 멈추고 비밀번호 입력창을 보여준다.
+# 기존 화면은 새 사이트의 공개 범위 설정을 따르지 않으므로 관리자 전용으로 둔다.
+# ==========================================
+def redirect_to_new_site():
+    if st.session_state.get("stay_streamlit"):
+        return
+
+    url = new_site_url()
+    hold = st.query_params.get("stay") == "1"
+    st.markdown("""
+<style>
+[data-testid="stSidebar"], [data-testid="collapsedControl"], [data-testid="stSidebarCollapsedControl"] { display: none !important; }
+.block-container { max-width: 560px; padding-top: 12vh; }
+.move-card { text-align: center; padding: 2rem 1.5rem 1.4rem; border: 1px solid #E2E8F0; border-radius: 24px;
+  background: linear-gradient(180deg,#FFFFFF 0%,#F8FAFC 100%); box-shadow: 0 16px 40px rgba(15,23,42,.07); margin-bottom: 1rem; }
+.move-logo { width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 20px; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; color: white; background: linear-gradient(135deg,#0F172A 0%,#1D4ED8 100%); }
+.move-kicker { font-size: .72rem; font-weight: 800; letter-spacing: .14em; color: #2563EB; }
+.move-title { font-size: 1.7rem; font-weight: 850; letter-spacing: -.04em; color: #0F172A; margin: .35rem 0 .6rem; }
+.move-desc { color: #64748B; font-size: .92rem; line-height: 1.7; }
+.move-credit { text-align: center; color: #94A3B8; font-size: .75rem; font-weight: 700; letter-spacing: .1em; margin-top: 1.4rem; }
+</style>
+""", unsafe_allow_html=True)
+    st.markdown(
+        '<div class="move-card">'
+        '<div class="move-logo">✦</div>'
+        '<div class="move-kicker">DIGITAL STRATEGY · AI LAB</div>'
+        f'<div class="move-title">{"새 화면으로 옮겨졌어요" if hold else "새 화면으로 이동하고 있어요"}</div>'
+        '<div class="move-desc">디지털전략부 AI LAB이 더 빠르고 안정적인 새 화면으로 옮겨졌어요.<br>'
+        + ("아래 버튼을 눌러 이동해 주세요." if hold else "잠시 후 자동으로 이동합니다. 이동하지 않으면 아래 버튼을 눌러 주세요.")
+        + '</div></div>',
+        unsafe_allow_html=True,
+    )
+    st.link_button("새 AI LAB으로 이동 →", url, type="primary", use_container_width=True)
+    if not hold:
+        # 컴포넌트 iframe은 sandbox라 상위 창을 직접 이동시킬 수 없다(allow-top-navigation 없음).
+        # 같은 출처(allow-same-origin)이므로 상위 문서에 스크립트를 넣어 상위 창이 스스로 이동하게 한다.
+        # 그래도 막히면 위의 이동 버튼을 누르면 된다.
+        target = json.dumps(url)
+        components.html(
+            "<script>setTimeout(function(){try{"
+            "var d=window.parent.document,s=d.createElement('script');"
+            f"s.textContent='window.location.replace('+JSON.stringify({target})+')';"
+            "d.head.appendChild(s);}catch(e){}},1500);</script>",
+            height=0,
+        )
+
+    with st.expander("관리자 · 기존 화면 계속 사용", expanded=hold):
+        admin_pw = get_secret("ADMIN_PASSWORD")
+        if not admin_pw:
+            st.caption("관리자 비밀번호(ADMIN_PASSWORD)가 설정되지 않아 기존 화면을 열 수 없어요. .streamlit/secrets.toml에 추가해 주세요.")
+        else:
+            st.caption("골프 Pool 관리 등 기존 화면은 관리자만 쓸 수 있어요. 자동 이동을 멈추려면 주소 끝에 ?stay=1 을 붙여 들어오세요.")
+            with st.form("stay_form", border=False):
+                pw = st.text_input("관리자 비밀번호", type="password")
+                if st.form_submit_button("기존 화면 열기", use_container_width=True):
+                    if hmac.compare_digest(pw.encode(), str(admin_pw).encode()):
+                        st.session_state.stay_streamlit = True
+                        st.session_state.authenticated = True
+                        st.rerun()
+                    else:
+                        st.error("비밀번호가 올바르지 않아요.")
+    st.markdown('<div class="move-credit">Creative by Minseo</div>', unsafe_allow_html=True)
+    st.stop()
+
+
+redirect_to_new_site()
 
 
 # ==========================================
@@ -807,6 +885,7 @@ st.markdown(r"""
 with st.sidebar:
     st.markdown("### ✦ AI WORKBENCH")
     st.caption("왼쪽 메뉴에서 원하는 서비스를 선택하세요.")
+    new_site_button()
 
     st.divider()
     st.markdown("**AI 에이전트 기능**")

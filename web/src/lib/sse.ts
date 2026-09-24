@@ -1,4 +1,5 @@
 // POST 요청의 Server-Sent Events 응답을 읽어 event별 콜백을 호출한다.
+import { apiFetch } from "@/lib/access";
 
 export async function postSSE(
   url: string,
@@ -6,7 +7,7 @@ export async function postSSE(
   onEvent: (event: string, data: unknown) => void,
   signal?: AbortSignal,
 ): Promise<void> {
-  const res = await fetch(url, {
+  const res = await apiFetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

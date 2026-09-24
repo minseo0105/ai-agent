@@ -32,6 +32,20 @@ API 키는 지금처럼 `.streamlit/secrets.toml`에서 읽습니다.
 | 차량 선택기 | ✅ `/car-selector` (`/api/car-selector/*`, 이미지는 `/media/car-*` 정적 서빙) |
 | GIF 변환기 | ✅ `/gif` (`/api/gif/preview`·`/generate`, multipart 업로드 · rembg 배경 제거) |
 
+## 공개 범위 · 관리자 설정 (`/admin`)
+
+- `ADMIN_PASSWORD`를 `.streamlit/secrets.toml`(또는 환경변수)에 넣으면 `/admin`에서 로그인할 수 있다.
+- 사이트 공개 범위(모두 공개 · 등록된 사람만 · 점검 중), 서비스별 공개(사이트 설정 따름 · 모두 공개 · 등록된 사람만 · 숨김),
+  공지 배너, 로그인 유지 기간, 구성원(개인 접속 코드 발급 · 사용 중지 · 재발급 · 삭제)을 관리한다.
+- 화면뿐 아니라 FastAPI 미들웨어(`api/access.py`)가 서비스 API 자체를 막는다. 설정과 서명 키는 `data/admin/`(Git 제외)에 저장된다.
+- 배포 시 여러 서버에서 같은 토큰을 쓰려면 `ACCESS_SECRET` 환경변수를 지정한다.
+
+## Streamlit (기존 화면)
+
+- 접속하면 새 사이트(`NEW_SITE_URL`, 기본 `http://localhost:3000`)로 자동 이동한다. 모든 사이드바에 이동 버튼이 있다.
+- 골프 Pool 관리 등 기존 화면은 `http://localhost:8501/?stay=1` → 관리자 비밀번호 입력으로만 열 수 있다
+  (기존 화면은 새 사이트의 공개 범위 설정을 따르지 않기 때문).
+
 ## 서비스 하나를 옮기는 순서
 
 1. `pages/X.py` 안의 계산·데이터 로직을 `services/x.py`로 분리 (`st.*` 호출 없이)

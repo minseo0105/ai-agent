@@ -1,4 +1,5 @@
 // FastAPI /api/golf 클라이언트 + 검색 상태 보관(sessionStorage)
+import { apiFetch } from "@/lib/access";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
@@ -140,7 +141,7 @@ export type ClubDetail = {
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await apiFetch(`${API_URL}${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
   });

@@ -1,4 +1,5 @@
 // FastAPI /api/gif 클라이언트 (multipart 업로드 → 이미지 바이너리 응답)
+import { apiFetch } from "@/lib/access";
 
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 export const MAX_UPLOAD_MB = 15;
@@ -56,7 +57,7 @@ function formData(image: File, background: File | null, fields: Record<string, s
 }
 
 async function post(path: string, fd: FormData, signal?: AbortSignal) {
-  const res = await fetch(`${API_URL}/api/gif${path}`, { method: "POST", body: fd, signal });
+  const res = await apiFetch(`${API_URL}/api/gif${path}`, { method: "POST", body: fd, signal });
   if (!res.ok) {
     let message = `서버 응답 오류 (${res.status})`;
     try {
