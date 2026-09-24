@@ -1032,6 +1032,34 @@ def _in_pool(club):
             or (ident.get("operating") == "operating" and ident.get("is_golf_course") is True))
 
 
+# 도시명 별칭: 행정구역이 바뀌었거나 흔히 함께 쓰는 지명
+CITY_ALIASES = {
+    "서울": ["서울특별시", "서울시", "서울"],
+    "인천": ["인천광역시", "인천"],
+    "용인": ["용인", "기흥", "처인", "수지"],
+    "성남": ["성남", "분당"],
+    "제주": ["제주", "서귀포"],
+}
+
+
+def _city_match(club, city):
+    """도시명 판정은 '위치'(시·군 필드와 주소)로만 한다.
+
+    - 골프장 이름은 보지 않는다. '뉴서울'·'남서울'처럼 이름에 다른 지역명이 들어간 곳이
+      섞여 나오기 때문이다(예: 뉴서울 = 경기도 광주시).
+    - 주소는 '고양시'처럼 시/군/구 단위로만 인정한다. 그냥 포함 여부로 보면
+      '충청북도 단양군 매포읍 고양5길'의 길 이름이 '고양' 검색에 걸린다.
+    """
+    if not city:
+        return True
+    aliases = CITY_ALIASES.get(city, [city])
+    field = str(club.get("city") or "").strip()
+    if any(field == a or field.startswith(a) for a in aliases):
+        return True
+    address = str(club.get("address") or "")
+    return any(re.search(rf"{re.escape(a)}(?:특별시|광역시|특별자치시|시|군|구)\b", address) for a in aliases)
+
+
 def load_pools():
     """(전체 원장, 직접검색 Pool, 조건/AI 검색 Pool)"""
     _refresh_if_db_changed()
@@ -1298,9 +1326,10 @@ def _run_search(cond, sort="추천순", departure_status=None, city=None):
     if cond["subregions"]:
         search_clubs = [c for c in search_clubs if any(_subregion_match(c, sub) for sub in cond["subregions"])]
     if city:
-        # 도시명: city/address/name에 실제 문자열이 있는 레코드만
-        search_clubs = [c for c in search_clubs
-                        if city in " ".join(str(c.get(k) or "") for k in ("city", "address", "name", "subregion"))]
+        # 도시명은 '위치' 기준으로만 판정한다.
+        # 이름은 보지 않는다: '뉴서울'·'남서울'처럼 이름에 지역명이 들어간 경기도 골프장이
+        # '서울' 검색에 섞여 나오는 문제가 있었다.
+        search_clubs = [c for c in search_clubs if _city_match(c, city)]
     subregion_count = len(search_clubs)
 
     # 추가조건은 정보가 확인된 레코드에 대해서만 판정한다. 정보가 없으면 '충족'으로 추정하지 않는다.
@@ -1384,10 +1413,28 @@ def _run_search(cond, sort="추천순", departure_status=None, city=None):
     return result
 
 
+def _known_cities():
+    """DB에 실제로 있는 시·군 이름. 문장검색에서 도시명을 넓게 인식하기 위해 쓴다."""
+    _, _, pool = load_pools()
+    cities = set()
+    for club in pool:
+        name = str(club.get("city") or "").strip()
+        # '경기남부'처럼 권역이 city에 들어간 경우는 도시명이 아니므로 제외
+        if len(name) >= 2 and name not in SUBREGION_MAP["수도권"] + SUBREGION_MAP["충청권"] + SUBREGION_MAP["강원권"]:
+            cities.add(name)
+    return cities
+
+
 def ai_condition(text):
     """문장 → cond. 기존 파서(지역·도시·요일·인원·예산)에 캐디/야간/시간대 키워드를 보강한다."""
     cond = parse_ai_conditions(text, "전체", False, 4, None)
     compact = re.sub(r"\s+", "", str(text or ""))
+    if not cond.get("city"):
+        # 목록에 없는 시·군(예: 고양)도 DB에 있으면 도시 조건으로 인식한다.
+        # 없으면 조건 없이 전체가 나와 엉뚱한 결과가 섞인다.
+        hit = sorted((c for c in _known_cities() if c in compact), key=len, reverse=True)
+        if hit:
+            cond["city"] = hit[0]
     cond["players_specified"] = cond.get("players") is not None
     players = int(cond.get("players") or 4)
     if re.search(r"3인|세\s*명|셋이|3명", text or ""):

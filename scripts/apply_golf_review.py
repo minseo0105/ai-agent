@@ -31,10 +31,25 @@ def _ours(item):
 
 
 def _fee_rows(ex, today):
+    """비회원(일반) 18홀 그린피만 fee_records 행으로 만든다.
+
+    customer 구분
+      - nonmember : 그대로 사용한다.
+      - member    : 사용하지 않는다. 회원가를 일반 요금으로 쓰면 실제보다 싸게 보인다.
+      - unknown   : 그 골프장 추출본에 member/nonmember 행이 하나도 없을 때만 사용한다.
+                    대중제(퍼블릭)는 회원·비회원 구분 없이 요금표가 하나뿐이라
+                    Claude가 customer를 'unknown'으로 남기는데, 이 값이 곧 일반 요금이다.
+                    회원가가 함께 있는 곳의 unknown은 어느 쪽인지 알 수 없으므로 버린다.
+    """
+    all_rows = [r for r in (ex.get("green_fees") or [])
+                if r.get("verified_quote") and r.get("holes") == 18]
+    labeled = {r.get("customer") for r in all_rows} & {"member", "nonmember"}
+    # 회원/비회원 구분이 전혀 없는 단일 요금표일 때만 unknown을 일반 요금으로 인정
+    usable = {"nonmember"} if labeled else {"unknown"}
+
     rows = []
-    for row in ex.get("green_fees") or []:
-        # 비회원(일반) 요금만. 가족회원·지역주민 등 '알 수 없음'은 최저가를 왜곡하므로 제외한다.
-        if not row.get("verified_quote") or row.get("customer") != "nonmember" or row.get("holes") != 18:
+    for row in all_rows:
+        if row.get("customer") not in usable:
             continue
         rows.append({
             "record_type": "official_homepage_extract",

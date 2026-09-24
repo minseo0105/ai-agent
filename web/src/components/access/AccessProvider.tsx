@@ -51,7 +51,7 @@ function CodeForm({ onDone }: { onDone: () => void }) {
 function Gate({ status, reason, onDone }: { status: AccessStatus; reason: "login" | "closed" | "hidden"; onDone: () => void }) {
   const openServices = Object.entries(status.services).filter(([, v]) => v.allowed && v.visible);
   const titles: Record<string, string> = {
-    golf: "⛳ 골프장 찾기",
+    golf: "⛳ TEE:PICK",
     dreamcar: "🚙 내차에서 드림카까지",
     realestate: "🏠 부동산 모니터",
     report: "📄 보고서 작성기",

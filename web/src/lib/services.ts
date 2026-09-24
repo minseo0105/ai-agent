@@ -18,9 +18,9 @@ export const SERVICES: Service[] = [
   {
     id: "golf",
     icon: "⛳",
-    title: "나에게 맞는 골프장 찾기",
-    desc: "전국 골프장을 조건이나 AI 문장으로 탐색하고, KGA 코스정보와 실제 후기까지 한 곳에서 살펴봅니다.",
-    tags: ["전국 골프장", "KGA 코스정보", "AI 문장검색", "실제 후기"],
+    title: "TEE:PICK · 오늘, 어디서 칠까?",
+    desc: "지역 · 시간 · 라운드 조건만 골라주세요. 내 조건에 맞는 골프장을 AI가 찾아드립니다.",
+    tags: ["수도권·충청·강원", "KGA 코스정보", "AI 문장검색", "실제 후기"],
     featured: true,
     href: "/golf",
   },

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "골프장 찾기 · 디지털전략부 AI LAB",
-  description: "수도권 · 충청권 · 강원권 골프장을 조건이나 AI 문장으로 찾아보세요.",
+  title: "TEE:PICK · 디지털전략부 AI LAB",
+  description: "오늘, 어디서 칠까? 지역 · 시간 · 라운드 조건만 고르면 AI가 골프장을 찾아드립니다.",
 };
 
 export default function GolfLayout({ children }: { children: React.ReactNode }) {
@@ -15,7 +15,7 @@ export default function GolfLayout({ children }: { children: React.ReactNode }) 
           디지털전략부 AI LAB
         </Link>
         <Link href="/golf" className="text-sm font-semibold text-muted hover:text-fg">
-          ⛳ 골프장 찾기
+          ⛳ TEE:PICK
         </Link>
       </header>
       {children}
