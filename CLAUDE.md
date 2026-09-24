@@ -10,7 +10,7 @@ Preserve source/evidence/confidence, field_evidence, enrichment history and cand
 Refresh schedule: full information January/July; prices April/October (quarterly prices overall).
 Do not revert to monthly fee collection. Remote automation has not been activated/verified.
 
-Local changes are intentionally uncommitted. Do not reset/clean/restore the working tree.
+Golf changes were committed and deployed on 2026-09-24. Read docs/golf_production_deployment_2026-09-24.md for the latest status. Preserve any subsequent local changes; do not reset/clean/restore the working tree.
 Use `venv\Scripts\python.exe -B scripts\golf_db_status.py` for current coverage and smoke checks.
 Use `venv\Scripts\python.exe -B -m unittest discover -s tests -p test_golf_import_policy.py -v` for the 13 policy tests.
 These checks do not call paid APIs. Do not treat the old dated research JSON as fresh research.
