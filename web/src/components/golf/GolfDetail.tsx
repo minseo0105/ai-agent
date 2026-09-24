@@ -27,13 +27,16 @@ function Metric({ label, value, sub }: { label: string; value: string; sub?: str
   );
 }
 
-/** Slope Rating은 113이 표준이다. 숫자만으로는 감이 안 오므로 한 줄로 풀어 준다. */
+/**
+ * Slope의 세계 표준은 113이지만 국내 코스는 121~147(중앙값 133)에 몰려 있다.
+ * 113 기준으로 나누면 거의 전부 '어려움'이 되므로 국내 분포에 맞춰 나눈다.
+ * services/golf_service.py의 difficulty_word와 같은 기준.
+ */
 function slopeLabel(slope: number) {
-  if (slope >= 145) return { text: "매우 어려움", tone: "text-red-600 dark:text-red-400" };
-  if (slope >= 135) return { text: "어려움", tone: "text-orange-600 dark:text-orange-400" };
-  if (slope >= 125) return { text: "보통보다 어려움", tone: "text-amber-600 dark:text-amber-400" };
-  if (slope >= 113) return { text: "보통", tone: "text-golf" };
-  return { text: "비교적 쉬움", tone: "text-emerald-600 dark:text-emerald-400" };
+  if (slope >= 138) return { text: "매우 어려움", tone: "text-red-600 dark:text-red-400" };
+  if (slope >= 133) return { text: "어려운 편", tone: "text-orange-600 dark:text-orange-400" };
+  if (slope >= 128) return { text: "보통", tone: "text-golf" };
+  return { text: "쉬운 편", tone: "text-emerald-600 dark:text-emerald-400" };
 }
 
 /** 대표 티(남자 화이트 우선)를 골라 난이도를 한눈에 보여준다. */
@@ -54,7 +57,7 @@ function CourseDifficulty({ ratings }: { ratings: ClubDetail["ratings"] }) {
         Slope {slope}
         {pick.rating != null && ` · Course Rating ${pick.rating}`} ({pick.tee} {pick.gender} 기준)
       </span>
-      <span className="w-full text-[11px] text-subtle">Slope 113이 표준 난이도 · 숫자가 클수록 보기 플레이어에게 어렵습니다.</span>
+      <span className="w-full text-[11px] text-subtle">국내 등록 코스(Slope 121~147) 기준 · 숫자가 클수록 보기 플레이어에게 어렵습니다.</span>
     </div>
   );
 }

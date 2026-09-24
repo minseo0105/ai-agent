@@ -654,21 +654,80 @@ def _kga_rating_summary(club):
     }
 
 
+def _human_reasons(club, cond, route, session_fee, est):
+    """'추천점수 10.5' 같은 내부 숫자 대신, 왜 이 골프장이 나왔는지 사람이 읽는 문장으로.
+
+    검색 조건과 실제로 맞아떨어진 부분만 적는다. 없으면 빈 목록을 돌려준다.
+    """
+    reasons = []
+
+    if cond.get("avg_score"):
+        skill = _skill_fit(club, cond["avg_score"], cond.get("challenge") or "적당히", cond.get("avg_score_label"))
+        if skill.get("known"):
+            summary = _kga_rating_summary(club) or {}
+            reasons.append(f"{skill['label']} (KGA Slope {round(summary.get('slope', 0))})")
+
+    if route and route.get("duration_min") is not None:
+        reasons.append(f"출발지에서 차량 약 {route['duration_min']}분")
+
+    budget = cond.get("budget")
+    price = session_fee if session_fee is not None else est
+    if budget and price is not None and price <= budget:
+        reasons.append(f"예산 {won(budget)} 안에 드는 {won(price)}")
+    elif session_fee is not None:
+        reasons.append(f"공식 요금표 확인 · {won(session_fee)}")
+
+    confirmed = [f for f in (cond.get("objective_features") or []) if _objective_feature_status(club, f) is True]
+    if confirmed:
+        reasons.append(" · ".join(confirmed) + " 확인됨")
+
+    return reasons[:3]
+
+
+def difficulty_word(slope):
+    """Slope를 국내 골프장 기준으로 말로 옮긴다.
+
+    Slope의 세계 표준은 113이지만 DB의 국내 코스는 121~147(중앙값 133)에 몰려 있다.
+    113 기준으로 나누면 거의 전부 '어려움'이 되어 구분이 안 되므로,
+    실제 분포의 사분위에 맞춰 나눈다.
+    """
+    if slope >= 138:
+        return "매우 어려움"
+    if slope >= 133:
+        return "어려운 편"
+    if slope >= 128:
+        return "보통"
+    return "쉬운 편"
+
+
+def _difficulty_chip(club):
+    """KGA Slope를 '난이도 보통 · Slope 131'처럼 한 조각으로. 수치가 없으면 None."""
+    summary = _kga_rating_summary(club)
+    if not summary:
+        return None
+    slope = round(summary["slope"])
+    return f"난이도 {difficulty_word(slope)} · Slope {slope}"
+
+
 def _skill_target_slope(avg_score, challenge):
     """
     평균타수는 Handicap Index가 아니므로 공식 핸디캡 계산에 쓰지 않는다.
     아래 값은 검색 정렬용 '참고 목표 난이도'일 뿐이다.
+
+    기준값은 DB에 실제로 들어 있는 KGA Slope 분포(121~147, 중앙값 133)에 맞췄다.
+    예전 기준(116~141)은 실제 분포보다 낮아 '편하게'를 골라도 대부분이
+    '도전적인 코스'로 표시됐다.
     """
     score = int(avg_score or 100)
     if score >= 110:
-        base = 118
-    elif score >= 100:
-        base = 123
-    elif score >= 90:
         base = 128
+    elif score >= 100:
+        base = 131
+    elif score >= 90:
+        base = 134
     else:
-        base = 133
-    return base + {"편하게": -7, "적당히": 0, "도전": 8}.get(challenge, 0)
+        base = 137
+    return base + {"편하게": -4, "적당히": 0, "도전": 4}.get(challenge, 0)
 
 
 def _skill_fit(club, avg_score, challenge, avg_score_label=None):
@@ -692,12 +751,13 @@ def _skill_fit(club, avg_score, challenge, avg_score_label=None):
 
     # 아래 문구는 KGA의 공식 난이도 등급이 아니라
     # 사용자가 선택한 평균타수/라운드 목적과 KGA 수치를 비교한 서비스 해석이다.
-    if distance <= 5:
+    # Slope는 1~2 차이로 체감이 갈리지 않는다. 경계에서 문구가 튀지 않도록 폭을 둔다.
+    if distance <= 8:
         label = "내가 원하는 난이도와 비슷해요"
     elif slope < target:
-        label = "내 설정에서는 비교적 편하게 즐길 후보예요"
+        label = "내 설정보다 편하게 즐길 코스예요"
     else:
-        label = "내 설정에서는 도전적인 코스예요"
+        label = "내 설정보다 도전적인 코스예요"
 
     bits = []
     if summary.get("length_yds"):
@@ -1409,10 +1469,8 @@ def _run_search(cond, sort="추천순", departure_status=None, city=None):
         else:
             pending_count += 1
 
-    all_recs = [
-        (club, [f"추천점수 {scored[club['id']][0]:.1f}"] + scored[club["id"]][1])
-        for club in filtered
-    ]
+    # 점수는 정렬에만 쓰고 화면에는 내보내지 않는다(사용자에게 의미가 없는 내부 숫자).
+    all_recs = [(club, scored[club["id"]][1]) for club in filtered]
     trace = {
         "total": total_count,
         "area": area_count,
@@ -1561,6 +1619,10 @@ def _card(course, reasons, cond, route_cache):
         facts.append("요금 확인 필요")
         fee_link = fee_lookup_link(course)
     facts.append(f"캐디 {_caddie_summary(course)}")
+    # KGA 공인 난이도는 다른 곳에 없는 정보라 조건 선택과 무관하게 보여준다
+    difficulty = _difficulty_chip(course)
+    if difficulty:
+        facts.append(difficulty)
     if "3인 플레이" in (cond.get("objective_features") or []):
         facts.append(f"3인 {_objective_display(course, '3인 플레이')}")
 
@@ -1580,7 +1642,8 @@ def _card(course, reasons, cond, route_cache):
         "badge": badge,
         "facts": facts,
         "badges": _descriptive_badges(course)[:4],
-        "reasons": reasons[:2],
+        # 점수 숫자 대신 왜 추천했는지 사람이 읽는 말로 남긴다
+        "reasons": _human_reasons(course, cond, route, session_fee, est) or reasons[:2],
         "evidence": evidence,
         "fee_link": fee_link,
     }

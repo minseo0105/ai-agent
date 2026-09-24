@@ -247,11 +247,22 @@ export default function GolfSearch() {
               <Field label="캐디" hint="선택">
                 <Segmented value={params.caddie} options={["전체", "캐디", "노캐디"] as const} onChange={(v) => set("caddie", v)} full />
               </Field>
+              {/* KGA 공인 난이도로 맞춰주는 기능이라 접어두지 않고 바로 보여준다 */}
+              <Field label="내 평균타수" hint="선택 · KGA 난이도로 맞춰드려요">
+                <select className={inputClass} value={params.avg_score_label} onChange={(e) => set("avg_score_label", e.target.value)}>
+                  {(options?.avg_scores ?? ["미선택"]).map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="원하는 난이도" hint="선택">
+                <Segmented value={params.challenge} options={["편하게", "적당히", "도전"] as const} onChange={(v) => set("challenge", v)} full />
+              </Field>
             </div>
 
             <details open={showDetail} onToggle={(e) => setShowDetail((e.target as HTMLDetailsElement).open)} className="group rounded-2xl border border-border px-4 py-3">
               <summary className="cursor-pointer list-none text-sm font-bold text-muted">
-                <span className="inline-block transition group-open:rotate-45">＋</span> 상세조건 · 인원 / 야간 / 난이도
+                <span className="inline-block transition group-open:rotate-45">＋</span> 상세조건 · 인원 / 야간
               </summary>
               <div className="mt-4 space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -276,16 +287,6 @@ export default function GolfSearch() {
                       />
                       야간 라운드만 보기
                     </label>
-                  </Field>
-                  <Field label="내 평균타수" hint="선택">
-                    <select className={inputClass} value={params.avg_score_label} onChange={(e) => set("avg_score_label", e.target.value)}>
-                      {(options?.avg_scores ?? ["미선택"]).map((s) => (
-                        <option key={s}>{s}</option>
-                      ))}
-                    </select>
-                  </Field>
-                  <Field label="난이도" hint="선택">
-                    <Segmented value={params.challenge} options={["편하게", "적당히", "도전"] as const} onChange={(v) => set("challenge", v)} full />
                   </Field>
                 </div>
               </div>
