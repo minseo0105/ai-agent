@@ -148,7 +148,8 @@ export default function GolfSearch() {
           : await golfApi.search(search.params, nextSort);
       setResult(r);
       setLast(search);
-      setSort(nextSort);
+      // 출발지를 못 찾으면 서버가 추천순으로 돌려주므로 화면 표시도 맞춘다
+      setSort(nextSort === "가까운순" && !r.has_departure ? "추천순" : nextSort);
       if (scroll) {
         setFilter("전체");
         setVisible(6);
@@ -199,7 +200,8 @@ export default function GolfSearch() {
             className="mt-5 space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
-              run({ mode: "condition", params }, "추천순");
+              // 출발지를 적었으면 가까운 곳부터 보여준다
+              run({ mode: "condition", params }, params.departure.trim() ? "가까운순" : "추천순");
             }}
           >
             <p className="text-xs text-subtle">필수는 시간대 하나만 · 선택조건은 전체로 두어도 검색됩니다.</p>
@@ -437,7 +439,8 @@ export default function GolfSearch() {
                 </div>
                 <Segmented
                   value={sort}
-                  options={["추천순", "가까운순", "가격순"] as const}
+                  // 가까운순은 출발지를 찾았을 때만 의미가 있다
+                  options={(result.has_departure ? ["추천순", "가까운순", "가격순"] : ["추천순", "가격순"]) as Sort[]}
                   onChange={(s) => last && run(last, s, false)}
                   ariaLabel="정렬"
                 />
