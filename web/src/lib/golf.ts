@@ -140,6 +140,8 @@ export type ClubDetail = {
   completeness: { items: { label: string; status: "complete" | "partial" | "missing" }[]; complete: number; total: number; assessed_at: string } | null;
   hole_rows: { course: string; hole: string; facts: string; strategy: string }[];
   course_overview: string;
+  /** 설계자 · 전장 · 잔디 종류 등 공식 코스 제원 (확인된 골프장만) */
+  course_specs: { items: { label: string; value: string }[]; source_url: string; checked_at: string };
   data_checked: string;
   reviews: Reviews;
 };

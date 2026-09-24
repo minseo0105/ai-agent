@@ -2024,6 +2024,60 @@ def _completeness_block(club):
             "assessed_at": (club.get("precision_assessment") or {}).get("assessed_at") or ""}
 
 
+_SPEC_LABELS = [
+    ("designer", "설계자", ""),
+    ("opened_year", "개장", "년"),
+    ("par_total", "파", ""),
+    ("total_yards", "전장", "yd"),
+    ("total_length_m", "전장", "m"),
+    ("bunkers", "벙커", "개"),
+    ("green_grass", "그린 잔디", ""),
+    ("fairway_grass", "페어웨이 잔디", ""),
+    ("tee_grass", "티 잔디", ""),
+    ("rough_grass", "러프 잔디", ""),
+    ("characteristic", "특징", ""),
+    ("composition", "구성", ""),
+]
+_GRASS_LABELS = {"green": "그린 잔디", "fairway": "페어웨이 잔디", "tee": "티 잔디", "rough": "러프 잔디"}
+
+
+def _course_overview_text(club):
+    """코스 개요 문장. 일부 골프장은 문장 대신 구조화된 값(설계자·잔디 등)으로 저장돼 있다."""
+    overview = club.get("course_overview")
+    if isinstance(overview, str) and overview.strip():
+        return overview.strip()
+    if isinstance(overview, dict):
+        summary = str(overview.get("legacy_summary") or "").strip()
+        if summary:
+            return summary
+    return "상세 코스정보는 공식 홈페이지에서 확인할 수 있습니다."
+
+
+def _course_specs(club):
+    """설계자·전장·잔디 종류 등 공식 코스 제원. 확인된 값만 [{label, value}]로 돌려준다."""
+    overview = club.get("course_overview")
+    if not isinstance(overview, dict):
+        return {"items": [], "source_url": "", "checked_at": ""}
+
+    items = []
+    for key, label, unit in _SPEC_LABELS:
+        value = overview.get(key)
+        if value in (None, "", []):
+            continue
+        text = f"{value:,}{unit}" if isinstance(value, (int, float)) and unit else f"{value}{unit}"
+        items.append({"label": label, "value": text})
+
+    grass = overview.get("grass")
+    if isinstance(grass, dict):
+        for key, label in _GRASS_LABELS.items():
+            if grass.get(key):
+                items.append({"label": label, "value": str(grass[key])})
+
+    return {"items": items,
+            "source_url": str(overview.get("source_url") or ""),
+            "checked_at": str(overview.get("checked_at") or "")}
+
+
 def get_club(club_id):
     _, clubs, _ = load_pools()
     club = next((x for x in clubs if x["id"] == club_id), None)
@@ -2153,7 +2207,8 @@ def club_detail(club_id, search=None):
         "fee_block": _fee_block(club),
         "course_cards": _course_cards(club, course_details),
         "hole_rows": _hole_rows(course_details),
-        "course_overview": club.get("course_overview") or "상세 코스정보는 공식 홈페이지에서 확인할 수 있습니다.",
+        "course_overview": _course_overview_text(club),
+        "course_specs": _course_specs(club),
         "data_checked": club.get("data_checked") or (club.get("pricing") or {}).get("last_checked") or "",
         "profile": _profile_block(club),
         "operations": _operations_block(club),

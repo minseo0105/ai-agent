@@ -27,6 +27,38 @@ function Metric({ label, value, sub }: { label: string; value: string; sub?: str
   );
 }
 
+/** Slope Rating은 113이 표준이다. 숫자만으로는 감이 안 오므로 한 줄로 풀어 준다. */
+function slopeLabel(slope: number) {
+  if (slope >= 145) return { text: "매우 어려움", tone: "text-red-600 dark:text-red-400" };
+  if (slope >= 135) return { text: "어려움", tone: "text-orange-600 dark:text-orange-400" };
+  if (slope >= 125) return { text: "보통보다 어려움", tone: "text-amber-600 dark:text-amber-400" };
+  if (slope >= 113) return { text: "보통", tone: "text-golf" };
+  return { text: "비교적 쉬움", tone: "text-emerald-600 dark:text-emerald-400" };
+}
+
+/** 대표 티(남자 화이트 우선)를 골라 난이도를 한눈에 보여준다. */
+function CourseDifficulty({ ratings }: { ratings: ClubDetail["ratings"] }) {
+  const scored = ratings.filter((r) => r.slope != null);
+  if (!scored.length) return null;
+  const pick =
+    scored.find((r) => r.gender === "남자" && /white/i.test(r.tee)) ??
+    scored.find((r) => r.gender === "남자") ??
+    scored[0];
+  const slope = pick.slope as number;
+  const label = slopeLabel(slope);
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-surface/70 px-3 py-2">
+      <span className="text-xs font-bold text-muted">체감 난이도</span>
+      <span className={`text-base font-extrabold ${label.tone}`}>{label.text}</span>
+      <span className="text-xs text-muted">
+        Slope {slope}
+        {pick.rating != null && ` · Course Rating ${pick.rating}`} ({pick.tee} {pick.gender} 기준)
+      </span>
+      <span className="w-full text-[11px] text-subtle">Slope 113이 표준 난이도 · 숫자가 클수록 보기 플레이어에게 어렵습니다.</span>
+    </div>
+  );
+}
+
 function range(r: [number, number] | null | undefined) {
   if (!r) return "확인 필요";
   return r[0] === r[1] ? won(r[0]) : `${won(r[0])} ~ ${won(r[1])}`;
@@ -428,80 +460,108 @@ export default function GolfDetail({ id }: { id: string }) {
 
       <Section title="이용조건">
         <p className="text-sm text-muted">{club.objective_summary.length ? club.objective_summary.join(" · ") : "확인된 이용조건이 아직 없습니다."}</p>
-        <details className="mt-3">
-          <summary className="cursor-pointer text-sm font-semibold text-muted">이용조건 근거 · KGA 코스정보</summary>
-          <div className="mt-3 space-y-3">
-            {club.objective_details.map((d) => (
-              <div key={d.feature} className="text-sm">
-                <b>{d.feature}</b> · {d.label}
-                <div className="text-xs text-subtle">{d.verification}</div>
-                {d.notes.map((n, i) => (
-                  <div key={i} className="text-xs text-subtle">
-                    {n}
-                  </div>
-                ))}
+
+        {/* KGA 공인 코스정보는 이 서비스의 차별점이라 접지 않고 바로 보여준다 */}
+        <div className="mt-4 rounded-2xl border border-golf/25 bg-golf-soft/40 p-4">
+          {club.kga.matched ? (
+            <div className="space-y-2.5 text-sm">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h3 className="font-extrabold">⛳ KGA 공인 코스정보</h3>
+                <span className="text-[11px] text-subtle">대한골프협회 · 확인일 {club.kga.checked_at}</span>
               </div>
-            ))}
-            <div className="border-t border-border pt-3">
-              {club.kga.matched ? (
-                <div className="space-y-2 text-sm">
-                  <h3 className="font-extrabold">⛳ KGA 공인 코스정보</h3>
-                  <p className="text-xs text-subtle">
-                    {club.kga.status} · 확인일 {club.kga.checked_at} · 대한골프협회
-                  </p>
-                  {club.kga.combos?.length ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {club.kga.combos.map((x) => (
-                        <Tag key={x}>{x}</Tag>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-subtle">KGA 매칭은 확인됐지만 코스 조합 상세는 확인되지 않았습니다.</p>
-                  )}
-                  {club.ratings.length ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full min-w-[320px] text-xs">
-                        <thead className="text-left text-muted">
-                          <tr>
-                            <th className="py-1 pr-2 font-semibold">티</th>
-                            <th className="py-1 pr-2 font-semibold">전장</th>
-                            <th className="py-1 pr-2 font-semibold">Course Rating</th>
-                            <th className="py-1 font-semibold">Slope</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-border">
-                          {club.ratings.map((r, i) => (
-                            <tr key={i}>
-                              <td className="py-1 pr-2">
-                                {r.course && club.ratings.some((x) => x.course !== r.course) ? `${r.course} · ` : ""}
-                                {r.tee} {r.gender}
-                              </td>
-                              <td className="py-1 pr-2">{r.length_yards ? `${r.length_yards.toLocaleString("ko-KR")}yd` : "-"}</td>
-                              <td className="py-1 pr-2">{r.rating ?? "-"}</td>
-                              <td className="py-1">{r.slope ?? "-"}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <p className="text-xs text-subtle">Course Rating · Slope Rating 상세값은 KGA 상세 데이터가 연결된 코스부터 표시됩니다.</p>
-                  )}
-                  {club.kga.source_url && (
-                    <a href={club.kga.source_url} target="_blank" rel="noopener noreferrer" className="inline-block text-xs font-bold text-golf">
-                      KGA 코스레이팅 DB ↗
-                    </a>
-                  )}
+              <CourseDifficulty ratings={club.ratings} />
+              {!!club.kga.combos?.length && (
+                <div>
+                  <div className="text-xs font-bold text-muted">코스 조합</div>
+                  <div className="mt-1 flex flex-wrap gap-1.5">
+                    {club.kga.combos.map((x) => (
+                      <Tag key={x}>{x}</Tag>
+                    ))}
+                  </div>
                 </div>
+              )}
+              {club.ratings.length ? (
+                <details className="rounded-xl bg-surface/70 px-3 py-2">
+                  <summary className="cursor-pointer text-xs font-bold text-muted">티별 상세 ({club.ratings.length}개)</summary>
+                  <div className="mt-2 overflow-x-auto">
+                    <table className="w-full min-w-[320px] text-xs">
+                      <thead className="text-left text-muted">
+                        <tr>
+                          <th className="py-1 pr-2 font-semibold">티</th>
+                          <th className="py-1 pr-2 font-semibold">전장</th>
+                          <th className="py-1 pr-2 font-semibold">Course Rating</th>
+                          <th className="py-1 font-semibold">Slope</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {club.ratings.map((r, i) => (
+                          <tr key={i}>
+                            <td className="py-1 pr-2">
+                              {r.course && club.ratings.some((x) => x.course !== r.course) ? `${r.course} · ` : ""}
+                              {r.tee} {r.gender}
+                            </td>
+                            <td className="py-1 pr-2">{r.length_yards ? `${r.length_yards.toLocaleString("ko-KR")}yd` : "-"}</td>
+                            <td className="py-1 pr-2">{r.rating ?? "-"}</td>
+                            <td className="py-1">{r.slope ?? "-"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
               ) : (
-                <p className="text-xs text-subtle">KGA 공인 코스정보는 아직 연결되지 않았습니다.</p>
+                <p className="text-xs text-subtle">코스 레이팅 수치는 KGA 상세 데이터가 연결된 코스부터 표시됩니다.</p>
+              )}
+              {club.kga.source_url && (
+                <a href={club.kga.source_url} target="_blank" rel="noopener noreferrer" className="inline-block text-xs font-bold text-golf">
+                  KGA 코스레이팅 DB ↗
+                </a>
               )}
             </div>
-          </div>
-        </details>
+          ) : (
+            <p className="text-xs text-subtle">⛳ KGA 공인 코스정보는 이 골프장에 아직 연결되지 않았습니다.</p>
+          )}
+        </div>
+
+        {club.objective_details.length > 0 && (
+          <details className="mt-3">
+            <summary className="cursor-pointer text-sm font-semibold text-muted">이용조건 근거</summary>
+            <div className="mt-3 space-y-3">
+              {club.objective_details.map((d) => (
+                <div key={d.feature} className="text-sm">
+                  <b>{d.feature}</b> · {d.label}
+                  <div className="text-xs text-subtle">{d.verification}</div>
+                  {d.notes.map((n, i) => (
+                    <div key={i} className="text-xs text-subtle">
+                      {n}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
       </Section>
 
       <Section title="코스 · 홀 정보">
+        {club.course_specs?.items.length > 0 && (
+          <div className="mb-3 rounded-2xl border border-border bg-surface-muted p-4">
+            <div className="mb-2 text-xs font-extrabold text-muted">공식 코스 제원</div>
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-3">
+              {club.course_specs.items.map((s) => (
+                <div key={s.label}>
+                  <dt className="text-[11px] text-subtle">{s.label}</dt>
+                  <dd className="text-sm font-bold">{s.value}</dd>
+                </div>
+              ))}
+            </dl>
+            {club.course_specs.source_url && (
+              <div className="mt-2">
+                <SourceLink url={club.course_specs.source_url} date={club.course_specs.checked_at} label="공식 코스정보" />
+              </div>
+            )}
+          </div>
+        )}
         {club.course_cards.length > 0 ? (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {club.course_cards.map((cc, i) => (
