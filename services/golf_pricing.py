@@ -72,6 +72,8 @@ def _parse_period(row):
 
 
 def _row_tier(row, today):
+    if row.get("validation_status") == "needs_review":
+        return 1
     status = " ".join(str(row.get(k) or "") for k in ("status", "source_status", "period_status", "effective_period")).lower()
     if row.get("superseded") is True or "historical" in status or "legacy" in status or "not_current" in status:
         return 1
@@ -226,7 +228,10 @@ def team_fee(club, kind):
     if item.get('fresh_until') and str(item['fresh_until']) < date.today().isoformat():
         return None
     for key in ("fee_team", "fee_team_18h", "18h_team", "fee_team_standard", "fee_team_standard_18h", "standard_team"):
-        amounts = _amounts(item.get(key))
+        value = item.get(key)
+        if isinstance(value, (int, float)) and not isinstance(value, bool) and value == 0:
+            return 0
+        amounts = _amounts(value)
         if amounts:
             return amounts[0]
     return None

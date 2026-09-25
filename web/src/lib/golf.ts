@@ -125,7 +125,7 @@ export type ClubDetail = {
         source_url: string;
         note: string;
       }
-    | { verified: true; kind: "legacy"; weekday_total: number | null; weekend_total: number | null; weekday_green: number; weekend_green: number; cart: number; caddie: number; note: string }
+    | { verified: true; kind: "legacy"; weekday_total: number | null; weekend_total: number | null; weekday_green: number; weekend_green: number; cart: number | null; caddie: number | null; note: string }
     | { verified: false; text: string; fee_link: FeeLink | null };
   course_cards: { title: string; specs: string; type: string; source_url: string }[];
   profile: { official_name: string; facts: string[]; source_url: string } | null;
@@ -138,6 +138,7 @@ export type ClubDetail = {
   };
   ratings: { course: string; tee: string; gender: string; rating: number | null; slope: number | null; length_yards: number | null }[];
   sources: { items: { label: string; url: string; checked_at: string; fields: string[] }[]; public_status: string; public_checked_at: string };
+  official_facilities?: { label: string; value: string; source_url: string; checked_at: string }[];
   completeness: { items: { label: string; status: "complete" | "partial" | "missing" }[]; complete: number; total: number; assessed_at: string } | null;
   hole_rows: { course: string; hole: string; facts: string; strategy: string }[];
   course_overview: string;

@@ -51,7 +51,17 @@
               "evidence": "블랙스톤이천GC 인터넷 업계 동갑내기 친구들과 라운드 코스도 좋고 그린도 빠르고 어렵기로 유멸한 골프장에서 재미나게 라운드 했어요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -97,7 +107,16 @@
               "evidence": "클럽하우스의 뷰가 좋다고,,,",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "sponsorship_suspected"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -121,7 +140,15 @@
               "evidence": "KLPGA 년도별 우승골퍼의 손도장이 벽에 전시되어 있고, 클럽하우스 내부도 깔끔하고 잘 정돈된 느낌이다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "951bd7ada9dd0df02b4c1f86",
@@ -130,7 +157,15 @@
               "evidence": "블루헤런CC는 페어웨이가 넓거나 보통이고, 전장이 비교적 긴편입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -154,7 +189,16 @@
               "evidence": "페어웨이 안으로 들어서면 랜딩 지점이 좁아지는",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "review_note": "바로 뒤에 시각적으로 좁아 보이지만 실제로는 넓다는 설명이 있어 단순 narrow 분류 보류.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "context_ambiguity"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -178,7 +222,15 @@
               "evidence": "블루헤런cc에서 곧 시합이 있어서 잔디 관리나 구장 관리는 아주 잘 되는 편 같았어요!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "78811932f981b7234691ba07",
@@ -187,7 +239,15 @@
               "evidence": "티박스와 그린을 보면 골프장 관리를 얼만큼 잘 하고 있는지 감이 오더라구요!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -211,7 +271,15 @@
               "evidence": "꼭 좁은 페어웨이에 대한 메리트만 확대해야 하는건지 궁금합니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -265,7 +333,15 @@
               "evidence": "락커와 화장실도 아주 깨끗해서 만족스러웠습니다",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "0b37eb2a08790b6421460c58",
@@ -274,7 +350,15 @@
               "evidence": "벙커는 그렇게 많은 편이 아니라",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -380,7 +464,7 @@
           "observed_at": "2026-09-24",
           "full_text_available": true,
           "sponsored_suspected": false,
-          "first_person_signal": false,
+          "first_person_signal": true,
           "content_hash": "b67b7dad6cb2a2d61249e476a019d8e84b27cbc66bda58f7e8384eb5d17b1206",
           "observations": [
             {
@@ -388,27 +472,56 @@
               "dimension": "bunkers",
               "label": "many",
               "evidence": "턱이 높은 벙커가 많아요~ㅎㅎ",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "Lake 2번 홀",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "2025-05-24 방문일과 2번 홀 소제목 확인. 높고 많은 벙커라는 해당 홀 의견.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": true
+              }
             },
             {
               "id": "69891c86ce9c2579c94742ca",
               "dimension": "fairway",
               "label": "wide",
               "evidence": "넓은 페어웨이를 활용한 전략적인 티샷이 요구됩니다.",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "Lake 4번 홀",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "4번 홀 소제목 아래의 페어웨이 설명. 전체 코스에 일반화하지 않음.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             },
             {
               "id": "7df2c4e141dca6c606eef4ea",
               "dimension": "bunkers",
               "label": "many",
               "evidence": "페어웨이 벙커가 많은 홀입니다.",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "Mountain 17번 홀",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "17번 홀 소제목과 이벤트 홀 문맥 확인.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             },
             {
               "id": "65017933d28d252a22529e08",
@@ -417,9 +530,18 @@
               "evidence": "잔디관리 잘되있고",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
-          ]
+          ],
+          "first_person_review_note": "본문 방문일 2025-05-24 및 실제 홀 순서 진행 확인"
         },
         {
           "source": "https://blog.naver.com/eggapple-/224039394492",
@@ -441,7 +563,17 @@
               "evidence": "클럽하우스는 전체적으로 밝고 환하고, 쾌적합니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -487,7 +619,15 @@
               "evidence": "역시 에어레이션을 해서 그린이 느리다는건 변명에 불과한 것 같습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "cf22d58d0b0ed51f36a385a0",
@@ -496,7 +636,15 @@
               "evidence": "티박스에서는 페어웨이가 좁아보이지만 나가보면 좌우 폭이 꽤 넓습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -520,7 +668,16 @@
               "evidence": "제이드 팰리스의 그린은 빠르다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "d258d5939217c4e052969696",
@@ -529,7 +686,16 @@
               "evidence": "제이드 팰리스의 페어웨이는 넓다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "1e33c3e8a5277dbaf9060ae1",
@@ -538,7 +704,16 @@
               "evidence": "양곤의 대부분의 골프장의 클럽하우스는 소박하다 못해 오래되고 낡은 경우가 많다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -626,7 +801,17 @@
               "evidence": "강남 300CC의 코스는 양측이 오비고 페어웨이 전폭은 조금 좁고 전장도 조금 짧게 느껴졌다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -650,7 +835,15 @@
               "evidence": "전장이 길고 넓은 페어웨이로 라베를 도전하고 싶은 골프장입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "c4216649af920e7a52ae0019",
@@ -659,7 +852,15 @@
               "evidence": "페어웨이는 잘 관리되어 있으며 아주 넓은 것이 특징입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "24929e8e9b21daa69b66d322",
@@ -668,7 +869,15 @@
               "evidence": "다만, 그린의 관리는 많이 아쉽습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -728,7 +937,17 @@
               "evidence": "라운드를 시작해보니 페어웨이는 비교적 넓은 편이라 티샷 부담은 적었지만, 곳곳에 배치된 벙커와 해저드가 은근히 신경 쓰였다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -873,7 +1092,15 @@
               "evidence": "보다시피 골프클럽Q는 코스의 언듈레이션이 꽤나 심하고 벙커들이 많으면서 턱도 꽤나 높은 편이다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "c68dae04685dceb7d5fdbb8a",
@@ -882,7 +1109,15 @@
               "evidence": "홀에 따라 다르지만 평균적으로 넓은 편에 가까운데 대신 벙커가 아주 많다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -906,7 +1141,15 @@
               "evidence": "라커, 욕장도 깨끗하게 잘 관리되어있었다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "aa3e5edd52fe6076dbf6c80b",
@@ -915,7 +1158,15 @@
               "evidence": "밸리코스는 듣던대로 페어웨이가 좀 좁고, 팜파스는 비교적 넓음.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "9f59b5f1acbc04aa75c960c9",
@@ -924,7 +1175,15 @@
               "evidence": "밸리코스는 듣던대로 페어웨이가 좀 좁고, 팜파스는 비교적 넓음.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -948,7 +1207,17 @@
               "evidence": "카테고리 이동 Collect FUN, make FUN · 15분 정도 휴식하고 시작한 후반 Pampas 코스 · 팜파스 코스는 전반 밸리코스보다는 페어웨이도 넓고 플레이하기에 쉬웠다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -972,7 +1241,17 @@
               "evidence": "페어웨이는 넓은 편이지만, 언듀레이션이 제법 있고, 블라인드 홀도 있고 오르막 내리막도 있어서 홀마다의 개성이 뚜렷한 편입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1018,7 +1297,17 @@
               "evidence": "코스가 전체적으로 평지에 가깝고, 페어웨이가 넓어서 저와 같은 초보 골린이 골퍼에게 추천할 수 있는 인천 그랜드 CC 라운딩 후기였습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1042,7 +1331,17 @@
               "evidence": "평탄한 지형과 넓은 페어웨이 덕분에 초보자들이 연습 라운드를 하기에도 좋아요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1080,7 +1379,17 @@
               "evidence": "청주 그랜드CC는 페어웨이가 넓고 평탄해서 초보자도 부담 없이 즐기기 좋았습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -1126,7 +1435,15 @@
               "evidence": "예전에 회원권이 있는 친구와 함께 갔던 기억에서 페어웨이 넓고, 전장도 길고 좋았던 기억이 있어, 보이자 마자 부킹을하게 되었다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "bd7f34a95a30bb9cbd0c213f",
@@ -1135,7 +1452,15 @@
               "evidence": "그린힐cc 넓은 페어웨이",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1245,7 +1570,15 @@
               "evidence": "남여주CC는 시설 대비 가격대가 좋기로 유명하다고 합니다!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "3464c5eabf41e057391cef36",
@@ -1254,7 +1587,15 @@
               "evidence": "코스를 제외한 로비를 포함한 시설은 전반적으로 아쉬웠고, 특히 화장실과 라커룸 시설은 아쉬운 편이었어요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1280,7 +1621,13 @@
               "status": "human_reviewed",
               "confidence": "single_review_statement",
               "reviewed_at": "2026-09-24",
-              "review_method": "source_context_read"
+              "review_method": "source_context_read",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             },
             {
               "id": "c5da54b5d4a8ab66350878a7",
@@ -1289,7 +1636,15 @@
               "evidence": "잔디관리도 잘 되어있었고, 좌, 우 그린을 번갈아가면서 사용해서 그런지, 그린 상태도 좋았습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "5657557acdcf1e2fcc46dd11",
@@ -1300,7 +1655,13 @@
               "status": "rejected",
               "confidence": "unreviewed_extraction",
               "reviewed_at": "2026-09-24",
-              "reason": "negation: does not support wide"
+              "reason": "negation: does not support wide",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1324,7 +1685,15 @@
               "evidence": "회원제 골프장 답게 페어웨이와 그린의 관리가 뛰어나 컨디션이 좋았다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "66894a9362a6fb77ca8e1564",
@@ -1333,7 +1702,15 @@
               "evidence": "넓은 페어웨이, 좋은 quality의 페어웨이가 기분을 좋게 했습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1357,7 +1734,17 @@
               "evidence": "우선 잔디는 정말 관리가 잘 돼 있었고 롱홀도 없었는데 언듈레이션은 좀 심했던 편이었고 그린도 쉽진 않았던 것 같당 !",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -1473,7 +1860,17 @@
               "evidence": "클럽하우스와 라커룸 컨디션 깔끔하고, 스타트하우스는 왠지 뉴서울cc 느낌 솔솔 나더라고요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -1697,7 +2094,16 @@
               "evidence": "넓은 페어웨이와 전략적 코스로 만족스러운 플레이를 즐길 수 있으며,",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "5c9441b5751509cf8f24ddba",
@@ -1706,7 +2112,16 @@
               "evidence": "산악 코스의 특성을 살린 넓은 페어웨이가 특색입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -1866,7 +2281,16 @@
               "evidence": "네이처코스는 전반적으로 언듈레이션이 심하지 않고, 페어웨이도 넓고 시야 확보도 잘 됩니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "same_author_multiple_sources"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2181,7 +2605,17 @@
               "evidence": "바로 옆에 연습 그린이 있는데 관리가 너무 잘되어 있습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -2213,7 +2647,15 @@
               "evidence": "클럽하우스는 아주 깔끔했어요",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "16757f598cd5054792b6b1d7",
@@ -2222,7 +2664,15 @@
               "evidence": "화장실/락커/샤워실 모두 엄청 깔끔하게",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2296,7 +2746,16 @@
               "evidence": "생각보다 페어웨이 엄청 넓었고요, 잔디관리 상태 좋았습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "8a4ec7872c9fae436cbd2d19",
@@ -2305,7 +2764,16 @@
               "evidence": "생각보다 페어웨이 엄청 넓었고요, 잔디관리 상태 좋았습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2343,7 +2811,17 @@
               "evidence": "페어웨이, 그린 넓고 길며 멋지게 코스가 꾸며져 있다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "be7e2e51c722ccdc08964bcc",
@@ -2352,7 +2830,17 @@
               "evidence": "잔디 관리 잘되어 있으나 남코스는 디봇이 많아서 약간 아쉬움.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2426,7 +2914,15 @@
               "evidence": "넓은 페어웨이도 있었으나",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "4d80fd6d566dd9046ada2d90",
@@ -2435,7 +2931,15 @@
               "evidence": "대체적으로 좁은 페어웨이와",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2459,7 +2963,15 @@
               "evidence": "페어웨이가 진짜 좁고 바닥이 전반적으로 브이자 모양이에요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "db2404444e234b719423af11",
@@ -2468,7 +2980,15 @@
               "evidence": "페어웨이 좁은 거 보이시죠??",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2506,7 +3026,17 @@
               "evidence": "일단 1번홀부터 좁은 페어웨이.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2615,7 +3145,17 @@
               "evidence": "캐디도 그럭저럭 친절하고, 페어웨이도 왠만큼 넓고, 길지만 가까운 옆 홀과의 거리는 큰 단점 중에 하나다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -2647,7 +3187,16 @@
               "evidence": "비에이비스타 퍼블릭 코스의 경우 전체적으로 짧은 전장과 좁은 페어웨이의 특징을 보여주고 있습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "a3e0c3b3ca56cbdbb027febc",
@@ -2656,7 +3205,16 @@
               "evidence": "비에이비스타는 좁은장소에 63개의 홀을 넣다보니 전체적으로 전장이 짧고 페어웨이는 좁고, 직선형의 코스가 많습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2680,7 +3238,15 @@
               "evidence": "퍼블릭 코스와 회원제 코스로 운영되고 있는데 퍼블릭 코스는 페어웨이가 매우 좁고 홀 간격이 너무 좁아서 공맞을까 항상 긴장하고 다녔던 것 같아요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -2702,9 +3268,18 @@
               "dimension": "facilities",
               "label": "negative",
               "evidence": "락커룸이나 카트는 노후 된게 보입니다.",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "락커룸·카트",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "실제 라운드 중 관찰한 노후 의견. 다른 시설에는 긍정 의견도 있어 시설 전체 평가로 확대하지 않음.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             }
           ]
         },
@@ -3062,7 +3637,15 @@
               "evidence": "그린과 페어웨이 관리가 우수하며, 넓은 페어웨이와 적당한 전장 덕분에 난이도는 무난한 편입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3122,7 +3705,15 @@
               "evidence": "지형 그대로 만든 코스여서 코스 내에 언듈레이션은 크지는 않지만 어느 정도 있고, 페어웨이 폭을 좁히거나 랜딩 존에 벙커를 만들어 난이도를 어느 정도 맞췄습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3188,7 +3779,17 @@
               "evidence": "장점 : 우선 무엇보다 코스 관리가 훌륭했습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3241,7 +3842,17 @@
               "evidence": "1992년 개장 후 일본 명장 스기하라 데루오가 설계했으며, 평탄한 페어웨이와 드넓은 힐링 구조가 특징입니다",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "sponsorship_suspected",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "0143330872867aa03109a94a",
@@ -3250,7 +3861,17 @@
               "evidence": "평지형답게 잔디 관리가 훌륭하며, 사계절 내내 페어웨이·티박스·그린 상태가 일정하게 유지됩니다",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "sponsorship_suspected",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3374,7 +3995,17 @@
               "evidence": "그린이 너무 느렸던것이 단점?",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3448,7 +4079,17 @@
               "evidence": "코스 관리 상태가 아쉬웠고.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3564,7 +4205,15 @@
               "evidence": "페어웨이 관리도 훌륭",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "e2ed51d335407effb1393a60",
@@ -3573,7 +4222,15 @@
               "evidence": "특히 그라스 벙커가 여기저기 정말 많았는데, 눈으로 보기에도 멋지고 동반자가 빠지면(ㅋㅋㅋ) 아주 재밌어지는 장점이 있다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "99b1ef93027d02404aa15bfe",
@@ -3582,7 +4239,15 @@
               "evidence": "페어웨이가 좁은 홀이 많고 도그렉도 많다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3606,7 +4271,17 @@
               "evidence": "카테고리 이동 해외골프 노마드 · 비발디파크 이스트 라운딩 코스평 · ✓전장이 길고 페어웨이는 넓음 · ✓티잉그라운드, 페이웨이 잔디 상태 좋음 · ✓그린, 그린 주변",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -3638,7 +4313,16 @@
               "evidence": "그린관리, 조경도 훌륭 그자체~",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "cfc28812181dd4c96c8076cf",
@@ -3647,7 +4331,16 @@
               "evidence": "최근 락커룸도 리뉴얼해서 깨끗하고 샤워실 또한 관리가 잘되어있다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3685,7 +4378,16 @@
               "evidence": "🏌️‍♀️  넓은 페어웨이와 첫 버디의 기억이 어우러진 특별한 하루",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "review_note": "첫 버디의 수년 전 기억과 2025년 재방문이 섞여 특징 관찰 시점 불명확.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "context_ambiguity"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "893c8a91013536042b44d39f",
@@ -3694,7 +4396,16 @@
               "evidence": "관리 상태가 전반적으로 양호하고, 페어웨이는 넓은 편이라 초심자 동반 플레이에도 부담이 적었다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "review_note": "수년 전 첫 버디 경험 문단으로 게시일을 경험일로 볼 수 없음.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "context_ambiguity"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "7f08c23e746355813057a6cb",
@@ -3703,7 +4414,16 @@
               "evidence": "• 넓은 페어웨이",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "review_note": "동일 작성자 반복 특징이며 실제 관찰 시점 추가 확인 필요.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "context_ambiguity"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3749,7 +4469,15 @@
               "evidence": "페어웨이는 넓은 편이어서 티샷에서 부담은 많이 없는 곳이니까 OB 걱정은 크게 하지 않으셔도 될 것 같은데 그린 주변에서 온그린하기 까다롭게 세팅되어 있어서",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -3923,7 +4651,17 @@
               "evidence": "락커와 락커사이의 공간도 좋고, 사우나 공간도 넓고 괜찮았다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4161,7 +4899,17 @@
               "evidence": "코스 레이아웃은 전체적으로 좋았으며, 3부 노캐디를 돌린다고 하는데도 페어웨이 및 그린 관리상태는 좋았습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4299,7 +5047,15 @@
               "evidence": "페어웨이는 좁지 않아서 무난하게 티샷할 수 있는데 전장도 그리 길지 않은 편이라서 괜찮으신 분들은 블루티에서 플레이하면 더 재미있을 거 같아요.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4323,7 +5079,15 @@
               "evidence": "보다시피 골프클럽Q는 코스의 언듈레이션이 꽤나 심하고 벙커들이 많으면서 턱도 꽤나 높은 편이다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "58dbd051ecafee40405df201",
@@ -4332,7 +5096,15 @@
               "evidence": "홀에 따라 다르지만 평균적으로 넓은 편에 가까운데 대신 벙커가 아주 많다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -4414,7 +5186,16 @@
               "evidence": "그린 주변에 벙커가 많아서 정교한 세컨샷이 필요하다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "136ab357742698d97d5c339c",
@@ -4423,7 +5204,16 @@
               "evidence": "그린 주변에 벙커가 많고 우측은 물이라서 정교한 세컨샷이 필요하다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4518,7 +5308,16 @@
               "evidence": "살살 오르막홀이며 페어웨이는 넓어 첫 티샷의 긴장감은 조금 덜 수 있어 보인다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "30f492505bc1cf38cc5c4af5",
@@ -4527,7 +5326,16 @@
               "evidence": "벙커도 많고 페어웨이 언듈레이션이 심함.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "a46df48c7debfb8c33f2bb75",
@@ -4536,7 +5344,16 @@
               "evidence": "엘리시안 힐코스의 경우 벙커들이 참 많은 것 같음.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4660,7 +5477,17 @@
               "evidence": "예미지 (금성백조) CC 4월 25일 오픈이야 오픈 전 시범 라운딩 갔는데 난 코스가 잼있더라고 페어웨이는 오픈 직전이라 감안하고..그린 관리는 아주 좋았음 그린 스피드는",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4849,7 +5676,17 @@
               "evidence": "잔디는 관리가 잘된편이고 그린스피드 2.5적혀있으나 모래랑 섞여 엄청나게 느리고 속도를 못맞추겠다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4951,7 +5788,17 @@
               "evidence": "다만 그린 주변에 벙커가 많아서 2온 공략이 은근 까다롭다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -4989,7 +5836,15 @@
               "evidence": "페어웨이는 꽤 넓은 편입니다만, 이런 잔디 구조로 잔디가 긴 러프에 빠지면 제대로 공을 쳐내기 쉽지 않습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -5057,7 +5912,17 @@
               "evidence": "페어웨이가 좁고 언듈레이션이 있어 정확한 샷이 요구되지만, 최상의 그린 상태와 조경 덕분에 라운딩 내내 즐거웠습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -5139,7 +6004,15 @@
               "evidence": "체력이 떨어지면서 넓은 페어웨이 놔 두고,",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "c35b01d2616919ee04fd4130",
@@ -5148,7 +6021,15 @@
               "evidence": "넓은 페어웨이 긴 전장.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5172,7 +6053,17 @@
               "evidence": "페어웨이가 넓고 전장이 긴편이다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5196,7 +6087,17 @@
               "evidence": "업다운이 삼하지도 않고, 페어웨이는 대체로 넓고 평평하고 벙커나 페널티구역이가 많지 않습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "90531622e4bd83ea8cd80712",
@@ -5205,7 +6106,17 @@
               "evidence": "업다운이 삼하지도 않고, 페어웨이는 대체로 넓고 평평하고 벙커나 페널티구역이가 많지 않습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -5315,7 +6226,15 @@
               "evidence": "전반적으로 내부시설이 낡았지만 깨끗해요!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "0ab30b5566a25323e872bdcd",
@@ -5324,7 +6243,15 @@
               "evidence": "전반적으로 내부시설이 낡았지만 깨끗해요!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5368,9 +6295,18 @@
               "dimension": "fairway",
               "label": "wide",
               "evidence": "있습니다.직접 라운딩을 해보니 전체적으로 페어웨이가 넓은 편이라 인상적이었습니다.",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "whole_course",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "천안상록 27홀 소개에 이어 직접 라운딩한 전체적 인상을 명시. 독립 후기 1명으로만 표시.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             },
             {
               "id": "057434406b1b2848198ba46e",
@@ -5379,7 +6315,16 @@
               "evidence": "동코스는 전체적으로 페어웨이가 넓고 초보자들도 절대 OB가 안나는 코스 입니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "review_note": "동코스 한정이며 절대 OB가 안 난다는 과장 표현 포함. 일반 특징으로 반영 보류.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "context_ambiguity"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5417,7 +6362,17 @@
               "evidence": "코스의 레이아웃이 아름답고 전장이 길며 제법 빠른 그린스피드가 유지가 되고 있는 훌륭한 골프장이나 잔디의 관리, 진행, 클럽하우스의 디테일등은 아쉬운 면이 있어",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5527,7 +6482,17 @@
               "evidence": "캐슬렉스 서울 GC 는 전체적으로 코스와 그린 관리가 아주 잘 되어 있었습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5580,7 +6545,15 @@
               "evidence": "그리고 코스에 벙커가 많지는 않지만 그린 근처에 크기가 큰 벙커가 자주 위치하고 있습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5938,7 +6911,17 @@
               "evidence": "일단 페어웨이가 넓으면 심리적 안정감때문",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -5976,7 +6959,17 @@
               "evidence": "아도니스CC는 페어웨이가 넓고, 전장 긴 골프장입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -6008,7 +7001,17 @@
               "evidence": "Sep 4, 2024 — 전체적으로 관리도 잔디, 그린, 디봇 관리가 잘 되어 있는 편!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -6040,7 +7043,16 @@
               "evidence": "락커와 사우나도 훌륭",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "72b02ba147400c50ae8ad7ac",
@@ -6049,7 +7061,16 @@
               "evidence": "대체로 넓은 페어웨이와 잘 관리된 코스라 공략하는 재미가 있다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "574ab1e07b7c1de3d333d279",
@@ -6058,7 +7079,16 @@
               "evidence": "전반이 끝나고 클럽하우스에서 마시는 맥주 한잔도 훌륭하다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6082,7 +7112,17 @@
               "evidence": "난이도 : 조금 어려움(전장은 보통길이다.페어웨이 넓이는 보통인편이었고 페어웨이업다운은 조금 있는편이다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -6371,7 +7411,15 @@
               "evidence": "티샷시 페어웨이의 폭이 넓은 편에 속해서 심적으로 굉장히 안정되는 홀이 많았지만, 대부분의 OB가 우측에 분포하고 있어 슬라이스에 고생하시는 분이라면, 주의해서 티샷을 하셔야 됩니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6495,7 +7543,15 @@
               "evidence": "다만 내리막으로 형성되어 있고 좌측에 해저드가 위치해있어 부담을 느끼실 수 있지만 비교적 페어웨이가 넓은 편이여서 비교적 쉽게 공략할 수 있는 홀이라고 생각됩니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "664903405e261238ca9b575c",
@@ -6504,7 +7560,15 @@
               "evidence": "페어웨이가 그리 좁아서",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6528,7 +7592,15 @@
               "evidence": "락커룸과 샤워실도 최신 시설로 바뀌어서 쾌적하게 이용했습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6552,7 +7624,15 @@
               "evidence": "그린은 뭐 엄청 느리구요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "765ee6fe23455be46a744c33",
@@ -6561,7 +7641,15 @@
               "evidence": "8월 중순 길고 길었던 폭우 때문에 그린이 너무 느렸던 게 좀 아쉬웠습니다만 나머지 관리 수준은 정말 최고였습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6585,7 +7673,15 @@
               "evidence": "투그린으로 관리가 매우 잘되있어서 그린스피드 2.9~3이상 나옵니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "09b6c2f589b8a36570678589",
@@ -6594,7 +7690,15 @@
               "evidence": "모든 홀의 그린 관리가 매우 훌륭합니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "1ad153753c37e4790a8d825e",
@@ -6603,7 +7707,15 @@
               "evidence": "페어웨이 넓지만 전략 필요",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "e080eedbfe7b341547e5a052",
@@ -6612,7 +7724,15 @@
               "evidence": "전장이 길고 페어웨이가 좁은 편",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6636,7 +7756,16 @@
               "evidence": "골프장 컨디션: 전날 비가 왔음에도 잔디가 폭신폭신하고 관리가 매우 잘되어있고 구석구석 예뻐서 눈호강하며 칠 수 있음.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -6666,18 +7795,36 @@
               "dimension": "bunkers",
               "label": "many",
               "evidence": "벙커도 많이 보이고 괜히 떨렸지만",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "올드코스",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "제목과 본문이 올드코스 방문을 명시. 듄스코스에 일반화하지 않음.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             },
             {
               "id": "7f78d6f9b06394b9c3d0b8d1",
               "dimension": "green",
               "label": "fast",
               "evidence": "그린은 꽤 빠른 편이었어요.",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "올드코스",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "비가 온 라운드 당일 그린 체감. 대회 직전이라는 문맥이며 상시 속도가 아님.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             }
           ]
         },
@@ -6715,7 +7862,15 @@
               "evidence": "티잉 구역 잔디는 관리가 잘 되어있고, 디봇 자국이 거의 없어 완벽한 상태였습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "01999371c8c852ad1f9c2e6d",
@@ -6724,7 +7879,15 @@
               "evidence": "보이는 것보다 페어웨이가 넓은 편이라 시원한 티샷을 하실 수 있는 홀입니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -6756,7 +7919,15 @@
               "evidence": "전체적으로 코스 관리가 잘 되어있고 구성이 재미있어서 좋은 기억을 가지고 있는 오크밸리.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "aee1d99212f92a5e8b96df3b",
@@ -6765,7 +7936,15 @@
               "evidence": "약간 내리막 파 3 홀로 그린의 왼쪽에 벙커들이 엄청 많습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6881,7 +8060,16 @@
               "evidence": "특별히 벙커가 너무 많았다거나 아니면 해저드가 엄청 많았다거나?",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "sponsorship_suspected"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "acf4ec171ca30f161f1b55e9",
@@ -6890,7 +8078,16 @@
               "evidence": "그린 스피드는 조금 빠른 편인듯 ?했구요",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "sponsorship_suspected"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -6958,7 +8155,16 @@
               "evidence": "라운딩 전날에는 숙소에서 머물렀는데, 시설이 군더더기 없이 깔끔하고 쾌적했습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -6981,8 +8187,19 @@
               "label": "wide",
               "evidence": "실크 코스는 비교적 페어웨이가 넓어 시원한 드라이버 샷을 날리기 좋지만 곳곳에 숨은 벙커를 주의해야 합니다.",
               "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "status": "rejected",
+              "confidence": "rejected_extraction",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "골프 전문 여행사의 판매 패키지 소개. 독립 방문 후기 아님. 코스 명칭도 같은 본문에서 상충.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -7014,7 +8231,15 @@
               "evidence": "우선 티샷을 날리고 페어웨이로 진입하는데 코스관리상태가 너무 좋아서 깜놀~",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "a5d3a123a683f3b7491851c9",
@@ -7025,7 +8250,13 @@
               "status": "human_reviewed",
               "confidence": "single_review_statement",
               "reviewed_at": "2026-09-24",
-              "review_method": "source_context_read"
+              "review_method": "source_context_read",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             }
           ]
         },
@@ -7049,7 +8280,15 @@
               "evidence": "많은 벙커들이 주로 그린 사이드나 100m 이내 어프로치 구간에 포진되어 있어 세컨드 샷부터는 심리적으로 부담되는 곳에 위치해 있습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -7087,7 +8326,15 @@
               "evidence": "티박스에 서자마자 눈에 벙커가 얼마나 많이보이는지,, 벙커를 피하겠다는 의지가 확 꺾이더라구요.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "23bc9c925eb6e7c453224788",
@@ -7096,7 +8343,15 @@
               "evidence": "그래도 아직 색깔만 노랗지, 디봇도 별로없고 잔디 관리상태도 너무 좋았어요!!",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -7239,9 +8494,18 @@
               "dimension": "fairway",
               "label": "wide",
               "evidence": "페어웨이가 이렇게 넓은데 왜 공은 가운데만 피해서 갈까?",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "버치코스 1번 홀",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "버치코스 시작 및 첫 홀 티샷 바로 뒤의 수사적 질문. 해당 홀 넓이 의견만 인정.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             }
           ]
         },
@@ -7265,7 +8529,16 @@
               "evidence": "그럴수 밖에 없는 이유는 정말로 페어웨이의 잔디 관리가 잘되어 있다는 것입니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "same_author_multiple_sources"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -7651,7 +8924,17 @@
               "evidence": "채석장으로 쓰면서 산을 평평하게 깎은 덕분에 산악지형 코스답지 않게 페어웨이가 넓다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -7689,7 +8972,17 @@
               "evidence": "코스 전반은 산악형의 특성을 잘 보여주지만, 일부 홀은 탁 트인 시야와 넓은 페어웨이를 갖추어 장타자에게도 매력적입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -7842,7 +9135,17 @@
               "evidence": "그린 모래도 없고 관리가 잘 된 편이었다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -7923,7 +9226,13 @@
               "evidence": "수도권매립지관리공사가 운영하는 시설 특유의 깔끔한 공공기관 느낌이 있어요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": false
+              }
             },
             {
               "id": "88a66245d0ad9be8b0472eef",
@@ -7932,7 +9241,13 @@
               "evidence": "그린관리는 잘 되어있는 편이고",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": false
+              }
             },
             {
               "id": "00e943daf599aa72012b829a",
@@ -7943,7 +9258,13 @@
               "status": "human_reviewed",
               "confidence": "single_review_statement",
               "reviewed_at": "2026-09-24",
-              "review_method": "source_context_read"
+              "review_method": "source_context_read",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             }
           ]
         },
@@ -7981,7 +9302,15 @@
               "evidence": "사우나도 시설이 좋은편은 아닙니다 :)",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "cf39544a8db81b1b1cc00e3d",
@@ -7990,7 +9319,15 @@
               "evidence": "시설이 오래된 느낌이지만 전체적으로 잔디 관리가 잘되어있고 무엇보다 접근성과 가격이 매우 좋아 자주 방문하고 싶은 골프장 입니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8100,7 +9437,16 @@
               "evidence": "역사가 있는 구장이라 잔디관리가 좋음",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "530e552916aa5b8fa77ad47c",
@@ -8109,7 +9455,16 @@
               "evidence": "페어웨이도 넓고 언듈레이션도 크지 않아서",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "46e76b911b45bf9b1fa1c2d8",
@@ -8118,7 +9473,16 @@
               "evidence": "잔디의 관리가 전체적으로 좋았던 곳",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8214,7 +9578,15 @@
               "evidence": "그래서 당연히 페어웨이는 좁고, 언듈레이션은 심합니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8238,7 +9610,16 @@
               "evidence": "전체적으로 블라인드 홀이 거의 없고 벙커가 많지 않아 무난한 플레이가 가능합니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "02ad7c694c76b73fde91a8ef",
@@ -8247,7 +9628,16 @@
               "evidence": "리앤리 CC는 전장이 전반적으로 짧은 코스이지만 좁은 페어웨이와 장애물로 골퍼들에게 새로운 도전을 제공합니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8407,7 +9797,15 @@
               "evidence": "✔️ 길고 좁은 페어웨이 : 페어웨이보다 러프와 해저드가 시야에 먼저 들어와서 티샷을 실수하면 스코어가 잘 나오지 않습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8553,7 +9951,15 @@
               "evidence": "페어웨이가 넓어서 티샷 공략하는 데는 크게 무리가 없습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "4011f4759e765eb4ea1295b5",
@@ -8562,7 +9968,15 @@
               "evidence": "전장이 길지는 않지만 티박스에 서면 페어웨이가 시각적으로 상당히 좁아 보이는 홀입니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8614,7 +10028,17 @@
               "evidence": "경치가 좋고 시설이 깔끔했다!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8659,8 +10083,17 @@
               "label": "many",
               "evidence": "다른 홀들에 비해 벙커가 많지 않은 홀이다.",
               "scope": "needs_scope_review",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "status": "rejected",
+              "confidence": "rejected_extraction",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "미국코스 2번 홀은 다른 홀보다 벙커가 많지 않다는 문장. many 추출은 부정문 반전 오류.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8720,7 +10153,15 @@
               "evidence": "특히 이날 코스관리 상태가 캐디님 잘못이 아님에도 불구하고 계속 사과하시며 어떻게든 공을 찾으려고 애쓰던 모습이 인상 깊었습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8744,7 +10185,15 @@
               "evidence": "2019년 개장한 곳답게 시설이 매우 깔끔하고 현대적인 인테리어가 눈에 띄었습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8867,7 +10316,17 @@
               "evidence": "락커와 사우나 시설도 넓고 좋았습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -8906,7 +10365,15 @@
               "evidence": "페어웨이가 넓기도 하고 OB가 없는 홀 중 5홀은 옆 홀에서 플레이 가능해 코스 난이도가 높다는 생각은 안들었습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -8995,7 +10462,16 @@
               "evidence": "락커와 사우나도 훌륭",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "46a7dbad3b2b4f750e2282ae",
@@ -9004,7 +10480,16 @@
               "evidence": "대체로 넓은 페어웨이와 잘 관리된 코스라 공략하는 재미가 있다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "f1fa26b07ff95778ce33f167",
@@ -9013,7 +10498,16 @@
               "evidence": "전반이 끝나고 클럽하우스에서 마시는 맥주 한잔도 훌륭하다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9037,7 +10531,17 @@
               "evidence": "난이도 : 조금 어려움(전장은 보통길이다.페어웨이 넓이는 보통인편이었고 페어웨이업다운은 조금 있는편이다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -9076,7 +10580,15 @@
               "evidence": "페어웨이 넓어 비교적 쉬움",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9222,7 +10734,15 @@
               "evidence": "보다시피 그린 관리상태도 꽤나 좋은 편.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9246,7 +10766,15 @@
               "evidence": "클럽하우스 너무 깨끗하고 관리도 잘 되어 있었어요~!!",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "b0ca290fa78b5c28713acfeb",
@@ -9255,7 +10783,15 @@
               "evidence": "전반전은 그린 스피드 느렸어도 관리 상태에 문제는 없었는데 후반에는 그린에서 퍼팅할 때마다 통통 튀었어요.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9293,7 +10829,16 @@
               "evidence": "그 이유는 일단 페어웨이가 많이 좁지 않다는 점.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "53feae707bfd7d88df4a230a",
@@ -9302,7 +10847,16 @@
               "evidence": "페어웨이는 넓고 좋다",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9354,7 +10908,15 @@
               "evidence": "광활하고 넓은 페어웨이: 웬만해서는 해저드나 OB(오비)가 없을 만큼 페어웨이가 아주 넓고 평탄하게 설계되어 있습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -9407,7 +10969,15 @@
               "evidence": "전체적인 시설은 깔끔하게 잘 관리되는 것 같았어요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "c029780e029fbff2f996cc8e",
@@ -9416,7 +10986,15 @@
               "evidence": "아리지CC 페어웨이 관리 잘 되고,",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "3760d4f1b931e3f597f579cb",
@@ -9425,7 +11003,15 @@
               "evidence": "구장을 보시면 페어웨이가 좁지 않고",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9449,7 +11035,15 @@
               "evidence": "날씨도 적당히 구름이 더위의 햇볕을 가려주고, 바람은 많이 불지 않아 우텁지근 하긴 하지만 에어컨이 시원한  클럽하우스 안과 락커에 들어 설때는 항상 기분이 좋다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9501,7 +11095,17 @@
               "evidence": "페어웨이 관리 좋았음.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9561,7 +11165,16 @@
               "evidence": "세컨샷은 심한 내리막 경사, 아시아나cc 동코스 전체에 언듈레이션이 심한 것 같아요ㅠㅠ 그리고 흐린데도 그린은 빠르더라고요.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9585,7 +11198,17 @@
               "evidence": "코스는 페어웨이가 넓은 홀과 좁은 홀이 혼재하고, 업다운이 제법 있어서 다이나믹한 편이며, 블라인드 홀도 많고 페어웨이에도 언듈레이션이 심해서 완전 재미있습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "f32be4d9b85fcad088f910f1",
@@ -9594,7 +11217,17 @@
               "evidence": "코스는 페어웨이가 넓은 홀과 좁은 홀이 혼재하고, 업다운이 제법 있어서 다이나믹한 편이며, 블라인드 홀도 많고 페어웨이에도 언듈레이션이 심해서 완전 재미있습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9696,7 +11329,17 @@
               "evidence": "더헤븐CC는 페어웨이가 넓은 편이라 초보자들도 벌타를 많이 받지 않고",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9749,7 +11392,15 @@
               "evidence": "오래된 느낌이지만 시설면서는 깔끔하게 관리되어",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "b0720100c4719b3a8d1addb8",
@@ -9758,7 +11409,15 @@
               "evidence": "그린 관리가 잘 이루어지고있고",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "8115127c623aa17c0d751195",
@@ -9767,7 +11426,15 @@
               "evidence": "페어웨이가 좁기때문에 확실하게 공략하는게",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "6be86f4e1a194a2730065222",
@@ -9776,7 +11443,15 @@
               "evidence": "페어웨이쪽은 꽤 넓으니 편하게 IP 지점을",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9822,7 +11497,15 @@
               "evidence": "페어웨이는 좁지 않아서 무난하게 티샷할 수 있는데 전장도 그리 길지 않은 편이라서 괜찮으신 분들은 블루티에서 플레이하면 더 재미있을 거 같아요.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -9946,7 +11629,15 @@
               "evidence": "시야가 좁고 페어웨이 좁아 정확도 중요",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "628d98cdfcf7cfdb080e86c2",
@@ -9955,7 +11646,15 @@
               "evidence": "11번홀: 넓은 페어웨이로 무난한 플레이 가능",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "aadc3051e42989b016a015fc",
@@ -9964,7 +11663,15 @@
               "evidence": "16번홀: 연못 해저드와 좁은 페어웨이.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -10032,7 +11739,17 @@
               "evidence": "페어웨이 폭이 살짝 좁게 느껴졌으나 언듈이 거의 없어서 난이도는 쉬운 편이었어요.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10184,7 +11901,17 @@
               "evidence": "좁은 페어웨이와 포대그린.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10244,7 +11971,17 @@
               "evidence": "·  · 너무나도 즐거웠던 여주썬밸리CC 에서의 라운딩 · 9홀 골프장임에도 코스 좋고, 관리 좋고, 심지어 캐디님도 굉장히",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10318,7 +12055,15 @@
               "evidence": "필드 잔디 관리는 상급으로 잘 관리중이네요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10356,7 +12101,17 @@
               "evidence": "영랑호cc는 전반적으로 페어웨이가 넓고, 언듈이 없어서 연습라운등을 하기에 참 좋은 곳이라 생각된다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10458,7 +12213,16 @@
               "evidence": "페어웨이도 좁고, 막창까지 220미터라고 하니 장타자에게는 드라이버가 길것 같고,",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "69f23055429d6ee23341f542",
@@ -10467,7 +12231,16 @@
               "evidence": "앞에는 해저드 갈수록 페어웨이가 좁아지는 홀",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "ccea91fa222b72ec982d8934",
@@ -10476,7 +12249,16 @@
               "evidence": "페어웨이가 좁아 보이면서 오르막",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "9dd04b03e13bbf38c6cf4ea7",
@@ -10485,7 +12267,16 @@
               "evidence": "페어웨이도 좁고, 경사도 심하고 ...",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10559,7 +12350,15 @@
               "evidence": "전체적으로 코스 관리가 잘 되어있고 구성이 재미있어서 좋은 기억을 가지고 있는 오크밸리.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "4b38c478f6f5d883d848c094",
@@ -10568,7 +12367,15 @@
               "evidence": "약간 내리막 파 3 홀로 그린의 왼쪽에 벙커들이 엄청 많습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10698,7 +12505,17 @@
               "evidence": "그린관리까지 잘 되어 있는#올림픽cc필드레슨까지 #골프스윙 #드라이버스윙 #올림픽cc 받을수 있어서 좋아요#골프라운딩#골프#라운딩후기#필드",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -10730,7 +12547,15 @@
               "evidence": "역시 회원제 구장답게 그린도 빠르게 잘굴러갑니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "de0eb135bae4b047be72a63e",
@@ -10739,7 +12564,15 @@
               "evidence": "30년이 된 골프장답게 풍성한 나무와 넓은페어웨이, 그리고 아름다운 호수까지",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "5942659a1497e6a2162e9ed1",
@@ -10748,7 +12581,15 @@
               "evidence": "사진에서 보시다시피 턱이 높은 벙커들이 중간중간 많이 있었어요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10772,7 +12613,17 @@
               "evidence": "필자가 라운딩 하는 날도 그린은 무척 빨랐으며 정오쯤에는 3.0스피드로 체감되었고 해가 저물면서 잔디가 조금 자라서 그런지 습도가 올라가서 그런지 2 후반대 스피드로",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -10838,7 +12689,17 @@
               "evidence": "페어웨이 넓이는 적당했지만, 그린 주변에 다가갈수록 매우 좁아지더군요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -11532,7 +13393,17 @@
               "evidence": "잔디관리도 너무 잘돼있고.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -11584,7 +13455,16 @@
               "evidence": "산허리를 휘감고 도는 식이라 티박스에서 페어웨이나 그린이 좁게 보였고, 산세 사이로 낮은 지역으로 길을 냈기 때문에 그린 뒷편으로 높은 산이 가로막은 모습이 좀 답답했다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -11708,7 +13588,17 @@
               "evidence": "그린은 그래도 관리가 잘되어 있네요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -11732,7 +13622,17 @@
               "evidence": "영상을 보면 알겠지만 확실히 페어웨이 관리는 잘되어 있다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -11891,7 +13791,17 @@
               "evidence": "페어웨이 넓이는 보토인편이었고 페어웨이업다운은 있는편이다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -11936,8 +13846,19 @@
               "label": "positive",
               "evidence": "클럽하우스에서 주는 식사는 아주 깔끔하게 음식이 준비되어 있었습니다.",
               "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "status": "rejected",
+              "confidence": "rejected_extraction",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "음식 준비가 깔끔하다는 문장으로 시설 품질 근거가 아님.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12053,7 +13974,15 @@
               "evidence": "하지만 그린도 빠르고 전반적으로 재미난 곳입니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "3fd8e3cbaa6a5b74a5860f75",
@@ -12062,7 +13991,15 @@
               "evidence": "페어웨이는 중지인데 관리가 정말 잘 되어 있습니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "dcb09eef0782853957ca99f8",
@@ -12071,7 +14008,15 @@
               "evidence": "페어웨이를 밟으면 관리잘된 골프장의 특징인 양단자를 밟는듯이 푹신하고 잔디밀도가 아주 높습니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12124,7 +14069,16 @@
               "evidence": "밸리코스보다는 파크코스의 관리상태가 좀 더 좋은 편이고, 바닥은 모든 홀, 기울기 없이 평평합니다.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12234,7 +14188,17 @@
               "evidence": "단 그린은 좀 느리고, 야간조명은 약간 어두울 정도.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12300,7 +14264,17 @@
               "evidence": "쉬운 코스는 아니다(좌우 산, 좁은 페어웨이가 있고 오르막 내리막 언듈레이션이 있다).",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -12346,7 +14320,15 @@
               "evidence": "좌도그렉홀이며 페어웨이가 엄청 넓다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             },
             {
               "id": "9a18625740877b40d5ec7312",
@@ -12355,7 +14337,15 @@
               "evidence": "평소 잔디 관리를 잘 했다면 그렇게 많은 그린을 보수해서 누더기 상태로 만들지 않았을텐데~ 하는 아쉬움이 컸음.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12379,7 +14369,17 @@
               "evidence": "이름과 달리 힐코스가 더 완만한 평지에 페어웨이도 더 넓고 편안했어요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12431,7 +14431,18 @@
               "evidence": "전반은 캐슬 코스인데 대회 코스 아닌데도 관리 잘되어있구요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review",
+                  "same_author_multiple_sources"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -12492,7 +14503,15 @@
               "evidence": "락커룸도 깔끔하게 잘되있어요.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "outside_freshness_window"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12516,7 +14535,17 @@
               "evidence": "카테고리 이동 더블알 김대표 블로그 · 전반 라운딩은 PRISTIEN 코스에서 진행 하였는데요, · 전체적으로 내리막 홀들이 많았고, 전장 자체가 길지 않고, 페어웨이가 넓은",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12552,9 +14581,18 @@
               "dimension": "fairway",
               "label": "wide",
               "evidence": "페어웨이는 비교적 넓은 편이지만, 도그랙 형 홀이나 해저드가 있는 티샷 구간에서는 부담감이 있었습니다",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "whole_course",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "가평 프리스틴밸리 전체 공략 단락의 체감. 넓어도 도그레그·해저드에서 부담 있다는 제한 보존.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             }
           ]
         },
@@ -12633,9 +14671,18 @@
               "dimension": "fairway",
               "label": "wide",
               "evidence": "페어웨이는 적당히 넓지만, 오히려 애매한 위치의 벙커, 짧지만 까다로운 Par3, 긴 Par4가 매 홀 리듬을 끊는다.",
-              "scope": "unspecified",
-              "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "scope": "whole_course",
+              "status": "human_reviewed",
+              "confidence": "single_review_opinion",
+              "reviewed_at": "2026-09-25",
+              "review_method": "source_context_inspection",
+              "reason": "필로스 반복 방문자의 전체적인 체감. 넓지만 공략이 어려웠다는 반대 맥락 보존.",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [],
+                "scope_verified": true
+              }
             }
           ]
         },
@@ -12887,7 +14934,17 @@
               "evidence": "페어웨이는 대체로 좁고 가끔 큰 언듈레이션이 있는 홀도 여럿입니다.",
               "scope": "unspecified",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         },
@@ -12925,7 +14982,17 @@
               "evidence": "전체적으로 정확도가 중요한 · 페어웨이가 넓은 편은 아니고.",
               "scope": "needs_scope_review",
               "status": "needs_review",
-              "confidence": "unreviewed_extraction"
+              "confidence": "unreviewed_extraction",
+              "screening": {
+                "checked_at": "2026-09-25",
+                "method": "offline_rules_v1",
+                "flags": [
+                  "full_text_missing",
+                  "publication_date_missing",
+                  "firsthand_context_needs_review"
+                ],
+                "scope_verified": false
+              }
             }
           ]
         }
@@ -13244,5 +15311,6 @@
         }
       ]
     }
-  }
+  },
+  "curated_at": "2026-09-25"
 }

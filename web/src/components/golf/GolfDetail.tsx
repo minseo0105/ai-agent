@@ -606,6 +606,23 @@ export default function GolfDetail({ id }: { id: string }) {
 
       <ReviewSection clubId={club.id} initial={club.reviews} />
 
+      {!!club.official_facilities?.length && (
+        <Section title="공식 안내 시설">
+          <div className="space-y-3 text-sm">
+            {club.official_facilities.map((facility) => (
+              <div key={facility.label}>
+                <div className="font-bold">{facility.label}</div>
+                <p className="mt-1 text-muted">{facility.value}</p>
+                <a href={facility.source_url} target="_blank" rel="noreferrer" className="text-xs text-golf underline">
+                  공식 출처{facility.checked_at ? ` · ${facility.checked_at} 확인` : ""}
+                </a>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-muted">시설 존재에 관한 안내입니다. 현재 이용 가능 시간·요금은 공식 홈페이지에서 확인해 주세요.</p>
+        </Section>
+      )}
+
       {(club.completeness || club.sources.items.length > 0 || club.sources.public_status) && (
         <Section
           title="정보 출처 · 데이터 충실도"

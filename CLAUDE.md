@@ -16,3 +16,5 @@ Use `venv\Scripts\python.exe -B -m unittest discover -s tests -p test_golf_impor
 These checks do not call paid APIs. Do not treat the old dated research JSON as fresh research.
 
 Also read `docs/golf_refinement_243_2026-09-24.md`: 243-record review evidence audit, paid search cost, candidate vs reviewed opinions, and scoped UI integration. Do not promote unreviewed review candidates to filters.
+
+Latest changes: read docs/golf_applied_2026-09-25.md for search integrity, 25 added fields, 13 reviewed observations, 4 rejected candidates, price quarantine, regression baseline, and deployment verification. Keep the 243 recommendation record IDs; suspected duplicate identities need separate review.

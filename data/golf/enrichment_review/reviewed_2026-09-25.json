@@ -1,0 +1,430 @@
+{
+  "created_at": "2026-09-25",
+  "results": [
+    {
+      "id": "vworld_인터불고원주g_c",
+      "name": "호텔인터불고 원주 골프클럽",
+      "official_url": "https://ibgolfclub.com/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://ibgolfclub.com/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "033-769-8280"
+        }
+      }
+    },
+    {
+      "id": "kgba_여주클래식",
+      "name": "YJC골프클럽",
+      "official_url": "https://www.yeojuclassic.co.kr/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.yeojuclassic.co.kr/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-883-7000"
+        }
+      }
+    },
+    {
+      "id": "vworld_해비치",
+      "name": "해비치",
+      "official_url": "https://www.haevichi.com/ccseoul/ko/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.haevichi.com/ccseoul/ko/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-579-3000"
+        }
+      }
+    },
+    {
+      "id": "vworld_해비치_2",
+      "name": "해비치cc",
+      "official_url": "https://www.haevichi.com/ccseoul/ko/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.haevichi.com/ccseoul/ko/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-579-3000"
+        }
+      }
+    },
+    {
+      "id": "vworld_신안퍼블릭c_c",
+      "name": "신안 퍼블릭 CC",
+      "official_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-8046-0777"
+        },
+        "official_features": [
+          {
+            "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+            "quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "driving_range",
+            "value": "골프연습장"
+          },
+          {
+            "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+            "quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "par3_course",
+            "value": "PAR3코스"
+          }
+        ],
+        "course_description": {
+          "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+          "quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "공식 안내 기준 회원제 18홀과 대중 9홀, 총 27홀 구성. 1999년 2월 개장했으며 골프연습장과 PAR3코스를 안내합니다."
+        }
+      }
+    },
+    {
+      "id": "kgba_신안",
+      "name": "신안",
+      "official_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-8046-0777"
+        },
+        "official_features": [
+          {
+            "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+            "quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "driving_range",
+            "value": "골프연습장"
+          },
+          {
+            "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+            "quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "par3_course",
+            "value": "PAR3코스"
+          }
+        ],
+        "course_description": {
+          "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+          "quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "공식 안내 기준 회원제 18홀과 대중 9홀, 총 27홀 구성. 1999년 2월 개장했으며 골프연습장과 PAR3코스를 안내합니다."
+        }
+      }
+    },
+    {
+      "id": "vworld_해솔리아",
+      "name": "해솔리아CC",
+      "official_url": "https://www.haesoliacc.co.kr/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.haesoliacc.co.kr/",
+          "quote": "해솔리아 골프장 공식 예약번호. 개인정보관리 담당 번호와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-329-8100"
+        }
+      }
+    },
+    {
+      "id": "kgba_리베라",
+      "name": "리베라 컨트리클럽",
+      "official_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-8047-8000"
+        },
+        "official_features": [
+          {
+            "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+            "quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "driving_range",
+            "value": "골프연습장 2개동(체리·밸리)"
+          },
+          {
+            "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+            "quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+            "reviewed": true,
+            "condition": "",
+            "evidence_type": "paraphrase_of_observed_source",
+            "field": "par3_course",
+            "value": "PAR3코스"
+          }
+        ],
+        "course_description": {
+          "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+          "quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "공식 안내 기준 36홀 회원제 골프장으로 1972년 11월 개장. 골프연습장 2개동(체리·밸리)과 PAR3코스를 안내합니다."
+        }
+      }
+    },
+    {
+      "id": "kgba_감곡",
+      "name": "감곡 컨트리클럽",
+      "official_url": "https://www.gamgokcc.com/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.gamgokcc.com/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "043-882-1600"
+        }
+      }
+    },
+    {
+      "id": "vworld_드림파크골프장",
+      "name": "드림파크골프장",
+      "official_url": "https://www.dreamparkcc.or.kr/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.dreamparkcc.or.kr/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "032-560-1700"
+        }
+      }
+    },
+    {
+      "id": "vworld_여주",
+      "name": "여주CC",
+      "official_url": "https://www.yeojoocc.co.kr",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.yeojoocc.co.kr/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-883-7000"
+        }
+      }
+    },
+    {
+      "id": "kgba_동원썬밸리",
+      "name": "동원썬밸리 컨트리클럽",
+      "official_url": "https://sunvalley.co.kr/dongwon/golf/intro",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://sunvalley.co.kr/dongwon/golf/intro",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "033-344-5308"
+        }
+      }
+    },
+    {
+      "id": "vworld_솔트베이_대중",
+      "name": "솔트베이(대중)",
+      "official_url": "https://www.saltbay.co.kr/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.saltbay.co.kr/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-400-0000"
+        },
+        "green_fees": [
+          {
+            "source_url": "https://www.saltbay.co.kr/Info/ReservationInfo",
+            "quote": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+            "reviewed": true,
+            "condition": "2026년 9월 1부 05:46~05:59 범위 150000~170000원. 인터넷회원 요건·시간별 범위.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "day": "weekday",
+            "session": "all",
+            "customer": "nonmember",
+            "holes": 18,
+            "price_krw": 150000
+          }
+        ]
+      }
+    },
+    {
+      "id": "vworld_석천",
+      "name": "석천CC",
+      "official_url": "https://www.yongincc.com",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "phone": {
+          "source_url": "https://www.yongincc.com/",
+          "quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "value": "031-332-3323"
+        }
+      }
+    },
+    {
+      "id": "vworld_마론뉴데이",
+      "name": "마론뉴데이cc",
+      "official_url": "http://www.maronnewday.com",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "cart_fee": {
+          "source_url": "http://www.maronnewday.com/html/guide02.asp",
+          "quote": "공식 일반 이용요금의 카트비 100,000원. 18홀 중도정산 안내와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "fee_team_krw": 100000
+        },
+        "caddie_fee": {
+          "source_url": "http://www.maronnewday.com/html/guide02.asp",
+          "quote": "공식 일반 이용요금의 캐디피 160,000원. 18홀 중도정산 안내와 구분.",
+          "reviewed": true,
+          "condition": "",
+          "evidence_type": "paraphrase_of_observed_source",
+          "fee_team_krw": 160000
+        }
+      }
+    },
+    {
+      "id": "vworld_오너스g_c",
+      "name": "오너스 골프클럽",
+      "official_url": "https://www.ownersgc.co.kr/",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "green_fees": [
+          {
+            "source_url": "https://www.ownersgc.co.kr/html/news/news_03_01.asp",
+            "quote": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+            "reviewed": true,
+            "condition": "인터넷 회원 가입 여부와 계절·시간별 변동. 정상가와 예약가 구분 필요.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "day": "weekday",
+            "session": "all",
+            "customer": "nonmember",
+            "holes": 18,
+            "price_krw": 190000
+          }
+        ]
+      }
+    },
+    {
+      "id": "kgba_하이원",
+      "name": "하이원 컨트리클럽",
+      "official_url": "https://www.high1.com/golf/index.do",
+      "observed_at": "2026-09-25",
+      "schema_version": 2,
+      "review_method": "human_official_source",
+      "extraction": {
+        "green_fees": [
+          {
+            "source_url": "https://www.high1.com/golf/contents.do?key=762",
+            "quote": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+            "reviewed": true,
+            "condition": "2026년 9월 기본 요금. 6시 할인·8시 할증, 금요일/일요일 2부 요일 예외.",
+            "evidence_type": "paraphrase_of_observed_source",
+            "day": "weekday",
+            "session": "all",
+            "customer": "nonmember",
+            "holes": 18,
+            "price_krw": 160000
+          }
+        ]
+      }
+    }
+  ],
+  "note": "94개 공식 홈페이지 본문 및 32개 연결 페이지 조사. 검토한 빈값만 채움. 조건부 그린피는 후보."
+}

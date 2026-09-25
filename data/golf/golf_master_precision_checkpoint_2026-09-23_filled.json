@@ -8603,10 +8603,10 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-8046-0777",
   "address": "경기도 안성시 고삼면 개울말길 149",
   "official_url": "https://www.shinan.co.kr/business/golf/shinancc",
-  "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+  "course_overview": "공식 안내 기준 회원제 18홀과 대중 9홀, 총 27홀 구성. 1999년 2월 개장했으며 골프연습장과 PAR3코스를 안내합니다.",
   "course_source": "vworld",
   "pool_source": "VWorld LT_P_SGISGOLF",
   "pool_checked": "2026-09-20",
@@ -8743,13 +8743,17 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "official_name",
      "official_url",
      "holes",
-     "course_structure"
+     "course_structure",
+     "phone",
+     "course_overview",
+     "enrichment.facts.driving_range",
+     "enrichment.facts.par3_course"
     ]
    }
   ],
@@ -8861,6 +8865,120 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
+  },
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-8046-0777",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "course_overview",
+     "previous": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+     "value": "공식 안내 기준 회원제 18홀과 대중 9홀, 총 27홀 구성. 1999년 2월 개장했으며 골프연습장과 PAR3코스를 안내합니다.",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "enrichment.facts.driving_range",
+     "previous": null,
+     "value": "골프연습장",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "enrichment.facts.par3_course",
+     "previous": null,
+     "value": "PAR3코스",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.shinan.co.kr/business/golf/shinancc"
+   ],
+   "facts": {
+    "driving_range": "골프연습장",
+    "par3_course": "PAR3코스"
+   }
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "course_overview": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "enrichment.facts.driving_range": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "enrichment.facts.par3_course": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
   }
  },
  {
@@ -11217,10 +11335,10 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-8047-8000",
   "address": "경기도 화성시 중리길 183",
   "official_url": "https://www.shinan.co.kr/business/golf/rivieracc",
-  "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+  "course_overview": "공식 안내 기준 36홀 회원제 골프장으로 1972년 11월 개장. 골프연습장 2개동(체리·밸리)과 PAR3코스를 안내합니다.",
   "course_source": "KGBA",
   "pool_source": "VWorld LT_P_SGISGOLF",
   "pool_checked": "2026-09-20",
@@ -11317,14 +11435,18 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "official_name",
      "official_url",
      "holes",
      "course_names",
-     "course_characteristics"
+     "course_characteristics",
+     "phone",
+     "course_overview",
+     "enrichment.facts.driving_range",
+     "enrichment.facts.par3_course"
     ]
    }
   ],
@@ -11437,6 +11559,120 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
+  },
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-8047-8000",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "course_overview",
+     "previous": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+     "value": "공식 안내 기준 36홀 회원제 골프장으로 1972년 11월 개장. 골프연습장 2개동(체리·밸리)과 PAR3코스를 안내합니다.",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+      "evidence_quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "enrichment.facts.driving_range",
+     "previous": null,
+     "value": "골프연습장 2개동(체리·밸리)",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+      "evidence_quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "enrichment.facts.par3_course",
+     "previous": null,
+     "value": "PAR3코스",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+      "evidence_quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.shinan.co.kr/business/golf/rivieracc"
+   ],
+   "facts": {
+    "driving_range": "골프연습장 2개동(체리·밸리)",
+    "par3_course": "PAR3코스"
+   }
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "course_overview": {
+    "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+    "evidence_quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "enrichment.facts.driving_range": {
+    "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+    "evidence_quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "enrichment.facts.par3_course": {
+    "source_url": "https://www.shinan.co.kr/business/golf/rivieracc",
+    "evidence_quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
   }
  },
  {
@@ -25675,7 +25911,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-883-7000",
   "address": "",
   "official_url": "https://www.yeojoocc.co.kr",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -25802,7 +26038,16 @@
    "evidence": [],
    "last_checked": null
   },
-  "sources": [],
+  "sources": [
+   {
+    "source_type": "official_homepage",
+    "source_url": "https://www.yeojoocc.co.kr/",
+    "fields": [
+     "phone"
+    ],
+    "checked_at": "2026-09-25"
+   }
+  ],
   "automation": {
    "enabled": true,
    "refresh_tier": "priority",
@@ -25929,7 +26174,42 @@
     "derived_at": "2026-09-24",
     "review_item": "vworld_여주"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-883-7000",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.yeojoocc.co.kr/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.yeojoocc.co.kr/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.yeojoocc.co.kr/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "kgba_이포",
@@ -38521,7 +38801,32 @@
      "recorded_at": "2026-09-24"
     }
    ],
-   "candidates": [],
+   "candidates": [
+    {
+     "field": "pricing.fee_records",
+     "value": {
+      "source_url": "https://www.ownersgc.co.kr/html/news/news_03_01.asp",
+      "quote": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+      "reviewed": true,
+      "condition": "인터넷 회원 가입 여부와 계절·시간별 변동. 정상가와 예약가 구분 필요.",
+      "evidence_type": "paraphrase_of_observed_source",
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 190000
+     },
+     "source": "https://www.ownersgc.co.kr/html/news/news_03_01.asp",
+     "evidence": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+     "confidence": "needs_review",
+     "condition": "인터넷 회원 가입 여부와 계절·시간별 변동. 정상가와 예약가 구분 필요.",
+     "observed_at": "2026-09-25",
+     "reason": "fee_scope_review",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "d811d8ea86982c4f55fe3de2a75d89e594c20934b3002a8c29bfb52b00758424"
+    }
+   ],
    "approved_source_urls": [
     "https://www.ownersgc.co.kr/"
    ]
@@ -42828,7 +43133,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "033-769-8280",
   "address": "강원특별자치도 원주시 동부순환로 200 (반곡동)",
   "official_url": "https://ibgolfclub.com/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -42979,6 +43284,14 @@
      "official_url",
      "reservation_method"
     ]
+   },
+   {
+    "source_type": "official_homepage",
+    "source_url": "https://ibgolfclub.com/",
+    "fields": [
+     "phone"
+    ],
+    "checked_at": "2026-09-25"
    }
   ],
   "automation": {
@@ -43102,7 +43415,42 @@
     "derived_at": "2026-09-23",
     "review_item": "vworld_인터불고원주g_c"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "033-769-8280",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://ibgolfclub.com/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://ibgolfclub.com/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://ibgolfclub.com/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "vworld_동서울레스피아",
@@ -48582,7 +48930,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "032-560-1700",
   "address": "인천광역시 서구 거월로 61",
   "official_url": "https://www.dreamparkcc.or.kr/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -48863,13 +49211,14 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.dreamparkcc.or.kr/",
-    "checked_at": "2026-09-22",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "official_name",
      "identity",
      "holes",
-     "course_names"
+     "course_names",
+     "phone"
     ]
    },
    {
@@ -49026,7 +49375,42 @@
     "method": "golf_official_enrich_v2+manual_review",
     "derived_at": "2026-09-24"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "032-560-1700",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.dreamparkcc.or.kr/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.dreamparkcc.or.kr/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.dreamparkcc.or.kr/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "vworld_대명비발디파크골프장",
@@ -49919,7 +50303,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "033-344-5308",
   "address": "강원특별자치도 횡성군 서원면 서원서로339번길 90",
   "official_url": "https://sunvalley.co.kr/dongwon/golf/intro",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -50063,13 +50447,14 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://sunvalley.co.kr/dongwon/golf/intro",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "official_name",
      "official_url",
      "location",
-     "course_structure"
+     "course_structure",
+     "phone"
     ]
    },
    {
@@ -50191,6 +50576,41 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
+  },
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "033-344-5308",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://sunvalley.co.kr/dongwon/golf/intro",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://sunvalley.co.kr/dongwon/golf/intro"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://sunvalley.co.kr/dongwon/golf/intro",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
   }
  },
  {
@@ -53770,7 +54190,10 @@
      "evidence_quote": "4월 | 100,000 | 140,000 | 5월 | 130,000 | 170,000 | 6월 | 160,000 | 190,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53781,7 +54204,10 @@
      "evidence_quote": "4월 | 100,000 | 140,000 | 5월 | 130,000 | 170,000 | 6월 | 160,000 | 190,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53792,7 +54218,10 @@
      "evidence_quote": "4월 | 100,000 | 140,000 | 5월 | 130,000 | 170,000 | 6월 | 160,000 | 190,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53803,7 +54232,10 @@
      "evidence_quote": "4월 | 100,000 | 140,000 | 5월 | 130,000 | 170,000 | 6월 | 160,000 | 190,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53814,7 +54246,10 @@
      "evidence_quote": "6월 | 160,000 | 190,000 | 7월 01일 ~ 7월 17일 | 190,000 | 250,000 | 1부,2부 요금 동일",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53825,7 +54260,10 @@
      "evidence_quote": "6월 | 160,000 | 190,000 | 7월 01일 ~ 7월 17일 | 190,000 | 250,000 | 1부,2부 요금 동일",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53836,7 +54274,10 @@
      "evidence_quote": "7월 01일 ~ 7월 17일 | 190,000 | 250,000 | 1부,2부 요금 동일 | 7월 18일 ~ 8월 23일 | 220,000 | 250,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53847,7 +54288,10 @@
      "evidence_quote": "7월 01일 ~ 7월 17일 | 190,000 | 250,000 | 1부,2부 요금 동일 | 7월 18일 ~ 8월 23일 | 220,000 | 250,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53858,7 +54302,10 @@
      "evidence_quote": "7월 18일 ~ 8월 23일 | 220,000 | 250,000 | 8월 24일 ~ 8월 31일 | 190,000 | 250,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53869,7 +54316,10 @@
      "evidence_quote": "7월 18일 ~ 8월 23일 | 220,000 | 250,000 | 8월 24일 ~ 8월 31일 | 190,000 | 250,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53880,7 +54330,10 @@
      "evidence_quote": "8월 24일 ~ 8월 31일 | 190,000 | 250,000 | 9월 | 160,000 | 190,000 | 6시대 -2만원 8시대 +2만원",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53891,7 +54344,10 @@
      "evidence_quote": "8월 24일 ~ 8월 31일 | 190,000 | 250,000 | 9월 | 160,000 | 190,000 | 6시대 -2만원 8시대 +2만원",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53902,7 +54358,10 @@
      "evidence_quote": "9월 | 160,000 | 190,000 | 6시대 -2만원 8시대 +2만원 | 10월 | 130,000 | 170,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53913,7 +54372,10 @@
      "evidence_quote": "9월 | 160,000 | 190,000 | 6시대 -2만원 8시대 +2만원 | 10월 | 130,000 | 170,000",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53924,7 +54386,10 @@
      "evidence_quote": "10월 | 130,000 | 170,000 | 11~12월 | 110,000 | 140,000 | ※ 금요일 2부 주말, 일요일 2부 주중요금 적용(5월 24일 제외)",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53935,7 +54400,10 @@
      "evidence_quote": "10월 | 130,000 | 170,000 | 11~12월 | 110,000 | 140,000 | ※ 금요일 2부 주말, 일요일 2부 주중요금 적용(5월 24일 제외)",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53946,7 +54414,10 @@
      "evidence_quote": "11~12월 | 110,000 | 140,000 | ※ 금요일 2부 주말, 일요일 2부 주중요금 적용(5월 24일 제외) | ※ 카트 이용료(대당) : 100,000원",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     },
     {
      "record_type": "official_homepage_extract",
@@ -53957,7 +54428,10 @@
      "evidence_quote": "11~12월 | 110,000 | 140,000 | ※ 금요일 2부 주말, 일요일 2부 주중요금 적용(5월 24일 제외) | ※ 카트 이용료(대당) : 100,000원",
      "source_url": "https://www.high1.com/golf/contents.do?key=762",
      "checked_at": "2026-09-24",
-     "confidence": "official_homepage_extracted_quote_verified"
+     "confidence": "official_homepage_extracted_quote_verified",
+     "validation_status": "needs_review",
+     "validation_reason": "월별·시간별 요금을 유효기간 없이 저장한 행. 현재 예산 검색 사용 보류.",
+     "validation_checked_at": "2026-09-25"
     }
    ],
    "last_checked": "2026-09-24",
@@ -54148,7 +54622,46 @@
     "derived_at": "2026-09-24",
     "review_item": "kgba_하이원"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "pricing.fee_records.validation_status",
+     "previous": "unbounded monthly rows",
+     "value": "needs_review",
+     "checked_at": "2026-09-25",
+     "source_url": "https://www.high1.com/golf/contents.do?key=762",
+     "evidence_quote": "2026년 월별 가격 및 시간 할증, 금요일·일요일 2부 예외를 공식 페이지에서 재확인. 기존 금액은 보존.",
+     "confidence": "official_source_context_reviewed"
+    }
+   ],
+   "candidates": [
+    {
+     "field": "pricing.fee_records",
+     "value": {
+      "source_url": "https://www.high1.com/golf/contents.do?key=762",
+      "quote": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+      "reviewed": true,
+      "condition": "2026년 9월 기본 요금. 6시 할인·8시 할증, 금요일/일요일 2부 요일 예외.",
+      "evidence_type": "paraphrase_of_observed_source",
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 160000
+     },
+     "source": "https://www.high1.com/golf/contents.do?key=762",
+     "evidence": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+     "confidence": "needs_review",
+     "condition": "2026년 9월 기본 요금. 6시 할인·8시 할증, 금요일/일요일 2부 요일 예외.",
+     "observed_at": "2026-09-25",
+     "reason": "fee_scope_review",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "9a302b8b46d3819984d02ae85f8e4647fc298cee42b26de7b93c3b6fb4130d28"
+    }
+   ]
+  }
  },
  {
   "id": "vworld_에콜리안정선",
@@ -69727,12 +70240,28 @@
    },
    "caddie": {
     "mode": "unknown",
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 160000,
+    "conditions": [],
+    "source_url": "http://www.maronnewday.com/html/guide02.asp",
+    "evidence_quote": "공식 일반 이용요금의 캐디피 160,000원. 18홀 중도정산 안내와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source",
+    "fresh_until": "2026-12-24"
    },
    "cart": {
-    "fee_team": null,
-    "conditions": []
+    "fee_team": 100000,
+    "conditions": [],
+    "source_url": "http://www.maronnewday.com/html/guide02.asp",
+    "evidence_quote": "공식 일반 이용요금의 카트비 100,000원. 18홀 중도정산 안내와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source",
+    "fresh_until": "2026-12-24"
    }
   },
   "pricing": {
@@ -69761,6 +70290,15 @@
      "phone"
     ],
     "checked_at": "2026-09-24"
+   },
+   {
+    "source_type": "official_homepage",
+    "source_url": "http://www.maronnewday.com/html/guide02.asp",
+    "fields": [
+     "operations.caddie.fee_team",
+     "operations.cart.fee_team"
+    ],
+    "checked_at": "2026-09-25"
    }
   ],
   "automation": {
@@ -69900,11 +70438,46 @@
       "evidence_type": "excerpt"
      },
      "recorded_at": "2026-09-24"
+    },
+    {
+     "field": "operations.caddie.fee_team",
+     "previous": null,
+     "value": 160000,
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "http://www.maronnewday.com/html/guide02.asp",
+      "evidence_quote": "공식 일반 이용요금의 캐디피 160,000원. 18홀 중도정산 안내와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source",
+      "fresh_until": "2026-12-24"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "operations.cart.fee_team",
+     "previous": null,
+     "value": 100000,
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "http://www.maronnewday.com/html/guide02.asp",
+      "evidence_quote": "공식 일반 이용요금의 카트비 100,000원. 18홀 중도정산 안내와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source",
+      "fresh_until": "2026-12-24"
+     },
+     "recorded_at": "2026-09-25"
     }
    ],
    "candidates": [],
    "approved_source_urls": [
-    "http://www.maronnewday.com/"
+    "http://www.maronnewday.com/",
+    "http://www.maronnewday.com/html/guide02.asp"
    ]
   },
   "field_evidence": {
@@ -69916,6 +70489,26 @@
     "method": "human_official_source",
     "condition": "",
     "evidence_type": "excerpt"
+   },
+   "operations.caddie.fee_team": {
+    "source_url": "http://www.maronnewday.com/html/guide02.asp",
+    "evidence_quote": "공식 일반 이용요금의 캐디피 160,000원. 18홀 중도정산 안내와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source",
+    "fresh_until": "2026-12-24"
+   },
+   "operations.cart.fee_team": {
+    "source_url": "http://www.maronnewday.com/html/guide02.asp",
+    "evidence_quote": "공식 일반 이용요금의 카트비 100,000원. 18홀 중도정산 안내와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source",
+    "fresh_until": "2026-12-24"
    }
   }
  },
@@ -121567,7 +122160,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-579-3000",
   "address": "경기도 남양주시 화도읍 재재기로190번길 26",
   "official_url": "https://www.haevichi.com/ccseoul/ko/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -121733,7 +122326,7 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.haevichi.com/ccseoul/ko/",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "current_official_name",
@@ -121871,6 +122464,41 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
+  },
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-579-3000",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.haevichi.com/ccseoul/ko/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.haevichi.com/ccseoul/ko/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.haevichi.com/ccseoul/ko/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
   }
  },
  {
@@ -126416,7 +127044,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-579-3000",
   "address": "경기도 남양주시 화도읍 재재기로190번길 26",
   "official_url": "https://www.haevichi.com/ccseoul/ko/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -126575,7 +127203,7 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.haevichi.com/ccseoul/ko/",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "current_official_name",
@@ -126713,6 +127341,41 @@
    "checkpoint_date": "2026-09-23",
    "base": "latest_work_v3_2_bulk_precision",
    "status": "partial_enrichment_checkpoint"
+  },
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-579-3000",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.haevichi.com/ccseoul/ko/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.haevichi.com/ccseoul/ko/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.haevichi.com/ccseoul/ko/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
   }
  },
  {
@@ -127134,7 +127797,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-400-0000",
   "address": "경기도 시흥시 마유로 987 (장곡동)",
   "official_url": "https://www.saltbay.co.kr/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -127325,6 +127988,14 @@
      "address",
      "identity"
     ]
+   },
+   {
+    "source_type": "official_homepage",
+    "source_url": "https://www.saltbay.co.kr/",
+    "fields": [
+     "phone"
+    ],
+    "checked_at": "2026-09-25"
    }
   ],
   "automation": {
@@ -127458,7 +128129,67 @@
     "derived_at": "2026-09-23",
     "review_item": "vworld_솔트베이_대중"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-400-0000",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.saltbay.co.kr/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [
+    {
+     "field": "pricing.fee_records",
+     "value": {
+      "source_url": "https://www.saltbay.co.kr/Info/ReservationInfo",
+      "quote": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+      "reviewed": true,
+      "condition": "2026년 9월 1부 05:46~05:59 범위 150000~170000원. 인터넷회원 요건·시간별 범위.",
+      "evidence_type": "paraphrase_of_observed_source",
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 150000
+     },
+     "source": "https://www.saltbay.co.kr/Info/ReservationInfo",
+     "evidence": "현재 공식 표의 조건부 가격이며 일반 고정요금으로 반영하지 않음.",
+     "confidence": "needs_review",
+     "condition": "2026년 9월 1부 05:46~05:59 범위 150000~170000원. 인터넷회원 요건·시간별 범위.",
+     "observed_at": "2026-09-25",
+     "reason": "fee_scope_review",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "7bc5a6b1a113b16467d0a5438513d72e7a9a32110361b64fb137b49119a56b34"
+    }
+   ],
+   "approved_source_urls": [
+    "https://www.saltbay.co.kr/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.saltbay.co.kr/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "vworld_안양베네스트",
@@ -134648,7 +135379,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-332-3323",
   "address": "경기 용인시 처인구 백암면 황새울로 255",
   "official_url": "https://www.yongincc.com",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -134729,7 +135460,16 @@
    "evidence": [],
    "last_checked": null
   },
-  "sources": [],
+  "sources": [
+   {
+    "source_type": "official_homepage",
+    "source_url": "https://www.yongincc.com/",
+    "fields": [
+     "phone"
+    ],
+    "checked_at": "2026-09-25"
+   }
+  ],
   "automation": {
    "enabled": true,
    "refresh_tier": "priority",
@@ -134856,7 +135596,42 @@
     "derived_at": "2026-09-23",
     "review_item": "vworld_석천"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-332-3323",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.yongincc.com/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.yongincc.com/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.yongincc.com/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "vworld_용인",
@@ -135857,7 +136632,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-329-8100",
   "address": "경기도 용인시 처인구 이동읍 백자로 369, 해솔리아컨트리클럽",
   "official_url": "https://www.haesoliacc.co.kr/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -136061,13 +136836,14 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.haesoliacc.co.kr/",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "official_name",
      "identity",
      "holes",
-     "course_names"
+     "course_names",
+     "phone"
     ]
    },
    {
@@ -136214,7 +136990,42 @@
     "derived_at": "2026-09-24",
     "review_item": "vworld_해솔리아"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-329-8100",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.haesoliacc.co.kr/",
+      "evidence_quote": "해솔리아 골프장 공식 예약번호. 개인정보관리 담당 번호와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.haesoliacc.co.kr/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.haesoliacc.co.kr/",
+    "evidence_quote": "해솔리아 골프장 공식 예약번호. 개인정보관리 담당 번호와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "vworld_선봉대",
@@ -152537,7 +153348,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-883-7000",
   "address": "경기도 여주시 월평로 78",
   "official_url": "https://www.yeojuclassic.co.kr/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -152689,13 +153500,14 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.yeojuclassic.co.kr/",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "official_name",
      "address",
      "official_url",
-     "operating_status"
+     "operating_status",
+     "phone"
     ]
    }
   ],
@@ -152820,7 +153632,42 @@
     "derived_at": "2026-09-24",
     "review_item": "kgba_여주클래식"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-883-7000",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.yeojuclassic.co.kr/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.yeojuclassic.co.kr/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.yeojuclassic.co.kr/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "kgba_h1_club",
@@ -153573,10 +154420,10 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "031-8046-0777",
   "address": "경기도 안성시 고삼면 개울말길 149",
   "official_url": "https://www.shinan.co.kr/business/golf/shinancc",
-  "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+  "course_overview": "공식 안내 기준 회원제 18홀과 대중 9홀, 총 27홀 구성. 1999년 2월 개장했으며 골프연습장과 PAR3코스를 안내합니다.",
   "course_source": "KGBA",
   "pool_source": "KGBA 회원사 지역별 골프장",
   "pool_checked": "2026-09-20",
@@ -153726,13 +154573,17 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
-    "checked_at": "2026-09-23",
+    "checked_at": "2026-09-25",
     "confidence": "confirmed",
     "fields": [
      "official_name",
      "identity",
      "holes",
-     "course_names"
+     "course_names",
+     "phone",
+     "course_overview",
+     "enrichment.facts.driving_range",
+     "enrichment.facts.par3_course"
     ]
    },
    {
@@ -153874,7 +154725,121 @@
   "vworld_y": 37.09951399909206,
   "merged_from": [
    "vworld_신안c_c"
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "031-8046-0777",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "course_overview",
+     "previous": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
+     "value": "공식 안내 기준 회원제 18홀과 대중 9홀, 총 27홀 구성. 1999년 2월 개장했으며 골프연습장과 PAR3코스를 안내합니다.",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "enrichment.facts.driving_range",
+     "previous": null,
+     "value": "골프연습장",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "enrichment.facts.par3_course",
+     "previous": null,
+     "value": "PAR3코스",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+      "evidence_quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.shinan.co.kr/business/golf/shinancc"
+   ],
+   "facts": {
+    "driving_range": "골프연습장",
+    "par3_course": "PAR3코스"
+   }
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "course_overview": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "공식 그룹 페이지의 해당 지점 규모·개장일·부대시설을 요약.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "enrichment.facts.driving_range": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "신안그룹의 해당 골프장 부대시설 안내. 그룹 내 다른 지점과 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   },
+   "enrichment.facts.par3_course": {
+    "source_url": "https://www.shinan.co.kr/business/golf/shinancc",
+    "evidence_quote": "해당 골프장 부대시설 목록에 PAR3코스 명시.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "southsprings",
@@ -161866,7 +162831,7 @@
    "verified": false,
    "basis": "공식 요금 확인 필요"
   },
-  "phone": "",
+  "phone": "043-882-1600",
   "address": "충청북도 음성군 감곡면 오갑길 195",
   "official_url": "https://www.gamgokcc.com/",
   "course_overview": "상세 코스정보는 공식 홈페이지에서 확인합니다.",
@@ -162083,6 +163048,14 @@
      "holes",
      "course_characteristics"
     ]
+   },
+   {
+    "source_type": "official_homepage",
+    "source_url": "https://www.gamgokcc.com/",
+    "fields": [
+     "phone"
+    ],
+    "checked_at": "2026-09-25"
    }
   ],
   "automation": {
@@ -162206,7 +163179,42 @@
     "derived_at": "2026-09-23",
     "review_item": "kgba_감곡"
    }
-  ]
+  ],
+  "enrichment": {
+   "history": [
+    {
+     "field": "phone",
+     "previous": "",
+     "value": "043-882-1600",
+     "previous_evidence": null,
+     "evidence": {
+      "source_url": "https://www.gamgokcc.com/",
+      "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "recorded_at": "2026-09-25"
+    }
+   ],
+   "candidates": [],
+   "approved_source_urls": [
+    "https://www.gamgokcc.com/"
+   ]
+  },
+  "field_evidence": {
+   "phone": {
+    "source_url": "https://www.gamgokcc.com/",
+    "evidence_quote": "공식 페이지의 해당 골프장 주소·지점명 옆 문의 또는 대표 번호 확인. 그룹 본사·팩스와 구분.",
+    "checked_at": "2026-09-25",
+    "confidence": "official_source_human_reviewed",
+    "method": "human_official_source",
+    "condition": "",
+    "evidence_type": "paraphrase_of_observed_source"
+   }
+  }
  },
  {
   "id": "clubd_theplayers",

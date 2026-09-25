@@ -350,10 +350,10 @@ export default function GolfSearch() {
               placeholder="예: 여주에서 주말 4인, 1인 30만원 이하 골프장 찾아줘"
             />
             <p className="text-xs text-subtle">
-              지역 · 주중/주말 · 인원 · 예산 · 캐디 · 야간 조건을 읽습니다. 조건 충족 여부가 미확인인 곳은 기본 제외하며, 결과에서 ‘미확인 포함해서 보기’로 추가할 수 있습니다.
+              지역 · 주중/주말 · 3·4인 · 그린피 예산 · 캐디 · 야간 조건을 읽습니다. 조건 충족 여부가 미확인인 곳은 기본 제외하며, 결과에서 ‘미확인 포함해서 보기’로 추가할 수 있습니다.
             </p>
             <p className="text-xs text-subtle">
-              ‘페어웨이 넓음’ 등 후기 기반 특징은 아직 확정 필터로 지원하지 않습니다. 지원 지역 밖의 등록 골프장은 ‘직접 찾기’를 이용해 주세요.
+              2인 · 연습장 · PAR3 · ‘페어웨이 넓음’ 등 후기 특징은 아직 검색 필터로 지원하지 않습니다. 지원 지역 밖의 등록 골프장은 ‘직접 찾기’를 이용해 주세요.
             </p>
             <button type="submit" disabled={loading || !text.trim()} className="w-full rounded-xl bg-golf py-3 text-sm font-extrabold text-white transition hover:brightness-110 disabled:opacity-40">
               문장으로 검색

@@ -8,6 +8,7 @@ import sys
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--project',default=str(Path(__file__).resolve().parents[1]));ap.add_argument('--output',required=True)
+    ap.add_argument('--source-date', default=date.today().isoformat(), type=lambda value: date.fromisoformat(value).isoformat())
     args=ap.parse_args();root=Path(args.project);sys.path.insert(0,str(root))
     # During staging the new policy module is loaded from this script's sibling services.
     import importlib.util
@@ -15,7 +16,7 @@ def main():
     policy=importlib.util.module_from_spec(spec);spec.loader.exec_module(policy)
     from services import golf_service as gs
     _,_,pool=gs.load_pools();today=date.today().isoformat()
-    folder=root/'data/golf/runtime'/('refinement_'+today)
+    folder=root/'data/golf/runtime'/('refinement_'+args.source_date)
     previous=root/'data/golf/review_evidence.json'
     old=json.loads(previous.read_text(encoding='utf-8')) if previous.exists() else {}
     output={'schema_version':1,'as_of':today,'scope_count':len(pool),'clubs':{}};audit=[]
@@ -26,19 +27,22 @@ def main():
         prior=old.get('clubs',{}).get(club['id'],{})
         prior_by_url={s['source']:s for s in prior.get('sources',[])}
         for r in raw.get('results',[]):
-            source=policy.extract(r,club,today)
+            source=policy.extract(r,club,raw.get('observed_at') or args.source_date)
             if not source or source['source'] in seen:continue
             seen.add(source['source'])
             prev=prior_by_url.get(source['source'],{})
             if prev.get('content_hash')==source['content_hash']:
-                reviewed={o['id']:o for o in prev.get('observations',[]) if o.get('status') in ('human_reviewed','rejected')}
+                if prev.get('first_person_review_note'):
+                    source['first_person_signal']=prev['first_person_signal']
+                    source['first_person_review_note']=prev['first_person_review_note']
+                reviewed={o['id']:o for o in prev.get('observations',[])}
                 source['observations']=[reviewed.get(o['id'],o) for o in source['observations']]
             elif any(o.get('status')=='human_reviewed' for o in prev.get('observations',[])):
                 source={**prev,'pending_revision':source}
             sources.append(source)
         # Failed or sparse collections never erase previously saved evidence.
         sources.extend(s for s in prior.get('sources',[]) if s['source'] not in seen)
-        entry={'id':club['id'],'name':club['name'],'observed_at':today,'collection_status':raw.get('status','not_collected'),'sources':sources}
+        entry={'id':club['id'],'name':club['name'],'observed_at':raw.get('observed_at') or prior.get('observed_at') or args.source_date,'collection_status':raw.get('status','not_collected'),'sources':sources}
         output['clubs'][club['id']]=entry
         missing=[]
         for key in ('phone','official_url','address','holes'):

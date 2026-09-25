@@ -122,13 +122,32 @@ def _pricing_fee_for_session(club, round_date=None, session_name=None, weekend=N
     return green_fee(club, weekend, session)
 
 
+def _known_team_fee(club, kind):
+    amount = team_fee(club, kind)
+    if amount is not None:
+        return amount
+    # An expired operations value must not revive via legacy data.
+    operation = (club.get("operations") or {}).get(kind) or {}
+    if operation.get("fresh_until") and str(operation["fresh_until"]) < date.today().isoformat():
+        return None
+    fee = club.get("fee") or {}
+    value = fee.get(kind + "_team") if fee.get("verified") else None
+    return value if isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0 else None
+
+
 def estimate_per_person(club, weekend=False, players=4, session=None):
-    """1인 예상비용 = 그린피 + (카트비 + 캐디피) ÷ 인원. 정밀 요금표가 없으면 catalog 방식으로 대체."""
+    """Only show a total when green fee and both team fees are known."""
     green = green_fee(club, bool(weekend), session)
-    if green is None:
-        return _catalog_estimate(club, weekend, players)
-    team = (team_fee(club, "cart") or 0) + (team_fee(club, "caddie") or 0)
-    return int(green + team / max(int(players or 4), 1))
+    if green is None and not (club.get("pricing") or {}).get("fee_records") and session is None:
+        fee = club.get("fee") or {}
+        day = "weekend" if weekend else "weekday"
+        value = fee.get(day + "_green") or fee.get(day)
+        if fee.get("verified") and isinstance(value, (int, float)) and not isinstance(value, bool) and value > 0:
+            green = value
+    cart, caddie = _known_team_fee(club, "cart"), _known_team_fee(club, "caddie")
+    if green is None or cart is None or caddie is None:
+        return None
+    return int(green + (cart + caddie) / max(int(players or 4), 1))
 
 
 # 정밀 DB operations.caddie.mode → 화면 구분
@@ -423,21 +442,9 @@ def naver_geocode(query, api_key_id, api_key):
 
 
 def _sort_price(course, cond):
-    """선택한 주중/주말·부 가격을 우선하고, 없으면 기존 1인 예상가를 사용."""
-    session_fee = _cond_session_fee(course, cond)
-    if session_fee is not None:
-        return float(session_fee)
-
-    try:
-        est = estimate_per_person(
-            course,
-            bool((cond or {}).get("weekend")),
-            int((cond or {}).get("players") or 4),
-        )
-    except Exception:
-        est = None
-
-    return float(est) if est is not None else float("inf")
+    """Sort by the same green fee used by the budget filter; unknowns last."""
+    amount = _cond_session_fee(course, cond)
+    return float(amount) if amount is not None else float("inf")
 
 
 def _distance_from_departure(course, departure_coord):
@@ -1297,7 +1304,7 @@ def _condition_sort_key(club, cond):
     price_missing = 0
     if cond.get("budget"):
         try:
-            estimated = estimate_per_person(club, bool(cond.get("weekend")), int(cond.get("players") or 4))
+            estimated = _cond_session_fee(club, cond)
         except Exception:
             estimated = None
         price_missing = 0 if _has_amount(estimated) else 1
@@ -1346,7 +1353,7 @@ def _recommendation_score(club, cond):
 
     if cond.get("budget"):
         try:
-            estimated = estimate_per_person(club, bool(cond.get("weekend")), int(cond.get("players") or 4))
+            estimated = _cond_session_fee(club, cond)
         except Exception:
             estimated = None
         if estimated is not None:
@@ -1415,11 +1422,9 @@ def _run_search(cond, sort="추천순", departure_status=None, city=None):
     for club in search_clubs:
         ok = _matches_caddie(club, cond.get("caddie"))
         if ok and cond.get("budget"):
-            # 화면의 예산은 '그린피' 기준. 그린피를 알면 그린피로, 모르면 1인 예상가로 비교한다.
+            # 화면의 예산은 그린피 기준이며 총액과 혼용하지 않는다.
             try:
                 est = _cond_session_fee(club, cond)
-                if est is None:
-                    est = estimate_per_person(club, bool(cond.get("weekend")), int(cond.get("players") or 4))
             except Exception:
                 est = None
             if est is not None and est > cond["budget"]:
@@ -1546,14 +1551,33 @@ def ai_search(text, sort="추천순", include_unknown=False):
     """AI 문장검색: 문장을 조건으로 해석한 뒤 조건 검색과 같은 엔진·같은 기준으로 찾는다."""
     cond = ai_condition(text)
     cond["include_unknown"] = include_unknown
-    result = _run_search(cond, sort, None, city=str(cond["city"]) if cond.get("city") else None)
+    unsupported = []
+    compact = re.sub(r"\s+", "", text).lower()
+    if re.search(r"(?<!\d)2인|두명|둘이|2명|커플라운", compact):
+        unsupported.append("2인 플레이")
+    for pattern, label in ((r"연습장|드라이빙레인지", "연습장 시설"), (r"par3|파3|파쓰리", "PAR3 시설")):
+        if re.search(pattern, compact):
+            unsupported.append(label)
+    if cond.get("traits") or re.search(r"페어웨이.*(?:넓|좁)|벙커.*(?:많|적)|시설.*(?:좋|깔끔)|그린.*(?:빠르|빠른|느린)", compact):
+        unsupported.append("후기 기반 특징")
+    if unsupported:
+        trace = dict.fromkeys(("total", "area", "subregion", "final", "conditional", "confirmed", "pending", "excluded", "unknown_excluded", "unknown_included"), 0)
+        trace["total"] = len(load_pools()[2])
+        trace["unknown_reasons"] = {}
+        result = _build_results([], cond, trace, sort, None)
+        result["applied"] = []
+        result["include_unknown"] = bool(include_unknown)
+        result["notice"] = "요청한 " + ", ".join(unsupported) + " 조건은 검증된 자료가 부족해 아직 검색 필터로 지원하지 않습니다. 해당 조건을 제외하고 다시 검색해 주세요. 조건을 무시한 추천 결과는 표시하지 않았습니다."
+        result["unsupported_conditions"] = unsupported
+    else:
+        result = _run_search(cond, sort, None, city=str(cond["city"]) if cond.get("city") else None)
     if cond.get('area') not in (None, '전체', *SUPPORTED_GOLF_AREAS):
         result['notice'] = f"{cond['area']}은 현재 추천 지원 지역이 아닙니다. 조건·AI 문장검색은 수도권·충청권·강원권을 지원합니다. 등록된 골프장은 ‘직접 찾기’에서 이름으로 조회할 수 있습니다."
     result["parsed"] = {
         "area": cond.get("area") if cond.get("area") not in (None, "전체") else "지원 지역 전체",
         "city": cond.get("city") or "전체",
         "day": "주말/공휴일" if cond.get("weekend") else "주중",
-        "players": f"{cond.get('players', 4)}인",
+        "players": "2인 (미지원)" if "2인 플레이" in unsupported else f"{cond.get('players', 4)}인",
         "budget": f"{cond['budget'] // 10000}만원 이하" if cond.get("budget") else "제한 없음",
         "caddie": cond.get("caddie") if cond.get("caddie") != "전체" else "",
         "night": "야간" if cond.get("night") else "",
@@ -1862,10 +1886,10 @@ def _fee_block(club):
     """정밀 요금표(pricing) 요약 + 카트/캐디 팀 요금. 요금표가 없으면 기존 fee 방식."""
     summary = fee_summary(club)
     if summary and (summary["weekday"] or summary["weekend"] or summary["unspecified"]):
-        cart, caddie = team_fee(club, "cart"), team_fee(club, "caddie")
+        cart, caddie = _known_team_fee(club, "cart"), _known_team_fee(club, "caddie")
         per_person = ((cart or 0) + (caddie or 0)) / 4
         def total(rng):
-            return [int(rng[0] + per_person), int(rng[1] + per_person)] if rng else None
+            return [int(rng[0] + per_person), int(rng[1] + per_person)] if rng and cart is not None and caddie is not None and summary["is_current"] else None
         return {
             "verified": True,
             "kind": "table",
@@ -1877,8 +1901,8 @@ def _fee_block(club):
             "checked_at": summary["checked_at"],
             "latest_notice_month": summary["latest_notice_month"],
             "source_url": summary["source_url"],
-            "note": ("비회원 18홀 공식 요금 기준 · 1인 예상은 카트·캐디 팀요금 ÷ 4 포함"
-                     + ("" if summary["is_current"] else " · 현재 기간 요금표가 없어 가장 최근 공식 요금으로 표시")),
+            "note": ("비회원 18홀 공식 요금 기준 · " + ("1인 예상은 카트·캐디 팀요금 ÷ 4 포함" if cart is not None and caddie is not None else "카트·캐디 부대비용 미확인 항목이 있어 총액 계산 보류")
+                     + ("" if summary["is_current"] else " · 현재 조건 적용이 확인되지 않은 참고 요금")),
         }
     fee = club.get("fee", {}) or {}
     # 그린피 값이 실제로 없으면(예: '실시간 변동'이라 0으로 저장된 경우) 확인된 요금으로 보여주지 않는다.
@@ -1893,15 +1917,15 @@ def _fee_block(club):
             "weekend_total": estimate_per_person(club, True, 4),
             "weekday_green": fee.get("weekday_green") or fee.get("weekday") or 0,
             "weekend_green": fee.get("weekend_green") or fee.get("weekend") or 0,
-            "cart": fee.get("cart_team", 0),
-            "caddie": fee.get("caddie_team", 0),
+            "cart": _known_team_fee(club, "cart"),
+            "caddie": _known_team_fee(club, "caddie"),
             "note": f'{fee.get("basis", "공식 안내")} · 4인 기준 · 3인 {three_person} · 실제 예약가 변동 가능',
         }
     extras = []
-    cart, caddie = fee.get("cart_team") or team_fee(club, "cart"), fee.get("caddie_team") or team_fee(club, "caddie")
-    if cart:
+    cart, caddie = _known_team_fee(club, "cart"), _known_team_fee(club, "caddie")
+    if cart is not None:
         extras.append(f'카트 {won(cart)} / 팀')
-    if caddie:
+    if caddie is not None:
         extras.append(f'캐디 {won(caddie)} / 팀')
     detail = " · ".join(extras) if extras else "상세요금 공식 확인 필요"
     return {"verified": False, "text": f'{fee.get("basis", "그린피 공식 확인 필요")} · {detail}',
@@ -2099,8 +2123,50 @@ def _sources_block(club):
             "public_checked_at": public.get("data_updated_at") or public.get("checked_at") or ""}
 
 
+def _official_facilities(club):
+    labels = {"driving_range": "골프연습장", "par3_course": "PAR3 코스", "practice_green": "연습 그린"}
+    facts = (club.get("enrichment") or {}).get("facts") or {}
+    evidence = club.get("field_evidence") or {}
+    result = []
+    for key, label in labels.items():
+        value = facts.get(key)
+        proof = evidence.get("enrichment.facts." + key) or {}
+        if value is None or not proof.get("source_url"):
+            continue
+        if isinstance(value, dict):
+            parts = []
+            if value.get("available") is False:
+                parts.append("없음")
+            if value.get("bays"):
+                parts.append(f"{value['bays']}타석")
+            if value.get("length_yd"):
+                parts.append(f"{value['length_yd']}야드")
+            practices = {"putting": "퍼팅 연습", "bunker_shot": "벙커 연습"}
+            parts.extend(practices[p] for p in value.get("practice", []) if p in practices)
+            weekdays = {"Monday": "월", "Tuesday": "화", "Wednesday": "수", "Thursday": "목", "Friday": "금", "Saturday": "토", "Sunday": "일"}
+            if value.get("closed_weekday") in weekdays:
+                parts.append(weekdays[value["closed_weekday"]] + "요일 휴무")
+            display = " · ".join(parts) or "공식 안내 확인"
+        elif isinstance(value, bool):
+            display = "있음" if value else "없음"
+        else:
+            display = str(value)
+        result.append({"label": label, "value": display, "source_url": proof["source_url"],
+                       "checked_at": proof.get("observed_at") or proof.get("checked_at") or ""})
+    return result
+
+
 def _completeness_block(club):
-    cats = ((club.get("precision_assessment") or {}).get("categories")) or {}
+    cats = dict(((club.get("precision_assessment") or {}).get("categories")) or {})
+    # Derived display status, never mutate historical assessments in the DB.
+    evidence = club.get("field_evidence") or {}
+    for kind in ("cart", "caddie"):
+        if _known_team_fee(club, kind) is not None and cats.get(kind) in (None, "missing"):
+            cats[kind] = "partial"
+    if (club.get("pricing") or {}).get("fee_records") and cats.get("green_fee") in (None, "missing"):
+        cats["green_fee"] = "partial"
+    if evidence.get("phone") and cats.get("basic_identity") == "missing":
+        cats["basic_identity"] = "partial"
     items = [{"label": _CATEGORY_LABELS.get(k, k), "status": v} for k, v in cats.items() if k in _CATEGORY_LABELS]
     if not items:
         return None
@@ -2300,6 +2366,7 @@ def club_detail(club_id, search=None):
         "ratings": _kga_ratings_table(club),
         "sources": _sources_block(club),
         "completeness": _completeness_block(club),
+        "official_facilities": _official_facilities(club),
         "reviews": _reviews_block(club),
     }
 

@@ -1,0 +1,2381 @@
+{
+  "as_of": "2026-09-25",
+  "records": 527,
+  "recommendation_records": 243,
+  "before": {
+    "official_url": 215,
+    "phone": 154,
+    "address": 235,
+    "holes": 221,
+    "pricing.fee_records": 118,
+    "operations.caddie.fee_team": 136,
+    "operations.cart.fee_team": 140
+  },
+  "after": {
+    "official_url": 215,
+    "phone": 168,
+    "address": 235,
+    "holes": 221,
+    "pricing.fee_records": 118,
+    "operations.caddie.fee_team": 137,
+    "operations.cart.fee_team": 141
+  },
+  "facts_changed": 15,
+  "changed_fields": 25,
+  "official_research": {
+    "target_records": 147,
+    "fetched_homepages": 94,
+    "fetched_pages": 126,
+    "no_official_url": 28,
+    "unavailable": 25
+  },
+  "quarantined_monthly_price_rows": 18,
+  "identity_review_groups": [
+    [
+      "vworld_해비치",
+      "vworld_해비치_2"
+    ],
+    [
+      "vworld_여주",
+      "kgba_여주클래식"
+    ],
+    [
+      "kgba_신안",
+      "vworld_신안퍼블릭c_c"
+    ]
+  ],
+  "identity_review_note": "동일 시설/회원제·대중제 분리 여부 검토 필요. ID 병합이나 Pool 변경은 하지 않음. 파주프리스틴밸리와 노스팜 연결도 명칭 검토 보류.",
+  "paid_api_calls": 0,
+  "items": [
+    {
+      "id": "vworld_스마트ku골프파빌리온",
+      "name": "스마트KU골프파빌리온",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_서원밸리g_c",
+      "name": "서원밸리 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_베스트밸리",
+      "name": "베스트밸리골프클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_주_파주",
+      "name": "(주)파주컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_파주프리스틴밸리",
+      "name": "파주프리스틴밸리",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_타이거",
+      "name": "타이거CC",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_안성c_c",
+      "name": "안성CC",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_안성베네스트g_c",
+      "name": "안성베네스트G.C",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_윈체스트",
+      "name": "윈체스트골프클럽",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_파인크리크c_c",
+      "name": "파인크리크 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_마에스트로c_c",
+      "name": "마에스트로 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_신안퍼블릭c_c",
+      "name": "신안 퍼블릭 CC",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_골프존카운티_안성h",
+      "name": "골프존카운티 안성H",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_김포seaside",
+      "name": "김포SEASIDE컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_기흥",
+      "name": "기흥 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_리베라",
+      "name": "리베라 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_발리오스",
+      "name": "발리오스 컨트리클럽",
+      "missing_fields": [
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_링크나인",
+      "name": "링크나인골프클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_화성",
+      "name": "화성골프클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_화성상록",
+      "name": "화성상록",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_강남300",
+      "name": "강남300",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_블루버드",
+      "name": "블루버드",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_곤지암",
+      "name": "곤지암",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_그린힐",
+      "name": "그린힐",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_남촌",
+      "name": "남촌",
+      "missing_fields": [
+        "phone",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_뉴서울",
+      "name": "뉴서울",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_이스트밸리",
+      "name": "이스트밸리",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_레이크우드",
+      "name": "레이크우드 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_송추",
+      "name": "송추 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_몽베르",
+      "name": "몽베르컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_일동레이크",
+      "name": "일동레이크 골프클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_포천아도니스",
+      "name": "포천아도니스컨트리클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_필로스",
+      "name": "필로스",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_푸른솔",
+      "name": "푸른솔GC 장성",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_베어크리크",
+      "name": "베어크리크",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_포천힐스",
+      "name": "포천힐스 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_포레스트힐",
+      "name": "포레스트힐 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_참밸리c_c",
+      "name": "참밸리C.C",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_금강",
+      "name": "금강 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_렉스필드",
+      "name": "렉스필드",
+      "missing_fields": [
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "blueheron",
+      "name": "블루헤런GC",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_솔모로",
+      "name": "솔모로",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_스카이밸리",
+      "name": "스카이밸리",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_신라",
+      "name": "신라CC",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_여주",
+      "name": "여주CC",
+      "missing_fields": [
+        "address"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_이포",
+      "name": "이포",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_자유",
+      "name": "자유 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_캐슬파인",
+      "name": "캐슬파인GC",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_세라지오",
+      "name": "세라지오",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_해슬리나인브릿지",
+      "name": "해슬리나인브릿지",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_남여주",
+      "name": "남여주 골프클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_소피아그린",
+      "name": "소피아그린",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_아리지",
+      "name": "아리지CC",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_360도",
+      "name": "360도 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_여주썬밸리",
+      "name": "여주썬밸리 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_페럼클럽",
+      "name": "페럼클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_잭니클라우스코리아",
+      "name": "잭니클라우스 골프클럽 코리아",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_가평베네스트g_c",
+      "name": "가평베네스트 골프클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_썬힐g_c",
+      "name": "썬힐G.C",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_크리스탈밸리g_c",
+      "name": "크리스탈밸리 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_프리스틴밸리g_c",
+      "name": "프리스틴밸리 골프클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_인서울27_주",
+      "name": "인서울27골프클럽(주)",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_리앤리",
+      "name": "리앤리CC",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_베뉴지",
+      "name": "베뉴지 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_더스타휴골프장",
+      "name": "더스타 휴 골프장",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "jade",
+      "name": "제이드팰리스GC",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_남춘천c_c",
+      "name": "남춘천 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_파가니카c_c",
+      "name": "파가니카 C.C",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_라데나",
+      "name": "라데나 골프클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_오너스g_c",
+      "name": "오너스 골프클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_인천오렌지듄스",
+      "name": "인천오렌지듄스골프클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_스프링베일리조트",
+      "name": "스프링베일 골프클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_로드힐스",
+      "name": "로드힐스 골프&리조트",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_베어크리크_2",
+      "name": "베어크리크골프클럽 포천",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_오크밸리회원제골프장",
+      "name": "오크밸리 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_오크힐스",
+      "name": "오크힐스 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_센추리21",
+      "name": "센추리21 컨트리클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_센추리21",
+      "name": "센추리21CC-Ⅱ",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_인천국제c_c",
+      "name": "인천국제C.C",
+      "missing_fields": [
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_파크밸리",
+      "name": "파크밸리 골프클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_인터불고원주g_c",
+      "name": "호텔인터불고 원주 골프클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_동서울레스피아",
+      "name": "동서울레스피아CC",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_샌드파인",
+      "name": "샌드파인 골프클럽",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_메이플비치골프_리조트",
+      "name": "메이플비치 골프&리조트",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_o2리조트회원제",
+      "name": "O2리조트회원제",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_인천그랜드c_c",
+      "name": "인천그랜드 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_o2리조트대중제",
+      "name": "O2리조트대중제",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_설악프라자",
+      "name": "플라자CC 설악",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_영랑호",
+      "name": "영랑호CC",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_파인밸리",
+      "name": "파인밸리 C.C",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_블랙밸리",
+      "name": "블랙밸리",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_힐드로사이c_c",
+      "name": "힐드로사이 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_클럽모우골프_라이프스타일",
+      "name": "클럽모우 골프&라이프스타일",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_홍천c_c",
+      "name": "홍천 C.C",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "address",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_소노펠리체",
+      "name": "소노펠리체",
+      "missing_fields": [
+        "phone",
+        "holes",
+        "pricing.fee_records"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_드림파크골프장",
+      "name": "드림파크골프장",
+      "missing_fields": [],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_오스타",
+      "name": "오스타CC",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_청우",
+      "name": "청우GC",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_동원썬밸리",
+      "name": "동원썬밸리 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_오스타퍼블릭",
+      "name": "오스타퍼블릭",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "address",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_섬강벨라스톤",
+      "name": "섬강벨라스톤",
+      "missing_fields": [
+        "address"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_알펜시아",
+      "name": "알펜시아 컨트리클럽",
+      "missing_fields": [
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_베어즈베스트청라",
+      "name": "베어즈베스트청라골프클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_휘닉스파크",
+      "name": "휘닉스 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_알펜시아700",
+      "name": "알펜시아 700 G.C",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_하이원",
+      "name": "하이원 컨트리클럽",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_에콜리안정선",
+      "name": "에콜리안 정선 골프장",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_한탄강",
+      "name": "한탄강 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "pineridge",
+      "name": "파인리즈CC",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_알프스퍼블릭",
+      "name": "알프스퍼블릭",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_대명설악",
+      "name": "소노펠리체 CC 델피노",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_설악썬밸리",
+      "name": "설악썬밸리 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_이븐데일",
+      "name": "이븐데일",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_떼제베",
+      "name": "청주떼제베",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_떼제베_2",
+      "name": "떼제베CC",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_그랜드",
+      "name": "그랜드",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_센테리움",
+      "name": "센테리움 컨트리클럽",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_로얄포레",
+      "name": "올데이 로얄포레",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_동촌",
+      "name": "동촌골프클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_중원",
+      "name": "중원골프클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kingsdale",
+      "name": "킹스데일GC",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_대영힐스",
+      "name": "대영힐스 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_세일",
+      "name": "세일컨트리클럽",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_힐데스하임",
+      "name": "킹즈락CC",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_벨포레",
+      "name": "벨포레CC",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "address",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_theemersongoldclub",
+      "name": "THE EMERSON GoldClub",
+      "missing_fields": [
+        "phone",
+        "address",
+        "holes"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_천룡골프장",
+      "name": "천룡컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_아트밸리",
+      "name": "아트밸리컨트리클럽",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_천룡골프장_2",
+      "name": "천룡골프장",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_크리스탈카운티",
+      "name": "크리스탈카운티CC",
+      "missing_fields": [
+        "phone",
+        "address",
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "rainbow",
+      "name": "레인보우힐스CC",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_젠스필드",
+      "name": "젠스필드 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_코스카",
+      "name": "코스카 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_진양밸리",
+      "name": "진양밸리CC",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_대호단양",
+      "name": "대호단양 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_버드우드g_c",
+      "name": "골프존카운티 천안",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_우정힐스c_c",
+      "name": "우정힐스 컨트리클럽",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_마론뉴데이",
+      "name": "마론뉴데이cc",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_유성",
+      "name": "유성",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_프린세스c_c",
+      "name": "포웰CC 프린세스",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_도고c_c",
+      "name": "도고 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_더힐",
+      "name": "더힐 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_파나시아골프장",
+      "name": "파나시아골프장",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_에딘버러c_c",
+      "name": "에딘버러 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_백제",
+      "name": "백제컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_태안비치c_c",
+      "name": "스톤비치",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_골든베이골프_리조트",
+      "name": "골든베이 골프&리조트",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_파인스톤c_c",
+      "name": "파인스톤컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_세종에머슨",
+      "name": "세종에머슨",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_세종필드",
+      "name": "세종필드",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_김천포도",
+      "name": "포도 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_세종레이캐슬",
+      "name": "세종레이캐슬GC",
+      "missing_fields": [
+        "holes"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_문경",
+      "name": "문경 골프클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_엠스클럽의성_18홀",
+      "name": "엠스클럽의성(18홀)",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_남서울골프장",
+      "name": "남서울 컨트리클럽",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_티클라우드",
+      "name": "티클라우드 컨트리클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_아일랜드_회원",
+      "name": "아일랜드(회원)",
+      "missing_fields": [
+        "official_url",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_아일랜드_대중",
+      "name": "더헤븐 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_뉴코리아",
+      "name": "뉴코리아 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_해비치",
+      "name": "해비치",
+      "missing_fields": [
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_한양",
+      "name": "서울·한양컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_올림픽",
+      "name": "올림픽CC",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_고양컨트리",
+      "name": "고양컨트리",
+      "missing_fields": [
+        "phone",
+        "address",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_고양",
+      "name": "고양컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_양주",
+      "name": "양주 컨트리클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_비전힐스",
+      "name": "비전힐스 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_해비치_2",
+      "name": "해비치cc",
+      "missing_fields": [
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_솔트베이_대중",
+      "name": "솔트베이(대중)",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "vworld_안양베네스트",
+      "name": "안양컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_캐슬렉스_2",
+      "name": "캐슬렉스 서울 골프클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "lakeside",
+      "name": "레이크사이드 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_레이크힐스용인",
+      "name": "레이크힐스용인컨트리클럽",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_신원c_c",
+      "name": "신원 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_아시아나c_c",
+      "name": "아시아나 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_은화삼",
+      "name": "은화삼 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_지산",
+      "name": "지산 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_프라자c_c",
+      "name": "플라자CC 용인",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_한원",
+      "name": "한원 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_화산",
+      "name": "화산",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "vworld_글렌로스",
+      "name": "글렌로스골프클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_석천",
+      "name": "석천CC",
+      "missing_fields": [
+        "holes",
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_써닝포인트",
+      "name": "써닝포인트 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "vworld_해솔리아",
+      "name": "해솔리아CC",
+      "missing_fields": [],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "88cc",
+      "name": "88컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_골드",
+      "name": "골드컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_남부",
+      "name": "남부",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_수원",
+      "name": "수원",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_한성",
+      "name": "한성컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_라비에벨_듄스",
+      "name": "라비에벨CC 듄스코스",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "whistling",
+      "name": "휘슬링락CC",
+      "missing_fields": [
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_플라자cc_설악",
+      "name": "플라자CC 설악",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_카스카디아",
+      "name": "카스카디아 골프클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_웰리힐리",
+      "name": "웰리힐리 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_용평",
+      "name": "용평 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_올데이_옥스필드",
+      "name": "올데이 옥스필드",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "oak",
+      "name": "오크밸리CC",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_엘리시안강촌",
+      "name": "엘리시안 강촌 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_세이지우드_홍천",
+      "name": "세이지우드CC 홍천",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_설해원",
+      "name": "설해원",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_베어크리크_춘천",
+      "name": "베어크리크 골프클럽 춘천",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_라비에벨_올드",
+      "name": "라비에벨CC 올드코스",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_샴발라",
+      "name": "샴발라 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_해비치_서울",
+      "name": "해비치 컨트리클럽 서울",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_푸른솔포천",
+      "name": "푸른솔GC 포천",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_잭니클라우스",
+      "name": "잭 니클라우스 골프클럽 코리아",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_아난티클럽서울",
+      "name": "아난티 코드 골프 클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_썬힐",
+      "name": "썬힐골프클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_서서울",
+      "name": "서서울 컨트리클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_노스팜",
+      "name": "노스팜 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_더_시에나_서울",
+      "name": "더 시에나 서울",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_페럼",
+      "name": "페럼클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_크리스밸리",
+      "name": "크리스밸리",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_웰링턴",
+      "name": "웰링턴 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_여주클래식",
+      "name": "YJC골프클럽",
+      "missing_fields": [],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_h1_club",
+      "name": "H1 CLUB",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_안성베네스트",
+      "name": "안성베네스트 골프클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_신안",
+      "name": "신안",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "southsprings",
+      "name": "사우스스프링스 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_비에이비스타",
+      "name": "비에이비스타",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "blackstone",
+      "name": "블랙스톤 이천",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_마이다스레이크_이천",
+      "name": "마이다스레이크 이천",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_route52",
+      "name": "ROUTE52 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_더스타휴",
+      "name": "더스타휴",
+      "missing_fields": [
+        "official_url",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_플라자cc_용인",
+      "name": "플라자CC 용인",
+      "missing_fields": [
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_코리아",
+      "name": "코리아컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_제일",
+      "name": "제일 컨트리클럽",
+      "missing_fields": [
+        "phone"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_안성",
+      "name": "안성",
+      "missing_fields": [
+        "official_url",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_골프클럽q",
+      "name": "골프클럽Q",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "kgba_예미지",
+      "name": "예미지 컨트리클럽",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_킹즈락",
+      "name": "킹즈락 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_천안상록",
+      "name": "천안상록 컨트리클럽",
+      "missing_fields": [
+        "phone",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_천룡",
+      "name": "천룡",
+      "missing_fields": [
+        "official_url",
+        "phone",
+        "holes",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "no_official_url",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_올데이_임페리얼레이크",
+      "name": "올데이 임페리얼레이크",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_sg아름다운",
+      "name": "SG아름다운",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_아난티중앙",
+      "name": "아난티 중앙 골프클럽",
+      "missing_fields": [
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "kgba_서산수",
+      "name": "서산수",
+      "missing_fields": [
+        "phone",
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_롯데스카이힐_부여",
+      "name": "롯데스카이힐CC 부여",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "kgba_감곡",
+      "name": "감곡 컨트리클럽",
+      "missing_fields": [
+        "pricing.fee_records"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 2
+    },
+    {
+      "id": "clubd_theplayers",
+      "name": "클럽디 더플레이어스",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "club72",
+      "name": "원더클럽 클럽72CC",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "unavailable",
+      "pages_fetched": 0
+    },
+    {
+      "id": "clubd_boeun",
+      "name": "클럽디 보은",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    },
+    {
+      "id": "silkriver",
+      "name": "청주 세레니티",
+      "missing_fields": [
+        "pricing.fee_records",
+        "operations.caddie.fee_team",
+        "operations.cart.fee_team"
+      ],
+      "official_audit": "fetched",
+      "pages_fetched": 1
+    },
+    {
+      "id": "lavie",
+      "name": "라비에벨CC",
+      "missing_fields": [],
+      "official_audit": "not_targeted_phone_and_greenfee_present",
+      "pages_fetched": 0
+    }
+  ]
+}

@@ -1,0 +1,3074 @@
+{
+  "as_of": "2026-09-25",
+  "scope": 243,
+  "observations": 235,
+  "statuses": {
+    "needs_review": 218,
+    "human_reviewed": 13,
+    "rejected": 4
+  },
+  "flags": {
+    "full_text_missing": 66,
+    "publication_date_missing": 127,
+    "firsthand_context_needs_review": 106,
+    "sponsorship_suspected": 5,
+    "outside_freshness_window": 81,
+    "context_ambiguity": 5,
+    "same_author_multiple_sources": 3
+  },
+  "new_context_decisions": [
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "63ac65a33389249e80cd1c67",
+      "status": "human_reviewed",
+      "scope": "Lake 2번 홀",
+      "reason": "2025-05-24 방문일과 2번 홀 소제목 확인. 높고 많은 벙커라는 해당 홀 의견."
+    },
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "69891c86ce9c2579c94742ca",
+      "status": "human_reviewed",
+      "scope": "Lake 4번 홀",
+      "reason": "4번 홀 소제목 아래의 페어웨이 설명. 전체 코스에 일반화하지 않음."
+    },
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "7df2c4e141dca6c606eef4ea",
+      "status": "human_reviewed",
+      "scope": "Mountain 17번 홀",
+      "reason": "17번 홀 소제목과 이벤트 홀 문맥 확인."
+    },
+    {
+      "club_id": "kgba_비에이비스타",
+      "observation_id": "2bb076abccdc07e549052d9d",
+      "status": "human_reviewed",
+      "scope": "락커룸·카트",
+      "reason": "실제 라운드 중 관찰한 노후 의견. 다른 시설에는 긍정 의견도 있어 시설 전체 평가로 확대하지 않음."
+    },
+    {
+      "club_id": "kgba_천안상록",
+      "observation_id": "90787380afdfd292e53984eb",
+      "status": "human_reviewed",
+      "scope": "whole_course",
+      "reason": "천안상록 27홀 소개에 이어 직접 라운딩한 전체적 인상을 명시. 독립 후기 1명으로만 표시."
+    },
+    {
+      "club_id": "lavie",
+      "observation_id": "7bb2fdc042276cda7bf1e0a6",
+      "status": "human_reviewed",
+      "scope": "올드코스",
+      "reason": "제목과 본문이 올드코스 방문을 명시. 듄스코스에 일반화하지 않음."
+    },
+    {
+      "club_id": "lavie",
+      "observation_id": "7f78d6f9b06394b9c3d0b8d1",
+      "status": "human_reviewed",
+      "scope": "올드코스",
+      "reason": "비가 온 라운드 당일 그린 체감. 대회 직전이라는 문맥이며 상시 속도가 아님."
+    },
+    {
+      "club_id": "silkriver",
+      "observation_id": "d285e2ef3eacf54e53aa4e20",
+      "status": "rejected",
+      "reason": "골프 전문 여행사의 판매 패키지 소개. 독립 방문 후기 아님. 코스 명칭도 같은 본문에서 상충."
+    },
+    {
+      "club_id": "vworld_가평베네스트g_c",
+      "observation_id": "150e8e922216e086001aa3ae",
+      "status": "human_reviewed",
+      "scope": "버치코스 1번 홀",
+      "reason": "버치코스 시작 및 첫 홀 티샷 바로 뒤의 수사적 질문. 해당 홀 넓이 의견만 인정."
+    },
+    {
+      "club_id": "vworld_베어즈베스트청라",
+      "observation_id": "3afb5629ca26deaf7e392ebb",
+      "status": "rejected",
+      "reason": "미국코스 2번 홀은 다른 홀보다 벙커가 많지 않다는 문장. many 추출은 부정문 반전 오류."
+    },
+    {
+      "club_id": "vworld_파인스톤c_c",
+      "observation_id": "c5081f02d22b516545766218",
+      "status": "rejected",
+      "reason": "음식 준비가 깔끔하다는 문장으로 시설 품질 근거가 아님."
+    },
+    {
+      "club_id": "vworld_프리스틴밸리g_c",
+      "observation_id": "02d5edcd9d17a62f27d93651",
+      "status": "human_reviewed",
+      "scope": "whole_course",
+      "reason": "가평 프리스틴밸리 전체 공략 단락의 체감. 넓어도 도그레그·해저드에서 부담 있다는 제한 보존."
+    },
+    {
+      "club_id": "vworld_필로스",
+      "observation_id": "ffd3945f8e9dafec70a2275f",
+      "status": "human_reviewed",
+      "scope": "whole_course",
+      "reason": "필로스 반복 방문자의 전체적인 체감. 넓지만 공략이 어려웠다는 반대 맥락 보존."
+    }
+  ],
+  "items": [
+    {
+      "club_id": "blackstone",
+      "observation_id": "e50e733212a5bc6f0e62e80b",
+      "source": "https://mindgolf.net/1893",
+      "author_key": "mindgolf.net",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "blueheron",
+      "observation_id": "9f44425e33853d1f46b78f72",
+      "source": "https://mlbpark.donga.com/mp/b.php?b=bullpen&id=202604060113720088&m=view",
+      "author_key": "mlbpark.donga.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "sponsorship_suspected"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "blueheron",
+      "observation_id": "38b32a5de7bf5ee01c7f4d0a",
+      "source": "https://blog.naver.com/k-holic-/223519582447",
+      "author_key": "naver:k-holic-",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "blueheron",
+      "observation_id": "951bd7ada9dd0df02b4c1f86",
+      "source": "https://blog.naver.com/k-holic-/223519582447",
+      "author_key": "naver:k-holic-",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "blueheron",
+      "observation_id": "21ab61ab585c35ded12ab35a",
+      "source": "https://blog.naver.com/junsul100/224329652869",
+      "author_key": "naver:junsul100",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "context_ambiguity"
+      ],
+      "reason": "바로 뒤에 시각적으로 좁아 보이지만 실제로는 넓다는 설명이 있어 단순 narrow 분류 보류."
+    },
+    {
+      "club_id": "blueheron",
+      "observation_id": "5515ccb6082e6ed6ed60f1b8",
+      "source": "https://blog.naver.com/estauce/223213443522",
+      "author_key": "naver:estauce",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "blueheron",
+      "observation_id": "78811932f981b7234691ba07",
+      "source": "https://blog.naver.com/estauce/223213443522",
+      "author_key": "naver:estauce",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "blueheron",
+      "observation_id": "742c1d2b42a10a70f607b3c7",
+      "source": "https://dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=1180182",
+      "author_key": "dealbada.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "clubd_boeun",
+      "observation_id": "b40533532710203ec8d3a17d",
+      "source": "https://sourmong.tistory.com/212",
+      "author_key": "sourmong.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "clubd_boeun",
+      "observation_id": "0b37eb2a08790b6421460c58",
+      "source": "https://sourmong.tistory.com/212",
+      "author_key": "sourmong.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "63ac65a33389249e80cd1c67",
+      "source": "https://draone.tistory.com/113",
+      "author_key": "draone.tistory.com",
+      "dimension": "bunkers",
+      "status": "human_reviewed",
+      "flags": [
+        "firsthand_context_needs_review"
+      ],
+      "reason": "2025-05-24 방문일과 2번 홀 소제목 확인. 높고 많은 벙커라는 해당 홀 의견."
+    },
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "69891c86ce9c2579c94742ca",
+      "source": "https://draone.tistory.com/113",
+      "author_key": "draone.tistory.com",
+      "dimension": "fairway",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "4번 홀 소제목 아래의 페어웨이 설명. 전체 코스에 일반화하지 않음."
+    },
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "7df2c4e141dca6c606eef4ea",
+      "source": "https://draone.tistory.com/113",
+      "author_key": "draone.tistory.com",
+      "dimension": "bunkers",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "17번 홀 소제목과 이벤트 홀 문맥 확인."
+    },
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "65017933d28d252a22529e08",
+      "source": "https://draone.tistory.com/113",
+      "author_key": "draone.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "clubd_theplayers",
+      "observation_id": "a91fe97806d64232da5b4444",
+      "source": "https://blog.naver.com/eggapple-/224039394492",
+      "author_key": "naver:eggapple-",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "jade",
+      "observation_id": "06c326cde6cf4cbe5478877c",
+      "source": "https://dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=1305022",
+      "author_key": "dealbada.com",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "jade",
+      "observation_id": "cf22d58d0b0ed51f36a385a0",
+      "source": "https://dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=1305022",
+      "author_key": "dealbada.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "jade",
+      "observation_id": "b76a4a6440930dcfa0ba8ffa",
+      "source": "https://handa3328.tistory.com/39",
+      "author_key": "handa3328.tistory.com",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "jade",
+      "observation_id": "d258d5939217c4e052969696",
+      "source": "https://handa3328.tistory.com/39",
+      "author_key": "handa3328.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "jade",
+      "observation_id": "1e33c3e8a5277dbaf9060ae1",
+      "source": "https://handa3328.tistory.com/39",
+      "author_key": "handa3328.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_강남300",
+      "observation_id": "3e535872d0449e1e85dd32c1",
+      "source": "https://blog.naver.com/iwrfr1004/223226657838",
+      "author_key": "naver:iwrfr1004",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_강남300",
+      "observation_id": "90dc2ad2f5210e85acb2cf53",
+      "source": "https://fnpapa.tistory.com/entry/%EC%84%9C%EC%9A%B8%EC%97%90%EC%84%9C-%EA%B0%80%EC%9E%A5-%EA%B0%80%EA%B9%8C%EC%9A%B4-%ED%92%88%EA%B2%A9%EC%9E%88%EB%8A%94-%EA%B3%A8%ED%94%84%EC%9E%A5-%EA%B0%95%EB%82%A8300cc-%EB%B0%A9%EB%AC%B8%EA%B8%B0",
+      "author_key": "fnpapa.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_강남300",
+      "observation_id": "c4216649af920e7a52ae0019",
+      "source": "https://fnpapa.tistory.com/entry/%EC%84%9C%EC%9A%B8%EC%97%90%EC%84%9C-%EA%B0%80%EC%9E%A5-%EA%B0%80%EA%B9%8C%EC%9A%B4-%ED%92%88%EA%B2%A9%EC%9E%88%EB%8A%94-%EA%B3%A8%ED%94%84%EC%9E%A5-%EA%B0%95%EB%82%A8300cc-%EB%B0%A9%EB%AC%B8%EA%B8%B0",
+      "author_key": "fnpapa.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_강남300",
+      "observation_id": "24929e8e9b21daa69b66d322",
+      "source": "https://fnpapa.tistory.com/entry/%EC%84%9C%EC%9A%B8%EC%97%90%EC%84%9C-%EA%B0%80%EC%9E%A5-%EA%B0%80%EA%B9%8C%EC%9A%B4-%ED%92%88%EA%B2%A9%EC%9E%88%EB%8A%94-%EA%B3%A8%ED%94%84%EC%9E%A5-%EA%B0%95%EB%82%A8300cc-%EB%B0%A9%EB%AC%B8%EA%B8%B0",
+      "author_key": "fnpapa.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_곤지암",
+      "observation_id": "3a642f07274e8a9c3f4610fe",
+      "source": "https://golf.sbs.co.kr/m/review/course/692988f1d47743e5220da7ce",
+      "author_key": "golf.sbs.co.kr",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_골프클럽q",
+      "observation_id": "9baad6a794d966074835c997",
+      "source": "https://gourmet-database.tistory.com/945",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_골프클럽q",
+      "observation_id": "c68dae04685dceb7d5fdbb8a",
+      "source": "https://gourmet-database.tistory.com/945",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_골프클럽q",
+      "observation_id": "3bcf5a0f28acbbd857725127",
+      "source": "https://mocuzin.tistory.com/52",
+      "author_key": "mocuzin.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_골프클럽q",
+      "observation_id": "aa3e5edd52fe6076dbf6c80b",
+      "source": "https://mocuzin.tistory.com/52",
+      "author_key": "mocuzin.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_골프클럽q",
+      "observation_id": "9f59b5f1acbc04aa75c960c9",
+      "source": "https://mocuzin.tistory.com/52",
+      "author_key": "mocuzin.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_골프클럽q",
+      "observation_id": "5df10abfa261732ea30ef6a7",
+      "source": "https://blog.naver.com/kimsister1/223444653169",
+      "author_key": "naver:kimsister1",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_골프클럽q",
+      "observation_id": "67dfd5b699f346a562fc2cc8",
+      "source": "https://blog.naver.com/dbwlsdkq/224085323170",
+      "author_key": "naver:dbwlsdkq",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_그랜드",
+      "observation_id": "9a2a1fc0812b00b862dceb52",
+      "source": "https://blog.naver.com/pinkmuni/223581820259",
+      "author_key": "naver:pinkmuni",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_그랜드",
+      "observation_id": "a4c55a0a05ffe6b1f3cfce1d",
+      "source": "https://blog.naver.com/seaoflover/224311598961",
+      "author_key": "naver:seaoflover",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_그랜드",
+      "observation_id": "5872083c16d77f652a8be623",
+      "source": "https://golf.sbs.co.kr/review/course/692988f2d47743ed2057860c",
+      "author_key": "golf.sbs.co.kr",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_그린힐",
+      "observation_id": "532ea4978db967264dfb746a",
+      "source": "https://sbde37.tistory.com/76",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_그린힐",
+      "observation_id": "bd7f34a95a30bb9cbd0c213f",
+      "source": "https://sbde37.tistory.com/76",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "8a86f5198a902809ec7e3ca5",
+      "source": "https://ricone.tistory.com/entry/%EC%9D%B8%EC%83%9D-%EB%91%90-%EB%B2%88%EC%A7%B8-%EB%B2%84%EB%94%94-%EA%B8%B0%EB%A1%9D-%EC%84%9C%EC%9A%B8%EC%97%90%EC%84%9C-%EA%B0%80%EA%B9%8C%EC%9A%B4-%EB%82%A8%EC%97%AC%EC%A3%BC-cc-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0",
+      "author_key": "ricone.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "3464c5eabf41e057391cef36",
+      "source": "https://ricone.tistory.com/entry/%EC%9D%B8%EC%83%9D-%EB%91%90-%EB%B2%88%EC%A7%B8-%EB%B2%84%EB%94%94-%EA%B8%B0%EB%A1%9D-%EC%84%9C%EC%9A%B8%EC%97%90%EC%84%9C-%EA%B0%80%EA%B9%8C%EC%9A%B4-%EB%82%A8%EC%97%AC%EC%A3%BC-cc-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0",
+      "author_key": "ricone.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "99c777fd9afb14eb58fa7c48",
+      "source": "https://gravity0411.tistory.com/42",
+      "author_key": "gravity0411.tistory.com",
+      "dimension": "fairway",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "c5da54b5d4a8ab66350878a7",
+      "source": "https://gravity0411.tistory.com/42",
+      "author_key": "gravity0411.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "5657557acdcf1e2fcc46dd11",
+      "source": "https://gravity0411.tistory.com/42",
+      "author_key": "gravity0411.tistory.com",
+      "dimension": "fairway",
+      "status": "rejected",
+      "flags": [],
+      "reason": "negation: does not support wide"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "f336427d1bd7cd99ad37bfc3",
+      "source": "https://headlee.tistory.com/373",
+      "author_key": "headlee.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "66894a9362a6fb77ca8e1564",
+      "source": "https://headlee.tistory.com/373",
+      "author_key": "headlee.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남여주",
+      "observation_id": "61540ea2ce3a4d45caae8361",
+      "source": "https://blog.naver.com/ssong_hwa/223497878799",
+      "author_key": "naver:ssong_hwa",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_남촌",
+      "observation_id": "494308367bba085229ab1882",
+      "source": "https://threads.com/@demian_winesnob/post/DVNyzSdDyqI/%EC%9D%B4%EC%8A%A4%ED%8A%B8%EB%B0%B8%EB%A6%AC%EC%99%80-%EB%8D%94%EB%B6%88%EC%96%B4-%EA%B4%91%EC%A3%BC-top-2%EB%9D%BC%EB%8A%94-%EB%82%A8%EC%B4%8Ccc-%EB%B0%A9%EB%AC%B8-%EC%95%84%EC%A7%81-%EC%9E%94%EB%94%94%EA%B0%80-%EB%85%B8%EB%9E%80%EC%83%89%EC%9D%B4%EB%9D%BC-%EC%9A%B0%EC%A4%91%EC%B6%A9%ED%95%B4-%EB%B3%B4%EC%9D%B4%EC%A7%80%EB%A7%8C-%EB%B4%84%EC%9D%B4-%EB%90%98%EB%A9%B4-%EC%B0%B8-%EC%9D%B4%EC%81%A0-%EB%93%AF-%ED%81%B4%EB%9F%BD%ED%95%98%EC%9A%B0%EC%8A%A4%EB%8F%84-%EC%9D%B4%EC%8A%A4%ED%8A%B8%EB%B3%B4%EB%8B%A4-%EC%95%BD",
+      "author_key": "threads.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_더_시에나_서울",
+      "observation_id": "4d06dcb81c8b20832afd7fbf",
+      "source": "https://thesiena.co.kr/content/seoulcc",
+      "author_key": "thesiena.co.kr",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_더_시에나_서울",
+      "observation_id": "5c9441b5751509cf8f24ddba",
+      "source": "https://thesiena.co.kr/content/seoulcc",
+      "author_key": "thesiena.co.kr",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_라데나",
+      "observation_id": "22220e579a447c28d4e114b7",
+      "source": "https://blog.naver.com/warmorcool/223475043254",
+      "author_key": "naver:warmorcool",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "same_author_multiple_sources"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_마이다스레이크_이천",
+      "observation_id": "8c81f6e8713bca5e987c3249",
+      "source": "https://blog.naver.com/competbank/224266079702",
+      "author_key": "naver:competbank",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_몽베르",
+      "observation_id": "26667c71f44d8669ec532f94",
+      "source": "https://jjjgd.tistory.com/63",
+      "author_key": "jjjgd.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_몽베르",
+      "observation_id": "16757f598cd5054792b6b1d7",
+      "source": "https://jjjgd.tistory.com/63",
+      "author_key": "jjjgd.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_발리오스",
+      "observation_id": "5c34f69397e794ee692465e8",
+      "source": "https://blog.naver.com/thzenetti/223299491382",
+      "author_key": "naver:thzenetti",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_발리오스",
+      "observation_id": "8a4ec7872c9fae436cbd2d19",
+      "source": "https://blog.naver.com/thzenetti/223299491382",
+      "author_key": "naver:thzenetti",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_발리오스",
+      "observation_id": "453d2ace56d1b7b6ce42492c",
+      "source": "https://blog.naver.com/pont5/224251924576",
+      "author_key": "naver:pont5",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_발리오스",
+      "observation_id": "be7e2e51c722ccdc08964bcc",
+      "source": "https://blog.naver.com/pont5/224251924576",
+      "author_key": "naver:pont5",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_베뉴지",
+      "observation_id": "37791e8f3c8887416b798154",
+      "source": "https://lea-j.tistory.com/46",
+      "author_key": "lea-j.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_베뉴지",
+      "observation_id": "4d80fd6d566dd9046ada2d90",
+      "source": "https://lea-j.tistory.com/46",
+      "author_key": "lea-j.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_베뉴지",
+      "observation_id": "bd92d9e4c530b36f88ccdce7",
+      "source": "https://ricone.tistory.com/entry/%EC%84%B8%EC%83%81-%EC%96%B4%EB%A0%A4%EC%9B%A0%EB%8D%98-%EA%B0%80%ED%8F%89-%EB%B2%A0%EB%89%B4%EC%A7%80CC-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-%EB%B0%B1%EB%8F%8C%EC%9D%B4-%EC%A0%88%EB%A7%9D%ED%8E%B8",
+      "author_key": "ricone.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_베뉴지",
+      "observation_id": "db2404444e234b719423af11",
+      "source": "https://ricone.tistory.com/entry/%EC%84%B8%EC%83%81-%EC%96%B4%EB%A0%A4%EC%9B%A0%EB%8D%98-%EA%B0%80%ED%8F%89-%EB%B2%A0%EB%89%B4%EC%A7%80CC-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-%EB%B0%B1%EB%8F%8C%EC%9D%B4-%EC%A0%88%EB%A7%9D%ED%8E%B8",
+      "author_key": "ricone.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_베뉴지",
+      "observation_id": "de760f6a9f093d756570c647",
+      "source": "https://blog.naver.com/salayamanhanda/224230903583",
+      "author_key": "naver:salayamanhanda",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_블랙밸리",
+      "observation_id": "90518a1298bd3fa0d25a203b",
+      "source": "https://sbde37.tistory.com/77",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_비에이비스타",
+      "observation_id": "0ea617a92598dbc098f0d72e",
+      "source": "https://smoothmen.tistory.com/397",
+      "author_key": "smoothmen.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_비에이비스타",
+      "observation_id": "a3e0c3b3ca56cbdbb027febc",
+      "source": "https://smoothmen.tistory.com/397",
+      "author_key": "smoothmen.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_비에이비스타",
+      "observation_id": "cd57552cace5c175a3a4db94",
+      "source": "https://blog.naver.com/lively_bennie/223049520107",
+      "author_key": "naver:lively_bennie",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_비에이비스타",
+      "observation_id": "2bb076abccdc07e549052d9d",
+      "source": "https://blog.naver.com/nami_healthylife/224238676519",
+      "author_key": "naver:nami_healthylife",
+      "dimension": "facilities",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "실제 라운드 중 관찰한 노후 의견. 다른 시설에는 긍정 의견도 있어 시설 전체 평가로 확대하지 않음."
+    },
+    {
+      "club_id": "kgba_서서울",
+      "observation_id": "1bd0d63a45b26eeeb78f703d",
+      "source": "https://tommy-life2.tistory.com/100",
+      "author_key": "tommy-life2.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_설해원",
+      "observation_id": "a07bc2ad4777a161d5fd57a8",
+      "source": "https://v.daum.net/v/u72Fgcsbxy",
+      "author_key": "v.daum.net",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_설해원",
+      "observation_id": "56484401694a28b561eb8af4",
+      "source": "https://dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=845204",
+      "author_key": "dealbada.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_세종에머슨",
+      "observation_id": "8a7b2c0519fca54e67bcde0c",
+      "source": "https://poiup01.tistory.com/72",
+      "author_key": "poiup01.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "sponsorship_suspected",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_세종에머슨",
+      "observation_id": "0143330872867aa03109a94a",
+      "source": "https://poiup01.tistory.com/72",
+      "author_key": "poiup01.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "sponsorship_suspected",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_센추리21",
+      "observation_id": "9cee83baec5f2e01bfc84722",
+      "source": "https://mindgolf.net/1889",
+      "author_key": "mindgolf.net",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_센테리움",
+      "observation_id": "0af85244b592c538d7e68e11",
+      "source": "https://golf.sbs.co.kr/review/course/692988f5d47743ed20578615",
+      "author_key": "golf.sbs.co.kr",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_소노펠리체",
+      "observation_id": "5f58e431dbf150c4c49ce001",
+      "source": "https://milkbiscuit.tistory.com/485",
+      "author_key": "milkbiscuit.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_소노펠리체",
+      "observation_id": "e2ed51d335407effb1393a60",
+      "source": "https://milkbiscuit.tistory.com/485",
+      "author_key": "milkbiscuit.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_소노펠리체",
+      "observation_id": "99b1ef93027d02404aa15bfe",
+      "source": "https://milkbiscuit.tistory.com/485",
+      "author_key": "milkbiscuit.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_소노펠리체",
+      "observation_id": "c8ea8edf66941eb926efe194",
+      "source": "https://blog.naver.com/thinks3355/223610493117",
+      "author_key": "naver:thinks3355",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_소피아그린",
+      "observation_id": "e9ff7ff8fbad6f2b1eaa25d4",
+      "source": "https://nanamomtravel.tistory.com/entry/%EC%97%AC%EC%A3%BC-%EC%86%8C%ED%94%BC%EC%95%84%EA%B7%B8%EB%A6%B0cc-%EB%9D%BC%EC%9A%B4%EB%94%A9%ED%9B%84%EA%B8%B0",
+      "author_key": "nanamomtravel.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_소피아그린",
+      "observation_id": "cfc28812181dd4c96c8076cf",
+      "source": "https://nanamomtravel.tistory.com/entry/%EC%97%AC%EC%A3%BC-%EC%86%8C%ED%94%BC%EC%95%84%EA%B7%B8%EB%A6%B0cc-%EB%9D%BC%EC%9A%B4%EB%94%A9%ED%9B%84%EA%B8%B0",
+      "author_key": "nanamomtravel.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_소피아그린",
+      "observation_id": "7597ff027d5234f9be0de091",
+      "source": "https://tommy-life2.tistory.com/70",
+      "author_key": "tommy-life2.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "context_ambiguity"
+      ],
+      "reason": "첫 버디의 수년 전 기억과 2025년 재방문이 섞여 특징 관찰 시점 불명확."
+    },
+    {
+      "club_id": "kgba_소피아그린",
+      "observation_id": "893c8a91013536042b44d39f",
+      "source": "https://tommy-life2.tistory.com/70",
+      "author_key": "tommy-life2.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "context_ambiguity"
+      ],
+      "reason": "수년 전 첫 버디 경험 문단으로 게시일을 경험일로 볼 수 없음."
+    },
+    {
+      "club_id": "kgba_소피아그린",
+      "observation_id": "7f08c23e746355813057a6cb",
+      "source": "https://tommy-life2.tistory.com/70",
+      "author_key": "tommy-life2.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "context_ambiguity"
+      ],
+      "reason": "동일 작성자 반복 특징이며 실제 관찰 시점 추가 확인 필요."
+    },
+    {
+      "club_id": "kgba_솔모로",
+      "observation_id": "5501f42ce2f8292df5054684",
+      "source": "https://golfaz.tistory.com/entry/%EC%86%94%EB%AA%A8%EB%A1%9CCC-%EB%A9%94%EC%9D%B4%ED%94%8C-%ED%8C%8C%EC%9D%B8-%EC%BD%94%EC%8A%A4-%EB%82%A0%EC%94%A8-%EA%B5%BF-%ED%9B%84%EA%B8%B0-%EC%97%90%EC%96%B4%EB%A0%88%EC%9D%B4%EC%85%98-%EC%9E%91%EC%97%85%EC%A4%91",
+      "author_key": "golfaz.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_스카이밸리",
+      "observation_id": "26cd26de346cace205de7cac",
+      "source": "https://sbde37.tistory.com/70",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_아난티중앙",
+      "observation_id": "32cd5001dfe4a5bfb33d4788",
+      "source": "https://blog.naver.com/alth2214/223261560654",
+      "author_key": "naver:alth2214",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_안성",
+      "observation_id": "109aa5d94cc8391413becf1f",
+      "source": "https://golfaz.tistory.com/entry/%EC%95%88%EC%84%B1CC-%EB%82%A0%EC%94%A8-%EC%A2%8B%EA%B2%8C-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-%EA%B7%B8%EB%A6%B0%EC%8A%A4%ED%94%BC%EB%93%9C%EC%BD%94%EC%8A%A4%EA%B3%B5%EB%9E%B5%EC%9D%80",
+      "author_key": "golfaz.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_안성",
+      "observation_id": "9399ae2d7d61dc2423a62381",
+      "source": "https://gourmet-database.tistory.com/945",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_안성",
+      "observation_id": "58dbd051ecafee40405df201",
+      "source": "https://gourmet-database.tistory.com/945",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_알펜시아",
+      "observation_id": "35576264d71b649a9ef598de",
+      "source": "https://gourmet-database.tistory.com/989",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_알펜시아",
+      "observation_id": "136ab357742698d97d5c339c",
+      "source": "https://gourmet-database.tistory.com/989",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_엘리시안강촌",
+      "observation_id": "9cb0b2aada5e5f8b94df06a8",
+      "source": "https://kanigolf.tistory.com/464",
+      "author_key": "kanigolf.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_엘리시안강촌",
+      "observation_id": "30f492505bc1cf38cc5c4af5",
+      "source": "https://kanigolf.tistory.com/464",
+      "author_key": "kanigolf.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_엘리시안강촌",
+      "observation_id": "a46df48c7debfb8c33f2bb75",
+      "source": "https://kanigolf.tistory.com/464",
+      "author_key": "kanigolf.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_예미지",
+      "observation_id": "c7a90fda5830bf18717efbda",
+      "source": "https://threads.com/@pang_ah_joo/post/DXc95JakyYF/%EC%98%88%EB%AF%B8%EC%A7%80-%EA%B8%88%EC%84%B1%EB%B0%B1%EC%A1%B0-cc-4%EC%9B%94-25%EC%9D%BC-%EC%98%A4%ED%94%88%EC%9D%B4%EC%95%BC%EC%98%A4%ED%94%88%EC%A0%84-%EC%8B%9C%EB%B2%94-%EB%9D%BC%EC%9A%B4%EB%94%A9-%EA%B0%94%EB%8A%94%EB%8D%B0-%EB%82%9C-%EC%BD%94%EC%8A%A4%EA%B0%80-%EC%9E%BC%EC%9E%88%EB%8D%94%EB%9D%BC%EA%B3%A0%ED%8E%98%EC%96%B4%EC%9B%A8%EC%9D%B4%EB%8A%94-%EC%98%A4%ED%94%88-%EC%A7%81%EC%A0%84%EC%9D%B4%EB%9D%BC-%EA%B0%90%EC%95%88%ED%95%98%EA%B3%A0%EA%B7%B8%EB%A6%B0-%EA%B4%80%EB%A6%AC%EB%8A%94-%EC%95%84%EC%A3%BC-%EC%A2%8B%EC%95%98%EC%9D%8C",
+      "author_key": "threads.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_웰리힐리",
+      "observation_id": "f8f2c00cebdd19bf9e1aa650",
+      "source": "https://forest-lim.tistory.com/265",
+      "author_key": "forest-lim.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_웰링턴",
+      "observation_id": "4893269c6a197442af84d85b",
+      "source": "https://gourmet-database.tistory.com/1086",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_웰링턴",
+      "observation_id": "6c21f31405279b3e7d724da7",
+      "source": "https://fnpapa.tistory.com/entry/%EA%B5%AD%EB%82%B4-NO1-%EB%AA%85%EB%AC%B8-%EA%B3%A8%ED%94%84%EC%9E%A5-%EA%B2%BD%EA%B8%B0%EB%8F%84-%EC%9D%B4%EC%B2%9C%EC%8B%9C-%EC%9B%B0%EB%A7%81%ED%84%B4CC",
+      "author_key": "fnpapa.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_은화삼",
+      "observation_id": "9acefdf6298ce53e1f11b934",
+      "source": "https://golf.sbs.co.kr/m/review/course/692988f6d4774316b57acb1e",
+      "author_key": "golf.sbs.co.kr",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_이포",
+      "observation_id": "4bea657019afde9be7e405ff",
+      "source": "https://boardman.tistory.com/entry/%EC%9D%B4%ED%8F%ACCC-%EC%95%BC%EA%B0%84-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-l-%EA%B3%B5-%EC%9E%98-%EB%B3%B4%EC%9D%BC%EA%B9%8C",
+      "author_key": "boardman.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_이포",
+      "observation_id": "c35b01d2616919ee04fd4130",
+      "source": "https://boardman.tistory.com/entry/%EC%9D%B4%ED%8F%ACCC-%EC%95%BC%EA%B0%84-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-l-%EA%B3%B5-%EC%9E%98-%EB%B3%B4%EC%9D%BC%EA%B9%8C",
+      "author_key": "boardman.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_이포",
+      "observation_id": "31782fa3183f55e3398ca183",
+      "source": "https://blog.naver.com/voued/223473340994",
+      "author_key": "naver:voued",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_이포",
+      "observation_id": "ca2e99823217b212ded0efda",
+      "source": "https://blog.naver.com/dbwlsdkq/223855877054",
+      "author_key": "naver:dbwlsdkq",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_이포",
+      "observation_id": "90531622e4bd83ea8cd80712",
+      "source": "https://blog.naver.com/dbwlsdkq/223855877054",
+      "author_key": "naver:dbwlsdkq",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_천룡",
+      "observation_id": "60a8990af1dbe7e751dc4477",
+      "source": "https://oklog1.tistory.com/entry/%EC%A7%84%EC%B2%9C-%EA%B3%A8%ED%94%84%EC%9E%A5-%EC%B2%9C%EB%A3%A1CC-%ED%8D%BC%EB%B8%94%EB%A6%AD-%EA%B3%A8%ED%94%84%EC%9E%A5-%ED%9B%84%EA%B8%B0-2%EC%9D%B8-%EB%9D%BC%EC%9A%B4%EB%94%A9-%EA%B0%80%EB%8A%A5%EA%B3%A8%ED%94%84%EC%9E%A5-%EB%85%B8%EC%BA%90%EB%94%94-%EA%B0%80%EB%8A%A5",
+      "author_key": "oklog1.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_천룡",
+      "observation_id": "0ab30b5566a25323e872bdcd",
+      "source": "https://oklog1.tistory.com/entry/%EC%A7%84%EC%B2%9C-%EA%B3%A8%ED%94%84%EC%9E%A5-%EC%B2%9C%EB%A3%A1CC-%ED%8D%BC%EB%B8%94%EB%A6%AD-%EA%B3%A8%ED%94%84%EC%9E%A5-%ED%9B%84%EA%B8%B0-2%EC%9D%B8-%EB%9D%BC%EC%9A%B4%EB%94%A9-%EA%B0%80%EB%8A%A5%EA%B3%A8%ED%94%84%EC%9E%A5-%EB%85%B8%EC%BA%90%EB%94%94-%EA%B0%80%EB%8A%A5",
+      "author_key": "oklog1.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_천안상록",
+      "observation_id": "90787380afdfd292e53984eb",
+      "source": "https://bogogagero.com/entry/%EC%B2%9C%EC%95%88-%EC%83%81%EB%A1%9D-cc-%EC%9D%BC%EB%B0%98%EC%9D%B8%EB%8F%84-%EC%98%88%EC%95%BD-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%B0%A9%EB%B2%95",
+      "author_key": "bogogagero.com",
+      "dimension": "fairway",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "천안상록 27홀 소개에 이어 직접 라운딩한 전체적 인상을 명시. 독립 후기 1명으로만 표시."
+    },
+    {
+      "club_id": "kgba_천안상록",
+      "observation_id": "057434406b1b2848198ba46e",
+      "source": "https://bogogagero.com/entry/%EC%B2%9C%EC%95%88-%EC%83%81%EB%A1%9D-cc-%EC%9D%BC%EB%B0%98%EC%9D%B8%EB%8F%84-%EC%98%88%EC%95%BD-%EA%B0%80%EB%8A%A5%ED%95%9C-%EB%B0%A9%EB%B2%95",
+      "author_key": "bogogagero.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "context_ambiguity"
+      ],
+      "reason": "동코스 한정이며 절대 OB가 안 난다는 과장 표현 포함. 일반 특징으로 반영 보류."
+    },
+    {
+      "club_id": "kgba_천안상록",
+      "observation_id": "a6aa6dd5f2018a4da2ded3c4",
+      "source": "https://blog.naver.com/iwrfr1004/224052975767",
+      "author_key": "naver:iwrfr1004",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_캐슬렉스_2",
+      "observation_id": "0c59d2485935d642aa98d2b0",
+      "source": "https://worldtravellerjp.tistory.com/747",
+      "author_key": "worldtravellerjp.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_코스카",
+      "observation_id": "612fd31f2664955e1bf1d05d",
+      "source": "https://alchemist-world.tistory.com/entry/%EC%BD%94%EC%8A%A4%EC%B9%B4-CC-%EC%BD%94%EC%8A%A4-%ED%9B%84%EA%B8%B0%EB%B6%80%ED%84%B0-%EC%9D%B8%EA%B7%BC-%EB%A7%9B%EC%A7%91%EA%B9%8C%EC%A7%80-%EC%99%84%EB%B2%BD-%EC%A0%95%EB%A6%AC",
+      "author_key": "alchemist-world.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_포천아도니스",
+      "observation_id": "c5d83417149c39fd971dfb1d",
+      "source": "https://blog.naver.com/divelight/223410950196",
+      "author_key": "naver:divelight",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_포천아도니스",
+      "observation_id": "9946a2b144c217fe6daadfc9",
+      "source": "https://blog.naver.com/k-holic-/223581173376",
+      "author_key": "naver:k-holic-",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_푸른솔포천",
+      "observation_id": "2e7f4303c0b3e60f9d5fe2f9",
+      "source": "https://blog.naver.com/luckysom_/223572136633",
+      "author_key": "naver:luckysom_",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_플라자cc_설악",
+      "observation_id": "5fb5ddb1d7a15ea0cf680566",
+      "source": "https://blog.naver.com/voued/223400002973",
+      "author_key": "naver:voued",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_플라자cc_설악",
+      "observation_id": "72b02ba147400c50ae8ad7ac",
+      "source": "https://blog.naver.com/voued/223400002973",
+      "author_key": "naver:voued",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_플라자cc_설악",
+      "observation_id": "574ab1e07b7c1de3d333d279",
+      "source": "https://blog.naver.com/voued/223400002973",
+      "author_key": "naver:voued",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_플라자cc_설악",
+      "observation_id": "81dd1b945ccda82dcb5346b2",
+      "source": "https://blog.naver.com/kin1584/223062057325",
+      "author_key": "naver:kin1584",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "kgba_화성상록",
+      "observation_id": "d7186fa6e04bcf5e241cb624",
+      "source": "https://barunsaram.tistory.com/entry/%ED%9B%84%EA%B8%B0%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%99%94%EC%84%B1%EC%83%81%EB%A1%9D-GC-%EA%B3%A8%ED%94%84%EC%9E%A5",
+      "author_key": "barunsaram.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "815382e41f12937df4cfb86e",
+      "source": "https://blog.naver.com/vgolden/223175599953",
+      "author_key": "naver:vgolden",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "664903405e261238ca9b575c",
+      "source": "https://blog.naver.com/vgolden/223175599953",
+      "author_key": "naver:vgolden",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "a98ff85d5cd98d115d7a8aa6",
+      "source": "https://premiumgolf.co.kr/community/board_view.html?idx=66&brd_idx=1",
+      "author_key": "premiumgolf.co.kr",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "25b2c2b578c8b9f5afa14046",
+      "source": "https://dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=839250",
+      "author_key": "dealbada.com",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "765ee6fe23455be46a744c33",
+      "source": "https://dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=839250",
+      "author_key": "dealbada.com",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "4d69b24b3c4aa64b513706e5",
+      "source": "https://theshinvia.com/lakeside-cc-yongin-west-east-south-course-comparison",
+      "author_key": "theshinvia.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "09b6c2f589b8a36570678589",
+      "source": "https://theshinvia.com/lakeside-cc-yongin-west-east-south-course-comparison",
+      "author_key": "theshinvia.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "1ad153753c37e4790a8d825e",
+      "source": "https://theshinvia.com/lakeside-cc-yongin-west-east-south-course-comparison",
+      "author_key": "theshinvia.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "e080eedbfe7b341547e5a052",
+      "source": "https://theshinvia.com/lakeside-cc-yongin-west-east-south-course-comparison",
+      "author_key": "theshinvia.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lakeside",
+      "observation_id": "e234a474cf229588b69673a0",
+      "source": "https://forest-lim.tistory.com/219",
+      "author_key": "forest-lim.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lavie",
+      "observation_id": "7bb2fdc042276cda7bf1e0a6",
+      "source": "https://blog.naver.com/chocowooy/224252471058",
+      "author_key": "naver:chocowooy",
+      "dimension": "bunkers",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "제목과 본문이 올드코스 방문을 명시. 듄스코스에 일반화하지 않음."
+    },
+    {
+      "club_id": "lavie",
+      "observation_id": "7f78d6f9b06394b9c3d0b8d1",
+      "source": "https://blog.naver.com/chocowooy/224252471058",
+      "author_key": "naver:chocowooy",
+      "dimension": "green",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "비가 온 라운드 당일 그린 체감. 대회 직전이라는 문맥이며 상시 속도가 아님."
+    },
+    {
+      "club_id": "lavie",
+      "observation_id": "e1a452ae252b0e1c87b70fee",
+      "source": "https://v.daum.net/v/54xxbaiBl4",
+      "author_key": "v.daum.net",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "lavie",
+      "observation_id": "01999371c8c852ad1f9c2e6d",
+      "source": "https://v.daum.net/v/54xxbaiBl4",
+      "author_key": "v.daum.net",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "oak",
+      "observation_id": "e176d9c94b29a9d3d6084f87",
+      "source": "https://worldtravellerjp.tistory.com/1035",
+      "author_key": "worldtravellerjp.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "oak",
+      "observation_id": "aee1d99212f92a5e8b96df3b",
+      "source": "https://worldtravellerjp.tistory.com/1035",
+      "author_key": "worldtravellerjp.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "pineridge",
+      "observation_id": "7ddcd3d65ddfb8e4ed8e526d",
+      "source": "https://blog.naver.com/hamassakki/223149971455",
+      "author_key": "naver:hamassakki",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "sponsorship_suspected"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "pineridge",
+      "observation_id": "acf4ec171ca30f161f1b55e9",
+      "source": "https://blog.naver.com/hamassakki/223149971455",
+      "author_key": "naver:hamassakki",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "sponsorship_suspected"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "silkriver",
+      "observation_id": "d2fb1934ae7444ff5d918c14",
+      "source": "https://yunyuntrip.com/%EC%B2%AD%EC%A3%BC-%EC%84%B8%EB%A0%88%EB%8B%88%ED%8B%B0-cc-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-%EC%B4%88%EC%97%AC%EB%A6%84-%EC%88%B2%EC%86%8D-%ED%9E%90%EB%A7%81-%EA%B3%A8%ED%94%84",
+      "author_key": "yunyuntrip.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "silkriver",
+      "observation_id": "d285e2ef3eacf54e53aa4e20",
+      "source": "https://bravo-golf.tistory.com/6255",
+      "author_key": "bravo-golf.tistory.com",
+      "dimension": "fairway",
+      "status": "rejected",
+      "flags": [
+        "firsthand_context_needs_review"
+      ],
+      "reason": "골프 전문 여행사의 판매 패키지 소개. 독립 방문 후기 아님. 코스 명칭도 같은 본문에서 상충."
+    },
+    {
+      "club_id": "southsprings",
+      "observation_id": "e9184c11c5b43d5807b57771",
+      "source": "https://blog.naver.com/suckhong85/223927199876",
+      "author_key": "naver:suckhong85",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "southsprings",
+      "observation_id": "a5d3a123a683f3b7491851c9",
+      "source": "https://blog.naver.com/suckhong85/223927199876",
+      "author_key": "naver:suckhong85",
+      "dimension": "bunkers",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "southsprings",
+      "observation_id": "cad76376ed97c7adf271383e",
+      "source": "https://v.daum.net/v/p81USKtngi",
+      "author_key": "v.daum.net",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "southsprings",
+      "observation_id": "3e762bed9d39a00b5c46f575",
+      "source": "https://blog.naver.com/naml8787/223395107156",
+      "author_key": "naver:naml8787",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "southsprings",
+      "observation_id": "23bc9c925eb6e7c453224788",
+      "source": "https://blog.naver.com/naml8787/223395107156",
+      "author_key": "naver:naml8787",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_가평베네스트g_c",
+      "observation_id": "150e8e922216e086001aa3ae",
+      "source": "https://somground.tistory.com/entry/%E2%9B%B3-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-%EA%B0%80%ED%8F%89%EB%B2%A0%EB%84%A4%EC%8A%A4%ED%8A%B8-GC-%EB%B2%84%EC%B9%98-%EB%A9%94%EC%9D%B4%ED%94%8C-%EC%BD%94%EC%8A%A4",
+      "author_key": "somground.tistory.com",
+      "dimension": "fairway",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "버치코스 시작 및 첫 홀 티샷 바로 뒤의 수사적 질문. 해당 홀 넓이 의견만 인정."
+    },
+    {
+      "club_id": "vworld_가평베네스트g_c",
+      "observation_id": "33984b7dae0c6a7f7f8dfe55",
+      "source": "https://blog.naver.com/thzenetti/223583957249",
+      "author_key": "naver:thzenetti",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "same_author_multiple_sources"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_대호단양",
+      "observation_id": "bd5104cdd999580abc19c46b",
+      "source": "https://blog.naver.com/pjy10912/223220509537",
+      "author_key": "naver:pjy10912",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_대호단양",
+      "observation_id": "8736c56d2b82b391dbebcaa2",
+      "source": "https://irumtour.com/m2/itemview.html?tid=85843",
+      "author_key": "irumtour.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_동서울레스피아",
+      "observation_id": "7912a73c627253fed50935cd",
+      "source": "https://blog.naver.com/happynnpeace/223528556093",
+      "author_key": "naver:happynnpeace",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_드림파크골프장",
+      "observation_id": "1461eb8cf0ed0053a52cf0b2",
+      "source": "https://blog.naver.com/seaoflover/224099814192",
+      "author_key": "naver:seaoflover",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_드림파크골프장",
+      "observation_id": "88a66245d0ad9be8b0472eef",
+      "source": "https://blog.naver.com/seaoflover/224099814192",
+      "author_key": "naver:seaoflover",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_드림파크골프장",
+      "observation_id": "00e943daf599aa72012b829a",
+      "source": "https://blog.naver.com/seaoflover/224099814192",
+      "author_key": "naver:seaoflover",
+      "dimension": "fairway",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_드림파크골프장",
+      "observation_id": "ba68dbb846b24c858fe84474",
+      "source": "https://good-couple.tistory.com/79",
+      "author_key": "good-couple.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_드림파크골프장",
+      "observation_id": "cf39544a8db81b1b1cc00e3d",
+      "source": "https://good-couple.tistory.com/79",
+      "author_key": "good-couple.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_떼제베_2",
+      "observation_id": "95ccad91a88b01d726027a0c",
+      "source": "https://sourmong.tistory.com/232",
+      "author_key": "sourmong.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_떼제베_2",
+      "observation_id": "530e552916aa5b8fa77ad47c",
+      "source": "https://sourmong.tistory.com/232",
+      "author_key": "sourmong.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_떼제베_2",
+      "observation_id": "46e76b911b45bf9b1fa1c2d8",
+      "source": "https://sourmong.tistory.com/232",
+      "author_key": "sourmong.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_리앤리",
+      "observation_id": "2ff6f8144ef20cf734d6a984",
+      "source": "https://jangborimart.tistory.com/565",
+      "author_key": "jangborimart.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_리앤리",
+      "observation_id": "cc415422ec3210fe5b9e16a0",
+      "source": "https://ingin100.com/%EB%A6%AC%EC%95%A4%EB%A6%ACcc-%EA%B3%A8%ED%94%84%EC%9E%A5-%EB%B0%A9%EB%AC%B8-%ED%9B%84%EA%B8%B0-lee-lee-country-club",
+      "author_key": "ingin100.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_리앤리",
+      "observation_id": "02ad7c694c76b73fde91a8ef",
+      "source": "https://ingin100.com/%EB%A6%AC%EC%95%A4%EB%A6%ACcc-%EA%B3%A8%ED%94%84%EC%9E%A5-%EB%B0%A9%EB%AC%B8-%ED%9B%84%EA%B8%B0-lee-lee-country-club",
+      "author_key": "ingin100.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_마에스트로c_c",
+      "observation_id": "fa9c11b2648dfad150f6a953",
+      "source": "https://theshinvia.com/maestro-cc-golf-review-difficulty-restaurant",
+      "author_key": "theshinvia.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_베스트밸리",
+      "observation_id": "e34d360782625e4866f908ce",
+      "source": "https://100golfstory.tistory.com/entry/%EB%B2%A0%EC%8A%A4%ED%8A%B8%EB%B0%B8%EB%A6%ACCC-%EB%9D%BC%EC%9A%B4%EB%94%A9%ED%9B%84%EA%B8%B0-%EC%8B%9D%EB%8B%B9-%EA%B7%B8%EB%A6%B0%ED%94%BC-%EC%BA%90%EB%94%94%ED%94%BC-%EC%B9%B4%ED%8A%B8%EB%B9%84-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0-%ED%8C%8C%EC%A3%BC%EA%B3%A8%ED%94%84%EC%97%B0%EC%8A%B5%EC%9E%A5-%EC%B6%94%EC%B2%9C",
+      "author_key": "100golfstory.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_베스트밸리",
+      "observation_id": "4011f4759e765eb4ea1295b5",
+      "source": "https://100golfstory.tistory.com/entry/%EB%B2%A0%EC%8A%A4%ED%8A%B8%EB%B0%B8%EB%A6%ACCC-%EB%9D%BC%EC%9A%B4%EB%94%A9%ED%9B%84%EA%B8%B0-%EC%8B%9D%EB%8B%B9-%EA%B7%B8%EB%A6%B0%ED%94%BC-%EC%BA%90%EB%94%94%ED%94%BC-%EC%B9%B4%ED%8A%B8%EB%B9%84-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0-%ED%8C%8C%EC%A3%BC%EA%B3%A8%ED%94%84%EC%97%B0%EC%8A%B5%EC%9E%A5-%EC%B6%94%EC%B2%9C",
+      "author_key": "100golfstory.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_베스트밸리",
+      "observation_id": "d18a9e782b66d7b7c5349f83",
+      "source": "https://blog.naver.com/jth1212000/223253820630",
+      "author_key": "naver:jth1212000",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_베어즈베스트청라",
+      "observation_id": "3afb5629ca26deaf7e392ebb",
+      "source": "https://kanigolf.tistory.com/518",
+      "author_key": "kanigolf.tistory.com",
+      "dimension": "bunkers",
+      "status": "rejected",
+      "flags": [],
+      "reason": "미국코스 2번 홀은 다른 홀보다 벙커가 많지 않다는 문장. many 추출은 부정문 반전 오류."
+    },
+    {
+      "club_id": "vworld_베어크리크",
+      "observation_id": "dbcbd8ce3d5c9cca32d91431",
+      "source": "https://v.daum.net/v/QrNE1cyPBI?f=p",
+      "author_key": "v.daum.net",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_베어크리크",
+      "observation_id": "653bc9a156669f25f8625e2c",
+      "source": "https://goljinboo.com/%EB%B2%A0%EC%96%B4%ED%81%AC%EB%A6%AC%ED%81%AC-%EC%B6%98%EC%B2%9C-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0-%EA%B0%80%EA%B2%A9-%EC%98%81%EC%83%81-%EC%A3%BC%EB%B3%80-%EB%A7%9B%EC%A7%91-%EC%B6%94",
+      "author_key": "goljinboo.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_벨포레",
+      "observation_id": "814f8809b3d108e8300ed49e",
+      "source": "https://blog.naver.com/hush113/224206291534",
+      "author_key": "naver:hush113",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_서원밸리g_c",
+      "observation_id": "7e5399980238759ccf9244c0",
+      "source": "https://v.daum.net/v/YmW5HWYx1O",
+      "author_key": "v.daum.net",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_설악프라자",
+      "observation_id": "6d26e79e47eabd815c69c1d4",
+      "source": "https://blog.naver.com/voued/223400002973",
+      "author_key": "naver:voued",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_설악프라자",
+      "observation_id": "46a7dbad3b2b4f750e2282ae",
+      "source": "https://blog.naver.com/voued/223400002973",
+      "author_key": "naver:voued",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_설악프라자",
+      "observation_id": "f1fa26b07ff95778ce33f167",
+      "source": "https://blog.naver.com/voued/223400002973",
+      "author_key": "naver:voued",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_설악프라자",
+      "observation_id": "633e5c937af1a59efa622736",
+      "source": "https://blog.naver.com/kin1584/223062057325",
+      "author_key": "naver:kin1584",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_세라지오",
+      "observation_id": "b45ee2d24571fa14b4fc0bac",
+      "source": "https://blog.naver.com/sjemanse/223546211139",
+      "author_key": "naver:sjemanse",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_신라",
+      "observation_id": "69427de0a16423e8e4cd77d8",
+      "source": "https://gourmet-database.tistory.com/944",
+      "author_key": "gourmet-database.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_신라",
+      "observation_id": "210706f54ee7835f1c80299e",
+      "source": "https://golfaz.tistory.com/entry/%EC%97%AC%EC%A3%BC-%EC%8B%A0%EB%9D%BCCC-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0-%EB%82%A0%EC%94%A8-%EA%B5%BF-%EA%B3%A8%ED%94%84%EC%9E%A5-%EC%BB%A8%EB%94%94%EC%85%98-%EC%A7%B1",
+      "author_key": "golfaz.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_신라",
+      "observation_id": "b0ca290fa78b5c28713acfeb",
+      "source": "https://golfaz.tistory.com/entry/%EC%97%AC%EC%A3%BC-%EC%8B%A0%EB%9D%BCCC-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0-%EB%82%A0%EC%94%A8-%EA%B5%BF-%EA%B3%A8%ED%94%84%EC%9E%A5-%EC%BB%A8%EB%94%94%EC%85%98-%EC%A7%B1",
+      "author_key": "golfaz.tistory.com",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_신라",
+      "observation_id": "ad51dfbb6b350c0e6f2ad3cd",
+      "source": "https://sbde37.tistory.com/55",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_신라",
+      "observation_id": "53feae707bfd7d88df4a230a",
+      "source": "https://sbde37.tistory.com/55",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_신라",
+      "observation_id": "9f227ebc0598bc62122843e0",
+      "source": "https://szju.tistory.com/205",
+      "author_key": "szju.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아리지",
+      "observation_id": "e002d6c07d9953cc27eda9d3",
+      "source": "https://blog.naver.com/jeh135/223259649884",
+      "author_key": "naver:jeh135",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아리지",
+      "observation_id": "c029780e029fbff2f996cc8e",
+      "source": "https://blog.naver.com/jeh135/223259649884",
+      "author_key": "naver:jeh135",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아리지",
+      "observation_id": "3760d4f1b931e3f597f579cb",
+      "source": "https://blog.naver.com/jeh135/223259649884",
+      "author_key": "naver:jeh135",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아리지",
+      "observation_id": "693106d844e4f22f45ff8dfb",
+      "source": "https://sbde37.tistory.com/38",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아리지",
+      "observation_id": "3ac72112268a0b259a460ce9",
+      "source": "https://m.dcinside.com/mini/golf/25075",
+      "author_key": "m.dcinside.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아시아나c_c",
+      "observation_id": "9d4575e9bd063565f3649f85",
+      "source": "https://blog.naver.com/yeseuldp/223105728882",
+      "author_key": "naver:yeseuldp",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아시아나c_c",
+      "observation_id": "38d698ab1a9cd7e19cec14f3",
+      "source": "https://blog.naver.com/dbwlsdkq/224046487782",
+      "author_key": "naver:dbwlsdkq",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아시아나c_c",
+      "observation_id": "f32be4d9b85fcad088f910f1",
+      "source": "https://blog.naver.com/dbwlsdkq/224046487782",
+      "author_key": "naver:dbwlsdkq",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아일랜드_대중",
+      "observation_id": "d88d2fb1b9e1e78543b3690d",
+      "source": "https://akdakdcl.tistory.com/41",
+      "author_key": "akdakdcl.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아트밸리",
+      "observation_id": "2498e06b42c6a08932733361",
+      "source": "https://blog.naver.com/wjdtmddufno1/222904187841",
+      "author_key": "naver:wjdtmddufno1",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아트밸리",
+      "observation_id": "b0720100c4719b3a8d1addb8",
+      "source": "https://blog.naver.com/wjdtmddufno1/222904187841",
+      "author_key": "naver:wjdtmddufno1",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아트밸리",
+      "observation_id": "8115127c623aa17c0d751195",
+      "source": "https://blog.naver.com/wjdtmddufno1/222904187841",
+      "author_key": "naver:wjdtmddufno1",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_아트밸리",
+      "observation_id": "6be86f4e1a194a2730065222",
+      "source": "https://blog.naver.com/wjdtmddufno1/222904187841",
+      "author_key": "naver:wjdtmddufno1",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_안성c_c",
+      "observation_id": "e215905fed3686c78ad929d3",
+      "source": "https://golfaz.tistory.com/entry/%EC%95%88%EC%84%B1CC-%EB%82%A0%EC%94%A8-%EC%A2%8B%EA%B2%8C-%EB%9D%BC%EC%9A%B4%EB%94%A9-%ED%9B%84%EA%B8%B0-%EA%B7%B8%EB%A6%B0%EC%8A%A4%ED%94%BC%EB%93%9C%EC%BD%94%EC%8A%A4%EA%B3%B5%EB%9E%B5%EC%9D%80",
+      "author_key": "golfaz.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_안양베네스트",
+      "observation_id": "5d954afb81b08aa5a8810b23",
+      "source": "https://zlemrzlemr.com/35",
+      "author_key": "zlemrzlemr.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_안양베네스트",
+      "observation_id": "628d98cdfcf7cfdb080e86c2",
+      "source": "https://zlemrzlemr.com/35",
+      "author_key": "zlemrzlemr.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_안양베네스트",
+      "observation_id": "aadc3051e42989b016a015fc",
+      "source": "https://zlemrzlemr.com/35",
+      "author_key": "zlemrzlemr.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_알프스퍼블릭",
+      "observation_id": "f4b4873efa18e6c532c3deb4",
+      "source": "https://blog.naver.com/golfcouple/223022361614",
+      "author_key": "naver:golfcouple",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_에콜리안정선",
+      "observation_id": "5a22f7dbee87e256a85f96b7",
+      "source": "https://blog.naver.com/oilchoi57/223921235296",
+      "author_key": "naver:oilchoi57",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_여주썬밸리",
+      "observation_id": "45ee30739b521214b05746ef",
+      "source": "https://blog.naver.com/kingjae07/223215881184",
+      "author_key": "naver:kingjae07",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_영랑호",
+      "observation_id": "1d5b2e8f2af2f926699af798",
+      "source": "https://blog.naver.com/july7th73/223990241738",
+      "author_key": "naver:july7th73",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_영랑호",
+      "observation_id": "39bc0de1663a911068d57ef6",
+      "source": "https://blog.naver.com/rangley/223018420138",
+      "author_key": "naver:rangley",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_오너스g_c",
+      "observation_id": "3f9e0690557f938945e7c29d",
+      "source": "https://heodj11.tistory.com/1004",
+      "author_key": "heodj11.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_오너스g_c",
+      "observation_id": "69f23055429d6ee23341f542",
+      "source": "https://heodj11.tistory.com/1004",
+      "author_key": "heodj11.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_오너스g_c",
+      "observation_id": "ccea91fa222b72ec982d8934",
+      "source": "https://heodj11.tistory.com/1004",
+      "author_key": "heodj11.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_오너스g_c",
+      "observation_id": "9dd04b03e13bbf38c6cf4ea7",
+      "source": "https://heodj11.tistory.com/1004",
+      "author_key": "heodj11.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_오크밸리회원제골프장",
+      "observation_id": "a7c8d372a84d36fb85a5d9d8",
+      "source": "https://worldtravellerjp.tistory.com/1035",
+      "author_key": "worldtravellerjp.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_오크밸리회원제골프장",
+      "observation_id": "4b38c478f6f5d883d848c094",
+      "source": "https://worldtravellerjp.tistory.com/1035",
+      "author_key": "worldtravellerjp.tistory.com",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_올림픽",
+      "observation_id": "9df38c433999b993932bcec9",
+      "source": "https://m.youtube.com/watch?v=_C3WjPAaoQA",
+      "author_key": "m.youtube.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_우정힐스c_c",
+      "observation_id": "00dddc89b0fd49d1409a81e6",
+      "source": "https://blog.naver.com/suckhong85/223208813662",
+      "author_key": "naver:suckhong85",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_우정힐스c_c",
+      "observation_id": "de0eb135bae4b047be72a63e",
+      "source": "https://blog.naver.com/suckhong85/223208813662",
+      "author_key": "naver:suckhong85",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_우정힐스c_c",
+      "observation_id": "5942659a1497e6a2162e9ed1",
+      "source": "https://blog.naver.com/suckhong85/223208813662",
+      "author_key": "naver:suckhong85",
+      "dimension": "bunkers",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_우정힐스c_c",
+      "observation_id": "56837caeab5276b76696e338",
+      "source": "https://blog.naver.com/iwrfr1004/223412836555",
+      "author_key": "naver:iwrfr1004",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_우정힐스c_c",
+      "observation_id": "6dd6b1b5b5f10d5599ccfe43",
+      "source": "https://v.daum.net/v/3Mvft9A8wU",
+      "author_key": "v.daum.net",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_크리스탈밸리g_c",
+      "observation_id": "cdab04d447411b7558f52cb9",
+      "source": "https://blog.naver.com/arte1101/223187403019",
+      "author_key": "naver:arte1101",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_크리스탈밸리g_c",
+      "observation_id": "74b4c363f0c37f1d50f41830",
+      "source": "https://mad4golf.tistory.com/355",
+      "author_key": "mad4golf.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_태안비치c_c",
+      "observation_id": "79b2339174799119a762feec",
+      "source": "https://100golfstory.tistory.com/entry/%EC%B6%A9%EC%B2%AD%EB%82%A8%EB%8F%84-%ED%83%9C%EC%95%88%EC%97%90-%EC%9C%84%EC%B9%98%ED%95%9C-%EC%8A%A4%ED%86%A4%EB%B9%84%EC%B9%98CC-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0-%EA%B5%AC%ED%83%9C%EC%95%88%EB%B9%84%EC%B9%98CC-%EC%8A%A4%ED%86%A4%EB%B9%84%EC%B9%98CC-%EA%B7%B8%EB%A6%B0%ED%94%BC-%EC%BA%90%EB%94%94%ED%94%BC-%EC%B9%B4%ED%8A%B8%EB%B9%84-%EC%A0%95%EB%B3%B4-%EC%8A%A4%ED%86%A4%EB%B9%84%EC%B9%98CC-%EC%A0%84%EA%B2%BD-%EC%8A%A4%ED%86%A4%EB%B9%84%EC%B9%98CC-%EC%BD%94%EC%8A%A4-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0",
+      "author_key": "100golfstory.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_태안비치c_c",
+      "observation_id": "63199d28a6461848639f9977",
+      "source": "https://blog.naver.com/zg_mensbnf/223578580879",
+      "author_key": "naver:zg_mensbnf",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_파인밸리",
+      "observation_id": "67a218cae277ec408f717356",
+      "source": "https://blog.naver.com/kin1584/223527066489",
+      "author_key": "naver:kin1584",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_파인스톤c_c",
+      "observation_id": "c5081f02d22b516545766218",
+      "source": "https://benjamin-lifeframe.tistory.com/entry/%EC%B6%A9%EB%82%A8-%EB%8B%B9%EC%A7%84-%EA%BD%83%EA%B3%BC-%EB%82%98%EB%AC%B4-%ED%92%8D%EA%B2%BD%EC%9D%B4-%EC%95%84%EB%A6%84%EB%8B%B5%EA%B3%A0-%EC%BA%90%EB%94%94%EA%B0%80-%EC%A2%8B%EC%9D%80-%EA%B3%A8%ED%94%84%EC%9E%A5-%ED%8C%8C%EC%9D%B8%EC%8A%A4%ED%86%A4cc",
+      "author_key": "benjamin-lifeframe.tistory.com",
+      "dimension": "facilities",
+      "status": "rejected",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "음식 준비가 깔끔하다는 문장으로 시설 품질 근거가 아님."
+    },
+    {
+      "club_id": "vworld_파인크리크c_c",
+      "observation_id": "27323324e707892f97b6f9f2",
+      "source": "https://hanjooroo.tistory.com/166",
+      "author_key": "hanjooroo.tistory.com",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_파인크리크c_c",
+      "observation_id": "3fd8e3cbaa6a5b74a5860f75",
+      "source": "https://hanjooroo.tistory.com/166",
+      "author_key": "hanjooroo.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_파인크리크c_c",
+      "observation_id": "dcb09eef0782853957ca99f8",
+      "source": "https://hanjooroo.tistory.com/166",
+      "author_key": "hanjooroo.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_파크밸리",
+      "observation_id": "a6d77d62c2263a749e1aa698",
+      "source": "https://9manual.com/entry/%ED%8C%8C%ED%81%AC%EB%B0%B8%EB%A6%ACcc-%EB%9D%BC%EC%9A%B4%EB%93%9C-%ED%9B%84%EA%B8%B0",
+      "author_key": "9manual.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_포레스트힐",
+      "observation_id": "d0342946e308fd429b17c330",
+      "source": "https://sbde37.tistory.com/45",
+      "author_key": "sbde37.tistory.com",
+      "dimension": "green",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_포레스트힐",
+      "observation_id": "a85f5ae0d87280f8c4df29b3",
+      "source": "https://blog.naver.com/pjy10912/223122002693",
+      "author_key": "naver:pjy10912",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_포천힐스",
+      "observation_id": "4fe88e087764949af3e62ced",
+      "source": "https://kanigolf.tistory.com/480",
+      "author_key": "kanigolf.tistory.com",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_포천힐스",
+      "observation_id": "9a18625740877b40d5ec7312",
+      "source": "https://kanigolf.tistory.com/480",
+      "author_key": "kanigolf.tistory.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_포천힐스",
+      "observation_id": "ebce026b15644916f208286e",
+      "source": "https://blog.naver.com/mysoulasylum/224339518603",
+      "author_key": "naver:mysoulasylum",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_포천힐스",
+      "observation_id": "33b43227303dffa79764752d",
+      "source": "https://dealbada.com/bbs/board.php?bo_table=forum_golf&wr_id=810255",
+      "author_key": "dealbada.com",
+      "dimension": "maintenance",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review",
+        "same_author_multiple_sources"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_프리스틴밸리g_c",
+      "observation_id": "d72904e485cad5433d6878ba",
+      "source": "https://draone.tistory.com/77",
+      "author_key": "draone.tistory.com",
+      "dimension": "facilities",
+      "status": "needs_review",
+      "flags": [
+        "outside_freshness_window"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_프리스틴밸리g_c",
+      "observation_id": "936f91c203d1cf37c0a760c8",
+      "source": "https://blog.naver.com/ruina12333/223571738610",
+      "author_key": "naver:ruina12333",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_프리스틴밸리g_c",
+      "observation_id": "02d5edcd9d17a62f27d93651",
+      "source": "https://zlemrzlemr.com/145",
+      "author_key": "zlemrzlemr.com",
+      "dimension": "fairway",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "가평 프리스틴밸리 전체 공략 단락의 체감. 넓어도 도그레그·해저드에서 부담 있다는 제한 보존."
+    },
+    {
+      "club_id": "vworld_필로스",
+      "observation_id": "ffd3945f8e9dafec70a2275f",
+      "source": "https://tommy-life2.tistory.com/74",
+      "author_key": "tommy-life2.tistory.com",
+      "dimension": "fairway",
+      "status": "human_reviewed",
+      "flags": [],
+      "reason": "필로스 반복 방문자의 전체적인 체감. 넓지만 공략이 어려웠다는 반대 맥락 보존."
+    },
+    {
+      "club_id": "vworld_해솔리아",
+      "observation_id": "60dee89b8cb1f6e567fe54b2",
+      "source": "https://v.daum.net/v/FAyIRV0g1t",
+      "author_key": "v.daum.net",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    },
+    {
+      "club_id": "vworld_해솔리아",
+      "observation_id": "dba64d90a601fe8ce4c02cb9",
+      "source": "https://blog.naver.com/arte1101/224225565189",
+      "author_key": "naver:arte1101",
+      "dimension": "fairway",
+      "status": "needs_review",
+      "flags": [
+        "full_text_missing",
+        "publication_date_missing",
+        "firsthand_context_needs_review"
+      ],
+      "reason": "원문·시점·대상 범위 확인 전 표시 보류"
+    }
+  ],
+  "note": "235건 모두 규칙 점검. 원문 문맥 판정은 new_context_decisions 및 기존 reviewed/rejected만. 전체 수작업 검증 완료 아님."
+}
