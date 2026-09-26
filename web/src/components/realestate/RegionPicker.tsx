@@ -26,7 +26,9 @@ export default function RegionPicker({
 
   // 칩에는 짧은 이름을 보여주고, 선택값은 원래 형식으로 유지한다.
   const toFull = (s: string) => visible.find((r) => short(r) === s) ?? s;
-  const selectedShort = value.filter((v) => visible.includes(v)).map(short);
+  const wholeSelected = selectWholeScope && pool.length > 0 && pool.every((r) => value.includes(r));
+  const selectedShort = wholeSelected ? [] : value.filter((v) => visible.includes(v)).map(short);
+  const wholeLabel = scope === "전체" ? "서울·경기 전체" : `${scope} 전체`;
 
   return (
     <div className="space-y-2">
@@ -34,7 +36,7 @@ export default function RegionPicker({
         <Segmented value={scope} options={["서울", "경기", "전체"] as const} onChange={(next) => {
           setScope(next);
           setQ("");
-          if (selectWholeScope) onChange(next === "서울" ? [...regions.서울] : next === "경기" ? [...regions.경기] : [...regions.서울, ...regions.경기]);
+
         }} ariaLabel="지역 범위" />
         <input className={`${inputClass} max-w-48 py-1.5`} value={q} onChange={(e) => setQ(e.target.value)} placeholder="구·시 검색" />
         {value.length > 0 && (
@@ -43,15 +45,23 @@ export default function RegionPicker({
           </button>
         )}
       </div>
-      {selectWholeScope && <p className="text-xs text-muted">서울·경기를 누르면 해당 지역 전체가 선택됩니다. 전체는 서울+경기이며, 아래에서 개별 지역을 선택하거나 해제할 수 있습니다.</p>}
+      {selectWholeScope && <p className="text-xs text-muted">아래에서 전체 또는 원하는 시·군·구를 선택하세요. 전체 선택 후 개별 지역을 누르면 해당 지역만 선택됩니다. 다른 시도의 선택은 유지됩니다.</p>}
       <div className="max-h-44 overflow-y-auto rounded-2xl border border-border p-3">
+        {selectWholeScope && (
+          <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-border pb-3">
+            <button type="button" aria-pressed={wholeSelected} onClick={() => onChange(wholeSelected ? value.filter((r) => !pool.includes(r)) : [...new Set([...value, ...pool])])} className={`rounded-full border px-3 py-1.5 text-xs font-bold ${wholeSelected ? "border-estate bg-estate text-white" : "border-border text-estate"}`}>
+              {wholeSelected ? "✓ " : ""}{wholeLabel}
+            </button>
+            <button type="button" onClick={() => onChange(value.filter((r) => !pool.includes(r)))} className="text-xs text-muted hover:text-fg">이 지역 선택 해제</button>
+          </div>
+        )}
         <ChoiceChips
           accent="estate"
           options={visible.map(short)}
           selected={selectedShort}
           onToggle={(s) => {
             const full = toFull(s);
-            onChange(value.includes(full) ? value.filter((x) => x !== full) : [...value, full]);
+            onChange(wholeSelected ? [...value.filter((r) => !pool.includes(r)), full] : value.includes(full) ? value.filter((x) => x !== full) : [...value, full]);
           }}
         />
         {visible.length === 0 && <p className="text-xs text-subtle">검색 결과가 없어요.</p>}
