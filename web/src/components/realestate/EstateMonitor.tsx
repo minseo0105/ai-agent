@@ -129,6 +129,8 @@ function TradeTab({ options }: { options: EstateOptions }) {
   const [types, setTypes] = useState<string[]>(["아파트", "연립·다세대"]);
   const [regions, setRegions] = useState<string[]>(["서울 > 송파구", "서울 > 강동구", "경기 > 하남시"]);
   const [month, setMonth] = useState(currentMonth());
+  const [maxPrice, setMaxPrice] = useState("");
+  const [appliedPrice, setAppliedPrice] = useState<number | null>(null);
   const [result, setResult] = useState<{ items: Trade[]; errors: string[]; counts: Record<string, number>; requests: number } | null>(null);
   const [typeFilter, setTypeFilter] = useState<string[]>([]);
   const [visible, setVisible] = useState(40);
@@ -139,9 +141,15 @@ function TradeTab({ options }: { options: EstateOptions }) {
     setError("");
     if (!types.length) return setError("주택유형을 1개 이상 선택해주세요.");
     if (!regions.length) return setError("조회지역을 1개 이상 선택해주세요.");
+    const price = maxPrice.trim() === "" ? undefined : Number(maxPrice);
+    if (price !== undefined && (!Number.isFinite(price) || price <= 0 || price > 10000)) {
+      return setError("최대 매매가격은 0보다 크고 10,000억원 이하로 입력해주세요.");
+    }
     setLoading(true);
+    setResult(null);
     try {
-      setResult(await estateApi.trades({ regions, property_types: types, month }));
+      setResult(await estateApi.trades({ regions, property_types: types, month, max_price_100m: price }));
+      setAppliedPrice(price ?? null);
       setTypeFilter([]);
       setVisible(40);
     } catch (e) {
@@ -169,6 +177,16 @@ function TradeTab({ options }: { options: EstateOptions }) {
           value={monthValue}
           onChange={(e) => e.target.value && setMonth(e.target.value.replace("-", ""))}
         />
+      </Field>
+      <Field label="최대 매매가격" hint="억원 단위 · 비워두면 전체 · 입력한 금액 포함 이하">
+        <div className="flex items-center gap-2">
+          <input aria-label="최대 매매가격 (억원)" type="number" inputMode="decimal" min="0.01" max="10000" step="0.01" placeholder="예: 5 → 5억원 이하" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className={`${inputClass} max-w-64`} />
+          <span className="shrink-0 text-sm text-muted">억원 이하</span>
+        </div>
+        <div className="mt-2">
+          <ChoiceChips accent="estate" options={["전체", "3억 이하", "5억 이하", "7억 이하", "10억 이하"]} selected={[maxPrice === "" ? "전체" : `${maxPrice}억 이하`]} onToggle={(v) => setMaxPrice(v === "전체" ? "" : v.replace("억 이하", ""))} />
+        </div>
+        <p className="mt-2 text-xs text-muted">실제 계약된 매매가격 기준이며 현재 매물의 호가가 아닙니다. 가격 미확인 거래는 가격 조건 적용 시 제외합니다.</p>
       </Field>
       <PrimaryButton onClick={search} disabled={loading}>
         실거래 조회 · {regions.length}개 지역 × {types.length}개 유형
@@ -201,8 +219,9 @@ function TradeTab({ options }: { options: EstateOptions }) {
             <ChoiceChips accent="estate" options={Object.keys(result.counts)} selected={typeFilter} onToggle={(v) => setTypeFilter(toggle(typeFilter, v))} />
           )}
           <p className="text-xs text-subtle">
-            {items.length}건 · 최근 거래일 순
+            {items.length}건 · 최근 거래일 순 · {appliedPrice === null ? "가격 전체" : `${appliedPrice}억원 이하`}
           </p>
+          {items.length === 0 && <p className="text-sm text-muted">조건에 맞는 실거래가 없어요. 가격 상한·지역·계약년월을 조정해 보세요.</p>}
           <div className="grid gap-3 md:grid-cols-2">
             {items.slice(0, visible).map((it) => (
               <Card key={it.id}>
@@ -474,7 +493,7 @@ function AlertTab({ onUnread }: { onUnread: (n: number) => void }) {
 
 export default function EstateMonitor() {
   const [options, setOptions] = useState<EstateOptions | null>(null);
-  const [tab, setTab] = useState<Tab>("청약 조회");
+  const [tab, setTab] = useState<Tab>("실거래 조회");
   const [unread, setUnread] = useState(0);
   const [error, setError] = useState("");
 
@@ -499,8 +518,8 @@ export default function EstateMonitor() {
         full
         ariaLabel="부동산 모니터 메뉴"
         options={[
-          { value: "청약 조회" as const, label: "청약" },
           { value: "실거래 조회" as const, label: "실거래" },
+          { value: "청약 조회" as const, label: "청약" },
           { value: "모니터링 조건" as const, label: "모니터링" },
           { value: "알림함" as const, label: unread ? `알림 ${unread}` : "알림" },
         ]}

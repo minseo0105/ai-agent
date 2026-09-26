@@ -96,7 +96,7 @@ export const estateApi = {
   options: () => request<EstateOptions>("/options"),
   subscriptions: (q: { kind: "apt" | "unsold"; regions: string[]; supply_types: string[]; kinds: string[]; statuses: string[] }) =>
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
-  trades: (q: { regions: string[]; property_types: string[]; month: string }) =>
+  trades: (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number }) =>
     post<{ items: Trade[]; errors: string[]; counts: Record<string, number>; requests: number }>("/trades", q),
   monitor: () => request<MonitorState>("/monitor"),
   setAuto: (enabled: boolean) => request<MonitorState>("/monitor/auto", { method: "PUT", body: JSON.stringify({ enabled }) }),

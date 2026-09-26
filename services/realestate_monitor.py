@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import sqlite3
 import xml.etree.ElementTree as ET
@@ -662,6 +663,19 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
         "floor": floor,
         "build_year": build_year,
     }
+
+
+def filter_trade_price(rows, max_price_100m=None):
+    """가격 상한(억원), 경계 포함. 가격 미확인은 제한 검색에서 제외한다."""
+    if max_price_100m is None:
+        return list(rows)
+    def matches(row):
+        try:
+            price = float(row.get("price_100m"))
+        except (TypeError, ValueError):
+            return False
+        return math.isfinite(price) and 0 < price <= max_price_100m
+    return [row for row in rows if matches(row)]
 
 
 def fetch_trade(
