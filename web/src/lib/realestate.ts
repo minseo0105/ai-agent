@@ -38,6 +38,7 @@ export type Trade = {
   jibun: string;
   road_name: string;
   area: number;
+  area_basis?: string;
   price_100m: number;
   price_text: string;
   date: string;
@@ -96,7 +97,7 @@ export const estateApi = {
   options: () => request<EstateOptions>("/options"),
   subscriptions: (q: { kind: "apt" | "unsold"; regions: string[]; supply_types: string[]; kinds: string[]; statuses: string[] }) =>
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
-  trades: async (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number }, onProgress?: (done: number, total: number) => void) => {
+  trades: async (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number; max_area?: number }, onProgress?: (done: number, total: number) => void) => {
     const regions = [...new Set(q.regions)];
     const result = { items: [] as Trade[], errors: [] as string[], counts: {} as Record<string, number>, requests: 0 };
     // 서버의 40개 조합 제한을 유지하고 긴 요청을 줄이기 위해 지역을 5개씩 순차 조회한다.

@@ -81,6 +81,7 @@ class TradeQuery(BaseModel):
     property_types: list[str] = Field(min_length=1)
     month: str = Field(pattern=r"^\d{6}$")
     max_price_100m: float | None = Field(None, gt=0, le=10000, allow_inf_nan=False)
+    max_area: float | None = Field(None, gt=0, le=100000, allow_inf_nan=False)
 
 
 @router.post("/trades")
@@ -92,6 +93,7 @@ async def trades(q: TradeQuery):
     except Exception as e:
         _error(e)
     rows = rm.filter_trade_price(rows, q.max_price_100m)
+    rows = rm.filter_trade_area(rows, q.max_area)
     rows = sorted(rows, key=lambda x: (x.get("date") or ""), reverse=True)
     for row in rows:
         row["naver_url"] = rm.build_naver_land_url(row)

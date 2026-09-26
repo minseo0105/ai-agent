@@ -569,6 +569,9 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
             "",
         )
 
+    area_keys = (["totalFloorAr", "buildingAr", "excluUseAr", "plottageAr"] if property_type == "단독·다가구" else ["excluUseAr", "area", "buildingAr"])
+    area_key = next((key for key in area_keys if _xml_text(item, key).strip()), "")
+    area_basis = {"totalFloorAr": "연면적", "buildingAr": "건물면적", "excluUseAr": "전용면적", "plottageAr": "대지면적"}.get(area_key, "면적 기준 미확인")
     year = _xml_text(item, "dealYear")
     month = _xml_text(item, "dealMonth")
     day = _xml_text(item, "dealDay")
@@ -657,6 +660,7 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
         "jibun": jibun,
         "road_name": road_name,
         "area": area,
+        "area_basis": area_basis,
         "price_100m": price_100m,
         "price_text": f"{price_100m:.2f}억원",
         "date": deal_date,
@@ -675,6 +679,20 @@ def filter_trade_price(rows, max_price_100m=None):
         except (TypeError, ValueError):
             return False
         return math.isfinite(price) and 0 < price <= max_price_100m
+    return [row for row in rows if matches(row)]
+
+
+def filter_trade_area(rows, max_area=None):
+    if max_area is None:
+        return list(rows)
+    def matches(row):
+        if row.get("area_basis") not in {"전용면적", "연면적", "건물면적"}:
+            return False
+        try:
+            area = float(row.get("area"))
+        except (TypeError, ValueError):
+            return False
+        return math.isfinite(area) and 0 < area <= max_area
     return [row for row in rows if matches(row)]
 
 

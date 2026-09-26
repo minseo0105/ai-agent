@@ -130,6 +130,8 @@ function TradeTab({ options }: { options: EstateOptions }) {
   const [regions, setRegions] = useState<string[]>(["서울 > 송파구", "서울 > 강동구", "경기 > 하남시"]);
   const [month, setMonth] = useState(currentMonth());
   const [maxPrice, setMaxPrice] = useState("");
+  const [maxArea, setMaxArea] = useState("");
+  const [appliedArea, setAppliedArea] = useState<number | null>(null);
   const [appliedPrice, setAppliedPrice] = useState<number | null>(null);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [result, setResult] = useState<{ items: Trade[]; errors: string[]; counts: Record<string, number>; requests: number } | null>(null);
@@ -146,12 +148,15 @@ function TradeTab({ options }: { options: EstateOptions }) {
     if (price !== undefined && (!Number.isFinite(price) || price <= 0 || price > 10000)) {
       return setError("최대 매매가격은 0보다 크고 10,000억원 이하로 입력해주세요.");
     }
+    const area = maxArea.trim() === "" ? undefined : Number(maxArea);
+    if (area !== undefined && (!Number.isFinite(area) || area <= 0 || area > 100000)) return setError("최대 면적은 0보다 크고 100,000㎡ 이하로 입력해주세요.");
     setLoading(true);
     setResult(null);
     setProgress({ done: 0, total: regions.length });
     try {
-      setResult(await estateApi.trades({ regions, property_types: types, month, max_price_100m: price }, (done, total) => setProgress({ done, total })));
+      setResult(await estateApi.trades({ regions, property_types: types, month, max_price_100m: price, max_area: area }, (done, total) => setProgress({ done, total })));
       setAppliedPrice(price ?? null);
+      setAppliedArea(area ?? null);
       setTypeFilter([]);
       setVisible(40);
     } catch (e) {
@@ -190,6 +195,17 @@ function TradeTab({ options }: { options: EstateOptions }) {
         </div>
         <p className="mt-2 text-xs text-muted">실제 계약된 매매가격 기준이며 현재 매물의 호가가 아닙니다. 가격 미확인 거래는 가격 조건 적용 시 제외합니다.</p>
       </Field>
+      <Field label="최대 면적" hint="㎡ 단위 · 비워두면 전체 · 입력한 면적 포함 이하">
+        <div className="flex items-center gap-2">
+          <input aria-label="최대 면적 (㎡)" type="number" inputMode="decimal" min="0.01" max="100000" step="0.01" placeholder="예: 85 → 85㎡ 이하" value={maxArea} onChange={(e) => setMaxArea(e.target.value)} className={`${inputClass} max-w-64`} />
+          <span className="shrink-0 text-sm text-muted">㎡ 이하</span>
+        </div>
+        <div className="mt-2">
+          <ChoiceChips accent="estate" options={["면적 전체", "60㎡ 이하", "85㎡ 이하", "102㎡ 이하", "135㎡ 이하"]} selected={[maxArea === "" ? "면적 전체" : `${maxArea}㎡ 이하`]} onToggle={(v) => setMaxArea(v === "면적 전체" ? "" : v.replace("㎡ 이하", ""))} />
+        </div>
+        {Number(maxArea) > 0 && Number.isFinite(Number(maxArea)) && <p className="mt-2 text-xs text-estate">약 {(Number(maxArea) / 3.3058).toFixed(1)}평 이하 · 입력 면적 환산</p>}
+        <p className="mt-2 text-xs text-muted">아파트·연립·오피스텔은 전용면적, 단독·다가구는 연면적 또는 건물면적 기준입니다. 공급면적 기준 평형과 다를 수 있으며, 면적·기준 미확인 및 대지면적만 있는 거래는 면적 조건 적용 시 제외합니다.</p>
+      </Field>
       <PrimaryButton onClick={search} disabled={loading}>
         실거래 조회 · {regions.length}개 지역 × {types.length}개 유형
       </PrimaryButton>
@@ -221,9 +237,9 @@ function TradeTab({ options }: { options: EstateOptions }) {
             <ChoiceChips accent="estate" options={Object.keys(result.counts)} selected={typeFilter} onToggle={(v) => setTypeFilter(toggle(typeFilter, v))} />
           )}
           <p className="text-xs text-subtle">
-            {items.length}건 · 최근 거래일 순 · {appliedPrice === null ? "가격 전체" : `${appliedPrice}억원 이하`}
+            {items.length}건 · 최근 거래일 순 · {appliedPrice === null ? "가격 전체" : `${appliedPrice}억원 이하`} · {appliedArea === null ? "면적 전체" : `${appliedArea}㎡ 이하`}
           </p>
-          {items.length === 0 && <p className="text-sm text-muted">조건에 맞는 실거래가 없어요. 가격 상한·지역·계약년월을 조정해 보세요.</p>}
+          {items.length === 0 && <p className="text-sm text-muted">조건에 맞는 실거래가 없어요. 가격·면적 상한·지역·계약년월을 조정해 보세요.</p>}
           <div className="grid gap-3 md:grid-cols-2">
             {items.slice(0, visible).map((it) => (
               <Card key={it.id}>
@@ -236,7 +252,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
                     <div className="mt-1.5 truncate text-base font-extrabold">{it.name}</div>
                     <p className="text-xs text-muted">{[it.region, it.road_name, it.jibun].filter(Boolean).join(" · ")}</p>
                     <p className="text-xs text-muted">
-                      {it.area > 0 ? `${it.area.toFixed(1)}㎡ (${(it.area / 3.3058).toFixed(1)}평)` : "면적정보 없음"} · {it.floor || "-"}층 · 준공 {it.build_year || "-"}
+                      {it.area_basis ?? "면적 기준 미확인"} · {it.area > 0 ? `${it.area.toFixed(1)}㎡ (${(it.area / 3.3058).toFixed(1)}평)` : "면적정보 없음"} · {it.floor || "-"}층 · 준공 {it.build_year || "-"}
                     </p>
                   </div>
                   <div className="shrink-0 text-right">

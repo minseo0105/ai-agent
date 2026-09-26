@@ -13,9 +13,9 @@ const sandbox={exports:{},process:{env:{}},require:()=>({apiFetch:async(url,init
 vm.runInNewContext(code,sandbox);
 (async()=>{
  const progress=[];
- const out=await sandbox.exports.estateApi.trades({regions:[...Array.from({length:12},(_,i)=>`r${i}`),'r0'],property_types:['아파트','오피스텔'],month:'202609',max_price_100m:5},(done,total)=>progress.push([done,total]));
+ const out=await sandbox.exports.estateApi.trades({regions:[...Array.from({length:12},(_,i)=>`r${i}`),'r0'],property_types:['아파트','오피스텔'],month:'202609',max_price_100m:5,max_area:85},(done,total)=>progress.push([done,total]));
  assert.equal(calls.length,3);assert.equal(out.items.length,7);assert.equal(out.errors.length,1);assert.equal(out.counts['아파트'],7);
- assert(calls.every(q=>q.regions.length<=5 && q.max_price_100m===5));
+ assert(calls.every(q=>q.regions.length<=5 && q.max_price_100m===5 && q.max_area===85));
  assert.deepEqual(progress,[[5,12],[10,12],[12,12]]);
  assert(out.items.every((x,i)=>i===0||out.items[i-1].date>=x.date));
  console.log('PASS: batching, duplicate regions, partial failure, price preservation, counts, progress, sorting');
