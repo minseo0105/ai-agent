@@ -61,7 +61,7 @@ function SubscriptionTab({ options }: { options: EstateOptions }) {
   return (
     <div className="space-y-4">
       <Field label="조회지역" hint="선택하지 않으면 전체">
-        <RegionPicker regions={options.regions} value={regions} onChange={setRegions} />
+        <RegionPicker regions={options.regions} value={regions} onChange={setRegions} selectWholeScope />
       </Field>
       <div className="grid gap-4 sm:grid-cols-3">
         <Field label="공급구분">

@@ -58,7 +58,7 @@ def options():
 
 class SubscriptionQuery(BaseModel):
     kind: Literal["apt", "unsold"] = "apt"
-    regions: list[str] = Field(default_factory=list, max_length=60)
+    regions: list[str] = Field(default_factory=list, max_length=100)
     supply_types: list[str] = Field(default_factory=list)
     kinds: list[str] = Field(default_factory=list)
     statuses: list[str] = Field(default_factory=list)
