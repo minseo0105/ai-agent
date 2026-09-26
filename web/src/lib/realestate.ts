@@ -96,8 +96,26 @@ export const estateApi = {
   options: () => request<EstateOptions>("/options"),
   subscriptions: (q: { kind: "apt" | "unsold"; regions: string[]; supply_types: string[]; kinds: string[]; statuses: string[] }) =>
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
-  trades: (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number }) =>
-    post<{ items: Trade[]; errors: string[]; counts: Record<string, number>; requests: number }>("/trades", q),
+  trades: async (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number }, onProgress?: (done: number, total: number) => void) => {
+    const regions = [...new Set(q.regions)];
+    const result = { items: [] as Trade[], errors: [] as string[], counts: {} as Record<string, number>, requests: 0 };
+    // 서버의 40개 조합 제한을 유지하고 긴 요청을 줄이기 위해 지역을 5개씩 순차 조회한다.
+    for (let start = 0; start < regions.length; start += 5) {
+      const batch = regions.slice(start, start + 5);
+      try {
+        const response = await post<typeof result>("/trades", { ...q, regions: batch });
+        result.items.push(...response.items);
+        result.errors.push(...response.errors);
+        result.requests += response.requests;
+      } catch (e) {
+        result.errors.push(`${batch.join(", ")}: ${(e as Error).message}`);
+      }
+      onProgress?.(Math.min(start + batch.length, regions.length), regions.length);
+    }
+    result.items.sort((a, b) => b.date.localeCompare(a.date));
+    for (const item of result.items) result.counts[item.property_type] = (result.counts[item.property_type] ?? 0) + 1;
+    return result;
+  },
   monitor: () => request<MonitorState>("/monitor"),
   setAuto: (enabled: boolean) => request<MonitorState>("/monitor/auto", { method: "PUT", body: JSON.stringify({ enabled }) }),
   addRules: (body: {

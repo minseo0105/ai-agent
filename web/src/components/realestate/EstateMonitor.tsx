@@ -131,6 +131,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
   const [month, setMonth] = useState(currentMonth());
   const [maxPrice, setMaxPrice] = useState("");
   const [appliedPrice, setAppliedPrice] = useState<number | null>(null);
+  const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [result, setResult] = useState<{ items: Trade[]; errors: string[]; counts: Record<string, number>; requests: number } | null>(null);
   const [typeFilter, setTypeFilter] = useState<string[]>([]);
   const [visible, setVisible] = useState(40);
@@ -147,8 +148,9 @@ function TradeTab({ options }: { options: EstateOptions }) {
     }
     setLoading(true);
     setResult(null);
+    setProgress({ done: 0, total: regions.length });
     try {
-      setResult(await estateApi.trades({ regions, property_types: types, month, max_price_100m: price }));
+      setResult(await estateApi.trades({ regions, property_types: types, month, max_price_100m: price }, (done, total) => setProgress({ done, total })));
       setAppliedPrice(price ?? null);
       setTypeFilter([]);
       setVisible(40);
@@ -168,7 +170,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
         <ChoiceChips accent="estate" options={options.property_types} selected={types} onToggle={(v) => setTypes(toggle(types, v))} />
       </Field>
       <Field label="조회지역">
-        <RegionPicker regions={options.regions} value={regions} onChange={setRegions} />
+        <RegionPicker regions={options.regions} value={regions} onChange={setRegions} selectWholeScope />
       </Field>
       <Field label="계약년월">
         <input
@@ -191,7 +193,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
       <PrimaryButton onClick={search} disabled={loading}>
         실거래 조회 · {regions.length}개 지역 × {types.length}개 유형
       </PrimaryButton>
-      {loading && <Spinner label={`${regions.length * types.length}개 조합을 조회하고 있어요…`} />}
+      {loading && <Spinner label={`지역 ${progress.done}/${progress.total}곳 조회 완료 · 전체 지역은 나누어 조회하므로 시간이 걸릴 수 있어요…`} />}
       <ErrorBox message={error} />
 
       {result && !loading && (

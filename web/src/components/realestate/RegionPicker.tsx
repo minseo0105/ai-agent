@@ -11,11 +11,13 @@ export default function RegionPicker({
   value,
   onChange,
   defaultScope = "전체",
+  selectWholeScope = false,
 }: {
   regions: { 서울: string[]; 경기: string[] };
   value: string[];
   onChange: (v: string[]) => void;
   defaultScope?: "서울" | "경기" | "전체";
+  selectWholeScope?: boolean;
 }) {
   const [scope, setScope] = useState<"서울" | "경기" | "전체">(defaultScope);
   const [q, setQ] = useState("");
@@ -29,7 +31,11 @@ export default function RegionPicker({
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
-        <Segmented value={scope} options={["서울", "경기", "전체"] as const} onChange={setScope} ariaLabel="지역 범위" />
+        <Segmented value={scope} options={["서울", "경기", "전체"] as const} onChange={(next) => {
+          setScope(next);
+          setQ("");
+          if (selectWholeScope) onChange(next === "서울" ? [...regions.서울] : next === "경기" ? [...regions.경기] : [...regions.서울, ...regions.경기]);
+        }} ariaLabel="지역 범위" />
         <input className={`${inputClass} max-w-48 py-1.5`} value={q} onChange={(e) => setQ(e.target.value)} placeholder="구·시 검색" />
         {value.length > 0 && (
           <button type="button" onClick={() => onChange([])} className="text-xs font-semibold text-muted hover:text-fg">
@@ -37,6 +43,7 @@ export default function RegionPicker({
           </button>
         )}
       </div>
+      {selectWholeScope && <p className="text-xs text-muted">서울·경기를 누르면 해당 지역 전체가 선택됩니다. 전체는 서울+경기이며, 아래에서 개별 지역을 선택하거나 해제할 수 있습니다.</p>}
       <div className="max-h-44 overflow-y-auto rounded-2xl border border-border p-3">
         <ChoiceChips
           accent="estate"
