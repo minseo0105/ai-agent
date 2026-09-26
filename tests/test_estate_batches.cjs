@@ -20,3 +20,9 @@ vm.runInNewContext(code,sandbox);
  assert(out.items.every((x,i)=>i===0||out.items[i-1].date>=x.date));
  console.log('PASS: batching, duplicate regions, partial failure, price preservation, counts, progress, sorting');
 })().catch(e=>{console.error(e);process.exitCode=1});
+const sortRows=[{id:'a',price_100m:5,area:85,date:'2026-09-01'},{id:'b',price_100m:3,area:100,date:'2026-09-02'},{id:'c',price_100m:0,area:0,date:'2026-09-03'}];
+for(const [order,expected] of [['가격 낮은 순','bac'],['가격 높은 순','abc'],['면적 작은 순','abc'],['면적 큰 순','bac'],['최근 거래일 순','cba']]) {
+ assert.equal(sandbox.exports.sortTrades(sortRows,order).map(x=>x.id).join(''),expected);
+}
+assert.equal(sortRows.map(x=>x.id).join(''),'abc');
+console.log('PASS: price/area/date sorting, unknowns last, original order preserved');

@@ -141,3 +141,18 @@ export function currentMonth() {
   const d = new Date();
   return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
+
+export type TradeSort = "최근 거래일 순" | "가격 낮은 순" | "가격 높은 순" | "면적 작은 순" | "면적 큰 순";
+export function sortTrades(items: Trade[], order: TradeSort): Trade[] {
+  return [...items].sort((a, b) => {
+    if (order === "최근 거래일 순") return b.date.localeCompare(a.date);
+    const key = order.startsWith("가격") ? "price_100m" : "area";
+    const av = a[key], bv = b[key];
+    const validA = Number.isFinite(av) && av > 0;
+    const validB = Number.isFinite(bv) && bv > 0;
+    if (validA !== validB) return validA ? -1 : 1;
+    const descending = order === "가격 높은 순" || order === "면적 큰 순";
+    const delta = validA && validB ? (av - bv) * (descending ? -1 : 1) : 0;
+    return delta || b.date.localeCompare(a.date);
+  });
+}

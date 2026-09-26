@@ -34,7 +34,7 @@ export const SERVICES: Service[] = [
   {
     id: "realestate",
     icon: "🏠",
-    title: "부동산 모니터",
+    title: "ZIP:ON",
     desc: "청약 · 실거래 · 관심지역을 모니터링합니다.",
     href: "/realestate",
   },

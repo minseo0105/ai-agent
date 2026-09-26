@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { ChoiceChips, Field, Segmented, Spinner, Tag, inputClass } from "@/components/golf/ui";
 import {
   currentMonth,
+  sortTrades,
+  type TradeSort,
   estateApi,
   type EstateOptions,
   type MonitorState,
@@ -136,6 +138,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [result, setResult] = useState<{ items: Trade[]; errors: string[]; counts: Record<string, number>; requests: number } | null>(null);
   const [typeFilter, setTypeFilter] = useState<string[]>([]);
+  const [sort, setSort] = useState<TradeSort>("최근 거래일 순");
   const [visible, setVisible] = useState(40);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -166,7 +169,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
     }
   }
 
-  const items = (result?.items ?? []).filter((x) => !typeFilter.length || typeFilter.includes(x.property_type));
+  const items = sortTrades((result?.items ?? []).filter((x) => !typeFilter.length || typeFilter.includes(x.property_type)), sort);
   const monthValue = `${month.slice(0, 4)}-${month.slice(4, 6)}`;
 
   return (
@@ -236,8 +239,14 @@ function TradeTab({ options }: { options: EstateOptions }) {
           {Object.keys(result.counts).length > 1 && (
             <ChoiceChips accent="estate" options={Object.keys(result.counts)} selected={typeFilter} onToggle={(v) => setTypeFilter(toggle(typeFilter, v))} />
           )}
+          <label className="flex items-center gap-2 text-sm font-semibold">
+            결과 정렬
+            <select aria-label="실거래 결과 정렬" value={sort} onChange={(e) => { setSort(e.target.value as TradeSort); setVisible(40); }} className={`${inputClass} max-w-48`}>
+              {(["최근 거래일 순", "가격 낮은 순", "가격 높은 순", "면적 작은 순", "면적 큰 순"] as TradeSort[]).map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </label>
           <p className="text-xs text-subtle">
-            {items.length}건 · 최근 거래일 순 · {appliedPrice === null ? "가격 전체" : `${appliedPrice}억원 이하`} · {appliedArea === null ? "면적 전체" : `${appliedArea}㎡ 이하`}
+            {items.length}건 · {sort} · {appliedPrice === null ? "가격 전체" : `${appliedPrice}억원 이하`} · {appliedArea === null ? "면적 전체" : `${appliedArea}㎡ 이하`}
           </p>
           {items.length === 0 && <p className="text-sm text-muted">조건에 맞는 실거래가 없어요. 가격·면적 상한·지역·계약년월을 조정해 보세요.</p>}
           <div className="grid gap-3 md:grid-cols-2">
@@ -534,7 +543,7 @@ export default function EstateMonitor() {
         value={tab}
         onChange={setTab}
         full
-        ariaLabel="부동산 모니터 메뉴"
+        ariaLabel="ZIP:ON 메뉴"
         options={[
           { value: "실거래 조회" as const, label: "실거래" },
           { value: "청약 조회" as const, label: "청약" },

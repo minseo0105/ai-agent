@@ -53,7 +53,7 @@ function Gate({ status, reason, onDone }: { status: AccessStatus; reason: "login
   const titles: Record<string, string> = {
     golf: "⛳ TEE:PICK",
     dreamcar: "🚙 내차에서 드림카까지",
-    realestate: "🏠 부동산 모니터",
+    realestate: "🏠 ZIP:ON",
     report: "📄 보고서 작성기",
     saju: "🔮 AI 사주 · 대운 분석",
     "car-selector": "🚗 차량 선택기",
