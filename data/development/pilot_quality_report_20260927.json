@@ -1,0 +1,81 @@
+{
+  "original_candidates": 183,
+  "canonical_projects": 183,
+  "exact_duplicates_merged": 0,
+  "probable_duplicate_pairs": 18,
+  "probable_canonical_projects": 36,
+  "review_pairs_with_field_differences": 18,
+  "quality": {
+    "address": {
+      "count": 149,
+      "total": 183,
+      "percent": 81.42
+    },
+    "official_id": {
+      "count": 149,
+      "total": 183,
+      "percent": 81.42
+    },
+    "official_source": {
+      "count": 183,
+      "total": 183,
+      "percent": 100.0
+    },
+    "stage": {
+      "count": 0,
+      "total": 183,
+      "percent": 0.0
+    },
+    "observed_stage": {
+      "count": 183,
+      "total": 183,
+      "percent": 100.0
+    },
+    "known_status": {
+      "count": 0,
+      "total": 183,
+      "percent": 0.0
+    },
+    "coordinates": {
+      "count": 0,
+      "total": 183,
+      "percent": 0.0
+    },
+    "verified_polygon": {
+      "count": 0,
+      "total": 183,
+      "percent": 0.0
+    }
+  },
+  "by_district": {
+    "강동구": 59,
+    "서초구": 72,
+    "송파구": 52
+  },
+  "by_type": {
+    "FAST_TRACK": 7,
+    "RECONSTRUCTION": 156,
+    "REDEVELOPMENT": 20
+  },
+  "validation_status": {
+    "NEEDS_REVIEW": 183
+  },
+  "status_distribution": {
+    "UNKNOWN": 183
+  },
+  "anomalies": [],
+  "conflict_count": 0,
+  "import_ready": "REVIEW REQUIRED",
+  "db_write": false,
+  "canary_preserved": 8,
+  "batch_plan": {
+    "maximum_batch_size": 10,
+    "automatic_import": false,
+    "review_then_verify_each_batch": true
+  },
+  "spatial_gaps": [
+    "Official list parsers do not extract coordinates or GIS boundaries.",
+    "No geocoder provider configured; cache alone cannot manufacture coordinates."
+  ],
+  "original_sha256": "010e349e3af459ca50ef5aac4f02ea62050ec6c09ff158d86633ddb11e598227"
+}

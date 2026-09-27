@@ -9,6 +9,7 @@ from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
 from services import realestate_monitor as rm
+from services import development
 
 router = APIRouter(prefix="/api/realestate", tags=["realestate"])
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -82,6 +83,7 @@ class TradeQuery(BaseModel):
     month: str = Field(pattern=r"^\d{6}$")
     max_price_100m: float | None = Field(None, gt=0, le=10000, allow_inf_nan=False)
     max_area: float | None = Field(None, gt=0, le=100000, allow_inf_nan=False)
+    include_development: bool = False
 
 
 @router.post("/trades")
@@ -97,6 +99,8 @@ async def trades(q: TradeQuery):
     rows = sorted(rows, key=lambda x: (x.get("date") or ""), reverse=True)
     for row in rows:
         row["naver_url"] = rm.build_naver_land_url(row)
+    if q.include_development:
+        rows = await run_in_threadpool(development.attach_context, rows)
     counts = {}
     for row in rows:
         counts[row.get("property_type", "기타")] = counts.get(row.get("property_type", "기타"), 0) + 1
@@ -170,3 +174,20 @@ def notifications(limit: int = 100):
 def read_notification(notification_id: int):
     rm.mark_notification_read(BASE_DIR, notification_id)
     return notifications()
+
+
+class DevelopmentQuery(BaseModel):
+    longitude: float | None = Field(None, ge=-180, le=180, allow_inf_nan=False)
+    latitude: float | None = Field(None, ge=-90, le=90, allow_inf_nan=False)
+    sigungu: str | None = Field(None, max_length=40)
+    radius_m: float = Field(1000, ge=0, le=10000, allow_inf_nan=False)
+    limit: int = Field(30, ge=1, le=100)
+
+
+@router.post('/development/search')
+async def development_search(q: DevelopmentQuery):
+    if (q.longitude is None) != (q.latitude is None):
+        raise HTTPException(422, '위도와 경도를 함께 입력해주세요.')
+    if q.longitude is None and not q.sigungu:
+        raise HTTPException(422, '좌표 또는 자치구를 입력해주세요.')
+    return await run_in_threadpool(development.search_projects, **q.model_dump())

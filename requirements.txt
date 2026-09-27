@@ -12,3 +12,5 @@ matplotlib==3.11.1
 rembg==2.0.84
 onnxruntime==1.29.0
 lunar_python==1.4.8
+
+beautifulsoup4>=4.12,<5

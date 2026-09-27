@@ -14,6 +14,7 @@ from urllib.parse import quote
 import requests
 
 from services.config import get_secret
+from services.supabase_auth import supabase_headers
 
 
 DB_NAME = "realestate_monitor.db"
@@ -182,13 +183,7 @@ def _remote_request(method: str, table: str, *, params=None, payload=None,
         raise RuntimeError("Supabase 설정이 없습니다.")
 
     url, key = config
-    headers = {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-        "Content-Type": "application/json",
-    }
-    if prefer:
-        headers["Prefer"] = prefer
+    headers = supabase_headers(key, prefer=prefer)
 
     response = requests.request(
         method,

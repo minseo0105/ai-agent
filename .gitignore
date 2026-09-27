@@ -34,3 +34,8 @@ test.py
 dart_test.py
 law_test.py
 web/out/
+
+# Isolated ZIP REST test dependencies and credential-free recovery journals
+reports/zipon-rest-venv/
+reports/zipon-rest-tests/
+reports/zipon-source-inspection/

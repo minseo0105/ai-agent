@@ -23,6 +23,7 @@ from pathlib import Path
 from threading import Lock
 
 from services.config import get_secret
+from services.supabase_auth import supabase_headers
 
 ADMIN_DIR = Path(__file__).resolve().parent.parent / "data" / "admin"
 SETTINGS_PATH = ADMIN_DIR / "access_settings.json"
@@ -84,7 +85,7 @@ def _remote_get(name: str):
 
     url, key = _supabase()
     r = requests.get(f"{url}/rest/v1/app_settings", params={"key": f"eq.{name}", "select": "value"},
-                     headers={"apikey": key, "Authorization": f"Bearer {key}"}, timeout=10)
+                     headers=supabase_headers(key), timeout=10)
     r.raise_for_status()
     rows = r.json()
     return rows[0]["value"] if rows else None
@@ -95,8 +96,7 @@ def _remote_put(name: str, value: str):
 
     url, key = _supabase()
     r = requests.post(f"{url}/rest/v1/app_settings", json={"key": name, "value": value}, timeout=10,
-                      headers={"apikey": key, "Authorization": f"Bearer {key}", "Content-Type": "application/json",
-                               "Prefer": "resolution=merge-duplicates,return=minimal"})
+                      headers=supabase_headers(key, prefer="resolution=merge-duplicates,return=minimal"))
     r.raise_for_status()
 
 
