@@ -520,3 +520,119 @@ class NewRpcSqlTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+POSTCHECK_SQL = ROOT / 'supabase/review/20260927_zipon_incremental_postcheck.sql'
+POST_ROLLBACK_CHECKS = ('TARGET_PROJECT_UNCHANGED', 'TEST_FIXTURES_ROLLED_BACK',
+                        'EIGHTEEN_ROWS_AND_HISTORY_INTACT')
+
+
+class IncrementalPostcheckSqlTests(unittest.TestCase):
+    """Static review of the rollback-only postcheck. It is never executed here."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sql = POSTCHECK_SQL.read_text(encoding='utf-8')
+        cls.lines = [line for line in cls.sql.splitlines() if line.strip()]
+        # Header comments are documentation for the operator, not statements.
+        cls.statements = [line for line in cls.lines if not line.lstrip().startswith('--')]
+        cls.code = '\n'.join(re.sub(r'--.*$', '', line) for line in cls.sql.splitlines())
+        cls.checks = re.findall(r"'check_item','([^']+)'", cls.sql)
+        cls.inner = cls.sql[cls.sql.index('SET LOCAL ROLE service_role'):
+                            cls.sql.index("USING ERRCODE='ZP001'")]
+
+    def test_the_transaction_opens_and_rolls_back(self):
+        self.assertEqual(self.statements[0].strip(), 'BEGIN;')
+        self.assertEqual(self.statements[-1].strip(), 'ROLLBACK;')
+        self.assertNotIn('COMMIT', self.code.upper())
+        self.assertIn("RAISE EXCEPTION 'Rollback successful test fixtures' USING ERRCODE='ZP001'", self.sql)
+
+    def test_nothing_destructive_and_no_schema_change(self):
+        upper = self.code.upper()
+        for forbidden in ('DELETE', 'TRUNCATE', 'DROP ', 'ALTER TABLE', 'CREATE TABLE',
+                          'CREATE OR REPLACE FUNCTION', 'CREATE POLICY', 'GRANT ', 'REVOKE '):
+            self.assertNotIn(forbidden, upper, forbidden)
+
+    def test_no_credential_or_secret_is_embedded(self):
+        for pattern in (r'sb_secret', r'service_role_key', r'eyJ[A-Za-z0-9]{8}', r'supabase\.co',
+                        r'SUPABASE_KEY', r'password'):
+            self.assertIsNone(re.search(pattern, self.sql, re.I), pattern)
+
+    def test_the_test_input_is_read_from_the_database(self):
+        self.assertIn("base_candidate:=latest.new_snapshot->'candidate'", self.sql)
+        self.assertIn("base_source:=latest.new_snapshot->'source'", self.sql)
+        # No hand-copied provenance: fixture hashes are built with repeat(), and no
+        # 64-char hex literal appears anywhere in the file.
+        self.assertIsNone(re.search(r"'[0-9a-f]{64}'", self.sql))
+        self.assertIn("repeat('a',64)", self.sql)
+        self.assertEqual(self.sql.count('0922ac26-1436-5158-853d-49d3c5aed7fb'), 1)
+
+    def test_every_in_transaction_check_asserts(self):
+        asserted = self.sql.count("RAISE EXCEPTION 'Postcheck assertion failed' USING ERRCODE='ZP002'")
+        in_transaction = [c for c in self.checks
+                          if c not in POST_ROLLBACK_CHECKS and not c.startswith('execution SQLSTATE')]
+        self.assertEqual(asserted, len(in_transaction))
+        self.assertGreaterEqual(asserted, 13)
+
+    def test_the_post_rollback_invariants_are_present(self):
+        for name in POST_ROLLBACK_CHECKS:
+            self.assertIn(name, self.checks)
+        self.assertIn('to_jsonb(after_row) IS NOT DISTINCT FROM to_jsonb(before_row)', self.sql)
+        self.assertIn("project_name LIKE 'TEST_ZIPON_%'", self.sql)
+
+    def test_the_covered_invariants(self):
+        expected = ['v2 functions exist and v1 is still present',
+                    'invoker rights, fixed search_path, service_role only',
+                    'baseline is the expected 18 rows and revision 1',
+                    'candidate and official source read from the stored snapshot',
+                    'identical candidate is unchanged with no new history',
+                    'DETAIL change: changed_fields exact, revision +1, history +1',
+                    'existing values are never overwritten',
+                    'history row records the diff and the transition columns',
+                    'FILL_BLANKS fills only the blank column',
+                    'status, stage and validation_status promotion blocked',
+                    'review_required keeps the master row out of it',
+                    'INITIAL ingest of a fixture project',
+                    'VERIFIED master keeps its values and is never downgraded',
+                    'SOURCE_MISSING recorded without touching status, stage or validation',
+                    'absence history states no status transition',
+                    'repeated SOURCE_MISSING adds no revision and no history']
+        self.assertEqual(self.checks[:len(expected)], expected)
+        self.assertEqual(self.checks[-3:], list(POST_ROLLBACK_CHECKS))
+
+    def test_it_targets_the_new_functions_only(self):
+        self.assertIn('public.zipon_ingest_candidate_v2(jsonb,jsonb,bigint,jsonb,uuid)', self.sql)
+        self.assertIn('public.zipon_record_source_missing(uuid,text,uuid)', self.sql)
+        # v1 is only checked for continued existence, never called.
+        self.assertNotIn('public.zipon_ingest_candidate(base_candidate', self.sql)
+        self.assertEqual(self.sql.count('public.zipon_ingest_candidate(jsonb,jsonb,bigint,uuid)'), 1)
+
+    def test_fixture_writes_are_isolated_and_official_shaped(self):
+        self.assertIn("tag:='TEST_ZIPON_'||fixture_id::text", self.sql)
+        self.assertIn('fixture_id uuid:=gen_random_uuid()', self.sql)
+        for url in re.findall(r"'(https://[^']+)'", self.sql):
+            self.assertRegex(url, r'^https://cleanup\.seoul\.go\.kr/TEST/')
+
+    def test_it_runs_the_rpcs_as_service_role(self):
+        self.assertIn('SET LOCAL ROLE service_role;', self.sql)
+        self.assertIn('zipon_ingest_candidate_v2(base_candidate', self.inner)
+        self.assertIn('zipon_record_source_missing(target_id', self.inner)
+
+    def test_the_sql_and_plpgsql_parse(self):
+        try:
+            from pglast import parse_plpgsql, parser
+        except ImportError:
+            self.skipTest('pglast is not installed in this environment')
+        statements = parser.parse_sql(self.sql)
+        self.assertEqual(len(statements), 6)
+        # First statement opens a transaction, last one rolls it back.
+        from pglast.enums import TransactionStmtKind
+        self.assertEqual(statements[0].stmt.kind, TransactionStmtKind.TRANS_STMT_BEGIN)
+        self.assertEqual(statements[-1].stmt.kind, TransactionStmtKind.TRANS_STMT_ROLLBACK)
+        body = re.search(r'DO \$test\$(.*?)\$test\$', self.sql, re.S).group(1)
+        parse_plpgsql('CREATE FUNCTION x() RETURNS void LANGUAGE plpgsql AS $x$' + body + '$x$')
+
+    def test_the_checked_functions_match_the_migration(self):
+        migration = RPC_SQL.read_text(encoding='utf-8')
+        self.assertIn('zipon_ingest_candidate_v2(\n  p_project jsonb, p_source jsonb, p_expected_revision bigint,\n  p_change jsonb DEFAULT', migration)
+        self.assertIn('zipon_record_source_missing(\n  p_project_id uuid, p_reason text, p_run_id uuid DEFAULT', migration)

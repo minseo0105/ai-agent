@@ -190,3 +190,51 @@ python3 -B scripts/run_zipon_refresh.py --job daily --scenario unchanged
 2. 18건 기준선에 `--apply`로 소규모 변경 1회를 실제 기록해 v2 경로를 실DB에서 확인.
 3. 알림 consumer를 `notifications`에 연결 + development 전용 알림 규칙.
 4. `cleanup.seoul.go.kr` 허용 후 실제 목록 수집을 파이프라인 COLLECT에 연결(현재는 저장된 snapshot).
+
+---
+
+## 부록: 새 RPC 적용 후 rollback-only postcheck (2026-09-27)
+
+`zipon_ingest_candidate_v2` / `zipon_record_source_missing`를 실DB에 적용한 뒤 실행하는 기능 검증입니다.
+
+파일: `supabase/review/20260927_zipon_incremental_postcheck.sql`
+실행: SQL Editor에서 Dashboard `postgres`로 **파일 전체**를 한 번에 실행.
+`BEGIN`으로 시작하고 `ROLLBACK`으로 끝납니다. 읽기 전용이 아니라 subtransaction 안에서 쓰고 전부 되돌립니다.
+
+- 테스트 입력은 DB에서 읽습니다. 대상 사업(`0922ac26-1436-5158-853d-49d3c5aed7fb`)의 최신
+  `development_updates.new_snapshot`에서 candidate와 official source를 꺼내므로
+  `source_url` / `content_hash` / `external_id`를 사람이 옮겨 적지 않습니다.
+- fixture 행은 `TEST_ZIPON_<uuid>` 이름의 임의 UUID만 씁니다.
+- ASSERT가 하나라도 실패하면 `ZP002` 예외로 즉시 중단되고, 성공이든 실패든 모든 쓰기가 되돌아갑니다.
+- `DELETE` / `TRUNCATE` / DDL / GRANT 없음. 기존 RPC는 존재만 확인하고 호출하지 않습니다.
+
+검사하는 invariant 19개 (in-transaction 16 + rollback 후 3):
+
+| # | 대상 | 검사 |
+| --- | --- | --- |
+| 1 | 함수 | v2 2개 존재 + v1 그대로 존재 |
+| 2 | 권한 | INVOKER, search_path 고정, service_role만 EXECUTE(anon/authenticated/PUBLIC 없음) |
+| 3 | 기준선 | 18행, revision 1, NEEDS_REVIEW, status UNKNOWN, stage NULL, 이력 1건 |
+| 4 | 입력 | candidate·source를 저장된 snapshot에서 읽었고 공식 URL·64자 hash·external_id 일치 |
+| 5 | no-op | 동일 candidate → `unchanged`, revision·이력 증가 없음 |
+| 6 | DETAIL | 통제된 1필드 변경 → `changed`, `update_kind=DETAIL`, `changed_fields=["address"]`, revision +1, 이력 +1 |
+| 7 | overwrite 금지 | master의 address·project_name·stage_raw 원래 값 유지 |
+| 8 | 이력 | `changed_fields`, `previous/new_stage`, `previous/new_status`, `from/to_revision` 정확 |
+| 9 | FILL_BLANKS | 빈 `planned_units`만 채우고 값이 있는 `dong`은 유지 |
+| 10 | 승격 차단 | status / stage / validation_status 승격 시도 3건 모두 `22023` 거부, revision 불변 |
+| 11 | 격리 | `review_required` → master 미변경(`area_m2` NULL 유지), 이력 description `REVIEW_REQUIRED:` |
+| 12 | INITIAL | fixture 신규 ingest → `new`, revision 1, `update_kind=INITIAL` |
+| 13 | VERIFIED 보호 | VERIFIED 행은 빈 칸도 채우지 않고 validation_status 강등 없음 |
+| 14 | SOURCE_MISSING | 이력 생성 + status/stage/validation_status 불변 |
+| 15 | SOURCE_MISSING | 이력의 previous=new(상태 전이 없음), `ABSENCE_IS_NOT_CANCELLATION` |
+| 16 | 재호출 | 연속 SOURCE_MISSING → `unchanged`, revision·이력 증가 없음 |
+| 17 | rollback 후 | `TARGET_PROJECT_UNCHANGED` — 대상 행 전체 컬럼이 실행 전과 jsonb 동일, 이력·source 수 동일 |
+| 18 | rollback 후 | `TEST_FIXTURES_ROLLED_BACK` — fixture 행·source·이력 없음, `TEST_ZIPON_%` 없음 |
+| 19 | rollback 후 | `EIGHTEEN_ROWS_AND_HISTORY_INTACT` — 전체 행 수·전체 이력 수 실행 전과 동일 |
+
+예상 성공 출력: `check_item / actual / expected / passed / observed` 20행(위 19개 + `ALL_CHECKS`),
+`actual`이 모두 `PASS`, 마지막 `ALL_CHECKS = PASS`. `execution SQLSTATE …` 행은 실패할 때만 나타납니다.
+`observed`에는 기준선(사업명·revision·validation_status·이력 수), 거부 횟수, rollback 후 행 수가 들어갑니다.
+
+`ALL_CHECKS = PASS`를 확인한 뒤에야 실제 incremental write(`--apply`)로 넘어가면 됩니다.
+정적 검토는 `tests/test_zipon_pipeline.py`의 `IncrementalPostcheckSqlTests` 12개가 담당합니다.
