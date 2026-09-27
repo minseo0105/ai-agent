@@ -39,3 +39,10 @@ web/out/
 reports/zipon-rest-venv/
 reports/zipon-rest-tests/
 reports/zipon-source-inspection/
+reports/zipon-sql-review/
+
+# Actual DB apply/reconciliation journals stay local (including failed atomic saves).
+/data/development/coordinate_*.json
+/data/development/coordinate_*.pending
+/data/development/coordinate_*.tmp
+/reports/zipon-final-validation.json

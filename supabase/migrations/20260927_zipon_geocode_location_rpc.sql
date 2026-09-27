@@ -1,4 +1,4 @@
--- REVIEW ONLY. NOT APPLIED. A narrow RPC for writing a geocoded representative
+-- REVIEWED INSTALL/REPAIR SQL. Not executed by this task. A geocoded representative
 -- point onto an existing development project, so the only database path for a
 -- geocoder result is one reviewed function instead of a PATCH on the table.
 --
@@ -14,6 +14,8 @@
 --   * the caller's expected 자치구 must equal the stored sigungu
 --   * the point must sit inside the Seoul bounding box and carry a finite coordinate
 --   * only an EXACT result from a named geocoder is accepted
+--   * ACCEPTED, coordinate_verified, longitude-first orientation and all address checks are required
+--   * a row with verified geometry is refused while holding its row lock
 -- It writes no development_updates row on purpose: a geocode is not an official
 -- source snapshot, and development_updates requires an official source_id.
 BEGIN;
@@ -35,7 +37,7 @@ BEGIN
  IF p_confidence IS DISTINCT FROM 'EXACT' THEN
    RETURN jsonb_build_object('result','refused','reason','CONFIDENCE_NOT_EXACT',
      'project_id',p_project_id); END IF;
- IF p_geocode_source NOT IN ('NAVER_MAP_GEOCODE','KAKAO_ADDRESS','VWORLD_ADDRESS') THEN
+ IF p_geocode_source IS NULL OR p_geocode_source NOT IN ('NAVER_MAP_GEOCODE','KAKAO_ADDRESS','VWORLD_ADDRESS') THEN
    RETURN jsonb_build_object('result','refused','reason','UNKNOWN_GEOCODE_SOURCE',
      'project_id',p_project_id); END IF;
  IF p_longitude IS NULL OR p_latitude IS NULL
@@ -48,6 +50,17 @@ BEGIN
  OR NULLIF(btrim(COALESCE(p_evidence->>'address_used','')),'') IS NULL THEN
    RETURN jsonb_build_object('result','refused','reason','NO_GEOCODE_EVIDENCE',
      'project_id',p_project_id); END IF;
+ -- A backend-reviewed ACCEPTED record is required; mere address strings are insufficient.
+ IF p_evidence->>'geocode_status' IS DISTINCT FROM 'ACCEPTED'
+ OR p_evidence->'coordinate_verified' IS DISTINCT FROM 'true'::jsonb
+ OR p_evidence->>'coordinate_orientation' IS DISTINCT FROM 'X_IS_LONGITUDE'
+ OR jsonb_typeof(p_evidence->'checks') IS DISTINCT FROM 'object' THEN
+   RETURN jsonb_build_object('result','refused','reason','ACCEPTED_EVIDENCE_REQUIRED',
+     'project_id',p_project_id); END IF;
+ IF NOT (p_evidence->'checks' @> '{"accuracy":true,"bounds":true,"axis_order":true,"seoul":true,"sido_match":true,"district_match":true,"dong_match":true,"lot_match":true}'::jsonb)
+ OR EXISTS (SELECT 1 FROM jsonb_each(p_evidence->'checks') AS c(k,v) WHERE c.v IS DISTINCT FROM 'true'::jsonb) THEN
+   RETURN jsonb_build_object('result','refused','reason','GEOCODE_CHECKS_NOT_PASSED',
+     'project_id',p_project_id); END IF;
 
  SELECT * INTO oldrow FROM public.development_projects WHERE project_id=p_project_id FOR UPDATE;
  IF NOT FOUND THEN
@@ -56,6 +69,9 @@ BEGIN
  IF oldrow.revision IS DISTINCT FROM p_expected_revision THEN
    RETURN jsonb_build_object('result','refused','reason','REVISION_CONFLICT',
      'project_id',p_project_id,'revision',oldrow.revision); END IF;
+ IF oldrow.geometry_verified IS TRUE THEN
+   RETURN jsonb_build_object('result','refused','reason','VERIFIED_BOUNDARY_PRESENT',
+     'project_id',p_project_id); END IF;
  IF oldrow.location IS NOT NULL THEN
    -- 이미 있는 좌표는 덮어쓰지 않는다. 교체는 별도 검토 절차의 일이다.
    RETURN jsonb_build_object('result','skipped','reason','LOCATION_ALREADY_SET',
@@ -72,6 +88,7 @@ BEGIN
    'road_address',p_evidence->>'road_address','jibun_address',p_evidence->>'jibun_address',
    'english_address',p_evidence->>'english_address',
    'address_elements',p_evidence->'address_elements','checks',p_evidence->'checks',
+   'geocode_status',p_evidence->>'geocode_status','coordinate_verified',p_evidence->'coordinate_verified',
    'axis_order','x=longitude,y=latitude','geocoded_at',p_evidence->>'geocoded_at',
    'recorded_at',to_jsonb(now())));
  UPDATE public.development_projects SET

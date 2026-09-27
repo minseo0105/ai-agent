@@ -105,8 +105,13 @@ def present_project(row):
     # 돌려주고, REST 직접 조회는 stage_raw / source_name을 돌려준다. 둘 다 받는다.
     detail, listed = observation(row)
     verified = stage_view(detail)
-    stage_raw = row.get('stage_raw') or row.get('project_stage') or row.get('stage') or listed.get('raw_stage')
-    normalized = row.get('normalized_stage') or (stage_raw if stage_raw in STAGE_LABELS else normalize_stage(stage_raw)['normalized_stage'])
+    # RPC UNKNOWN/blank placeholders must not hide a known official-list stage.
+    stage_raw = next((v.strip() for v in (row.get('stage_raw'), row.get('project_stage'),
+                      row.get('stage'), listed.get('raw_stage'))
+                      if isinstance(v, str) and v.strip() and v.strip() != 'UNKNOWN'), None)
+    normalized = row.get('normalized_stage')
+    if not normalized or normalized == 'UNKNOWN':
+        normalized = stage_raw if stage_raw in STAGE_LABELS else normalize_stage(stage_raw)['normalized_stage']
     if verified:
         stage_raw = verified['label']
         normalized = normalize_stage(stage_raw)['normalized_stage']

@@ -100,11 +100,26 @@ class OfficialStageTests(unittest.TestCase):
             self.assertNotIn(raw,card)
 
     def test_real_collection_counts_and_catalog_match_without_db(self):
-        report=json.loads((ROOT/'data/development/official_stage_result_20260927.json').read_text(encoding='utf-8'))
+        report=json.loads((ROOT/'data/development/stage_reconciliation_20260927.json').read_text(encoding='utf-8'))
         catalog=stage.catalog()
         self.assertEqual(len(catalog),130)
-        self.assertEqual(sum(stage.stage_view(v) is not None for v in catalog.values()),report['summary']['current_stage_extracted'])
-        self.assertFalse(report['summary']['db_write'])
+        self.assertEqual(sum(stage.stage_view(v) is not None for v in catalog.values()),report['coverage']['direct_detail'])
+        self.assertFalse(report['coverage']['db_write'])
+
+    def test_all_130_rpc_unknown_placeholders_preserve_known_stage(self):
+        for pid in stage.catalog():
+            result=presentation.present_project({'project_id':pid,'project_stage':'UNKNOWN',
+                                                'normalized_stage':'UNKNOWN','stage_raw':'  '})
+            self.assertNotEqual(result['stage']['label'],'세부 진행단계 확인 중',pid)
+
+    def test_shinbanpo25_has_independent_official_identity_and_evidence(self):
+        entry=stage.catalog()['0164b2b0-1b21-51e3-8b8d-f97bda852a18']
+        self.assertEqual(entry['cafe_id'],'650900000613q27')
+        self.assertTrue(all(entry['identity_evidence']['identity_checks'].values()))
+        self.assertIn('61-1',entry['identity']['address'])
+        self.assertIsNotNone(stage.stage_view(entry))
+        self.assertIn('current_stage_evidence',entry)
+        self.assertIn('milestone_evidence',entry)
 
 if __name__=='__main__':
     unittest.main()

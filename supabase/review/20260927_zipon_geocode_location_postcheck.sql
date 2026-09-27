@@ -1,3 +1,5 @@
+-- LEGACY WRITE/ROLLBACK TEST. DO NOT RUN for the current read-only RPC diagnosis.
+-- Use 20260927_zipon_location_rpc_readonly_postcheck.sql instead.
 -- NEW zipon-realestate only. Run the ENTIRE file as Dashboard postgres.
 -- Rollback-only functional test for zipon_set_project_location. NOT read-only: it
 -- writes inside a subtransaction and rolls every write back, on success and on
@@ -27,7 +29,9 @@ BEGIN
  evidence:=jsonb_build_object('address_used',COALESCE(before_row.address,'POSTCHECK_ADDRESS'),
    'matched_address',COALESCE(before_row.address,'POSTCHECK_ADDRESS'),
    'address_elements',jsonb_build_object('SIDO','서울특별시','SIGUGUN',before_row.sigungu),
-   'checks',jsonb_build_object('axis_order',true),'geocoded_at',to_jsonb(now()));
+   'geocode_status','ACCEPTED','coordinate_verified',true,'coordinate_orientation','X_IS_LONGITUDE',
+   'checks','{"accuracy":true,"bounds":true,"axis_order":true,"seoul":true,"sido_match":true,"district_match":true,"dong_match":true,"lot_match":true}'::jsonb,
+   'geocoded_at',to_jsonb(now()));
  BEGIN
  SELECT COALESCE((to_regprocedure('public.zipon_set_project_location(uuid,double precision,double precision,text,text,text,bigint,jsonb)') IS NOT NULL),false) INTO ok;
  results:=results||jsonb_build_array(jsonb_build_object('check_item','zipon_set_project_location exists','passed',ok));
