@@ -32,9 +32,22 @@ export type Subscription = {
 
 export type TradeDetail = Record<string, string>;
 
+/** NAVER Dynamic Map 로더 설정. 지도 Client ID만 담고 Client Secret은 절대 담지 않는다. */
+export type MapSdkConfig = {
+  provider: string;
+  configured: boolean;
+  client_id: string | null;
+  script_url: string;
+  key_param: string;
+  key_param_fallback: string;
+  web_service_url: string;
+  note: string;
+};
+
 export type MapConfig = {
   active: string;
   fallback: string;
+  sdk: MapSdkConfig;
   providers: {
     id: string;
     label: string;

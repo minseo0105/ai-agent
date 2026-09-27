@@ -767,23 +767,40 @@ class GeocodeProviderTests(unittest.TestCase):
 
 
 class MapScreenTests(unittest.TestCase):
-    def test_the_map_is_client_only_and_uses_open_tiles(self):
+    def test_the_map_is_naver_dynamic_map_loaded_in_the_browser_only(self):
         source = read('components/realestate/ZiponMap.tsx')
-        self.assertIn('await import("leaflet")', source)
-        self.assertIn('tile.openstreetmap.org', source)
-        self.assertIn('OpenStreetMap contributors', source)
+        loader = read('lib/naverMaps.ts')
+        self.assertIn('loadNaverMaps', source)
+        self.assertIn('MapTypeId.NORMAL', source)
+        # 로더 URL은 서버가 내려준다. 프론트엔드에 박아 두지 않는다.
+        self.assertIn('sdk.script_url', loader)
+        from services import map_providers
+        self.assertEqual(map_providers.NAVER_MAPS_SCRIPT,
+                         'https://oapi.map.naver.com/openapi/v3/maps.js')
+        # Leaflet과 OSM 타일은 ZIP:ON 지도에서 더 쓰지 않는다.
+        self.assertNotIn('leaflet', source.lower())
+        self.assertNotIn('openstreetmap', source.lower())
         self.assertNotIn('googleapis', source)
+        # 지도 키는 서버 응답에서만 오고 빌드에 박히지 않는다.
         self.assertNotIn('NEXT_PUBLIC', source)
+        self.assertNotIn('NEXT_PUBLIC', loader)
+        self.assertIn('sdk.client_id', loader)
 
     def test_only_a_verified_boundary_is_drawn_as_an_area(self):
         source = read('components/realestate/ZiponMap.tsx')
         self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', source)
-        self.assertIn('circleMarker', source)
+        # 면은 Polygon으로만 그리고, 대표좌표 주변 원은 사업구역이라고 부르지 않는다.
+        self.assertIn('api.Polygon', source)
+        self.assertIn('api.Circle', source)
+        self.assertIn('대표위치 주변', source)
+        for wrong in ('사업구역 경계', '정비구역 경계'):
+            self.assertNotIn(f'{wrong}</span>', source)
 
-    def test_the_legend_explains_the_three_marks(self):
+    def test_the_legend_names_every_project_type(self):
         source = read('components/realestate/ZiponMap.tsx')
-        for label in ('선택 부동산', '공식 사업구역', '사업 대표위치', '위치 데이터 준비 중'):
+        for label in ('재개발', '재건축', '모아타운', '신속통합기획', '선택 부동산'):
             self.assertIn(label, source)
+        self.assertIn('좌표 없는 ${points.length - mappable}건은 목록에만 표시', source)
 
     def test_the_transaction_card_leads_with_the_relationship(self):
         source = read('components/realestate/TransactionCard.tsx')
@@ -853,12 +870,22 @@ class BaseMapTests(unittest.TestCase):
         config = map_providers.config(lambda name: 'placeholder' if name == 'KAKAO_JAVASCRIPT_KEY' else '')
         self.assertEqual(config['active'], 'osm')
 
-    def test_the_config_never_carries_a_key(self):
+    def test_the_config_carries_only_the_browser_map_key(self):
         from services import map_providers
-        config = map_providers.config(lambda name: 'super-secret-value')
+        # 서버 전용 키는 값이 절대 나가지 않는다. 지도 Client ID만 예외이고, 그것은
+        # 브라우저가 SDK를 부를 때 필요한 값이라 sdk에만 담긴다.
+        secrets = {'NAVER_MAP_CLIENT_ID': 'BROWSER_MAP_KEY',
+                   'NAVER_MAP_CLIENT_SECRET': 'SERVER_ONLY_SECRET',
+                   'KAKAO_REST_API_KEY': 'SERVER_ONLY_SECRET',
+                   'VWORLD_API_KEY': 'SERVER_ONLY_SECRET',
+                   'KAKAO_JAVASCRIPT_KEY': 'OTHER_BROWSER_KEY',
+                   'VWORLD_MAP_KEY': 'OTHER_BROWSER_KEY'}
+        config = map_providers.config(lambda name: secrets.get(name, ''))
         text = json.dumps(config, ensure_ascii=False)
-        # 키 이름은 어떤 키를 등록해야 하는지 알리기 위해 담고, 값은 절대 담지 않는다.
-        self.assertNotIn('super-secret-value', text)
+        self.assertNotIn('SERVER_ONLY_SECRET', text)
+        self.assertNotIn('OTHER_BROWSER_KEY', text)
+        self.assertEqual(config['sdk']['client_id'], 'BROWSER_MAP_KEY')
+        self.assertEqual(text.count('BROWSER_MAP_KEY'), 1)
         self.assertEqual(sorted(p['browser_key_name'] for p in config['providers']
                                 if p['browser_key_name']),
                          ['KAKAO_JAVASCRIPT_KEY', 'NAVER_MAP_CLIENT_ID', 'VWORLD_MAP_KEY'])
@@ -1069,22 +1096,24 @@ class MapFirstScreenTests(unittest.TestCase):
 
     def test_the_map_separates_property_type_programme_and_boundary(self):
         map_source = read('components/realestate/ZiponMap.tsx')
-        self.assertIn('DEVELOPMENT_COLOR', map_source)
-        self.assertIn('PROGRAM_COLOR', map_source)
+        self.assertIn('TYPE_COLOR', map_source)
+        self.assertIn('PROGRAM_RING', map_source)
         self.assertIn('point.program_layer', map_source)
         self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', map_source)
         self.assertIn('선택 부동산', map_source)
 
-    def test_the_legend_names_the_three_marks(self):
+    def test_the_legend_names_the_marker_kinds(self):
         map_source = read('components/realestate/ZiponMap.tsx')
-        for label in ('선택 부동산', '공식 사업구역', '사업 대표위치'):
+        for label in ('재개발', '재건축', '모아타운', '신속통합기획', '선택 부동산'):
             self.assertIn(label, map_source)
         self.assertNotIn('공식 경계 확인</span>', map_source)
 
-    def test_the_map_takes_its_basemap_from_the_server_with_an_osm_fallback(self):
+    def test_the_map_takes_its_sdk_settings_from_the_server(self):
         map_source = read('components/realestate/ZiponMap.tsx')
-        self.assertIn('config?.tile ?? OSM', map_source)
-        self.assertIn('tile.openstreetmap.org', map_source)
+        self.assertIn('config?.sdk ?? null', map_source)
+        self.assertIn('loadNaverMaps(sdk)', map_source)
+        # 키가 없으면 빈 지도를 남기지 않고 못 불러왔다고 말한다.
+        self.assertIn('지도를 불러오지 못했어요', map_source)
         self.assertIn('mapConfig()', read('components/realestate/DevelopmentTab.tsx'))
 
     def test_the_map_reports_its_viewport_for_a_future_bbox_query(self):
@@ -1092,11 +1121,15 @@ class MapFirstScreenTests(unittest.TestCase):
         self.assertIn('onBoundsChange', map_source)
         self.assertIn('getBounds()', map_source)
 
-    def test_the_popup_shows_what_the_spec_asks_for(self):
+    def test_the_info_window_shows_what_the_spec_asks_for(self):
         map_source = read('components/realestate/ZiponMap.tsx')
-        for piece in ('point.stage_label', 'point.address', 'point.last_checked',
-                      'point.official_url', 'point.accuracy_label', 'point.boundary_status_label'):
+        for piece in ('point.stage_label', 'point.address', 'point.type_label',
+                      'point.program_label', 'point.accuracy_label',
+                      'point.boundary_status_label'):
             self.assertIn(piece, map_source)
+        self.assertIn('api.InfoWindow', map_source)
+        # InfoWindow 본문은 escape해서 넣는다.
+        self.assertIn('escapeHtml(', map_source)
 
     def test_the_map_height_stays_mobile_sized(self):
         self.assertIn('height = 340', read('components/realestate/ZiponMap.tsx'))
@@ -1509,18 +1542,30 @@ class DynamicMapExposureTests(unittest.TestCase):
         providers, config = self.config({'NAVER_MAP_CLIENT_ID': 'ID_VALUE',
                                          'NAVER_MAP_CLIENT_SECRET': 'SECRET_VALUE'})
         text = json.dumps(config, ensure_ascii=False)
-        self.assertNotIn('ID_VALUE', text)
+        # Client Secret은 어떤 경우에도 브라우저로 내려가지 않는다.
         self.assertNotIn('SECRET_VALUE', text)
+        # Client ID는 웹 지도 SDK 인증에 필요하므로 sdk에만 담겨 내려간다.
+        self.assertEqual(config['sdk']['client_id'], 'ID_VALUE')
         self.assertIn('NAVER_MAP_CLIENT_SECRET', config['browser_exposure']['never_sent_to_browser'])
         naver = next(p for p in config['providers'] if p['id'] == 'naver')
         self.assertEqual(naver['browser_key_name'], 'NAVER_MAP_CLIENT_ID')
         self.assertEqual(naver['web_service_url'], 'https://minseo2-digital-ai-lab.hf.space')
         self.assertEqual(providers.NAVER_WEB_SERVICE_URL, 'https://minseo2-digital-ai-lab.hf.space')
 
-    def test_a_configured_naver_client_id_does_not_change_the_tile_source(self):
+    def test_a_configured_client_id_makes_naver_the_active_map(self):
         _, config = self.config({'NAVER_MAP_CLIENT_ID': 'ID_VALUE'})
+        self.assertEqual(config['active'], 'naver')
+        self.assertTrue(config['sdk']['configured'])
+        self.assertEqual(config['sdk']['client_id'], 'ID_VALUE')
+        # raster fallback은 그대로 남는다. js_sdk가 타일 소스를 대신하지는 않는다.
+        self.assertEqual(config['fallback'], 'osm')
+        self.assertIsNone(config['tile']['url_template'])
+
+    def test_without_a_client_id_the_map_is_not_claimed_to_work(self):
+        _, config = self.config({})
         self.assertEqual(config['active'], 'osm')
-        self.assertIn('tile.openstreetmap.org', config['tile']['url_template'])
+        self.assertFalse(config['sdk']['configured'])
+        self.assertIsNone(config['sdk']['client_id'])
 
     def test_no_frontend_file_mentions_a_geocoding_credential(self):
         for path in (ROOT / 'web/src').rglob('*.ts*'):
@@ -2497,3 +2542,122 @@ class StageBatchTests(unittest.TestCase):
         with patch.object(rm, '_remote_request', side_effect=forbidden):
             self.assertEqual(dev.stage_metadata([{'project_id': 'not-a-uuid'}]),
                              [{'project_id': 'not-a-uuid'}])
+
+
+class NaverDynamicMapTests(unittest.TestCase):
+    """지도가 NAVER Dynamic Map으로 동작하고, 키 취급이 안전한지."""
+
+    def setUp(self):
+        self.map_source = read('components/realestate/ZiponMap.tsx')
+        self.loader = read('lib/naverMaps.ts')
+        self.tab = read('components/realestate/DevelopmentTab.tsx')
+
+    def test_the_sdk_is_loaded_once_with_the_server_supplied_key(self):
+        self.assertIn('let pending: Promise<NaverMaps> | null = null', self.loader)
+        self.assertIn('if (window.naver?.maps) return Promise.resolve(window.naver.maps)', self.loader)
+        self.assertIn('sdk.key_param', self.loader)
+        # 콘솔 세대에 따라 키 파라미터 이름이 다르므로 예비 이름으로 한 번만 더 시도한다.
+        self.assertIn('sdk.key_param_fallback', self.loader)
+        self.assertEqual(self.loader.count('tryLoad(sdk, sdk.'), 2)
+
+    def test_a_missing_client_id_never_pretends_to_have_a_map(self):
+        self.assertIn('NAVER_MAP_CLIENT_ID_NOT_CONFIGURED', self.loader)
+        self.assertIn("if (!sdk?.configured || failed)", self.map_source)
+        self.assertIn('지도를 불러오지 못했어요', self.map_source)
+
+    def test_no_client_secret_reaches_the_browser_bundle(self):
+        for source in (self.map_source, self.loader, self.tab,
+                       read('lib/realestate.ts')):
+            self.assertNotIn('NAVER_MAP_CLIENT_SECRET', source)
+            self.assertNotIn('X-NCP-APIGW', source)
+            self.assertNotIn('client_secret', source)
+
+    def test_the_server_only_reveals_the_browser_map_key(self):
+        from services import map_providers
+        sdk = map_providers.sdk_config(lambda name: {'NAVER_MAP_CLIENT_ID': 'CID',
+                                                     'NAVER_MAP_CLIENT_SECRET': 'SECRET'}.get(name, ''))
+        text = json.dumps(sdk, ensure_ascii=False)
+        self.assertEqual(sdk['client_id'], 'CID')
+        self.assertNotIn('SECRET', text)
+        self.assertEqual(sdk['web_service_url'], 'https://minseo2-digital-ai-lab.hf.space')
+
+    def test_the_default_map_type_is_normal(self):
+        self.assertIn('mapTypeId: api.MapTypeId.NORMAL', self.map_source)
+
+    def test_markers_are_distinguished_by_project_type(self):
+        for code in ('REDEVELOPMENT', 'RECONSTRUCTION', 'MOATOWN', 'OTHER_PROJECT'):
+            self.assertIn(code, self.map_source)
+        self.assertIn('FAST_TRACK', self.map_source)
+        # 선택된 marker는 크기와 테두리로 구분하되 지도를 가릴 만큼 키우지 않는다.
+        self.assertIn('const size = selected ? 26 : 16', self.map_source)
+
+    def test_a_representative_point_is_never_drawn_as_a_zone(self):
+        self.assertIn('대표위치 주변', self.map_source)
+        # 면은 공식 경계가 확인된 사업만. 지금은 그런 사업이 없어 아무 면도 그려지지 않는다.
+        polygon = self.map_source.split('api.Polygon', 1)[0]
+        self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', polygon)
+        # INSIDE는 주석에서 '하지 않는다'고 적는 것 말고 코드에 나오지 않아야 한다.
+        code = [line for line in self.map_source.splitlines()
+                if 'INSIDE' in line and not line.lstrip().startswith(('*', '//', '/*'))]
+        self.assertEqual(code, [])
+        self.assertNotIn('allows_inside', self.map_source)
+
+    def test_the_map_is_responsive_and_mobile_sized(self):
+        self.assertIn('height = 340', self.map_source)
+        self.assertIn('className="w-full overflow-hidden rounded-2xl', self.map_source)
+        self.assertIn('height={340}', self.tab)
+        self.assertIn('height={200}', self.tab)
+
+    def test_only_located_projects_become_markers(self):
+        self.assertIn("points.filter((p) => p.latitude != null && p.longitude != null)",
+                      self.map_source)
+        self.assertIn('for (const point of located)', self.map_source)
+
+
+class MapCardLinkTests(unittest.TestCase):
+    """카드 ↔ 지도 양방향 연결. selectedProject 하나가 기준이다."""
+
+    def setUp(self):
+        self.tab = read('components/realestate/DevelopmentTab.tsx')
+        self.map_source = read('components/realestate/ZiponMap.tsx')
+
+    def test_selection_has_a_single_source_of_truth(self):
+        self.assertEqual(self.tab.count('useState<string | null>(null)'), 1)
+        self.assertIn('const [selectedId, setSelectedId] = useState<string | null>(null)', self.tab)
+        # 카드 클릭과 marker 클릭이 같은 상태를 바꾼다.
+        self.assertIn('onClick={() => setSelectedId(p.project_id)}', self.tab)
+        self.assertIn('onSelect={selectFromMap}', self.tab)
+        self.assertIn('const selectFromMap = useCallback((projectId: string | null) => {\n    setSelectedId(projectId);\n  }, []);',
+                      self.tab)
+
+    def test_a_marker_click_does_not_force_a_scroll(self):
+        # marker 클릭만으로 화면을 끌어올리지 않는다. 이동은 버튼으로 사용자가 고른다.
+        selecting = self.tab.split('const scrollToCard', 1)[0]
+        self.assertNotIn('scrollIntoView', selecting)
+        self.assertIn('사업정보 보기', self.tab)
+        self.assertIn('onClick={scrollToCard}', self.tab)
+
+    def test_selecting_a_project_pans_the_map_and_opens_an_info_window(self):
+        self.assertIn('instance.panTo(position, { duration: 320 })', self.map_source)
+        self.assertIn('instance.setZoom(compact ? 16 : 15, true)', self.map_source)
+        self.assertIn('info.current.open(instance, marker)', self.map_source)
+        self.assertIn('info.current.setContent(infoHtml(point))', self.map_source)
+
+    def test_the_mini_map_sits_next_to_the_cards(self):
+        self.assertIn('선택 사업 위치', self.tab)
+        self.assertIn('compact', self.tab)
+        self.assertIn('selectedPoints', self.tab)
+        # mini-map은 카드 목록 바로 위에 있어야 모바일에서 위치를 연결해 준다.
+        self.assertLess(self.tab.index('선택 사업 위치'), self.tab.index('<DevelopmentCard'))
+
+    def test_the_mini_map_shows_only_the_selected_project(self):
+        self.assertIn('visiblePoints.filter((point) => point.project_id === selectedId)', self.tab)
+
+    def test_a_project_without_a_coordinate_says_so_instead_of_a_blank_map(self):
+        self.assertIn('selected.mappable ? (', self.tab)
+        self.assertIn('좌표를 확보하지 못해 지도에 표시하지 않습니다', self.tab)
+
+    def test_the_compact_map_drops_the_legend_and_bounds_reporting(self):
+        self.assertIn('{!compact && (', self.map_source)
+        self.assertIn('if (!compact && bounds.current)', self.map_source)
+        self.assertIn('zoomControl: !compact', self.map_source)

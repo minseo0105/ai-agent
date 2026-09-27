@@ -1,30 +1,76 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { Map as LeafletMap } from "leaflet";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DevelopmentMapPoint, MapConfig } from "@/lib/realestate";
+import {
+  loadNaverMaps,
+  type NaverInfoWindow,
+  type NaverMapInstance,
+  type NaverMarker,
+  type NaverMaps,
+  type NaverOverlay,
+} from "@/lib/naverMaps";
 
-const OSM = {
-  url_template: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-  attribution: "© OpenStreetMap contributors",
-  max_zoom: 19,
-};
-const SEOUL: [number, number] = [37.5512, 127.1265];
-/** 사업유형(DEVELOPMENT) 레이어 색. 정책 프로그램은 별도 링으로 덧그린다. */
-const DEVELOPMENT_COLOR: Record<string, string> = {
+const SEOUL = { lat: 37.5512, lng: 127.1265 };
+/** 사업유형별 marker 색. 정책 프로그램은 테두리로 구분해 유형과 섞지 않는다. */
+const TYPE_COLOR: Record<string, string> = {
   REDEVELOPMENT: "#B42332",
   RECONSTRUCTION: "#1D4ED8",
+  MOATOWN: "#0F766E",
   OTHER_PROJECT: "#64748B",
 };
-const PROGRAM_COLOR: Record<string, string> = { FAST_TRACK: "#7C3AED", MOATOWN: "#0F766E" };
+const PROGRAM_RING: Record<string, string> = { FAST_TRACK: "#7C3AED", MOATOWN: "#0F766E" };
+const LEGEND: { label: string; color: string; ring?: string }[] = [
+  { label: "재개발", color: TYPE_COLOR.REDEVELOPMENT },
+  { label: "재건축", color: TYPE_COLOR.RECONSTRUCTION },
+  { label: "모아타운", color: TYPE_COLOR.MOATOWN },
+  { label: "신속통합기획", color: TYPE_COLOR.OTHER_PROJECT, ring: PROGRAM_RING.FAST_TRACK },
+];
 
 export type MapFocus = { latitude: number; longitude: number; label: string } | null;
 export type MapBounds = { north: number; south: number; east: number; west: number };
 
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
+
+/** marker 하나. 선택된 것은 크기와 흰 테두리로 확실히 구분하고, 지도를 가릴 만큼 키우지 않는다. */
+function markerIcon(maps: NaverMaps, point: DevelopmentMapPoint, selected: boolean) {
+  const color = TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"] ?? TYPE_COLOR.OTHER_PROJECT;
+  const ring = point.program_layer ? PROGRAM_RING[point.program_layer] ?? PROGRAM_RING.FAST_TRACK : null;
+  const size = selected ? 26 : 16;
+  const border = ring ?? "#FFFFFF";
+  const width = selected ? 4 : ring ? 3 : 2;
+  return {
+    content:
+      `<div style="width:${size}px;height:${size}px;border-radius:9999px;background:${color};` +
+      `border:${width}px solid ${border};box-sizing:border-box;` +
+      `box-shadow:0 1px 3px rgba(0,0,0,.35)${selected ? ",0 0 0 3px rgba(180,35,50,.35)" : ""};"></div>`,
+    size: new maps.Size(size, size),
+    anchor: new maps.Point(size / 2, size / 2),
+  };
+}
+
+function infoHtml(point: DevelopmentMapPoint) {
+  const tags = [point.type_label, point.program_label].filter(Boolean).join(" · ");
+  const rows = [
+    `<div style="font-weight:800;font-size:13px">${escapeHtml(point.name ?? "")}</div>`,
+    tags ? `<div style="color:#475569;font-size:12px">${escapeHtml(tags)}</div>` : "",
+    point.stage_label ? `<div style="font-size:12px">${escapeHtml(point.stage_label)}</div>` : "",
+    point.address ? `<div style="color:#64748B;font-size:11px">${escapeHtml(point.address)}</div>` : "",
+    `<div style="color:#94A3B8;font-size:11px">${escapeHtml(point.accuracy_label)} · ${escapeHtml(
+      point.boundary_status_label,
+    )}</div>`,
+  ];
+  return `<div style="padding:10px 12px;max-width:240px;line-height:1.5">${rows.filter(Boolean).join("")}</div>`;
+}
+
 /**
- * 부동산 개발정보 지도. Leaflet은 브라우저에서만 불러오므로 static export/SSR에서 안전하다.
- * 레이어를 분리한다: 선택 부동산 / 사업유형 / 정책 프로그램 / 공식 경계 / 대표위치.
- * 공식 경계가 확인된 사업만 면으로 그리고, 대표좌표로는 면을 만들지 않는다.
+ * ZIP:ON 개발정보 지도. NAVER Maps JavaScript API v3 Dynamic Map을 쓴다.
+ *
+ * 대표좌표는 대표좌표로만 그린다: 선택 사업 주변에 옅은 원을 둘 수 있지만 그것은
+ * '대표위치 주변'이며 사업구역 경계가 아니다. 면은 공식 경계가 확인된 사업만 Polygon으로
+ * 그리고, 오늘은 그런 사업이 없으므로 아무 면도 그려지지 않는다. INSIDE 판정은 하지 않는다.
  */
 export default function ZiponMap({
   points,
@@ -32,6 +78,7 @@ export default function ZiponMap({
   config = null,
   selectedId = null,
   height = 340,
+  compact = false,
   onSelect,
   onBoundsChange,
 }: {
@@ -40,150 +87,234 @@ export default function ZiponMap({
   config?: MapConfig | null;
   selectedId?: string | null;
   height?: number;
+  /** mini-map 모드: 범례와 범위 통지 없이 선택 사업만 보여준다. */
+  compact?: boolean;
   onSelect?: (projectId: string | null) => void;
   onBoundsChange?: (bounds: MapBounds) => void;
 }) {
   const container = useRef<HTMLDivElement>(null);
-  const map = useRef<LeafletMap | null>(null);
-  const group = useRef<unknown>(null);
-  const tile = config?.tile ?? OSM;
+  const maps = useRef<NaverMaps | null>(null);
+  const map = useRef<NaverMapInstance | null>(null);
+  const markers = useRef<Map<string, NaverMarker>>(new Map());
+  const overlays = useRef<NaverOverlay[]>([]);
+  const info = useRef<NaverInfoWindow | null>(null);
+  const listeners = useRef<unknown[]>([]);
+  const select = useRef(onSelect);
+  const bounds = useRef(onBoundsChange);
+  const [failed, setFailed] = useState<string | null>(null);
+  const sdk = config?.sdk ?? null;
+
+  select.current = onSelect;
+  bounds.current = onBoundsChange;
+
+  const located = useMemo(
+    () => points.filter((p) => p.latitude != null && p.longitude != null),
+    [points],
+  );
 
   useEffect(() => {
+    if (!sdk) return;
     let cancelled = false;
-    (async () => {
-      const L = (await import("leaflet")).default;
-      await import("leaflet/dist/leaflet.css");
-      if (cancelled || !container.current || map.current) return;
-      map.current = L.map(container.current, { scrollWheelZoom: false }).setView(SEOUL, 13);
-      L.tileLayer(tile.url_template ?? OSM.url_template, {
-        maxZoom: tile.max_zoom ?? OSM.max_zoom,
-        attribution: tile.attribution ?? OSM.attribution,
-      }).addTo(map.current);
-      group.current = L.layerGroup().addTo(map.current);
-      if (onBoundsChange) {
-        const emit = () => {
-          const b = map.current?.getBounds();
-          if (b) onBoundsChange({ north: b.getNorth(), south: b.getSouth(), east: b.getEast(), west: b.getWest() });
-        };
-        map.current.on("moveend", emit);
-      }
-    })();
-    return () => {
-      cancelled = true;
-      map.current?.remove();
-      map.current = null;
-      group.current = null;
-    };
-    // 타일 설정은 최초 1회만 적용한다.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const L = (await import("leaflet")).default;
-      if (cancelled || !map.current || !group.current) return;
-      const layer = group.current as ReturnType<typeof L.layerGroup>;
-      layer.clearLayers();
-      const bounds: [number, number][] = [];
-
-      for (const point of points) {
-        if (point.latitude == null || point.longitude == null) continue;
-        const position: [number, number] = [point.latitude, point.longitude];
-        bounds.push(position);
-        const color = DEVELOPMENT_COLOR[point.development_layer ?? "OTHER_PROJECT"] ?? DEVELOPMENT_COLOR.OTHER_PROJECT;
-        const selected = selectedId === point.project_id;
-
-        // BOUNDARY 레이어: 공식 경계가 확인된 사업만 면으로.
-        if (point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary) {
-          L.geoJSON(point.boundary as never, { style: { color, weight: 2, fillOpacity: 0.12 } }).addTo(layer);
-        }
-        // PROGRAM 레이어: 정책 프로그램은 바깥 링으로 덧그려 유형과 구분한다.
-        if (point.program_layer) {
-          L.circleMarker(position, {
-            radius: selected ? 14 : 11,
-            color: PROGRAM_COLOR[point.program_layer] ?? "#7C3AED",
-            weight: 2,
-            fill: false,
-            dashArray: "3 3",
-          }).addTo(layer);
-        }
-        // POINT 레이어: 대표위치.
-        const marker = L.circleMarker(position, {
-          radius: selected ? 9 : 7,
-          color,
-          weight: selected ? 3 : 2,
-          fillColor: color,
-          fillOpacity: selected ? 0.85 : 0.55,
+    loadNaverMaps(sdk)
+      .then((api) => {
+        if (cancelled || !container.current || map.current) return;
+        maps.current = api;
+        map.current = new api.Map(container.current, {
+          center: new api.LatLng(SEOUL.lat, SEOUL.lng),
+          zoom: compact ? 16 : 12,
+          mapTypeId: api.MapTypeId.NORMAL,
+          scaleControl: false,
+          logoControl: true,
+          mapDataControl: false,
+          zoomControl: !compact,
+          scrollWheel: !compact,
         });
-        const tags = [point.type_label, point.program_label].filter(Boolean).join(" · ");
-        marker.bindPopup(
-          [
-            `<strong>${point.name ?? ""}</strong>`,
-            tags,
-            point.stage_label ?? "",
-            point.address ?? "",
-            point.last_checked ? `최근 공식 확인 ${point.last_checked}` : "",
-            `<span style="color:#64748B">${point.accuracy_label} · ${point.boundary_status_label}</span>`,
-            point.official_url ? `<a href="${point.official_url}" target="_blank" rel="noopener noreferrer">공식자료 ↗</a>` : "",
-          ]
-            .filter(Boolean)
-            .join("<br/>"),
-        );
-        if (onSelect) marker.on("click", () => onSelect(point.project_id));
-        marker.addTo(layer);
-      }
-
-      // PROPERTY 레이어: 선택 부동산은 별도 마커로 구분한다.
-      if (property) {
-        const position: [number, number] = [property.latitude, property.longitude];
-        bounds.push(position);
-        L.circleMarker(position, {
-          radius: 10,
-          color: "#111827",
-          weight: 3,
-          fillColor: "#FFFFFF",
-          fillOpacity: 1,
-        })
-          .bindPopup(`<strong>${property.label}</strong><br/>선택 부동산`)
-          .addTo(layer)
-          .openPopup();
-        map.current.setView(position, 15);
-      } else if (bounds.length > 0) {
-        map.current.fitBounds(bounds, { padding: [24, 24], maxZoom: 15 });
-      }
-    })();
+        info.current = new api.InfoWindow({ content: "", borderWidth: 0, disableAnchor: true });
+        if (!compact && bounds.current) {
+          listeners.current.push(
+            api.Event.addListener(map.current, "idle", () => {
+              const box = map.current?.getBounds();
+              if (!box) return;
+              const max = box.getMax();
+              const min = box.getMin();
+              bounds.current?.({ north: max.lat(), south: min.lat(), east: max.lng(), west: min.lng() });
+            }),
+          );
+        }
+        setFailed(null);
+      })
+      .catch((error: Error) => {
+        if (!cancelled) setFailed(error.message);
+      });
     return () => {
       cancelled = true;
+      for (const listener of listeners.current) maps.current?.Event.removeListener(listener);
+      listeners.current = [];
+      info.current?.close();
+      for (const marker of markers.current.values()) marker.setMap(null);
+      markers.current.clear();
+      for (const overlay of overlays.current) overlay.setMap(null);
+      overlays.current = [];
+      map.current?.destroy();
+      map.current = null;
     };
-  }, [points, property, selectedId, onSelect]);
+    // 지도 인스턴스는 한 번만 만든다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sdk, compact]);
 
-  const mappable = points.filter((p) => p.latitude != null && p.longitude != null).length;
+  // marker 다시 그리기. 좌표가 없는 사업은 marker를 만들지 않는다(가짜 좌표 금지).
+  useEffect(() => {
+    const api = maps.current;
+    const instance = map.current;
+    if (!api || !instance) return;
+    for (const marker of markers.current.values()) marker.setMap(null);
+    markers.current.clear();
+    for (const overlay of overlays.current) overlay.setMap(null);
+    overlays.current = [];
+
+    for (const point of located) {
+      const position = new api.LatLng(point.latitude as number, point.longitude as number);
+      // 공식 경계가 확인된 사업만 면으로. 오늘은 해당 사업이 없어 아무 면도 그리지 않는다.
+      if (point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary) {
+        const paths = point.boundary as { coordinates?: number[][][] };
+        const ring = paths.coordinates?.[0];
+        if (ring) {
+          overlays.current.push(
+            new api.Polygon({
+              map: instance,
+              paths: [ring.map(([lng, lat]) => new api.LatLng(lat, lng))],
+              strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+              strokeWeight: 2,
+              fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+              fillOpacity: 0.12,
+            }),
+          );
+        }
+      }
+      const marker = new api.Marker({
+        map: instance,
+        position,
+        title: point.name ?? undefined,
+        icon: markerIcon(api, point, selectedId === point.project_id),
+        zIndex: selectedId === point.project_id ? 1000 : 1,
+      });
+      if (select.current) {
+        listeners.current.push(
+          api.Event.addListener(marker, "click", () => select.current?.(point.project_id)),
+        );
+      }
+      markers.current.set(point.project_id, marker);
+    }
+
+    if (property) {
+      overlays.current.push(
+        new api.Marker({
+          map: instance,
+          position: new api.LatLng(property.latitude, property.longitude),
+          icon: {
+            content:
+              '<div style="width:18px;height:18px;border-radius:9999px;background:#FFFFFF;' +
+              'border:3px solid #111827;box-sizing:border-box"></div>',
+            size: new api.Size(18, 18),
+            anchor: new api.Point(9, 9),
+          },
+          zIndex: 1200,
+        }) as unknown as NaverOverlay,
+      );
+    }
+  }, [located, property, selectedId]);
+
+  // 선택 사업으로 부드럽게 이동하고 InfoWindow를 띄운다. 화면을 강제로 스크롤하지 않는다.
+  useEffect(() => {
+    const api = maps.current;
+    const instance = map.current;
+    if (!api || !instance) return;
+    const point = located.find((p) => p.project_id === selectedId);
+    if (!point) {
+      info.current?.close();
+      if (!compact && !property && located.length > 0) {
+        const box = new api.LatLngBounds();
+        for (const item of located) {
+          box.extend(new api.LatLng(item.latitude as number, item.longitude as number));
+        }
+        instance.fitBounds(box, { top: 24, right: 24, bottom: 24, left: 24 });
+      }
+      return;
+    }
+    const position = new api.LatLng(point.latitude as number, point.longitude as number);
+    instance.panTo(position, { duration: 320 });
+    if (instance.getZoom() < 15) instance.setZoom(compact ? 16 : 15, true);
+    // 선택 사업 주변 표시. '대표위치 주변'이며 사업구역 경계가 아니다.
+    overlays.current.push(
+      new api.Circle({
+        map: instance,
+        center: position,
+        radius: 120,
+        strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+        strokeWeight: 1,
+        strokeOpacity: 0.7,
+        fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+        fillOpacity: 0.08,
+      }),
+    );
+    const marker = markers.current.get(point.project_id);
+    if (info.current && marker) {
+      info.current.setContent(infoHtml(point));
+      info.current.open(instance, marker);
+    }
+  }, [selectedId, located, compact, property]);
+
+  const mappable = located.length;
+
+  if (!sdk?.configured || failed) {
+    return (
+      <div
+        style={{ height }}
+        className="flex w-full items-center justify-center rounded-2xl border border-border bg-surface-muted px-4 text-center text-xs text-muted"
+      >
+        지도를 불러오지 못했어요. 네이버 지도 설정을 확인해 주세요.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-1.5">
       <div
         ref={container}
         role="application"
-        aria-label="부동산 개발정보 지도"
+        aria-label={compact ? "선택 사업 위치 지도" : "부동산 개발정보 지도"}
         style={{ height }}
         className="w-full overflow-hidden rounded-2xl border border-border bg-surface-muted"
       />
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-subtle">
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden className="inline-block size-2.5 rounded-full border-2 border-slate-900 bg-white dark:border-white" /> 선택 부동산
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden className="inline-block h-2.5 w-4 border-2 border-estate bg-estate/15" /> 공식 사업구역
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span aria-hidden className="inline-block size-2.5 rounded-full border-2 border-estate bg-estate/50" /> 사업 대표위치
-        </span>
-        <span className="ml-auto">
-          지도 표시 {mappable}/{points.length}건
-          {mappable === 0 && points.length > 0 && " · 위치 데이터 준비 중"}
-        </span>
-      </div>
+      {!compact && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-subtle">
+          {LEGEND.map((item) => (
+            <span key={item.label} className="inline-flex items-center gap-1">
+              <span
+                aria-hidden
+                className="inline-block size-2.5 rounded-full"
+                style={{
+                  background: item.color,
+                  border: `2px solid ${item.ring ?? "#FFFFFF"}`,
+                  boxSizing: "border-box",
+                }}
+              />
+              {item.label}
+            </span>
+          ))}
+          <span className="inline-flex items-center gap-1">
+            <span
+              aria-hidden
+              className="inline-block size-2.5 rounded-full border-2 border-slate-900 bg-white dark:border-white"
+            />
+            선택 부동산
+          </span>
+          <span className="ml-auto">
+            지도 표시 {mappable}/{points.length}건
+            {points.length > mappable && ` · 좌표 없는 ${points.length - mappable}건은 목록에만 표시`}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

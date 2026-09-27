@@ -135,15 +135,22 @@ export default function DevelopmentTab({
     모아타운: inRegion.filter((p) => p.type_label === "모아타운").length,
   };
   const selected = visible.find((p) => p.project_id === selectedId) ?? null;
+  const selectedPoints = useMemo(
+    () => visiblePoints.filter((point) => point.project_id === selectedId),
+    [visiblePoints, selectedId],
+  );
   const mappable = visiblePoints.filter((p) => p.latitude != null).length;
   const coordinateless = visible.length - mappable;
   const unavailable = !loading && !error && !ready;
 
-  // 지도 marker를 누르면 해당 카드로 이동하고, 카드를 누르면 marker를 강조한다.
+  // marker를 누르면 같은 selectedProject가 되고 카드도 선택 상태가 된다. 화면을 강제로
+  // 스크롤하지는 않고, 카드로 이동할지는 '사업정보 보기'로 사용자가 고른다.
   const selectFromMap = useCallback((projectId: string | null) => {
     setSelectedId(projectId);
-    if (projectId) cardRefs.current[projectId]?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, []);
+  const scrollToCard = useCallback(() => {
+    if (selectedId) cardRefs.current[selectedId]?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [selectedId]);
   const onBounds = useCallback((_bounds: MapBounds) => {
     // bbox 조회 준비: 지금은 서울시 전체를 한 번 받아 두고 화면 범위는 지도에서만 쓴다.
   }, []);
@@ -233,6 +240,13 @@ export default function DevelopmentTab({
                 <p className="mt-0.5 text-subtle">
                   {selected.address ?? "대표주소 확인 중"} · {selected.location_accuracy.label}
                 </p>
+                <button
+                  type="button"
+                  onClick={scrollToCard}
+                  className={`${CHIP} mt-1.5 border border-border text-muted hover:text-fg`}
+                >
+                  사업정보 보기
+                </button>
               </div>
             ) : (
               <p className="mt-1 text-xs text-muted">
@@ -259,6 +273,36 @@ export default function DevelopmentTab({
           )}
           {visible.length === 0 && (
             <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">조건에 맞는 개발사업이 없어요.</p>
+          )}
+
+          {selected && (
+            <section className="rounded-xl border border-border bg-surface-muted p-2.5">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+                <h3 className="text-[11px] font-extrabold tracking-wide text-muted">선택 사업 위치</h3>
+                <span className="text-[11px] text-subtle">
+                  {selected.mappable ? selected.location_accuracy.label : "좌표 미확보"}
+                </span>
+              </div>
+              <div className="mt-0.5 text-xs font-extrabold">{selected.name}</div>
+              <p className="text-[11px] text-muted">
+                {[selected.type_label, selected.program_label].filter(Boolean).join(" · ")} · {selected.stage.label}
+              </p>
+              {selected.mappable ? (
+                <div className="mt-2">
+                  <ZiponMap
+                    points={selectedPoints}
+                    config={config}
+                    selectedId={selected.project_id}
+                    height={200}
+                    compact
+                  />
+                </div>
+              ) : (
+                <p className="mt-2 rounded-lg bg-surface px-2.5 py-2 text-[11px] text-muted">
+                  이 사업은 아직 좌표를 확보하지 못해 지도에 표시하지 않습니다. 목록에서는 계속 확인할 수 있어요.
+                </p>
+              )}
+            </section>
           )}
 
           <div className="grid gap-2.5 md:grid-cols-2">
