@@ -1382,6 +1382,14 @@ class TradeGeocodeTests(unittest.TestCase):
 
 
 class GeocodeApplyStepTests(unittest.TestCase):
+    def test_server_secret_uses_apikey_and_legacy_keeps_bearer(self):
+        for key in ('sb_secret_mock', 'legacy_mock'):
+            with patch.dict('os.environ', {'ZIPON_IMPORT_SUPABASE_URL': self.apply.PROJECT_URL,
+                                           'ZIPON_IMPORT_SUPABASE_KEY': key}):
+                _, headers = self.apply.configuration()
+            self.assertEqual(headers['apikey'], key)
+            self.assertEqual('Authorization' in headers, not key.startswith('sb_secret_'))
+
     def setUp(self):
         import apply_zipon_geocode
         self.apply = apply_zipon_geocode
@@ -1892,6 +1900,21 @@ class BulkGeocodeTargetTests(unittest.TestCase):
 
 
 class BulkGeocodeRunTests(unittest.TestCase):
+    def test_aggregate_preserves_address_elements_and_failed_attempts(self):
+        first = self.bulk.run(self.get_secret, bulk_naver(), self.cache, size=1)
+        failure = self.bulk.run(self.get_secret, Mock(side_effect=TimeoutError('private')),
+                                self.cache, offset=1, size=1)
+        self.assertEqual(failure['totals']['FAILED'], 1)
+        forbidden = Mock(side_effect=AssertionError('aggregate must not call provider'))
+        aggregate = self.bulk.run(self.get_secret, forbidden, self.cache, cache_only=True)
+        forbidden.assert_not_called()
+        self.assertEqual(aggregate['totals']['FAILED'], 1)
+        self.assertEqual(aggregate['totals']['PENDING_PROVIDER'], 126)
+        self.assertEqual(aggregate['apply_ready']['items'][0]['address_elements'],
+                         first['apply_ready']['items'][0]['address_elements'])
+        self.assertTrue(aggregate['apply_ready']['items'][0]['address_elements'])
+        self.assertNotIn('private', json.dumps(aggregate))
+
     def setUp(self):
         from services import development_bulk_geocode
         import tempfile, shutil
@@ -2046,7 +2069,8 @@ class BulkGeocodeRunTests(unittest.TestCase):
         address = self.bulk.targets()[9]['canonical_address']
         report, _ = self.whole_run(bulk_naver(fail={address: TimeoutError('boom')}))
         row = next(r for r in report['artifact']['items'] if r['canonical_address'] == address)
-        self.assertEqual(row['outcome'], 'PENDING_PROVIDER')
+        self.assertEqual(row['outcome'], 'FAILED')
+        self.assertEqual(report['totals']['FAILED'], 1)
         self.assertEqual(report['totals']['ACCEPTED'], 127)
 
     def test_nothing_runs_and_nothing_is_written_without_credentials(self):

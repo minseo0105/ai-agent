@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from services import development_geocode as geo
 from services.development_collector import MAX_IMPORT_BATCH
 from services.development_official import now
+from services.supabase_auth import supabase_headers
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'data/development'
@@ -66,8 +67,7 @@ def configuration():
         raise ApplyBlocked('SERVER_SECRET_KEY_REQUIRED')
     if any(c.isspace() for c in key):
         raise ApplyBlocked('KEY_CONTAINS_WHITESPACE')
-    return url, {'apikey': key, 'Authorization': 'Bearer ' + key,
-                 'Content-Type': 'application/json', 'Accept': 'application/json'}
+    return url, dict(supabase_headers(key), Accept='application/json')
 
 
 def eligible(queue):

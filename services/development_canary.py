@@ -111,7 +111,7 @@ def verify(row, response, evaluation):
         'geocode_source': evaluation.get('geocode_source'),
         'result_status': evaluation.get('result_status'),
         'endpoint': evaluation.get('endpoint'), 'checks': checks,
-        'address_elements': candidate.get('address_elements') or None,
+        'address_elements': elements or None,
         'address_used': evaluation.get('address_used'),
         'geocoded_at': evaluation.get('geocoded_at'),
         # 후보가 여러 개여서 특정하지 못한 경우, 사람이 비교할 후보 요약.
@@ -238,7 +238,7 @@ def run_rows(rows, get_secret, http_get=None, cache=None, preferred=None, cache_
         address = geo.normalize_address(row['canonical_address'])
         key = geo.cache_key(address)
         cached = store.get(key)
-        if cached is not None and cached.get('geocode_confidence') != 'UNRESOLVED':
+        if cached is not None and (cache_only or cached.get('geocode_confidence') != 'UNRESOLVED'):
             response = None
             evaluation = dict(geo.from_cache_row(cached), from_cache=True)
         elif cache_only or selected['provider'] is None:

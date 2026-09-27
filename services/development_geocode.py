@@ -65,7 +65,8 @@ class GeocodeCache:
     # 잃고, 자치구 일치나 좌표 축 검사가 실패한 것처럼 보인다.
     SNAPSHOT_FIELDS = ('checks', 'address_elements', 'coordinate_orientation', 'road_address',
                        'jibun_address', 'english_address', 'distance_m', 'review_reason',
-                       'candidate_summaries', 'disambiguated_from', 'endpoint', 'wanted_parts')
+                       'candidate_summaries', 'disambiguated_from', 'endpoint', 'wanted_parts',
+                       'error_type')
 
     def __init__(self, directory):
         self.directory = Path(directory)
