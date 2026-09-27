@@ -14,8 +14,11 @@ import {
   type Trade,
 } from "@/lib/realestate";
 import RegionPicker from "./RegionPicker";
+import DevelopmentTab from "./DevelopmentTab";
+import TradeFilters, { FilterChips, type TradeFilterValue } from "./TradeFilters";
+import TransactionCard from "./TransactionCard";
 
-type Tab = "청약 조회" | "실거래 조회" | "모니터링 조건" | "알림함";
+type Tab = "청약 조회" | "실거래 조회" | "개발사업" | "모니터링 조건" | "알림함";
 const toggle = (list: string[], v: string) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
 
 function Card({ children }: { children: React.ReactNode }) {
@@ -128,13 +131,15 @@ function SubscriptionTab({ options }: { options: EstateOptions }) {
 // ------------------------------------------------------------------ 실거래
 
 function TradeTab({ options }: { options: EstateOptions }) {
-  const [types, setTypes] = useState<string[]>(["아파트", "연립·다세대"]);
-  const [regions, setRegions] = useState<string[]>(["서울 > 송파구", "서울 > 강동구", "경기 > 하남시"]);
-  const [month, setMonth] = useState(currentMonth());
-  const [maxPrice, setMaxPrice] = useState("");
-  const [maxArea, setMaxArea] = useState("");
-  const [appliedArea, setAppliedArea] = useState<number | null>(null);
-  const [appliedPrice, setAppliedPrice] = useState<number | null>(null);
+  const [filters, setFilters] = useState<TradeFilterValue>({
+    types: ["아파트", "연립·다세대"],
+    regions: ["서울 > 송파구", "서울 > 강동구", "경기 > 하남시"],
+    month: currentMonth(),
+    maxPrice: "",
+    maxArea: "",
+    includeDevelopment: false,
+  });
+  const [applied, setApplied] = useState<TradeFilterValue | null>(null);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [result, setResult] = useState<{ items: Trade[]; errors: string[]; counts: Record<string, number>; requests: number } | null>(null);
   const [typeFilter, setTypeFilter] = useState<string[]>([]);
@@ -145,21 +150,34 @@ function TradeTab({ options }: { options: EstateOptions }) {
 
   async function search() {
     setError("");
-    if (!types.length) return setError("주택유형을 1개 이상 선택해주세요.");
-    if (!regions.length) return setError("조회지역을 1개 이상 선택해주세요.");
-    const price = maxPrice.trim() === "" ? undefined : Number(maxPrice);
+    if (!filters.types.length) return setError("주택유형을 1개 이상 선택해주세요.");
+    if (!filters.regions.length) return setError("조회지역을 1개 이상 선택해주세요.");
+    const price = filters.maxPrice.trim() === "" ? undefined : Number(filters.maxPrice);
     if (price !== undefined && (!Number.isFinite(price) || price <= 0 || price > 10000)) {
       return setError("최대 매매가격은 0보다 크고 10,000억원 이하로 입력해주세요.");
     }
-    const area = maxArea.trim() === "" ? undefined : Number(maxArea);
-    if (area !== undefined && (!Number.isFinite(area) || area <= 0 || area > 100000)) return setError("최대 면적은 0보다 크고 100,000㎡ 이하로 입력해주세요.");
+    const area = filters.maxArea.trim() === "" ? undefined : Number(filters.maxArea);
+    if (area !== undefined && (!Number.isFinite(area) || area <= 0 || area > 100000)) {
+      return setError("최대 면적은 0보다 크고 100,000㎡ 이하로 입력해주세요.");
+    }
     setLoading(true);
     setResult(null);
-    setProgress({ done: 0, total: regions.length });
+    setProgress({ done: 0, total: filters.regions.length });
     try {
-      setResult(await estateApi.trades({ regions, property_types: types, month, max_price_100m: price, max_area: area }, (done, total) => setProgress({ done, total })));
-      setAppliedPrice(price ?? null);
-      setAppliedArea(area ?? null);
+      setResult(
+        await estateApi.trades(
+          {
+            regions: filters.regions,
+            property_types: filters.types,
+            month: filters.month,
+            max_price_100m: price,
+            max_area: area,
+            include_development: filters.includeDevelopment,
+          },
+          (done, total) => setProgress({ done, total }),
+        ),
+      );
+      setApplied(filters);
       setTypeFilter([]);
       setVisible(40);
     } catch (e) {
@@ -170,48 +188,22 @@ function TradeTab({ options }: { options: EstateOptions }) {
   }
 
   const items = sortTrades((result?.items ?? []).filter((x) => !typeFilter.length || typeFilter.includes(x.property_type)), sort);
-  const monthValue = `${month.slice(0, 4)}-${month.slice(4, 6)}`;
 
   return (
     <div className="space-y-4">
-      <Field label="주택유형" hint="여러 개 선택 가능">
-        <ChoiceChips accent="estate" options={options.property_types} selected={types} onToggle={(v) => setTypes(toggle(types, v))} />
-      </Field>
-      <Field label="조회지역">
-        <RegionPicker regions={options.regions} value={regions} onChange={setRegions} selectWholeScope />
-      </Field>
-      <Field label="계약년월">
-        <input
-          type="month"
-          className={`${inputClass} max-w-48`}
-          value={monthValue}
-          onChange={(e) => e.target.value && setMonth(e.target.value.replace("-", ""))}
-        />
-      </Field>
-      <Field label="최대 매매가격" hint="억원 단위 · 비워두면 전체 · 입력한 금액 포함 이하">
-        <div className="flex items-center gap-2">
-          <input aria-label="최대 매매가격 (억원)" type="number" inputMode="decimal" min="0.01" max="10000" step="0.01" placeholder="예: 5 → 5억원 이하" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className={`${inputClass} max-w-64`} />
-          <span className="shrink-0 text-sm text-muted">억원 이하</span>
-        </div>
-        <div className="mt-2">
-          <ChoiceChips accent="estate" options={["전체", "3억 이하", "5억 이하", "7억 이하", "10억 이하"]} selected={[maxPrice === "" ? "전체" : `${maxPrice}억 이하`]} onToggle={(v) => setMaxPrice(v === "전체" ? "" : v.replace("억 이하", ""))} />
-        </div>
-        <p className="mt-2 text-xs text-muted">실제 계약된 매매가격 기준이며 현재 매물의 호가가 아닙니다. 가격 미확인 거래는 가격 조건 적용 시 제외합니다.</p>
-      </Field>
-      <Field label="최대 면적" hint="㎡ 단위 · 비워두면 전체 · 입력한 면적 포함 이하">
-        <div className="flex items-center gap-2">
-          <input aria-label="최대 면적 (㎡)" type="number" inputMode="decimal" min="0.01" max="100000" step="0.01" placeholder="예: 85 → 85㎡ 이하" value={maxArea} onChange={(e) => setMaxArea(e.target.value)} className={`${inputClass} max-w-64`} />
-          <span className="shrink-0 text-sm text-muted">㎡ 이하</span>
-        </div>
-        <div className="mt-2">
-          <ChoiceChips accent="estate" options={["면적 전체", "60㎡ 이하", "85㎡ 이하", "102㎡ 이하", "135㎡ 이하"]} selected={[maxArea === "" ? "면적 전체" : `${maxArea}㎡ 이하`]} onToggle={(v) => setMaxArea(v === "면적 전체" ? "" : v.replace("㎡ 이하", ""))} />
-        </div>
-        {Number(maxArea) > 0 && Number.isFinite(Number(maxArea)) && <p className="mt-2 text-xs text-estate">약 {(Number(maxArea) / 3.3058).toFixed(1)}평 이하 · 입력 면적 환산</p>}
-        <p className="mt-2 text-xs text-muted">아파트·연립·오피스텔은 전용면적, 단독·다가구는 연면적 또는 건물면적 기준입니다. 공급면적 기준 평형과 다를 수 있으며, 면적·기준 미확인 및 대지면적만 있는 거래는 면적 조건 적용 시 제외합니다.</p>
-      </Field>
-      <PrimaryButton onClick={search} disabled={loading}>
-        실거래 조회 · {regions.length}개 지역 × {types.length}개 유형
-      </PrimaryButton>
+      {result && applied ? (
+        <details className="rounded-2xl border border-border bg-surface-muted px-3 py-2.5">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 marker:hidden">
+            <FilterChips value={applied} />
+            <span className="shrink-0 text-xs font-bold text-muted">조건 변경</span>
+          </summary>
+          <div className="mt-3">
+            <TradeFilters options={options} value={filters} onChange={setFilters} onSearch={search} loading={loading} />
+          </div>
+        </details>
+      ) : (
+        <TradeFilters options={options} value={filters} onChange={setFilters} onSearch={search} loading={loading} />
+      )}
       {loading && <Spinner label={`지역 ${progress.done}/${progress.total}곳 조회 완료 · 전체 지역은 나누어 조회하므로 시간이 걸릴 수 있어요…`} />}
       <ErrorBox message={error} />
 
@@ -219,9 +211,9 @@ function TradeTab({ options }: { options: EstateOptions }) {
         <div className="space-y-3">
           <div className="flex flex-wrap gap-2">
             {Object.entries(result.counts).map(([k, v]) => (
-              <div key={k} className="rounded-2xl bg-surface-muted px-4 py-2.5">
+              <div key={k} className="rounded-xl bg-surface-muted px-3 py-2">
                 <div className="text-[11px] font-semibold text-muted">{k}</div>
-                <div className="text-lg font-extrabold">{v}건</div>
+                <div className="text-base font-extrabold">{v}건</div>
               </div>
             ))}
           </div>
@@ -236,47 +228,37 @@ function TradeTab({ options }: { options: EstateOptions }) {
               <p className="mt-1">연립·다세대·단독/다가구·오피스텔 API는 공공데이터포털에서 별도 활용신청이 필요할 수 있어요.</p>
             </details>
           )}
-          {Object.keys(result.counts).length > 1 && (
-            <ChoiceChips accent="estate" options={Object.keys(result.counts)} selected={typeFilter} onToggle={(v) => setTypeFilter(toggle(typeFilter, v))} />
-          )}
-          <label className="flex items-center gap-2 text-sm font-semibold">
-            결과 정렬
-            <select aria-label="실거래 결과 정렬" value={sort} onChange={(e) => { setSort(e.target.value as TradeSort); setVisible(40); }} className={`${inputClass} max-w-48`}>
-              {(["최근 거래일 순", "가격 낮은 순", "가격 높은 순", "면적 작은 순", "면적 큰 순"] as TradeSort[]).map((s) => <option key={s} value={s}>{s}</option>)}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            {Object.keys(result.counts).length > 1 ? (
+              <ChoiceChips accent="estate" options={Object.keys(result.counts)} selected={typeFilter} onToggle={(v) => setTypeFilter(toggle(typeFilter, v))} />
+            ) : (
+              <span />
+            )}
+            <select
+              aria-label="실거래 결과 정렬"
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value as TradeSort);
+                setVisible(40);
+              }}
+              className={`${inputClass} max-w-40`}
+            >
+              {(["최근 거래일 순", "가격 낮은 순", "가격 높은 순", "면적 작은 순", "면적 큰 순"] as TradeSort[]).map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </select>
-          </label>
-          <p className="text-xs text-subtle">
-            {items.length}건 · {sort} · {appliedPrice === null ? "가격 전체" : `${appliedPrice}억원 이하`} · {appliedArea === null ? "면적 전체" : `${appliedArea}㎡ 이하`}
-          </p>
+          </div>
+          <p className="text-xs text-subtle">{items.length}건 · {sort}</p>
           {items.length === 0 && <p className="text-sm text-muted">조건에 맞는 실거래가 없어요. 가격·면적 상한·지역·계약년월을 조정해 보세요.</p>}
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-2.5 md:grid-cols-2">
             {items.slice(0, visible).map((it) => (
-              <Card key={it.id}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="rounded-full bg-estate-soft px-2.5 py-0.5 text-[11px] font-bold text-estate">{it.property_type}</span>
-                      <Tag>{it.region_label}</Tag>
-                    </div>
-                    <div className="mt-1.5 truncate text-base font-extrabold">{it.name}</div>
-                    <p className="text-xs text-muted">{[it.region, it.road_name, it.jibun].filter(Boolean).join(" · ")}</p>
-                    <p className="text-xs text-muted">
-                      {it.area_basis ?? "면적 기준 미확인"} · {it.area > 0 ? `${it.area.toFixed(1)}㎡ (${(it.area / 3.3058).toFixed(1)}평)` : "면적정보 없음"} · {it.floor || "-"}층 · 준공 {it.build_year || "-"}
-                    </p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <div className="text-lg font-extrabold text-estate">{it.price_text}</div>
-                    <div className="text-[11px] text-subtle">{it.date}</div>
-                  </div>
-                </div>
-                <a href={it.naver_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs font-bold text-estate hover:underline">
-                  네이버부동산 주변 매물 ↗
-                </a>
-              </Card>
+              <TransactionCard key={it.id} trade={it} />
             ))}
           </div>
           {visible < items.length && (
-            <button type="button" onClick={() => setVisible(visible + 40)} className="w-full rounded-xl border border-border py-2.5 text-sm font-bold text-muted hover:text-fg">
+            <button type="button" onClick={() => setVisible(visible + 40)} className="min-h-11 w-full rounded-xl border border-border py-2.5 text-sm font-bold text-muted hover:text-fg">
               40건 더보기 · 남은 {items.length - visible}건
             </button>
           )}
@@ -516,6 +498,39 @@ function AlertTab({ onUnread }: { onUnread: (n: number) => void }) {
   );
 }
 
+// ------------------------------------------------------------------ 진입 안내
+
+const CAPABILITIES: { tab: Tab; icon: string; title: string; desc: string }[] = [
+  { tab: "실거래 조회", icon: "📈", title: "실거래", desc: "내가 찾는 지역의 실제 거래가격 확인" },
+  { tab: "청약 조회", icon: "🏗️", title: "청약", desc: "서울·경기 청약 일정과 조건 탐색" },
+  { tab: "개발사업", icon: "🧭", title: "개발사업", desc: "내 집 주변 재개발·재건축·신속통합기획 확인" },
+  { tab: "모니터링 조건", icon: "🔔", title: "관심지역", desc: "새 거래·청약·개발 변화를 계속 모니터링" },
+];
+
+function Capabilities({ active, onPick }: { active: Tab; onPick: (tab: Tab) => void }) {
+  return (
+    <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+      {CAPABILITIES.map((c) => (
+        <button
+          key={c.tab}
+          type="button"
+          onClick={() => onPick(c.tab)}
+          aria-current={active === c.tab}
+          className={`min-h-20 rounded-2xl border p-3 text-left transition ${
+            active === c.tab ? "border-estate/50 bg-estate-soft" : "border-border bg-surface hover:border-estate/30"
+          }`}
+        >
+          <span className="text-base" aria-hidden>
+            {c.icon}
+          </span>
+          <div className="mt-1 text-sm font-extrabold leading-tight">{c.title}</div>
+          <p className="mt-0.5 text-[11px] leading-snug text-muted">{c.desc}</p>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ------------------------------------------------------------------ 페이지
 
 export default function EstateMonitor() {
@@ -539,6 +554,7 @@ export default function EstateMonitor() {
           PUBLIC_DATA_API_KEY가 없어요. .streamlit/secrets.toml의 [realestate] 설정을 확인해 주세요.
         </p>
       )}
+      <Capabilities active={tab} onPick={setTab} />
       <Segmented
         value={tab}
         onChange={setTab}
@@ -547,6 +563,7 @@ export default function EstateMonitor() {
         options={[
           { value: "실거래 조회" as const, label: "실거래" },
           { value: "청약 조회" as const, label: "청약" },
+          { value: "개발사업" as const, label: "개발사업" },
           { value: "모니터링 조건" as const, label: "모니터링" },
           { value: "알림함" as const, label: unread ? `알림 ${unread}` : "알림" },
         ]}
@@ -559,6 +576,7 @@ export default function EstateMonitor() {
         <div hidden={tab !== "실거래 조회"}>
           <TradeTab options={options} />
         </div>
+        <div hidden={tab !== "개발사업"}>{tab === "개발사업" && <DevelopmentTab options={options} />}</div>
         <div hidden={tab !== "모니터링 조건"}>{tab === "모니터링 조건" && <MonitorTab options={options} />}</div>
         <div hidden={tab !== "알림함"}>{tab === "알림함" && <AlertTab onUnread={setUnread} />}</div>
       </div>

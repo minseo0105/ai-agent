@@ -30,6 +30,45 @@ export type Subscription = {
   status: string;
 };
 
+export type TradeDetail = Record<string, string>;
+
+export type DevelopmentProject = {
+  project_id: string;
+  name: string;
+  type_label: string;
+  program_label: string | null;
+  district: string | null;
+  dong: string | null;
+  address: string | null;
+  stage: { label: string; official_text: string | null };
+  stage_basis: string;
+  status_label: string;
+  trust: { code: string; label: string; tone: string; note: string };
+  official_source: { name: string | null; url: string | null };
+  last_checked: string | null;
+  spatial: { code: string; label: string; confirmed_boundary: boolean };
+  distance_m: number | null;
+  has_location: boolean;
+  location_notice: string | null;
+};
+
+export type DevelopmentContext = {
+  label: string;
+  available: boolean;
+  projects: DevelopmentProject[];
+  notice: string | null;
+  reason_label: string | null;
+};
+
+export type DevelopmentSearch = {
+  status: "ok" | "unavailable";
+  reason: string | null;
+  projects: DevelopmentProject[];
+  total: number;
+  located: number;
+  location_notice: string;
+};
+
 export type Trade = {
   id: string;
   property_type: string;
@@ -46,6 +85,9 @@ export type Trade = {
   build_year: string;
   region_label: string;
   naver_url: string;
+  detail?: TradeDetail;
+  source_label?: string;
+  development?: DevelopmentContext | null;
 };
 
 export type Rule = {
@@ -97,7 +139,9 @@ export const estateApi = {
   options: () => request<EstateOptions>("/options"),
   subscriptions: (q: { kind: "apt" | "unsold"; regions: string[]; supply_types: string[]; kinds: string[]; statuses: string[] }) =>
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
-  trades: async (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number; max_area?: number }, onProgress?: (done: number, total: number) => void) => {
+  development: (q: { sigungu?: string; longitude?: number; latitude?: number; radius_m?: number; limit?: number }) =>
+    post<DevelopmentSearch>("/development/search", q),
+  trades: async (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number; max_area?: number; include_development?: boolean }, onProgress?: (done: number, total: number) => void) => {
     const regions = [...new Set(q.regions)];
     const result = { items: [] as Trade[], errors: [] as string[], counts: {} as Record<string, number>, requests: 0 };
     // 서버의 40개 조합 제한을 유지하고 긴 요청을 줄이기 위해 지역을 5개씩 순차 조회한다.

@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 from services import realestate_monitor as rm
 from services import development
+from services import development_presentation as presentation
 
 router = APIRouter(prefix="/api/realestate", tags=["realestate"])
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -101,6 +102,9 @@ async def trades(q: TradeQuery):
         row["naver_url"] = rm.build_naver_land_url(row)
     if q.include_development:
         rows = await run_in_threadpool(development.attach_context, rows)
+        for row in rows:
+            # 화면에는 내부 enum 대신 사용자 문구를 내려준다.
+            row['development'] = presentation.present_context(row.get('development_context'))
     counts = {}
     for row in rows:
         counts[row.get("property_type", "기타")] = counts.get(row.get("property_type", "기타"), 0) + 1
@@ -190,4 +194,8 @@ async def development_search(q: DevelopmentQuery):
         raise HTTPException(422, '위도와 경도를 함께 입력해주세요.')
     if q.longitude is None and not q.sigungu:
         raise HTTPException(422, '좌표 또는 자치구를 입력해주세요.')
-    return await run_in_threadpool(development.search_projects, **q.model_dump())
+    result = await run_in_threadpool(development.search_projects, **q.model_dump())
+    projects = [presentation.present_project(row) for row in result.get('nearby_projects') or []]
+    return dict(result, projects=projects, total=len(projects),
+                located=sum(1 for p in projects if p['has_location']),
+                location_notice=presentation.NO_LOCATION_NOTICE)

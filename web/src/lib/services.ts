@@ -34,8 +34,9 @@ export const SERVICES: Service[] = [
   {
     id: "realestate",
     icon: "🏠",
-    title: "ZIP:ON",
-    desc: "청약 · 실거래 · 관심지역을 모니터링합니다.",
+    title: "ZIP:ON · 부동산 변화를 한눈에",
+    desc: "실거래가 · 청약 · 재개발을 확인하고 관심지역의 변화를 모니터링합니다.",
+    tags: ["실거래가", "청약", "개발사업", "관심지역 모니터링"],
     href: "/realestate",
   },
   {

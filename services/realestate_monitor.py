@@ -644,6 +644,32 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
     price_100m = _parse_money_100m(amount_text)
     area = _parse_float(area_text)
 
+    # 상세보기용 공식 제공 항목. 값이 없는 항목은 만들지 않는다.
+    detail_fields = [
+        ("거래유형", ["dealingGbn"]),
+        ("중개사 소재지", ["estateAgentSggNm"]),
+        ("등기일자", ["rgstDate"]),
+        ("계약해제", ["cdealType"]),
+        ("해제사유 발생일", ["cdealDay"]),
+        ("매도자", ["slerGbn"]),
+        ("매수자", ["buyerGbn"]),
+        ("토지임대부", ["landLeaseholdGbn"]),
+        ("동", ["aptDong"]),
+        ("본번", ["bonbun"]),
+        ("부번", ["bubun"]),
+        ("도로명 본번", ["roadNmBonbun"]),
+        ("도로명 부번", ["roadNmBubun"]),
+        ("대지면적", ["plottageAr"]),
+        ("연면적", ["totalFloorAr"]),
+        ("건물면적", ["buildingAr"]),
+        ("주택유형 원문", ["houseType"]),
+    ]
+    detail = {}
+    for label, keys in detail_fields:
+        value = _first_xml_text(item, keys, "").strip()
+        if value and value not in ("-", "0"):
+            detail[label] = value
+
     return {
         "id": (
             f"{property_type}:{lawd_cd}:{sequence}:"
@@ -661,6 +687,8 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
         "date": deal_date,
         "floor": floor,
         "build_year": build_year,
+        "detail": detail,
+        "source_label": "국토교통부 실거래가 공개시스템 (공공데이터포털)",
     }
 
 
