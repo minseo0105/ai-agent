@@ -143,15 +143,18 @@ def main():
                       help='plan and read-only preflight; zero database writes (default)')
     mode.add_argument('--apply', action='store_true',
                       help='call the RPC in batches of ten, then reconcile')
+    ap.add_argument('--queue', type=Path, default=QUEUE_FILE,
+                    help='queue file to apply (default: the geocode queue; use the '
+                         'apply-ready artifact from the bulk run)')
     args = ap.parse_args()
 
-    queue = json.loads(QUEUE_FILE.read_text(encoding='utf-8'))
+    queue = json.loads(args.queue.read_text(encoding='utf-8'))
     rows, rejected = eligible(queue)
     plan = batches(rows)
     summary = {'format': 'zipon-geocode-apply-v1', 'generated_at': now(),
                'mode': 'APPLY' if args.apply else ('CHECK_CONFIG' if args.check_config else 'DRY_RUN'),
                'db_write': bool(args.apply), 'rpc': RPC, 'batch_size': MAX_IMPORT_BATCH,
-               'queue_file': str(QUEUE_FILE.relative_to(ROOT)),
+               'queue_file': str(args.queue),
                'queue_generated_at': queue.get('generated_at'),
                'queue_provider': queue.get('provider'),
                'totals': {'queue_items': len(queue.get('items') or []), 'eligible': len(rows),

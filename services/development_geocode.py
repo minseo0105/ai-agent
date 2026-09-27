@@ -59,7 +59,13 @@ class GeocodeCache:
 
     COLUMNS = ('normalized_address', 'latitude', 'longitude', 'geocode_source',
                'geocode_confidence', 'geocoded_at', 'address_used', 'coordinate_verified',
-               'provider_candidate_count', 'cache_version')
+               'provider_candidate_count', 'cache_version', 'matched_address', 'accuracy',
+               'result_status', 'raw_snapshot')
+    # 판정 근거는 raw_snapshot에 담는다. 이것을 빼면 캐시에서 되살린 행이 검증 근거를
+    # 잃고, 자치구 일치나 좌표 축 검사가 실패한 것처럼 보인다.
+    SNAPSHOT_FIELDS = ('checks', 'address_elements', 'coordinate_orientation', 'road_address',
+                       'jibun_address', 'english_address', 'distance_m', 'review_reason',
+                       'candidate_summaries', 'disambiguated_from', 'endpoint', 'wanted_parts')
 
     def __init__(self, directory):
         self.directory = Path(directory)
@@ -80,6 +86,10 @@ class GeocodeCache:
 
     def put(self, key, entry):
         row = {column: entry.get(column) for column in self.COLUMNS}
+        if row.get('raw_snapshot') is None:
+            snapshot = {field: entry[field] for field in self.SNAPSHOT_FIELDS
+                        if entry.get(field) is not None}
+            row['raw_snapshot'] = snapshot or None
         row['cache_key'] = key
         self.path(key).write_text(json.dumps(row, ensure_ascii=False, indent=2) + '\n',
                                   encoding='utf-8')
@@ -87,6 +97,13 @@ class GeocodeCache:
 
     def rows(self):
         return [json.loads(p.read_text(encoding='utf-8')) for p in sorted(self.directory.glob('*.json'))]
+
+
+def from_cache_row(row):
+    """캐시 행을 다시 평가 결과 모양으로 펼친다. 검증 근거를 잃지 않기 위한 것이다."""
+    evaluation = {key: value for key, value in (row or {}).items() if key != 'raw_snapshot'}
+    evaluation.update((row or {}).get('raw_snapshot') or {})
+    return evaluation
 
 
 def in_bounds(longitude, latitude):
@@ -167,8 +184,31 @@ def element_checks(parts, elements):
     return checks
 
 
+def candidate_checks(parts, candidate):
+    """이 후보가 요청 주소와 맞는지 항목별로 본다. 판정은 evaluate()가 모아서 한다."""
+    longitude, latitude = candidate.get('longitude'), candidate.get('latitude')
+    elements = candidate.get('address_elements') or {}
+    orientation = (candidate.get('coordinate_orientation')
+                   or coordinate_orientation(longitude, latitude))
+    checks = {'accuracy': candidate.get('accuracy') in ACCEPTED_ACCURACY,
+              'bounds': in_bounds(longitude, latitude),
+              'axis_order': orientation == 'X_IS_LONGITUDE'}
+    if elements:
+        checks.update(element_checks(parts, elements))
+    else:
+        # addressElements를 주지 않는 provider는 되돌려준 주소 문자열로만 검증한다.
+        returned = normalize_address(candidate.get('matched_address'))
+        checks['district_match'] = bool(parts['district']) and parts['district'] in returned
+        checks['lot_match'] = bool(parts['lot']) and parts['lot'] in returned
+    return checks, orientation
+
+
 def evaluate(address, response):
-    """Decide whether a provider response is an exact match for this address."""
+    """Decide whether a provider response is an exact match for this address.
+
+    후보가 여러 개일 때 첫 결과를 쓰지 않는다. 주소 구성요소 검증을 모두 통과하는
+    후보가 정확히 하나일 때만 그것을 채택하고, 0개거나 2개 이상이면 검토로 보낸다.
+    """
     unresolved = {'latitude': None, 'longitude': None, 'geocode_source': None,
                   'geocoded_at': datetime.now(timezone.utc).isoformat(),
                   'address_used': normalize_address(address), 'coordinate_verified': False,
@@ -179,42 +219,45 @@ def evaluate(address, response):
                     geocode_source=(response or {}).get('provider'),
                     result_status=(response or {}).get('result_status'))
     candidates = response.get('candidates') or []
+    parts = wanted_parts(address)
     result = dict(unresolved, geocode_source=response.get('provider'),
                   provider_candidate_count=len(candidates), endpoint=response.get('endpoint'),
-                  result_status='MATCHED')
-    if len(candidates) != 1:
+                  result_status='MATCHED', wanted_parts=parts)
+    scored = [(candidate,) + candidate_checks(parts, candidate) for candidate in candidates]
+    passing = [entry for entry in scored if all(entry[1].values())]
+    if len(candidates) != 1 and len(passing) != 1:
         # Several official candidates for one address is exactly the case the
         # first-result-wins geocoders get wrong.
         return dict(result, geocode_confidence='GEOCODE_REVIEW',
-                    review_reason='MULTIPLE_PROVIDER_CANDIDATES')
-    candidate = candidates[0]
-    longitude, latitude = candidate.get('longitude'), candidate.get('latitude')
-    parts = wanted_parts(address)
-    wanted = parts['normalized']
-    returned = normalize_address(candidate.get('matched_address'))
-    elements = candidate.get('address_elements') or {}
-    orientation = candidate.get('coordinate_orientation') or coordinate_orientation(longitude, latitude)
-    checks = {'accuracy': candidate.get('accuracy') in ACCEPTED_ACCURACY,
-              'bounds': in_bounds(longitude, latitude),
-              'axis_order': orientation == 'X_IS_LONGITUDE'}
-    if elements:
-        checks.update(element_checks(parts, elements))
-    else:
-        # addressElements를 주지 않는 provider는 되돌려준 주소 문자열로만 검증한다.
-        checks['district_match'] = bool(parts['district']) and parts['district'] in returned
-        checks['lot_match'] = bool(parts['lot']) and parts['lot'] in returned
-    detail = {'matched_address': returned, 'accuracy': candidate.get('accuracy'), 'checks': checks,
-              'address_elements': elements or None, 'coordinate_orientation': orientation,
+                    review_reason='MULTIPLE_PROVIDER_CANDIDATES',
+                    candidate_summaries=[_summary(c, checks) for c, checks, _ in scored])
+    candidate, checks, orientation = passing[0] if passing else scored[0]
+    detail = {'matched_address': normalize_address(candidate.get('matched_address')),
+              'accuracy': candidate.get('accuracy'), 'checks': checks,
+              'address_elements': candidate.get('address_elements') or None,
+              'coordinate_orientation': orientation,
               'road_address': candidate.get('road_address'),
               'jibun_address': candidate.get('jibun_address'),
               'english_address': candidate.get('english_address'),
-              'distance_m': candidate.get('distance_m'), 'wanted_parts': parts}
+              'distance_m': candidate.get('distance_m'),
+              'disambiguated_from': len(candidates) if len(candidates) > 1 else None}
     failed = sorted(name for name, ok in checks.items() if not ok)
     if failed:
         return dict(result, geocode_confidence='GEOCODE_REVIEW',
                     review_reason='CHECK_FAILED:' + ','.join(failed), **detail)
-    return dict(result, latitude=latitude, longitude=longitude, geocode_confidence='EXACT',
-                coordinate_verified=True, address_used=wanted, **detail)
+    return dict(result, latitude=candidate.get('latitude'), longitude=candidate.get('longitude'),
+                geocode_confidence='EXACT', coordinate_verified=True,
+                address_used=parts['normalized'], **detail)
+
+
+def _summary(candidate, checks):
+    """검토용 후보 요약. 사람이 공식 주소와 나란히 놓고 보게 만든다."""
+    return {'jibun_address': candidate.get('jibun_address') or candidate.get('matched_address'),
+            'road_address': candidate.get('road_address'),
+            'longitude': candidate.get('longitude'), 'latitude': candidate.get('latitude'),
+            'accuracy': candidate.get('accuracy'),
+            'address_elements': candidate.get('address_elements') or None,
+            'failed_checks': sorted(name for name, ok in checks.items() if not ok)}
 
 
 def resolve(addresses, cache, provider=None):

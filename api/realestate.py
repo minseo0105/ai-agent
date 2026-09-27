@@ -15,6 +15,7 @@ from services import map_providers
 from services import development_geocode as geocode
 from services import trade_geocode
 from services import development_canary
+from services import development_bulk_geocode as bulk_geocode
 
 router = APIRouter(prefix="/api/realestate", tags=["realestate"])
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -257,6 +258,28 @@ def geocode_canary():
     """
     return _cached('geocode-canary',
                    lambda: development_canary.run(rm._secret, geocode.requests_get), ttl=3600)
+
+
+@router.get('/geocode/bulk')
+def geocode_bulk(offset: int = 0, size: int = bulk_geocode.DEFAULT_SLICE,
+                 aggregate: bool = False):
+    """주소가 확보된 개발사업을 slice 단위로 지오코딩한다. 데이터베이스에는 쓰지 않는다.
+
+    한 번에 전부 호출하면 요청이 너무 길어지므로 slice로 나눈다. 같은 slice를 다시
+    부르면 1시간 동안 같은 결과를 돌려주고, 주소 캐시가 있으면 provider를 부르지 않는다.
+    aggregate=true는 provider를 아예 부르지 않고 캐시만 읽어 전체 보고서를 만든다.
+    """
+    if not 1 <= size <= bulk_geocode.MAX_SLICE:
+        raise HTTPException(422, f'size는 1~{bulk_geocode.MAX_SLICE} 사이여야 합니다.')
+    if offset < 0:
+        raise HTTPException(422, 'offset은 0 이상이어야 합니다.')
+    if aggregate:
+        return _cached('geocode-bulk-aggregate',
+                       lambda: bulk_geocode.run(rm._secret, geocode.requests_get,
+                                                cache_only=True), ttl=60)
+    return _cached(f'geocode-bulk:{offset}:{size}',
+                   lambda: bulk_geocode.run(rm._secret, geocode.requests_get,
+                                            offset=offset, size=size), ttl=3600)
 
 
 @router.get('/development/map')

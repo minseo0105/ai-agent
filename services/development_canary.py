@@ -78,23 +78,26 @@ def verify(row, response, evaluation):
     """요청 주소와 NAVER 응답을 항목별로 맞대어 본 기록. 판정을 만들지는 않는다."""
     candidates = (response or {}).get('candidates') or []
     candidate = candidates[0] if len(candidates) == 1 else {}
-    elements = candidate.get('address_elements') or {}
-    wanted = geo.wanted_parts(row['canonical_address'])
+    # 캐시에서 되살린 건은 응답이 없다. 그때는 평가 결과에 남은 값을 쓴다.
+    pick = lambda field: (candidate.get(field) if candidate.get(field) is not None
+                          else evaluation.get(field))
+    elements = candidate.get('address_elements') or evaluation.get('address_elements') or {}
+    wanted = evaluation.get('wanted_parts') or geo.wanted_parts(row['canonical_address'])
     checks = evaluation.get('checks') or {}
     return {
         'project_id': row['project_id'], 'project_name': row['project_name'],
         'canonical_address': row['canonical_address'], 'district': row['district'],
         'project_type': row['project_type'], 'program': row['program'],
-        'candidate_count': len(candidates),
-        'matched_road_address': candidate.get('road_address') or None,
-        'matched_jibun_address': candidate.get('jibun_address') or None,
+        'candidate_count': (len(candidates) if response is not None
+                            else evaluation.get('provider_candidate_count') or 0),
+        'matched_road_address': pick('road_address') or None,
+        'matched_jibun_address': pick('jibun_address') or None,
         'matched_address': evaluation.get('matched_address'),
-        'english_address': candidate.get('english_address') or None,
-        'distance_m': candidate.get('distance_m'),
+        'english_address': pick('english_address') or None,
+        'distance_m': pick('distance_m'),
         'longitude': evaluation.get('longitude'), 'latitude': evaluation.get('latitude'),
-        'provider_longitude': candidate.get('longitude'),
-        'provider_latitude': candidate.get('latitude'),
-        'in_seoul_bounds': geo.in_bounds(candidate.get('longitude'), candidate.get('latitude')),
+        'provider_longitude': pick('longitude'), 'provider_latitude': pick('latitude'),
+        'in_seoul_bounds': geo.in_bounds(pick('longitude'), pick('latitude')),
         'district_match': checks.get('district_match'),
         'returned_district': elements.get('SIGUGUN'),
         'dong_match': checks.get('dong_match'), 'returned_dong': elements.get('DONGMYUN'),
@@ -108,6 +111,11 @@ def verify(row, response, evaluation):
         'geocode_source': evaluation.get('geocode_source'),
         'result_status': evaluation.get('result_status'),
         'endpoint': evaluation.get('endpoint'), 'checks': checks,
+        'address_elements': candidate.get('address_elements') or None,
+        'address_used': evaluation.get('address_used'),
+        'geocoded_at': evaluation.get('geocoded_at'),
+        # 후보가 여러 개여서 특정하지 못한 경우, 사람이 비교할 후보 요약.
+        'candidate_summaries': evaluation.get('candidate_summaries') or None,
     }
 
 
@@ -211,22 +219,33 @@ def sanity(accepted):
 
 def run(get_secret, http_get=None, cache=None, preferred=None):
     """열 건만 조회하고 검증·분류·지도 payload·sanity를 한 번에 돌려준다. DB write 없음."""
+    return dict(run_rows(CANARY, get_secret, http_get, cache, preferred),
+                format=CANARY_VERSION, selected=len(CANARY), bulk_149_run=False)
+
+
+def run_rows(rows, get_secret, http_get=None, cache=None, preferred=None, cache_only=False):
+    """주어진 행들만 조회하고 검증·분류·지도 payload·sanity를 돌려준다. DB write 없음.
+
+    cache_only면 provider를 부르지 않고 이미 받아 둔 주소 캐시만 읽는다. 이미 요금을
+    낸 조회를 다시 사지 않고 전체 보고서를 다시 만들 수 있게 하기 위한 것이다.
+    """
     selected = geo.select_provider(get_secret, http_get or geo.requests_get, preferred)
     store = cache if cache is not None else _cache_store()
     records, counts = [], {'ACCEPTED': 0, 'REVIEW_REQUIRED': 0, 'FAILED': 0,
                            'PENDING_PROVIDER': 0}
     calls = 0
-    for row in CANARY:
+    for row in rows:
         address = geo.normalize_address(row['canonical_address'])
         key = geo.cache_key(address)
         cached = store.get(key)
         if cached is not None and cached.get('geocode_confidence') != 'UNRESOLVED':
-            response, evaluation = None, dict(cached, from_cache=True)
-        elif selected['provider'] is None:
+            response = None
+            evaluation = dict(geo.from_cache_row(cached), from_cache=True)
+        elif cache_only or selected['provider'] is None:
             response = None
             evaluation = {'geocode_confidence': 'UNRESOLVED', 'coordinate_verified': False,
                           'geocode_source': None, 'latitude': None, 'longitude': None,
-                          'reason': selected['blocker']}
+                          'reason': 'NOT_YET_GEOCODED' if cache_only else selected['blocker']}
         else:
             try:
                 response = selected['provider'](address)
@@ -245,12 +264,12 @@ def run(get_secret, http_get=None, cache=None, preferred=None):
         counts[record['outcome']] += 1
         records.append(record)
     accepted = [r for r in records if r['outcome'] == 'ACCEPTED']
-    return {'format': CANARY_VERSION, 'db_write': False, 'migration_applied': False,
-            'bulk_149_run': False, 'provider': selected['name'],
+    return {'db_write': False, 'migration_applied': False,
+            'cache_only': bool(cache_only), 'provider': selected['name'],
             'provider_configured': selected['provider'] is not None,
             'blocker': selected['blocker'], 'provider_priority': list(selected['priority']),
             'endpoint': geo.PROVIDER_SPECS.get(selected['name'] or '', {}).get('endpoint'),
-            'selected': len(CANARY), 'provider_calls': calls, 'totals': counts,
+            'selected': len(rows), 'provider_calls': calls, 'totals': counts,
             'policy': ['첫 결과를 무조건 채택하지 않는다',
                        '동 중심점·구청·주민센터 수준 응답은 채택하지 않는다',
                        'x=경도, y=위도이며 교환하지 않는다',

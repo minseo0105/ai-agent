@@ -215,3 +215,104 @@ GET /api/realestate/geocode/canary               # 이 10건만 조회
 자치구 이탈, provider 오류, 자격증명 없음, 캐시 재사용, 비밀값 비노출).
 
 `/api/realestate/geocode/canary`는 main에 배포된 뒤에 호출할 수 있다.
+
+---
+
+# 전체 개발사업 Geocoding (2026-09-27)
+
+Canary 10건이 9 ACCEPTED / 1 REVIEW_REQUIRED로 끝난 뒤, 주소가 확보된 개발사업 전체로
+넘어가는 단계. **DB write 없음, migration 없음, 배포 없음(코드 준비까지).**
+
+## 1. 숫자 정리 (서로 다른 scope를 섞지 않는다)
+
+| 수 | 무엇인가 |
+| --- | --- |
+| 183 | 공식 목록에서 수집한 원본 후보 레코드. canonical과 1:1이며 병합된 것은 없다 |
+| 149 | canonical 중 **주소를 가진** 것 |
+| 34 | canonical 중 **주소가 아예 없는** 것 — 전부 신속통합기획(FAST_TRACK) |
+| 130 | 이미 Supabase에 들어간 canonical |
+| **128** | **DB에 있고 + 주소가 있는 것 = 이번 지오코딩 대상** |
+| 2 | DB에 있으나 주소가 없는 것 (둘 다 FAST_TRACK: 천호동 392-9, 마천2) |
+| 21 | 주소는 있으나 아직 quarantine이라 DB에 없는 것 |
+
+`130 = 128 + 2`, `149 = 128 + 21`, `183 = 149 + 34`, `53 quarantine = 21 + 32`으로 모두 맞는다.
+이전에 말한 "주소 품질 통과 128"은 이 표의 128과 같은 집합이다(그 128건은 전부 주소 검증
+완료·지번 주소·단순 번지·동 확보 상태라 추가 품질 필터로 더 걸러지는 것이 없었다).
+이전의 "149 source candidates"는 **DB 여부를 따지지 않은** 주소 보유 canonical 전체였다.
+
+대상 128건은 `services/development_geocode_targets.py`에 생성돼 있다. `data/`는 Space로
+올리지 않고 NAVER 자격증명은 Space에만 있으므로 목록이 `services/`에 있어야 실행된다.
+`scripts/build_zipon_geocode_targets.py`가 canonical 파일에서 같은 표를 다시 만들고,
+테스트가 둘이 어긋나지 않는지 확인한다.
+
+DB의 현재 좌표 보유 행 수는 이번 단계에서 조회하지 않았다. apply 단계가 행마다
+preflight GET으로 다시 확인하므로 거기서 판단한다.
+
+## 2. 실행 (production, slice 단위)
+
+```
+GET /api/realestate/geocode/bulk?offset=0&size=32
+GET /api/realestate/geocode/bulk?offset=32&size=32
+GET /api/realestate/geocode/bulk?offset=64&size=32
+GET /api/realestate/geocode/bulk?offset=96&size=32
+GET /api/realestate/geocode/bulk?aggregate=true     # provider 호출 0회
+```
+
+- 한 요청 최대 50건(`MAX_SLICE`), 기본 32건. 128건을 한 요청에 태우면 요청이 너무 길다.
+- 같은 slice 재호출은 1시간 동안 같은 결과. 주소 캐시가 있으면 provider를 부르지 않는다.
+- `aggregate=true`는 **provider를 한 번도 부르지 않고** 캐시만 읽어 전체 보고서를 만든다.
+  아직 조회되지 않은 행은 `PENDING_PROVIDER`로 남는다.
+- 판정 정책은 Canary와 동일. 후보가 여러 개일 때는 **주소 구성요소 검증을 모두 통과하는
+  후보가 정확히 하나일 때만** 그것을 쓰고, 0개거나 2개 이상이면 REVIEW_REQUIRED다.
+  첫 후보를 쓰는 경로는 없다.
+
+캐시 관련 실제 결함을 하나 고쳤다: 캐시 행이 10개 열만 저장해서, 캐시에서 되살린 행은
+`matched_address`·`accuracy`·`checks`를 잃고 있었다. 그 상태로 sanity를 돌리면 자치구
+일치와 좌표 축 검사가 **실패한 것처럼** 보인다. 캐시 열에 `matched_address`, `accuracy`,
+`result_status`, `raw_snapshot`을 추가해(모두 Supabase `geocode_cache`에 있는 열) 판정
+근거를 함께 저장한다.
+
+## 3. 산출물
+
+| 파일 | 내용 |
+| --- | --- |
+| `bulk_geocode_result_20260927.json` | 전 행 결과. 요구된 15개 열 |
+| `bulk_geocode_review_20260927.json` | REVIEW_REQUIRED만. 공식주소 + NAVER 후보 나란히 |
+| `geocode_apply_ready_20260927.json` | ACCEPTED만. apply 단계 입력 |
+
+`scripts/save_zipon_bulk_geocode.py <응답.json> --write`가 만든다. 형식이 다르거나,
+`db_write`가 true이거나, 자격증명 모양이 섞였거나, apply 목록에 ACCEPTED 아닌 행이
+있거나, 채택되지 않은 행에 좌표가 붙어 있으면 **파일을 만들지 않고 거부**한다.
+
+apply 단계는 `python scripts/apply_zipon_geocode.py --queue data/development/geocode_apply_ready_20260927.json --dry-run`.
+기존 좌표·검증된 폴리곤 보호, 자치구 불일치 차단, 배치 10건, reviewed RPC 경유는 그대로다.
+
+## 4. 신속통합기획 34건 (geocoder에 보내지 않는다)
+
+주소가 없는 사업을 검색에 던지면 동 중심점이나 구청 좌표가 돌아온다. 그것이 대표 위치로
+굳는 것이 이 프로젝트에서 가장 피하려는 일이므로, 34건은 따로 분석만 한다
+(`scripts/analyze_zipon_fast_track.py`, `data/development/fast_track_location_20260927.json`).
+
+| 분류 | 건수 | 뜻 |
+| --- | --- | --- |
+| ADDRESS_RECOVERABLE_FROM_OFFICIAL_SOURCE | 23 | 이미 가진 공식 텍스트에서 동+번지가 나온다 |
+| LOCATION_NAME_ONLY | 10 | 동 이름까지만 알 수 있다 |
+| NEEDS_OFFICIAL_DETAIL | 1 | 단서가 없어 자치구 고시/상세를 받아와야 한다 |
+| INSUFFICIENT_LOCATION | 0 | — |
+
+23건 중 1건(`천호동 392-9`)은 **사업명 자체가 지번**이고, 22건은 같은 자치구의 사업장
+등록 행(주소 검증 완료)과 이름으로 연결된다. **연결은 동일성 검토 대상이며 주소를
+canonical로 자동 복사하지 않는다.** 그중 4건은 이름이 가리키는 동과 연결된 등록 행의
+동이 달라 `clue_conflict`로 표시했다(고덕주공9↔명일동, 고덕현대↔명일동, 신반포2차↔잠원동,
+가락우창↔오금동). 검토자가 먼저 봐야 하는 건들이다.
+
+번지 패턴은 **사업명에서만** 찾는다. 공식 목록 행에는 면적·세대수·연번이 들어 있어
+행 전체에 정규식을 걸면 `풍납극동 37`처럼 세대수를 지번으로 읽는다. 실제로 첫 시도에서
+그렇게 잘못 읽혔고, 테스트로 고정했다.
+
+## 5. 지도 readiness
+
+`map_readiness`가 ACCEPTED만으로 `mappable_projects`, `bbox`, `center`, `suggested_zoom`,
+자치구별·유형별·프로그램별 마커 수를 낸다. point는 대표 위치이므로
+`inside_judgement: NOT_PERMITTED_WITHOUT_VERIFIED_BOUNDARY`이고 `allows_inside`는 false다.
+FAST_TRACK과 모아타운은 좌표가 없으므로 지도 카운트에서 0이다.

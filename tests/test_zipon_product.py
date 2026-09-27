@@ -1810,3 +1810,421 @@ class GeocodeCanaryTests(unittest.TestCase):
             store = self.canary._cache_store()
         self.assertTrue(store.directory.exists())
         self.assertNotIn('/proc/', str(store.directory))
+
+
+def bulk_naver(points=None, extra=None, counter=None, fail=None, multi=()):
+    """Answers like NAVER for every bulk target, derived from the requested address."""
+    from services.development_geocode_targets import targets
+    rows = {row['canonical_address']: index for index, row in enumerate(targets())}
+    table = dict({address: (127.0 + i * 0.0013, 37.5 + i * 0.0009)
+                  for address, i in rows.items()}, **(points or {}))
+
+    def item_for(address):
+        longitude, latitude = table[address]
+        parts = geo.wanted_parts(address)
+        return {'roadAddress': '', 'jibunAddress': address, 'englishAddress': 'stub',
+                'x': str(longitude), 'y': str(latitude), 'distance': 0.0,
+                'addressElements': [{'types': ['SIDO'], 'longName': parts['sido']},
+                                    {'types': ['SIGUGUN'], 'longName': parts['district']},
+                                    {'types': ['DONGMYUN'], 'longName': parts['dong']},
+                                    {'types': ['LAND_NUMBER'], 'longName': parts['lot']}]}
+
+    def http_get(url, params=None, headers=None, timeout=10):
+        address = (params or {}).get('query')
+        if counter is not None:
+            counter.append(address)
+        if fail and address in fail:
+            raise fail[address]
+        if address not in table:
+            return {'status': 'OK', 'addresses': []}
+        item = dict(item_for(address), **((extra or {}).get(address) or {}))
+        addresses = [item]
+        if address in multi:
+            # 같은 동의 다른 번지. 번지 검사에서 걸러져야 한다.
+            other = dict(item_for(address))
+            other['addressElements'] = [e for e in other['addressElements']
+                                        if 'LAND_NUMBER' not in e['types']]
+            other['addressElements'].append({'types': ['LAND_NUMBER'], 'longName': '99999'})
+            other['jibunAddress'] = address + '9'
+            addresses = [other, item, dict(other, x=str(table[address][0] + 0.004))]
+        return {'status': 'OK', 'meta': {'totalCount': len(addresses)}, 'addresses': addresses}
+    return http_get
+
+
+class BulkGeocodeTargetTests(unittest.TestCase):
+    def test_the_generated_table_matches_the_canonical_file(self):
+        import build_zipon_geocode_targets as builder
+        current = (ROOT / 'services/development_geocode_targets.py').read_text(encoding='utf-8')
+        self.assertEqual(builder.render(builder.rows()), current)
+
+    def test_the_target_set_is_in_the_database_and_has_an_address(self):
+        from services.development_geocode_targets import targets
+        rows = targets()
+        self.assertEqual(len(rows), 128)
+        canonical = json.loads((DATA / 'pilot_canonical_verified_20260927.json')
+                               .read_text(encoding='utf-8'))['projects']
+        baseline = json.loads((DATA / 'db_baseline_20260927.json')
+                              .read_text(encoding='utf-8'))['projects']
+        result = json.loads((DATA / 'bulk_import_result_20260927.json').read_text(encoding='utf-8'))
+        in_db = {p['project_id'] for p in baseline} | {i for b in result['batches']
+                                                      for i in b['project_ids']}
+        by_id = {p['raw']['candidate_ids'][0]: p for p in canonical}
+        for row in rows:
+            self.assertIn(row['project_id'], in_db)
+            project = by_id[row['project_id']]
+            self.assertEqual(row['canonical_address'],
+                             project['location']['representative_address'])
+            self.assertEqual(row['district'], project['location']['district'])
+            self.assertTrue(project['location']['address_verified'])
+
+    def test_the_scopes_reconcile(self):
+        canonical = json.loads((DATA / 'pilot_canonical_verified_20260927.json')
+                               .read_text(encoding='utf-8'))['projects']
+        addressed = [p for p in canonical if p['location']['representative_address']]
+        fast_track = [p for p in canonical if p['classification']['program'] == 'FAST_TRACK']
+        self.assertEqual(len(canonical), 183)
+        self.assertEqual(len(addressed), 149)
+        self.assertEqual(len(canonical) - len(addressed), 34)
+        # 주소가 없는 34건은 전부 신속통합기획이다.
+        self.assertEqual({p['raw']['candidate_ids'][0] for p in canonical
+                          if not p['location']['representative_address']},
+                         {p['raw']['candidate_ids'][0] for p in fast_track})
+
+
+class BulkGeocodeRunTests(unittest.TestCase):
+    def setUp(self):
+        from services import development_bulk_geocode
+        import tempfile, shutil
+        self.bulk = development_bulk_geocode
+        self.directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.directory, True)
+        self.cache = geo.GeocodeCache(Path(self.directory) / 'cache')
+        self.secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        self.get_secret = lambda name: self.secrets.get(name, '')
+
+    def whole_run(self, http_get, size=32):
+        offset, calls = 0, 0
+        while offset is not None:
+            sliced = self.bulk.run(self.get_secret, http_get, self.cache,
+                                   offset=offset, size=size)
+            calls += sliced['provider_calls']
+            offset = sliced['next_offset']
+        report = self.bulk.run(self.get_secret, http_get, self.cache, cache_only=True)
+        return report, calls
+
+    def test_a_slice_never_exceeds_the_cap(self):
+        report = self.bulk.run(self.get_secret, bulk_naver(), self.cache, offset=0, size=999)
+        self.assertEqual(report['size'], self.bulk.MAX_SLICE)
+        self.assertEqual(report['provider_calls'], self.bulk.MAX_SLICE)
+
+    def test_the_whole_target_set_is_covered_once(self):
+        counter = []
+        report, calls = self.whole_run(bulk_naver(counter=counter))
+        self.assertEqual(calls, 128)
+        self.assertEqual(len(counter), 128)
+        self.assertEqual(report['target_total'], 128)
+        self.assertEqual(report['totals']['ACCEPTED'], 128)
+        self.assertEqual(len(report['artifact']['items']), 128)
+
+    def test_the_aggregate_spends_nothing_and_keeps_the_evidence(self):
+        report, _ = self.whole_run(bulk_naver())
+        self.assertEqual(report['provider_calls'], 0)
+        self.assertTrue(report['cache_only'])
+        row = report['artifact']['items'][0]
+        # 캐시에서 되살린 행도 판정 근거를 그대로 들고 있어야 한다.
+        self.assertEqual(row['candidate_count'], 1)
+        self.assertEqual(row['accuracy'], 'PARCEL')
+        self.assertEqual(row['matched_address'], row['canonical_address'])
+        self.assertIn('district_match', row['acceptance_reason'])
+        for check in ('district_match', 'district_spread', 'duplicate_coordinates',
+                      'coordinate_orientation'):
+            self.assertTrue(report['sanity'][check]['passed'], check)
+
+    def test_the_artifact_carries_exactly_the_requested_columns(self):
+        report, _ = self.whole_run(bulk_naver())
+        self.assertEqual(report['artifact']['fields'], list(self.bulk.ARTIFACT_FIELDS))
+        for row in report['artifact']['items']:
+            self.assertEqual(set(row), set(self.bulk.ARTIFACT_FIELDS))
+        self.secrets.update(NAVER_MAP_CLIENT_ID='ID_VALUE', NAVER_MAP_CLIENT_SECRET='SECRET_VALUE')
+        text = json.dumps(self.bulk.run(self.get_secret, bulk_naver(), self.cache,
+                                        cache_only=True), ensure_ascii=False)
+        self.assertNotIn('ID_VALUE', text)
+        self.assertNotIn('SECRET_VALUE', text)
+
+    def test_the_stored_dong_is_never_replaced_by_the_provider_answer(self):
+        address = self.bulk.targets()[0]['canonical_address']
+        extra = {address: {'addressElements': [
+            {'types': ['SIDO'], 'longName': '서울특별시'},
+            {'types': ['SIGUGUN'], 'longName': geo.wanted_parts(address)['district']},
+            {'types': ['DONGMYUN'], 'longName': '엉뚱동'},
+            {'types': ['LAND_NUMBER'], 'longName': geo.wanted_parts(address)['lot']}]}}
+        report, _ = self.whole_run(bulk_naver(extra=extra))
+        row = next(r for r in report['artifact']['items']
+                   if r['canonical_address'] == address)
+        self.assertEqual(row['dong'], geo.wanted_parts(address)['dong'])
+        self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')
+        self.assertIsNone(row['longitude'])
+
+    def test_multiple_candidates_resolve_only_when_one_is_unambiguous(self):
+        address = self.bulk.targets()[5]['canonical_address']
+        report, _ = self.whole_run(bulk_naver(multi=(address,)))
+        row = next(r for r in report['artifact']['items'] if r['canonical_address'] == address)
+        # 세 후보 중 번지가 맞는 것이 하나뿐이면 그것을 쓴다. 첫 후보를 쓰지 않는다.
+        self.assertEqual(row['candidate_count'], 3)
+        self.assertEqual(row['outcome'], 'ACCEPTED')
+        self.assertEqual(row['matched_address'], address)
+        self.assertEqual(report['totals']['ACCEPTED'], 128)
+
+    def test_several_matching_candidates_stay_for_review(self):
+        address = self.bulk.targets()[7]['canonical_address']
+        longitude, latitude = 127.05, 37.52
+
+        def http_get(url, params=None, headers=None, timeout=10):
+            if (params or {}).get('query') != address:
+                return bulk_naver()(url, params, headers, timeout)
+            parts = geo.wanted_parts(address)
+            item = {'jibunAddress': address, 'roadAddress': '', 'x': str(longitude),
+                    'y': str(latitude), 'addressElements': [
+                        {'types': ['SIDO'], 'longName': parts['sido']},
+                        {'types': ['SIGUGUN'], 'longName': parts['district']},
+                        {'types': ['DONGMYUN'], 'longName': parts['dong']},
+                        {'types': ['LAND_NUMBER'], 'longName': parts['lot']}]}
+            return {'status': 'OK', 'addresses': [item, dict(item, x=str(longitude + 0.003))]}
+        report, _ = self.whole_run(http_get)
+        row = next(r for r in report['artifact']['items'] if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')
+        self.assertEqual(row['acceptance_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+        self.assertIsNone(row['latitude'])
+        review = next(r for r in report['review']['items']
+                      if r['official_address'] == address)
+        self.assertEqual(len(review['naver_candidates']), 2)
+        self.assertEqual(review['official_address'], address)
+        self.assertIsNone(review['decision'])
+
+    def test_review_rows_are_excluded_from_the_apply_ready_artifact(self):
+        address = self.bulk.targets()[3]['canonical_address']
+        report, _ = self.whole_run(bulk_naver(points={address: (128.9, 35.1)}))
+        row = next(r for r in report['artifact']['items'] if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')
+        apply_ids = {item['project_id'] for item in report['apply_ready']['items']}
+        review_ids = {item['project_id'] for item in report['review']['items']}
+        self.assertNotIn(row['project_id'], apply_ids)
+        self.assertIn(row['project_id'], review_ids)
+        self.assertEqual(len(apply_ids), 127)
+        self.assertFalse(apply_ids & review_ids)
+
+    def test_the_apply_ready_artifact_is_what_the_apply_step_accepts(self):
+        import apply_zipon_geocode
+        report, _ = self.whole_run(bulk_naver())
+        eligible, rejected = apply_zipon_geocode.eligible(report['apply_ready'])
+        self.assertEqual(len(eligible), 128)
+        self.assertEqual(rejected, [])
+        payload = apply_zipon_geocode.payload_for(eligible[0], {'sigungu': eligible[0]['district'],
+                                                               'revision': 1})
+        self.assertEqual(payload['p_geocode_source'], 'NAVER_MAP_GEOCODE')
+        self.assertEqual(payload['p_confidence'], 'EXACT')
+        self.assertTrue(payload['p_evidence']['matched_address'])
+        self.assertTrue(payload['p_evidence']['address_used'])
+        self.assertLessEqual(max(len(b) for b in apply_zipon_geocode.batches(eligible)), 10)
+
+    def test_the_map_readiness_counts_what_can_be_drawn(self):
+        report, _ = self.whole_run(bulk_naver())
+        readiness = report['map_readiness']
+        self.assertEqual(readiness['mappable_projects'], 128)
+        self.assertEqual(readiness['reconstruction'], 111)
+        self.assertEqual(readiness['redevelopment'], 17)
+        self.assertEqual(readiness['other'], 0)
+        self.assertEqual(readiness['fast_track'], 0)
+        self.assertEqual(readiness['moatown'], 0)
+        self.assertEqual(readiness['by_district'], {'강동구': 39, '서초구': 56, '송파구': 33})
+        self.assertEqual(readiness['inside_judgement'],
+                         'NOT_PERMITTED_WITHOUT_VERIFIED_BOUNDARY')
+        for point in report['map']['points']:
+            self.assertFalse(point['allows_inside'])
+
+    def test_a_failing_address_does_not_stop_the_run(self):
+        address = self.bulk.targets()[9]['canonical_address']
+        report, _ = self.whole_run(bulk_naver(fail={address: TimeoutError('boom')}))
+        row = next(r for r in report['artifact']['items'] if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'PENDING_PROVIDER')
+        self.assertEqual(report['totals']['ACCEPTED'], 127)
+
+    def test_nothing_runs_and_nothing_is_written_without_credentials(self):
+        def forbidden(*args, **kwargs):
+            raise AssertionError('no provider call without credentials')
+        report = self.bulk.run(lambda name: '', forbidden, self.cache, offset=0, size=32)
+        self.assertEqual(report['provider_calls'], 0)
+        self.assertEqual(report['totals']['PENDING_PROVIDER'], 32)
+        self.assertFalse(report['db_write'])
+        self.assertEqual(report['apply_ready']['items'], [])
+
+
+class BulkGeocodeEndpointTests(unittest.TestCase):
+    def setUp(self):
+        from api import realestate as api
+        from services import development_bulk_geocode, development_canary
+        import tempfile, shutil
+        self.api, self.bulk, self.canary = api, development_bulk_geocode, development_canary
+        self.directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.directory, True)
+        api._cache.clear()
+        self.addCleanup(api._cache.clear)
+
+    def call(self, http_get, **kwargs):
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        with patch.object(rm, '_secret', side_effect=lambda name, *a: secrets.get(name, '')), \
+             patch.object(geo, 'requests_get', http_get), \
+             patch.object(self.canary, '_default_cache_dir',
+                          return_value=Path(self.directory) / 'cache'):
+            return self.api.geocode_bulk(**kwargs)
+
+    def test_a_slice_is_cached_so_a_repeat_costs_nothing(self):
+        counter = []
+        first = self.call(bulk_naver(counter=counter), offset=0, size=16)
+        second = self.call(bulk_naver(counter=counter), offset=0, size=16)
+        self.assertEqual(len(counter), 16)
+        self.assertIs(first, second)
+        self.assertEqual(first['size'], 16)
+        self.assertEqual(first['next_offset'], 16)
+
+    def test_the_aggregate_calls_no_provider(self):
+        counter = []
+        self.call(bulk_naver(counter=counter), offset=0, size=16)
+        aggregate = self.call(bulk_naver(counter=counter), aggregate=True)
+        self.assertEqual(len(counter), 16, 'aggregate must not call the provider')
+        self.assertEqual(aggregate['provider_calls'], 0)
+        self.assertEqual(aggregate['totals']['ACCEPTED'], 16)
+        self.assertEqual(aggregate['totals']['PENDING_PROVIDER'], 112)
+
+    def test_an_oversized_slice_is_refused(self):
+        from fastapi import HTTPException
+        for kwargs in ({'size': 0}, {'size': self.bulk.MAX_SLICE + 1}, {'offset': -1}):
+            with self.assertRaises(HTTPException):
+                self.call(bulk_naver(), **kwargs)
+
+    def test_the_response_states_the_dataset_scope(self):
+        report = self.call(bulk_naver(), offset=0, size=1)
+        self.assertEqual(report['scope'], {'canonical_total': 183, 'address_available': 149,
+                                           'address_missing': 34, 'in_database': 130,
+                                           'geocode_target': 128,
+                                           'in_database_without_address': 2,
+                                           'address_but_quarantined': 21})
+        self.assertFalse(report['db_write'])
+
+
+class BulkGeocodeArtifactTests(unittest.TestCase):
+    def setUp(self):
+        import save_zipon_bulk_geocode
+        self.saver = save_zipon_bulk_geocode
+
+    def response(self, **overrides):
+        from services import development_bulk_geocode as bulk
+        import tempfile
+        cache = geo.GeocodeCache(tempfile.mkdtemp())
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        get_secret = lambda name: secrets.get(name, '')
+        offset = 0
+        while offset is not None:
+            sliced = bulk.run(get_secret, bulk_naver(), cache, offset=offset, size=50)
+            offset = sliced['next_offset']
+        return dict(bulk.run(get_secret, bulk_naver(), cache, cache_only=True), **overrides)
+
+    def test_a_clean_response_produces_the_three_documents(self):
+        response = self.response()
+        counts = self.saver.check(response)
+        self.assertEqual(counts, {'artifact': 128, 'accepted': 128, 'review': 0,
+                                  'apply_ready': 128})
+        result, review, apply_ready = self.saver.documents(response)
+        self.assertEqual(result['fields'], list(self.saver.ARTIFACT_FIELDS))
+        self.assertEqual(len(result['items']), 128)
+        self.assertEqual(review['items'], [])
+        self.assertEqual(len(apply_ready['items']), 128)
+        self.assertFalse(result['db_write'])
+
+    def test_a_response_claiming_a_database_write_is_rejected(self):
+        with self.assertRaises(self.saver.Rejected):
+            self.saver.check(self.response(db_write=True))
+
+    def test_a_credential_shaped_value_is_rejected(self):
+        response = self.response()
+        response['provider'] = 'naver eyJabcdefghijklmnopqrstuvwxyz0123456789'
+        with self.assertRaises(self.saver.Rejected):
+            self.saver.check(response)
+
+    def test_an_apply_row_that_is_not_accepted_is_rejected(self):
+        response = self.response()
+        response['artifact']['items'][0]['outcome'] = 'REVIEW_REQUIRED'
+        response['artifact']['items'][0]['longitude'] = None
+        response['artifact']['items'][0]['latitude'] = None
+        with self.assertRaises(self.saver.Rejected):
+            self.saver.check(response)
+
+    def test_a_non_accepted_row_carrying_a_coordinate_is_rejected(self):
+        response = self.response()
+        row = response['artifact']['items'][0]
+        row['outcome'] = 'FAILED'
+        response['apply_ready']['items'] = [i for i in response['apply_ready']['items']
+                                            if i['project_id'] != row['project_id']]
+        with self.assertRaises(self.saver.Rejected):
+            self.saver.check(response)
+
+
+class FastTrackLocationTests(unittest.TestCase):
+    def setUp(self):
+        self.document = json.loads((DATA / 'fast_track_location_20260927.json')
+                                   .read_text(encoding='utf-8'))
+
+    def test_the_analysis_covers_every_addressless_project_and_calls_no_geocoder(self):
+        self.assertEqual(self.document['totals']['fast_track'], 34)
+        self.assertEqual(len(self.document['items']), 34)
+        self.assertFalse(self.document['geocoder_called'])
+        self.assertFalse(self.document['db_write'])
+        for row in self.document['items']:
+            self.assertIsNone(row['address_in_source'])
+            self.assertEqual(row['program'], 'FAST_TRACK')
+            self.assertIn(row['classification'],
+                          ('ADDRESS_RECOVERABLE_FROM_OFFICIAL_SOURCE', 'LOCATION_NAME_ONLY',
+                           'INSUFFICIENT_LOCATION', 'NEEDS_OFFICIAL_DETAIL'))
+
+    def test_every_row_records_what_evidence_exists(self):
+        for row in self.document['items']:
+            for field in ('project_name', 'district', 'official_source', 'source_url',
+                          'raw_source_text', 'raw_stage'):
+                self.assertIsNotNone(row[field], f"{row['project_name']} {field}")
+            self.assertTrue(row['source_url'].startswith('https://cleanup.seoul.go.kr/'))
+
+    def test_a_lot_is_only_read_from_the_project_name(self):
+        import analyze_zipon_fast_track as analysis
+        # 목록 행에는 면적·세대수·연번이 있어 행 전체에 정규식을 걸면 세대수를 지번으로 읽는다.
+        pungnap = next(r for r in self.document['items'] if r['project_name'] == '풍납극동')
+        self.assertIsNone(pungnap['lot_in_name'])
+        self.assertIn('37', ' '.join(pungnap['raw_source_text']))
+        named = next(r for r in self.document['items'] if r['project_name'] == '천호동 392-9')
+        self.assertEqual(named['lot_in_name'], '천호동 392-9')
+        self.assertEqual(named['classification'], 'ADDRESS_RECOVERABLE_FROM_OFFICIAL_SOURCE')
+        self.assertEqual(analysis.LOT_IN_NAME.search('풍납극동'), None)
+
+    def test_a_registry_link_is_offered_for_review_not_applied(self):
+        linked = [r for r in self.document['items'] if r['registry_links']]
+        self.assertTrue(linked)
+        for row in linked:
+            self.assertEqual(row['classification'],
+                             'ADDRESS_RECOVERABLE_FROM_OFFICIAL_SOURCE')
+            # 연결된 등록 행의 주소를 이 사업의 주소로 옮겨 적지 않는다.
+            self.assertIsNone(row['address_in_source'])
+            for link in row['registry_links']:
+                self.assertTrue(link['registry_address'])
+                self.assertTrue(link['address_verified'])
+
+    def test_a_conflicting_dong_clue_is_flagged(self):
+        conflicts = [r for r in self.document['items'] if r['clue_conflict']]
+        self.assertTrue(conflicts)
+        self.assertEqual(self.document['totals']['clue_conflict'], len(conflicts))
+        for row in conflicts:
+            self.assertTrue(row['dong_tokens'])
+            self.assertTrue(row['linked_dong'])
+            self.assertFalse(set(row['dong_tokens']) & set(row['linked_dong']))
+
+    def test_the_analysis_reproduces_from_the_canonical_file(self):
+        import analyze_zipon_fast_track as analysis
+        self.assertEqual(analysis.analyse(), self.document['items'])
