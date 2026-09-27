@@ -24,6 +24,8 @@ STAGE_TAXONOMY = ('CANDIDATE', 'PLANNING', 'PLAN_DELIBERATION', 'PLAN_NOTICED', 
                   'CONSTRUCTION', 'PARTIAL_COMPLETION', 'COMPLETED', 'TRANSFER_NOTICE',
                   'ASSOCIATION_DISSOLVED', 'ASSOCIATION_LIQUIDATION', 'CANCELLED', 'UNKNOWN')
 STAGE_MAP = {
+    '기본계획수립': 'PLANNING', '조합설립추진위원회승인': 'COMMITTEE',
+    '철거신고': 'DEMOLITION', '착공신고': 'CONSTRUCTION', '일반분양승인': 'SALES',
     '후보지선정': 'CANDIDATE',
     '정비계획제안': 'PLANNING', '정비계획수립': 'PLANNING', '주민공람': 'PLANNING',
     '재공람': 'PLANNING', '구의회의견청취': 'PLANNING',

@@ -6,6 +6,7 @@ and neither does a claim the evidence does not support: a stage read from an
 official list is shown as list-based, never as confirmed.
 """
 from services.development_official import normalize_stage
+from services.development_stage import observation, stage_view, DESCRIPTIONS
 
 
 STAGE_LABELS = {
@@ -17,7 +18,7 @@ STAGE_LABELS = {
     'SALES': '분양', 'DEMOLITION': '철거', 'CONSTRUCTION': '착공',
     'PARTIAL_COMPLETION': '부분 준공', 'COMPLETED': '준공', 'TRANSFER_NOTICE': '이전고시',
     'ASSOCIATION_DISSOLVED': '조합 해산', 'ASSOCIATION_LIQUIDATION': '조합 청산',
-    'CANCELLED': '취소', 'UNKNOWN': '공식 단계 확인 중',
+    'CANCELLED': '취소', 'UNKNOWN': '세부 진행단계 확인 중',
 }
 # SHINTONG은 정책 프로그램으로 수집된 행이라 사업유형(재개발/재건축)은 아직 확정되지 않았다.
 # 유형 자리에 프로그램 이름을 넣지 않는다.
@@ -79,8 +80,9 @@ NO_LOCATION_NOTICE = '정확한 위치 확인 후 주변 개발정보를 연결�
 
 
 def stage_label(normalized_stage, raw_stage=None):
-    label = STAGE_LABELS.get(normalized_stage or 'UNKNOWN', '공식 단계 확인 중')
-    return {'label': label, 'official_text': raw_stage or None}
+    label = STAGE_LABELS.get(normalized_stage or 'UNKNOWN', '세부 진행단계 확인 중')
+    return {'label': label, 'official_text': (label if raw_stage in STAGE_LABELS and raw_stage != 'UNKNOWN'
+                                             else None if raw_stage == 'UNKNOWN' else raw_stage or None)}
 
 
 def trust(validation_status):
@@ -101,8 +103,13 @@ def present_project(row):
     """One development project, shaped for the screen. Input is a DB/RPC row."""
     # zipon_development_search는 project_stage / official_source / source_url / verified_at을
     # 돌려주고, REST 직접 조회는 stage_raw / source_name을 돌려준다. 둘 다 받는다.
-    stage_raw = row.get('stage_raw') or row.get('project_stage') or row.get('stage')
-    normalized = row.get('normalized_stage') or normalize_stage(stage_raw)['normalized_stage']
+    detail, listed = observation(row)
+    verified = stage_view(detail)
+    stage_raw = row.get('stage_raw') or row.get('project_stage') or row.get('stage') or listed.get('raw_stage')
+    normalized = row.get('normalized_stage') or (stage_raw if stage_raw in STAGE_LABELS else normalize_stage(stage_raw)['normalized_stage'])
+    if verified:
+        stage_raw = verified['label']
+        normalized = normalize_stage(stage_raw)['normalized_stage']
     # 경계 검증 신호는 SQL에서만 온다. 대표좌표만으로는 절대 True가 되지 않는다.
     verified_boundary = bool(row.get('boundary_verified') or row.get('geometry_verified')
                              or row.get('evidence_verified'))
@@ -116,21 +123,26 @@ def present_project(row):
         'type_label': TYPE_LABELS.get(row.get('project_type'), '기타'),
         'district': row.get('sigungu'), 'dong': row.get('dong'),
         'address': row.get('address'),
-        'stage': stage_label(normalized, stage_raw),
-        'stage_basis': STAGE_BASIS_LABELS.get(row.get('stage_basis'),
+        'stage': dict(stage_label(normalized, stage_raw), **({'label': verified['label']} if verified else {})),
+        'stage_description': verified['description'] if verified else DESCRIPTIONS.get(normalized),
+        'stage_history': (detail or {}).get('milestones') or [],
+        'stage_basis': '서울시 공식 상세정보 확인' if verified else STAGE_BASIS_LABELS.get(row.get('stage_basis'),
                                               STAGE_BASIS_LABELS['OFFICIAL_LIST_CELL']),
-        'stage_verified_level': STAGE_VERIFIED_LEVEL.get(row.get('stage_basis'),
+        'stage_verified_level': 'OFFICIAL_DETAIL_VERIFIED' if verified else STAGE_VERIFIED_LEVEL.get(row.get('stage_basis'),
                                                         'OFFICIAL_LIST_MAPPED'),
-        'stage_timeline': stage_timeline(normalized),
+        'stage_timeline': verified['timeline'] if verified else dict(stage_timeline(normalized),
+            steps=[stage_label(normalized)['label']] if normalized != 'UNKNOWN' else [],
+            current_index=0 if normalized != 'UNKNOWN' else None,
+            total=1 if normalized != 'UNKNOWN' else 0),
         'program': program_of(row),
         'program_label': (program_of(row) or {}).get('label'),
         'location_accuracy': location_accuracy(row),
         'status_label': STATUS_LABELS.get(row.get('status') or 'UNKNOWN', '공식 확인 진행 중'),
         'trust': trust(row.get('validation_status')),
-        'official_source': {'name': row.get('source_name') or row.get('official_source'),
-                            'url': row.get('evidence_url') or row.get('source_url')},
-        'last_checked': row.get('last_verified_at') or row.get('collected_at')
-                        or row.get('verified_at'),
+        'official_source': {'name': '서울시 정비사업 정보몽땅' if verified else row.get('source_name') or row.get('official_source') or listed.get('source_name'),
+                            'url': (detail or {}).get('evidence_url') or row.get('evidence_url') or row.get('source_url') or listed.get('source_url')},
+        'last_checked': (detail or {}).get('fetched_at') or row.get('last_verified_at') or row.get('collected_at')
+                        or row.get('verified_at') or listed.get('verified_at'),
         'spatial': spatial,
         'distance_m': row.get('meters') if row.get('meters') is not None else row.get('distance_m'),
         'distance_label': distance_bucket(
@@ -234,7 +246,7 @@ def impact(context, *, trade_has_point=None):
 def map_point(row):
     """지도용 경량 payload. 상세는 선택했을 때 따로 가져온다."""
     program = program_of(row)
-    stage = normalize_stage(row.get('stage_raw') or row.get('project_stage'))
+    presented = present_project(row)
     accuracy = location_accuracy(row)
     layers = map_layer_of(row)
     boundary = boundary_layer(row)
@@ -247,12 +259,12 @@ def map_point(row):
             'development_layer': layers['development'], 'program_layer': layers['program'],
             'address': row.get('address'),
             'last_checked': (row.get('last_verified_at') or '')[:10] or None,
-            'official_url': row.get('source_url'),
+            'official_url': presented['official_source']['url'],
             'type_code': row.get('project_type'),
             'type_label': TYPE_LABELS.get(row.get('project_type'), '기타'),
             'program_code': (program or {}).get('code'),
             'program_label': (program or {}).get('label'),
-            'stage_label': STAGE_LABELS.get(stage['normalized_stage'], '공식 단계 확인 중'),
+            'stage_label': presented['stage']['label'],
             'district': row.get('sigungu'), 'dong': row.get('dong'),
             'accuracy': accuracy['code'], 'accuracy_label': accuracy['label'],
             'confidence': trust(row.get('validation_status'))['label'],

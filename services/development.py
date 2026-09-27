@@ -2,11 +2,31 @@
 import binascii
 import math
 import struct
+from uuid import UUID
 
 from services import realestate_monitor as rm
 
 MAP_COLUMNS = ('project_id,project_name,project_type,sigungu,dong,address,stage_raw,status,'
                'validation_status,location,geometry_verified,last_verified_at')
+
+def stage_metadata(rows):
+    """One read-only batch fills columns omitted by the spatial RPC. No SQL change."""
+    ids = []
+    for row in rows or []:
+        try:
+            ids.append(str(UUID(str(row.get('project_id')))))
+        except (ValueError, TypeError):
+            continue
+    if not ids:
+        return rows
+    try:
+        found = rm._remote_request('GET', 'development_projects', params={
+            'select':'project_id,stage,stage_raw,field_evidence,external_id,official_authority',
+            'project_id':'in.(' + ','.join(sorted(set(ids))) + ')', 'limit':len(set(ids))})
+        metadata = {p['project_id']:p for p in found}
+    except Exception:
+        return rows
+    return [dict(row, **{k:v for k,v in metadata.get(row.get('project_id'), {}).items() if k != 'project_id'}) for row in rows]
 
 
 def _point(value):
@@ -85,7 +105,7 @@ def search_projects(*, longitude=None, latitude=None, sigungu=None, radius_m=100
         rows = rm._remote_request('POST', 'rpc/zipon_development_search', payload={
             'p_longitude': longitude, 'p_latitude': latitude, 'p_sigungu': sigungu,
             'p_radius_m': radius_m, 'p_limit': limit})
-        return {'status': 'ok', 'nearby_projects': rows, 'reason': None}
+        return {'status': 'ok', 'nearby_projects': stage_metadata(rows), 'reason': None}
     except Exception:
         # No raw errors/URLs/credentials in browser responses.
         return {'status': 'unavailable', 'nearby_projects': [], 'reason': 'DEVELOPMENT_UNAVAILABLE'}

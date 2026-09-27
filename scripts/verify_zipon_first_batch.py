@@ -57,9 +57,12 @@ def offline_contract():
          patch.object(rm, '_remote_request', return_value=stub) as request:
         result = dev.search_projects(sigungu='강동구', limit=100)
     check('api_status_ok', result['status'] == 'ok', result['status'])
-    check('api_calls_the_spatial_rpc', request.call_args.args == ('POST', 'rpc/zipon_development_search'))
+    rpc_call = request.call_args_list[0]
+    check('api_calls_the_spatial_rpc', rpc_call.args == ('POST', 'rpc/zipon_development_search'))
     check('api_sends_no_coordinates_for_a_district_query',
-          request.call_args.kwargs['payload']['p_longitude'] is None)
+          rpc_call.kwargs['payload']['p_longitude'] is None)
+    check('stage_metadata_is_read_only', all(call.args == ('GET', 'development_projects')
+          for call in request.call_args_list[1:]))
     rows = result['nearby_projects']
     check('api_returns_the_batch', len(rows) == len(batch), len(rows))
     for field in ('project_name', 'project_type', 'stage', 'status', 'validation_status',

@@ -50,6 +50,7 @@ export default function DevelopmentCard({
           <span className="text-xs font-extrabold">{project.stage.label}</span>
         </div>
         <StageTimeline timeline={project.stage_timeline} />
+        {project.stage_description && <p className="mt-2 text-xs leading-relaxed text-muted">{project.stage_description}</p>}
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-subtle">
@@ -81,6 +82,21 @@ export default function DevelopmentCard({
       </div>
 
       <CollapsibleDetails label="상세보기">
+        {!!project.stage_history?.length && (
+          <section className="mb-3" aria-label="공식 진행이력">
+            <h4 className="mb-2 text-xs font-bold">공식 진행이력</h4>
+            <ol className="space-y-1 text-xs">
+              {project.stage_history.filter(item => item.stage_date || item.is_current).map(item => (
+                <li key={item.stage_order} className="flex justify-between gap-3">
+                  <span className={item.is_current ? "font-bold text-estate" : "text-muted"}>
+                    {item.is_current ? "● " : ""}{item.stage_name}
+                  </span>
+                  <span>{item.stage_date?.replace(/-/g, ".") ?? "날짜 미공개"}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
         <DetailRow label="공식 사업명" value={project.name} />
         <DetailRow label="공식 사업 ID" value={project.official_id} />
         <DetailRow label="담당기관" value={project.official_authority} />

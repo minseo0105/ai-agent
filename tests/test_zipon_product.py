@@ -120,7 +120,7 @@ class PresentationTests(unittest.TestCase):
 
     def test_an_unmapped_stage_says_so(self):
         self.assertEqual(self.project(normalized_stage=None, stage_raw=None)['stage']['label'],
-                         '공식 단계 확인 중')
+                         '세부 진행단계 확인 중')
 
     def test_list_based_evidence_is_not_presented_as_confirmed(self):
         project = self.project(stage_basis='OFFICIAL_LIST_CELL')

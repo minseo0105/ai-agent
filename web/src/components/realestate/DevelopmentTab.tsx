@@ -268,7 +268,7 @@ export default function DevelopmentTab({
           </div>
           {visible.length > 0 && (
             <p className="text-[11px] leading-relaxed text-subtle">
-              서울시 공식 목록에서 확인한 자료입니다. 공식 상세정보 확인 전 단계이므로 사업 진행 여부는 공식 출처로 다시 확인해 주세요.
+              사업별로 공식 상세정보 또는 목록에서 확인한 단계와 확인일을 표시합니다. 진행단계의 근거는 각 카드의 서울시 공식자료에서 확인할 수 있습니다.
             </p>
           )}
         </>

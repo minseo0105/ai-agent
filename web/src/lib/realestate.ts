@@ -119,6 +119,8 @@ export type DevelopmentProject = {
   program_label: string | null;
   stage_verified_level: "OFFICIAL_DETAIL_VERIFIED" | "OFFICIAL_LIST_MAPPED";
   stage_timeline: { steps: string[]; current_index: number | null; current_label: string | null; total: number; note: string | null };
+  stage_description?: string | null;
+  stage_history?: { stage_name: string; stage_date: string | null; stage_order: number; is_current: boolean }[];
   location_accuracy: { code: string; label: string; note: string };
   distance_label: string | null;
   district: string | null;
