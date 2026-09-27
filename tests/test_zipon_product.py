@@ -1077,9 +1077,11 @@ class MapFirstScreenTests(unittest.TestCase):
     def test_the_explorer_puts_search_and_map_above_the_list(self):
         tab = read('components/realestate/DevelopmentTab.tsx')
         self.assertIn('부동산 개발정보 지도', tab)
-        self.assertLess(tab.index('aria-label="사업명 · 동 · 유형 검색"'), tab.index('<ZiponMap'))
-        self.assertLess(tab.index('<ZiponMap'), tab.index('이 위치의 개발정보'))
-        self.assertLess(tab.index('이 위치의 개발정보'), tab.index('<DevelopmentCard'))
+        # 순서는 컴포넌트 본문 기준으로 본다. 파일 앞쪽의 보조 컴포넌트 정의는 렌더 순서가 아니다.
+        body = tab.split('export default function DevelopmentTab', 1)[1]
+        self.assertLess(body.index('aria-label="사업명 · 동 · 유형 검색"'), body.index('<ZiponMap'))
+        self.assertLess(body.index('<ZiponMap'), body.index('이 위치의 개발정보'))
+        self.assertLess(body.index('이 위치의 개발정보'), body.index('<DevelopmentCard'))
 
     def test_the_filters_cover_every_layer(self):
         tab = read('components/realestate/DevelopmentTab.tsx')
@@ -2643,19 +2645,28 @@ class MapCardLinkTests(unittest.TestCase):
         self.assertIn('info.current.open(instance, marker)', self.map_source)
         self.assertIn('info.current.setContent(infoHtml(point))', self.map_source)
 
-    def test_the_mini_map_sits_next_to_the_cards(self):
+    def test_the_mini_map_sits_under_the_card_that_was_clicked(self):
         self.assertIn('선택 사업 위치', self.tab)
-        self.assertIn('compact', self.tab)
         self.assertIn('selectedPoints', self.tab)
-        # mini-map은 카드 목록 바로 위에 있어야 모바일에서 위치를 연결해 준다.
-        self.assertLess(self.tab.index('선택 사업 위치'), self.tab.index('<DevelopmentCard'))
+        # 누른 카드 바로 다음에 붙어야 목록에서 스크롤을 올리지 않고 위치를 본다.
+        loop = self.tab.split('visible.slice(0, MAX_CARDS).map', 1)[1]
+        card = loop.index('<DevelopmentCard')
+        panel = loop.index('<SelectedLocation')
+        self.assertLess(card, panel)
+        self.assertIn('{selectedId === p.project_id && (', loop)
+        self.assertIn('className="md:col-span-2"', loop)
+        # 카드 위의 독립 패널은 없앴다. 같은 내용을 두 군데서 따로 관리하지 않는다.
+        above = self.tab.split('visible.slice(0, MAX_CARDS).map', 1)[0]
+        self.assertNotIn('<SelectedLocation', above)
 
     def test_the_mini_map_shows_only_the_selected_project(self):
         self.assertIn('visiblePoints.filter((point) => point.project_id === selectedId)', self.tab)
 
     def test_a_project_without_a_coordinate_says_so_instead_of_a_blank_map(self):
-        self.assertIn('selected.mappable ? (', self.tab)
-        self.assertIn('좌표를 확보하지 못해 지도에 표시하지 않습니다', self.tab)
+        panel = self.tab.split('function SelectedLocation', 1)[1].split('function matchesFilter', 1)[0]
+        self.assertIn('project.mappable ? (', panel)
+        self.assertIn('좌표 미확보', panel)
+        self.assertIn('좌표를 확보하지 못해 지도에 표시하지 않습니다', panel)
 
     def test_the_compact_map_drops_the_legend_and_bounds_reporting(self):
         self.assertIn('{!compact && (', self.map_source)

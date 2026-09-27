@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Spinner, inputClass } from "@/components/golf/ui";
 import DevelopmentCard from "./DevelopmentCard";
 import RegionPicker from "./RegionPicker";
@@ -25,6 +25,50 @@ function Kpi({ label, value, accent = false }: { label: string; value: number; a
       <div className="text-[11px] font-semibold text-muted">{label}</div>
       <div className={`text-lg font-extrabold leading-tight ${accent ? "text-estate" : ""}`}>{value}</div>
     </div>
+  );
+}
+
+/** 선택한 사업의 위치. 누른 카드 바로 아래에서 같은 내용을 보여준다. */
+function SelectedLocation({
+  project,
+  points,
+  config,
+  className = "",
+}: {
+  project: DevelopmentProject;
+  points: DevelopmentMapPoint[];
+  config: MapConfig | null;
+  className?: string;
+}) {
+  return (
+    <section className={`rounded-xl border border-estate/40 bg-surface-muted p-2.5 ${className}`}>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+        <h3 className="text-[11px] font-extrabold tracking-wide text-muted">선택 사업 위치</h3>
+        <span className="text-[11px] text-subtle">
+          {project.mappable ? project.location_accuracy.label : "좌표 미확보"}
+        </span>
+      </div>
+      <div className="mt-0.5 text-xs font-extrabold">{project.name}</div>
+      <p className="text-[11px] text-muted">
+        {[project.type_label, project.program_label].filter(Boolean).join(" · ")} · {project.stage.label}
+      </p>
+      {project.address && <p className="text-[11px] text-subtle">{project.address}</p>}
+      {project.mappable ? (
+        <div className="mt-2">
+          <ZiponMap
+            points={points}
+            config={config}
+            selectedId={project.project_id}
+            height={200}
+            compact
+          />
+        </div>
+      ) : (
+        <p className="mt-2 rounded-lg bg-surface px-2.5 py-2 text-[11px] text-muted">
+          이 사업은 아직 좌표를 확보하지 못해 지도에 표시하지 않습니다. 목록에서는 계속 확인할 수 있어요.
+        </p>
+      )}
+    </section>
   );
 }
 
@@ -275,48 +319,28 @@ export default function DevelopmentTab({
             <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">조건에 맞는 개발사업이 없어요.</p>
           )}
 
-          {selected && (
-            <section className="rounded-xl border border-border bg-surface-muted p-2.5">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-                <h3 className="text-[11px] font-extrabold tracking-wide text-muted">선택 사업 위치</h3>
-                <span className="text-[11px] text-subtle">
-                  {selected.mappable ? selected.location_accuracy.label : "좌표 미확보"}
-                </span>
-              </div>
-              <div className="mt-0.5 text-xs font-extrabold">{selected.name}</div>
-              <p className="text-[11px] text-muted">
-                {[selected.type_label, selected.program_label].filter(Boolean).join(" · ")} · {selected.stage.label}
-              </p>
-              {selected.mappable ? (
-                <div className="mt-2">
-                  <ZiponMap
-                    points={selectedPoints}
-                    config={config}
-                    selectedId={selected.project_id}
-                    height={200}
-                    compact
-                  />
-                </div>
-              ) : (
-                <p className="mt-2 rounded-lg bg-surface px-2.5 py-2 text-[11px] text-muted">
-                  이 사업은 아직 좌표를 확보하지 못해 지도에 표시하지 않습니다. 목록에서는 계속 확인할 수 있어요.
-                </p>
-              )}
-            </section>
-          )}
-
           <div className="grid gap-2.5 md:grid-cols-2">
             {visible.slice(0, MAX_CARDS).map((p) => (
-              <div
-                key={p.project_id}
-                ref={(node) => {
-                  cardRefs.current[p.project_id] = node;
-                }}
-                onClick={() => setSelectedId(p.project_id)}
-                className={`rounded-2xl transition ${selectedId === p.project_id ? "ring-2 ring-estate" : ""}`}
-              >
-                <DevelopmentCard project={p} />
-              </div>
+              <Fragment key={p.project_id}>
+                <div
+                  ref={(node) => {
+                    cardRefs.current[p.project_id] = node;
+                  }}
+                  onClick={() => setSelectedId(p.project_id)}
+                  className={`rounded-2xl transition ${selectedId === p.project_id ? "ring-2 ring-estate" : ""}`}
+                >
+                  <DevelopmentCard project={p} />
+                </div>
+                {/* 누른 카드 바로 아래에서 위치를 확인한다. 화면 위쪽까지 올라가지 않아도 된다. */}
+                {selectedId === p.project_id && (
+                  <SelectedLocation
+                    project={p}
+                    points={selectedPoints}
+                    config={config}
+                    className="md:col-span-2"
+                  />
+                )}
+              </Fragment>
             ))}
           </div>
           {visible.length > MAX_CARDS && (
