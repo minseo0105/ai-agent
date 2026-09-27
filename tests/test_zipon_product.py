@@ -434,3 +434,92 @@ class ScreenCompactnessTests(unittest.TestCase):
         # 선택되지 않은 필터는 중립색을 쓴다.
         self.assertIn('border border-border text-muted hover:text-fg', tab)
         self.assertIn('bg-estate text-white', tab)
+
+
+class ZiponSupabaseSeparationTests(unittest.TestCase):
+    """ZIP:ON uses its own project in production without touching AI LAB's."""
+
+    URL, KEY = 'ZIPON_SUPABASE_URL', 'ZIPON_SUPABASE_SERVICE_ROLE_KEY'
+    SHARED_URL, SHARED_KEY = 'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'
+
+    def config(self, **env):
+        # Placeholder values only; no real credential is used in a test. A local
+        # secrets.toml must not change the outcome, so the file loader is stubbed.
+        from services import config as config_module
+        with patch.object(config_module, '_load_secrets_file', return_value={}), \
+             patch.dict('os.environ', env, clear=False):
+            for name in (self.URL, self.KEY, self.SHARED_URL, self.SHARED_KEY):
+                if name not in env:
+                    __import__('os').environ.pop(name, None)
+            return rm._supabase_config()
+
+    def test_the_zipon_project_wins_when_both_of_its_values_are_set(self):
+        self.assertEqual(self.config(**{self.URL: 'https://zipon.example.invalid/',
+                                        self.KEY: 'zipon-placeholder',
+                                        self.SHARED_URL: 'https://shared.example.invalid',
+                                        self.SHARED_KEY: 'shared-placeholder'}),
+                         ('https://zipon.example.invalid', 'zipon-placeholder'))
+
+    def test_the_existing_settings_are_the_fallback(self):
+        self.assertEqual(self.config(**{self.SHARED_URL: 'https://shared.example.invalid',
+                                        self.SHARED_KEY: 'shared-placeholder'}),
+                         ('https://shared.example.invalid', 'shared-placeholder'))
+
+    def test_a_half_configured_zipon_project_never_mixes_credentials(self):
+        for partial in ({self.URL: 'https://zipon.example.invalid'},
+                        {self.KEY: 'zipon-placeholder'}):
+            config = self.config(**dict(partial, **{self.SHARED_URL: 'https://shared.example.invalid',
+                                                    self.SHARED_KEY: 'shared-placeholder'}))
+            self.assertEqual(config, ('https://shared.example.invalid', 'shared-placeholder'), partial)
+
+    def test_without_any_setting_the_sqlite_fallback_stays(self):
+        self.assertIsNone(self.config())
+        with patch.object(rm, '_supabase_config', return_value=None):
+            self.assertFalse(rm._using_remote_db())
+
+    def test_development_reads_share_the_same_connection(self):
+        source = (ROOT / 'services/development.py').read_text(encoding='utf-8')
+        self.assertIn('rm._using_remote_db()', source)
+        self.assertIn("rm._remote_request('GET', 'development_projects'", source)
+        for token in ('SUPABASE_URL', 'SERVICE_ROLE', 'ZIPON_SUPABASE'):
+            self.assertNotIn(token, source)
+
+    def test_the_pipeline_takes_an_injected_transport_instead_of_credentials(self):
+        source = (ROOT / 'services/development_pipeline.py').read_text(encoding='utf-8')
+        for token in ('SUPABASE', 'SERVICE_ROLE', 'os.environ'):
+            self.assertNotIn(token, source)
+
+    def test_access_management_keeps_the_existing_project(self):
+        source = (ROOT / 'services/access.py').read_text(encoding='utf-8')
+        self.assertIn('SUPABASE_URL', source)
+        self.assertNotIn('ZIPON_SUPABASE', source)
+
+    def test_no_supabase_secret_reaches_the_frontend(self):
+        for path in sorted((ROOT / 'web/src').rglob('*.ts*')):
+            text = path.read_text(encoding='utf-8')
+            for token in ('SERVICE_ROLE', 'SUPABASE_URL', 'ZIPON_SUPABASE', 'sb_secret'):
+                self.assertNotIn(token, text, path.name)
+        out = ROOT / 'web/out'
+        if out.exists():
+            for path in sorted(out.rglob('*.js')):
+                text = path.read_text(encoding='utf-8', errors='ignore')
+                for token in ('SERVICE_ROLE', 'ZIPON_SUPABASE', 'sb_secret'):
+                    self.assertNotIn(token, text, path.name)
+
+    def test_no_public_env_variable_carries_the_key(self):
+        for name in ('web/next.config.ts', 'Dockerfile', '.github/workflows/deploy-space.yml'):
+            text = (ROOT / name).read_text(encoding='utf-8')
+            self.assertNotIn('NEXT_PUBLIC_SUPABASE', text)
+            self.assertNotIn('NEXT_PUBLIC_ZIPON', text)
+            self.assertNotIn('SERVICE_ROLE', text)
+
+    def test_the_scheduled_monitor_passes_the_zipon_project_too(self):
+        text = (ROOT / '.github/workflows/realestate-monitor.yml').read_text(encoding='utf-8')
+        self.assertIn('ZIPON_SUPABASE_URL: ${{ secrets.ZIPON_SUPABASE_URL }}', text)
+        self.assertIn('ZIPON_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.ZIPON_SUPABASE_SERVICE_ROLE_KEY }}', text)
+        self.assertIn('SUPABASE_URL: ${{ secrets.SUPABASE_URL }}', text)
+
+    def test_the_deploy_doc_lists_the_new_space_secrets(self):
+        text = (ROOT / 'docs/deploy.md').read_text(encoding='utf-8')
+        self.assertIn('`ZIPON_SUPABASE_URL`', text)
+        self.assertIn('`ZIPON_SUPABASE_SERVICE_ROLE_KEY`', text)

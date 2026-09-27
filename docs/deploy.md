@@ -21,8 +21,10 @@ GitHub `main`에 push하면 GitHub Actions(`deploy-space.yml`)가 Space로 올�
    | 이름 | 값 | 비고 |
    |---|---|---|
    | `ADMIN_PASSWORD` | 관리자 비밀번호 | `/admin` 로그인 |
-   | `SUPABASE_URL` | GitHub Secrets와 같은 값 | 관리자 설정·부동산 저장 |
+   | `SUPABASE_URL` | GitHub Secrets와 같은 값 | 관리자 설정·접근관리 (기존 AI LAB) |
    | `SUPABASE_SERVICE_ROLE_KEY` | GitHub Secrets와 같은 값 | |
+   | `ZIPON_SUPABASE_URL` | `https://nnxtkvjpzqqhjlgnprzo.supabase.co` | ZIP:ON 전용 프로젝트. 없으면 위 `SUPABASE_*`로 동작 |
+   | `ZIPON_SUPABASE_SERVICE_ROLE_KEY` | zipon-realestate의 service role 키 | 서버에서만 사용 · 브라우저로 전달하지 않음 |
    | `ANTHROPIC_API_KEY` | | AI 에이전트·보고서 |
    | `OPENAI_API_KEY` | | GPT·사주 |
    | `TAVILY_API_KEY` | | 웹검색·골프 후기 |

@@ -14,6 +14,9 @@ jobs:
     timeout-minutes: 10
     env:
       PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+      # ZIP:ON 전용 프로젝트가 등록돼 있으면 그쪽을 쓰고, 없으면 기존 설정으로 동작한다.
+      ZIPON_SUPABASE_URL: ${{ secrets.ZIPON_SUPABASE_URL }}
+      ZIPON_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.ZIPON_SUPABASE_SERVICE_ROLE_KEY }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
     steps:

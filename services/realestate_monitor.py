@@ -165,11 +165,19 @@ def get_api_status():
 def _supabase_config():
     """Return the Cloud database settings when Supabase is configured.
 
-    Local development deliberately continues to use SQLite when these secrets
-    are absent, so existing data and the standalone scheduler keep working.
+    ZIP:ON has its own Supabase project in production, so ZIPON_SUPABASE_* wins
+    when it is set. Without it the existing AI LAB settings are used, which keeps
+    current local and scheduler setups working. The service role key is read on
+    the server only and never reaches the browser.
+
+    Local development deliberately continues to use SQLite when neither pair is
+    configured, so existing data and the standalone scheduler keep working.
     """
-    url = _secret("SUPABASE_URL")
-    key = _secret("SUPABASE_SERVICE_ROLE_KEY")
+    # URL과 키는 한 쌍으로만 쓴다. 한쪽만 설정된 상태에서 두 프로젝트의 값이
+    # 섞이면 잘못된 프로젝트에 잘못된 키로 접속하게 된다.
+    zipon = (_secret("ZIPON_SUPABASE_URL"), _secret("ZIPON_SUPABASE_SERVICE_ROLE_KEY"))
+    shared = (_secret("SUPABASE_URL"), _secret("SUPABASE_SERVICE_ROLE_KEY"))
+    url, key = zipon if all(zipon) else shared
     if not url or not key:
         return None
     return url.rstrip("/"), key
