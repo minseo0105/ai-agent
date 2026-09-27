@@ -35,6 +35,8 @@ export type TradeDetail = Record<string, string>;
 export type DevelopmentProject = {
   project_id: string;
   name: string;
+  official_id: string | null;
+  official_authority: string | null;
   type_label: string;
   program_label: string | null;
   district: string | null;
@@ -58,6 +60,13 @@ export type DevelopmentContext = {
   projects: DevelopmentProject[];
   notice: string | null;
   reason_label: string | null;
+};
+
+export type DevelopmentSummary = {
+  status: "ok" | "unavailable";
+  reason: string | null;
+  total: number;
+  districts: { district: string; total: number; verified: number; by_type: Record<string, number>; type_labels: Record<string, number> }[];
 };
 
 export type DevelopmentSearch = {
@@ -139,6 +148,7 @@ export const estateApi = {
   options: () => request<EstateOptions>("/options"),
   subscriptions: (q: { kind: "apt" | "unsold"; regions: string[]; supply_types: string[]; kinds: string[]; statuses: string[] }) =>
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
+  developmentSummary: () => request<DevelopmentSummary>("/development/summary"),
   development: (q: { sigungu?: string; longitude?: number; latitude?: number; radius_m?: number; limit?: number }) =>
     post<DevelopmentSearch>("/development/search", q),
   trades: async (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number; max_area?: number; include_development?: boolean }, onProgress?: (done: number, total: number) => void) => {

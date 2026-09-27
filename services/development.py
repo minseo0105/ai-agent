@@ -21,6 +21,30 @@ def search_projects(*, longitude=None, latitude=None, sigungu=None, radius_m=100
         # No raw errors/URLs/credentials in browser responses.
         return {'status': 'unavailable', 'nearby_projects': [], 'reason': 'DEVELOPMENT_UNAVAILABLE'}
 
+def district_summary(limit=1000):
+    """자치구별 적재 현황. 읽기 전용 REST GET 한 번으로 계산한다."""
+    if not rm._using_remote_db():
+        return {'status': 'unavailable', 'districts': [], 'total': 0, 'reason': 'NOT_CONFIGURED'}
+    try:
+        rows = rm._remote_request('GET', 'development_projects', params={
+            'select': 'sigungu,project_type,validation_status', 'limit': limit})
+    except Exception:
+        return {'status': 'unavailable', 'districts': [], 'total': 0, 'reason': 'DEVELOPMENT_UNAVAILABLE'}
+    grouped = {}
+    for row in rows or []:
+        district = row.get('sigungu') or '미확인'
+        bucket = grouped.setdefault(district, {'district': district, 'total': 0, 'by_type': {},
+                                               'verified': 0})
+        bucket['total'] += 1
+        kind = row.get('project_type') or 'OTHER'
+        bucket['by_type'][kind] = bucket['by_type'].get(kind, 0) + 1
+        if row.get('validation_status') == 'VERIFIED':
+            bucket['verified'] += 1
+    districts = sorted(grouped.values(), key=lambda b: (-b['total'], b['district']))
+    return {'status': 'ok', 'districts': districts, 'total': sum(b['total'] for b in districts),
+            'reason': None}
+
+
 def attach_context(rows, *, radius_m=1000, budget=10):
     """Bound lookups per request. Never guess coordinates from a dong centroid."""
     cache = {}

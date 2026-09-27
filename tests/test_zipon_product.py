@@ -284,3 +284,153 @@ class QuarantineResolutionTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+WEB = ROOT / 'web/src'
+
+
+def read(path):
+    return (WEB / path).read_text(encoding='utf-8')
+
+
+class DevelopmentSummaryTests(unittest.TestCase):
+    rows = [{'sigungu': '강동구', 'project_type': 'RECONSTRUCTION', 'validation_status': 'NEEDS_REVIEW'},
+            {'sigungu': '강동구', 'project_type': 'REDEVELOPMENT', 'validation_status': 'NEEDS_REVIEW'},
+            {'sigungu': '송파구', 'project_type': 'SHINTONG', 'validation_status': 'VERIFIED'}]
+
+    def test_counts_are_grouped_by_district_and_type(self):
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=self.rows):
+            summary = dev.district_summary()
+        self.assertEqual(summary['status'], 'ok')
+        self.assertEqual(summary['total'], 3)
+        self.assertEqual(summary['districts'][0]['district'], '강동구')
+        self.assertEqual(summary['districts'][0]['total'], 2)
+        self.assertEqual(summary['districts'][1]['verified'], 1)
+
+    def test_it_reads_only(self):
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=self.rows) as request:
+            dev.district_summary()
+        self.assertEqual(request.call_args.args[0], 'GET')
+
+    def test_an_unavailable_store_degrades_quietly(self):
+        with patch.object(rm, '_using_remote_db', return_value=False):
+            self.assertEqual(dev.district_summary()['reason'], 'NOT_CONFIGURED')
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', side_effect=RuntimeError('secret must not leak')):
+            summary = dev.district_summary()
+        self.assertEqual(summary['districts'], [])
+        self.assertNotIn('secret', json.dumps(summary, ensure_ascii=False))
+
+    def test_the_endpoint_adds_readable_type_labels(self):
+        from api.realestate import development_summary
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=self.rows):
+            result = asyncio.run(development_summary())
+        self.assertEqual(result['districts'][0]['type_labels'], {'재건축': 1, '재개발': 1})
+        self.assertEqual(result['districts'][1]['type_labels'], {'신속통합기획': 1})
+
+
+class ScreenCompactnessTests(unittest.TestCase):
+    """Static checks for the review findings: tall hero, duplicate nav, open region list."""
+
+    def test_the_hero_is_compact_and_has_no_long_paragraph(self):
+        hero = read('app/realestate/page.tsx')
+        self.assertIn('내 집과 관심지역의 부동산 변화를 한눈에', hero)
+        self.assertIn('실거래 · 청약 · 개발사업 · 관심지역 모니터링', hero)
+        self.assertNotIn('py-8', hero)
+        self.assertNotIn('공식 자료로 확인하고, 관심지역의 새로운 변화를 계속 지켜봅니다', hero)
+
+    def test_navigation_is_not_duplicated(self):
+        monitor = read('components/realestate/EstateMonitor.tsx')
+        self.assertNotIn('Capabilities', monitor)
+        self.assertEqual(monitor.count('<Segmented'), 1)
+        self.assertIn('overflow-x-auto', monitor)
+
+    def test_every_tab_is_reachable_from_the_one_navigation(self):
+        monitor = read('components/realestate/EstateMonitor.tsx')
+        for label in ('실거래', '청약', '개발사업', '모니터링', '알림'):
+            self.assertIn(f'label: "{label}"', monitor.replace('label: unread ? `알림 ${unread}` : "알림"',
+                                                              'label: "알림"'))
+
+    def test_the_region_picker_starts_collapsed_and_scrolls_the_page_not_a_box(self):
+        picker = read('components/realestate/RegionPicker.tsx')
+        self.assertIn('const [open, setOpen] = useState(false)', picker)
+        self.assertIn('지역 선택 ›', picker)
+        self.assertIn('지역 변경', picker)
+        self.assertIn('선택 완료', picker)
+        self.assertNotIn('overflow-y-auto', picker)
+        self.assertNotIn('max-h-', picker)
+
+    def test_the_region_picker_supports_a_single_district(self):
+        picker = read('components/realestate/RegionPicker.tsx')
+        self.assertIn('if (max === 1) return onChange([region])', picker)
+
+    def test_trade_filters_keep_price_and_area_behind_the_disclosure(self):
+        filters = read('components/realestate/TradeFilters.tsx')
+        self.assertIn('상세조건', filters)
+        self.assertIn('const [advanced, setAdvanced] = useState(false)', filters)
+        head, advanced = filters.split('{advanced && (', 1)
+        self.assertNotIn('최대 매매가격', head)
+        self.assertNotIn('최대 면적', head)
+        self.assertIn('최대 매매가격', advanced)
+        self.assertIn('주변 개발정보 함께 보기', advanced)
+
+    def test_applied_conditions_collapse_into_chips(self):
+        monitor = read('components/realestate/EstateMonitor.tsx')
+        self.assertIn('<FilterChips value={applied} />', monitor)
+        self.assertIn('조건 변경', monitor)
+
+    def test_the_transaction_card_keeps_details_collapsed(self):
+        card = read('components/realestate/TransactionCard.tsx')
+        head = card.split('<CollapsibleDetails', 1)[0]
+        for field in ('build_year', 'road_name', 'jibun', 'source_label'):
+            self.assertNotIn(field, head)
+        for field in ('price_text', 'property_type', 'floor', 'date'):
+            self.assertIn(field, head)
+        self.assertIn('trade.detail', card)
+
+    def test_detail_rows_skip_empty_values(self):
+        self.assertIn('if (!value) return null;', read('components/realestate/CollapsibleDetails.tsx'))
+
+    def test_the_development_tab_loads_without_a_search_button(self):
+        tab = read('components/realestate/DevelopmentTab.tsx')
+        self.assertIn('useEffect', tab)
+        self.assertIn('developmentSummary()', tab)
+        self.assertNotIn('개발사업 찾기', tab)
+        self.assertIn('if (summary) load(districts)', tab)
+
+    def test_the_development_tab_shows_counts_and_filters_from_the_data(self):
+        tab = read('components/realestate/DevelopmentTab.tsx')
+        for piece in ('전체', '재건축', '재개발', '신속통합기획'):
+            self.assertIn(piece, tab)
+        self.assertIn('const stages = [...new Set(projects.map((p) => p.stage.label))]', tab)
+        self.assertIn('진행단계 전체', tab)
+
+    def test_the_development_card_separates_verified_from_list_mapped(self):
+        card = read('components/realestate/DevelopmentCard.tsx')
+        self.assertIn('project.stage_basis', card)
+        self.assertIn('project.trust.label', card)
+        self.assertIn('공식 ID', card)
+        self.assertIn('추진 프로그램', card)
+        self.assertIn('공식자료 ↗', card)
+        self.assertIn('{url && (', card)
+        for token in ('NEEDS_REVIEW', 'UNVERIFIED', 'ASSOCIATION_APPROVED', 'RECONSTRUCTION'):
+            self.assertNotIn(token, card)
+
+    def test_touch_targets_and_wrapping_are_mobile_safe(self):
+        for name in ('RegionPicker.tsx', 'TradeFilters.tsx', 'DevelopmentTab.tsx',
+                     'DevelopmentCard.tsx', 'CollapsibleDetails.tsx'):
+            source = read('components/realestate/' + name)
+            self.assertIn('min-h-', source, name)
+            self.assertNotIn('w-[', source, name)
+            self.assertNotIn('overflow-x-scroll', source, name)
+        self.assertIn('break-words', read('components/realestate/DevelopmentCard.tsx'))
+        self.assertIn('min-w-0', read('components/realestate/TransactionCard.tsx'))
+
+    def test_only_selected_and_primary_elements_are_burgundy(self):
+        tab = read('components/realestate/DevelopmentTab.tsx')
+        # 선택되지 않은 필터는 중립색을 쓴다.
+        self.assertIn('border border-border text-muted hover:text-fg', tab)
+        self.assertIn('bg-estate text-white', tab)

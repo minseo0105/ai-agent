@@ -1,74 +1,139 @@
 "use client";
 
 import { useState } from "react";
-import { ChoiceChips, Segmented, inputClass } from "@/components/golf/ui";
+import { Segmented, inputClass } from "@/components/golf/ui";
 
 const short = (r: string) => r.replace(/^(서울|경기) > /, "");
+const CHIP = "min-h-9 rounded-full px-3 py-1.5 text-xs font-bold transition";
 
-/** 서울·경기 시군구 복수 선택: 범위 전환 + 검색 + 칩. 값은 "서울 > 송파구" 형식 그대로. */
+/**
+ * 기본은 접힌 상태. '지역 선택 / 지역 변경'을 눌렀을 때만 목록을 펼치고, 선택을 마치면 다시 접는다.
+ * 값은 "서울 > 송파구" 형식을 그대로 유지한다.
+ */
 export default function RegionPicker({
   regions,
   value,
   onChange,
-  defaultScope = "전체",
   selectWholeScope = false,
+  max,
 }: {
   regions: { 서울: string[]; 경기: string[] };
   value: string[];
   onChange: (v: string[]) => void;
-  defaultScope?: "서울" | "경기" | "전체";
   selectWholeScope?: boolean;
+  max?: number;
 }) {
-  const [scope, setScope] = useState<"서울" | "경기" | "전체">(defaultScope);
+  const [open, setOpen] = useState(false);
+  const [scope, setScope] = useState<"서울" | "경기">("서울");
   const [q, setQ] = useState("");
-  const pool = scope === "서울" ? regions.서울 : scope === "경기" ? regions.경기 : [...regions.서울, ...regions.경기];
-  const visible = pool.filter((r) => !q.trim() || r.includes(q.trim()));
+  const all = [...regions.서울, ...regions.경기];
+  const pool = scope === "서울" ? regions.서울 : regions.경기;
+  const keyword = q.trim();
+  const visible = keyword ? all.filter((r) => r.includes(keyword)) : pool;
+  const atLimit = typeof max === "number" && value.length >= max;
 
-  // 칩에는 짧은 이름을 보여주고, 선택값은 원래 형식으로 유지한다.
-  const toFull = (s: string) => visible.find((r) => short(r) === s) ?? s;
-  const wholeSelected = selectWholeScope && pool.length > 0 && pool.every((r) => value.includes(r));
-  const selectedShort = wholeSelected ? [] : value.filter((v) => visible.includes(v)).map(short);
-  const wholeLabel = scope === "전체" ? "서울·경기 전체" : `${scope} 전체`;
+  function pick(region: string) {
+    if (value.includes(region)) return onChange(value.filter((r) => r !== region));
+    if (max === 1) return onChange([region]);
+    if (atLimit) return;
+    onChange([...value, region]);
+  }
+
+  if (!open) {
+    return (
+      <div className="flex flex-wrap items-center gap-1.5">
+        {value.length === 0 ? (
+          <>
+            {selectWholeScope && (
+              <button type="button" onClick={() => onChange(all)} className={`${CHIP} border border-border text-muted hover:text-fg`}>
+                서울·경기 전체
+              </button>
+            )}
+            <button type="button" onClick={() => setOpen(true)} className={`${CHIP} bg-estate px-3.5 text-white`}>
+              지역 선택 ›
+            </button>
+          </>
+        ) : (
+          <>
+            {value.slice(0, 8).map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => onChange(value.filter((x) => x !== r))}
+                aria-label={`${short(r)} 선택 해제`}
+                className={`${CHIP} bg-estate-soft text-estate`}
+              >
+                {short(r)} <span aria-hidden className="ml-0.5 opacity-60">×</span>
+              </button>
+            ))}
+            {value.length > 8 && <span className="text-xs font-semibold text-muted">+{value.length - 8}곳</span>}
+            <button type="button" onClick={() => setOpen(true)} className={`${CHIP} border border-border text-muted hover:text-fg`}>
+              지역 변경
+            </button>
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-2">
+    <div className="rounded-2xl border border-border bg-surface p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <Segmented value={scope} options={["서울", "경기", "전체"] as const} onChange={(next) => {
-          setScope(next);
-          setQ("");
-
-        }} ariaLabel="지역 범위" />
-        <input className={`${inputClass} max-w-48 py-1.5`} value={q} onChange={(e) => setQ(e.target.value)} placeholder="구·시 검색" />
-        {value.length > 0 && (
-          <button type="button" onClick={() => onChange([])} className="text-xs font-semibold text-muted hover:text-fg">
-            선택 {value.length}곳 · 모두 해제
-          </button>
-        )}
-      </div>
-      {selectWholeScope && <p className="text-xs text-muted">아래에서 전체 또는 원하는 시·군·구를 선택하세요. 전체 선택 후 개별 지역을 누르면 해당 지역만 선택됩니다. 다른 시도의 선택은 유지됩니다.</p>}
-      <div className="max-h-44 overflow-y-auto rounded-2xl border border-border p-3">
-        {selectWholeScope && (
-          <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-border pb-3">
-            <button type="button" aria-pressed={wholeSelected} onClick={() => onChange(wholeSelected ? value.filter((r) => !pool.includes(r)) : [...new Set([...value, ...pool])])} className={`rounded-full border px-3 py-1.5 text-xs font-bold ${wholeSelected ? "border-estate bg-estate text-white" : "border-border text-estate"}`}>
-              {wholeSelected ? "✓ " : ""}{wholeLabel}
-            </button>
-            <button type="button" onClick={() => onChange(value.filter((r) => !pool.includes(r)))} className="text-xs text-muted hover:text-fg">이 지역 선택 해제</button>
-          </div>
-        )}
-        <ChoiceChips
-          accent="estate"
-          options={visible.map(short)}
-          selected={selectedShort}
-          onToggle={(s) => {
-            const full = toFull(s);
-            onChange(wholeSelected ? [...value.filter((r) => !pool.includes(r)), full] : value.includes(full) ? value.filter((x) => x !== full) : [...value, full]);
-          }}
+        <Segmented value={scope} options={["서울", "경기"] as const} onChange={(next) => setScope(next)} ariaLabel="지역 범위" />
+        <input
+          className={`${inputClass} min-w-0 flex-1 py-1.5`}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="구·시 검색"
+          aria-label="지역 검색"
         />
+      </div>
+      {keyword && <p className="mt-1.5 text-[11px] text-subtle">‘{keyword}’ 검색 결과 · 서울·경기 전체에서 찾습니다.</p>}
+      <div className="mt-2.5 flex flex-wrap gap-1.5">
+        {visible.map((r) => {
+          const selected = value.includes(r);
+          return (
+            <button
+              key={r}
+              type="button"
+              aria-pressed={selected}
+              disabled={!selected && atLimit && max !== 1}
+              onClick={() => pick(r)}
+              className={`${CHIP} ${
+                selected ? "bg-estate text-white" : "border border-border text-muted hover:text-fg disabled:opacity-40"
+              }`}
+            >
+              {short(r)}
+            </button>
+          );
+        })}
         {visible.length === 0 && <p className="text-xs text-subtle">검색 결과가 없어요.</p>}
       </div>
-      {value.some((v) => !visible.includes(v)) && (
-        <p className="text-[11px] text-subtle">다른 범위에서 선택한 지역: {value.filter((v) => !visible.includes(v)).map(short).join(", ")}</p>
-      )}
+      <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-2.5">
+        <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted">
+          {selectWholeScope && max !== 1 && (
+            <button type="button" onClick={() => onChange([...new Set([...value, ...pool])])} className="hover:text-fg">
+              {scope} 전체 추가
+            </button>
+          )}
+          {value.length > 0 && (
+            <button type="button" onClick={() => onChange([])} className="hover:text-fg">
+              모두 해제
+            </button>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setQ("");
+            setOpen(false);
+          }}
+          className="min-h-11 rounded-xl bg-estate px-5 text-sm font-extrabold text-white"
+        >
+          선택 완료{value.length > 0 ? ` · ${value.length}곳` : ""}
+        </button>
+      </div>
+      {atLimit && max !== 1 && <p className="mt-1.5 text-[11px] text-subtle">최대 {max}곳까지 선택할 수 있어요.</p>}
     </div>
   );
 }

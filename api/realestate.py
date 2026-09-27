@@ -188,6 +188,15 @@ class DevelopmentQuery(BaseModel):
     limit: int = Field(30, ge=1, le=100)
 
 
+@router.get('/development/summary')
+async def development_summary():
+    result = await run_in_threadpool(development.district_summary)
+    districts = [dict(bucket, type_labels={presentation.TYPE_LABELS.get(k, '기타'): v
+                                           for k, v in bucket['by_type'].items()})
+                 for bucket in result.get('districts') or []]
+    return dict(result, districts=districts)
+
+
 @router.post('/development/search')
 async def development_search(q: DevelopmentQuery):
     if (q.longitude is None) != (q.latitude is None):

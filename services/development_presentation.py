@@ -75,6 +75,8 @@ def present_project(row):
     return {
         'project_id': row.get('project_id'),
         'name': row.get('project_name'),
+        'official_id': row.get('external_id'),
+        'official_authority': row.get('official_authority'),
         'type_label': TYPE_LABELS.get(row.get('project_type'), '기타'),
         'program_label': PROGRAM_LABELS.get(row.get('program')),
         'district': row.get('sigungu'), 'dong': row.get('dong'),

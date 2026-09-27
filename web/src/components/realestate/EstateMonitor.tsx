@@ -498,39 +498,6 @@ function AlertTab({ onUnread }: { onUnread: (n: number) => void }) {
   );
 }
 
-// ------------------------------------------------------------------ 진입 안내
-
-const CAPABILITIES: { tab: Tab; icon: string; title: string; desc: string }[] = [
-  { tab: "실거래 조회", icon: "📈", title: "실거래", desc: "내가 찾는 지역의 실제 거래가격 확인" },
-  { tab: "청약 조회", icon: "🏗️", title: "청약", desc: "서울·경기 청약 일정과 조건 탐색" },
-  { tab: "개발사업", icon: "🧭", title: "개발사업", desc: "내 집 주변 재개발·재건축·신속통합기획 확인" },
-  { tab: "모니터링 조건", icon: "🔔", title: "관심지역", desc: "새 거래·청약·개발 변화를 계속 모니터링" },
-];
-
-function Capabilities({ active, onPick }: { active: Tab; onPick: (tab: Tab) => void }) {
-  return (
-    <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-      {CAPABILITIES.map((c) => (
-        <button
-          key={c.tab}
-          type="button"
-          onClick={() => onPick(c.tab)}
-          aria-current={active === c.tab}
-          className={`min-h-20 rounded-2xl border p-3 text-left transition ${
-            active === c.tab ? "border-estate/50 bg-estate-soft" : "border-border bg-surface hover:border-estate/30"
-          }`}
-        >
-          <span className="text-base" aria-hidden>
-            {c.icon}
-          </span>
-          <div className="mt-1 text-sm font-extrabold leading-tight">{c.title}</div>
-          <p className="mt-0.5 text-[11px] leading-snug text-muted">{c.desc}</p>
-        </button>
-      ))}
-    </div>
-  );
-}
-
 // ------------------------------------------------------------------ 페이지
 
 export default function EstateMonitor() {
@@ -554,21 +521,22 @@ export default function EstateMonitor() {
           PUBLIC_DATA_API_KEY가 없어요. .streamlit/secrets.toml의 [realestate] 설정을 확인해 주세요.
         </p>
       )}
-      <Capabilities active={tab} onPick={setTab} />
-      <Segmented
-        value={tab}
-        onChange={setTab}
-        full
-        ariaLabel="ZIP:ON 메뉴"
+      <div className="-mx-1 overflow-x-auto px-1 pb-0.5">
+        <Segmented
+          value={tab}
+          onChange={setTab}
+          full
+          ariaLabel="ZIP:ON 메뉴"
         options={[
-          { value: "실거래 조회" as const, label: "실거래" },
-          { value: "청약 조회" as const, label: "청약" },
-          { value: "개발사업" as const, label: "개발사업" },
-          { value: "모니터링 조건" as const, label: "모니터링" },
-          { value: "알림함" as const, label: unread ? `알림 ${unread}` : "알림" },
-        ]}
-      />
-      <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm sm:p-6">
+            { value: "실거래 조회" as const, label: "실거래" },
+            { value: "청약 조회" as const, label: "청약" },
+            { value: "개발사업" as const, label: "개발사업" },
+            { value: "모니터링 조건" as const, label: "모니터링" },
+            { value: "알림함" as const, label: unread ? `알림 ${unread}` : "알림" },
+          ]}
+        />
+      </div>
+      <div className="rounded-2xl border border-border bg-surface p-3 shadow-sm sm:p-5">
         {/* 탭을 숨겨도 입력값·결과가 유지되도록 언마운트하지 않는다 */}
         <div hidden={tab !== "청약 조회"}>
           <SubscriptionTab options={options} />
