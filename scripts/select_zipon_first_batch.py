@@ -13,6 +13,7 @@ import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from services.development_collector import MAX_IMPORT_BATCH
+from services.development_identity import latent_overlap, program_identities
 from services.development_official import compact, now
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,22 +23,6 @@ DRYRUN_FILE = DATA / 'import_batch_01_dryrun_20260927.json'
 DRY_RUN_FIELDS = ('canonical_id', 'project_id', 'external_id', 'project_name', 'project_type',
                   'program', 'district', 'dong', 'address', 'stage', 'stage_raw', 'status',
                   'validation_status', 'source_name', 'source_url', 'content_hash')
-
-
-def program_identities(projects):
-    """Names published by a program list (신속통합기획 / 모아타운) rather than by the
-    business registry. A registry name that contains one of these is very likely
-    the same physical project under its official business name."""
-    return sorted({(p['location']['district'], compact(p['identity']['official_project_name']))
-                   for p in projects if not p['classification']['official_registry_row']
-                   and len(compact(p['identity']['official_project_name'])) >= 3})
-
-
-def latent_overlap(project, identities):
-    name = compact(project['identity']['official_project_name'])
-    return [{'district': district, 'program_name': program}
-            for district, program in identities
-            if district == project['location']['district'] and program in name]
 
 
 def eligible(project, identities=()):
