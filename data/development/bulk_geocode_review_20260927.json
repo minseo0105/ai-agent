@@ -1,0 +1,401 @@
+{
+  "generated_at": "2026-09-27T11:23:06.537400+00:00",
+  "db_write": false,
+  "source": "zipon-bulk-geocode-v1",
+  "provider": "naver",
+  "target_total": 128,
+  "scope": {
+    "canonical_total": 183,
+    "address_available": 149,
+    "address_missing": 34,
+    "in_database": 130,
+    "geocode_target": 128,
+    "in_database_without_address": 2,
+    "address_but_quarantined": 21
+  },
+  "format": "zipon-bulk-geocode-review-v1",
+  "note": "자동 선택하지 않는다. 사람이 공식 주소와 NAVER 후보를 비교한다.",
+  "items": [
+    {
+      "project_id": "02b9c94c-8b6c-5297-affa-1e827181afb0",
+      "project_name": "둔촌주공아파트 주택재건축정비사업조합",
+      "official_address": "서울특별시 강동구 둔촌동 172",
+      "district": "강동구",
+      "dong": "둔촌동",
+      "candidate_count": 3,
+      "review_reason": "MULTIPLE_PROVIDER_CANDIDATES",
+      "naver_candidates": [
+        {
+          "jibun_address": "서울특별시 강동구 둔촌동 172-1",
+          "road_address": "서울특별시 강동구 양재대로84길 63",
+          "longitude": 127.1362933,
+          "latitude": 37.5245396,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "강동구",
+            "DONGMYUN": "둔촌동",
+            "ROAD_NAME": "양재대로84길",
+            "BUILDING_NUMBER": "63",
+            "LAND_NUMBER": "172-1",
+            "POSTAL_CODE": "05411"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 강동구 둔촌동 170-1 둔촌파출소",
+          "road_address": "서울특별시 강동구 양재대로 1340 둔촌파출소",
+          "longitude": 127.1387571,
+          "latitude": 37.526937,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "강동구",
+            "DONGMYUN": "둔촌동",
+            "ROAD_NAME": "양재대로",
+            "BUILDING_NUMBER": "1340",
+            "BUILDING_NAME": "둔촌파출소",
+            "LAND_NUMBER": "170-1",
+            "POSTAL_CODE": "05409"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 강동구 둔촌동 176-2 서울위례초등학교",
+          "road_address": "서울특별시 강동구 명일로 23 서울위례초등학교",
+          "longitude": 127.1393017,
+          "latitude": 37.5220622,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "강동구",
+            "DONGMYUN": "둔촌동",
+            "ROAD_NAME": "명일로",
+            "BUILDING_NUMBER": "23",
+            "BUILDING_NAME": "서울위례초등학교",
+            "LAND_NUMBER": "176-2",
+            "POSTAL_CODE": "05410"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "returned_district": null,
+      "returned_dong": null,
+      "returned_lot": null,
+      "wanted_dong": "둔촌동",
+      "wanted_lot": "172",
+      "decision": null,
+      "decided_by": null,
+      "decided_at": null
+    },
+    {
+      "project_id": "da41f6bc-a63d-5481-b0da-d53ad853be2d",
+      "project_name": "신반포5차아파트 주택재건축정비사업 조합",
+      "official_address": "서울특별시 서초구 잠원동 64-8",
+      "district": "서초구",
+      "dong": "잠원동",
+      "candidate_count": 3,
+      "review_reason": "MULTIPLE_PROVIDER_CANDIDATES",
+      "naver_candidates": [
+        {
+          "jibun_address": "서울특별시 서초구 잠원동 64-3",
+          "road_address": "서울특별시 서초구 잠원로 145-9",
+          "longitude": 127.0088581,
+          "latitude": 37.5161801,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "서초구",
+            "DONGMYUN": "잠원동",
+            "ROAD_NAME": "잠원로",
+            "BUILDING_NUMBER": "145-9",
+            "LAND_NUMBER": "64-3",
+            "POSTAL_CODE": "06514"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 서초구 잠원동 63-13 잠원씨제이빌리지",
+          "road_address": "서울특별시 서초구 잠원로 130 잠원씨제이빌리지",
+          "longitude": 127.0085698,
+          "latitude": 37.5147575,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "서초구",
+            "DONGMYUN": "잠원동",
+            "ROAD_NAME": "잠원로",
+            "BUILDING_NUMBER": "130",
+            "BUILDING_NAME": "잠원씨제이빌리지",
+            "LAND_NUMBER": "63-13",
+            "POSTAL_CODE": "06519"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 서초구 잠원동 65-8 잠원한신그린아파트",
+          "road_address": "서울특별시 서초구 신반포로33길 71 잠원한신그린아파트",
+          "longitude": 127.0078811,
+          "latitude": 37.5133686,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "서초구",
+            "DONGMYUN": "잠원동",
+            "ROAD_NAME": "신반포로33길",
+            "BUILDING_NUMBER": "71",
+            "BUILDING_NAME": "잠원한신그린아파트",
+            "LAND_NUMBER": "65-8",
+            "POSTAL_CODE": "06520"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "returned_district": null,
+      "returned_dong": null,
+      "returned_lot": null,
+      "wanted_dong": "잠원동",
+      "wanted_lot": "64-8",
+      "decision": null,
+      "decided_by": null,
+      "decided_at": null
+    },
+    {
+      "project_id": "2501d1c5-9cfa-5a29-8828-4cc22d05dc45",
+      "project_name": "이화연립 주택재건축정비사업조합",
+      "official_address": "서울특별시 송파구 풍납동 153",
+      "district": "송파구",
+      "dong": "풍납동",
+      "candidate_count": 3,
+      "review_reason": "MULTIPLE_PROVIDER_CANDIDATES",
+      "naver_candidates": [
+        {
+          "jibun_address": "서울특별시 송파구 풍납동 153-2",
+          "road_address": "",
+          "longitude": 127.1209136,
+          "latitude": 37.5361302,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "풍납동",
+            "LAND_NUMBER": "153-2"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 풍납동 152-2",
+          "road_address": "서울특별시 송파구 바람드리길 52",
+          "longitude": 127.121373,
+          "latitude": 37.5371369,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "풍납동",
+            "ROAD_NAME": "바람드리길",
+            "BUILDING_NUMBER": "52",
+            "LAND_NUMBER": "152-2",
+            "POSTAL_CODE": "05518"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 풍납동 154",
+          "road_address": "서울특별시 송파구 풍성로25나길 6",
+          "longitude": 127.1202815,
+          "latitude": 37.5354881,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "풍납동",
+            "ROAD_NAME": "풍성로25나길",
+            "BUILDING_NUMBER": "6",
+            "LAND_NUMBER": "154",
+            "POSTAL_CODE": "05521"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "returned_district": null,
+      "returned_dong": null,
+      "returned_lot": null,
+      "wanted_dong": "풍납동",
+      "wanted_lot": "153",
+      "decision": null,
+      "decided_by": null,
+      "decided_at": null
+    },
+    {
+      "project_id": "ba93bd0e-a8f9-51b5-9000-e3f58f14354a",
+      "project_name": "마천4재정비촉진구역 주택재개발정비사업조합",
+      "official_address": "서울특별시 송파구 마천동 323",
+      "district": "송파구",
+      "dong": "마천동",
+      "candidate_count": 3,
+      "review_reason": "MULTIPLE_PROVIDER_CANDIDATES",
+      "naver_candidates": [
+        {
+          "jibun_address": "서울특별시 송파구 마천동 323-1",
+          "road_address": "서울특별시 송파구 마천로61마길 12-10",
+          "longitude": 127.1539594,
+          "latitude": 37.4928342,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "마천동",
+            "ROAD_NAME": "마천로61마길",
+            "BUILDING_NUMBER": "12-10",
+            "LAND_NUMBER": "323-1",
+            "POSTAL_CODE": "05763"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 322-1",
+          "road_address": "서울특별시 송파구 마천로61마길 10",
+          "longitude": 127.1544672,
+          "latitude": 37.4931815,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "마천동",
+            "ROAD_NAME": "마천로61마길",
+            "BUILDING_NUMBER": "10",
+            "LAND_NUMBER": "322-1",
+            "POSTAL_CODE": "05763"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 324",
+          "road_address": "서울특별시 송파구 성내천로 316",
+          "longitude": 127.1558017,
+          "latitude": 37.4924895,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "마천동",
+            "ROAD_NAME": "성내천로",
+            "BUILDING_NUMBER": "316",
+            "LAND_NUMBER": "324",
+            "POSTAL_CODE": "05763"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "returned_district": null,
+      "returned_dong": null,
+      "returned_lot": null,
+      "wanted_dong": "마천동",
+      "wanted_lot": "323",
+      "decision": null,
+      "decided_by": null,
+      "decided_at": null
+    },
+    {
+      "project_id": "de10ea8a-e0ad-57ec-9adf-806ede5d38da",
+      "project_name": "마천3재정비촉진구역 주택재개발정비사업조합",
+      "official_address": "서울특별시 송파구 마천동 283",
+      "district": "송파구",
+      "dong": "마천동",
+      "candidate_count": 3,
+      "review_reason": "MULTIPLE_PROVIDER_CANDIDATES",
+      "naver_candidates": [
+        {
+          "jibun_address": "서울특별시 송파구 마천동 283-1",
+          "road_address": "서울특별시 송파구 성내천로49길 2-1",
+          "longitude": 127.1561031,
+          "latitude": 37.4937938,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "마천동",
+            "ROAD_NAME": "성내천로49길",
+            "BUILDING_NUMBER": "2-1",
+            "LAND_NUMBER": "283-1",
+            "POSTAL_CODE": "05760"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 282-2",
+          "road_address": "서울특별시 송파구 성내천로51길 13",
+          "longitude": 127.1575093,
+          "latitude": 37.4936066,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "마천동",
+            "ROAD_NAME": "성내천로51길",
+            "BUILDING_NUMBER": "13",
+            "LAND_NUMBER": "282-2",
+            "POSTAL_CODE": "05760"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 284-2",
+          "road_address": "서울특별시 송파구 성내천로49길 2",
+          "longitude": 127.1561878,
+          "latitude": 37.4936029,
+          "accuracy": "PARCEL",
+          "address_elements": {
+            "SIDO": "서울특별시",
+            "SIGUGUN": "송파구",
+            "DONGMYUN": "마천동",
+            "ROAD_NAME": "성내천로49길",
+            "BUILDING_NUMBER": "2",
+            "LAND_NUMBER": "284-2",
+            "POSTAL_CODE": "05760"
+          },
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "returned_district": null,
+      "returned_dong": null,
+      "returned_lot": null,
+      "wanted_dong": "마천동",
+      "wanted_lot": "283",
+      "decision": null,
+      "decided_by": null,
+      "decided_at": null
+    }
+  ]
+}
