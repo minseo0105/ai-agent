@@ -1,0 +1,299 @@
+{
+  "generated_at": "2026-09-27T01:34:34.848748+00:00",
+  "format": "zipon-verification-report-v1",
+  "db_write": false,
+  "inputs": {
+    "pilot_20260927.json": {
+      "path": "data/development/pilot_20260927.json",
+      "sha256": "8b6086ecec306270dc9f1d285e392e4e1b20b79a512772a85e0004fe244885a5"
+    },
+    "pilot_canonical_20260927.json": {
+      "path": "data/development/pilot_canonical_20260927.json",
+      "sha256": "fa30481995eb48da4eab0ae04756da5ccd32d223ab82a11b315cf1704a6c3eb1"
+    },
+    "pilot_duplicate_review_20260927.json": {
+      "path": "data/development/pilot_duplicate_review_20260927.json",
+      "sha256": "c7016b72c023348e0d443b01768b025ef9fe17e678f9910519be92541262c8e9"
+    },
+    "canary_20260927.json": {
+      "path": "data/development/canary_20260927.json",
+      "sha256": "0c9d7575124da14b6498c0a19e4ea5740ed2acd96fd55fe7e098b3223587ffeb"
+    },
+    "candidates": 183,
+    "previous_canonical_projects": 183,
+    "probable_duplicate_pairs": 18
+  },
+  "identity": {
+    "same_project": 0,
+    "different_project": 0,
+    "still_ambiguous": 18,
+    "pairs_reviewed": 18,
+    "canonical_projects_after_verified_merge": 183,
+    "merged_projects": 0
+  },
+  "quality_state": {
+    "NEEDS_REVIEW": 52,
+    "PARTIALLY_VERIFIED": 131
+  },
+  "quality_reasons": {
+    "NO_OFFICIAL_ADDRESS": 34,
+    "NO_OFFICIAL_IDENTIFIER": 34,
+    "OFFICIAL_DETAIL_IDENTITY_NOT_READ": 183,
+    "STATUS_NOT_OFFICIALLY_ESTABLISHED": 164,
+    "UNRESOLVED_DUPLICATE_CANDIDATE": 36
+  },
+  "stage": {
+    "officially_mapped": 183,
+    "unresolved": 0,
+    "distribution": {
+      "ASSOCIATION_APPROVED": 35,
+      "ASSOCIATION_DISSOLVED": 21,
+      "ASSOCIATION_LIQUIDATION": 16,
+      "CANDIDATE": 1,
+      "COMMITTEE": 21,
+      "COMPLETED": 10,
+      "CONSTRUCTION": 4,
+      "DEMOLITION": 2,
+      "DESIGNATED": 2,
+      "IMPLEMENTATION_APPROVED": 9,
+      "IMPLEMENTER_DESIGNATED": 3,
+      "MANAGEMENT_DISPOSITION": 13,
+      "PARTIAL_COMPLETION": 1,
+      "PLANNING": 12,
+      "PLAN_DELIBERATION": 8,
+      "PLAN_NOTICED": 12,
+      "SAFETY_DIAGNOSIS": 1,
+      "SALES": 3,
+      "TRANSFER_NOTICE": 9
+    }
+  },
+  "status": {
+    "verified": 19,
+    "unknown": 164,
+    "distribution": {
+      "COMPLETED": 19,
+      "UNKNOWN": 164
+    },
+    "hypotheses": {
+      "ACTIVE_LISTED_UNCONFIRMED": 126,
+      "ACTIVE_PROBABLE_REMAINING_WORK": 1,
+      "AMBIGUOUS_COMPLETED_OR_CANCELLED": 21,
+      "COMPLETED_PROBABLE_POST_TRANSFER": 16,
+      "NONE": 19
+    }
+  },
+  "address": {
+    "verified": 149,
+    "unresolved": 34,
+    "road_address": 0,
+    "dong_resolved": 149,
+    "dong_corrected_from_pilot": 47
+  },
+  "geocoding": {
+    "coordinates_obtained": 0,
+    "coordinate_verified": 0,
+    "geocode_review": 0,
+    "unresolved": 183,
+    "provider": {
+      "provider_calls": 0,
+      "cache_hits": 0,
+      "duplicates_avoided": 0,
+      "unique_normalized_addresses": 149,
+      "addresses_submitted": 149,
+      "provider_configured": false,
+      "cache_directory": "data/development/cache/geocode"
+    }
+  },
+  "boundary": {
+    "verified_polygons": 0,
+    "unresolved": 183,
+    "spatial_relation_capability": {
+      "UNKNOWN": 183
+    }
+  },
+  "official_cache": {
+    "requests": 0,
+    "cache_hits": 0,
+    "duplicates_avoided": 0,
+    "unique_official_identities": 183,
+    "candidates": 183,
+    "official_pages_requested": 1,
+    "official_pages_fetched": 0,
+    "detail_pages_fetched": 0,
+    "duplicate_requests_avoided": 4,
+    "cache_directory": "data/development/cache/official_detail",
+    "cache_entries": 1,
+    "list_page_discovery": {
+      "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650": {
+        "result_status": "FETCH_FAILED",
+        "detail_endpoint_confirmed": false,
+        "error_type": "ProxyError"
+      },
+      "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710": {
+        "result_status": "SKIPPED_HOST_UNAVAILABLE",
+        "detail_endpoint_confirmed": false,
+        "error_type": "ProxyError"
+      },
+      "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740": {
+        "result_status": "SKIPPED_HOST_UNAVAILABLE",
+        "detail_endpoint_confirmed": false,
+        "error_type": "ProxyError"
+      },
+      "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do": {
+        "result_status": "SKIPPED_HOST_UNAVAILABLE",
+        "detail_endpoint_confirmed": false,
+        "error_type": "ProxyError"
+      },
+      "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do": {
+        "result_status": "SKIPPED_HOST_UNAVAILABLE",
+        "detail_endpoint_confirmed": false,
+        "error_type": "ProxyError"
+      }
+    }
+  },
+  "by_district": {
+    "강동구": 59,
+    "서초구": 72,
+    "송파구": 52
+  },
+  "by_canonical_type": {
+    "RECONSTRUCTION": 156,
+    "REDEVELOPMENT": 27
+  },
+  "by_program": {
+    "FAST_TRACK": 34,
+    "NONE": 149
+  },
+  "failures": [
+    {
+      "source": "cleanup.seoul.go.kr",
+      "url": "https://cleanup.seoul.go.kr/",
+      "failure_reason": "ProxyError",
+      "observed_at": "2026-09-27T01:34:34.566266+00:00",
+      "retry_recommendation": "allow the host in the environment network policy, then rerun scripts/verify_zipon_development.py --fetch-official"
+    },
+    {
+      "source": "seoul_moa",
+      "url": "https://news.seoul.go.kr/citybuild/moa-housing-town/policy/status",
+      "failure_reason": "ConnectTimeout",
+      "observed_at": "2026-09-26T23:59:18.249784+00:00",
+      "retry_recommendation": "no confirmed alternative official endpoint; recollect once the host answers. Counts are never substituted."
+    },
+    {
+      "source": "geocoder",
+      "url": "https://api.vworld.kr/req/address",
+      "failure_reason": "VWORLD_API_KEY_NOT_CONFIGURED",
+      "observed_at": null,
+      "retry_recommendation": "reuse the VWorld credentials this project already uses for golf (no new paid API), allow api.vworld.kr in the network policy, then rerun with --geocode"
+    }
+  ],
+  "import": {
+    "canonical_projects": 183,
+    "import_eligible": 127,
+    "batches": 13,
+    "excluded_needs_review": 52,
+    "excluded_existing_canary": 8
+  },
+  "official_detail_log": [
+    {
+      "cache_key": "url-c55b290806142b545753aafaeca794d6",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "87a5f7f2-7a33-54d4-99d7-dafb7c02309d"
+    },
+    {
+      "cache_key": "url-20fdd4d3cf0b32325ecf66e93d2ac950",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "a7d5adab-6b21-5d66-acee-c7d25e5ae7bf"
+    },
+    {
+      "cache_key": "url-368271b22dd290d2c8123ab993f60a62",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "8ab19fc2-5f02-54a8-9568-6a3ef0218ec4"
+    },
+    {
+      "cache_key": "url-bf342355809d87b7b2dba17b24e4a7ab",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "429dc953-a406-56ff-871d-0ced658be69f"
+    },
+    {
+      "cache_key": "url-18563c87e28cd218a4fc5d2f8b4cfff5",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "835dbf81-7d28-5481-afa3-e6d6f56d0ec1"
+    },
+    {
+      "cache_key": "url-9ce04c7f1b5216d0b50e10daff13213e",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "e03dc797-31ac-589b-b2aa-3f9cc311abe3"
+    },
+    {
+      "cache_key": "url-74529f9bcdfc7d46708b9661b12d5b6c",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "85e282d7-3fc6-5a4c-b3da-8ec05f41b4d9"
+    },
+    {
+      "cache_key": "url-ea709500d0862e4eba853ab8f7e9452d",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "4a15b332-f101-5010-ab66-3ab8fa1239ef"
+    },
+    {
+      "cache_key": "url-a3ddf0184c0469b6e52649973d7276be",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "8b732a9d-a2c8-5cad-8a4d-b26967a54317"
+    },
+    {
+      "cache_key": "url-017199cd88f45d43def028f73fdb8992",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "8be78340-d0d9-554e-966c-5e6d0f927812"
+    },
+    {
+      "cache_key": "url-50582164053f042f821b2694e9284aae",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "5ccbcbdc-1b13-54de-8ba1-6d9c169dd3c8"
+    },
+    {
+      "cache_key": "url-06b7be7dba6acf3ff4be59b2095e9e86",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "b0994645-743a-5c16-84d7-1c875fd291d3"
+    },
+    {
+      "cache_key": "url-1e6cd7bee17ad76a7d52639753ebeaf8",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "0d3e824d-64fb-5946-a219-4ccff857c211"
+    },
+    {
+      "cache_key": "url-944836d087aebfca47c94fba0a51db6c",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "b61d0d95-b28c-5082-95dd-70b82256bbcd"
+    },
+    {
+      "cache_key": "url-236a8cd7875db6a0d97440afc6d87978",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "2e97fcb8-c1e7-56a2-8964-fc4183f6f010"
+    },
+    {
+      "cache_key": "url-465afe42d0a52b73f3124296cb5c6188",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "29599d13-7703-5e8a-bf98-fb4535f5218b"
+    },
+    {
+      "cache_key": "url-9f5e6e107ffce2358b17654a697574ee",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "3e9705dd-2b30-5f53-ab65-ec03ca53f216"
+    },
+    {
+      "cache_key": "url-3a10f6755e38b8ad1b7a04e00dbfd6e4",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "4ac6d330-9046-546e-9035-93a03de9438e"
+    },
+    {
+      "cache_key": "url-c9d9428d9fa781bf04c894c90ef956eb",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "19ebf09c-e4ec-5255-99dd-b30c5353f502"
+    },
+    {
+      "cache_key": "url-b3a4b5ca0798f7b80d12f5926d80e5f5",
+      "result_status": "NO_CONFIRMED_DETAIL_ENDPOINT",
+      "project_id": "73ca3d71-36de-53d2-962c-d19d4bf87c69"
+    }
+  ]
+}

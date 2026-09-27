@@ -12,6 +12,14 @@ from urllib.parse import urlsplit
 import requests
 from bs4 import BeautifulSoup
 
+from services.development_official import dong_from_address
+
+# The identity seed is frozen: the pilot records and the canary rows already in
+# the database were derived from the project name verbatim. Parser fixes must not
+# silently re-identify an existing project, so a change here needs a new version
+# and a mapping migration.
+IDENTITY_NORMALIZER_VERSION = 'seoul-identity-v1'
+
 DISTRICTS = {'강동구': '11740', '송파구': '11710', '서초구': '11650'}
 SOURCES = [
  {'id': 'seoul_moa', 'name': '서울시 모아타운 추진현황', 'kind': 'moa',
@@ -78,7 +86,7 @@ def parse_page(content, source, collected_at=None):
             pos = cells.index(district)
             if len(cells) <= pos + 2: continue
             external_id = None; address = None; stage_raw = None; area = None; units = None
-            dates = re.findall(r'd{4}-d{2}-d{2}', ' '.join(cells))
+            dates = re.findall(r'\d{4}-\d{2}-\d{2}', ' '.join(cells))
             if source['kind'] == 'directory':
                 category, name = cells[pos+1:pos+3]
                 kind = 'REDEVELOPMENT' if '재개발' in category else 'RECONSTRUCTION' if '재건축' in category else None
@@ -92,17 +100,20 @@ def parse_page(content, source, collected_at=None):
                 area = number(cells[pos+2])
                 if source['kind'] != 'moa' and len(cells) > pos+4:
                     units = number(cells[pos+3]); stage_raw = cells[pos+4]
-                if re.search(r'[동리가]s*d', name): address = name
+                # A 신속통합기획 row whose 구역명 is itself a lot ("천호동 392-9") is
+                # an official representative address, not an inferred one.
+                if re.search(r'[동리가]\s*\d', name): address = name
             if not name or name in ('사업장명','대표 지번','구역명'): continue
             address = ('서울특별시 ' + district + ' ' + address) if address else None
-            identity = 'cleanup:' + external_id if external_id else source['id'] + ':' + district + ':' + re.sub(r's+', '', name)
+            identity = 'cleanup:' + external_id if external_id else f"{source['id']}:{district}:{name}"
             pid = str(uuid.uuid5(uuid.NAMESPACE_URL, identity))
-            evidence = {'cells': cells, 'source_url': source['url'], 'parser_version': 'seoul-tables-v1', 'observed_dates': dates}
+            evidence = {'cells': cells, 'source_url': source['url'], 'parser_version': 'seoul-tables-v1',
+                        'identity_normalizer': IDENTITY_NORMALIZER_VERSION, 'observed_dates': dates}
             content_hash = digest(evidence)
             record = {'project_id': pid, 'project_name': name, 'project_type': kind,
               'official_authority': 'cleanup.seoul.go.kr' if external_id else None,
               'external_id': external_id, 'sido': '서울특별시', 'sigungu': district,
-              'dong': (re.search(r'([가-힣0-9]+동)', address or '') or [None])[0],
+              'dong': dong_from_address(address, district),
               'address': address, 'stage': None, 'stage_raw': stage_raw,
               'status': 'UNKNOWN', 'validation_status': 'NEEDS_REVIEW',
               'area_m2': area, 'planned_units': int(units) if units is not None else None,

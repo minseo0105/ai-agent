@@ -1,6 +1,11 @@
 # ZIP:ON development sprint — 2026-09-27
 
-## Applied locally, not deployed
+## Applied locally, not deployed (superseded)
+
+> 2026-09-27: migrations, both RPCs, the spatial postcheck and the 8-record canary import have since
+> been applied and verified on the real `zipon-realestate` project. See
+> `docs/zipon_rpc_predeploy_20260927.md` and `docs/zipon_development_verification_20260927.md`.
+
 
 Shared server-only Supabase headers now support sb_secret_ via apikey only and legacy keys via apikey + Bearer. Monitor and access settings use the same helper. SQLite and access local-file fallback selection are unchanged. No production configuration was read or changed and no Supabase write was performed in this sprint. Completed migrations and REST compatibility tests were NOT rerun.
 

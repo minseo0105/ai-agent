@@ -1,0 +1,15 @@
+{
+  "fetched_at": "2026-09-27T01:34:34.566266+00:00",
+  "source_system": "cleanup.seoul.go.kr",
+  "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+  "external_id": null,
+  "parser_version": "cleanup-detail-v1",
+  "result_status": "FETCH_FAILED",
+  "http_status": null,
+  "content_hash": null,
+  "parsed_fields": {},
+  "evidence": {
+    "error_type": "ProxyError"
+  },
+  "cache_key": "url-113c8c93b726a3258b52ffb1be3507f3"
+}
