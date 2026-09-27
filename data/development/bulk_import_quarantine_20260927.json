@@ -1,0 +1,784 @@
+{
+  "format": "zipon-bulk-quarantine-v1",
+  "generated_at": "2026-09-27T03:23:06.145516+00:00",
+  "db_write": false,
+  "policy": "quarantined candidates are never written; they wait for review",
+  "totals": {
+    "quarantined": 53,
+    "already_in_db": 18,
+    "identity_conflict": 0,
+    "duplicate_risk": 38
+  },
+  "items": [
+    {
+      "project_id": "03d67646-267c-54f9-a294-5a762414f009",
+      "canonical_id": "c5a35d71-3bca-58be-9981-195dd479e65e",
+      "project_name": "성내현대",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "07ccf38f-9862-514d-97d7-75a84043e466",
+      "canonical_id": "14fdf374-dcf2-5e4b-b37b-0fb17a63cf07",
+      "project_name": "신반포19차 25차(아) 재건축정비사업조합",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "0d3e824d-64fb-5946-a219-4ccff857c211",
+      "canonical_id": "def55110-be95-5a9b-abae-093229fd129a",
+      "project_name": "풍납미성",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "0e723f58-c159-5f6d-a38b-6e16a32e8882",
+      "canonical_id": "a1cf2cee-ea8f-5b29-b7be-ae2522e0773d",
+      "project_name": "서초진흥",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "10329810-3b72-5eb0-acee-19150cf17522",
+      "canonical_id": "5d2fd5ef-588c-5572-9a35-dd75f7d84d8c",
+      "project_name": "올림픽선수기자촌아파트 재건축정비사업 조합설립추진위원회",
+      "district": "송파구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "10a263ab-289b-571b-93a5-5ecd977c5abb",
+      "canonical_id": "ca49f40b-57a4-5b2c-9b45-8d2445edfb3d",
+      "project_name": "상일동 빌라단지 통합 재건축",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP"
+      ],
+      "quality_state": "PARTIALLY_VERIFIED"
+    },
+    {
+      "project_id": "19ebf09c-e4ec-5255-99dd-b30c5353f502",
+      "canonical_id": "6f605c5f-af67-5e04-959b-f55842951136",
+      "project_name": "올림픽선수기자촌",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "1ca48798-0a29-553f-afac-46efd1c56293",
+      "canonical_id": "d337883a-b76f-5d34-99ce-af409f3804fc",
+      "project_name": "천호동 214-19번지 일대 재개발정비사업(천호 3-1구역)",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP"
+      ],
+      "quality_state": "PARTIALLY_VERIFIED"
+    },
+    {
+      "project_id": "246da9b5-497f-53f2-8737-3a06116be474",
+      "canonical_id": "556d18ae-6382-565a-8160-bab0c37eb121",
+      "project_name": "대우효령",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "29599d13-7703-5e8a-bf98-fb4535f5218b",
+      "canonical_id": "26111ee5-765e-530d-86b6-04894c4e4c06",
+      "project_name": "송파한양1차",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "2e97fcb8-c1e7-56a2-8964-fc4183f6f010",
+      "canonical_id": "9fe56fc8-f563-54dd-9327-16ceaed32275",
+      "project_name": "반포미도2차",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "2f72ad85-8727-5708-8428-9e1355b61225",
+      "canonical_id": "6e857fba-237d-52b9-80a9-cbb2188d7f21",
+      "project_name": "오금대림",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "38625430-ec34-529c-8a5d-5a8298d58795",
+      "canonical_id": "e5139d35-5293-5e6b-97ab-7952cdeeae60",
+      "project_name": "명일우성아파트 재건축정비사업",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "3b2e34a3-e6e3-5803-8257-fdb5d7f58532",
+      "canonical_id": "56806355-a25d-5f19-ac60-053d9d58c146",
+      "project_name": "방배대우효령아파트 주택재건축정비사업 조합설립추진위원회",
+      "district": "서초구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP"
+      ],
+      "quality_state": "PARTIALLY_VERIFIED"
+    },
+    {
+      "project_id": "3e9705dd-2b30-5f53-ab65-ec03ca53f216",
+      "canonical_id": "ac067a71-4a18-5371-ac59-092179c89a2c",
+      "project_name": "신반포19차,25차",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "3eb1507c-7ea2-50bf-bf0f-6886e65b2189",
+      "canonical_id": "77bdd3c8-16a8-5205-af09-776ebe0797b2",
+      "project_name": "장미1,2,3차아파트 주택재건축정비사업 조합",
+      "district": "송파구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "4517bb03-f27b-5c9a-bb1b-050b28abb39f",
+      "canonical_id": "f0cf153d-1c00-5772-b814-5ef3da65e1d3",
+      "project_name": "성내 현대아파트 재건축 정비사업",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "45864c99-b646-531f-a3d0-7dba9fcc8f49",
+      "canonical_id": "d345d8c0-cb5c-5815-9224-2719254f5f00",
+      "project_name": "반포미도2차아파트 재건축정비사업 조합설립추진위원회",
+      "district": "서초구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "46ee293a-af3e-568a-ba5d-b7fbd8ada6e9",
+      "canonical_id": "67fb4dd1-2b73-50f9-8d71-14371cd69664",
+      "project_name": "서초현대",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "4a15b332-f101-5010-ab66-3ab8fa1239ef",
+      "canonical_id": "d842d147-4e22-5169-8454-280362e8cbfc",
+      "project_name": "잠실주공5단지",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "4ac6d330-9046-546e-9035-93a03de9438e",
+      "canonical_id": "02da74f2-3c73-52bc-96f1-bfbb0aa867a6",
+      "project_name": "풍납극동",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "4b52530e-b2f5-5c51-ac76-6e1ce1c5cc65",
+      "canonical_id": "0658b9ba-24a5-5dad-9123-3d64ca46ba1c",
+      "project_name": "서초진흥아파트 주택재건축정비사업조합",
+      "district": "서초구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "4c399aba-0bfd-52d6-a64f-c178e22ef492",
+      "canonical_id": "048cf469-caa5-5435-8530-ae71ac30ed43",
+      "project_name": "방배삼호아파트 주택재건축정비사업 조합설립추진위원회",
+      "district": "서초구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "5110c858-0e90-5558-82a4-32eded2cdeed",
+      "canonical_id": "400ca27a-6bdc-5c40-9633-4664b692bec7",
+      "project_name": "상일동빌라",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "545ab0bf-f6e4-56e3-88ff-ebb79dcf97b2",
+      "canonical_id": "c3207853-762e-5bb7-a0af-acfc704ccf4b",
+      "project_name": "고덕현대아파트 재건축정비사업",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "58afd20b-3369-50d3-a36c-75df2e29550e",
+      "canonical_id": "e245da7b-40d3-583a-8d9c-d9e9da7efae7",
+      "project_name": "가락우창아파트 재건축정비사업",
+      "district": "송파구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "5ccbcbdc-1b13-54de-8ba1-6d9c169dd3c8",
+      "canonical_id": "56dd0152-868d-52c7-9816-77a3432a68cf",
+      "project_name": "명일한양",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "674c3cc2-3dc0-5be3-99d3-6aa54c8236db",
+      "canonical_id": "cd0a7c1b-9818-51a1-b63d-e89b49218b36",
+      "project_name": "풍납극동아파트 재건축정비사업",
+      "district": "송파구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "73ca3d71-36de-53d2-962c-d19d4bf87c69",
+      "canonical_id": "577c617a-8244-5857-9681-b0b5ec609776",
+      "project_name": "방배삼호",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "835dbf81-7d28-5481-afa3-e6d6f56d0ec1",
+      "canonical_id": "d5832ef7-1d58-5cd4-b33d-15053b532752",
+      "project_name": "천호3-2",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "85e282d7-3fc6-5a4c-b3da-8ec05f41b4d9",
+      "canonical_id": "20abfe7d-df52-59e4-b601-a6867e944d84",
+      "project_name": "천호3-1",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "87a5f7f2-7a33-54d4-99d7-dafb7c02309d",
+      "canonical_id": "4f4e391c-6b7e-5d32-8e1e-70fea24b5f47",
+      "project_name": "천호A1-2",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "87e3f394-d9a3-577c-9390-17717e24fc63",
+      "canonical_id": "aaabfd8f-e6fb-53bd-b8df-136b3bb9ee84",
+      "project_name": "마천5재정비촉진구역 재개발정비사업조합",
+      "district": "송파구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "8b732a9d-a2c8-5cad-8a4d-b26967a54317",
+      "canonical_id": "bc55f20b-bfa2-50c7-b37e-516ab3704d4e",
+      "project_name": "명일 신동아",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "8be78340-d0d9-554e-966c-5e6d0f927812",
+      "canonical_id": "3d2af25a-ec5e-5cba-934f-7337f86f7711",
+      "project_name": "올림픽훼밀리타운",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "9d3ef8b8-56ea-58e1-a333-ba602f5fb5f3",
+      "canonical_id": "be4611a1-aa92-5c62-b798-244fe45f3924",
+      "project_name": "명일 한양아파트 재건축정비사업",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "a7d5adab-6b21-5d66-acee-c7d25e5ae7bf",
+      "canonical_id": "c349652b-6699-510e-a2e9-a514b0128c76",
+      "project_name": "마천5",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "a9d053a8-f67f-5d28-aeae-af7f77919ce7",
+      "canonical_id": "2a345374-efa3-5664-98fc-dffb6d008216",
+      "project_name": "올림픽훼밀리타운 재건축정비사업 조합설립추진위원회",
+      "district": "송파구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "b00c15ac-c515-5f5a-bb78-e101279f34d7",
+      "canonical_id": "129afe47-4bae-56d3-85e1-7b9e12db2e78",
+      "project_name": "잠원한강",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "b0994645-743a-5c16-84d7-1c875fd291d3",
+      "canonical_id": "8355a966-22d6-502d-abfc-f93b5742b318",
+      "project_name": "(방배)임광3차",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "b28bbc74-337e-561e-bd4f-ab69e6fd66c6",
+      "canonical_id": "6b97b303-5e14-50d6-bb11-b789c1e04689",
+      "project_name": "천호동 461-31번지 일대 재개발정비사업(천호 A1-2)",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP"
+      ],
+      "quality_state": "PARTIALLY_VERIFIED"
+    },
+    {
+      "project_id": "b61d0d95-b28c-5082-95dd-70b82256bbcd",
+      "canonical_id": "796ed5b3-c721-5305-8bcc-82566e588f4f",
+      "project_name": "가락우창",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "b8e34111-1352-5998-b4ae-8f79e6de5ffe",
+      "canonical_id": "113c4ebb-0603-5f91-a85d-679e15a0cb3d",
+      "project_name": "고덕현대",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "cb0bc26f-513b-5c8e-8d2e-de065cc16b87",
+      "canonical_id": "2dcb1e4a-14e9-50f5-b9f4-df6f522749e9",
+      "project_name": "장미1,2,3차",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "ceacc5c4-8d2d-5ddf-928d-88fecec91925",
+      "canonical_id": "3ad6ec4e-5322-5c80-a4b0-7a8c17d432e5",
+      "project_name": "고덕주공9",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "d320a9a8-d064-520c-a193-22d467d223c2",
+      "canonical_id": "cb93db39-3268-5fa8-ad2b-58f53a24691d",
+      "project_name": "신반포2차",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "d69784f4-6c37-57e9-adf8-1936892f20f9",
+      "canonical_id": "48104925-3fce-527d-aea0-58cc896e82c5",
+      "project_name": "풍납미성아파트 재건축정비사업",
+      "district": "송파구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "d91bba3e-3b28-5e39-8180-64af2c3475bb",
+      "canonical_id": "6fb66693-53cc-53c5-9840-0d06412e808e",
+      "project_name": "양재우성",
+      "district": "서초구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "dde643d9-3840-5e4c-82da-90661137edb7",
+      "canonical_id": "88e9e955-2871-52d3-b231-8100f09a883e",
+      "project_name": "신반포2차아파트 재건축정비사업조합",
+      "district": "서초구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP",
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "e03dc797-31ac-589b-b2aa-3f9cc311abe3",
+      "canonical_id": "56e676b5-17b2-54d3-9bc3-c99af717c180",
+      "project_name": "천호3-3",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "e1d272d0-cf48-54d0-9ee5-d19f1363c70a",
+      "canonical_id": "b8be2550-0761-5375-95e4-4eb573eb4678",
+      "project_name": "명일우성",
+      "district": "강동구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    },
+    {
+      "project_id": "e8fce8a3-a5ed-5a96-8d80-75a5dffeb4b3",
+      "canonical_id": "897ac5b7-fc22-52f4-a0f1-dc8aaa48789e",
+      "project_name": "고덕주공9단지아파트 재건축정비사업",
+      "district": "강동구",
+      "reasons": [
+        "LATENT_PROGRAM_IDENTITY_OVERLAP"
+      ],
+      "quality_state": "PARTIALLY_VERIFIED"
+    },
+    {
+      "project_id": "fa21eb9f-8348-54d3-8d86-5a8a0d76eb86",
+      "canonical_id": "f71f64ae-4272-5882-83b0-7676487f025e",
+      "project_name": "송파한양2차",
+      "district": "송파구",
+      "reasons": [
+        "QUALITY_STATE_NEEDS_REVIEW",
+        "IDENTITY_NOT_SETTLED",
+        "NO_OFFICIAL_EXTERNAL_ID",
+        "NO_OFFICIAL_ADDRESS"
+      ],
+      "quality_state": "NEEDS_REVIEW"
+    }
+  ],
+  "already_in_database": [
+    {
+      "project_id": "0164b2b0-1b21-51e3-8b8d-f97bda852a18",
+      "canonical_id": "e9599985-b990-5359-9e36-65b76cef8074",
+      "project_name": "신반포25차아파트주택재건축정비사업조합설립추진위원회",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "02b9c94c-8b6c-5297-affa-1e827181afb0",
+      "canonical_id": "1ec313d9-59fe-5b77-bbe3-abdc5a4675d7",
+      "project_name": "둔촌주공아파트 주택재건축정비사업조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "070e2349-2569-5652-8d56-bc8080b20304",
+      "canonical_id": "013ea6cb-fe69-5407-8073-fa17fb088a1d",
+      "project_name": "송파한양2차아파트 재건축정비사업 조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "0922ac26-1436-5158-853d-49d3c5aed7fb",
+      "canonical_id": "0b485946-9f60-5399-abf3-2f4ccd80539c",
+      "project_name": "천호 A1-1구역 공공재개발 정비사업 주민대표회의",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "0cfa354d-f9ac-5516-aa2a-1f6767c0aa98",
+      "canonical_id": "4b88c119-6683-53a6-b1a3-952c27e8c258",
+      "project_name": "마천2재정비촉진구역 주택재개발정비사업",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "429dc953-a406-56ff-871d-0ced658be69f",
+      "canonical_id": "c83a665d-7e31-5f10-9a3c-bd1fd143ee78",
+      "project_name": "천호동 392-9",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "75fad2a2-efe7-5e55-b6e5-10b7e31066f0",
+      "canonical_id": "4957f40e-db72-5766-9d2a-02b785d50b45",
+      "project_name": "신반포21차아파트 주택재건축정비사업조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "7fa5391f-055e-52db-8255-c04705f14e37",
+      "canonical_id": "4cf7ef98-4894-5768-89f8-b437c7ca6c36",
+      "project_name": "신반포18차 337동 주택재건축정비사업조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "8ab19fc2-5f02-54a8-9568-6a3ef0218ec4",
+      "canonical_id": "30c2384f-baa4-5e83-af58-7723e6174d03",
+      "project_name": "마천2",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "cf230af2-e3a2-57b6-a36e-af3ae0ee7153",
+      "canonical_id": "4a1ba7cb-2f9e-5b72-9aa3-6d9b12934b8a",
+      "project_name": "거여새마을구역(LH)",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "d643b796-868b-5d43-a5d3-db95919113fc",
+      "canonical_id": "b6a216a7-d7a4-53af-b63c-05363b4e111f",
+      "project_name": "천호1 도시환경정비사업조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "da41f6bc-a63d-5481-b0da-d53ad853be2d",
+      "canonical_id": "037eac1a-467c-5111-b9b7-e58d64daa040",
+      "project_name": "신반포5차아파트 주택재건축정비사업 조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "dde3dfc6-ca79-5226-b3c6-a16a9872043c",
+      "canonical_id": "0dcb58ad-d364-5aca-9d0f-69c3d8558347",
+      "project_name": "내방세권역활성화사업",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "canary"
+    },
+    {
+      "project_id": "e8233bc5-9483-5d7f-a6dc-b94e45ab9f60",
+      "canonical_id": "f2c07845-ede4-5e25-b08a-b99bb080b8b0",
+      "project_name": "천호4촉진구역 도시환경정비사업 조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "eb5bfd23-202f-5b7e-b47c-fed295ab3042",
+      "canonical_id": "6f96753d-507c-5ca2-b55e-15abaa44d649",
+      "project_name": "강동역세권2구역 도시정비형 재개발사업",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "ef0b76be-d0ba-5bee-9b24-deaa80bd5c3e",
+      "canonical_id": "39ab2b71-8208-5288-8d28-40781ce8d55e",
+      "project_name": "천호동 397-419번지 일대 주택정비형재개발사업조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "f3ed8e0a-3804-557c-9eb7-5f6e195e9e81",
+      "canonical_id": "38f9ee04-1551-5678-b655-c4b971378028",
+      "project_name": "거여2재정비촉진구역제2지구 주택재개발정비사업조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    },
+    {
+      "project_id": "f7f59645-22de-5d0e-9460-52bf05903133",
+      "canonical_id": "37e40b1c-159e-5474-b0d9-8146f93de66f",
+      "project_name": "거여2재정비촉진구역 1지구 주택재개발정비사업조합",
+      "kind": "ALREADY_IN_DATABASE",
+      "origin": "first_batch"
+    }
+  ]
+}

@@ -1,0 +1,3923 @@
+{
+  "format": "zipon-bulk-import-plan-v1",
+  "generated_at": "2026-09-27T03:23:06.145516+00:00",
+  "target_project_ref": "nnxtkvjpzqqhjlgnprzo",
+  "db_write": false,
+  "rpc": "rpc/zipon_ingest_candidate_v2",
+  "maximum_batch_size": 10,
+  "policy": [
+    "eligible only: official identity, address, stage and provenance",
+    "projects already in the database are idempotent skips",
+    "identity collisions and unsettled identities are quarantined",
+    "payload never carries stage, status, validation_status or geometry",
+    "seoul-identity-v1 is frozen: project_id is used as collected"
+  ],
+  "totals": {
+    "total_source": 183,
+    "already_in_db": 18,
+    "eligible": 112,
+    "quarantined": 53,
+    "batch_count": 12,
+    "expected_new": 112,
+    "expected_update": 0,
+    "identity_conflict": 0,
+    "duplicate_risk": 38
+  },
+  "by_district": {
+    "강동구": 33,
+    "서초구": 51,
+    "송파구": 28
+  },
+  "by_type": {
+    "RECONSTRUCTION": 105,
+    "REDEVELOPMENT": 7
+  },
+  "baseline": {
+    "canary": 8,
+    "first_batch": 10,
+    "total": 18
+  },
+  "dry_run_result": "PASS",
+  "batches": [
+    {
+      "batch_id": "bulk-01",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "75b06636-3292-5705-ae25-4ca3f4e503a2",
+          "project_id": "dc140d3e-8e62-5a6d-b5ba-9fa95b61bf90",
+          "external_id": "chunho8",
+          "project_name": "천호8재정비촉진구역 도시정비형 재개발사업 조합",
+          "project_type": "REDEVELOPMENT",
+          "program": null,
+          "district": "강동구",
+          "dong": "천호동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 천호동 166-4",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "c3b15fef7f4834f417a879cc9aa17a348769355b4fdf967b42a87054dfdb515c",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "c1130236-44f5-50b5-a0ee-caa683f1405a",
+          "project_id": "c73e85dd-9467-5057-a43b-f89a35eb3f1e",
+          "external_id": "bangbae6",
+          "project_name": "방배6구역 주택재건축 정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 818-14",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "8f13007c18fc13379c535752db4c5673789a54a474ee0a20f3927ece51876e54",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "5560dba5-d9ea-5a7e-bf82-8360f1306ca1",
+          "project_id": "f6214930-a708-5029-a382-f6778ba91bde",
+          "external_id": "macheon-1",
+          "project_name": "마천1재정비촉진구역 주택재개발정비사업조합",
+          "project_type": "REDEVELOPMENT",
+          "program": null,
+          "district": "송파구",
+          "dong": "마천동",
+          "dong_in_raw_record": "마천동",
+          "address": "서울특별시 송파구 마천동 194-1",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "49acea18a5da7924428409b157f4853cc3f2946bddf2e725a9c2ece3e7bfcf2d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "a6350112-f0b5-545c-98b1-ff6ed875ab4a",
+          "project_id": "e17699d4-d2a1-5908-aea7-c7b5363bb478",
+          "external_id": "gokang1",
+          "project_name": "고덕강일1역세권 재개발사업",
+          "project_type": "REDEVELOPMENT",
+          "program": null,
+          "district": "강동구",
+          "dong": "고덕동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 고덕동 294",
+          "stage": null,
+          "stage_raw": "정비계획 수립",
+          "normalized_stage": "PLANNING",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "b2dd38459f424d836fb61bec88f332b3d13424e8e8f0fd3a3722e21dd76eba11",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "c95c97a3-d029-5042-8a80-e20155a8e519",
+          "project_id": "6d9435bd-454e-533b-829a-4ffd2b08ba71",
+          "external_id": "banpohyundai",
+          "project_name": "반포현대아파트주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 30-15",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "f54fe3578ea9c35ef4e35644d752b575e67bf10ab1a79fe7ec02d911e02c545b",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "bf860637-23d8-5683-b99e-a5666bb5cc80",
+          "project_id": "ba93bd0e-a8f9-51b5-9000-e3f58f14354a",
+          "external_id": "akcjs4",
+          "project_name": "마천4재정비촉진구역 주택재개발정비사업조합",
+          "project_type": "REDEVELOPMENT",
+          "program": null,
+          "district": "송파구",
+          "dong": "마천동",
+          "dong_in_raw_record": "마천동",
+          "address": "서울특별시 송파구 마천동 323",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "67c71285f01361727f271c87b127482c2a8ab608d9c523e0f39ce5a1b3d22381",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "be8c63da-6b2c-5e7f-bc5e-8c537eca004a",
+          "project_id": "a0850dc4-ba3c-5bc4-920f-d27656f9a803",
+          "external_id": "cheonho532-2",
+          "project_name": "천호동 532-2번지 재개발사업",
+          "project_type": "REDEVELOPMENT",
+          "program": null,
+          "district": "강동구",
+          "dong": "천호동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 천호동 532-2",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "1e5994a1167c1821ef21ec238868746ed5f5676195b2278ed8150ed221da6a65",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "c95d6142-6575-5678-8632-9845aeff825f",
+          "project_id": "d37fcbd5-fa93-5be2-b44a-bcb76ac7a05c",
+          "external_id": "hs4apt",
+          "project_name": "신반포4지구 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 60-3",
+          "stage": null,
+          "stage_raw": "준공인가",
+          "normalized_stage": "COMPLETED",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "d3542204fab2e3d236c41baeb5f84b55822f7cab4818df80a9be981898f90a57",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "cd43f9c7-a54e-5e6b-b699-7472a5a7aeaf",
+          "project_id": "de10ea8a-e0ad-57ec-9adf-806ede5d38da",
+          "external_id": "macheon3",
+          "project_name": "마천3재정비촉진구역 주택재개발정비사업조합",
+          "project_type": "REDEVELOPMENT",
+          "program": null,
+          "district": "송파구",
+          "dong": "마천동",
+          "dong_in_raw_record": "마천동",
+          "address": "서울특별시 송파구 마천동 283",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "40fd2e2525f74e76a8db76fcf8bed19d40c38d6ee6e9c29962d47d2b953abb33",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "fcc38e4b-7d8d-5133-a184-c6ebf182e73d",
+          "project_id": "5ecb4d05-4fe2-555b-8160-1b51aa424c32",
+          "external_id": "sn174-13",
+          "project_name": "강동역세권(1구역) SHIFT 장기전세주택",
+          "project_type": "REDEVELOPMENT",
+          "program": null,
+          "district": "강동구",
+          "dong": "성내동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 성내동 174-13",
+          "stage": null,
+          "stage_raw": "정비구역지정",
+          "normalized_stage": "DESIGNATED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "3c1cc598582780e02d326c69e1e089ddb967e038d10f467f366032886e2a396c",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-02",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "e16bb392-1ae6-5175-a6f0-415006eca6cf",
+          "project_id": "7fc3c9c1-e225-52e6-b742-ed4b83f84af6",
+          "external_id": "OI4yD42v",
+          "project_name": "서초삼호1차아파트 주택재건축 정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "서초동",
+          "dong_in_raw_record": "서초동",
+          "address": "서울특별시 서초구 서초동 1310",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "16555fee9603931f14632cf32d51dca7fca227643fa3ffbc18797034ef8926ff",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "532e58de-8105-5144-9e94-8fb1b8ea8e1d",
+          "project_id": "1a37e972-e886-5fec-a872-80402bd47c44",
+          "external_id": "jjapt16",
+          "project_name": "잠실진주아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "신천동",
+          "dong_in_raw_record": "신천동",
+          "address": "서울특별시 송파구 신천동 20-4",
+          "stage": null,
+          "stage_raw": "준공인가",
+          "normalized_stage": "COMPLETED",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "1514cc9118c7f0dafa12ec0c07089d858736433a649379c01883d2581128d7e1",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "48838957-d6fc-507c-ac62-cec2654a272a",
+          "project_id": "1786cbb9-3cb6-5050-9e64-13517b3e21b1",
+          "external_id": "mp58WDsA",
+          "project_name": "현대연립 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "둔촌동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 둔촌동 513-1",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "31d011b55ca19a2fd1aa9a7538fc35c24eb2983f7f41201941732762b617c652",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "03509736-a3f3-5d65-8d88-3cfb9a98ad29",
+          "project_id": "ca9dc5c8-d8aa-561c-8764-c4f5a2f04f97",
+          "external_id": "bangbae13",
+          "project_name": "방배13구역 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 541-2",
+          "stage": null,
+          "stage_raw": "철거",
+          "normalized_stage": "DEMOLITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "d674b53a41d78df8d3544d79441488d6cde7bce26bf9c41c588e0e6f54322051",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "93489cdd-adf8-538d-b5d1-0f73a5872903",
+          "project_id": "b271dd2e-de82-57e3-9269-20734c765060",
+          "external_id": "jsmsapt",
+          "project_name": "잠실미성·크로바아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "신천동",
+          "dong_in_raw_record": "신천동",
+          "address": "서울특별시 송파구 신천동 17-6",
+          "stage": null,
+          "stage_raw": "준공인가",
+          "normalized_stage": "COMPLETED",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "e450fab36cd1d7a0d5f3faf0048e49c52ae0a11674e58788a71276dd999ca214",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "76c41e1a-41ca-5091-9415-3fe42944690e",
+          "project_id": "d540af87-0492-52c3-bc4a-e8329ca14ece",
+          "external_id": "GcA7n032",
+          "project_name": "길동신동아1,2차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "길동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 길동 160",
+          "stage": null,
+          "stage_raw": "준공인가",
+          "normalized_stage": "COMPLETED",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "83bfa11c1d4eee594f5d009ea7b126023dea29df12d913f4c6f2ce3e6d894c01",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "0de15688-c196-597b-bc5b-1e8cb6baae31",
+          "project_id": "4525bca3-5af9-5153-a66b-6bf078ff9d6a",
+          "external_id": "jwdaelim",
+          "project_name": "잠원동 대림아파트 주택재건축 정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 57",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "e38f5aea8ebc75a7ec8fb13c844f79b34b84bbbed8b1e0830970c5e784a859f1",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "bda8189a-184f-5125-8e45-c5b998c828aa",
+          "project_id": "806e2e28-a504-5c28-81b6-1d33379e3340",
+          "external_id": "grh5apt",
+          "project_name": "가락현대5차아파트 소규모재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "가락동",
+          "dong_in_raw_record": "가락동",
+          "address": "서울특별시 송파구 가락동 161-3",
+          "stage": null,
+          "stage_raw": "준공인가",
+          "normalized_stage": "COMPLETED",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "b7cf145d4b8e374c55031e203f80a39cc370f30bcfece9381bfc4ffc196849ac",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "9fe6ae97-4797-5d82-9dcb-202fefca0772",
+          "project_id": "3da15a55-833e-5bf9-ac4f-686a30391c0a",
+          "external_id": "gangdong2",
+          "project_name": "강동2단지아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "암사동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 암사동 413",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "363ecbb6dfd3a0e14961c5e993249158a7d298488349692482c472582d47ce99",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "1a1e79ee-83da-5873-8eaa-ff0388f0123f",
+          "project_id": "435f7ef7-3f72-5b57-84f1-2077f88c0cf0",
+          "external_id": "bangbae14",
+          "project_name": "방배14구역 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 975-35",
+          "stage": null,
+          "stage_raw": "철거",
+          "normalized_stage": "DEMOLITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "456df5b86983286ef71c72825b67769b267903ee547abcdc28e79beef3b55cb0",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-03",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "03bea0d3-eaf4-5b07-a0a8-bee8ea6ae4c4",
+          "project_id": "533bc8db-98e3-5e71-9f57-5c6210b95cf3",
+          "external_id": "Tw2w7Iwv",
+          "project_name": "잠실우성4차 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "잠실동",
+          "dong_in_raw_record": "잠실동",
+          "address": "서울특별시 송파구 잠실동 320",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "7f8e384d26f70134ddc3f1eb3437cf7d12fbc326b2eb45c99fd3c6219f822ef9",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "a3941706-b6ce-54c6-a02d-b011d117e04a",
+          "project_id": "b0226c62-7a70-52de-af09-fd5c98c32748",
+          "external_id": "c6y8omyO",
+          "project_name": "풍전연립 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "천호동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 천호동 28-32",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "9e6bcba561cbd8c2abe5728d67515049ec54b73f1a648c20d6e46bde15ad2df0",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "21074f52-5bc2-5044-bc59-a925966f3957",
+          "project_id": "f0d993f6-e0ac-5296-89f2-4a58a8eb8e7d",
+          "external_id": "shinbanpo13",
+          "project_name": "신반포13차 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 52-2",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "37bd16bb876bf54a45d1ee8af6187ab838387e22ba1db608a1fc597ad65d4374",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "07c31389-37c5-555e-aea6-dc2429483639",
+          "project_id": "472a8f82-5869-59bf-837a-078ac786b82e",
+          "external_id": "moonsarang136",
+          "project_name": "문정동 136번지일대 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "문정동",
+          "dong_in_raw_record": "문정동",
+          "address": "서울특별시 송파구 문정동 136",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "f7bac76e311935bf75e5a5b27f3d07f9a2a5f348e38ba3f34b070af8d2d1587d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "b5da6047-40b8-5a01-bc9a-ca8251e88b5b",
+          "project_id": "7d4842f9-cde6-5a8d-b40a-ecd9fc10cce7",
+          "external_id": "H3m945wk",
+          "project_name": "선화연립 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "성내동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 성내동 405-9",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "702efda11a3d875bb77c1912b195283f8494938910d148e5891ec874b57852b4",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "2cf00a4a-3d7d-578c-ab3a-9eb9919a6dad",
+          "project_id": "4ed73cfe-469f-56e0-b0c8-d9175fc7536e",
+          "external_id": "seochojh2",
+          "project_name": "서초중앙하이츠2구역 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 1000-3",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "60092a43e54a30317ee41b2c1a57610f000c65e36de80e584e142a54e1a5b5dd",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "0d3832f1-1ff2-5c55-aea4-7a9c58d4baf2",
+          "project_id": "84005086-7c24-515f-b13b-d1f6740f651e",
+          "external_id": "youcheonjohap",
+          "project_name": "유천연립 소규모재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "풍납동",
+          "dong_in_raw_record": "풍납동",
+          "address": "서울특별시 송파구 풍납동 147-1",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "eda08ac39e21b9587a30170f6d6d1e7a18c6cc7d76fc4100616061166ed32dfd",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "d6f3dd89-542d-5273-b51e-cee210b95b24",
+          "project_id": "beb38743-797d-57c2-8bfe-caa608d5b943",
+          "external_id": "u1OG3XV9",
+          "project_name": "성내미주아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "성내동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 성내동 547-1",
+          "stage": null,
+          "stage_raw": "이전고시",
+          "normalized_stage": "TRANSFER_NOTICE",
+          "status": "UNKNOWN",
+          "normalized_status": "COMPLETED",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "39b939cb2287fa8c944062d87a3609d34e962ae51430ed1524ad4ae507672d77",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "343e806b-cc70-5607-8cf4-dc1bf739c55f",
+          "project_id": "2dce67b0-141c-52ad-b9ef-715d683400bf",
+          "external_id": "seoch8",
+          "project_name": "방배경남아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 1028-1",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "ad9e8f5f78a655804493429afac73a288abdc7e98381308dc187defac37ff69b",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "1911f601-3b17-5007-9ffc-3cd674f7a3b4",
+          "project_id": "407ac11f-1ddc-5ccd-a60a-a15d31982a4f",
+          "external_id": "hCmUm22k",
+          "project_name": "가락시영아파트 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "가락동",
+          "dong_in_raw_record": "가락동",
+          "address": "서울특별시 송파구 가락동 479",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "c08dcdfef0bea9b656c934b11043ef41187ac7171914d74612c4d9ffe7412646",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-04",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "01c4fe86-f0e9-55f0-9181-8c8308707e9f",
+          "project_id": "3b3569d5-8e49-5e44-8f0e-a7d2f565ad0d",
+          "external_id": "chunho2",
+          "project_name": "천호2구역 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "천호동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 천호동 437-5",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "ad57d0b794e6377a2720e31ccfaee1f71f6f0c7309b4a561d4b2d354b1f21e7c",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "34447a82-dd1e-592c-852c-140cdccc7d63",
+          "project_id": "87941d90-662d-54fb-a528-cf0974e2fdd8",
+          "external_id": "banpomido1",
+          "project_name": "반포미도1차아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 60-4",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "c5ce549f251cca55df4b557f41215a213d651d788e0c3efde07713616ee44724",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "22cc466f-9aa8-5aae-8fbd-6b3bda958dac",
+          "project_id": "b0853521-74f9-5136-8022-563fb79d8599",
+          "external_id": "Q1qk5nF6",
+          "project_name": "잠실우성아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "잠실동",
+          "dong_in_raw_record": "잠실동",
+          "address": "서울특별시 송파구 잠실동 101-1",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "44de1b20be3110d8520efc3ef6b9777560370a979e2be8fec1efd670ae589798",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "0f41af2c-3b06-546e-b2aa-7e81582fa751",
+          "project_id": "49fe93ff-7767-531f-9943-753b7f55ac53",
+          "external_id": "JMpQDO2B",
+          "project_name": "고덕주공3단지아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "상일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 상일동 121",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "2b1a408df2aca961f8a726bc1c27b2b47c6a772795cc91faa292a63401f305e9",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "3b1318e7-d4f5-5b8d-a92e-572634deaf65",
+          "project_id": "91ad7c81-b175-5b87-b2dc-641389e89f36",
+          "external_id": "bangbae5",
+          "project_name": "방배5구역주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 946-8",
+          "stage": null,
+          "stage_raw": "착공",
+          "normalized_stage": "CONSTRUCTION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "96d2a8139dc13c960c148c7e692f71d92b481438e990ca55f18a6bd91098594c",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "316d7cf3-dbb3-59a5-bc96-5c5e295eab1b",
+          "project_id": "da4ce8fb-c7ef-5c12-a945-ef2c268ff9b3",
+          "external_id": "garakgd",
+          "project_name": "가락극동아파트 재건축사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "가락동",
+          "dong_in_raw_record": "가락동",
+          "address": "서울특별시 송파구 가락동 192",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "5ae11b84765e4e93f7313968a21f61fbb79a817b1ac733ef3c74800d0a5f7692",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "137747ee-b591-5030-898e-3fe2af412d09",
+          "project_id": "b249e804-7df9-5b62-aea9-d64016e5e6dd",
+          "external_id": "gwangsinzangmi",
+          "project_name": "광신장미 소규모재건축사업",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "성내동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 성내동 120-85",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "43d6c87faa673d75da34cb0a47d3620afea39a268fa7a383d99e1d5ce55d08b3",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "3cdc91f5-8c48-5937-8636-a87701433aa1",
+          "project_id": "9e6b1e22-210b-5cf2-89fb-439c93b22e63",
+          "external_id": "sinbanpo12",
+          "project_name": "신반포12차아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 50-5",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "87be0c9a5132dc078ed0041735db9186497a2a7be27c409660d6e20927ed336d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "3dbabbcb-5da0-5dfe-8a26-11023cddb4b9",
+          "project_id": "cb2f1e51-d744-517f-acf3-47adb08f4b69",
+          "external_id": "hanyang3",
+          "project_name": "한양3차아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "방이동",
+          "dong_in_raw_record": "방이동",
+          "address": "서울특별시 송파구 방이동 225",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "adb3f385c8b87a42b574aa3c267c79c2fccea94f65af63f48ed620cfd0d645e3",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "157cf862-e87d-59c4-8bcd-0c5a8689118e",
+          "project_id": "1effd17b-53f8-52a3-b2bc-a91c8c7ce4f7",
+          "external_id": "zRl8AA6L",
+          "project_name": "고덕주공6단지아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "상일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 상일동 124",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "e5a8eeb219ac7df7b3bcb41d8457f527df76ae309e1dca1cd7c24df08a1633a3",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-05",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "42a86e8b-43a6-5267-a7ac-edee1121626a",
+          "project_id": "9e2f2792-2083-584c-a50f-7478db80571f",
+          "external_id": "banpokyeoungnam",
+          "project_name": "반포경남아파트 주택재건축 정비사업",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 1-8",
+          "stage": null,
+          "stage_raw": "추진위원회승인",
+          "normalized_stage": "COMMITTEE",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "5c92eb7861d2fadeae6a3eb5d38efa1afc550692c6055cd7f1718d1a2170b88d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "4a1c35ef-8f03-521a-a628-2221a4a96146",
+          "project_id": "a9146688-420b-5e2e-bbcb-e39780e4542e",
+          "external_id": "jamsil5apt",
+          "project_name": "잠실5단지아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "잠실동",
+          "dong_in_raw_record": "잠실동",
+          "address": "서울특별시 송파구 잠실동 27",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "b79f57ec644339eb2fbf32695f35b7ae21a89c12acec6a223a309f8dc9fbe6e9",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "278a60f8-a9ac-5b45-a4c5-81f7b8e8e313",
+          "project_id": "d3e33f73-0c63-5515-8ce2-4b3a9dd1ce75",
+          "external_id": "QUYEw8ZX",
+          "project_name": "삼익그린맨션아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "명일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 명일동 309-1",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "e16fe3ecbd348e70eb0b48c0f8c7594d6a4fa62d32bd1726d377cc35f06991ce",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "47466175-cf65-581a-ba28-b814e4c8b96a",
+          "project_id": "ae29190a-ada7-5b76-bd19-484cc2fa7eec",
+          "external_id": "shinbanpo22",
+          "project_name": "신반포22차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 65-33",
+          "stage": null,
+          "stage_raw": "착공",
+          "normalized_stage": "CONSTRUCTION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "0f5a6ebd6f358ca4a0a692f577633fc2103989de2dc606e694c393338505acbc",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "4caaa55e-6ce6-5327-9a43-cd41f4e21fa6",
+          "project_id": "8ce0fcab-579e-54f3-ab09-df384230e52a",
+          "external_id": "hyundai",
+          "project_name": "가락1차현대아파트 재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "문정동",
+          "dong_in_raw_record": "문정동",
+          "address": "서울특별시 송파구 문정동 3",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "62b87a06e0ca7c7d8e1d8857235736804ff33c5720e6ce44d4e899a8f018e98d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "37db17f5-ee1f-5882-8468-d1ba881829b3",
+          "project_id": "57e78c4b-ee7a-535a-b02b-b283befeb9df",
+          "external_id": "myeongilshindonga",
+          "project_name": "명일동 신동아아파트 재건축정비사업",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "명일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 명일동 44",
+          "stage": null,
+          "stage_raw": "추진위원회승인",
+          "normalized_stage": "COMMITTEE",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "181609c9e820d78896ee910e1b0e635daedf936cc2537a76e19089f32ad20430",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "52493433-97cd-56be-b8d1-3ea3cec0444c",
+          "project_id": "7e753b95-b1d1-51fb-b7a5-3492c7375d3e",
+          "external_id": "sinbanpo20",
+          "project_name": "신반포20차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 60-78",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "5fea20fdca7a4f91dd2d73c253c21b86010471ddabfacef328f3f429ac24b3df",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "4d4fa87c-05e8-5106-b80d-ddf2dced1d5e",
+          "project_id": "c6e1aca9-a186-54a4-b06e-f1039cd77502",
+          "external_id": "garakmirung",
+          "project_name": "가락미륭아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "가락동",
+          "dong_in_raw_record": "가락동",
+          "address": "서울특별시 송파구 가락동 138",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "de2ad53aaf5f494a21426a241c5e942d1e55e5cf2e7e55c82d77064800474d86",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "5637fc11-bc5a-5003-9b62-a55cb1a8e91f",
+          "project_id": "2819a6b5-a564-5fa1-9627-498e9fdcbe00",
+          "external_id": "w0EL5P2F",
+          "project_name": "고덕주공5단지아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "상일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 상일동 131",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "979a195d6c56a585b0d95a77a6e73092d27d6d859d28635e5ba8c3749af3812a",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "5c24003e-fdd0-53b8-8d68-b2436e955064",
+          "project_id": "03852475-6791-5fe9-9ea1-db09b5fdddc8",
+          "external_id": "hyosung",
+          "project_name": "강남원효성빌라 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 591-1",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "b6cd5ec56845816448b0d6f86e559e0c9caa87a5abce989e41f135f6b26a54f0",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-06",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "4e20efd5-1deb-519e-9d9c-e91f69098619",
+          "project_id": "cb2569c0-e38b-596c-af65-8cfb2df4bd30",
+          "external_id": "gpapt199",
+          "project_name": "가락프라자아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "가락동",
+          "dong_in_raw_record": "가락동",
+          "address": "서울특별시 송파구 가락동 199",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "6294dc140d819657d72b323881d1c158a216fc22a21c05b527eb9c8242b035ed",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "563b0aa6-b8bd-595c-bd73-b70972f2f5e8",
+          "project_id": "2970a67b-6a70-5fce-9197-7168eb72d4a8",
+          "external_id": "jM4s43od",
+          "project_name": "고덕시영아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "고덕동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 고덕동 670",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "10ebd7091f5887b7aa77639f630f0f5a5994d52cf94e282f552d22d62ddd5dd9",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "6252e26f-505a-5528-82a3-55cf6cb69357",
+          "project_id": "f78a8553-bfda-5c19-aebd-18948b7cf3b3",
+          "external_id": "wooseongone",
+          "project_name": "서초우성1차아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "서초동",
+          "dong_in_raw_record": "서초동",
+          "address": "서울특별시 서초구 서초동 1336",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "a4ddf751946a93a6e7ff8941729fda1096db411cbc5195088dca3e0602505d30",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "56b2f7ac-0c50-5755-9786-ddc8fc56487c",
+          "project_id": "20e128c5-d0be-5060-a868-1dcb6785d6a6",
+          "external_id": "samhwan",
+          "project_name": "삼환가락아파트 재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "가락동",
+          "dong_in_raw_record": "가락동",
+          "address": "서울특별시 송파구 가락동 176",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "eb55b436fa15ff837674ab22c5170165159209e0c5c20c4bd2880a9d1e07ed2d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "58f6ad6d-e53f-5249-b193-0953f7e60e36",
+          "project_id": "986e8615-51d1-5a89-8b78-ca932d1485ff",
+          "external_id": "jQ9IH7J2",
+          "project_name": "고덕주공7단지아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "상일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 상일동 187",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "f426679c3ca3b61b363fac50966a13356568ba2cea0655a490f832675a95d92f",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "628e5d74-ff2a-514e-92ff-510044bd3d91",
+          "project_id": "3618cecc-72ca-54db-9c9d-489d8c256e9c",
+          "external_id": "seochorainbow",
+          "project_name": "서초무지개아파트 재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "서초동",
+          "dong_in_raw_record": "서초동",
+          "address": "서울특별시 서초구 서초동 1335",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "52735a85add90c4331834002d7e0bf9acb2ca8aa8099f4a0fbe3f15fde10a676",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "688e7ffa-d834-5625-8cad-a0cdcdceca7f",
+          "project_id": "bae9ff6b-7313-5798-847c-74a224d2ce03",
+          "external_id": "J5qnq21Z",
+          "project_name": "반도아파트 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "송파동",
+          "dong_in_raw_record": "송파동",
+          "address": "서울특별시 송파구 송파동 167",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "4ca2077112feb57ad26531d92ee5a32ba469d4a87190d0e6347e4db9a3817026",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "71d70a34-2e22-5650-ad53-1ba54d576299",
+          "project_id": "89326dc7-0457-5481-8a46-c3140dc2926d",
+          "external_id": "HK58c6H3",
+          "project_name": "목화연립 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "성내동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 성내동 209",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "e6feb246bc954ef9470d31203d164736141061fc60e9d6e18b34d2bbaa46ac21",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "6886d8de-ecbf-50c7-a39e-c51d83facb58",
+          "project_id": "ced54a69-da62-5c5c-841e-91f2e7e7bd7b",
+          "external_id": "bangbae3",
+          "project_name": "방배3구역주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 992-1",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "d5407898fa7e70957db9ba87e4d785c22d28d911d54488f7de7b3c90596cf333",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "79ffc295-11fb-550d-9c9e-be6596bec8bd",
+          "project_id": "a12e564e-fab5-5d8d-abf1-e84a9df3f852",
+          "external_id": "songpa100",
+          "project_name": "송파동 100번지 일대 조합설립추진위원회",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "송파동",
+          "dong_in_raw_record": "송파동",
+          "address": "서울특별시 송파구 송파동 100",
+          "stage": null,
+          "stage_raw": "추진위원회승인",
+          "normalized_stage": "COMMITTEE",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "bc39edd8b693a40bab3788bc82071a551db49077ea2e89f880f219bbdf818b88",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-07",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "78f361f0-5be2-51f3-9328-dd3eb2abc3d3",
+          "project_id": "58968a97-196a-5566-b7d3-e796cf9eb06f",
+          "external_id": "samic11a",
+          "project_name": "삼익그린11차아파트 소규모재건축사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "명일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 명일동 38",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "b393a80fb818b16ed89c8212057d848fbee56bfb212b2368df7515808487cd3a",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "701ac74a-3d57-554f-8f3e-fa1abf52421a",
+          "project_id": "aaf40619-5a95-5664-a1e5-325cc1d0c79f",
+          "external_id": "sinbanpo15",
+          "project_name": "신반포15차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 12",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "5e6f28681ab4d3f34bbfb13c94978f5604c58a842c375e46a837826287e18ca3",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "9dd0c90f-78c9-5881-98f3-d1db2ccdc3f4",
+          "project_id": "5cfe43c8-72c9-5c4c-a0b6-c0f13e035fca",
+          "external_id": "hanyang01",
+          "project_name": "한양1차아파트 재건축정비사업",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "송파동",
+          "dong_in_raw_record": "송파동",
+          "address": "서울특별시 송파구 송파동 119",
+          "stage": null,
+          "stage_raw": "추진위원회승인",
+          "normalized_stage": "COMMITTEE",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "27d46b79fcfcd6e84f08b6159fa648f26cb815eff8a90e20f9c1507babd2f25f",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "971541b5-0a28-56fa-a453-48609c303c0a",
+          "project_id": "189dbb8b-8a9d-5c37-9634-e18b8861d7b6",
+          "external_id": "samik82",
+          "project_name": "둔촌동 삼익빌라 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "둔촌동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 둔촌동 85-2",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "3a92c9cd3a4963aea2415b438cba4ef3f70a28db7b68b03aebe02dc1954cdf92",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "71221341-4c3d-596f-ad71-1ad2e945d89c",
+          "project_id": "c5994671-c7db-54ba-9f50-be9c811d06b8",
+          "external_id": "sinbanpo27",
+          "project_name": "신반포27차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 56-2",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "b6f0263663d7eaca123ea566365fcd35b7cb5c28eac57f365460d4136cc23b2a",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "b1ba6059-062a-55ae-8036-396e5cde9ee8",
+          "project_id": "2501d1c5-9cfa-5a29-8828-4cc22d05dc45",
+          "external_id": "Od1JsPE7",
+          "project_name": "이화연립 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "풍납동",
+          "dong_in_raw_record": "풍납동",
+          "address": "서울특별시 송파구 풍납동 153",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "d3c4327055b9f0a9b4c3b27f769af1521d1dfc499e94df9a3d7b87503d62b480",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "9869cb6c-1066-5e84-9218-470fea0c530e",
+          "project_id": "24d0d910-5171-5786-86c1-60d5f6142df9",
+          "external_id": "samikmansion",
+          "project_name": "삼익맨숀아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "명일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 명일동 270",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "528e24458e2ccbfe3bfe9943a4ee3479bbc9423c36e79de23add636104eca0b1",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "7132225f-85ea-5601-86bf-a4948bbf7c19",
+          "project_id": "2b61d78f-0a23-52a5-bb3d-0f6d647bef9b",
+          "external_id": "bangbaesinsamho",
+          "project_name": "방배신삼호아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 725",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "5e04d9b28bebbacdc4eb0346308b45619153f786f0f2fcdc823423faa944ea9c",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "b5b412bf-69e6-5e48-8f6d-221e95609615",
+          "project_id": "dd006ac3-b29f-5927-8e6e-c8723c88edf3",
+          "external_id": "daelim",
+          "project_name": "대림가락아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "방이동",
+          "dong_in_raw_record": "방이동",
+          "address": "서울특별시 송파구 방이동 217",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "d0f158b7f5a0b84d859695e89bf819e8f68380b1ea6d460aeb57f3cb2201478d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "9ae70624-3f89-5da4-8cea-f8c71e3851ef",
+          "project_id": "9330283d-faeb-595b-a679-f7fc3bc41cc3",
+          "external_id": "gd1207",
+          "project_name": "고덕대우아파트 소규모재건축사업",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "고덕동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 고덕동 470",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "e69632eba9a0cf87be732778f0819c4e8ed3ea3a47dd00116327a87517cd0051",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-08",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "7825a950-91ce-5721-93f4-27784b68119c",
+          "project_id": "818d5dca-cf8e-5da7-94f9-6a70f3ce3538",
+          "external_id": "wooseongtwo",
+          "project_name": "우성2차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "서초동",
+          "dong_in_raw_record": "서초동",
+          "address": "서울특별시 서초구 서초동 1331",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "b2caf844da51ae1ecc5ab55813629c8192e7c9536ae26d79baa465a39c301fe3",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "d0e4f467-ac6a-55d7-bc67-1c4de23fb7ae",
+          "project_id": "13e8641b-86f1-5978-a40e-b22c7f11b349",
+          "external_id": "songpams",
+          "project_name": "송파미성아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "송파동",
+          "dong_in_raw_record": "송파동",
+          "address": "서울특별시 송파구 송파동 161",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "104c56febf41dfe420d9942aedbbe306fc329498d1e6dd68cdb851e1628482bf",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "bd217b37-f345-52be-bc0f-c51dc43b0400",
+          "project_id": "1436e9a7-4b6e-5297-b048-b8743063a07b",
+          "external_id": "cheonho3",
+          "project_name": "천호3 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "천호동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 천호동 423-76",
+          "stage": null,
+          "stage_raw": "분양",
+          "normalized_stage": "SALES",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "80234436dbf79e8ab6c99ae3f26ca1a88c7f2b3ac66c5126a4efc60eba7f49ee",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "7a2a7c3a-4267-5a57-b78a-2bed4743f240",
+          "project_id": "af9fb1f7-2ae9-59e4-b468-98e2307d3696",
+          "external_id": "bangbae7",
+          "project_name": "방배7구역 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 891-3",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "cbbc73cb0fe13e567c243b6d9f956c2ed1bba6bf5ad8736bd1f9fc64b69e32a6",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "d785fa47-a1ee-5733-bc72-eaab0b77e975",
+          "project_id": "d319580d-3b5b-5975-b3a8-d7eaaf7de948",
+          "external_id": "grsamik",
+          "project_name": "가락삼익맨숀아파트 재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "송파동",
+          "dong_in_raw_record": "송파동",
+          "address": "서울특별시 송파구 송파동 166",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "4dcdb264dc706cf643a30b7fe35eccebac0e7dad027b16435573999383506205",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "c428da09-909e-5b45-8f19-da5ae72408c4",
+          "project_id": "381bd58b-b8e8-5751-adbc-61cf82d51b0f",
+          "external_id": "hangeonwoosung",
+          "project_name": "길동한전우성아파트 소규모주택정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "길동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 길동 332",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "1f9ec7c30da4b402de076d25a30d530ca7ecad28f17e3d80dd768db0136c9e31",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "7c4e2c76-d165-5a6e-b2c1-cef6678ffc55",
+          "project_id": "82b2f196-9afd-5695-a6a8-84517c4bd443",
+          "external_id": "seochojh1",
+          "project_name": "서초중앙하이츠1구역 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 1000-4",
+          "stage": null,
+          "stage_raw": "사업시행인가",
+          "normalized_stage": "IMPLEMENTATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "c0c6254aa7cffea9a8b9d2fd3aa2a54bdc5a1ebfdd0a26d35d40b6f1f7f647a0",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "df8f898b-a165-52c0-8e48-42fa252165c3",
+          "project_id": "2bdf1013-0b5d-5b39-8fe6-0f68ac50aa05",
+          "external_id": "woosung01",
+          "project_name": "가락우성1차아파트 재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "가락동",
+          "dong_in_raw_record": "가락동",
+          "address": "서울특별시 송파구 가락동 96-1",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "9d8c2b4a3f55554b0dbffbeb92cb61bfb61e8968748b46ef7172ee842a7122df",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "d3f46657-1399-57f3-bd61-5fbb650b7cad",
+          "project_id": "17ae087a-3eb2-590e-9e32-7c36cd66eb6c",
+          "external_id": "samikpark",
+          "project_name": "삼익파크아파트 재건축사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "길동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 길동 54",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "4dae6661a02b4858fc97b32925dd30857a6bc788dc21eda20b636bd5d0cf3161",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "7d22f009-fab7-5720-8b09-4f3721b6444d",
+          "project_id": "239a4745-3733-5a89-91bd-9a558904f13f",
+          "external_id": "samho4",
+          "project_name": "삼호가든4차아파트 주택재건축 정비사업",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 30-18",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "df7fda2d1b560c82869ed88342f5a406e1a1acad97849c64a98d0076c1866036",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-09",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "e6f761ec-733d-53e2-bcce-1f1665344675",
+          "project_id": "4e57dee2-10a5-5476-a4d1-b02391d0f9cb",
+          "external_id": "sanga1cha",
+          "project_name": "가락상아1차아파트 재건축사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "오금동",
+          "dong_in_raw_record": "오금동",
+          "address": "서울특별시 송파구 오금동 166",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "11c9ff93c6797e3cc41efeb6474d40cafe73bc40d6d1cde732197f2f90af38a4",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "d60ffc86-f46a-5cad-a903-708eb3d17303",
+          "project_id": "ea4c2423-f5a7-508e-856d-8676a5010be8",
+          "external_id": "JGog1o6Q",
+          "project_name": "길동신동아3차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "길동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 길동 43",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "6984f8a248e39c2b35ad7a872bf9c7413bb655df2f90cf9fecf65873f1575fed",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "89363891-50b8-5d6a-83d9-32e09e932b6e",
+          "project_id": "21cf4969-019b-5f01-a17f-81b70d31fbb2",
+          "external_id": "wooseongthree",
+          "project_name": "우성3차 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "서초동",
+          "dong_in_raw_record": "서초동",
+          "address": "서울특별시 서초구 서초동 1332-1",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "919f500635c9e75eb4835564d9e980b4369b0484325ec5a53135f4260f7d19e4",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "fd2cb675-a2a5-5c6b-903d-4acf16a0d271",
+          "project_id": "5b7d0e9c-35b9-5248-b7ba-05d007e780ff",
+          "external_id": "ogeumhyundai",
+          "project_name": "오금현대아파트 주택재건축정비사업구역",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "송파구",
+          "dong": "오금동",
+          "dong_in_raw_record": "오금동",
+          "address": "서울특별시 송파구 오금동 43",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 송파구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+          "content_hash": "d499df7e163a154dcbab07ae867b09fee3a7e4d0b08c3b33638203b9387f8990",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "d8aa86d1-1751-5cf7-a2b5-d489b9837696",
+          "project_id": "4726f9a9-9a76-5a8f-ac0a-4b05789f7f3a",
+          "external_id": "rPjHkSQA",
+          "project_name": "길동진흥아파트 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "길동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 길동 298-1",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "fcf18c01d9fb6f29284265faaf7b3d2f74aca3dc33d23205f3ace402ef1fe5ce",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "93a68ebd-fb9c-54b6-be7e-1b1331e5b953",
+          "project_id": "423b0e3b-a774-596a-9d8b-986ab04c4f0f",
+          "external_id": "imgwang3",
+          "project_name": "임광3차아파트 재건축정비사업 조합설립추진위원회",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 1010-1",
+          "stage": null,
+          "stage_raw": "추진위원회승인",
+          "normalized_stage": "COMMITTEE",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "4ff23bb42719d0ddcd11cc2cd1ac0dd40bdd4e39ec627be090e273a874074e7b",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "db7cf2d1-8e8e-5cd8-8063-ce128c0e3037",
+          "project_id": "ca87054c-f2fd-5bc0-8014-bded909a4754",
+          "external_id": "cheonhowoosung",
+          "project_name": "천호우성아파트 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "천호동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 천호동 19-1",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "cb78df915e8316226c7ab71d7c3559c55ed6e6c7f8121518e23976fa342a6ec4",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "98fbdcf2-f26d-5df8-b0ee-6ed49a9a4b60",
+          "project_id": "de81d0be-286c-57b2-a1fd-8509071022c3",
+          "external_id": "bangbaesamick",
+          "project_name": "방배삼익아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 1018-1",
+          "stage": null,
+          "stage_raw": "분양",
+          "normalized_stage": "SALES",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "b6ac160acd91591ee1b9fbd33f17dabfa9955d4686d499f1e3f18daf276547f4",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "dc83f8f7-7671-572e-8330-8a54626e7745",
+          "project_id": "3490662b-b0fd-5aa0-9973-e0f962a56894",
+          "external_id": "goduk4apt",
+          "project_name": "고덕주공4단지아파트 주택재건축정비사업조합 청산위원회",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "상일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 상일동 134",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "a578d8998a3edf0c4fe915d85a3aa5be5c1a837c6545b524687e033f091f78e2",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "9b628f43-6f4a-5ccf-adb0-6cd2fe762cce",
+          "project_id": "41321d8a-9c89-524b-8874-eed1d085e7c3",
+          "external_id": "seochohanyang",
+          "project_name": "서초한양아파트 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 32-5",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "7ce767be01ec51e3d86c0ab346265f7844f7977462b9ae6c8ba035e25be8f51a",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-10",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "ec735b89-11f5-5850-aea8-4ecd1e13f4dd",
+          "project_id": "282e9069-b2db-5b17-90e3-6585f3637600",
+          "external_id": "in814VyA",
+          "project_name": "고덕주공2단지아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "고덕동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 고덕동 212",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "800fe987ff55b7bc839138b60ca521e1e11e454f5aec54b62ea60bc04a9377d3",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "a83ec1de-574a-5616-a289-e7235aa980d1",
+          "project_id": "6e754198-c1ec-591e-a789-f055441a6e9f",
+          "external_id": "hanshin18",
+          "project_name": "신반포18차24차 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 52",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "b1186d13522b1eca625c3f5d33b03529c9b0ce2ffc1967b77cf0987f2687d155",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "fc19457a-0509-57d3-9348-439d946e9a79",
+          "project_id": "56c7f977-d45b-59f0-ab1c-644ff1574341",
+          "external_id": "samikgreen2",
+          "project_name": "삼익그린2차 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "강동구",
+          "dong": "명일동",
+          "dong_in_raw_record": "강동",
+          "address": "서울특별시 강동구 명일동 15",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 강동구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+          "content_hash": "3c745cb2627fe92933675a98f7b4fa51569be17923698b853db9b193c87a2721",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "ad554ad2-00cc-58d3-9c9e-ad7b555805ec",
+          "project_id": "63d523b2-0a61-5fb2-9f53-2a223bb11e3d",
+          "external_id": "shinbanpogungjun",
+          "project_name": "신반포궁전아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 65-1",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "e63d976ea1418809e24a68a446aea5cd34765a5e3187aec759dbdebb3ed6446b",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "bd452ff5-905a-5003-877b-e03d0e2945b3",
+          "project_id": "22e158d0-d2c5-515d-9ee6-002573442253",
+          "external_id": "shinbanpo7",
+          "project_name": "신반포7차아파트주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 65-32",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "eba38dc847cbbb76c6965076184b518f23fe83e29becde0211f7ce012ad94704",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "bd56612b-162b-5603-b8ac-06499259bf1b",
+          "project_id": "438ff734-b014-53f7-87b9-617debafae18",
+          "external_id": "XchC064Q",
+          "project_name": "신반포6차아파트 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 74-2",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "bcbd4e7edbb0f2599ab8c0a8970a1eda09fca258e17a75118b72bb8122d4b58c",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "bd7dc8d1-57aa-55ff-987e-88f4dce7c278",
+          "project_id": "6f8dbd75-fa52-5a27-846e-84cb70d74798",
+          "external_id": "banpo3",
+          "project_name": "반포아파트(제3주구) 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 1053",
+          "stage": null,
+          "stage_raw": "부분준공인가",
+          "normalized_stage": "PARTIAL_COMPLETION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "ceb5e31bf9dbd75873a3750b1e3d5184055cbc9074fbc5e5bf1fc2e77a8ebf40",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "c286e8fd-a869-5629-a9f8-c7ce2d357adb",
+          "project_id": "df54a7fb-6414-54af-aa8c-87bc01837623",
+          "external_id": "sinseong",
+          "project_name": "신성빌라 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 593-98",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "ea39c54a9e46137a1a4e5cc5fa58231a979c75b0e2fab6bebd57deb06e0798d8",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "c7393619-9afc-51ca-8a03-02970be6d9d2",
+          "project_id": "a6c6f219-761c-5e18-9bcc-065c249524a6",
+          "external_id": "sbanpo16",
+          "project_name": "신반포16차아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 55-10",
+          "stage": null,
+          "stage_raw": "관리처분인가",
+          "normalized_stage": "MANAGEMENT_DISPOSITION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "c6ff4e059d6b8461b8763fd2a21436b2107d6d5cdd00d2028763f2a9c6be456b",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "ce86fa23-3597-5087-a573-372286dede9d",
+          "project_id": "5646d0ef-7aca-5c2d-8908-a3d5db729da1",
+          "external_id": "PJ82der7",
+          "project_name": "반포한양아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 66",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "30c508c03aef61f831aa7d4527e10fe1a2e34b92cfe880650acf9a848ef27724",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-11",
+      "size": 10,
+      "candidates": [
+        {
+          "canonical_id": "dc580ed7-edd7-5adb-85e9-e2f05380662d",
+          "project_id": "2b404ee9-4c9f-5c40-a482-e162bdde3bdd",
+          "external_id": "shinbanpo14",
+          "project_name": "신반포14차 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 74",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "8e23bb11e0541f4cac50ccdd735faeee4b73cbf5493235114402f73d8b806c94",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "e4748f3e-43a3-50d4-8ccc-ba0553288921",
+          "project_id": "0eb84ce9-d75a-52dc-84cf-e36b44301947",
+          "external_id": "banpowooseong",
+          "project_name": "반포우성아파트 재건축 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 74-1",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "77814e0ad2c7c67d15589e054af1cf9a0bdd9101b663ff95b561dd2a192c1972",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "e5814f34-e647-52c9-9e55-949b19a3ad20",
+          "project_id": "49e20f80-b242-5fad-9c73-7f8d57a0df97",
+          "external_id": "samho3",
+          "project_name": "삼호가든맨션3차 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 32-8",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "ba4c4a066b8891da024c27699b3dd1af4d362fc9376a1e5b3e7c838628b85e8d",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "e88a24aa-efbe-5dd7-9fad-ddaa1d91fdaa",
+          "project_id": "982e55e4-9ce6-51c3-9f5a-4920ea807e0e",
+          "external_id": "shinbanpo3",
+          "project_name": "신반포3차,경남 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 1-1",
+          "stage": null,
+          "stage_raw": "조합해산",
+          "normalized_stage": "ASSOCIATION_DISSOLVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "b0d2e3f6d816d730475f7da6190c40f632a10294b30de9470c2f06063e2db79e",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "e8ed0056-72d4-527a-bbd8-461178f21452",
+          "project_id": "b4ad2818-5ea5-53e2-8b01-e83470cb6375",
+          "external_id": "shindongaapt",
+          "project_name": "방배신동아아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 988-1",
+          "stage": null,
+          "stage_raw": "착공",
+          "normalized_stage": "CONSTRUCTION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "8be8d22168c45926492e57308d4d8f8af13753c59c91cafc94e89b6bec9fc005",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "f08cf3f9-725c-5a18-a9ec-311c5ff91fc6",
+          "project_id": "e7fdd205-e3fc-5007-a5a0-83a720ae5eb5",
+          "external_id": "sbanpo1",
+          "project_name": "신반포1차아파트 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 2-1",
+          "stage": null,
+          "stage_raw": "조합청산",
+          "normalized_stage": "ASSOCIATION_LIQUIDATION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "7400aa53629aa2a9aca8d31edde33ab09f3d663fb2da67e813f556e1dc2bf6cb",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "f27a5e6e-d175-5f98-8105-c0285f64aff6",
+          "project_id": "0a179fc4-01b7-5991-97ad-0c4108273a8f",
+          "external_id": "cleanup43-9",
+          "project_name": "방배15 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "방배동",
+          "dong_in_raw_record": "방배동",
+          "address": "서울특별시 서초구 방배동 528-3",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "c589886c3446e6bba21b25a40825324ecf593e1c1a5ea5f768bfbc8cd000dfcf",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "f331f5c5-7659-5a41-a337-a825fe543e71",
+          "project_id": "35e544be-8197-5857-8529-badaa02452db",
+          "external_id": "wmhalla",
+          "project_name": "우면한라아파트 재건축정비사업 조합설립추진위원회",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "우면동",
+          "dong_in_raw_record": "우면동",
+          "address": "서울특별시 서초구 우면동 67",
+          "stage": null,
+          "stage_raw": "추진위원회승인",
+          "normalized_stage": "COMMITTEE",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "1a680441534ff3b1b37f8135a2046bd7e1b9b466a6aee6732f6d2e47e18617e1",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "f48b937d-82d4-5a4a-84a8-c1e8f5969f49",
+          "project_id": "f05fe7f5-e3ed-505b-8a6b-fb397c89bb3b",
+          "external_id": "sinbanpo4",
+          "project_name": "신반포4차아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "잠원동",
+          "dong_in_raw_record": "잠원동",
+          "address": "서울특별시 서초구 잠원동 70",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "ef6a07b511484eaee8c14ca3625d073b11e47709027f90bc3bb94f3177ae1aca",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "f50e61c9-e00c-5f79-89f1-3534aa3a3750",
+          "project_id": "d39abeea-4ea6-59d0-bb17-694058e69493",
+          "external_id": "samho5",
+          "project_name": "삼호가든5차아파트 재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 30-1",
+          "stage": null,
+          "stage_raw": "조합설립인가",
+          "normalized_stage": "ASSOCIATION_APPROVED",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "7755e7aa07227f7de1cff588c4914ea58c61ebed631788f961e002fbf6cf2c92",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 10
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    },
+    {
+      "batch_id": "bulk-12",
+      "size": 2,
+      "candidates": [
+        {
+          "canonical_id": "fb86df71-eeaa-5034-b61c-af3657d944da",
+          "project_id": "d7d9648b-599f-5a7f-a1cd-b5868af05487",
+          "external_id": "seochosindonga",
+          "project_name": "서초신동아아파트 주택재건축정비사업조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "서초동",
+          "dong_in_raw_record": "서초동",
+          "address": "서울특별시 서초구 서초동 1334",
+          "stage": null,
+          "stage_raw": "분양",
+          "normalized_stage": "SALES",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "c81ee4f8f4aece0aaebbc9282275566f532d9c09ec5e913f86059c56607e37c7",
+          "source_validation_status": "UNVERIFIED"
+        },
+        {
+          "canonical_id": "fcb2c7d6-c5d6-5665-a3b2-5bf5c907bca7",
+          "project_id": "05412ecb-2d1a-52f9-a7b5-dfa857238fc2",
+          "external_id": "banpojk",
+          "project_name": "반포주공1단지(1,2,4주구) 주택재건축정비사업 조합",
+          "project_type": "RECONSTRUCTION",
+          "program": null,
+          "district": "서초구",
+          "dong": "반포동",
+          "dong_in_raw_record": "반포동",
+          "address": "서울특별시 서초구 반포동 810",
+          "stage": null,
+          "stage_raw": "착공",
+          "normalized_stage": "CONSTRUCTION",
+          "status": "UNKNOWN",
+          "normalized_status": "UNKNOWN",
+          "validation_status": "NEEDS_REVIEW",
+          "source_name": "정보몽땅 사업장 목록 서초구",
+          "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+          "content_hash": "f130fca80cdb5da7d99fda086f844a50f11b356fc6a5f30179add7812aec0fab",
+          "source_validation_status": "UNVERIFIED"
+        }
+      ],
+      "dry_run": {
+        "result": "PASS",
+        "checks": [
+          {
+            "check": "batch_size_within_limit",
+            "result": "PASS",
+            "detail": 2
+          },
+          {
+            "check": "project_id_is_uuid",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "project_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_present",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "external_id_unique",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_project_type",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_district",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_address",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_stage_raw",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_name",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_source_url",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "field_present_content_hash",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "content_hash_is_sha256",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "official_source_host",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "stage_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "status_not_promoted_in_payload",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "validation_status_stays_needs_review",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "source_validation_status_stays_unverified",
+            "result": "PASS",
+            "detail": null
+          },
+          {
+            "check": "no_canary_collision",
+            "result": "PASS",
+            "detail": []
+          },
+          {
+            "check": "no_name_containment_inside_batch",
+            "result": "PASS",
+            "detail": []
+          }
+        ],
+        "canary_collisions": [],
+        "canary_rows_in_database": 8
+      }
+    }
+  ]
+}
