@@ -12,6 +12,8 @@ from services import realestate_monitor as rm
 from services import development
 from services import development_presentation as presentation
 from services import map_providers
+from services import development_geocode as geocode
+from services import trade_geocode
 
 router = APIRouter(prefix="/api/realestate", tags=["realestate"])
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -86,6 +88,8 @@ class TradeQuery(BaseModel):
     max_price_100m: float | None = Field(None, gt=0, le=10000, allow_inf_nan=False)
     max_area: float | None = Field(None, gt=0, le=100000, allow_inf_nan=False)
     include_development: bool = False
+    # 실거래 주소 지오코딩은 유료 쿼터를 쓰므로 명시적으로 켤 때만 동작한다.
+    include_coordinates: bool = False
 
 
 @router.post("/trades")
@@ -101,6 +105,11 @@ async def trades(q: TradeQuery):
     rows = sorted(rows, key=lambda x: (x.get("date") or ""), reverse=True)
     for row in rows:
         row["naver_url"] = rm.build_naver_land_url(row)
+    geocode_summary = None
+    if q.include_coordinates:
+        # 개발사업과 같은 provider·같은 판정 기준. 검증된 좌표만 붙는다.
+        resolved = await run_in_threadpool(_geocode_trades, rows)
+        rows, geocode_summary = resolved['items'], _clean_geocode_summary(resolved)
     if q.include_development:
         rows = await run_in_threadpool(development.attach_context, rows)
         for row in rows:
@@ -113,7 +122,21 @@ async def trades(q: TradeQuery):
     counts = {}
     for row in rows:
         counts[row.get("property_type", "기타")] = counts.get(row.get("property_type", "기타"), 0) + 1
-    return {"items": rows, "errors": errors, "counts": counts, "requests": len(q.regions) * len(q.property_types)}
+    return {"items": rows, "errors": errors, "counts": counts,
+            "requests": len(q.regions) * len(q.property_types), "geocode": geocode_summary}
+
+
+TRADE_GEOCODE_CACHE = BASE_DIR / 'data/development/cache/geocode'
+
+
+def _geocode_trades(rows):
+    """실거래 주소를 개발사업과 같은 캐시·같은 판정으로 좌표화한다. DB write는 없다."""
+    cache = geocode.GeocodeCache(TRADE_GEOCODE_CACHE)
+    return trade_geocode.resolve_trades(rows, cache, rm._secret, geocode.requests_get)
+
+
+def _clean_geocode_summary(resolved):
+    return {k: v for k, v in resolved.items() if k != 'items'}
 
 
 @router.get("/monitor")
@@ -206,6 +229,22 @@ async def development_summary():
 def map_config():
     """쓸 수 있는 basemap과 한글 표기 여부. 지도 키 값은 담지 않는다."""
     return map_providers.config(rm._secret)
+
+
+@router.get('/geocode/status')
+def geocode_status(probe: bool = False):
+    """지오코딩 provider 연결 상태. Client ID/Secret 값은 어떤 필드에도 담지 않는다.
+
+    probe=false면 자격증명 유무만 보고 네트워크를 건드리지 않는다. probe=true면
+    개발사업 데이터와 무관한 샘플 주소 한 건으로 연결과 좌표 축을 확인한다.
+    유료 쿼터를 쓰므로 결과는 5분간 재사용한다.
+    """
+    if not probe:
+        return _cached('geocode-status',
+                       lambda: geocode.status(rm._secret), ttl=60)
+    return _cached('geocode-status-probe',
+                   lambda: geocode.status(rm._secret, geocode.requests_get,
+                                          geocode.SAMPLE_ADDRESS), ttl=300)
 
 
 @router.get('/development/map')

@@ -735,7 +735,7 @@ class GeocodeProviderTests(unittest.TestCase):
     def test_a_missing_credential_is_named_without_its_value(self):
         provider, blocker = geo.build_provider('naver', lambda name: '', lambda *a, **k: {})
         self.assertIsNone(provider)
-        self.assertEqual(blocker, 'NAVER_CLOUD_API_KEY_ID_NOT_CONFIGURED')
+        self.assertEqual(blocker, 'NAVER_MAP_CLIENT_ID_NOT_CONFIGURED')
         self.assertIsNone(geo.build_provider('unknown', lambda name: '', None)[0])
 
     def test_kakao_candidates_are_judged_by_the_strict_evaluator(self):
@@ -854,9 +854,13 @@ class BaseMapTests(unittest.TestCase):
 
     def test_the_config_never_carries_a_key(self):
         from services import map_providers
-        text = json.dumps(map_providers.config(lambda name: 'super-secret-value'), ensure_ascii=False)
+        config = map_providers.config(lambda name: 'super-secret-value')
+        text = json.dumps(config, ensure_ascii=False)
+        # 키 이름은 어떤 키를 등록해야 하는지 알리기 위해 담고, 값은 절대 담지 않는다.
         self.assertNotIn('super-secret-value', text)
-        self.assertNotIn('KAKAO_JAVASCRIPT_KEY', text)
+        self.assertEqual(sorted(p['browser_key_name'] for p in config['providers']
+                                if p['browser_key_name']),
+                         ['KAKAO_JAVASCRIPT_KEY', 'NAVER_MAP_CLIENT_ID', 'VWORLD_MAP_KEY'])
 
     def test_the_endpoint_serves_the_config(self):
         from api.realestate import map_config
@@ -1096,3 +1100,422 @@ class MapFirstScreenTests(unittest.TestCase):
     def test_the_map_height_stays_mobile_sized(self):
         self.assertIn('height = 340', read('components/realestate/ZiponMap.tsx'))
         self.assertIn('height={340}', read('components/realestate/DevelopmentTab.tsx'))
+
+
+NAVER_ITEM = {
+    'roadAddress': '서울특별시 강동구 천호대로 1000',
+    'jibunAddress': '서울특별시 강동구 천호동 423-1',
+    'englishAddress': '423-1, Cheonho-dong, Gangdong-gu, Seoul, Republic of Korea',
+    'x': '127.1234567', 'y': '37.5387654', 'distance': 0.0,
+    'addressElements': [
+        {'types': ['SIDO'], 'longName': '서울특별시', 'shortName': '서울특별시'},
+        {'types': ['SIGUGUN'], 'longName': '강동구', 'shortName': '강동구'},
+        {'types': ['DONGMYUN'], 'longName': '천호동', 'shortName': '천호동'},
+        {'types': ['LAND_NUMBER'], 'longName': '423-1', 'shortName': '423-1'},
+        {'types': ['ROAD_NAME'], 'longName': '천호대로', 'shortName': '천호대로'},
+        {'types': ['BUILDING_NUMBER'], 'longName': '1000', 'shortName': '1000'},
+        {'types': ['POSTAL_CODE'], 'longName': '05238', 'shortName': '05238'}]}
+NAVER_ADDRESS = '서울특별시 강동구 천호동 423-1'
+
+
+def naver_response(item=None, captured=None):
+    """Answers like NAVER does and records the request the provider actually made."""
+    payload = {'status': 'OK', 'meta': {'totalCount': 1},
+               'addresses': [dict(NAVER_ITEM, **(item or {}))] if item is not False else []}
+
+    def http_get(url, params=None, headers=None, timeout=10):
+        if captured is not None:
+            captured.update(url=url, params=params or {}, headers=headers or {}, timeout=timeout)
+        return payload
+    return http_get
+
+
+class NaverGeocodeTests(unittest.TestCase):
+    def test_the_naver_provider_reads_the_maps_application_credentials(self):
+        spec = geo.PROVIDER_SPECS['naver']
+        self.assertEqual(spec['required'], ('NAVER_MAP_CLIENT_ID', 'NAVER_MAP_CLIENT_SECRET'))
+        report = geo.provider_availability(lambda name: '')
+        self.assertEqual(report['naver']['missing_secrets'],
+                         ['NAVER_MAP_CLIENT_ID', 'NAVER_MAP_CLIENT_SECRET'])
+
+    def test_the_request_uses_the_current_endpoint_and_the_documented_headers(self):
+        captured = {}
+        geo.naver_provider('client-id', 'client-secret', naver_response(captured=captured))(NAVER_ADDRESS)
+        self.assertEqual(captured['url'], 'https://maps.apigw.ntruss.com/map-geocode/v2/geocode')
+        self.assertEqual(captured['headers'][geo.NAVER_HEADER_KEY_ID], 'client-id')
+        self.assertEqual(captured['headers'][geo.NAVER_HEADER_KEY], 'client-secret')
+        self.assertEqual(geo.NAVER_HEADER_KEY_ID, 'X-NCP-APIGW-API-KEY-ID')
+        self.assertEqual(geo.NAVER_HEADER_KEY, 'X-NCP-APIGW-API-KEY')
+        self.assertEqual(captured['params']['query'], NAVER_ADDRESS)
+
+    def test_x_is_the_longitude_and_y_is_the_latitude(self):
+        result = geo.naver_provider('id', 'secret', naver_response())(NAVER_ADDRESS)
+        candidate = result['candidates'][0]
+        self.assertEqual(candidate['longitude'], 127.1234567)
+        self.assertEqual(candidate['latitude'], 37.5387654)
+        self.assertEqual(candidate['coordinate_orientation'], 'X_IS_LONGITUDE')
+
+    def test_every_documented_field_is_carried_through(self):
+        evaluation = geo.evaluate(NAVER_ADDRESS,
+                                  geo.naver_provider('id', 'secret', naver_response())(NAVER_ADDRESS))
+        self.assertEqual(evaluation['geocode_confidence'], 'EXACT')
+        self.assertEqual(evaluation['road_address'], '서울특별시 강동구 천호대로 1000')
+        self.assertEqual(evaluation['jibun_address'], NAVER_ADDRESS)
+        self.assertIn('Cheonho-dong', evaluation['english_address'])
+        self.assertEqual(evaluation['distance_m'], 0.0)
+        self.assertEqual(evaluation['address_elements']['LAND_NUMBER'], '423-1')
+        self.assertEqual(evaluation['longitude'], 127.1234567)
+        self.assertEqual(evaluation['latitude'], 37.5387654)
+        self.assertTrue(evaluation['coordinate_verified'])
+
+    def test_a_swapped_axis_pair_is_reviewed_and_never_silently_corrected(self):
+        swapped = geo.naver_provider('id', 'secret', naver_response(
+            {'x': '37.5387654', 'y': '127.1234567'}))(NAVER_ADDRESS)
+        self.assertEqual(swapped['candidates'][0]['coordinate_orientation'], 'SUSPECT_SWAPPED')
+        evaluation = geo.evaluate(NAVER_ADDRESS, swapped)
+        self.assertEqual(evaluation['geocode_confidence'], 'GEOCODE_REVIEW')
+        self.assertIn('axis_order', evaluation['review_reason'])
+        self.assertIsNone(evaluation['latitude'])
+        self.assertIsNone(evaluation['longitude'])
+
+    def test_the_district_dong_and_lot_must_match_exactly(self):
+        response = geo.naver_provider('id', 'secret', naver_response())(NAVER_ADDRESS)
+        for address, failed in (('서울특별시 송파구 천호동 423-1', 'district_match'),
+                                ('서울특별시 강동구 성내동 423-1', 'dong_match'),
+                                ('서울특별시 강동구 천호동 423', 'lot_match')):
+            evaluation = geo.evaluate(address, response)
+            self.assertEqual(evaluation['geocode_confidence'], 'GEOCODE_REVIEW', address)
+            self.assertIn(failed, evaluation['review_reason'], address)
+
+    def test_an_address_outside_seoul_is_never_accepted(self):
+        response = geo.naver_provider('id', 'secret', naver_response(
+            {'jibunAddress': '경기도 하남시 천호동 423-1', 'x': '127.2050', 'y': '37.5390',
+             'addressElements': [{'types': ['SIDO'], 'longName': '경기도'},
+                                 {'types': ['SIGUGUN'], 'longName': '하남시'},
+                                 {'types': ['DONGMYUN'], 'longName': '천호동'},
+                                 {'types': ['LAND_NUMBER'], 'longName': '423-1'}]}))('경기도 하남시 천호동 423-1')
+        evaluation = geo.evaluate('경기도 하남시 천호동 423-1', response)
+        self.assertEqual(evaluation['geocode_confidence'], 'GEOCODE_REVIEW')
+        self.assertIn('seoul', evaluation['review_reason'])
+
+    def test_a_dong_centroid_answer_is_not_a_representative_point(self):
+        centroid = geo.naver_provider('id', 'secret', naver_response(
+            {'roadAddress': '', 'jibunAddress': '서울특별시 강동구 천호동', 'x': '127.12', 'y': '37.53',
+             'addressElements': [{'types': ['SIDO'], 'longName': '서울특별시'},
+                                 {'types': ['SIGUGUN'], 'longName': '강동구'},
+                                 {'types': ['DONGMYUN'], 'longName': '천호동'}]}))('서울특별시 강동구 천호동')
+        self.assertEqual(centroid['candidates'][0]['accuracy'], 'REGION')
+        evaluation = geo.evaluate('서울특별시 강동구 천호동', centroid)
+        self.assertEqual(evaluation['geocode_confidence'], 'GEOCODE_REVIEW')
+        self.assertIn('not_a_region_centroid', evaluation['review_reason'])
+
+    def test_two_candidates_are_never_resolved_by_taking_the_first(self):
+        response = geo.naver_provider('id', 'secret', naver_response())(NAVER_ADDRESS)
+        two = dict(response, candidates=response['candidates'] * 2)
+        evaluation = geo.evaluate(NAVER_ADDRESS, two)
+        self.assertEqual(evaluation['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+        self.assertFalse(evaluation['coordinate_verified'])
+
+    def test_a_road_address_is_checked_against_the_road_and_building_number(self):
+        item = {'jibunAddress': '서울특별시 중구 태평로1가 31',
+                'roadAddress': '서울특별시 중구 세종대로 110', 'x': '126.9779692', 'y': '37.5662952',
+                'addressElements': [{'types': ['SIDO'], 'longName': '서울특별시'},
+                                    {'types': ['SIGUGUN'], 'longName': '중구'},
+                                    {'types': ['ROAD_NAME'], 'longName': '세종대로'},
+                                    {'types': ['BUILDING_NUMBER'], 'longName': '110'}]}
+        response = geo.naver_provider('id', 'secret', naver_response(item))(geo.SAMPLE_ADDRESS)
+        evaluation = geo.evaluate(geo.SAMPLE_ADDRESS, response)
+        self.assertEqual(evaluation['geocode_confidence'], 'EXACT')
+        self.assertTrue(evaluation['checks']['building_number_match'])
+
+    def test_the_legacy_host_is_only_retried_when_the_path_is_gone(self):
+        calls = []
+
+        class Missing(Exception):
+            response = type('R', (), {'status_code': 404})()
+
+        class Unauthorized(Exception):
+            response = type('R', (), {'status_code': 401})()
+
+        def flaky(url, params=None, headers=None, timeout=10):
+            calls.append(url)
+            if url == geo.NAVER_GEOCODE_URL:
+                raise Missing()
+            return {'status': 'OK', 'addresses': [NAVER_ITEM]}
+        geo.naver_provider('id', 'secret', flaky)(NAVER_ADDRESS)
+        self.assertEqual(calls, [geo.NAVER_GEOCODE_URL, geo.NAVER_GEOCODE_LEGACY_URL])
+
+        def denied(url, params=None, headers=None, timeout=10):
+            calls.append(url)
+            raise Unauthorized()
+        with self.assertRaises(Unauthorized):
+            geo.naver_provider('id', 'secret', denied)(NAVER_ADDRESS)
+        self.assertEqual(calls.count(geo.NAVER_GEOCODE_URL), 2)
+
+    def test_naver_comes_first_then_kakao_then_vworld(self):
+        self.assertEqual(geo.PROVIDER_PRIORITY, ('naver', 'kakao', 'vworld'))
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y',
+                   'KAKAO_REST_API_KEY': 'z'}
+        chosen = geo.select_provider(lambda n: secrets.get(n, ''), lambda *a, **k: {})
+        self.assertEqual(chosen['name'], 'naver')
+        without_naver = geo.select_provider(lambda n: '' if n.startswith('NAVER') else secrets.get(n, ''),
+                                            lambda *a, **k: {})
+        self.assertEqual(without_naver['name'], 'kakao')
+        self.assertEqual(without_naver['skipped'][0]['blocker'], 'NAVER_MAP_CLIENT_ID_NOT_CONFIGURED')
+        nothing = geo.select_provider(lambda n: '', lambda *a, **k: {})
+        self.assertIsNone(nothing['provider'])
+        self.assertEqual(nothing['blocker'], 'NO_GEOCODER_CREDENTIAL_CONFIGURED')
+
+    def test_no_credential_value_reaches_the_status_report(self):
+        secrets = {'NAVER_MAP_CLIENT_ID': 'ID_VALUE', 'NAVER_MAP_CLIENT_SECRET': 'SECRET_VALUE'}
+        report = geo.status(lambda n: secrets.get(n, ''), naver_response(), geo.SAMPLE_ADDRESS)
+        text = json.dumps(report, ensure_ascii=False)
+        self.assertNotIn('ID_VALUE', text)
+        self.assertNotIn('SECRET_VALUE', text)
+        self.assertTrue(report['configured'])
+        self.assertTrue(report['reachable'])
+        self.assertEqual(report['provider'], 'naver')
+        self.assertEqual(report['probe']['coordinate_orientation'], 'X_IS_LONGITUDE')
+
+    def test_the_status_check_makes_no_request_without_a_probe_address(self):
+        def forbidden(*args, **kwargs):
+            raise AssertionError('the health check must not call the provider')
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        report = geo.status(lambda n: secrets.get(n, ''), forbidden)
+        self.assertTrue(report['configured'])
+        self.assertIsNone(report['reachable'])
+        self.assertIsNone(report['probe'])
+
+    def test_an_unreachable_provider_reports_the_type_not_the_message(self):
+        def broken(*args, **kwargs):
+            raise TimeoutError('https://maps.apigw.ntruss.com/...?query=x SECRET_VALUE')
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        report = geo.status(lambda n: secrets.get(n, ''), broken, geo.SAMPLE_ADDRESS)
+        self.assertFalse(report['reachable'])
+        self.assertEqual(report['probe']['error_type'], 'TimeoutError')
+        self.assertNotIn('SECRET_VALUE', json.dumps(report, ensure_ascii=False))
+
+
+class GeocodeStatusEndpointTests(unittest.TestCase):
+    def endpoint(self, secrets, http_get, probe):
+        from api import realestate as api
+        api._cache.clear()
+        with patch.object(rm, '_secret', side_effect=lambda name, *a: secrets.get(name, '')), \
+             patch.object(geo, 'requests_get', http_get):
+            return api.geocode_status(probe=probe)
+
+    def test_the_status_endpoint_names_the_provider_without_calling_it(self):
+        def forbidden(*args, **kwargs):
+            raise AssertionError('probe=false must not call the provider')
+        result = self.endpoint({'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'},
+                              forbidden, False)
+        self.assertEqual(result['provider'], 'naver')
+        self.assertTrue(result['configured'])
+        self.assertIsNone(result['reachable'])
+
+    def test_the_probe_uses_a_sample_address_and_hides_the_credentials(self):
+        result = self.endpoint({'NAVER_MAP_CLIENT_ID': 'ID_VALUE', 'NAVER_MAP_CLIENT_SECRET': 'SECRET_VALUE'},
+                               naver_response(), True)
+        self.assertTrue(result['reachable'])
+        self.assertEqual(result['probe']['address'], geo.SAMPLE_ADDRESS)
+        self.assertNotIn('SECRET_VALUE', json.dumps(result, ensure_ascii=False))
+
+    def test_an_unconfigured_deployment_reports_the_blocker(self):
+        result = self.endpoint({}, naver_response(), True)
+        self.assertFalse(result['configured'])
+        self.assertEqual(result['blocker'], 'NO_GEOCODER_CREDENTIAL_CONFIGURED')
+        self.assertIsNone(result['reachable'])
+
+
+class TradeGeocodeTests(unittest.TestCase):
+    def setUp(self):
+        from services import trade_geocode
+        self.module = trade_geocode
+
+    def trade(self, **extra):
+        return dict({'id': 't1', 'region_label': '서울특별시>강동구',
+                     'canonical_address': '천호동 423-1'}, **extra)
+
+    def test_the_full_address_carries_the_sido_and_the_district(self):
+        self.assertEqual(self.module.full_address(self.trade()), NAVER_ADDRESS)
+        self.assertIsNone(self.module.full_address(self.trade(region_label='')))
+        self.assertIsNone(self.module.full_address({'region_label': '서울특별시>강동구'}))
+
+    def test_a_trade_reuses_the_development_provider_and_the_same_judgement(self):
+        cache = geo.GeocodeCache(Path(self.enterTempDir()) / 'cache')
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        result = self.module.resolve_trades([self.trade()], cache, lambda n: secrets.get(n, ''),
+                                            naver_response())
+        self.assertEqual(result['provider'], 'naver')
+        self.assertEqual(result['located'], 1)
+        self.assertFalse(result['db_write'])
+        row = result['items'][0]
+        self.assertEqual(row['longitude'], 127.1234567)
+        self.assertEqual(row['latitude'], 37.5387654)
+        self.assertTrue(row['coordinate_verified'])
+
+    def test_an_ambiguous_trade_address_keeps_no_coordinate(self):
+        cache = geo.GeocodeCache(Path(self.enterTempDir()) / 'cache')
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        result = self.module.resolve_trades([self.trade(canonical_address='천호동')], cache,
+                                            lambda n: secrets.get(n, ''), naver_response())
+        row = result['items'][0]
+        self.assertFalse(row['coordinate_verified'])
+        self.assertIsNone(row.get('latitude'))
+        self.assertEqual(result['located'], 0)
+
+    def test_without_credentials_nothing_is_called_and_nothing_is_located(self):
+        cache = geo.GeocodeCache(Path(self.enterTempDir()) / 'cache')
+
+        def forbidden(*args, **kwargs):
+            raise AssertionError('no provider call without credentials')
+        result = self.module.resolve_trades([self.trade()], cache, lambda n: '', forbidden)
+        self.assertEqual(result['blocker'], 'NO_GEOCODER_CREDENTIAL_CONFIGURED')
+        self.assertEqual(result['located'], 0)
+        self.assertFalse(result['items'][0]['coordinate_verified'])
+
+    def enterTempDir(self):
+        import tempfile
+        directory = tempfile.mkdtemp()
+        self.addCleanup(__import__('shutil').rmtree, directory, True)
+        return directory
+
+
+class GeocodeApplyStepTests(unittest.TestCase):
+    def setUp(self):
+        import apply_zipon_geocode
+        self.apply = apply_zipon_geocode
+
+    def accepted(self, **extra):
+        return dict({'project_id': 'p-1', 'district': '강동구', 'geocode_status': 'ACCEPTED',
+                     'coordinate_verified': True, 'geocode_confidence': 'EXACT',
+                     'coordinate_orientation': 'X_IS_LONGITUDE', 'geocode_source': 'naver:geocode',
+                     'longitude': 127.1234567, 'latitude': 37.5387654,
+                     'canonical_address': NAVER_ADDRESS, 'matched_address': NAVER_ADDRESS}, **extra)
+
+    def test_only_a_verified_exact_row_is_eligible(self):
+        rows, rejected = self.apply.eligible({'items': [
+            self.accepted(),
+            self.accepted(project_id='p-2', geocode_status='GEOCODE_REVIEW_REQUIRED'),
+            self.accepted(project_id='p-3', coordinate_verified=False),
+            self.accepted(project_id='p-4', coordinate_orientation='SUSPECT_SWAPPED'),
+            self.accepted(project_id='p-5', longitude=128.6, latitude=35.87),
+            self.accepted(project_id='p-6', geocode_source='guessed'),
+            self.accepted(project_id='p-7', district=None)]})
+        self.assertEqual([r['project_id'] for r in rows], ['p-1'])
+        self.assertEqual(len(rejected), 6)
+        reasons = {r['project_id']: r['skip_reasons'] for r in rejected}
+        self.assertIn('AXIS_ORDER_NOT_VERIFIED', reasons['p-4'])
+        self.assertIn('COORDINATE_OUTSIDE_SEOUL', reasons['p-5'])
+        self.assertIn('UNKNOWN_GEOCODE_SOURCE', reasons['p-6'])
+
+    def test_an_existing_coordinate_or_boundary_is_protected(self):
+        row = self.accepted()
+        self.assertEqual(self.apply.preflight(row, None), ['PROJECT_NOT_IN_DATABASE'])
+        self.assertIn('LOCATION_ALREADY_SET', self.apply.preflight(
+            row, {'sigungu': '강동구', 'revision': 1, 'location': '0101', 'geometry_verified': False}))
+        self.assertIn('VERIFIED_BOUNDARY_PRESENT', self.apply.preflight(
+            row, {'sigungu': '강동구', 'revision': 1, 'location': None, 'geometry_verified': True}))
+        self.assertIn('DISTRICT_MISMATCH', self.apply.preflight(
+            row, {'sigungu': '송파구', 'revision': 1, 'location': None, 'geometry_verified': False}))
+        self.assertEqual(self.apply.preflight(
+            row, {'sigungu': '강동구', 'revision': 3, 'location': None, 'geometry_verified': False}), [])
+
+    def test_the_payload_names_the_provider_and_carries_the_evidence(self):
+        payload = self.apply.payload_for(self.accepted(), {'sigungu': '강동구', 'revision': 3})
+        self.assertEqual(payload['p_geocode_source'], 'NAVER_MAP_GEOCODE')
+        self.assertEqual(payload['p_confidence'], 'EXACT')
+        self.assertEqual(payload['p_expected_revision'], 3)
+        self.assertEqual(payload['p_longitude'], 127.1234567)
+        self.assertEqual(payload['p_latitude'], 37.5387654)
+        self.assertEqual(payload['p_evidence']['matched_address'], NAVER_ADDRESS)
+
+    def test_batches_never_exceed_ten(self):
+        from services.development_collector import MAX_IMPORT_BATCH
+        plan = self.apply.batches([self.accepted(project_id=f'p-{i}') for i in range(23)])
+        self.assertEqual([len(b) for b in plan], [10, 10, 3])
+        self.assertEqual(MAX_IMPORT_BATCH, 10)
+
+    def test_write_credentials_are_their_own_pair(self):
+        with patch.dict('os.environ', {'ZIPON_IMPORT_SUPABASE_URL': '',
+                                       'ZIPON_IMPORT_SUPABASE_KEY': ''}, clear=False):
+            with self.assertRaises(self.apply.ApplyBlocked) as caught:
+                self.apply.configuration()
+        self.assertEqual(caught.exception.reason, 'MISSING_ZIPON_IMPORT_SUPABASE_URL')
+
+    def test_the_apply_script_writes_only_through_the_reviewed_rpc(self):
+        source = (ROOT / 'scripts/apply_zipon_geocode.py').read_text(encoding='utf-8')
+        self.assertEqual(self.apply.RPC, 'rpc/zipon_set_project_location')
+        for forbidden in ('requests.delete', 'requests.patch', 'requests.put'):
+            self.assertNotIn(forbidden, source)
+
+
+class GeocodeLocationRpcTests(unittest.TestCase):
+    def setUp(self):
+        self.sql = (ROOT / 'supabase/migrations/20260927_zipon_geocode_location_rpc.sql') \
+            .read_text(encoding='utf-8')
+
+    def test_the_rpc_never_writes_a_boundary_or_a_business_status(self):
+        statement = self.sql.split('UPDATE public.development_projects SET')[1].split('WHERE')[0]
+        for column in ('geometry', 'geometry_source', 'geometry_verified', 'status=', 'stage=',
+                       'validation_status', 'canonical_source_id'):
+            self.assertNotIn(column, statement)
+        for column in ('location=', 'location_source=', 'location_verified_at=', 'field_evidence='):
+            self.assertIn(column, statement)
+
+    def test_the_rpc_refuses_instead_of_correcting(self):
+        for reason in ('CONFIDENCE_NOT_EXACT', 'UNKNOWN_GEOCODE_SOURCE', 'COORDINATE_OUTSIDE_SEOUL',
+                       'NO_GEOCODE_EVIDENCE', 'PROJECT_NOT_FOUND', 'REVISION_CONFLICT',
+                       'LOCATION_ALREADY_SET', 'DISTRICT_MISMATCH'):
+            self.assertIn(reason, self.sql)
+        self.assertNotIn('DELETE', self.sql.upper().replace('DELETED', ''))
+
+    def test_the_rpc_is_invoker_rights_and_service_role_only(self):
+        self.assertIn('SECURITY INVOKER', self.sql)
+        self.assertIn('SET search_path=pg_catalog,public,extensions,pg_temp', self.sql)
+        self.assertIn('REVOKE ALL ON FUNCTION public.zipon_set_project_location', self.sql)
+        self.assertIn('GRANT EXECUTE ON FUNCTION public.zipon_set_project_location', self.sql)
+        self.assertIn('TO service_role', self.sql)
+
+    def test_the_postcheck_rolls_everything_back(self):
+        postcheck = (ROOT / 'supabase/review/20260927_zipon_geocode_location_postcheck.sql') \
+            .read_text(encoding='utf-8')
+        self.assertTrue(postcheck.strip().endswith('ROLLBACK;'))
+        self.assertIn("RAISE EXCEPTION 'Rollback successful test fixtures' USING ERRCODE='ZP001'",
+                      postcheck)
+        self.assertIn('TARGET_PROJECT_UNCHANGED', postcheck)
+        self.assertIn('ROW_COUNTS_AND_COORDINATE_COVERAGE_INTACT', postcheck)
+        statements = '\n'.join(line for line in postcheck.splitlines()
+                               if not line.lstrip().startswith('--')).upper()
+        for forbidden in ('DELETE FROM', 'TRUNCATE', 'DROP ', 'ALTER TABLE'):
+            self.assertNotIn(forbidden, statements)
+
+
+class DynamicMapExposureTests(unittest.TestCase):
+    def config(self, secrets=None):
+        from services import map_providers
+        return map_providers, map_providers.config(lambda name: (secrets or {}).get(name, ''))
+
+    def test_only_the_map_client_id_may_reach_the_browser(self):
+        providers, config = self.config({'NAVER_MAP_CLIENT_ID': 'ID_VALUE',
+                                         'NAVER_MAP_CLIENT_SECRET': 'SECRET_VALUE'})
+        text = json.dumps(config, ensure_ascii=False)
+        self.assertNotIn('ID_VALUE', text)
+        self.assertNotIn('SECRET_VALUE', text)
+        self.assertIn('NAVER_MAP_CLIENT_SECRET', config['browser_exposure']['never_sent_to_browser'])
+        naver = next(p for p in config['providers'] if p['id'] == 'naver')
+        self.assertEqual(naver['browser_key_name'], 'NAVER_MAP_CLIENT_ID')
+        self.assertEqual(naver['web_service_url'], 'https://minseo2-digital-ai-lab.hf.space')
+        self.assertEqual(providers.NAVER_WEB_SERVICE_URL, 'https://minseo2-digital-ai-lab.hf.space')
+
+    def test_a_configured_naver_client_id_does_not_change_the_tile_source(self):
+        _, config = self.config({'NAVER_MAP_CLIENT_ID': 'ID_VALUE'})
+        self.assertEqual(config['active'], 'osm')
+        self.assertIn('tile.openstreetmap.org', config['tile']['url_template'])
+
+    def test_no_frontend_file_mentions_a_geocoding_credential(self):
+        for path in (ROOT / 'web/src').rglob('*.ts*'):
+            source = path.read_text(encoding='utf-8')
+            for secret in ('NAVER_MAP_CLIENT_SECRET', 'KAKAO_REST_API_KEY', 'X-NCP-APIGW-API-KEY',
+                           'SERVICE_ROLE', 'NEXT_PUBLIC_SUPABASE'):
+                self.assertNotIn(secret, source, f'{path.name} mentions {secret}')

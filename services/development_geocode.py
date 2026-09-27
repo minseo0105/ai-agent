@@ -5,6 +5,13 @@ result. Here a coordinate is only accepted when the provider returns exactly one
 candidate whose returned address still contains the district and the lot we
 asked for. Anything else becomes GEOCODE_REVIEW and stays unresolved, so no
 representative point is ever manufactured from a dong centroid.
+
+NAVER Maps Geocoding is the first provider (NAVER -> Kakao -> VWorld) because it
+returns addressElements, which lets the sido / 자치구 / 동 / 번지 comparison be an
+exact field match instead of a substring test. x is the longitude and y is the
+latitude; the axes are never swapped, and a response that looks swapped is sent to
+review rather than quietly corrected. Credentials are read by name only and never
+appear in a return value, a cache row or a log line.
 """
 from datetime import datetime, timezone
 import hashlib
@@ -16,6 +23,22 @@ import unicodedata
 CACHE_VERSION = 'zipon-geocode-v1'
 ACCEPTED_ACCURACY = ('PARCEL', 'BUILDING', 'ROAD_ADDRESS')
 SEOUL_BOUNDS = {'longitude': (126.734, 127.270), 'latitude': (37.413, 37.715)}
+SEOUL_SIDO = '서울특별시'
+
+# NAVER Maps Geocoding. 현 host는 maps.apigw.ntruss.com이고 구 host는
+# naveropenapi.apigw.ntruss.com이다. 경로와 인증 헤더는 두 host에서 같다.
+NAVER_GEOCODE_URL = 'https://maps.apigw.ntruss.com/map-geocode/v2/geocode'
+NAVER_GEOCODE_LEGACY_URL = 'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode'
+NAVER_HEADER_KEY_ID = 'X-NCP-APIGW-API-KEY-ID'      # Client ID
+NAVER_HEADER_KEY = 'X-NCP-APIGW-API-KEY'            # Client Secret
+# 개발사업 데이터와 무관한 연결 확인용 주소(서울특별시청). 실데이터를 태우지 않는다.
+SAMPLE_ADDRESS = '서울특별시 중구 세종대로 110'
+# 좌표 축을 확인하기 위한 한반도 범위. 서울 판정용 SEOUL_BOUNDS와는 목적이 다르다.
+KOREA_LONGITUDE = (124.0, 132.0)
+KOREA_LATITUDE = (33.0, 39.0)
+# NAVER가 addressElements.types로 돌려주는 구성요소.
+ELEMENT_TYPES = ('SIDO', 'SIGUGUN', 'DONGMYUN', 'RI', 'ROAD_NAME', 'BUILDING_NUMBER',
+                 'BUILDING_NAME', 'LAND_NUMBER', 'POSTAL_CODE')
 
 
 def normalize_address(value):
@@ -72,6 +95,78 @@ def in_bounds(longitude, latitude):
             and SEOUL_BOUNDS['latitude'][0] <= latitude <= SEOUL_BOUNDS['latitude'][1])
 
 
+def _within(value, span):
+    return isinstance(value, (int, float)) and span[0] <= value <= span[1]
+
+
+def coordinate_orientation(x, y):
+    """NAVER/Kakao는 x=경도, y=위도로 응답한다. 뒤집지 않고, 뒤집힌 것으로 보이면 그렇다고 표시한다.
+
+    값을 조용히 교환하면 서울 한복판에 엉뚱한 핀이 꽂히고도 통과한다. 그래서
+    의심스러운 응답은 SUSPECT_SWAPPED로 남겨 evaluate()가 검토로 보내게 한다.
+    """
+    if _within(x, KOREA_LONGITUDE) and _within(y, KOREA_LATITUDE):
+        return 'X_IS_LONGITUDE'
+    if _within(y, KOREA_LONGITUDE) and _within(x, KOREA_LATITUDE):
+        return 'SUSPECT_SWAPPED'
+    return 'OUT_OF_RANGE'
+
+
+def wanted_parts(address):
+    """요청 주소에서 시도·자치구·동·번지(또는 도로명·건물번호)를 뽑는다.
+
+    지번 주소와 도로명 주소를 구분한다. '세종대로 110'의 110은 번지가 아니라
+    건물번호이므로 LAND_NUMBER와 비교하면 멀쩡한 결과가 검토로 밀린다.
+    """
+    text = normalize_address(address)
+    tokens = text.split()
+    sido = tokens[0] if tokens and tokens[0].endswith(('시', '도')) and len(tokens[0]) > 2 else None
+    district = next((t for t in tokens if t != sido and t.endswith('구')), None)
+    dong = next((t for t in tokens if t not in (sido, district)
+                 and re.fullmatch(r'[가-힣0-9]+[동리가]', t)), None)
+    road = next((t for t in tokens if t not in (sido, district)
+                 and re.search(r'(로|길)$', t)), None)
+    number = re.search(r'(\d+(?:-\d+)?)\s*$', text)
+    return {'normalized': text, 'sido': sido, 'district': district, 'dong': dong, 'road': road,
+            'lot': number.group(1) if number and not road else None,
+            'building_number': number.group(1) if number and road else None}
+
+
+def address_elements(item):
+    """NAVER addressElements를 타입별 dict로 펼친다. longName을 우선한다."""
+    flat = {}
+    for element in (item or {}).get('addressElements') or []:
+        value = ((element or {}).get('longName') or (element or {}).get('shortName') or '').strip()
+        for kind in (element or {}).get('types') or []:
+            if kind and value and not flat.get(kind):
+                flat[kind] = value
+    return flat
+
+
+def element_checks(parts, elements):
+    """addressElements로 서울·자치구·동·번지를 정확 일치로 검증한다.
+
+    substring 비교는 '천호동 3'이 '천호동 30'을 통과시키므로 쓰지 않는다.
+    번지도 건물번호도 없는 요청은 동·구 중심점으로 해석될 수 있어 EXACT가 되지 않는다.
+    """
+    checks = {'seoul': elements.get('SIDO', '') == SEOUL_SIDO}
+    if parts['sido']:
+        checks['sido_match'] = elements.get('SIDO', '') == parts['sido']
+    if parts['district']:
+        checks['district_match'] = elements.get('SIGUGUN', '') == parts['district']
+    if parts['dong']:
+        checks['dong_match'] = elements.get('DONGMYUN', '') == parts['dong']
+    if parts['lot']:
+        checks['lot_match'] = elements.get('LAND_NUMBER', '') == parts['lot']
+    if parts['road']:
+        checks['road_match'] = elements.get('ROAD_NAME', '') == parts['road']
+    if parts['building_number']:
+        checks['building_number_match'] = elements.get('BUILDING_NUMBER', '') == parts['building_number']
+    if not parts['lot'] and not parts['building_number']:
+        checks['not_a_region_centroid'] = False
+    return checks
+
+
 def evaluate(address, response):
     """Decide whether a provider response is an exact match for this address."""
     unresolved = {'latitude': None, 'longitude': None, 'geocode_source': None,
@@ -81,29 +176,45 @@ def evaluate(address, response):
     if not response or response.get('result_status') != 'MATCHED':
         return dict(unresolved, geocode_confidence='UNRESOLVED',
                     provider_candidate_count=len(response.get('candidates') or []) if response else 0,
-                    geocode_source=(response or {}).get('provider'))
+                    geocode_source=(response or {}).get('provider'),
+                    result_status=(response or {}).get('result_status'))
     candidates = response.get('candidates') or []
     result = dict(unresolved, geocode_source=response.get('provider'),
-                  provider_candidate_count=len(candidates))
+                  provider_candidate_count=len(candidates), endpoint=response.get('endpoint'),
+                  result_status='MATCHED')
     if len(candidates) != 1:
         # Several official candidates for one address is exactly the case the
         # first-result-wins geocoders get wrong.
-        return dict(result, geocode_confidence='GEOCODE_REVIEW')
+        return dict(result, geocode_confidence='GEOCODE_REVIEW',
+                    review_reason='MULTIPLE_PROVIDER_CANDIDATES')
     candidate = candidates[0]
     longitude, latitude = candidate.get('longitude'), candidate.get('latitude')
-    wanted = normalize_address(address)
+    parts = wanted_parts(address)
+    wanted = parts['normalized']
     returned = normalize_address(candidate.get('matched_address'))
-    district = next((t for t in wanted.split() if t.endswith('구')), None)
-    lot = re.search(r'(\d+(?:-\d+)?)\s*$', wanted)
+    elements = candidate.get('address_elements') or {}
+    orientation = candidate.get('coordinate_orientation') or coordinate_orientation(longitude, latitude)
     checks = {'accuracy': candidate.get('accuracy') in ACCEPTED_ACCURACY,
               'bounds': in_bounds(longitude, latitude),
-              'district_match': bool(district) and district in returned,
-              'lot_match': bool(lot) and lot.group(1) in returned}
-    if not all(checks.values()):
-        return dict(result, geocode_confidence='GEOCODE_REVIEW', checks=checks)
+              'axis_order': orientation == 'X_IS_LONGITUDE'}
+    if elements:
+        checks.update(element_checks(parts, elements))
+    else:
+        # addressElements를 주지 않는 provider는 되돌려준 주소 문자열로만 검증한다.
+        checks['district_match'] = bool(parts['district']) and parts['district'] in returned
+        checks['lot_match'] = bool(parts['lot']) and parts['lot'] in returned
+    detail = {'matched_address': returned, 'accuracy': candidate.get('accuracy'), 'checks': checks,
+              'address_elements': elements or None, 'coordinate_orientation': orientation,
+              'road_address': candidate.get('road_address'),
+              'jibun_address': candidate.get('jibun_address'),
+              'english_address': candidate.get('english_address'),
+              'distance_m': candidate.get('distance_m'), 'wanted_parts': parts}
+    failed = sorted(name for name, ok in checks.items() if not ok)
+    if failed:
+        return dict(result, geocode_confidence='GEOCODE_REVIEW',
+                    review_reason='CHECK_FAILED:' + ','.join(failed), **detail)
     return dict(result, latitude=latitude, longitude=longitude, geocode_confidence='EXACT',
-                coordinate_verified=True, address_used=wanted, matched_address=returned,
-                accuracy=candidate.get('accuracy'), checks=checks)
+                coordinate_verified=True, address_used=wanted, **detail)
 
 
 def resolve(addresses, cache, provider=None):
@@ -169,7 +280,9 @@ def vworld_provider(api_key, domain, http_get):
         for item in results:
             point = (item or {}).get('point') or {}
             try:
-                candidates.append({'longitude': float(point['x']), 'latitude': float(point['y']),
+                longitude, latitude = float(point['x']), float(point['y'])
+                candidates.append({'longitude': longitude, 'latitude': latitude,
+                                   'coordinate_orientation': coordinate_orientation(longitude, latitude),
                                    'accuracy': 'PARCEL',
                                    'matched_address': ((response.get('refined') or {}).get('text')
                                                        or (item or {}).get('text') or '')})
@@ -183,14 +296,20 @@ def vworld_provider(api_key, domain, http_get):
 # Provider registry. Each entry names the secrets it needs so availability can be
 # reported without calling anything, and so a provider can be swapped later.
 PROVIDER_SPECS = {
-    'vworld': {'secrets': ('VWORLD_API_KEY', 'VWORLD_DOMAIN'), 'required': ('VWORLD_API_KEY',),
-               'host': 'api.vworld.kr', 'cost': 'free public API (key required)'},
+    'naver': {'secrets': ('NAVER_MAP_CLIENT_ID', 'NAVER_MAP_CLIENT_SECRET'),
+              'required': ('NAVER_MAP_CLIENT_ID', 'NAVER_MAP_CLIENT_SECRET'),
+              'host': 'maps.apigw.ntruss.com', 'endpoint': NAVER_GEOCODE_URL,
+              'cost': 'free monthly quota, then paid', 'address_elements': True},
     'kakao': {'secrets': ('KAKAO_REST_API_KEY',), 'required': ('KAKAO_REST_API_KEY',),
-              'host': 'dapi.kakao.com', 'cost': 'free tier (key required)'},
-    'naver': {'secrets': ('NAVER_CLOUD_API_KEY_ID', 'NAVER_CLOUD_API_KEY'),
-              'required': ('NAVER_CLOUD_API_KEY_ID', 'NAVER_CLOUD_API_KEY'),
-              'host': 'maps.apigw.ntruss.com', 'cost': 'paid tier after free quota'},
+              'host': 'dapi.kakao.com',
+              'endpoint': 'https://dapi.kakao.com/v2/local/search/address.json',
+              'cost': 'free tier (key required)', 'address_elements': False},
+    'vworld': {'secrets': ('VWORLD_API_KEY', 'VWORLD_DOMAIN'), 'required': ('VWORLD_API_KEY',),
+               'host': 'api.vworld.kr', 'endpoint': 'https://api.vworld.kr/req/address',
+               'cost': 'free public API (key required)', 'address_elements': False},
 }
+# NAVER를 먼저 쓴다. 한글 지번 주소 정확도와 addressElements 검증이 가장 강하다.
+PROVIDER_PRIORITY = ('naver', 'kakao', 'vworld')
 
 
 def kakao_provider(api_key, http_get):
@@ -202,7 +321,9 @@ def kakao_provider(api_key, http_get):
         candidates = []
         for item in (payload or {}).get('documents') or []:
             try:
-                candidates.append({'longitude': float(item['x']), 'latitude': float(item['y']),
+                longitude, latitude = float(item['x']), float(item['y'])
+                candidates.append({'longitude': longitude, 'latitude': latitude,
+                                   'coordinate_orientation': coordinate_orientation(longitude, latitude),
                                    'accuracy': 'PARCEL' if item.get('address') else 'ROAD_ADDRESS',
                                    'matched_address': (item.get('address') or {}).get('address_name')
                                                       or (item.get('road_address') or {}).get('address_name') or ''})
@@ -213,24 +334,99 @@ def kakao_provider(api_key, http_get):
     return call
 
 
-def naver_provider(key_id, key, http_get):
-    """NAVER Cloud Geocoding. 첫 결과를 자동 채택하지 않는다."""
+def _float_or_none(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _endpoint_missing(exc):
+    """구 host 확인은 경로/호스트를 못 찾은 경우에만 한다.
+
+    인증 실패나 쿼터 초과로 다시 호출하면 과금 호출을 두 번 하게 되므로 재시도하지 않는다.
+    """
+    status = getattr(getattr(exc, 'response', None), 'status_code', None)
+    if status == 404:
+        return True
+    return status is None and type(exc).__name__ in (
+        'ConnectionError', 'ConnectTimeout', 'NameResolutionError', 'gaierror')
+
+
+def naver_accuracy(item, elements):
+    """번지가 있으면 PARCEL, 건물번호/도로명만 있으면 ROAD_ADDRESS, 둘 다 없으면 REGION.
+
+    REGION은 ACCEPTED_ACCURACY에 없다. 구청·주민센터·동 중심점 수준의 응답이
+    좌표로 채택되는 경로를 여기서 끊는다.
+    """
+    if elements.get('LAND_NUMBER'):
+        return 'PARCEL'
+    if elements.get('BUILDING_NUMBER') or ((item or {}).get('roadAddress') or '').strip():
+        return 'ROAD_ADDRESS'
+    return 'REGION'
+
+
+def naver_provider(client_id, client_secret, http_get):
+    """NAVER Maps Geocoding. 첫 결과를 자동 채택하지 않고 판정은 evaluate()가 한다.
+
+    인증 헤더는 Client ID -> X-NCP-APIGW-API-KEY-ID, Client Secret -> X-NCP-APIGW-API-KEY.
+    좌표는 x=경도, y=위도이며 교환하지 않는다. 축이 의심스러우면 표시만 남긴다.
+    """
+    headers = {NAVER_HEADER_KEY_ID: client_id, NAVER_HEADER_KEY: client_secret,
+               'Accept': 'application/json'}
+
+    def fetch(address):
+        params = {'query': address, 'count': 10}
+        try:
+            return http_get(NAVER_GEOCODE_URL, params=params, headers=headers, timeout=10), \
+                NAVER_GEOCODE_URL
+        except Exception as exc:
+            if not _endpoint_missing(exc):
+                raise
+            return http_get(NAVER_GEOCODE_LEGACY_URL, params=params, headers=headers,
+                            timeout=10), NAVER_GEOCODE_LEGACY_URL
+
     def call(address):
-        payload = http_get('https://maps.apigw.ntruss.com/map-geocode/v2/geocode',
-                           params={'query': address},
-                           headers={'x-ncp-apigw-api-key-id': key_id, 'x-ncp-apigw-api-key': key},
-                           timeout=10)
+        payload, endpoint = fetch(address)
+        payload = payload or {}
         candidates = []
-        for item in (payload or {}).get('addresses') or []:
-            try:
-                candidates.append({'longitude': float(item['x']), 'latitude': float(item['y']),
-                                   'accuracy': 'ROAD_ADDRESS' if item.get('roadAddress') else 'PARCEL',
-                                   'matched_address': item.get('jibunAddress') or item.get('roadAddress') or ''})
-            except (KeyError, TypeError, ValueError):
+        for item in payload.get('addresses') or []:
+            longitude, latitude = _float_or_none(item.get('x')), _float_or_none(item.get('y'))
+            if longitude is None or latitude is None:
                 continue
-        return {'provider': 'naver:geocode', 'result_status': 'MATCHED' if candidates else 'NO_MATCH',
+            elements = address_elements(item)
+            candidates.append({
+                'longitude': longitude,                      # x = 경도
+                'latitude': latitude,                        # y = 위도
+                'coordinate_orientation': coordinate_orientation(longitude, latitude),
+                'accuracy': naver_accuracy(item, elements),
+                'matched_address': item.get('jibunAddress') or item.get('roadAddress') or '',
+                'jibun_address': item.get('jibunAddress') or '',
+                'road_address': item.get('roadAddress') or '',
+                'english_address': item.get('englishAddress') or '',
+                # 요청에 기준 좌표를 보내지 않으므로 distance는 0으로 오는 값이다. 기록만 한다.
+                'distance_m': _float_or_none(item.get('distance')),
+                'address_elements': elements,
+            })
+        status = str(payload.get('status') or '').upper()
+        if candidates:
+            result_status = 'MATCHED'
+        elif status in ('', 'OK'):
+            result_status = 'NO_MATCH'
+        else:
+            result_status = status
+        return {'provider': 'naver:geocode', 'endpoint': endpoint, 'result_status': result_status,
+                'provider_total': (payload.get('meta') or {}).get('totalCount'),
                 'candidates': candidates}
     return call
+
+
+def requests_get(url, params=None, headers=None, timeout=10):
+    """공통 HTTP GET. 오류 본문이나 헤더를 로그에 남기지 않는다."""
+    import requests
+    response = requests.get(url, params=params, headers=headers, timeout=timeout)
+    response.raise_for_status()
+    return response.json()
 
 
 def provider_availability(get_secret):
@@ -239,7 +435,9 @@ def provider_availability(get_secret):
     for name, spec in PROVIDER_SPECS.items():
         missing = [key for key in spec['required'] if not str(get_secret(key) or '').strip()]
         report[name] = {'configured': not missing, 'missing_secrets': missing,
-                        'host': spec['host'], 'cost': spec['cost']}
+                        'host': spec['host'], 'endpoint': spec['endpoint'],
+                        'cost': spec['cost'], 'address_elements': spec['address_elements'],
+                        'priority': PROVIDER_PRIORITY.index(name) + 1}
     return report
 
 
@@ -256,5 +454,62 @@ def build_provider(name, get_secret, http_get):
                                str(get_secret('VWORLD_DOMAIN') or '').strip(), http_get), None
     if name == 'kakao':
         return kakao_provider(str(get_secret('KAKAO_REST_API_KEY')).strip(), http_get), None
-    return naver_provider(str(get_secret('NAVER_CLOUD_API_KEY_ID')).strip(),
-                          str(get_secret('NAVER_CLOUD_API_KEY')).strip(), http_get), None
+    return naver_provider(str(get_secret('NAVER_MAP_CLIENT_ID')).strip(),
+                          str(get_secret('NAVER_MAP_CLIENT_SECRET')).strip(), http_get), None
+
+
+def select_provider(get_secret, http_get, preferred=None):
+    """NAVER -> Kakao -> VWorld 순서로 자격증명이 갖춰진 첫 provider를 고른다.
+
+    preferred를 주면 그것을 먼저 시도하고, 없으면 우선순위대로 내려간다. 어떤
+    경우에도 비밀값은 반환하지 않고 어떤 provider가 왜 막혔는지만 남긴다.
+    """
+    availability = provider_availability(get_secret)
+    order = ([preferred] if preferred else []) + [n for n in PROVIDER_PRIORITY if n != preferred]
+    skipped = []
+    for name in order:
+        provider, blocker = build_provider(name, get_secret, http_get)
+        if provider is not None:
+            return {'provider': provider, 'name': name, 'blocker': None, 'priority': order,
+                    'availability': availability, 'skipped': skipped}
+        skipped.append({'provider': name, 'blocker': blocker})
+    return {'provider': None, 'name': None, 'blocker': 'NO_GEOCODER_CREDENTIAL_CONFIGURED',
+            'priority': order, 'availability': availability, 'skipped': skipped}
+
+
+def status(get_secret, http_get=None, probe_address=None, preferred=None):
+    """지오코딩 헬스체크. Client ID/Secret 값은 어떤 필드에도 담지 않는다.
+
+    probe_address가 없으면 네트워크를 건드리지 않고 reachable은 None으로 둔다.
+    주소를 주면 그 한 건만 호출해 축 순서(x=경도, y=위도)까지 확인한다.
+    """
+    selected = select_provider(get_secret, http_get or (lambda *a, **k: None), preferred)
+    spec = PROVIDER_SPECS.get(selected['name'] or '', {})
+    report = {'provider': selected['name'], 'configured': selected['provider'] is not None,
+              'reachable': None, 'priority': list(selected['priority']),
+              'blocker': selected['blocker'], 'endpoint': spec.get('endpoint'),
+              'host': spec.get('host'), 'providers': selected['availability'],
+              'skipped': selected['skipped'], 'probe': None,
+              'checked_at': datetime.now(timezone.utc).isoformat()}
+    if selected['provider'] is None or not probe_address:
+        return report
+    address = normalize_address(probe_address)
+    try:
+        response = selected['provider'](address)
+        evaluation = evaluate(address, response)
+        candidate = (response.get('candidates') or [None])[0] or {}
+        report['reachable'] = True
+        report['probe'] = {'address': address, 'result_status': response.get('result_status'),
+                           'candidate_count': len(response.get('candidates') or []),
+                           'geocode_confidence': evaluation['geocode_confidence'],
+                           'coordinate_orientation': candidate.get('coordinate_orientation'),
+                           'longitude': candidate.get('longitude'),
+                           'latitude': candidate.get('latitude'),
+                           'endpoint': response.get('endpoint')}
+    except Exception as exc:
+        # 예외 문자열은 요청 URL과 함께 키가 섞일 수 있으므로 타입과 상태코드만 남긴다.
+        report['reachable'] = False
+        report['probe'] = {'address': address, 'error_type': type(exc).__name__,
+                           'http_status': getattr(getattr(exc, 'response', None),
+                                                  'status_code', None)}
+    return report
