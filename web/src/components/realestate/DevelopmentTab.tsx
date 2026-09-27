@@ -9,12 +9,13 @@ import {
   estateApi,
   type DevelopmentMapPoint,
   type DevelopmentProject,
-  type DevelopmentSummary,
   type EstateOptions,
   type MapConfig,
 } from "@/lib/realestate";
 
 const MAX_DISTRICTS = 5;
+// 카드 렌더 상한. 넘으면 조용히 자르지 않고 몇 건을 보여주는지 화면에 적는다.
+const MAX_CARDS = 200;
 const FILTERS = ["전체", "재개발", "재건축", "신속통합기획", "모아타운", "기타 정비사업"] as const;
 const CHIP = "min-h-9 rounded-full px-3 py-1.5 text-xs font-bold transition";
 
@@ -42,7 +43,6 @@ export default function DevelopmentTab({
   property?: MapFocus;
 }) {
   const [config, setConfig] = useState<MapConfig | null>(null);
-  const [summary, setSummary] = useState<DevelopmentSummary | null>(null);
   const [districts, setDistricts] = useState<string[]>([]);
   const [projects, setProjects] = useState<DevelopmentProject[]>([]);
   const [points, setPoints] = useState<DevelopmentMapPoint[]>([]);
@@ -52,55 +52,54 @@ export default function DevelopmentTab({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [ready, setReady] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     estateApi.mapConfig().then(setConfig).catch(() => {});
-    estateApi
-      .developmentSummary()
-      .then((r) => {
-        setSummary(r);
-        setDistricts(r.districts.slice(0, 3).map((d) => `서울 > ${d.district}`));
-        if (r.status !== "ok" || r.districts.length === 0) setLoading(false);
-      })
-      .catch((e) => {
-        setError((e as Error).message);
-        setLoading(false);
-      });
   }, []);
 
-  const load = useCallback(async (selected: string[]) => {
-    const names = selected.map((r) => r.replace(/^(서울|경기) > /, "")).slice(0, MAX_DISTRICTS);
-    if (names.length === 0) {
-      setProjects([]);
-      setPoints([]);
-      setLoading(false);
-      return;
-    }
+  // 목록과 marker를 한 응답에서 받는다. 자치구별 응답을 합치면 한 자치구가 실패했을 때
+  // 그 사업들이 조용히 빠진 합계가 '전체'로 보인다. 지역 선택은 이 데이터를 화면에서
+  // 거르는 것이고, 다시 조회하지 않는다.
+  useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     setError("");
-    try {
-      const [lists, maps] = await Promise.all([
-        Promise.all(names.map((name) => estateApi.development({ sigungu: name, limit: 100 }))),
-        Promise.all(names.map((name) => estateApi.developmentMap(name, 200))),
-      ]);
-      setProjects(lists.flatMap((r) => (r.status === "ok" ? r.projects : [])));
-      setPoints(maps.flatMap((r) => (r.status === "ok" ? r.points : [])));
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
+    estateApi
+      .developmentMap()
+      .then((r) => {
+        if (cancelled) return;
+        if (r.status !== "ok") {
+          setReady(false);
+          setProjects([]);
+          setPoints([]);
+          return;
+        }
+        setReady(true);
+        setProjects(r.projects);
+        setPoints(r.points);
+      })
+      .catch((e) => {
+        if (!cancelled) setError((e as Error).message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  useEffect(() => {
-    if (summary) load(districts);
-  }, [districts, summary, load]);
-
   const search = keyword.trim();
+  const selectedDistricts = useMemo(
+    () => new Set(districts.map((r) => r.replace(/^(서울|경기) > /, "")).slice(0, MAX_DISTRICTS)),
+    [districts],
+  );
   const visible = useMemo(
     () =>
       projects.filter((p) => {
+        if (selectedDistricts.size > 0 && !selectedDistricts.has(p.district ?? "")) return false;
         if (!matchesFilter(p, filter)) return false;
         if (stageFilter !== "전체" && p.stage.label !== stageFilter) return false;
         if (!search) return true;
@@ -109,26 +108,36 @@ export default function DevelopmentTab({
           .join(" ")
           .includes(search);
       }),
-    [projects, filter, stageFilter, search],
+    [projects, selectedDistricts, filter, stageFilter, search],
   );
   // 진행단계는 응답에 실제로 있는 값만 제공한다. 단계를 추정하지 않는다.
   const stages = useMemo(() => [...new Set(projects.map((p) => p.stage.label))].sort(), [projects]);
   const visibleIds = useMemo(() => new Set(visible.map((p) => p.project_id)), [visible]);
+  // 목록에 보이는 사업만 marker가 된다. 좌표가 없는 사업은 목록에 남고 marker만 없다.
   const visiblePoints = useMemo(
-    () => points.filter((point) => matchesFilter(point, filter) && (!search || visibleIds.has(point.project_id))),
-    [points, filter, search, visibleIds],
+    () => points.filter((point) => visibleIds.has(point.project_id)),
+    [points, visibleIds],
   );
 
+  // 지역·유형을 고르지 않은 기본 상태의 분모는 API가 가진 전체 사업이다.
+  const inRegion = useMemo(
+    () =>
+      selectedDistricts.size === 0
+        ? projects
+        : projects.filter((p) => selectedDistricts.has(p.district ?? "")),
+    [projects, selectedDistricts],
+  );
   const counts = {
     total: visible.length,
-    재개발: projects.filter((p) => p.type_label === "재개발").length,
-    재건축: projects.filter((p) => p.type_label === "재건축").length,
-    신속통합기획: projects.filter((p) => p.program_label === "신속통합기획").length,
-    모아타운: projects.filter((p) => p.type_label === "모아타운").length,
+    재개발: inRegion.filter((p) => p.type_label === "재개발").length,
+    재건축: inRegion.filter((p) => p.type_label === "재건축").length,
+    신속통합기획: inRegion.filter((p) => p.program_label === "신속통합기획").length,
+    모아타운: inRegion.filter((p) => p.type_label === "모아타운").length,
   };
   const selected = visible.find((p) => p.project_id === selectedId) ?? null;
   const mappable = visiblePoints.filter((p) => p.latitude != null).length;
-  const unavailable = summary?.status !== "ok";
+  const coordinateless = visible.length - mappable;
+  const unavailable = !loading && !error && !ready;
 
   // 지도 marker를 누르면 해당 카드로 이동하고, 카드를 누르면 marker를 강조한다.
   const selectFromMap = useCallback((projectId: string | null) => {
@@ -136,7 +145,7 @@ export default function DevelopmentTab({
     if (projectId) cardRefs.current[projectId]?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, []);
   const onBounds = useCallback((_bounds: MapBounds) => {
-    // bbox 조회 준비: 현재는 자치구 단위로 받아오고 화면 범위는 지도에서만 사용한다.
+    // bbox 조회 준비: 지금은 서울시 전체를 한 번 받아 두고 화면 범위는 지도에서만 쓴다.
   }, []);
 
   return (
@@ -191,7 +200,7 @@ export default function DevelopmentTab({
         ))}
       </div>
 
-      {!unavailable && districts.length > 0 && (
+      {ready && (
         <ZiponMap
           points={visiblePoints}
           property={property}
@@ -211,7 +220,7 @@ export default function DevelopmentTab({
         </p>
       )}
 
-      {!loading && !unavailable && (
+      {!loading && ready && (
         <>
           <section className="rounded-xl bg-surface-muted p-2.5">
             <h3 className="text-[11px] font-extrabold tracking-wide text-muted">이 위치의 개발정보</h3>
@@ -228,6 +237,7 @@ export default function DevelopmentTab({
             ) : (
               <p className="mt-1 text-xs text-muted">
                 {visible.length}건 중 {mappable}건이 지도에 표시됩니다.
+                {coordinateless > 0 && ` 좌표가 없는 ${coordinateless}건은 목록에만 남습니다.`}
                 {mappable === 0 && " 좌표를 확보하는 중이라 아직 지도에 핀이 없습니다."}
                 {" 지도나 아래 목록에서 사업을 선택하면 해석을 보여드려요."}
               </p>
@@ -242,18 +252,17 @@ export default function DevelopmentTab({
             {counts.모아타운 > 0 && <Kpi label="모아타운" value={counts.모아타운} />}
           </div>
 
-          {districts.length === 0 && (
+          {selectedDistricts.size === 0 && (
             <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">
-              지역을 선택하면 해당 자치구의 개발사업을 지도에 보여드려요.
-              {summary && summary.total > 0 && ` 현재 ${summary.total}건이 등록돼 있어요.`}
+              서울시 전체 {projects.length}건을 보여드리고 있어요. 지역을 선택하면 해당 자치구만 남습니다.
             </p>
           )}
-          {districts.length > 0 && visible.length === 0 && (
+          {visible.length === 0 && (
             <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">조건에 맞는 개발사업이 없어요.</p>
           )}
 
           <div className="grid gap-2.5 md:grid-cols-2">
-            {visible.slice(0, 60).map((p) => (
+            {visible.slice(0, MAX_CARDS).map((p) => (
               <div
                 key={p.project_id}
                 ref={(node) => {
@@ -266,6 +275,11 @@ export default function DevelopmentTab({
               </div>
             ))}
           </div>
+          {visible.length > MAX_CARDS && (
+            <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">
+              {visible.length}건 중 {MAX_CARDS}건을 카드로 보여드리고 있어요. 지역이나 유형을 좁혀 주세요.
+            </p>
+          )}
           {visible.length > 0 && (
             <p className="text-[11px] leading-relaxed text-subtle">
               사업별로 공식 상세정보 또는 목록에서 확인한 단계와 확인일을 표시합니다. 진행단계의 근거는 각 카드의 서울시 공식자료에서 확인할 수 있습니다.

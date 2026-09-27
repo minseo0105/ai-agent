@@ -283,9 +283,15 @@ def geocode_bulk(offset: int = 0, size: int = bulk_geocode.DEFAULT_SLICE,
 
 
 @router.get('/development/map')
-async def development_map(sigungu: str | None = None, limit: int = 200,
+async def development_map(sigungu: str | None = None, limit: int = 500,
                           north: float | None = None, south: float | None = None,
                           east: float | None = None, west: float | None = None):
+    """목록과 지도 마커의 공통 기준. 한 응답에서 둘을 같이 내려준다.
+
+    화면이 자치구별 응답을 합쳐 '전체'를 만들면, 한 자치구가 실패했을 때 그 사업들이
+    조용히 빠진 합계가 전체로 보인다. 그래서 여기서 한 번에 내려주고, 실패는
+    status로만 알린다. 좌표가 없는 사업은 목록에는 남고 마커만 만들지 않는다.
+    """
     if not 1 <= limit <= 500:
         raise HTTPException(422, 'limit은 1~500 사이여야 합니다.')
     corners = (north, south, east, west)
@@ -296,12 +302,18 @@ async def development_map(sigungu: str | None = None, limit: int = 200,
         result = await run_in_threadpool(development.map_projects, sigungu, limit, bbox)
     except ValueError:
         raise HTTPException(422, '지도 범위 값이 올바르지 않습니다.')
-    points = [presentation.map_point(row) for row in result.get('projects') or []]
+    rows = result.get('projects') or []
+    points = [presentation.map_point(row) for row in rows]
+    projects = [presentation.present_project(row) for row in rows]
+    mappable = sum(1 for point in points if point['mappable'])
     return {'status': result['status'], 'reason': result['reason'], 'points': points,
-            'total': len(points), 'mappable': sum(1 for p in points if p['mappable']),
+            'projects': projects, 'total': len(points), 'mappable': mappable,
+            'coordinateless': len(points) - mappable,
             'bbox_filtered': result.get('bbox_filtered', False),
             'layers': presentation.MAP_LAYERS, 'legend': presentation.LOCATION_ACCURACY,
-            'location_notice': presentation.NO_LOCATION_NOTICE}
+            'location_notice': presentation.NO_LOCATION_NOTICE,
+            # 검증된 경계가 없으므로 대표 좌표로 구역 내부를 판정하지 않는다.
+            'inside_enabled': False}
 
 
 @router.post('/development/nearby')

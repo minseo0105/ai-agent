@@ -81,9 +81,14 @@ export type DevelopmentMapPoint = {
 export type DevelopmentMap = {
   status: "ok" | "unavailable";
   reason: string | null;
+  /** 지도 marker. 좌표가 없는 사업은 mappable=false로 함께 온다. */
   points: DevelopmentMapPoint[];
+  /** 같은 응답의 목록. 목록과 marker가 서로 다른 API를 합치지 않게 한다. */
+  projects: DevelopmentProject[];
   total: number;
   mappable: number;
+  coordinateless: number;
+  inside_enabled: boolean;
   legend: Record<string, { label: string; note: string }>;
   layers: Record<string, { label: string; marker: string; color: string; layer?: string }>;
   bbox_filtered: boolean;
@@ -134,6 +139,9 @@ export type DevelopmentProject = {
   last_checked: string | null;
   spatial: { code: string; label: string; confirmed_boundary: boolean };
   distance_m: number | null;
+  latitude: number | null;
+  longitude: number | null;
+  mappable: boolean;
   has_location: boolean;
   location_notice: string | null;
 };
@@ -241,7 +249,7 @@ export const estateApi = {
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
   developmentSummary: () => request<DevelopmentSummary>("/development/summary"),
   mapConfig: () => request<MapConfig>("/map/config"),
-  developmentMap: (sigungu?: string, limit = 200, bbox?: { north: number; south: number; east: number; west: number }) =>
+  developmentMap: (sigungu?: string, limit = 500, bbox?: { north: number; south: number; east: number; west: number }) =>
     request<DevelopmentMap>(
       `/development/map?limit=${limit}${sigungu ? `&sigungu=${encodeURIComponent(sigungu)}` : ""}` +
         (bbox ? `&north=${bbox.north}&south=${bbox.south}&east=${bbox.east}&west=${bbox.west}` : ""),

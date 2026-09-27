@@ -9,6 +9,11 @@ from services import realestate_monitor as rm
 MAP_COLUMNS = ('project_id,project_name,project_type,sigungu,dong,address,stage_raw,status,'
                'validation_status,location,geometry_verified,last_verified_at')
 
+# in.() 필터는 id마다 37자를 쓴다. 서울시 전체를 한 번에 물으면 질의문자열이 5KB에
+# 가까워지고, 중간 프록시가 자르면 카드의 단계 상세가 통째로 비어버린다. 그래서 나눠 묻는다.
+STAGE_BATCH = 50
+
+
 def stage_metadata(rows):
     """One read-only batch fills columns omitted by the spatial RPC. No SQL change."""
     ids = []
@@ -17,15 +22,20 @@ def stage_metadata(rows):
             ids.append(str(UUID(str(row.get('project_id')))))
         except (ValueError, TypeError):
             continue
-    if not ids:
+    unique = sorted(set(ids))
+    if not unique:
         return rows
-    try:
-        found = rm._remote_request('GET', 'development_projects', params={
-            'select':'project_id,stage,stage_raw,field_evidence,external_id,official_authority',
-            'project_id':'in.(' + ','.join(sorted(set(ids))) + ')', 'limit':len(set(ids))})
-        metadata = {p['project_id']:p for p in found}
-    except Exception:
-        return rows
+    metadata = {}
+    for start in range(0, len(unique), STAGE_BATCH):
+        chunk = unique[start:start + STAGE_BATCH]
+        try:
+            found = rm._remote_request('GET', 'development_projects', params={
+                'select':'project_id,stage,stage_raw,field_evidence,external_id,official_authority',
+                'project_id':'in.(' + ','.join(chunk) + ')', 'limit':len(chunk)})
+        except Exception:
+            # 한 묶음이 실패해도 나머지 단계 상세는 살린다. 단계를 추정하지는 않는다.
+            continue
+        metadata.update({p['project_id']:p for p in found})
     return [dict(row, **{k:v for k,v in metadata.get(row.get('project_id'), {}).items() if k != 'project_id'}) for row in rows]
 
 
@@ -51,7 +61,7 @@ def _point(value):
     return longitude, latitude
 
 
-def map_projects(sigungu=None, limit=200, bbox=None):
+def map_projects(sigungu=None, limit=500, bbox=None):
     """지도용 경량 목록. 상세는 선택 시 따로 조회한다.
 
     bbox(north, south, east, west)는 좌표를 해석한 뒤 서버에서 걸러낸다. 좌표가
@@ -74,6 +84,9 @@ def map_projects(sigungu=None, limit=200, bbox=None):
         rows = rm._remote_request('GET', 'development_projects', params=params)
     except Exception:
         return {'status': 'unavailable', 'projects': [], 'reason': 'DEVELOPMENT_UNAVAILABLE'}
+    # 목록과 지도가 같은 응답을 쓰므로 단계 상세도 여기서 함께 채운다. 단계 판정 로직은
+    # 건드리지 않고, 탐색 경로가 이미 쓰는 읽기 전용 배치를 그대로 재사용한다.
+    rows = stage_metadata(rows)
     result = []
     for row in rows or []:
         longitude, latitude = _point(row.get('location'))

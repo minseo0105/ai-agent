@@ -415,9 +415,10 @@ class ScreenCompactnessTests(unittest.TestCase):
     def test_the_development_tab_loads_without_a_search_button(self):
         tab = read('components/realestate/DevelopmentTab.tsx')
         self.assertIn('useEffect', tab)
-        self.assertIn('developmentSummary()', tab)
+        # 목록과 marker를 한 응답에서 받는다. 자치구별 조회를 합치지 않는다.
+        self.assertIn('estateApi\n      .developmentMap()', tab)
         self.assertNotIn('개발사업 찾기', tab)
-        self.assertIn('if (summary) load(districts)', tab)
+        self.assertNotIn('estateApi.development(', tab)
 
     def test_the_development_tab_shows_counts_and_filters_from_the_data(self):
         tab = read('components/realestate/DevelopmentTab.tsx')
@@ -2252,3 +2253,247 @@ class FastTrackLocationTests(unittest.TestCase):
     def test_the_analysis_reproduces_from_the_canonical_file(self):
         import analyze_zipon_fast_track as analysis
         self.assertEqual(analysis.analyse(), self.document['items'])
+
+
+# 좌표가 있는 행 / 없는 행. geography(Point) EWKB hex는 실제 응답 형식 그대로다.
+SEOUL_POINT = '0101000020E6100000A01A2FDD24DF5F4062105839B4C84240'
+
+
+def development_row(project_id, name, district, dong, address, point, **extra):
+    return dict({'project_id': project_id, 'project_name': name, 'project_type': 'RECONSTRUCTION',
+                 'sigungu': district, 'dong': dong, 'address': address, 'stage_raw': '조합설립인가',
+                 'status': 'UNKNOWN', 'validation_status': 'NEEDS_REVIEW', 'location': point,
+                 'geometry_verified': False, 'last_verified_at': '2026-09-27T00:00:00+00:00'},
+                **extra)
+
+
+def fixture_id(index):
+    """project_id는 실제와 같은 UUID여야 한다. stage_metadata가 UUID만 조회하기 때문이다."""
+    return f'00000000-0000-4000-8000-{index:012d}'
+
+
+SEOCHO_IDS = [fixture_id(1), fixture_id(2), fixture_id(3)]
+GANGDONG_LOCATED, GANGDONG_BARE = fixture_id(4), fixture_id(5)
+SONGPA_LOCATED, SONGPA_BARE = fixture_id(6), fixture_id(7)
+
+
+def whole_city_rows():
+    """서초 3 · 강동 2 · 송파 2 = 7건, 그중 2건은 좌표가 없다."""
+    rows = [development_row(project_id, f'서초{index}', '서초구', '반포동',
+                            f'서울특별시 서초구 반포동 {index + 1}', SEOUL_POINT)
+            for index, project_id in enumerate(SEOCHO_IDS)]
+    rows.append(development_row(GANGDONG_LOCATED, '강동0', '강동구', '둔촌동',
+                                '서울특별시 강동구 둔촌동 172', SEOUL_POINT))
+    rows.append(development_row(GANGDONG_BARE, '강동1', '강동구', '길동',
+                                '서울특별시 강동구 길동 54', None))
+    rows.append(development_row(SONGPA_LOCATED, '송파0', '송파구', '마천동',
+                                '서울특별시 송파구 마천동 183-1', SEOUL_POINT,
+                                project_type='REDEVELOPMENT'))
+    rows.append(development_row(SONGPA_BARE, '송파1', '송파구', '신천동', None, None))
+    return rows
+
+
+class MapListConsistencyTests(unittest.TestCase):
+    """목록 합계와 지도 마커 수가 API 응답과 어긋나지 않는지."""
+
+    def call(self, rows, **kwargs):
+        from api.realestate import development_map
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', side_effect=[rows, []]):
+            return asyncio.run(development_map(**kwargs))
+
+    def test_one_response_carries_both_the_list_and_the_markers(self):
+        result = self.call(whole_city_rows())
+        self.assertEqual(result['status'], 'ok')
+        self.assertEqual(result['total'], 7)
+        self.assertEqual(len(result['projects']), 7)
+        self.assertEqual(len(result['points']), 7)
+        # 같은 행에서 나오므로 목록과 마커의 project_id 집합이 반드시 같다.
+        self.assertEqual([p['project_id'] for p in result['projects']],
+                         [p['project_id'] for p in result['points']])
+
+    def test_a_project_without_a_coordinate_stays_in_the_list(self):
+        result = self.call(whole_city_rows())
+        self.assertEqual(result['mappable'], 5)
+        self.assertEqual(result['coordinateless'], 2)
+        self.assertEqual(result['total'], result['mappable'] + result['coordinateless'])
+        without = [p for p in result['projects'] if not p['mappable']]
+        self.assertEqual({p['name'] for p in without}, {'강동1', '송파1'})
+        for project in without:
+            self.assertIsNone(project['latitude'])
+            self.assertIsNone(project['longitude'])
+            self.assertEqual(project['location_accuracy']['label'], '위치 데이터 준비 중')
+        # 좌표가 없어도 목록에서 사라지지 않는다.
+        self.assertIn('강동1', [p['name'] for p in result['projects']])
+
+    def test_a_verified_coordinate_is_never_reported_as_pending(self):
+        result = self.call(whole_city_rows())
+        located = [p for p in result['projects'] if p['mappable']]
+        self.assertEqual(len(located), 5)
+        for project in located:
+            self.assertEqual(project['location_accuracy']['label'], '대표 위치')
+            self.assertIsNone(project['location_notice'])
+            self.assertTrue(project['has_location'])
+            self.assertIsNotNone(project['address'])
+            self.assertIsNotNone(project['latitude'])
+            self.assertIsNotNone(project['longitude'])
+
+    def test_the_address_survives_into_the_card_payload(self):
+        result = self.call(whole_city_rows())
+        card = next(p for p in result['projects'] if p['project_id'] == GANGDONG_LOCATED)
+        self.assertEqual(card['address'], '서울특별시 강동구 둔촌동 172')
+        self.assertEqual(card['district'], '강동구')
+        self.assertEqual(card['dong'], '둔촌동')
+
+    def test_every_district_is_present_in_one_request(self):
+        result = self.call(whole_city_rows())
+        districts = {}
+        for project in result['projects']:
+            districts[project['district']] = districts.get(project['district'], 0) + 1
+        self.assertEqual(districts, {'서초구': 3, '강동구': 2, '송파구': 2})
+
+    def test_the_default_limit_covers_the_whole_city(self):
+        from api.realestate import development_map
+        import inspect
+        self.assertEqual(inspect.signature(development_map).parameters['limit'].default, 500)
+        self.assertEqual(inspect.signature(dev.map_projects).parameters['limit'].default, 500)
+
+    def test_a_failed_read_is_unavailable_rather_than_a_partial_count(self):
+        from api.realestate import development_map
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', side_effect=RuntimeError('boom')):
+            result = asyncio.run(development_map())
+        self.assertEqual(result['status'], 'unavailable')
+        self.assertEqual(result['total'], 0)
+        self.assertEqual(result['projects'], [])
+        self.assertEqual(result['points'], [])
+
+    def test_the_stage_label_still_comes_from_the_official_value(self):
+        rows = whole_city_rows()
+        rows[0]['stage_raw'] = '준공인가'
+        result = self.call(rows)
+        labels = {p['project_id']: p['stage']['label'] for p in result['projects']}
+        self.assertEqual(labels[SEOCHO_IDS[0]], '준공')
+        self.assertEqual(labels[GANGDONG_LOCATED], '조합설립 인가')
+
+    def test_the_list_keeps_the_stage_detail_batch(self):
+        """단계 상세는 탐색 경로와 같은 읽기 전용 배치에서 온다. 단계 로직은 그대로다."""
+        rows = whole_city_rows()
+        detail = [{'project_id': GANGDONG_LOCATED, 'stage': 'ASSOCIATION_APPROVED',
+                   'stage_raw': '조합설립인가', 'external_id': 'gangdong0',
+                   'official_authority': 'cleanup.seoul.go.kr', 'field_evidence': {}}]
+        from api.realestate import development_map
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', side_effect=[rows, detail]) as request:
+            result = asyncio.run(development_map())
+        self.assertEqual(request.call_count, 2)
+        card = next(p for p in result['projects'] if p['project_id'] == GANGDONG_LOCATED)
+        self.assertEqual(card['official_id'], 'gangdong0')
+        self.assertEqual(card['official_authority'], 'cleanup.seoul.go.kr')
+
+    def test_a_representative_point_never_enables_inside(self):
+        result = self.call(whole_city_rows())
+        self.assertFalse(result['inside_enabled'])
+        for point in result['points']:
+            self.assertFalse(point['allows_inside'])
+            self.assertIsNone(point['boundary'])
+            self.assertNotEqual(point['boundary_status'], 'OFFICIAL_VERIFIED')
+        for project in result['projects']:
+            self.assertNotEqual(project['spatial']['code'], 'INSIDE')
+            self.assertFalse(project['spatial']['confirmed_boundary'])
+
+    def test_a_district_request_still_narrows_the_same_shape(self):
+        rows = [r for r in whole_city_rows() if r['sigungu'] == '강동구']
+        result = self.call(rows, sigungu='강동구')
+        self.assertEqual(result['total'], 2)
+        self.assertEqual(result['mappable'], 1)
+        self.assertEqual(result['coordinateless'], 1)
+        self.assertEqual({p['district'] for p in result['projects']}, {'강동구'})
+
+
+class MapScreenConsistencyTests(unittest.TestCase):
+    """화면이 숫자를 만들어내는 방식이 다시 자치구별 합산으로 돌아가지 않도록 고정한다."""
+
+    def setUp(self):
+        self.tab = read('components/realestate/DevelopmentTab.tsx')
+
+    def test_the_tab_reads_one_endpoint_for_the_list_and_the_map(self):
+        self.assertIn('estateApi\n      .developmentMap()', self.tab)
+        self.assertIn('setProjects(r.projects)', self.tab)
+        self.assertIn('setPoints(r.points)', self.tab)
+        # 목록 전용 탐색 호출과 자치구별 병렬 조회는 더 쓰지 않는다.
+        self.assertNotIn('estateApi.development(', self.tab)
+        self.assertNotIn('names.map(', self.tab)
+        self.assertNotIn('Promise.all', self.tab)
+
+    def test_a_failed_district_can_no_longer_be_dropped_silently(self):
+        self.assertNotIn('r.status === "ok" ? r.projects : []', self.tab)
+        self.assertNotIn('r.status === "ok" ? r.points : []', self.tab)
+        self.assertNotIn('.flatMap(', self.tab)
+        # 불러오지 못하면 숫자를 반쯤 채우지 않고 못 불러왔다고 말한다.
+        self.assertIn('if (r.status !== "ok")', self.tab)
+        self.assertIn('개발정보를 지금 불러올 수 없어요', self.tab)
+
+    def test_the_default_view_is_the_whole_city(self):
+        # 기본 상태에서 자치구를 미리 골라 두지 않는다. 그래야 전체가 전체를 뜻한다.
+        self.assertNotIn('districts.slice(0, 3)', self.tab)
+        self.assertNotIn('setDistricts(r.districts', self.tab)
+        self.assertIn('selectedDistricts.size === 0', self.tab)
+        self.assertIn('서울시 전체 {projects.length}건', self.tab)
+
+    def test_the_markers_follow_the_visible_list(self):
+        self.assertIn('points.filter((point) => visibleIds.has(point.project_id))', self.tab)
+        self.assertIn('const coordinateless = visible.length - mappable', self.tab)
+        self.assertIn('좌표가 없는 ${coordinateless}건은 목록에만 남습니다', self.tab)
+
+    def test_the_card_list_is_not_silently_truncated(self):
+        self.assertIn('const MAX_CARDS = 200', self.tab)
+        self.assertIn('visible.slice(0, MAX_CARDS)', self.tab)
+        self.assertIn('visible.length > MAX_CARDS', self.tab)
+        self.assertNotIn('visible.slice(0, 60)', self.tab)
+
+    def test_the_card_uses_its_own_address_and_accuracy(self):
+        self.assertIn('{selected.address ?? "대표주소 확인 중"} · {selected.location_accuracy.label}',
+                      self.tab)
+
+
+class StageBatchTests(unittest.TestCase):
+    """서울시 전체를 한 번에 물을 때 단계 상세가 통째로 비지 않도록."""
+
+    def rows(self, count=130):
+        return [{'project_id': f'00000000-0000-4000-8000-{n:012d}'} for n in range(1, count + 1)]
+
+    def test_the_batch_is_split_so_the_query_string_stays_short(self):
+        sizes = []
+
+        def request(method, path, params=None, payload=None):
+            ids = params['project_id'][4:-1].split(',')
+            sizes.append(len(ids))
+            # in.() 필터가 5KB 가까이 길어지면 중간 프록시가 자를 수 있다.
+            self.assertLess(len(params['project_id']), 2500)
+            return [{'project_id': i, 'external_id': 'x'} for i in ids]
+        with patch.object(rm, '_remote_request', side_effect=request):
+            enriched = dev.stage_metadata(self.rows())
+        self.assertEqual(sizes, [50, 50, 30])
+        self.assertEqual(sum(1 for r in enriched if r.get('external_id')), 130)
+
+    def test_one_failed_batch_does_not_erase_the_others(self):
+        state = {'first': True}
+
+        def request(method, path, params=None, payload=None):
+            if state['first']:
+                state['first'] = False
+                raise RuntimeError('boom')
+            ids = params['project_id'][4:-1].split(',')
+            return [{'project_id': i, 'external_id': 'x'} for i in ids]
+        with patch.object(rm, '_remote_request', side_effect=request):
+            enriched = dev.stage_metadata(self.rows())
+        self.assertEqual(len(enriched), 130)
+        self.assertEqual(sum(1 for r in enriched if r.get('external_id')), 80)
+
+    def test_rows_without_a_uuid_ask_nothing(self):
+        def forbidden(*args, **kwargs):
+            raise AssertionError('no request for rows without a UUID')
+        with patch.object(rm, '_remote_request', side_effect=forbidden):
+            self.assertEqual(dev.stage_metadata([{'project_id': 'not-a-uuid'}]),
+                             [{'project_id': 'not-a-uuid'}])

@@ -120,6 +120,7 @@ def present_project(row):
                              or row.get('evidence_verified'))
     spatial = relation(row.get('spatial_relation') or row.get('relation'),
                        boundary_verified=verified_boundary)
+    latitude, longitude = row.get('latitude'), row.get('longitude')
     return {
         'project_id': row.get('project_id'),
         'name': row.get('project_name'),
@@ -153,8 +154,15 @@ def present_project(row):
         'distance_label': distance_bucket(
             row.get('meters') if row.get('meters') is not None else row.get('distance_m'),
             spatial['code']),
-        'has_location': spatial['code'] != 'UNKNOWN',
-        'location_notice': None if spatial['code'] != 'UNKNOWN' else NO_LOCATION_NOTICE,
+        # 카드가 자기 좌표를 들고 있어야 지도와 목록이 같은 위치를 말한다. 좌표가 있어도
+        # 대표 위치일 뿐이므로 spatial 관계는 바뀌지 않고 INSIDE도 생기지 않는다.
+        'latitude': latitude, 'longitude': longitude,
+        'mappable': latitude is not None and longitude is not None,
+        'has_location': spatial['code'] != 'UNKNOWN' or (latitude is not None
+                                                         and longitude is not None),
+        'location_notice': (None if spatial['code'] != 'UNKNOWN'
+                            or (latitude is not None and longitude is not None)
+                            else NO_LOCATION_NOTICE),
     }
 
 
