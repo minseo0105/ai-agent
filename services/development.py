@@ -1,6 +1,58 @@
 """Optional development context. All database I/O uses REST/RPC, no psycopg."""
+import binascii
 import math
+import struct
+
 from services import realestate_monitor as rm
+
+MAP_COLUMNS = ('project_id,project_name,project_type,sigungu,dong,address,stage_raw,status,'
+               'validation_status,location,geometry_verified,last_verified_at')
+
+
+def _point(value):
+    """geography(Point) EWKB hex -> (경도, 위도). 좌표가 없으면 (None, None).
+
+    PostgREST는 geography 컬럼을 EWKB hex로 돌려준다. 포인트 외 형태는 읽지 않는다.
+    """
+    if not isinstance(value, str) or len(value) < 42:
+        return None, None
+    try:
+        raw = binascii.unhexlify(value)
+        little = raw[0] == 1
+        kind = struct.unpack_from('<I' if little else '>I', raw, 1)[0]
+        if kind & 0xFF != 1:  # POINT만 처리
+            return None, None
+        offset = 5 + (4 if kind & 0x20000000 else 0)  # SRID 포함 여부
+        longitude, latitude = struct.unpack_from('<dd' if little else '>dd', raw, offset)
+    except (binascii.Error, struct.error, IndexError):
+        return None, None
+    if not (math.isfinite(longitude) and math.isfinite(latitude)):
+        return None, None
+    return longitude, latitude
+
+
+def map_projects(sigungu=None, limit=200):
+    """지도용 경량 목록. 상세는 선택 시 따로 조회한다."""
+    if not 1 <= limit <= 500:
+        raise ValueError('Invalid limit')
+    if not rm._using_remote_db():
+        return {'status': 'unavailable', 'projects': [], 'reason': 'NOT_CONFIGURED'}
+    params = {'select': MAP_COLUMNS, 'limit': limit}
+    if sigungu:
+        params['sigungu'] = 'eq.' + sigungu
+    try:
+        rows = rm._remote_request('GET', 'development_projects', params=params)
+    except Exception:
+        return {'status': 'unavailable', 'projects': [], 'reason': 'DEVELOPMENT_UNAVAILABLE'}
+    result = []
+    for row in rows or []:
+        longitude, latitude = _point(row.get('location'))
+        # 검증된 경계 GeoJSON은 아직 제공 경로가 없다. 추정 polygon은 만들지 않는다.
+        result.append(dict(row, longitude=longitude, latitude=latitude, boundary=None))
+    return {'status': 'ok', 'projects': result, 'reason': None}
+
+
+
 
 def search_projects(*, longitude=None, latitude=None, sigungu=None, radius_m=1000, limit=30):
     if (longitude is None) != (latitude is None):

@@ -178,3 +178,83 @@ def vworld_provider(api_key, domain, http_get):
         return {'provider': 'vworld:address', 'result_status': 'MATCHED' if candidates else 'NO_MATCH',
                 'candidates': candidates}
     return call
+
+
+# Provider registry. Each entry names the secrets it needs so availability can be
+# reported without calling anything, and so a provider can be swapped later.
+PROVIDER_SPECS = {
+    'vworld': {'secrets': ('VWORLD_API_KEY', 'VWORLD_DOMAIN'), 'required': ('VWORLD_API_KEY',),
+               'host': 'api.vworld.kr', 'cost': 'free public API (key required)'},
+    'kakao': {'secrets': ('KAKAO_REST_API_KEY',), 'required': ('KAKAO_REST_API_KEY',),
+              'host': 'dapi.kakao.com', 'cost': 'free tier (key required)'},
+    'naver': {'secrets': ('NAVER_CLOUD_API_KEY_ID', 'NAVER_CLOUD_API_KEY'),
+              'required': ('NAVER_CLOUD_API_KEY_ID', 'NAVER_CLOUD_API_KEY'),
+              'host': 'maps.apigw.ntruss.com', 'cost': 'paid tier after free quota'},
+}
+
+
+def kakao_provider(api_key, http_get):
+    """Kakao 주소 검색. 후보를 모두 돌려주고 판정은 evaluate()가 한다."""
+    def call(address):
+        payload = http_get('https://dapi.kakao.com/v2/local/search/address.json',
+                           params={'query': address, 'size': 10},
+                           headers={'Authorization': 'KakaoAK ' + api_key}, timeout=10)
+        candidates = []
+        for item in (payload or {}).get('documents') or []:
+            try:
+                candidates.append({'longitude': float(item['x']), 'latitude': float(item['y']),
+                                   'accuracy': 'PARCEL' if item.get('address') else 'ROAD_ADDRESS',
+                                   'matched_address': (item.get('address') or {}).get('address_name')
+                                                      or (item.get('road_address') or {}).get('address_name') or ''})
+            except (KeyError, TypeError, ValueError):
+                continue
+        return {'provider': 'kakao:address', 'result_status': 'MATCHED' if candidates else 'NO_MATCH',
+                'candidates': candidates}
+    return call
+
+
+def naver_provider(key_id, key, http_get):
+    """NAVER Cloud Geocoding. 첫 결과를 자동 채택하지 않는다."""
+    def call(address):
+        payload = http_get('https://maps.apigw.ntruss.com/map-geocode/v2/geocode',
+                           params={'query': address},
+                           headers={'x-ncp-apigw-api-key-id': key_id, 'x-ncp-apigw-api-key': key},
+                           timeout=10)
+        candidates = []
+        for item in (payload or {}).get('addresses') or []:
+            try:
+                candidates.append({'longitude': float(item['x']), 'latitude': float(item['y']),
+                                   'accuracy': 'ROAD_ADDRESS' if item.get('roadAddress') else 'PARCEL',
+                                   'matched_address': item.get('jibunAddress') or item.get('roadAddress') or ''})
+            except (KeyError, TypeError, ValueError):
+                continue
+        return {'provider': 'naver:geocode', 'result_status': 'MATCHED' if candidates else 'NO_MATCH',
+                'candidates': candidates}
+    return call
+
+
+def provider_availability(get_secret):
+    """어떤 provider가 자격증명을 갖췄는지. 네트워크 호출은 하지 않고 값도 출력하지 않는다."""
+    report = {}
+    for name, spec in PROVIDER_SPECS.items():
+        missing = [key for key in spec['required'] if not str(get_secret(key) or '').strip()]
+        report[name] = {'configured': not missing, 'missing_secrets': missing,
+                        'host': spec['host'], 'cost': spec['cost']}
+    return report
+
+
+def build_provider(name, get_secret, http_get):
+    """이름으로 provider를 만든다. 자격증명이 없으면 (None, 이유)."""
+    spec = PROVIDER_SPECS.get(name)
+    if spec is None:
+        return None, 'UNKNOWN_PROVIDER_' + str(name)
+    missing = [key for key in spec['required'] if not str(get_secret(key) or '').strip()]
+    if missing:
+        return None, missing[0] + '_NOT_CONFIGURED'
+    if name == 'vworld':
+        return vworld_provider(str(get_secret('VWORLD_API_KEY')).strip(),
+                               str(get_secret('VWORLD_DOMAIN') or '').strip(), http_get), None
+    if name == 'kakao':
+        return kakao_provider(str(get_secret('KAKAO_REST_API_KEY')).strip(), http_get), None
+    return naver_provider(str(get_secret('NAVER_CLOUD_API_KEY_ID')).strip(),
+                          str(get_secret('NAVER_CLOUD_API_KEY')).strip(), http_get), None

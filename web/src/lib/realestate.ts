@@ -32,13 +32,66 @@ export type Subscription = {
 
 export type TradeDetail = Record<string, string>;
 
+export type DevelopmentMapPoint = {
+  project_id: string;
+  name: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  boundary: unknown | null;
+  type_code: string | null;
+  type_label: string;
+  program_code: string | null;
+  program_label: string | null;
+  stage_label: string;
+  district: string | null;
+  dong: string | null;
+  accuracy: "OFFICIAL_BOUNDARY" | "REPRESENTATIVE_POINT" | "NO_LOCATION";
+  accuracy_label: string;
+  confidence: string;
+  mappable: boolean;
+};
+
+export type DevelopmentMap = {
+  status: "ok" | "unavailable";
+  reason: string | null;
+  points: DevelopmentMapPoint[];
+  total: number;
+  mappable: number;
+  legend: Record<string, { label: string; note: string }>;
+  location_notice: string;
+};
+
+export type DevelopmentImpactBlock = {
+  inside: { code: string; label: string; project: string | null; notice: string | null };
+  nearest: {
+    project_id: string;
+    name: string;
+    type_label: string;
+    program_label: string | null;
+    stage_label: string;
+    stage_basis: string;
+    distance_m: number | null;
+    distance_label: string | null;
+    official_source: { name: string | null; url: string | null };
+    trust_label: string;
+  } | null;
+  count: number;
+  has_map_point: boolean;
+  available: boolean;
+};
+
 export type DevelopmentProject = {
   project_id: string;
   name: string;
   official_id: string | null;
   official_authority: string | null;
   type_label: string;
+  program: { code: string; label: string } | null;
   program_label: string | null;
+  stage_verified_level: "OFFICIAL_DETAIL_VERIFIED" | "OFFICIAL_LIST_MAPPED";
+  stage_timeline: { steps: string[]; current_index: number | null; current_label: string | null; total: number; note: string | null };
+  location_accuracy: { code: string; label: string; note: string };
+  distance_label: string | null;
   district: string | null;
   dong: string | null;
   address: string | null;
@@ -95,8 +148,15 @@ export type Trade = {
   region_label: string;
   naver_url: string;
   detail?: TradeDetail;
+  raw_detail?: TradeDetail;
+  address_road?: string | null;
+  address_jibun?: string | null;
+  canonical_address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   source_label?: string;
   development?: DevelopmentContext | null;
+  development_impact?: DevelopmentImpactBlock | null;
 };
 
 export type Rule = {
@@ -149,6 +209,10 @@ export const estateApi = {
   subscriptions: (q: { kind: "apt" | "unsold"; regions: string[]; supply_types: string[]; kinds: string[]; statuses: string[] }) =>
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
   developmentSummary: () => request<DevelopmentSummary>("/development/summary"),
+  developmentMap: (sigungu?: string, limit = 200) =>
+    request<DevelopmentMap>(`/development/map?limit=${limit}${sigungu ? `&sigungu=${encodeURIComponent(sigungu)}` : ""}`),
+  developmentNearby: (q: { longitude: number; latitude: number; radius_m?: number; limit?: number }) =>
+    post<DevelopmentSearch & { impact: DevelopmentImpactBlock }>("/development/nearby", q),
   development: (q: { sigungu?: string; longitude?: number; latitude?: number; radius_m?: number; limit?: number }) =>
     post<DevelopmentSearch>("/development/search", q),
   trades: async (q: { regions: string[]; property_types: string[]; month: string; max_price_100m?: number; max_area?: number; include_development?: boolean }, onProgress?: (done: number, total: number) => void) => {

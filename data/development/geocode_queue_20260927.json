@@ -1,9 +1,37 @@
 {
   "format": "zipon-geocode-queue-v1",
-  "generated_at": "2026-09-27T04:00:12.515249+00:00",
+  "generated_at": "2026-09-27T08:29:43.697163+00:00",
   "db_write": false,
+  "provider": "vworld",
   "provider_configured": false,
-  "blocker": "VWORLD_API_KEY_NOT_CONFIGURED",
+  "blocker": "NO_GEOCODER_CREDENTIAL_CONFIGURED",
+  "provider_availability": {
+    "vworld": {
+      "configured": false,
+      "missing_secrets": [
+        "VWORLD_API_KEY"
+      ],
+      "host": "api.vworld.kr",
+      "cost": "free public API (key required)"
+    },
+    "kakao": {
+      "configured": false,
+      "missing_secrets": [
+        "KAKAO_REST_API_KEY"
+      ],
+      "host": "dapi.kakao.com",
+      "cost": "free tier (key required)"
+    },
+    "naver": {
+      "configured": false,
+      "missing_secrets": [
+        "NAVER_CLOUD_API_KEY_ID",
+        "NAVER_CLOUD_API_KEY"
+      ],
+      "host": "maps.apigw.ntruss.com",
+      "cost": "paid tier after free quota"
+    }
+  },
   "policy": [
     "one provider call per normalized address",
     "a coordinate is accepted only for a single exact district and lot match",

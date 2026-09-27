@@ -104,7 +104,11 @@ async def trades(q: TradeQuery):
         rows = await run_in_threadpool(development.attach_context, rows)
         for row in rows:
             # 화면에는 내부 enum 대신 사용자 문구를 내려준다.
-            row['development'] = presentation.present_context(row.get('development_context'))
+            context = presentation.present_context(row.get('development_context'))
+            row['development'] = context
+            row['development_impact'] = presentation.impact(
+                context, trade_has_point=row.get('latitude') is not None
+                and row.get('longitude') is not None)
     counts = {}
     for row in rows:
         counts[row.get("property_type", "기타")] = counts.get(row.get("property_type", "기타"), 0) + 1
@@ -195,6 +199,28 @@ async def development_summary():
                                            for k, v in bucket['by_type'].items()})
                  for bucket in result.get('districts') or []]
     return dict(result, districts=districts)
+
+
+@router.get('/development/map')
+async def development_map(sigungu: str | None = None, limit: int = 200):
+    if not 1 <= limit <= 500:
+        raise HTTPException(422, 'limit은 1~500 사이여야 합니다.')
+    result = await run_in_threadpool(development.map_projects, sigungu, limit)
+    points = [presentation.map_point(row) for row in result.get('projects') or []]
+    return {'status': result['status'], 'reason': result['reason'], 'points': points,
+            'total': len(points), 'mappable': sum(1 for p in points if p['mappable']),
+            'legend': presentation.LOCATION_ACCURACY,
+            'location_notice': presentation.NO_LOCATION_NOTICE}
+
+
+@router.post('/development/nearby')
+async def development_nearby(q: DevelopmentQuery):
+    if q.longitude is None or q.latitude is None:
+        raise HTTPException(422, '주변 개발사업을 찾으려면 좌표가 필요합니다.')
+    result = await run_in_threadpool(development.search_projects, **q.model_dump())
+    projects = [presentation.present_project(row) for row in result.get('nearby_projects') or []]
+    return dict(result, projects=projects, total=len(projects),
+                impact=presentation.impact({'projects': projects}, trade_has_point=True))
 
 
 @router.post('/development/search')

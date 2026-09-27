@@ -652,17 +652,19 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
     price_100m = _parse_money_100m(amount_text)
     area = _parse_float(area_text)
 
-    # 상세보기용 공식 제공 항목. 값이 없는 항목은 만들지 않는다.
+    # 사용자가 읽는 상세 항목과, 참고용 원문 항목을 나눈다. 값이 없으면 만들지 않는다.
     detail_fields = [
         ("거래유형", ["dealingGbn"]),
-        ("중개사 소재지", ["estateAgentSggNm"]),
         ("등기일자", ["rgstDate"]),
         ("계약해제", ["cdealType"]),
         ("해제사유 발생일", ["cdealDay"]),
         ("매도자", ["slerGbn"]),
         ("매수자", ["buyerGbn"]),
-        ("토지임대부", ["landLeaseholdGbn"]),
         ("동", ["aptDong"]),
+    ]
+    raw_fields = [
+        ("중개사 소재지", ["estateAgentSggNm"]),
+        ("토지임대부", ["landLeaseholdGbn"]),
         ("본번", ["bonbun"]),
         ("부번", ["bubun"]),
         ("도로명 본번", ["roadNmBonbun"]),
@@ -672,11 +674,24 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
         ("건물면적", ["buildingAr"]),
         ("주택유형 원문", ["houseType"]),
     ]
-    detail = {}
-    for label, keys in detail_fields:
-        value = _first_xml_text(item, keys, "").strip()
-        if value and value not in ("-", "0"):
-            detail[label] = value
+
+    def collect(fields):
+        found = {}
+        for label, keys in fields:
+            value = _first_xml_text(item, keys, "").strip()
+            if value and value not in ("-", "0"):
+                found[label] = value
+        return found
+
+    detail = collect(detail_fields)
+    raw_detail = collect(raw_fields)
+    # 본번·부번은 화면에 그대로 내보내지 않고 주소를 만드는 데 쓴다.
+    road_bonbun = raw_detail.get("도로명 본번", "").lstrip("0")
+    road_bubun = raw_detail.get("도로명 부번", "").lstrip("0")
+    road_number = "-".join(x for x in (road_bonbun, road_bubun) if x)
+    address_road = " ".join(x for x in (road_name, road_number) if x).strip()
+    address_jibun = " ".join(x for x in (umd, jibun) if x).strip()
+    canonical_address = address_road or address_jibun or umd
 
     return {
         "id": (
@@ -696,6 +711,10 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
         "floor": floor,
         "build_year": build_year,
         "detail": detail,
+        "raw_detail": raw_detail,
+        "address_road": address_road or None,
+        "address_jibun": address_jibun or None,
+        "canonical_address": canonical_address or None,
         "source_label": "국토교통부 실거래가 공개시스템 (공공데이터포털)",
     }
 
