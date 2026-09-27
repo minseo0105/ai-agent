@@ -18,7 +18,7 @@ import DevelopmentTab from "./DevelopmentTab";
 import TradeFilters, { FilterChips, type TradeFilterValue } from "./TradeFilters";
 import TransactionCard from "./TransactionCard";
 
-type Tab = "청약 조회" | "실거래 조회" | "개발사업" | "모니터링 조건" | "알림함";
+type Tab = "개발지도" | "실거래 조회" | "청약 조회" | "모니터링 조건" | "알림함";
 const toggle = (list: string[], v: string) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
 
 function Card({ children }: { children: React.ReactNode }) {
@@ -502,7 +502,7 @@ function AlertTab({ onUnread }: { onUnread: (n: number) => void }) {
 
 export default function EstateMonitor() {
   const [options, setOptions] = useState<EstateOptions | null>(null);
-  const [tab, setTab] = useState<Tab>("실거래 조회");
+  const [tab, setTab] = useState<Tab>("개발지도");
   const [unread, setUnread] = useState(0);
   const [error, setError] = useState("");
 
@@ -528,9 +528,9 @@ export default function EstateMonitor() {
           full
           ariaLabel="ZIP:ON 메뉴"
         options={[
+            { value: "개발지도" as const, label: "개발지도" },
             { value: "실거래 조회" as const, label: "실거래" },
             { value: "청약 조회" as const, label: "청약" },
-            { value: "개발사업" as const, label: "개발사업" },
             { value: "모니터링 조건" as const, label: "모니터링" },
             { value: "알림함" as const, label: unread ? `알림 ${unread}` : "알림" },
           ]}
@@ -544,7 +544,7 @@ export default function EstateMonitor() {
         <div hidden={tab !== "실거래 조회"}>
           <TradeTab options={options} />
         </div>
-        <div hidden={tab !== "개발사업"}>{tab === "개발사업" && <DevelopmentTab options={options} />}</div>
+        <div hidden={tab !== "개발지도"}>{tab === "개발지도" && <DevelopmentTab options={options} />}</div>
         <div hidden={tab !== "모니터링 조건"}>{tab === "모니터링 조건" && <MonitorTab options={options} />}</div>
         <div hidden={tab !== "알림함"}>{tab === "알림함" && <AlertTab onUnread={setUnread} />}</div>
       </div>

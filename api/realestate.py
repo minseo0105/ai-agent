@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 from services import realestate_monitor as rm
 from services import development
 from services import development_presentation as presentation
+from services import map_providers
 
 router = APIRouter(prefix="/api/realestate", tags=["realestate"])
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -201,15 +202,31 @@ async def development_summary():
     return dict(result, districts=districts)
 
 
+@router.get('/map/config')
+def map_config():
+    """쓸 수 있는 basemap과 한글 표기 여부. 지도 키 값은 담지 않는다."""
+    return map_providers.config(rm._secret)
+
+
 @router.get('/development/map')
-async def development_map(sigungu: str | None = None, limit: int = 200):
+async def development_map(sigungu: str | None = None, limit: int = 200,
+                          north: float | None = None, south: float | None = None,
+                          east: float | None = None, west: float | None = None):
     if not 1 <= limit <= 500:
         raise HTTPException(422, 'limit은 1~500 사이여야 합니다.')
-    result = await run_in_threadpool(development.map_projects, sigungu, limit)
+    corners = (north, south, east, west)
+    if any(v is not None for v in corners) and not all(v is not None for v in corners):
+        raise HTTPException(422, '지도 범위는 north·south·east·west를 함께 보내주세요.')
+    bbox = None if north is None else {'north': north, 'south': south, 'east': east, 'west': west}
+    try:
+        result = await run_in_threadpool(development.map_projects, sigungu, limit, bbox)
+    except ValueError:
+        raise HTTPException(422, '지도 범위 값이 올바르지 않습니다.')
     points = [presentation.map_point(row) for row in result.get('projects') or []]
     return {'status': result['status'], 'reason': result['reason'], 'points': points,
             'total': len(points), 'mappable': sum(1 for p in points if p['mappable']),
-            'legend': presentation.LOCATION_ACCURACY,
+            'bbox_filtered': result.get('bbox_filtered', False),
+            'layers': presentation.MAP_LAYERS, 'legend': presentation.LOCATION_ACCURACY,
             'location_notice': presentation.NO_LOCATION_NOTICE}
 
 

@@ -236,9 +236,18 @@ def map_point(row):
     program = program_of(row)
     stage = normalize_stage(row.get('stage_raw') or row.get('project_stage'))
     accuracy = location_accuracy(row)
+    layers = map_layer_of(row)
+    boundary = boundary_layer(row)
     return {'project_id': row.get('project_id'), 'name': row.get('project_name'),
             'latitude': row.get('latitude'), 'longitude': row.get('longitude'),
-            'boundary': row.get('boundary') if accuracy['code'] == 'OFFICIAL_BOUNDARY' else None,
+            'boundary': boundary['geometry'],
+            'boundary_status': boundary['boundary_status'],
+            'boundary_status_label': boundary['status_label'],
+            'allows_inside': boundary['allows_inside'],
+            'development_layer': layers['development'], 'program_layer': layers['program'],
+            'address': row.get('address'),
+            'last_checked': (row.get('last_verified_at') or '')[:10] or None,
+            'official_url': row.get('source_url'),
             'type_code': row.get('project_type'),
             'type_label': TYPE_LABELS.get(row.get('project_type'), '기타'),
             'program_code': (program or {}).get('code'),
@@ -248,3 +257,49 @@ def map_point(row):
             'accuracy': accuracy['code'], 'accuracy_label': accuracy['label'],
             'confidence': trust(row.get('validation_status'))['label'],
             'mappable': accuracy['code'] != 'NO_LOCATION'}
+
+
+# 지도 레이어. project_type과 program은 서로 다른 레이어이며 섞지 않는다.
+MAP_LAYERS = {
+    'PROPERTY': {'label': '선택 부동산', 'marker': 'star', 'color': '#111827'},
+    'REDEVELOPMENT': {'label': '재개발', 'marker': 'circle', 'color': '#B42332', 'layer': 'DEVELOPMENT'},
+    'RECONSTRUCTION': {'label': '재건축', 'marker': 'circle', 'color': '#1D4ED8', 'layer': 'DEVELOPMENT'},
+    'OTHER_PROJECT': {'label': '기타 정비사업', 'marker': 'circle', 'color': '#64748B', 'layer': 'DEVELOPMENT'},
+    'FAST_TRACK': {'label': '신속통합기획', 'marker': 'ring', 'color': '#7C3AED', 'layer': 'PROGRAM'},
+    'MOATOWN': {'label': '모아타운', 'marker': 'square', 'color': '#0F766E', 'layer': 'PROGRAM'},
+    'BOUNDARY': {'label': '공식 사업구역', 'marker': 'polygon', 'color': '#B42332', 'layer': 'BOUNDARY'},
+    'POINT': {'label': '사업 대표위치', 'marker': 'circle', 'color': '#B42332', 'layer': 'POINT'},
+}
+MAP_FILTERS = ('전체', '재개발', '재건축', '신속통합기획', '모아타운', '기타 정비사업')
+# 향후 공식 경계를 넣을 때 반드시 함께 저장할 provenance.
+BOUNDARY_PROVENANCE_FIELDS = ('source', 'source_url', 'verified_at', 'boundary_status')
+BOUNDARY_STATUS = {'OFFICIAL_VERIFIED': '공식 경계 확인', 'PENDING': '공식 경계 확보 전',
+                   'NOT_AVAILABLE': '공식 경계 미공개'}
+
+
+def map_layer_of(row):
+    """마커를 그릴 레이어 키. 유형은 DEVELOPMENT, 정책은 PROGRAM으로 따로 나간다."""
+    kind = row.get('project_type')
+    if kind in ('REDEVELOPMENT', 'RECONSTRUCTION'):
+        development = kind
+    elif kind in ('MOATOWN', 'MOAHOUSE'):
+        development = 'OTHER_PROJECT'
+    else:
+        development = 'OTHER_PROJECT'
+    program = (program_of(row) or {}).get('code')
+    if kind in ('MOATOWN', 'MOAHOUSE'):
+        program = 'MOATOWN'
+    return {'development': development, 'program': program}
+
+
+def boundary_layer(row):
+    """경계 레이어 계약. 추정 polygon은 만들지 않고 provenance 없이 표시하지 않는다."""
+    geometry = row.get('boundary') or row.get('geometry')
+    verified = bool(row.get('geometry_verified'))
+    status = 'OFFICIAL_VERIFIED' if (geometry and verified) else (
+        'PENDING' if not geometry else 'NOT_AVAILABLE')
+    return {'geometry': geometry if status == 'OFFICIAL_VERIFIED' else None,
+            'boundary_status': status, 'status_label': BOUNDARY_STATUS[status],
+            'source': row.get('geometry_source'), 'source_url': row.get('source_url'),
+            'verified_at': row.get('geometry_verified_at'),
+            'allows_inside': status == 'OFFICIAL_VERIFIED'}

@@ -31,10 +31,20 @@ def _point(value):
     return longitude, latitude
 
 
-def map_projects(sigungu=None, limit=200):
-    """지도용 경량 목록. 상세는 선택 시 따로 조회한다."""
+def map_projects(sigungu=None, limit=200, bbox=None):
+    """지도용 경량 목록. 상세는 선택 시 따로 조회한다.
+
+    bbox(north, south, east, west)는 좌표를 해석한 뒤 서버에서 걸러낸다. 좌표가
+    없는 사업은 bbox 조회에서 제외되지만 목록에서 사라지지는 않는다.
+    """
     if not 1 <= limit <= 500:
         raise ValueError('Invalid limit')
+    if bbox is not None:
+        north, south, east, west = (bbox['north'], bbox['south'], bbox['east'], bbox['west'])
+        if not all(math.isfinite(v) for v in (north, south, east, west)) or north < south \
+                or east < west or not (-90 <= south <= north <= 90) \
+                or not (-180 <= west <= east <= 180):
+            raise ValueError('Invalid bbox')
     if not rm._using_remote_db():
         return {'status': 'unavailable', 'projects': [], 'reason': 'NOT_CONFIGURED'}
     params = {'select': MAP_COLUMNS, 'limit': limit}
@@ -47,9 +57,16 @@ def map_projects(sigungu=None, limit=200):
     result = []
     for row in rows or []:
         longitude, latitude = _point(row.get('location'))
+        if bbox is not None:
+            if longitude is None or latitude is None:
+                continue
+            if not (bbox['south'] <= latitude <= bbox['north']
+                    and bbox['west'] <= longitude <= bbox['east']):
+                continue
         # 검증된 경계 GeoJSON은 아직 제공 경로가 없다. 추정 polygon은 만들지 않는다.
         result.append(dict(row, longitude=longitude, latitude=latitude, boundary=None))
-    return {'status': 'ok', 'projects': result, 'reason': None}
+    return {'status': 'ok', 'projects': result, 'reason': None,
+            'bbox_filtered': bbox is not None}
 
 
 

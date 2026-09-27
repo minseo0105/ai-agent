@@ -1,20 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Spinner, inputClass } from "@/components/golf/ui";
 import DevelopmentCard from "./DevelopmentCard";
 import RegionPicker from "./RegionPicker";
-import ZiponMap, { type MapFocus } from "./ZiponMap";
+import ZiponMap, { type MapBounds, type MapFocus } from "./ZiponMap";
 import {
   estateApi,
   type DevelopmentMapPoint,
   type DevelopmentProject,
   type DevelopmentSummary,
   type EstateOptions,
+  type MapConfig,
 } from "@/lib/realestate";
 
 const MAX_DISTRICTS = 5;
-const TYPE_FILTERS = ["전체", "재개발", "재건축", "모아타운", "신속통합기획"];
+const FILTERS = ["전체", "재개발", "재건축", "신속통합기획", "모아타운", "기타 정비사업"] as const;
 const CHIP = "min-h-9 rounded-full px-3 py-1.5 text-xs font-bold transition";
 
 function Kpi({ label, value, accent = false }: { label: string; value: number; accent?: boolean }) {
@@ -26,21 +27,35 @@ function Kpi({ label, value, accent = false }: { label: string; value: number; a
   );
 }
 
-/** 들어오면 바로 현황이 보이는 개발사업 현황판. 조회 버튼을 누르지 않아도 자동으로 불러온다. */
-export default function DevelopmentTab({ options }: { options: EstateOptions }) {
+function matchesFilter(item: { type_label: string; program_label: string | null }, filter: string) {
+  if (filter === "전체") return true;
+  if (filter === "기타 정비사업") return !["재개발", "재건축", "모아타운"].includes(item.type_label);
+  return item.type_label === filter || item.program_label === filter;
+}
+
+/** 부동산 개발정보 지도. 지도가 주인공이고 목록은 지도를 설명하는 보조 역할이다. */
+export default function DevelopmentTab({
+  options,
+  property = null,
+}: {
+  options: EstateOptions;
+  property?: MapFocus;
+}) {
+  const [config, setConfig] = useState<MapConfig | null>(null);
   const [summary, setSummary] = useState<DevelopmentSummary | null>(null);
   const [districts, setDistricts] = useState<string[]>([]);
   const [projects, setProjects] = useState<DevelopmentProject[]>([]);
   const [points, setPoints] = useState<DevelopmentMapPoint[]>([]);
-  const [focus, setFocus] = useState<MapFocus>(null);
-  const [typeFilter, setTypeFilter] = useState("전체");
-  const [stageFilter, setStageFilter] = useState("전체");
+  const [filter, setFilter] = useState<string>("전체");
   const [keyword, setKeyword] = useState("");
+  const [stageFilter, setStageFilter] = useState("전체");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // 자치구 목록은 실제 적재 현황에서 가져온다. 데이터가 있는 지역을 기본 선택한다.
   useEffect(() => {
+    estateApi.mapConfig().then(setConfig).catch(() => {});
     estateApi
       .developmentSummary()
       .then((r) => {
@@ -82,36 +97,54 @@ export default function DevelopmentTab({ options }: { options: EstateOptions }) 
     if (summary) load(districts);
   }, [districts, summary, load]);
 
-  const byType = (p: DevelopmentProject) =>
-    typeFilter === "전체" || p.type_label === typeFilter || p.program_label === typeFilter;
-  const stages = [...new Set(projects.map((p) => p.stage.label))].sort();
-  const visible = projects.filter((p) => {
-    if (!byType(p)) return false;
-    if (stageFilter !== "전체" && p.stage.label !== stageFilter) return false;
-    const q = keyword.trim();
-    return !q || [p.name, p.address, p.dong, p.type_label].filter(Boolean).join(" ").includes(q);
-  });
+  const search = keyword.trim();
+  const visible = useMemo(
+    () =>
+      projects.filter((p) => {
+        if (!matchesFilter(p, filter)) return false;
+        if (stageFilter !== "전체" && p.stage.label !== stageFilter) return false;
+        if (!search) return true;
+        return [p.name, p.address, p.dong, p.district, p.type_label, p.program_label, p.stage.label]
+          .filter(Boolean)
+          .join(" ")
+          .includes(search);
+      }),
+    [projects, filter, stageFilter, search],
+  );
+  // 진행단계는 응답에 실제로 있는 값만 제공한다. 단계를 추정하지 않는다.
+  const stages = useMemo(() => [...new Set(projects.map((p) => p.stage.label))].sort(), [projects]);
+  const visibleIds = useMemo(() => new Set(visible.map((p) => p.project_id)), [visible]);
+  const visiblePoints = useMemo(
+    () => points.filter((point) => matchesFilter(point, filter) && (!search || visibleIds.has(point.project_id))),
+    [points, filter, search, visibleIds],
+  );
+
   const counts = {
-    total: projects.filter(byType).length,
-    재건축: projects.filter((p) => p.type_label === "재건축").length,
+    total: visible.length,
     재개발: projects.filter((p) => p.type_label === "재개발").length,
-    모아타운: projects.filter((p) => p.type_label === "모아타운").length,
+    재건축: projects.filter((p) => p.type_label === "재건축").length,
     신속통합기획: projects.filter((p) => p.program_label === "신속통합기획").length,
+    모아타운: projects.filter((p) => p.type_label === "모아타운").length,
   };
-  const visiblePoints = points.filter((point) => {
-    if (typeFilter === "전체") return true;
-    return point.type_label === typeFilter || point.program_label === typeFilter;
-  });
+  const selected = visible.find((p) => p.project_id === selectedId) ?? null;
+  const mappable = visiblePoints.filter((p) => p.latitude != null).length;
   const unavailable = summary?.status !== "ok";
+
+  // 지도 marker를 누르면 해당 카드로 이동하고, 카드를 누르면 marker를 강조한다.
+  const selectFromMap = useCallback((projectId: string | null) => {
+    setSelectedId(projectId);
+    if (projectId) cardRefs.current[projectId]?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, []);
+  const onBounds = useCallback((_bounds: MapBounds) => {
+    // bbox 조회 준비: 현재는 자치구 단위로 받아오고 화면 범위는 지도에서만 사용한다.
+  }, []);
 
   return (
     <div className="space-y-3">
       <div>
-        <h2 className="text-base font-extrabold tracking-tight">
-          {districts.length === 1 ? `${districts[0].replace(/^(서울|경기) > /, "")} 개발사업` : "개발사업"}
-        </h2>
+        <h2 className="text-base font-extrabold tracking-tight">부동산 개발정보 지도</h2>
         <p className="mt-0.5 text-xs leading-relaxed text-muted">
-          재개발 · 재건축 · 신속통합기획 등 공식자료 기반 개발사업을 확인합니다.
+          재개발 · 재건축 · 신속통합기획 · 모아타운을 지도에서 확인합니다. 서울시 공식자료 기준입니다.
         </p>
       </div>
 
@@ -119,83 +152,118 @@ export default function DevelopmentTab({ options }: { options: EstateOptions }) 
         <span className="text-xs font-bold text-subtle">지역</span>
         <RegionPicker regions={options.regions} value={districts} onChange={setDistricts} max={MAX_DISTRICTS} />
       </div>
-
-      {!unavailable && districts.length > 0 && (
-        <ZiponMap points={visiblePoints} focus={focus} height={320} />
-      )}
-
-      {!unavailable && (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <Kpi label="전체" value={counts.total} accent />
-          {counts.재건축 > 0 && <Kpi label="재건축" value={counts.재건축} />}
-          {counts.재개발 > 0 && <Kpi label="재개발" value={counts.재개발} />}
-          {counts.모아타운 > 0 && <Kpi label="모아타운" value={counts.모아타운} />}
-          {counts.신속통합기획 > 0 && <Kpi label="신속통합기획" value={counts.신속통합기획} />}
-        </div>
-      )}
-
-      <div className="flex flex-wrap gap-1.5">
-        {TYPE_FILTERS.filter((t) => (t === "전체" || t === "재건축" ? true : counts[t as "재개발" | "모아타운" | "신속통합기획"] > 0)).map((t) => (
-          <button
-            key={t}
-            type="button"
-            aria-pressed={typeFilter === t}
-            onClick={() => setTypeFilter(t)}
-            className={`${CHIP} ${typeFilter === t ? "bg-estate text-white" : "border border-border text-muted hover:text-fg"}`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
-      {stages.length > 1 && (
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <input
+          aria-label="사업명 · 동 · 유형 검색"
+          placeholder="사업명 · 동 · 유형 검색 (예: 천호동, 재개발)"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          className={`${inputClass} min-w-0 flex-1`}
+        />
+        {stages.length > 1 && (
           <select
             aria-label="진행단계"
             value={stageFilter}
             onChange={(e) => setStageFilter(e.target.value)}
-            className={`${inputClass} max-w-44`}
+            className={`${inputClass} max-w-40`}
           >
             <option value="전체">진행단계 전체</option>
-            {stages.map((s) => (
-              <option key={s} value={s}>
-                {s} ({projects.filter((p) => p.stage.label === s).length})
+            {stages.map((stage) => (
+              <option key={stage} value={stage}>
+                {stage} ({projects.filter((p) => p.stage.label === stage).length})
               </option>
             ))}
           </select>
-          <input
-            aria-label="사업명 검색"
-            placeholder="사업명 · 동 검색"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            className={`${inputClass} min-w-0 flex-1`}
-          />
-        </div>
+        )}
+      </div>
+
+      <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5">
+        {FILTERS.filter((f) => f === "전체" || f === "기타 정비사업" || counts[f as "재개발"] > 0).map((f) => (
+          <button
+            key={f}
+            type="button"
+            aria-pressed={filter === f}
+            onClick={() => setFilter(f)}
+            className={`${CHIP} shrink-0 ${filter === f ? "bg-estate text-white" : "border border-border text-muted hover:text-fg"}`}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
+      {!unavailable && districts.length > 0 && (
+        <ZiponMap
+          points={visiblePoints}
+          property={property}
+          config={config}
+          selectedId={selectedId}
+          height={340}
+          onSelect={selectFromMap}
+          onBoundsChange={onBounds}
+        />
       )}
 
-      {loading && <Spinner label="개발사업 현황을 불러오고 있어요…" />}
+      {loading && <Spinner label="개발정보를 불러오고 있어요…" />}
       {error && <p className="rounded-xl bg-red-500/10 px-3 py-2.5 text-sm text-red-600 dark:text-red-400">{error}</p>}
-
       {!loading && unavailable && (
         <p className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-sm text-amber-800 dark:text-amber-300">
-          개발사업 정보를 지금 불러올 수 없어요. 잠시 후 다시 시도해 주세요.
+          개발정보를 지금 불러올 수 없어요. 잠시 후 다시 시도해 주세요.
         </p>
       )}
 
       {!loading && !unavailable && (
-        <div className="space-y-3">
+        <>
+          <section className="rounded-xl bg-surface-muted p-2.5">
+            <h3 className="text-[11px] font-extrabold tracking-wide text-muted">이 위치의 개발정보</h3>
+            {selected ? (
+              <div className="mt-1 text-xs">
+                <div className="font-extrabold">{selected.name}</div>
+                <p className="mt-0.5 text-muted">
+                  {[selected.type_label, selected.program_label].filter(Boolean).join(" · ")} · {selected.stage.label}
+                </p>
+                <p className="mt-0.5 text-subtle">
+                  {selected.address ?? "대표주소 확인 중"} · {selected.location_accuracy.label}
+                </p>
+              </div>
+            ) : (
+              <p className="mt-1 text-xs text-muted">
+                {visible.length}건 중 {mappable}건이 지도에 표시됩니다.
+                {mappable === 0 && " 좌표를 확보하는 중이라 아직 지도에 핀이 없습니다."}
+                {" 지도나 아래 목록에서 사업을 선택하면 해석을 보여드려요."}
+              </p>
+            )}
+          </section>
+
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+            <Kpi label="전체 사업" value={counts.total} accent />
+            {counts.재개발 > 0 && <Kpi label="재개발" value={counts.재개발} />}
+            {counts.재건축 > 0 && <Kpi label="재건축" value={counts.재건축} />}
+            {counts.신속통합기획 > 0 && <Kpi label="신속통합기획" value={counts.신속통합기획} />}
+            {counts.모아타운 > 0 && <Kpi label="모아타운" value={counts.모아타운} />}
+          </div>
+
           {districts.length === 0 && (
             <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">
-              지역을 선택하면 해당 자치구의 개발사업을 보여드려요.
+              지역을 선택하면 해당 자치구의 개발사업을 지도에 보여드려요.
               {summary && summary.total > 0 && ` 현재 ${summary.total}건이 등록돼 있어요.`}
             </p>
           )}
           {districts.length > 0 && visible.length === 0 && (
             <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">조건에 맞는 개발사업이 없어요.</p>
           )}
+
           <div className="grid gap-2.5 md:grid-cols-2">
             {visible.slice(0, 60).map((p) => (
-              <DevelopmentCard key={p.project_id} project={p} onShowMap={setFocus} />
+              <div
+                key={p.project_id}
+                ref={(node) => {
+                  cardRefs.current[p.project_id] = node;
+                }}
+                onClick={() => setSelectedId(p.project_id)}
+                className={`rounded-2xl transition ${selectedId === p.project_id ? "ring-2 ring-estate" : ""}`}
+              >
+                <DevelopmentCard project={p} />
+              </div>
             ))}
           </div>
           {visible.length > 0 && (
@@ -203,7 +271,7 @@ export default function DevelopmentTab({ options }: { options: EstateOptions }) 
               서울시 공식 목록에서 확인한 자료입니다. 공식 상세정보 확인 전 단계이므로 사업 진행 여부는 공식 출처로 다시 확인해 주세요.
             </p>
           )}
-        </div>
+        </>
       )}
     </div>
   );

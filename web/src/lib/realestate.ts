@@ -32,12 +32,39 @@ export type Subscription = {
 
 export type TradeDetail = Record<string, string>;
 
+export type MapConfig = {
+  active: string;
+  fallback: string;
+  providers: {
+    id: string;
+    label: string;
+    kind: string;
+    korean_labels: boolean;
+    requires_browser_key: boolean;
+    configured: boolean;
+    note: string;
+    url_template: string | null;
+    attribution: string;
+    max_zoom: number;
+  }[];
+  tile: { url_template: string | null; attribution: string; max_zoom: number };
+  note: string;
+};
+
 export type DevelopmentMapPoint = {
   project_id: string;
   name: string | null;
   latitude: number | null;
   longitude: number | null;
   boundary: unknown | null;
+  boundary_status: string;
+  boundary_status_label: string;
+  allows_inside: boolean;
+  development_layer: string | null;
+  program_layer: string | null;
+  address: string | null;
+  last_checked: string | null;
+  official_url: string | null;
   type_code: string | null;
   type_label: string;
   program_code: string | null;
@@ -58,6 +85,8 @@ export type DevelopmentMap = {
   total: number;
   mappable: number;
   legend: Record<string, { label: string; note: string }>;
+  layers: Record<string, { label: string; marker: string; color: string; layer?: string }>;
+  bbox_filtered: boolean;
   location_notice: string;
 };
 
@@ -209,8 +238,12 @@ export const estateApi = {
   subscriptions: (q: { kind: "apt" | "unsold"; regions: string[]; supply_types: string[]; kinds: string[]; statuses: string[] }) =>
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
   developmentSummary: () => request<DevelopmentSummary>("/development/summary"),
-  developmentMap: (sigungu?: string, limit = 200) =>
-    request<DevelopmentMap>(`/development/map?limit=${limit}${sigungu ? `&sigungu=${encodeURIComponent(sigungu)}` : ""}`),
+  mapConfig: () => request<MapConfig>("/map/config"),
+  developmentMap: (sigungu?: string, limit = 200, bbox?: { north: number; south: number; east: number; west: number }) =>
+    request<DevelopmentMap>(
+      `/development/map?limit=${limit}${sigungu ? `&sigungu=${encodeURIComponent(sigungu)}` : ""}` +
+        (bbox ? `&north=${bbox.north}&south=${bbox.south}&east=${bbox.east}&west=${bbox.west}` : ""),
+    ),
   developmentNearby: (q: { longitude: number; latitude: number; radius_m?: number; limit?: number }) =>
     post<DevelopmentSearch & { impact: DevelopmentImpactBlock }>("/development/nearby", q),
   development: (q: { sigungu?: string; longitude?: number; latitude?: number; radius_m?: number; limit?: number }) =>

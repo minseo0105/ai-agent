@@ -365,7 +365,7 @@ class ScreenCompactnessTests(unittest.TestCase):
 
     def test_every_tab_is_reachable_from_the_one_navigation(self):
         monitor = read('components/realestate/EstateMonitor.tsx')
-        for label in ('실거래', '청약', '개발사업', '모니터링', '알림'):
+        for label in ('실거래', '청약', '개발지도', '모니터링', '알림'):
             self.assertIn(f'label: "{label}"', monitor.replace('label: unread ? `알림 ${unread}` : "알림"',
                                                               'label: "알림"'))
 
@@ -421,9 +421,9 @@ class ScreenCompactnessTests(unittest.TestCase):
 
     def test_the_development_tab_shows_counts_and_filters_from_the_data(self):
         tab = read('components/realestate/DevelopmentTab.tsx')
-        for piece in ('전체', '재건축', '재개발', '신속통합기획'):
+        for piece in ('전체', '재건축', '재개발', '신속통합기획', '모아타운'):
             self.assertIn(piece, tab)
-        self.assertIn('const stages = [...new Set(projects.map((p) => p.stage.label))]', tab)
+        self.assertIn('[...new Set(projects.map((p) => p.stage.label))]', tab)
         self.assertIn('진행단계 전체', tab)
 
     def test_the_development_card_separates_verified_from_list_mapped(self):
@@ -672,9 +672,12 @@ class MapEndpointTests(unittest.TestCase):
         self.assertEqual(point['program_label'], '신속통합기획')
         self.assertIsNone(point['boundary'])
         self.assertEqual(set(point) - {'project_id', 'name', 'latitude', 'longitude', 'boundary',
-                                       'type_code', 'type_label', 'program_code', 'program_label',
-                                       'stage_label', 'district', 'dong', 'accuracy',
-                                       'accuracy_label', 'confidence', 'mappable'}, set())
+                                       'boundary_status', 'boundary_status_label', 'allows_inside',
+                                       'development_layer', 'program_layer', 'address',
+                                       'last_checked', 'official_url', 'type_code', 'type_label',
+                                       'program_code', 'program_label', 'stage_label', 'district',
+                                       'dong', 'accuracy', 'accuracy_label', 'confidence',
+                                       'mappable'}, set())
         self.assertEqual(result['mappable'], 1)
         self.assertIn('OFFICIAL_BOUNDARY', result['legend'])
 
@@ -773,12 +776,12 @@ class MapScreenTests(unittest.TestCase):
 
     def test_only_a_verified_boundary_is_drawn_as_an_area(self):
         source = read('components/realestate/ZiponMap.tsx')
-        self.assertIn('point.accuracy === "OFFICIAL_BOUNDARY" && point.boundary', source)
+        self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', source)
         self.assertIn('circleMarker', source)
 
-    def test_the_legend_explains_the_three_accuracy_levels(self):
+    def test_the_legend_explains_the_three_marks(self):
         source = read('components/realestate/ZiponMap.tsx')
-        for label in ('대표 위치', '공식 경계 확인', '위치 데이터 준비 중'):
+        for label in ('선택 부동산', '공식 사업구역', '사업 대표위치', '위치 데이터 준비 중'):
             self.assertIn(label, source)
 
     def test_the_transaction_card_leads_with_the_relationship(self):
@@ -815,4 +818,281 @@ class MapScreenTests(unittest.TestCase):
 
     def test_the_map_height_is_mobile_sized(self):
         self.assertIn('height = 340', read('components/realestate/ZiponMap.tsx'))
-        self.assertIn('height={320}', read('components/realestate/DevelopmentTab.tsx'))
+        self.assertIn('height={340}', read('components/realestate/DevelopmentTab.tsx'))
+
+
+class BaseMapTests(unittest.TestCase):
+    def test_open_street_map_is_the_working_default(self):
+        from services import map_providers
+        config = map_providers.config(lambda name: '')
+        self.assertEqual(config['active'], 'osm')
+        self.assertEqual(config['fallback'], 'osm')
+        self.assertIn('tile.openstreetmap.org', config['tile']['url_template'])
+        self.assertIn('OpenStreetMap', config['tile']['attribution'])
+
+    def test_every_provider_reports_korean_labels_and_key_needs(self):
+        from services import map_providers
+        config = map_providers.config(lambda name: '')
+        by_id = {p['id']: p for p in config['providers']}
+        self.assertEqual(set(by_id), {'osm', 'vworld', 'kakao', 'naver'})
+        self.assertTrue(all(p['korean_labels'] for p in config['providers']))
+        self.assertFalse(by_id['osm']['requires_browser_key'])
+        for name in ('vworld', 'kakao', 'naver'):
+            self.assertTrue(by_id[name]['requires_browser_key'], name)
+            self.assertFalse(by_id[name]['configured'], name)
+
+    def test_a_configured_korean_tile_provider_becomes_active(self):
+        from services import map_providers
+        config = map_providers.config(lambda name: 'placeholder' if name == 'VWORLD_MAP_KEY' else '')
+        self.assertEqual(config['active'], 'vworld')
+        self.assertIn('vworld', config['tile']['url_template'])
+
+    def test_an_sdk_provider_never_silently_becomes_the_tile_source(self):
+        from services import map_providers
+        config = map_providers.config(lambda name: 'placeholder' if name == 'KAKAO_JAVASCRIPT_KEY' else '')
+        self.assertEqual(config['active'], 'osm')
+
+    def test_the_config_never_carries_a_key(self):
+        from services import map_providers
+        text = json.dumps(map_providers.config(lambda name: 'super-secret-value'), ensure_ascii=False)
+        self.assertNotIn('super-secret-value', text)
+        self.assertNotIn('KAKAO_JAVASCRIPT_KEY', text)
+
+    def test_the_endpoint_serves_the_config(self):
+        from api.realestate import map_config
+        with patch.object(rm, '_secret', return_value=''):
+            result = map_config()
+        self.assertEqual(result['active'], 'osm')
+
+
+class MapLayerTests(unittest.TestCase):
+    def point(self, **overrides):
+        base = {'project_id': 'p', 'project_name': 'x', 'project_type': 'REDEVELOPMENT',
+                'stage_raw': '구역지정', 'validation_status': 'NEEDS_REVIEW',
+                'latitude': 37.5, 'longitude': 127.1, 'geometry_verified': False,
+                'source_url': 'https://cleanup.seoul.go.kr/x'}
+        return pr.map_point(dict(base, **overrides))
+
+    def test_project_type_and_programme_are_different_layers(self):
+        fast = self.point(project_type='SHINTONG')
+        self.assertEqual(fast['development_layer'], 'OTHER_PROJECT')
+        self.assertEqual(fast['program_layer'], 'FAST_TRACK')
+        self.assertEqual(fast['type_label'], '정비사업')
+        self.assertEqual(fast['program_label'], '신속통합기획')
+
+    def test_a_plain_project_has_no_programme_layer(self):
+        plain = self.point(project_type='RECONSTRUCTION')
+        self.assertEqual(plain['development_layer'], 'RECONSTRUCTION')
+        self.assertIsNone(plain['program_layer'])
+
+    def test_moatown_is_its_own_programme_layer(self):
+        moa = self.point(project_type='MOATOWN')
+        self.assertEqual(moa['program_layer'], 'MOATOWN')
+        self.assertEqual(moa['type_label'], '모아타운')
+
+    def test_the_layer_table_separates_type_programme_and_boundary(self):
+        self.assertEqual(pr.MAP_LAYERS['REDEVELOPMENT']['layer'], 'DEVELOPMENT')
+        self.assertEqual(pr.MAP_LAYERS['FAST_TRACK']['layer'], 'PROGRAM')
+        self.assertEqual(pr.MAP_LAYERS['MOATOWN']['layer'], 'PROGRAM')
+        self.assertEqual(pr.MAP_LAYERS['BOUNDARY']['layer'], 'BOUNDARY')
+        self.assertIn('PROPERTY', pr.MAP_LAYERS)
+
+    def test_a_boundary_needs_provenance_before_it_is_drawn(self):
+        pending = self.point()
+        self.assertEqual(pending['boundary_status'], 'PENDING')
+        self.assertIsNone(pending['boundary'])
+        self.assertFalse(pending['allows_inside'])
+        polygon = {'type': 'Polygon', 'coordinates': [[[127, 37], [127.1, 37], [127.1, 37.1], [127, 37]]]}
+        unverified = self.point(boundary=polygon)
+        self.assertEqual(unverified['boundary_status'], 'NOT_AVAILABLE')
+        self.assertIsNone(unverified['boundary'])
+        self.assertFalse(unverified['allows_inside'])
+        verified = self.point(boundary=polygon, geometry_verified=True)
+        self.assertEqual(verified['boundary_status'], 'OFFICIAL_VERIFIED')
+        self.assertIsNotNone(verified['boundary'])
+        self.assertTrue(verified['allows_inside'])
+        self.assertEqual(verified['accuracy'], 'OFFICIAL_BOUNDARY')
+
+    def test_the_boundary_contract_names_its_provenance(self):
+        self.assertEqual(pr.BOUNDARY_PROVENANCE_FIELDS,
+                         ('source', 'source_url', 'verified_at', 'boundary_status'))
+        layer = pr.boundary_layer({'boundary': {'type': 'Polygon'}, 'geometry_verified': True,
+                                   'geometry_source': '서울시 정비구역 경계',
+                                   'source_url': 'https://cleanup.seoul.go.kr/x',
+                                   'geometry_verified_at': '2026-09-27T00:00:00+00:00'})
+        for field in pr.BOUNDARY_PROVENANCE_FIELDS:
+            self.assertIn(field, layer)
+        self.assertTrue(layer['allows_inside'])
+
+
+class BboxApiTests(unittest.TestCase):
+    def rows(self):
+        import binascii
+        import struct
+
+        def ewkb(lon, lat):
+            return binascii.hexlify(struct.pack('<BIIdd', 1, 0x20000001, 4326, lon, lat)).decode()
+        return [{'project_id': 'inside', 'project_name': '안쪽', 'project_type': 'REDEVELOPMENT',
+                 'sigungu': '강동구', 'stage_raw': '구역지정', 'validation_status': 'NEEDS_REVIEW',
+                 'location': ewkb(127.10, 37.55), 'geometry_verified': False},
+                {'project_id': 'outside', 'project_name': '바깥', 'project_type': 'REDEVELOPMENT',
+                 'sigungu': '강동구', 'stage_raw': '구역지정', 'validation_status': 'NEEDS_REVIEW',
+                 'location': ewkb(126.90, 37.40), 'geometry_verified': False},
+                {'project_id': 'nopoint', 'project_name': '좌표없음', 'project_type': 'REDEVELOPMENT',
+                 'sigungu': '강동구', 'stage_raw': '구역지정', 'validation_status': 'NEEDS_REVIEW',
+                 'location': None, 'geometry_verified': False}]
+
+    def test_a_bbox_keeps_only_points_inside_it(self):
+        from api.realestate import development_map
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=self.rows()):
+            result = asyncio.run(development_map(north=37.60, south=37.50, east=127.20, west=127.00))
+        self.assertEqual([p['project_id'] for p in result['points']], ['inside'])
+        self.assertTrue(result['bbox_filtered'])
+
+    def test_without_a_bbox_every_row_is_returned(self):
+        from api.realestate import development_map
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=self.rows()):
+            result = asyncio.run(development_map())
+        self.assertEqual(len(result['points']), 3)
+        self.assertFalse(result['bbox_filtered'])
+        self.assertEqual(result['mappable'], 2)
+
+    def test_a_partial_or_invalid_bbox_is_refused(self):
+        from api.realestate import development_map
+        from fastapi import HTTPException
+        with self.assertRaises(HTTPException):
+            asyncio.run(development_map(north=37.6))
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=self.rows()):
+            with self.assertRaises(HTTPException):
+                asyncio.run(development_map(north=37.4, south=37.6, east=127.2, west=127.0))
+
+    def test_the_map_payload_stays_light(self):
+        from api.realestate import development_map
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=self.rows()) as request:
+            result = asyncio.run(development_map(sigungu='강동구'))
+        columns = request.call_args.kwargs['params']['select'].split(',')
+        # 폴리곤·원문 스냅샷 같은 무거운 컬럼은 지도 조회에 담지 않는다.
+        for heavy in ('field_evidence', 'raw_snapshot', 'geometry'):
+            self.assertNotIn(heavy, columns)
+        self.assertIn('geometry_verified', columns)
+        self.assertLessEqual(len(json.dumps(result['points'][0], ensure_ascii=False)), 900)
+
+
+class TransactionToDevelopmentE2ETests(unittest.TestCase):
+    """거래 → canonical address → 좌표 → 주변 개발사업 → 거리."""
+
+    def test_a_sample_transaction_reaches_a_development_distance(self):
+        import xml.etree.ElementTree as ET
+        markup = ('<item><aptNm>둔촌주공</aptNm><dealAmount>195,000</dealAmount><excluUseAr>84.99</excluUseAr>'
+                  '<dealYear>2026</dealYear><dealMonth>9</dealMonth><dealDay>3</dealDay><floor>12</floor>'
+                  '<buildYear>1980</buildYear><umdNm>둔촌동</umdNm><jibun>170</jibun>'
+                  '<roadNm>양재대로</roadNm><roadNmBonbun>01321</roadNmBonbun></item>')
+        trade = rm._trade_item_to_common(ET.fromstring(markup), '아파트', '11740', '202609')
+        # 1. 화면용 주소를 만든다 (본번/부번은 노출하지 않고 주소 생성에만 쓴다).
+        self.assertEqual(trade['canonical_address'], '양재대로 1321')
+
+        # 2. 같은 geocoder 추상화를 쓴다. 첫 결과를 무조건 채택하지 않는다.
+        address = '서울특별시 강동구 둔촌동 170'
+        payload = {'documents': [{'x': '127.1420', 'y': '37.5290',
+                                  'address': {'address_name': address}}]}
+        provider = geo.kakao_provider('placeholder', lambda *a, **k: payload)
+        evaluation = geo.evaluate(address, provider(address))
+        self.assertEqual(evaluation['geocode_confidence'], 'EXACT')
+        self.assertTrue(evaluation['coordinate_verified'])
+
+        # 3. 좌표로 주변 개발사업을 찾는다.
+        rpc = [{'project_id': 'p1', 'project_name': '천호○○구역', 'project_type': 'REDEVELOPMENT',
+                'project_stage': '구역지정', 'status': 'UNKNOWN', 'validation_status': 'NEEDS_REVIEW',
+                'relation': 'NEARBY', 'distance_m': 280.0, 'official_source': '서울시 정비사업 정보몽땅',
+                'source_url': 'https://cleanup.seoul.go.kr/x', 'verified_at': None}]
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', return_value=rpc):
+            found = dev.search_projects(longitude=evaluation['longitude'],
+                                        latitude=evaluation['latitude'], radius_m=1000)
+        projects = [pr.present_project(row) for row in found['nearby_projects']]
+        impact = pr.impact({'projects': projects}, trade_has_point=True)
+
+        # 4. 사용자 문구로 해석된다. INSIDE는 추정하지 않는다.
+        self.assertEqual(impact['nearest']['name'], '천호○○구역')
+        self.assertEqual(impact['nearest']['distance_label'], '300m 이내')
+        self.assertEqual(impact['nearest']['distance_m'], 280.0)
+        self.assertEqual(impact['nearest']['type_label'], '재개발')
+        self.assertEqual(impact['nearest']['stage_label'], '정비구역 지정')
+        self.assertEqual(impact['nearest']['official_source']['name'], '서울시 정비사업 정보몽땅')
+        self.assertEqual(impact['inside']['code'], 'NOT_DETERMINED')
+        self.assertEqual(impact['inside']['notice'], pr.INSIDE_UNKNOWN_NOTICE)
+
+    def test_a_dong_centroid_style_match_is_not_accepted(self):
+        # 동 중심점·구청 같은 fallback 위치는 자동 채택하지 않는다.
+        payload = {'documents': [{'x': '127.1470', 'y': '37.5300',
+                                  'address': {'address_name': '서울특별시 강동구 둔촌동'}}]}
+        provider = geo.kakao_provider('placeholder', lambda *a, **k: payload)
+        result = geo.evaluate('서울특별시 강동구 둔촌동 170', provider('서울특별시 강동구 둔촌동 170'))
+        self.assertEqual(result['geocode_confidence'], 'GEOCODE_REVIEW')
+        self.assertIsNone(result['latitude'])
+
+
+class MapFirstScreenTests(unittest.TestCase):
+    def test_the_map_tab_comes_first(self):
+        monitor = read('components/realestate/EstateMonitor.tsx')
+        self.assertIn('useState<Tab>("개발지도")', monitor)
+        self.assertLess(monitor.index('label: "개발지도"'), monitor.index('label: "실거래"'))
+
+    def test_the_explorer_puts_search_and_map_above_the_list(self):
+        tab = read('components/realestate/DevelopmentTab.tsx')
+        self.assertIn('부동산 개발정보 지도', tab)
+        self.assertLess(tab.index('aria-label="사업명 · 동 · 유형 검색"'), tab.index('<ZiponMap'))
+        self.assertLess(tab.index('<ZiponMap'), tab.index('이 위치의 개발정보'))
+        self.assertLess(tab.index('이 위치의 개발정보'), tab.index('<DevelopmentCard'))
+
+    def test_the_filters_cover_every_layer(self):
+        tab = read('components/realestate/DevelopmentTab.tsx')
+        for label in ('재개발', '재건축', '신속통합기획', '모아타운', '기타 정비사업'):
+            self.assertIn(f'"{label}"', tab)
+
+    def test_map_and_list_are_synchronised(self):
+        tab = read('components/realestate/DevelopmentTab.tsx')
+        self.assertIn('onSelect={selectFromMap}', tab)
+        self.assertIn('scrollIntoView', tab)
+        self.assertIn('setSelectedId(p.project_id)', tab)
+        self.assertIn('ring-2 ring-estate', tab)
+        self.assertIn('selectedId={selectedId}', tab)
+
+    def test_the_map_separates_property_type_programme_and_boundary(self):
+        map_source = read('components/realestate/ZiponMap.tsx')
+        self.assertIn('DEVELOPMENT_COLOR', map_source)
+        self.assertIn('PROGRAM_COLOR', map_source)
+        self.assertIn('point.program_layer', map_source)
+        self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', map_source)
+        self.assertIn('선택 부동산', map_source)
+
+    def test_the_legend_names_the_three_marks(self):
+        map_source = read('components/realestate/ZiponMap.tsx')
+        for label in ('선택 부동산', '공식 사업구역', '사업 대표위치'):
+            self.assertIn(label, map_source)
+        self.assertNotIn('공식 경계 확인</span>', map_source)
+
+    def test_the_map_takes_its_basemap_from_the_server_with_an_osm_fallback(self):
+        map_source = read('components/realestate/ZiponMap.tsx')
+        self.assertIn('config?.tile ?? OSM', map_source)
+        self.assertIn('tile.openstreetmap.org', map_source)
+        self.assertIn('mapConfig()', read('components/realestate/DevelopmentTab.tsx'))
+
+    def test_the_map_reports_its_viewport_for_a_future_bbox_query(self):
+        map_source = read('components/realestate/ZiponMap.tsx')
+        self.assertIn('onBoundsChange', map_source)
+        self.assertIn('getBounds()', map_source)
+
+    def test_the_popup_shows_what_the_spec_asks_for(self):
+        map_source = read('components/realestate/ZiponMap.tsx')
+        for piece in ('point.stage_label', 'point.address', 'point.last_checked',
+                      'point.official_url', 'point.accuracy_label', 'point.boundary_status_label'):
+            self.assertIn(piece, map_source)
+
+    def test_the_map_height_stays_mobile_sized(self):
+        self.assertIn('height = 340', read('components/realestate/ZiponMap.tsx'))
+        self.assertIn('height={340}', read('components/realestate/DevelopmentTab.tsx'))
