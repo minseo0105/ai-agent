@@ -14,6 +14,7 @@ from services import development_presentation as presentation
 from services import map_providers
 from services import development_geocode as geocode
 from services import trade_geocode
+from services import development_canary
 
 router = APIRouter(prefix="/api/realestate", tags=["realestate"])
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -245,6 +246,17 @@ def geocode_status(probe: bool = False):
     return _cached('geocode-status-probe',
                    lambda: geocode.status(rm._secret, geocode.requests_get,
                                           geocode.SAMPLE_ADDRESS), ttl=300)
+
+
+@router.get('/geocode/canary')
+def geocode_canary():
+    """개발사업 10건만 실제 geocode해서 좌표 품질과 지도 표시 가능성을 본다.
+
+    149건 전체 실행이 아니고, 데이터베이스에는 아무것도 쓰지 않는다. 유료 호출이라
+    결과는 한 시간 재사용하고, 주소 캐시가 있으면 provider를 다시 부르지 않는다.
+    """
+    return _cached('geocode-canary',
+                   lambda: development_canary.run(rm._secret, geocode.requests_get), ttl=3600)
 
 
 @router.get('/development/map')

@@ -1519,3 +1519,294 @@ class DynamicMapExposureTests(unittest.TestCase):
             for secret in ('NAVER_MAP_CLIENT_SECRET', 'KAKAO_REST_API_KEY', 'X-NCP-APIGW-API-KEY',
                            'SERVICE_ROLE', 'NEXT_PUBLIC_SUPABASE'):
                 self.assertNotIn(secret, source, f'{path.name} mentions {secret}')
+
+
+# Canary fixtures. One plausible coordinate per canary address, all inside the right
+# district, so the stub exercises the real evaluator rather than a mocked verdict.
+CANARY_POINTS = {
+    '서울특별시 강동구 둔촌동 172': (127.1436, 37.5281),
+    '서울특별시 강동구 천호동 467-61': (127.1268, 37.5395),
+    '서울특별시 강동구 길동 54': (127.1421, 37.5372),
+    '서울특별시 강동구 상일동 124': (127.1681, 37.5545),
+    '서울특별시 송파구 송파동 151': (127.1123, 37.5021),
+    '서울특별시 송파구 마천동 183-1': (127.1519, 37.4977),
+    '서울특별시 송파구 신천동 20-4': (127.0873, 37.5157),
+    '서울특별시 서초구 잠원동 61-1': (127.0104, 37.5192),
+    '서울특별시 서초구 반포동 591-1': (126.9958, 37.5041),
+    '서울특별시 서초구 방배동 528-3': (126.9932, 37.4869),
+}
+
+
+def canary_naver(points=None, extra=None, counter=None, fail=None):
+    """Answers like NAVER for the canary addresses, from the requested address alone."""
+    table = dict(CANARY_POINTS, **(points or {}))
+
+    def http_get(url, params=None, headers=None, timeout=10):
+        address = (params or {}).get('query')
+        if counter is not None:
+            counter.append(address)
+        if fail and address in fail:
+            raise fail[address]
+        if address not in table:
+            return {'status': 'OK', 'addresses': []}
+        longitude, latitude = table[address]
+        parts = geo.wanted_parts(address)
+        elements = [{'types': ['SIDO'], 'longName': parts['sido']},
+                    {'types': ['SIGUGUN'], 'longName': parts['district']},
+                    {'types': ['DONGMYUN'], 'longName': parts['dong']},
+                    {'types': ['LAND_NUMBER'], 'longName': parts['lot']}]
+        item = {'roadAddress': '', 'jibunAddress': address, 'englishAddress': 'stub',
+                'x': str(longitude), 'y': str(latitude), 'distance': 0.0,
+                'addressElements': elements}
+        item.update((extra or {}).get(address) or {})
+        addresses = [item] * ((extra or {}).get(address, {}).pop('_repeat', 1)
+                              if isinstance((extra or {}).get(address), dict) else 1)
+        return {'status': 'OK', 'meta': {'totalCount': len(addresses)}, 'addresses': addresses}
+    return http_get
+
+
+class GeocodeCanaryTests(unittest.TestCase):
+    def setUp(self):
+        from services import development_canary
+        import tempfile, shutil
+        self.canary = development_canary
+        self.directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.directory, True)
+
+    def cache(self):
+        return geo.GeocodeCache(Path(self.directory) / 'cache')
+
+    def run_canary(self, http_get, secrets=None):
+        secrets = secrets if secrets is not None else {'NAVER_MAP_CLIENT_ID': 'x',
+                                                       'NAVER_MAP_CLIENT_SECRET': 'y'}
+        return self.canary.run(lambda name: secrets.get(name, ''), http_get, self.cache())
+
+    def test_the_frozen_ten_match_the_selection_artifact(self):
+        document = json.loads((DATA / 'geocode_canary_20260927.json').read_text(encoding='utf-8'))
+        self.assertEqual(list(self.canary.CANARY), document['items'])
+        self.assertEqual(len(self.canary.CANARY), 10)
+        for row in self.canary.CANARY:
+            self.assertEqual(set(row), {'project_id', 'project_name', 'canonical_address',
+                                        'district', 'project_type', 'program'})
+
+    def test_the_ten_mix_the_three_districts_and_ten_dong(self):
+        districts = {}
+        for row in self.canary.CANARY:
+            districts[row['district']] = districts.get(row['district'], 0) + 1
+        self.assertEqual(districts, {'강동구': 4, '송파구': 3, '서초구': 3})
+        self.assertEqual(len({row['canonical_address'] for row in self.canary.CANARY}), 10)
+        self.assertEqual(len({geo.wanted_parts(row['canonical_address'])['dong']
+                              for row in self.canary.CANARY}), 10)
+        self.assertEqual(len({row['project_type'] for row in self.canary.CANARY}), 2)
+
+    def test_a_clean_run_accepts_all_ten_and_records_every_check(self):
+        result = self.run_canary(canary_naver())
+        self.assertEqual(result['provider'], 'naver')
+        self.assertEqual(result['provider_calls'], 10)
+        self.assertEqual(result['totals'], {'ACCEPTED': 10, 'REVIEW_REQUIRED': 0, 'FAILED': 0,
+                                            'PENDING_PROVIDER': 0})
+        self.assertFalse(result['db_write'])
+        for row in result['results']:
+            self.assertEqual(row['candidate_count'], 1)
+            self.assertEqual(row['matched_jibun_address'], row['canonical_address'])
+            self.assertTrue(row['in_seoul_bounds'])
+            self.assertTrue(row['district_match'])
+            self.assertTrue(row['dong_match'])
+            self.assertTrue(row['lot_match'])
+            self.assertEqual(row['returned_district'], row['district'])
+            self.assertEqual(row['coordinate_orientation'], 'X_IS_LONGITUDE')
+            self.assertEqual(row['geocode_confidence'], 'EXACT')
+            self.assertTrue(row['acceptance_reason'].startswith('EXACT_MATCH_ON_'))
+            self.assertEqual((row['longitude'], row['latitude']),
+                             CANARY_POINTS[row['canonical_address']])
+
+    def test_the_map_payload_is_what_the_component_already_consumes(self):
+        result = self.run_canary(canary_naver())
+        payload = result['map']
+        self.assertEqual(payload['total'], 10)
+        self.assertEqual(payload['mappable'], 10)
+        first = payload['points'][0]
+        self.assertEqual(set(first), set(pr.map_point({'project_id': 'x'})))
+        for point in payload['points']:
+            self.assertEqual(point['accuracy'], 'REPRESENTATIVE_POINT')
+            self.assertEqual(point['accuracy_label'], '대표 위치')
+            self.assertTrue(point['mappable'])
+        self.assertEqual(payload['inside_judgement'],
+                         'NOT_PERMITTED_WITHOUT_VERIFIED_BOUNDARY')
+
+    def test_the_bbox_center_and_zoom_cover_the_ten_points(self):
+        payload = self.run_canary(canary_naver())['map']
+        longitudes = [p[0] for p in CANARY_POINTS.values()]
+        latitudes = [p[1] for p in CANARY_POINTS.values()]
+        self.assertEqual(payload['bbox'], {'west': min(longitudes), 'east': max(longitudes),
+                                           'south': min(latitudes), 'north': max(latitudes)})
+        self.assertAlmostEqual(payload['center']['longitude'],
+                               (min(longitudes) + max(longitudes)) / 2)
+        self.assertAlmostEqual(payload['center']['latitude'],
+                               (min(latitudes) + max(latitudes)) / 2)
+        self.assertTrue(9 <= payload['suggested_zoom'] <= 16)
+
+    def test_inside_is_never_produced_from_a_canary_point(self):
+        payload = self.run_canary(canary_naver())['map']
+        for point in payload['points']:
+            self.assertFalse(point['allows_inside'])
+            self.assertIsNone(point['boundary'])
+            self.assertNotEqual(point['boundary_status'], 'OFFICIAL_VERIFIED')
+
+    def test_two_candidates_are_reviewed_rather_than_taking_the_first(self):
+        address = self.canary.CANARY[0]['canonical_address']
+        longitude, latitude = CANARY_POINTS[address]
+
+        def http_get(url, params=None, headers=None, timeout=10):
+            if (params or {}).get('query') != address:
+                return canary_naver()(url, params, headers, timeout)
+            parts = geo.wanted_parts(address)
+            item = {'jibunAddress': address, 'roadAddress': '', 'x': str(longitude),
+                    'y': str(latitude), 'addressElements': [
+                        {'types': ['SIDO'], 'longName': parts['sido']},
+                        {'types': ['SIGUGUN'], 'longName': parts['district']},
+                        {'types': ['DONGMYUN'], 'longName': parts['dong']},
+                        {'types': ['LAND_NUMBER'], 'longName': parts['lot']}]}
+            return {'status': 'OK', 'addresses': [item, dict(item, x=str(longitude + 0.002))]}
+        result = self.run_canary(http_get)
+        row = next(r for r in result['results'] if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')
+        self.assertEqual(row['acceptance_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+        self.assertEqual(row['candidate_count'], 2)
+        self.assertIsNone(row['longitude'])
+        self.assertEqual(result['totals']['ACCEPTED'], 9)
+
+    def test_a_dong_centroid_answer_is_reviewed_not_accepted(self):
+        address = self.canary.CANARY[2]['canonical_address']
+
+        def http_get(url, params=None, headers=None, timeout=10):
+            if (params or {}).get('query') != address:
+                return canary_naver()(url, params, headers, timeout)
+            parts = geo.wanted_parts(address)
+            return {'status': 'OK', 'addresses': [{
+                'jibunAddress': f"{parts['sido']} {parts['district']} {parts['dong']}",
+                'roadAddress': '', 'x': '127.1400', 'y': '37.5380',
+                'addressElements': [{'types': ['SIDO'], 'longName': parts['sido']},
+                                    {'types': ['SIGUGUN'], 'longName': parts['district']},
+                                    {'types': ['DONGMYUN'], 'longName': parts['dong']}]}]}
+        row = next(r for r in self.run_canary(http_get)['results']
+                   if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')
+        self.assertEqual(row['accuracy'], 'REGION')
+        self.assertIn('lot_match', row['acceptance_reason'])
+        self.assertIsNone(row['latitude'])
+
+    def test_a_district_mismatch_is_reviewed_and_carries_no_coordinate(self):
+        address = self.canary.CANARY[4]['canonical_address']
+        extra = {address: {'addressElements': [
+            {'types': ['SIDO'], 'longName': '서울특별시'},
+            {'types': ['SIGUGUN'], 'longName': '강동구'},
+            {'types': ['DONGMYUN'], 'longName': '송파동'},
+            {'types': ['LAND_NUMBER'], 'longName': '151'}]}}
+        result = self.run_canary(canary_naver(extra=extra))
+        row = next(r for r in result['results'] if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')
+        self.assertIn('district_match', row['acceptance_reason'])
+        self.assertEqual(row['returned_district'], '강동구')
+        self.assertIsNone(row['longitude'])
+        # 채택되지 않았으므로 자치구 sanity 검사 대상에서도 빠진다.
+        self.assertEqual(result['sanity']['district_match']['mismatched'], [])
+        self.assertEqual(result['sanity']['evaluated_points'], 9)
+
+    def test_a_swapped_axis_answer_is_reviewed(self):
+        address = self.canary.CANARY[6]['canonical_address']
+        longitude, latitude = CANARY_POINTS[address]
+        result = self.run_canary(canary_naver(points={address: (latitude, longitude)}))
+        row = next(r for r in result['results'] if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')
+        self.assertIn('axis_order', row['acceptance_reason'])
+        self.assertEqual(row['coordinate_orientation'], 'SUSPECT_SWAPPED')
+        self.assertEqual(result['sanity']['coordinate_orientation']['suspect'], [])
+
+    def test_two_projects_on_one_coordinate_are_flagged(self):
+        first, second = (self.canary.CANARY[0]['canonical_address'],
+                         self.canary.CANARY[1]['canonical_address'])
+        shared = CANARY_POINTS[first]
+        result = self.run_canary(canary_naver(points={second: shared}))
+        duplicates = result['sanity']['duplicate_coordinates']
+        self.assertFalse(duplicates['passed'])
+        self.assertEqual(sorted(next(iter(duplicates['exact'].values()))),
+                         sorted([self.canary.CANARY[0]['project_id'],
+                                 self.canary.CANARY[1]['project_id']]))
+        self.assertTrue(duplicates['within_about_11m'])
+
+    def test_a_coordinate_far_from_its_district_group_is_flagged(self):
+        address = self.canary.CANARY[3]['canonical_address']
+        result = self.run_canary(canary_naver(points={address: (127.2600, 37.7000)}))
+        spread = result['sanity']['district_spread']
+        self.assertFalse(spread['passed'])
+        self.assertIn(self.canary.CANARY[3]['project_id'],
+                      spread['by_district']['강동구']['beyond_limit'])
+
+    def test_a_provider_error_is_failed_and_does_not_stop_the_run(self):
+        address = self.canary.CANARY[5]['canonical_address']
+        result = self.run_canary(canary_naver(fail={address: TimeoutError('boom')}))
+        row = next(r for r in result['results'] if r['canonical_address'] == address)
+        self.assertEqual(row['outcome'], 'FAILED')
+        self.assertEqual(row['acceptance_reason'], 'PROVIDER_ERROR_TimeoutError')
+        self.assertEqual(result['totals']['ACCEPTED'], 9)
+        self.assertEqual(result['totals']['FAILED'], 1)
+
+    def test_without_credentials_nothing_is_called_and_nothing_fails(self):
+        def forbidden(*args, **kwargs):
+            raise AssertionError('no provider call without credentials')
+        result = self.canary.run(lambda name: '', forbidden, self.cache())
+        self.assertEqual(result['provider_calls'], 0)
+        self.assertEqual(result['totals'], {'ACCEPTED': 0, 'REVIEW_REQUIRED': 0, 'FAILED': 0,
+                                            'PENDING_PROVIDER': 10})
+        self.assertEqual(result['blocker'], 'NO_GEOCODER_CREDENTIAL_CONFIGURED')
+        # 시도조차 못 한 실행에 통과 판정을 붙이지 않는다.
+        for check in ('district_match', 'district_spread', 'duplicate_coordinates',
+                      'coordinate_orientation'):
+            self.assertIsNone(result['sanity'][check]['passed'], check)
+
+    def test_the_run_calls_each_address_once_and_reuses_the_cache(self):
+        counter = []
+        cache = self.cache()
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        get_secret = lambda name: secrets.get(name, '')
+        first = self.canary.run(get_secret, canary_naver(counter=counter), cache)
+        self.assertEqual(len(counter), 10)
+        second = self.canary.run(get_secret, canary_naver(counter=counter), cache)
+        self.assertEqual(len(counter), 10, 'the second run must not call the provider again')
+        self.assertEqual(second['provider_calls'], 0)
+        self.assertEqual(second['totals']['ACCEPTED'], first['totals']['ACCEPTED'])
+        self.assertTrue(all(row['from_cache'] for row in second['results']))
+
+    def test_the_report_carries_no_credential_and_no_database_write(self):
+        secrets = {'NAVER_MAP_CLIENT_ID': 'ID_VALUE', 'NAVER_MAP_CLIENT_SECRET': 'SECRET_VALUE'}
+        result = self.canary.run(lambda name: secrets.get(name, ''), canary_naver(), self.cache())
+        text = json.dumps(result, ensure_ascii=False)
+        self.assertNotIn('ID_VALUE', text)
+        self.assertNotIn('SECRET_VALUE', text)
+        self.assertFalse(result['db_write'])
+        self.assertFalse(result['migration_applied'])
+        self.assertFalse(result['bulk_149_run'])
+
+    def test_the_endpoint_runs_the_canary_once_and_caches_it(self):
+        from api import realestate as api
+        counter = []
+        api._cache.clear()
+        secrets = {'NAVER_MAP_CLIENT_ID': 'x', 'NAVER_MAP_CLIENT_SECRET': 'y'}
+        with patch.object(rm, '_secret', side_effect=lambda name, *a: secrets.get(name, '')), \
+             patch.object(geo, 'requests_get', canary_naver(counter=counter)), \
+             patch.object(self.canary, '_default_cache_dir',
+                          return_value=Path(self.directory) / 'endpoint'):
+            first = api.geocode_canary()
+            second = api.geocode_canary()
+        api._cache.clear()
+        self.assertEqual(first['totals']['ACCEPTED'], 10)
+        self.assertEqual(len(counter), 10)
+        self.assertIs(first, second)
+
+    def test_an_unwritable_cache_directory_does_not_stop_the_canary(self):
+        with patch.object(self.canary, '_default_cache_dir',
+                          return_value=Path('/proc/zipon-cannot-write')):
+            store = self.canary._cache_store()
+        self.assertTrue(store.directory.exists())
+        self.assertNotIn('/proc/', str(store.directory))

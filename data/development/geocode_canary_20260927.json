@@ -1,0 +1,119 @@
+{
+  "format": "zipon-geocode-canary-v1",
+  "generated_at": "2026-09-27T10:25:04.900838+00:00",
+  "db_write": false,
+  "source": "data/development/pilot_canonical_verified_20260927.json",
+  "selected_from": {
+    "canonical_in_database": 130,
+    "eligible": 128
+  },
+  "quota": {
+    "강동구": 4,
+    "송파구": 3,
+    "서초구": 3
+  },
+  "rule": [
+    "already in the database",
+    "address_verified with address_type LOT and a plain 번지",
+    "동 taken from the official address token",
+    "exactly one original address on the record",
+    "the address is unique among the canonical rows in the database",
+    "per-district quota filled in project_id order, one project per 동"
+  ],
+  "note": "신속통합기획(FAST_TRACK) 기록은 주소가 없어 구조적으로 제외된다. 이 파일에는 좌표도, 증거도, 자격증명도 담지 않는다.",
+  "mix": {
+    "districts": {
+      "강동구": 4,
+      "송파구": 3,
+      "서초구": 3
+    },
+    "project_types": {
+      "RECONSTRUCTION": 8,
+      "REDEVELOPMENT": 2
+    },
+    "distinct_dong": 10,
+    "sub_lot_addresses": 6
+  },
+  "items": [
+    {
+      "project_id": "02b9c94c-8b6c-5297-affa-1e827181afb0",
+      "project_name": "둔촌주공아파트 주택재건축정비사업조합",
+      "canonical_address": "서울특별시 강동구 둔촌동 172",
+      "district": "강동구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    },
+    {
+      "project_id": "0922ac26-1436-5158-853d-49d3c5aed7fb",
+      "project_name": "천호 A1-1구역 공공재개발 정비사업 주민대표회의",
+      "canonical_address": "서울특별시 강동구 천호동 467-61",
+      "district": "강동구",
+      "project_type": "REDEVELOPMENT",
+      "program": null
+    },
+    {
+      "project_id": "17ae087a-3eb2-590e-9e32-7c36cd66eb6c",
+      "project_name": "삼익파크아파트 재건축사업조합",
+      "canonical_address": "서울특별시 강동구 길동 54",
+      "district": "강동구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    },
+    {
+      "project_id": "1effd17b-53f8-52a3-b2bc-a91c8c7ce4f7",
+      "project_name": "고덕주공6단지아파트 주택재건축정비사업조합",
+      "canonical_address": "서울특별시 강동구 상일동 124",
+      "district": "강동구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    },
+    {
+      "project_id": "070e2349-2569-5652-8d56-bc8080b20304",
+      "project_name": "송파한양2차아파트 재건축정비사업 조합",
+      "canonical_address": "서울특별시 송파구 송파동 151",
+      "district": "송파구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    },
+    {
+      "project_id": "0cfa354d-f9ac-5516-aa2a-1f6767c0aa98",
+      "project_name": "마천2재정비촉진구역 주택재개발정비사업",
+      "canonical_address": "서울특별시 송파구 마천동 183-1",
+      "district": "송파구",
+      "project_type": "REDEVELOPMENT",
+      "program": null
+    },
+    {
+      "project_id": "1a37e972-e886-5fec-a872-80402bd47c44",
+      "project_name": "잠실진주아파트 주택재건축정비사업조합",
+      "canonical_address": "서울특별시 송파구 신천동 20-4",
+      "district": "송파구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    },
+    {
+      "project_id": "0164b2b0-1b21-51e3-8b8d-f97bda852a18",
+      "project_name": "신반포25차아파트주택재건축정비사업조합설립추진위원회",
+      "canonical_address": "서울특별시 서초구 잠원동 61-1",
+      "district": "서초구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    },
+    {
+      "project_id": "03852475-6791-5fe9-9ea1-db09b5fdddc8",
+      "project_name": "강남원효성빌라 재건축정비사업조합",
+      "canonical_address": "서울특별시 서초구 반포동 591-1",
+      "district": "서초구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    },
+    {
+      "project_id": "0a179fc4-01b7-5991-97ad-0c4108273a8f",
+      "project_name": "방배15 재건축정비사업조합",
+      "canonical_address": "서울특별시 서초구 방배동 528-3",
+      "district": "서초구",
+      "project_type": "RECONSTRUCTION",
+      "program": null
+    }
+  ]
+}
