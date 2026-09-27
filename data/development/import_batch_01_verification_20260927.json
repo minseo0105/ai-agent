@@ -1,0 +1,113 @@
+{
+  "format": "zipon-first-batch-verification-v1",
+  "db_write": false,
+  "batch_file": "data/development/import_batch_01_20260927.json",
+  "api_and_join": [
+    {
+      "check": "api_status_ok",
+      "result": "PASS",
+      "detail": "ok"
+    },
+    {
+      "check": "api_calls_the_spatial_rpc",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_sends_no_coordinates_for_a_district_query",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_returns_the_batch",
+      "result": "PASS",
+      "detail": 10
+    },
+    {
+      "check": "api_exposes_project_name",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_exposes_project_type",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_exposes_stage",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_exposes_status",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_exposes_validation_status",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_exposes_source_name",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_exposes_evidence_url",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_never_reports_verified_validation_status",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "api_relation_unknown_without_coordinates",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "no_inside_without_verified_boundary",
+      "result": "PASS",
+      "detail": []
+    },
+    {
+      "check": "relation_values_are_known",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "trade_without_coordinates_does_not_query",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "trade_relation_unknown",
+      "result": "PASS",
+      "detail": "UNKNOWN"
+    },
+    {
+      "check": "trade_status_needs_geocode",
+      "result": "PASS",
+      "detail": "needs_geocode"
+    },
+    {
+      "check": "trade_reason_requires_exact_address",
+      "result": "PASS",
+      "detail": null
+    },
+    {
+      "check": "trade_join_has_no_projects_attached",
+      "result": "PASS",
+      "detail": null
+    }
+  ],
+  "database": {
+    "status": "SKIPPED",
+    "reason": "ZIPON_IMPORT_ENV_NOT_SET"
+  },
+  "result": "PASS",
+  "failures": []
+}

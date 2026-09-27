@@ -180,11 +180,18 @@ def import_candidate(record, request, run_id=None):
         'p_source':record['source'], 'p_run_id':run_id, 'p_expected_revision':current[0]['revision'] if current else 0})
 
 
+MAX_IMPORT_BATCH = 10
+
+
 def import_batch(records, request):
     """Explicit caller-supplied transport. Each candidate+history is atomic in RPC.
 
     An interrupted run remains RUNNING for operator review, not silently successful.
+    The batch ceiling is enforced here as well as in the CLI, before any request is
+    issued, so no code path can write more than a reviewed batch.
     """
+    if not 1 <= len(records) <= MAX_IMPORT_BATCH:
+        raise ValueError(f'IMPORT_BATCH_LIMIT_1_TO_{MAX_IMPORT_BATCH}')
     run_id = str(uuid.uuid4())
     request('POST', 'development_collection_runs', payload={
         'run_id': run_id, 'source_name': 'Seoul pilot reviewed import',
