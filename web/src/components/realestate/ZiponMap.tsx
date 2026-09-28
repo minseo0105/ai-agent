@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DevelopmentMapPoint, MapConfig } from "@/lib/realestate";
+import { getProjectCoordinate, type ProjectCoordinate } from "@/lib/projectCoordinate";
 import {
   loadNaverMaps,
   type NaverInfoWindow,
@@ -93,47 +94,61 @@ export default function ZiponMap({
   onBoundsChange?: (bounds: MapBounds) => void;
 }) {
   const container = useRef<HTMLDivElement>(null);
-  const maps = useRef<NaverMaps | null>(null);
-  const map = useRef<NaverMapInstance | null>(null);
   const markers = useRef<Map<string, NaverMarker>>(new Map());
   const overlays = useRef<NaverOverlay[]>([]);
+  const circle = useRef<NaverOverlay | null>(null);
   const info = useRef<NaverInfoWindow | null>(null);
   const listeners = useRef<unknown[]>([]);
   const select = useRef(onSelect);
   const bounds = useRef(onBoundsChange);
+  // 지도 인스턴스는 SDK가 로드된 뒤에 생긴다. ref에 담으면 렌더가 다시 일어나지 않아
+  // marker/center 효과가 '아직 지도 없음'으로 한 번 빠져나간 뒤 영영 다시 돌지 않는다.
+  // 그래서 상태로 들고 있는다. 이것이 상세 지도에 위치가 찍히지 않던 원인이다.
+  const [api, setApi] = useState<NaverMaps | null>(null);
+  const [instance, setInstance] = useState<NaverMapInstance | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const sdk = config?.sdk ?? null;
 
   select.current = onSelect;
   bounds.current = onBoundsChange;
 
+  /** 좌표는 공통 helper로만 읽는다. 메인 지도와 상세 지도가 같은 값을 쓴다. */
   const located = useMemo(
-    () => points.filter((p) => p.latitude != null && p.longitude != null),
+    () =>
+      points
+        .map((point) => ({ point, coordinate: getProjectCoordinate(point) }))
+        .filter((entry): entry is { point: DevelopmentMapPoint; coordinate: ProjectCoordinate } =>
+          entry.coordinate !== null,
+        ),
     [points],
+  );
+  const selectedEntry = useMemo(
+    () => located.find((entry) => entry.point.project_id === selectedId) ?? null,
+    [located, selectedId],
   );
 
   useEffect(() => {
     if (!sdk) return;
     let cancelled = false;
+    let created: NaverMapInstance | null = null;
     loadNaverMaps(sdk)
-      .then((api) => {
-        if (cancelled || !container.current || map.current) return;
-        maps.current = api;
-        map.current = new api.Map(container.current, {
-          center: new api.LatLng(SEOUL.lat, SEOUL.lng),
+      .then((loaded) => {
+        if (cancelled || !container.current) return;
+        created = new loaded.Map(container.current, {
+          center: new loaded.LatLng(SEOUL.lat, SEOUL.lng),
           zoom: compact ? 16 : 12,
-          mapTypeId: api.MapTypeId.NORMAL,
+          mapTypeId: loaded.MapTypeId.NORMAL,
           scaleControl: false,
           logoControl: true,
           mapDataControl: false,
           zoomControl: !compact,
           scrollWheel: !compact,
         });
-        info.current = new api.InfoWindow({ content: "", borderWidth: 0, disableAnchor: true });
+        info.current = new loaded.InfoWindow({ content: "", borderWidth: 0, disableAnchor: true });
         if (!compact && bounds.current) {
           listeners.current.push(
-            api.Event.addListener(map.current, "idle", () => {
-              const box = map.current?.getBounds();
+            loaded.Event.addListener(created, "idle", () => {
+              const box = created?.getBounds();
               if (!box) return;
               const max = box.getMax();
               const min = box.getMin();
@@ -141,6 +156,8 @@ export default function ZiponMap({
             }),
           );
         }
+        setApi(loaded);
+        setInstance(created);
         setFailed(null);
       })
       .catch((error: Error) => {
@@ -148,32 +165,40 @@ export default function ZiponMap({
       });
     return () => {
       cancelled = true;
-      for (const listener of listeners.current) maps.current?.Event.removeListener(listener);
+      for (const listener of listeners.current) window.naver?.maps?.Event.removeListener(listener);
       listeners.current = [];
       info.current?.close();
+      info.current = null;
       for (const marker of markers.current.values()) marker.setMap(null);
       markers.current.clear();
       for (const overlay of overlays.current) overlay.setMap(null);
       overlays.current = [];
-      map.current?.destroy();
-      map.current = null;
+      circle.current?.setMap(null);
+      circle.current = null;
+      created?.destroy();
+      setInstance(null);
     };
     // 지도 인스턴스는 한 번만 만든다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sdk, compact]);
 
-  // marker 다시 그리기. 좌표가 없는 사업은 marker를 만들지 않는다(가짜 좌표 금지).
+  // marker 갱신. 좌표가 없는 사업은 marker를 만들지 않는다(가짜 좌표 금지).
+  // 이미 있는 marker는 지우고 다시 만들지 않고 위치와 아이콘만 바꾼다.
   useEffect(() => {
-    const api = maps.current;
-    const instance = map.current;
     if (!api || !instance) return;
-    for (const marker of markers.current.values()) marker.setMap(null);
-    markers.current.clear();
+    const wanted = new Set(located.map((entry) => entry.point.project_id));
+    for (const [projectId, marker] of markers.current) {
+      if (!wanted.has(projectId)) {
+        marker.setMap(null);
+        markers.current.delete(projectId);
+      }
+    }
     for (const overlay of overlays.current) overlay.setMap(null);
     overlays.current = [];
 
-    for (const point of located) {
-      const position = new api.LatLng(point.latitude as number, point.longitude as number);
+    for (const { point, coordinate } of located) {
+      // NAVER SDK는 (위도, 경도) 순서다. API는 longitude/latitude로 준다.
+      const position = new api.LatLng(coordinate.lat, coordinate.lng);
       // 공식 경계가 확인된 사업만 면으로. 오늘은 해당 사업이 없어 아무 면도 그리지 않는다.
       if (point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary) {
         const paths = point.boundary as { coordinates?: number[][][] };
@@ -191,12 +216,21 @@ export default function ZiponMap({
           );
         }
       }
+      const selected = selectedId === point.project_id;
+      const existing = markers.current.get(point.project_id);
+      if (existing) {
+        existing.setPosition(position);
+        existing.setIcon(markerIcon(api, point, selected));
+        existing.setZIndex(selected ? 1000 : 1);
+        existing.setMap(instance);
+        continue;
+      }
       const marker = new api.Marker({
         map: instance,
         position,
         title: point.name ?? undefined,
-        icon: markerIcon(api, point, selectedId === point.project_id),
-        zIndex: selectedId === point.project_id ? 1000 : 1,
+        icon: markerIcon(api, point, selected),
+        zIndex: selected ? 1000 : 1,
       });
       if (select.current) {
         listeners.current.push(
@@ -222,47 +256,56 @@ export default function ZiponMap({
         }) as unknown as NaverOverlay,
       );
     }
-  }, [located, property, selectedId]);
+  }, [api, instance, located, property, selectedId]);
 
-  // 선택 사업으로 부드럽게 이동하고 InfoWindow를 띄운다. 화면을 강제로 스크롤하지 않는다.
+  // 선택 사업으로 지도를 옮기고 InfoWindow를 띄운다. 화면을 강제로 스크롤하지 않는다.
   useEffect(() => {
-    const api = maps.current;
-    const instance = map.current;
     if (!api || !instance) return;
-    const point = located.find((p) => p.project_id === selectedId);
-    if (!point) {
+    circle.current?.setMap(null);
+    circle.current = null;
+    if (!selectedEntry) {
       info.current?.close();
       if (!compact && !property && located.length > 0) {
         const box = new api.LatLngBounds();
-        for (const item of located) {
-          box.extend(new api.LatLng(item.latitude as number, item.longitude as number));
-        }
+        for (const entry of located) box.extend(new api.LatLng(entry.coordinate.lat, entry.coordinate.lng));
         instance.fitBounds(box, { top: 24, right: 24, bottom: 24, left: 24 });
       }
       return;
     }
-    const position = new api.LatLng(point.latitude as number, point.longitude as number);
-    instance.panTo(position, { duration: 320 });
-    if (instance.getZoom() < 15) instance.setZoom(compact ? 16 : 15, true);
+    const { point, coordinate } = selectedEntry;
+    const position = new api.LatLng(coordinate.lat, coordinate.lng);
+    // 접혀 있던 영역에서 만들어진 지도는 크기가 0이라 중심이 어긋난다. 크기가 확정된
+    // 다음 프레임에 resize를 알리고 다시 중심을 잡는다.
+    const settle = () => {
+      api.Event.trigger(instance, "resize");
+      if (compact) {
+        instance.setCenter(position);
+        instance.setZoom(17, false);
+      } else {
+        instance.panTo(position, { duration: 320 });
+        if (instance.getZoom() < 15) instance.setZoom(15, true);
+      }
+    };
+    settle();
+    const frame = window.requestAnimationFrame(settle);
     // 선택 사업 주변 표시. '대표위치 주변'이며 사업구역 경계가 아니다.
-    overlays.current.push(
-      new api.Circle({
-        map: instance,
-        center: position,
-        radius: 120,
-        strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-        strokeWeight: 1,
-        strokeOpacity: 0.7,
-        fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-        fillOpacity: 0.08,
-      }),
-    );
+    circle.current = new api.Circle({
+      map: instance,
+      center: position,
+      radius: 120,
+      strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+      strokeWeight: 1,
+      strokeOpacity: 0.7,
+      fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+      fillOpacity: 0.08,
+    });
     const marker = markers.current.get(point.project_id);
     if (info.current && marker) {
       info.current.setContent(infoHtml(point));
       info.current.open(instance, marker);
     }
-  }, [selectedId, located, compact, property]);
+    return () => window.cancelAnimationFrame(frame);
+  }, [api, instance, selectedEntry, located, compact, property]);
 
   const mappable = located.length;
 

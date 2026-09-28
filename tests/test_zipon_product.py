@@ -1132,7 +1132,7 @@ class MapFirstScreenTests(unittest.TestCase):
                       'point.program_label', 'point.accuracy_label',
                       'point.boundary_status_label'):
             self.assertIn(piece, map_source)
-        self.assertIn('api.InfoWindow', map_source)
+        self.assertIn('InfoWindow(', map_source)
         # InfoWindow 본문은 escape해서 넣는다.
         self.assertIn('escapeHtml(', map_source)
 
@@ -2587,7 +2587,7 @@ class NaverDynamicMapTests(unittest.TestCase):
         self.assertEqual(sdk['web_service_url'], 'https://minseo2-digital-ai-lab.hf.space')
 
     def test_the_default_map_type_is_normal(self):
-        self.assertIn('mapTypeId: api.MapTypeId.NORMAL', self.map_source)
+        self.assertIn('mapTypeId: loaded.MapTypeId.NORMAL', self.map_source)
 
     def test_markers_are_distinguished_by_project_type(self):
         for code in ('REDEVELOPMENT', 'RECONSTRUCTION', 'MOATOWN', 'OTHER_PROJECT'):
@@ -2615,9 +2615,11 @@ class NaverDynamicMapTests(unittest.TestCase):
         self.assertIn('height={190}', read('components/realestate/DevelopmentCard.tsx'))
 
     def test_only_located_projects_become_markers(self):
-        self.assertIn("points.filter((p) => p.latitude != null && p.longitude != null)",
-                      self.map_source)
-        self.assertIn('for (const point of located)', self.map_source)
+        # 좌표 해석은 공통 helper 하나로만 한다.
+        self.assertIn('getProjectCoordinate(point)', self.map_source)
+        self.assertIn('entry.coordinate !== null', self.map_source)
+        self.assertIn('for (const { point, coordinate } of located)', self.map_source)
+        self.assertNotIn('p.latitude != null && p.longitude != null', self.map_source)
 
 
 class MapCardLinkTests(unittest.TestCase):
@@ -2644,8 +2646,9 @@ class MapCardLinkTests(unittest.TestCase):
         self.assertIn('onClick={scrollToCard}', self.tab)
 
     def test_selecting_a_project_pans_the_map_and_opens_an_info_window(self):
+        # 상세(compact) 지도는 즉시 중심을 잡고, 메인 지도는 부드럽게 이동한다.
+        self.assertIn('instance.setCenter(position)', self.map_source)
         self.assertIn('instance.panTo(position, { duration: 320 })', self.map_source)
-        self.assertIn('instance.setZoom(compact ? 16 : 15, true)', self.map_source)
         self.assertIn('info.current.open(instance, marker)', self.map_source)
         self.assertIn('info.current.setContent(infoHtml(point))', self.map_source)
 
@@ -2948,3 +2951,89 @@ class FastTrackDecisionTests(unittest.TestCase):
             if not row['duplicate_risk']:
                 self.assertEqual(row['recommended_action'], 'IMPORT_WITH_ADDRESS')
                 self.assertFalse(row['existing_canonical'])
+
+
+class ProjectCoordinateHelperTests(unittest.TestCase):
+    """공통 좌표 helper를 실제 운영 좌표 122건으로 실행해서 확인한다."""
+
+    @classmethod
+    def setUpClass(cls):
+        import shutil, subprocess
+        if shutil.which('node') is None:
+            raise unittest.SkipTest('node is not available')
+        check = ROOT / 'scripts/checks/project_coordinate_check.mts'
+        result = subprocess.run(['node', '--experimental-strip-types', str(check)],
+                                capture_output=True, text=True, cwd=str(ROOT))
+        if result.returncode != 0:
+            raise unittest.SkipTest(f'coordinate check did not run: {result.stderr[:200]}')
+        cls.report = json.loads(result.stdout.strip().splitlines()[-1])
+
+    def test_every_production_coordinate_survives_the_helper(self):
+        # 122건 전부가 그대로 통과해야 한다. 하나라도 떨어지면 지도에서 사라진다.
+        self.assertEqual(self.report['accepted'], 122)
+        self.assertEqual(self.report['matched'], 122)
+        self.assertEqual(self.report['rejected'], [])
+
+    def test_latitude_and_longitude_are_not_swapped(self):
+        self.assertTrue(self.report['latitude_band'])
+        self.assertTrue(self.report['longitude_band'])
+        for district in ('강동구', '송파구', '서초구'):
+            coordinate = self.report['districts'][district]
+            self.assertTrue(37 < coordinate['lat'] < 38, district)
+            self.assertTrue(126 < coordinate['lng'] < 128, district)
+
+    def test_a_swapped_pair_is_refused_rather_than_corrected(self):
+        # 조용히 교환하면 엉뚱한 자리에 핀이 꽂히고도 정상처럼 보인다.
+        self.assertIsNone(self.report['swapped'])
+        self.assertEqual(self.report['swapped_problem'], 'SUSPECT_SWAPPED')
+
+    def test_strings_are_accepted_and_gaps_are_named(self):
+        self.assertEqual(self.report['string_input'], {'lat': 37.55, 'lng': 127.14})
+        self.assertEqual(self.report['missing_problem'], 'NO_COORDINATE')
+        self.assertEqual(self.report['outside_problem'], 'OUTSIDE_SEOUL')
+
+
+class MiniMapLifecycleTests(unittest.TestCase):
+    """상세 지도에 위치가 찍히지 않던 원인이 다시 생기지 않도록 고정한다."""
+
+    def setUp(self):
+        self.map_source = read('components/realestate/ZiponMap.tsx')
+
+    def test_the_map_instance_lives_in_state_not_only_a_ref(self):
+        # ref에 담으면 렌더가 다시 일어나지 않아 marker/center 효과가 한 번 빠져나간 뒤
+        # 영영 다시 돌지 않는다. 그것이 상세 지도에 위치가 없던 원인이었다.
+        self.assertIn('const [api, setApi] = useState<NaverMaps | null>(null)', self.map_source)
+        self.assertIn('const [instance, setInstance] = useState<NaverMapInstance | null>(null)',
+                      self.map_source)
+        self.assertNotIn('const map = useRef<NaverMapInstance | null>(null)', self.map_source)
+
+    def test_both_effects_wait_for_the_instance(self):
+        self.assertIn('}, [api, instance, located, property, selectedId]);', self.map_source)
+        self.assertIn('}, [api, instance, selectedEntry, located, compact, property]);',
+                      self.map_source)
+
+    def test_a_collapsed_container_is_resized_before_centring(self):
+        self.assertIn('api.Event.trigger(instance, "resize")', self.map_source)
+        self.assertIn('window.requestAnimationFrame(settle)', self.map_source)
+        self.assertIn('window.cancelAnimationFrame(frame)', self.map_source)
+        # resize가 중심 잡기보다 먼저여야 한다.
+        settle = self.map_source.split('const settle = () => {', 1)[1]
+        self.assertLess(settle.index('resize'), settle.index('setCenter'))
+
+    def test_switching_projects_moves_the_existing_marker(self):
+        self.assertIn('existing.setPosition(position)', self.map_source)
+        self.assertIn('markers.current.get(point.project_id)', self.map_source)
+        # 선택이 바뀌면 이전 원은 지우고 새로 그린다. 쌓이지 않는다.
+        self.assertIn('circle.current?.setMap(null)', self.map_source)
+
+    def test_the_compact_map_centres_immediately(self):
+        self.assertIn('instance.setCenter(position)', self.map_source)
+        self.assertIn('instance.setZoom(17, false)', self.map_source)
+
+    def test_the_card_and_the_main_map_share_one_coordinate_source(self):
+        card = read('components/realestate/DevelopmentCard.tsx')
+        tab = read('components/realestate/DevelopmentTab.tsx')
+        self.assertIn('getProjectCoordinate', self.map_source)
+        # 카드는 좌표를 직접 만들지 않고 같은 point를 넘긴다.
+        self.assertIn('points={[point]}', card)
+        self.assertIn('pointById.get(p.project_id) ?? null', tab)

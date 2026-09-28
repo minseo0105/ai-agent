@@ -27,6 +27,8 @@ export type NaverMarker = {
   setMap: (map: NaverMapInstance | null) => void;
   setIcon: (icon: unknown) => void;
   setZIndex: (index: number) => void;
+  /** 이미 있는 marker는 지우고 다시 만들지 않고 위치만 옮긴다. */
+  setPosition: (latlng: NaverLatLng) => void;
   getPosition: () => NaverLatLng;
 };
 export type NaverInfoWindow = {
@@ -52,6 +54,8 @@ export type NaverMaps = {
   Event: {
     addListener: (target: unknown, event: string, handler: (...args: unknown[]) => void) => unknown;
     removeListener: (listener: unknown) => void;
+    /** 접혀 있던 영역에서 만들어진 지도에 크기 변경을 알린다. */
+    trigger: (target: unknown, event: string) => void;
   };
 };
 
