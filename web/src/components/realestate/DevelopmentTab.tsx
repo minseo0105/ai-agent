@@ -28,50 +28,6 @@ function Kpi({ label, value, accent = false }: { label: string; value: number; a
   );
 }
 
-/** 선택한 사업의 위치. 누른 카드 바로 아래에서 같은 내용을 보여준다. */
-function SelectedLocation({
-  project,
-  points,
-  config,
-  className = "",
-}: {
-  project: DevelopmentProject;
-  points: DevelopmentMapPoint[];
-  config: MapConfig | null;
-  className?: string;
-}) {
-  return (
-    <section className={`rounded-xl border border-estate/40 bg-surface-muted p-2.5 ${className}`}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-        <h3 className="text-[11px] font-extrabold tracking-wide text-muted">선택 사업 위치</h3>
-        <span className="text-[11px] text-subtle">
-          {project.mappable ? project.location_accuracy.label : "좌표 미확보"}
-        </span>
-      </div>
-      <div className="mt-0.5 text-xs font-extrabold">{project.name}</div>
-      <p className="text-[11px] text-muted">
-        {[project.type_label, project.program_label].filter(Boolean).join(" · ")} · {project.stage.label}
-      </p>
-      {project.address && <p className="text-[11px] text-subtle">{project.address}</p>}
-      {project.mappable ? (
-        <div className="mt-2">
-          <ZiponMap
-            points={points}
-            config={config}
-            selectedId={project.project_id}
-            height={200}
-            compact
-          />
-        </div>
-      ) : (
-        <p className="mt-2 rounded-lg bg-surface px-2.5 py-2 text-[11px] text-muted">
-          이 사업은 아직 좌표를 확보하지 못해 지도에 표시하지 않습니다. 목록에서는 계속 확인할 수 있어요.
-        </p>
-      )}
-    </section>
-  );
-}
-
 function matchesFilter(item: { type_label: string; program_label: string | null }, filter: string) {
   if (filter === "전체") return true;
   if (filter === "기타 정비사업") return !["재개발", "재건축", "모아타운"].includes(item.type_label);
@@ -179,9 +135,10 @@ export default function DevelopmentTab({
     모아타운: inRegion.filter((p) => p.type_label === "모아타운").length,
   };
   const selected = visible.find((p) => p.project_id === selectedId) ?? null;
-  const selectedPoints = useMemo(
-    () => visiblePoints.filter((point) => point.project_id === selectedId),
-    [visiblePoints, selectedId],
+  // 카드가 자기 point를 찾을 수 있게 한 번만 색인한다. 좌표를 복제하지 않는다.
+  const pointById = useMemo(
+    () => new Map(points.map((point) => [point.project_id, point])),
+    [points],
   );
   const mappable = visiblePoints.filter((p) => p.latitude != null).length;
   const coordinateless = visible.length - mappable;
@@ -329,17 +286,14 @@ export default function DevelopmentTab({
                   onClick={() => setSelectedId(p.project_id)}
                   className={`rounded-2xl transition ${selectedId === p.project_id ? "ring-2 ring-estate" : ""}`}
                 >
-                  <DevelopmentCard project={p} />
-                </div>
-                {/* 누른 카드 바로 아래에서 위치를 확인한다. 화면 위쪽까지 올라가지 않아도 된다. */}
-                {selectedId === p.project_id && (
-                  <SelectedLocation
+                  {/* 위치는 카드 안에서 보여준다. 좌표는 목록과 같은 응답의 point를 그대로 쓴다. */}
+                  <DevelopmentCard
                     project={p}
-                    points={selectedPoints}
-                    config={config}
-                    className="md:col-span-2"
+                    point={pointById.get(p.project_id) ?? null}
+                    mapConfig={config}
+                    selected={selectedId === p.project_id}
                   />
-                )}
+                </div>
               </Fragment>
             ))}
           </div>

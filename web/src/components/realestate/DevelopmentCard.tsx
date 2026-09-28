@@ -2,8 +2,8 @@
 
 import CollapsibleDetails, { DetailRow } from "./CollapsibleDetails";
 import StageTimeline from "./StageTimeline";
-import type { MapFocus } from "./ZiponMap";
-import type { DevelopmentProject } from "@/lib/realestate";
+import ZiponMap, { type MapFocus } from "./ZiponMap";
+import type { DevelopmentMapPoint, DevelopmentProject, MapConfig } from "@/lib/realestate";
 
 const TONE: Record<string, string> = {
   ok: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
@@ -24,10 +24,22 @@ export default function DevelopmentCard({
   project,
   compact = false,
   onShowMap,
+  point = null,
+  mapConfig = null,
+  selected = false,
 }: {
   project: DevelopmentProject;
   compact?: boolean;
   onShowMap?: (focus: MapFocus) => void;
+  /**
+   * 이 사업의 지도 point. 목록과 같은 응답에서 온 것을 그대로 받는다. 카드가 좌표를
+   * 따로 만들거나 복제하지 않기 위해서다. boundary를 함께 들고 오므로, 공식 경계가
+   * 확보되면 같은 경로로 Polygon이 그려진다.
+   */
+  point?: DevelopmentMapPoint | null;
+  mapConfig?: MapConfig | null;
+  /** 선택된 카드에서만 지도를 그린다. 목록 전체에 지도를 띄우지 않는다. */
+  selected?: boolean;
 }) {
   const place = [project.district, project.dong].filter(Boolean).join(" ");
   const url = project.official_source.url;
@@ -43,6 +55,35 @@ export default function DevelopmentCard({
         <DevelopmentBadge label={project.location_accuracy.label} tone="muted" title={project.location_accuracy.note} />
       </div>
       <p className="mt-1 break-words text-xs text-muted">{[place, project.address].filter(Boolean).join(" · ") || "주소 확인 중"}</p>
+
+      {selected && (
+        <section className="mt-2.5" aria-label="사업 위치">
+          <h4 className="mb-1.5 text-[11px] font-extrabold tracking-wide text-muted">사업 위치</h4>
+          {project.mappable && point ? (
+            <>
+              <ZiponMap
+                points={[point]}
+                config={mapConfig}
+                selectedId={project.project_id}
+                height={190}
+                compact
+              />
+              {project.address && (
+                <p className="mt-1.5 break-words text-[11px] text-subtle">{project.address}</p>
+              )}
+              <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-subtle">
+                <span aria-hidden className="inline-block size-2 rounded-full bg-estate" />
+                사업 대표위치
+              </p>
+            </>
+          ) : (
+            // 좌표가 없으면 서울 중심 지도를 대신 띄우지 않는다. 가짜 위치를 만들지 않는다.
+            <p className="rounded-lg bg-surface-muted px-2.5 py-2 text-[11px] text-muted">
+              아직 확인된 사업 위치가 없습니다.
+            </p>
+          )}
+        </section>
+      )}
 
       <div className="mt-2">
         <div className="flex items-baseline justify-between gap-2">

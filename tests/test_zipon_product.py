@@ -2608,7 +2608,8 @@ class NaverDynamicMapTests(unittest.TestCase):
         self.assertIn('height = 340', self.map_source)
         self.assertIn('className="w-full overflow-hidden rounded-2xl', self.map_source)
         self.assertIn('height={340}', self.tab)
-        self.assertIn('height={200}', self.tab)
+        # 카드 안 지도는 더 작게. 카드가 지도에 먹히지 않게 한다.
+        self.assertIn('height={190}', read('components/realestate/DevelopmentCard.tsx'))
 
     def test_only_located_projects_become_markers(self):
         self.assertIn("points.filter((p) => p.latitude != null && p.longitude != null)",
@@ -2645,30 +2646,203 @@ class MapCardLinkTests(unittest.TestCase):
         self.assertIn('info.current.open(instance, marker)', self.map_source)
         self.assertIn('info.current.setContent(infoHtml(point))', self.map_source)
 
-    def test_the_mini_map_sits_under_the_card_that_was_clicked(self):
-        self.assertIn('선택 사업 위치', self.tab)
-        self.assertIn('selectedPoints', self.tab)
-        # 누른 카드 바로 다음에 붙어야 목록에서 스크롤을 올리지 않고 위치를 본다.
-        loop = self.tab.split('visible.slice(0, MAX_CARDS).map', 1)[1]
-        card = loop.index('<DevelopmentCard')
-        panel = loop.index('<SelectedLocation')
-        self.assertLess(card, panel)
-        self.assertIn('{selectedId === p.project_id && (', loop)
-        self.assertIn('className="md:col-span-2"', loop)
-        # 카드 위의 독립 패널은 없앴다. 같은 내용을 두 군데서 따로 관리하지 않는다.
-        above = self.tab.split('visible.slice(0, MAX_CARDS).map', 1)[0]
-        self.assertNotIn('<SelectedLocation', above)
+    def test_the_mini_map_lives_inside_the_card_detail(self):
+        card = read('components/realestate/DevelopmentCard.tsx')
+        self.assertIn('aria-label="사업 위치"', card)
+        self.assertIn('<ZiponMap', card)
+        # 기본정보(주소) 바로 아래, 현재 단계보다 위에 온다.
+        self.assertLess(card.index('aria-label="사업 위치"'), card.index('현재 단계'))
+        self.assertLess(card.index('주소 확인 중'), card.index('aria-label="사업 위치"'))
+        # 선택된 카드에서만 그린다. 목록 전체에 지도를 띄우지 않는다.
+        self.assertIn('{selected && (', card)
+        # 카드 밖의 별도 패널은 없앴다. 같은 사업에 지도가 둘 생기지 않게 한다.
+        self.assertNotIn('SelectedLocation', self.tab)
 
-    def test_the_mini_map_shows_only_the_selected_project(self):
-        self.assertIn('visiblePoints.filter((point) => point.project_id === selectedId)', self.tab)
+    def test_the_card_map_uses_the_shared_point_without_copying_coordinates(self):
+        card = read('components/realestate/DevelopmentCard.tsx')
+        # 카드는 목록과 같은 응답의 point를 그대로 받는다. 좌표를 다시 만들지 않는다.
+        self.assertIn('points={[point]}', card)
+        self.assertNotIn('latitude:', card)
+        self.assertNotIn('longitude:', card)
+        self.assertIn('pointById.get(p.project_id) ?? null', self.tab)
+        self.assertIn('new Map(points.map((point) => [point.project_id, point]))', self.tab)
 
     def test_a_project_without_a_coordinate_says_so_instead_of_a_blank_map(self):
-        panel = self.tab.split('function SelectedLocation', 1)[1].split('function matchesFilter', 1)[0]
-        self.assertIn('project.mappable ? (', panel)
-        self.assertIn('좌표 미확보', panel)
-        self.assertIn('좌표를 확보하지 못해 지도에 표시하지 않습니다', panel)
+        card = read('components/realestate/DevelopmentCard.tsx')
+        self.assertIn('project.mappable && point ? (', card)
+        # 좌표가 없으면 서울 중심 지도를 대신 보여주지 않는다.
+        self.assertIn('아직 확인된 사업 위치가 없습니다', card)
 
     def test_the_compact_map_drops_the_legend_and_bounds_reporting(self):
         self.assertIn('{!compact && (', self.map_source)
         self.assertIn('if (!compact && bounds.current)', self.map_source)
         self.assertIn('zoomControl: !compact', self.map_source)
+
+
+class CoordinateGapReviewTests(unittest.TestCase):
+    """좌표 미확보 8건 검토. 인접 지번을 같은 지번으로 채택하지 않는지."""
+
+    def setUp(self):
+        self.document = json.loads((DATA / 'geocode_gap_review_20260928.json')
+                                   .read_text(encoding='utf-8'))
+
+    def test_the_review_covers_every_gap_and_writes_nothing(self):
+        self.assertEqual(self.document['totals']['reviewed'], 8)
+        self.assertFalse(self.document['db_write'])
+        self.assertFalse(self.document['geocoder_called'])
+        for row in self.document['items']:
+            for field in ('project_id', 'project_name', 'current_status', 'official_evidence',
+                          'candidate_count', 'candidate_summary', 'recommended_action',
+                          'confidence', 'reason'):
+                self.assertIn(field, row)
+
+    def test_a_neighbouring_lot_is_never_safe_to_apply(self):
+        import review_zipon_coordinate_gaps as review
+        for row in self.document['items']:
+            if row['current_status'] != 'REVIEW_REQUIRED':
+                continue
+            wanted = row['official_evidence']['official_address'].split()[-1]
+            for candidate in row['candidate_summary']:
+                if candidate['returned_lot'] != wanted:
+                    self.assertFalse(candidate['lot_match'], candidate['returned_lot'])
+            if row['recommended_action'] == 'SAFE_TO_APPLY':
+                supporting = [c for c in row['candidate_summary'] if c['lot_match']]
+                self.assertEqual(len(supporting), 1)
+        self.assertTrue(callable(review.judge))
+
+    def test_only_an_exact_single_lot_match_is_proposed(self):
+        for row in self.document['items']:
+            if row['recommended_action'] != 'SAFE_TO_APPLY':
+                self.assertIsNone(row['proposed_coordinate'], row['project_name'])
+
+    def test_the_five_ambiguous_projects_stay_for_manual_review(self):
+        manual = [r for r in self.document['items'] if r['recommended_action'] == 'MANUAL_REVIEW']
+        self.assertEqual(len(manual), 5)
+        for row in manual:
+            self.assertEqual(row['confidence'], 'LOW')
+            self.assertEqual(row['candidate_count'], 3)
+
+    def test_a_failed_lookup_asks_for_official_detail_not_a_guess(self):
+        failed = [r for r in self.document['items'] if r['current_status'] == 'FAILED']
+        self.assertEqual(len(failed), 1)
+        self.assertEqual(failed[0]['recommended_action'], 'NEEDS_OFFICIAL_DETAIL')
+        self.assertEqual(failed[0]['candidate_summary'], [])
+        self.assertIsNone(failed[0]['proposed_coordinate'])
+
+
+class FastTrackIdentityReviewTests(unittest.TestCase):
+    """신속통합기획 동일성 판정. CONFIRMED만 주소 복원 후보다."""
+
+    def setUp(self):
+        self.document = json.loads((DATA / 'fast_track_identity_review_20260928.json')
+                                   .read_text(encoding='utf-8'))
+
+    def test_every_fast_track_project_is_classified(self):
+        self.assertEqual(self.document['totals']['fast_track_total'], 34)
+        self.assertFalse(self.document['db_write'])
+        for row in self.document['items']:
+            self.assertIn(row['identity_status'],
+                          ('IDENTITY_CONFIRMED', 'IDENTITY_PROBABLE', 'IDENTITY_CONFLICT',
+                           'NO_MATCH'))
+            for field in ('project_id', 'project_name', 'official_candidate', 'district',
+                          'dong', 'official_address', 'official_url', 'identity_evidence',
+                          'identity_status', 'address_recoverable', 'conflict_reason'):
+                self.assertIn(field, row)
+
+    def test_a_conflict_never_carries_an_address(self):
+        conflicts = [r for r in self.document['items'] if r['identity_status'] == 'IDENTITY_CONFLICT']
+        self.assertEqual(len(conflicts), 4)
+        for row in conflicts:
+            self.assertIsNone(row['official_address'])
+            self.assertIsNone(row['official_candidate'])
+            self.assertFalse(row['address_recoverable'])
+            self.assertTrue(row['conflict_reason'])
+
+    def test_probable_and_no_match_are_not_recoverable(self):
+        for row in self.document['items']:
+            if row['identity_status'] in ('IDENTITY_PROBABLE', 'NO_MATCH'):
+                # 사업명 자체에 지번이 있는 경우만 예외이며, 그때도 등록 행 주소를 쓰지 않는다.
+                if row['address_recoverable']:
+                    self.assertTrue(row['identity_evidence']['lot_in_project_name'])
+                    self.assertIsNone(row['official_address'])
+
+    def test_confirmed_links_state_every_signal(self):
+        confirmed = [r for r in self.document['items']
+                     if r['identity_status'] == 'IDENTITY_CONFIRMED']
+        self.assertEqual(len(confirmed), 18)
+        for row in confirmed:
+            self.assertTrue(row['official_address'])
+            self.assertTrue(row['address_recoverable'])
+            candidates = row['identity_evidence']['candidates']
+            self.assertEqual(len(candidates), 1)
+            signals = candidates[0]['signals']
+            for signal in ('name_contained', 'district_match', 'type_match', 'dong_agrees',
+                           'registry_is_official_row', 'registry_address_verified'):
+                self.assertTrue(signals[signal], f"{row['project_name']} {signal}")
+
+    def test_a_duplicate_already_in_the_database_is_flagged(self):
+        risky = [r for r in self.document['items'] if r['duplicate_risk']]
+        self.assertEqual(len(risky), 1)
+        # 둘 다 DB에 있으면 주소 복원이 아니라 중복 정리가 필요한 상황이다.
+        self.assertEqual(risky[0]['project_name'], '마천2')
+        self.assertTrue(risky[0]['in_database'])
+        self.assertTrue(risky[0]['candidate_in_database'])
+
+
+class StageEvidenceReviewTests(unittest.TestCase):
+    """단계 근거 보강 검토. 상세가 있다고 자동 승격하지 않는다."""
+
+    def setUp(self):
+        self.document = json.loads((DATA / 'stage_evidence_review_20260928.json')
+                                   .read_text(encoding='utf-8'))
+
+    def test_the_review_writes_nothing_and_calls_nothing(self):
+        self.assertFalse(self.document['db_write'])
+        self.assertFalse(self.document['network_called'])
+        self.assertEqual(self.document['totals']['list_only'], 11)
+
+    def test_a_detail_page_alone_does_not_promote(self):
+        for row in self.document['list_only_projects']:
+            if row['recommended_action'] == 'PROMOTE_TO_DETAIL_VERIFIED':
+                self.assertTrue(all(row['identity_checks'].values()), row['project_name'])
+            else:
+                self.assertFalse(all(row['identity_checks'].values()), row['project_name'])
+
+    def test_a_two_digit_year_is_never_given_a_century(self):
+        for row in self.document['date_gap_projects']:
+            for milestone in row['milestones']:
+                if milestone['verification_status'] != 'VERIFIED':
+                    self.assertIsNone(milestone['normalized_value'])
+        for row in self.document['ambiguous_date_projects']:
+            self.assertEqual(row['recommended_action'], 'KEEP_RAW_DO_NOT_INTERPRET')
+
+    def test_the_date_counts_separate_missing_from_uninterpretable(self):
+        totals = self.document['totals']
+        # 근거가 아예 없는 것과, 있지만 세기를 확정할 수 없는 것은 다른 문제다.
+        self.assertEqual(totals['date_evidence_missing'] + totals['date_evidence_present'], 130)
+        self.assertEqual(totals['ambiguous_year_only'] + totals['fully_verified_dates'],
+                         totals['date_evidence_present'])
+
+
+class PolygonSourceSurveyTests(unittest.TestCase):
+    def setUp(self):
+        self.document = json.loads((DATA / 'polygon_source_survey_20260928.json')
+                                   .read_text(encoding='utf-8'))
+
+    def test_no_polygon_was_created_and_none_is_usable_yet(self):
+        self.assertFalse(self.document['polygon_created'])
+        self.assertFalse(self.document['db_write'])
+        self.assertFalse(self.document['immediately_usable'])
+
+    def test_every_candidate_names_an_official_source(self):
+        self.assertTrue(self.document['candidates'])
+        for candidate in self.document['candidates']:
+            self.assertTrue(candidate['official_url'].startswith('http'))
+            for field in ('source', 'dataset', 'geometry_type', 'coordinate_system',
+                          'project_matching_key', 'coverage', 'update_frequency', 'licensing'):
+                self.assertTrue(candidate[field], f"{candidate['dataset']} {field}")
+
+    def test_the_matching_gap_is_stated_before_any_write(self):
+        gap = self.document['blocking_gap']
+        self.assertTrue(gap['problem'])
+        self.assertTrue(gap['required_before_any_write'])

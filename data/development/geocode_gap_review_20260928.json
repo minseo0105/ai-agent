@@ -1,0 +1,462 @@
+{
+  "format": "zipon-coordinate-gap-review-v1",
+  "generated_at": "2026-09-28T04:21:07.295654+00:00",
+  "db_write": false,
+  "geocoder_called": false,
+  "note": "지오코더를 다시 부르지 않았고 데이터베이스에도 쓰지 않았습니다. 인접 지번은 같은 지번이 아니므로 채택하지 않습니다.",
+  "totals": {
+    "MANUAL_REVIEW": 5,
+    "NEEDS_OFFICIAL_DETAIL": 1,
+    "OFFICIAL_ADDRESS_RECOVERED": 1,
+    "NEEDS_IDENTITY_REVIEW": 1,
+    "reviewed": 8
+  },
+  "items": [
+    {
+      "project_id": "02b9c94c-8b6c-5297-affa-1e827181afb0",
+      "project_name": "둔촌주공아파트 주택재건축정비사업조합",
+      "current_status": "REVIEW_REQUIRED",
+      "official_evidence": {
+        "official_project_name": "둔촌주공아파트 주택재건축정비사업조합",
+        "official_external_id": "WRjmSk3r",
+        "source_system": "cleanup.seoul.go.kr",
+        "official_address": "서울특별시 강동구 둔촌동 172",
+        "address_type": "LOT",
+        "address_source": "공식 사업장 목록 대표지번",
+        "address_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+        "address_verified": true,
+        "official_registry_row": true,
+        "raw_stage": "준공인가",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+        "content_hash": "72b7c06b5383301803434f11697a4505500099412efb77dc118277658b1b107d"
+      },
+      "candidate_count": 3,
+      "candidate_summary": [
+        {
+          "jibun_address": "서울특별시 강동구 둔촌동 172-1",
+          "road_address": "서울특별시 강동구 양재대로84길 63",
+          "longitude": 127.1362933,
+          "latitude": 37.5245396,
+          "accuracy": "PARCEL",
+          "returned_lot": "172-1",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 강동구 둔촌동 170-1 둔촌파출소",
+          "road_address": "서울특별시 강동구 양재대로 1340 둔촌파출소",
+          "longitude": 127.1387571,
+          "latitude": 37.526937,
+          "accuracy": "PARCEL",
+          "returned_lot": "170-1",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 강동구 둔촌동 176-2 서울위례초등학교",
+          "road_address": "서울특별시 강동구 명일로 23 서울위례초등학교",
+          "longitude": 127.1393017,
+          "latitude": 37.5220622,
+          "accuracy": "PARCEL",
+          "returned_lot": "176-2",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "recommended_action": "MANUAL_REVIEW",
+      "confidence": "LOW",
+      "reason": "어느 후보도 공식 지번 172을(를) 지지하지 않습니다. 돌려받은 지번은 172-1, 170-1, 176-2로 모두 인접 필지입니다.",
+      "proposed_coordinate": null
+    },
+    {
+      "project_id": "da41f6bc-a63d-5481-b0da-d53ad853be2d",
+      "project_name": "신반포5차아파트 주택재건축정비사업 조합",
+      "current_status": "REVIEW_REQUIRED",
+      "official_evidence": {
+        "official_project_name": "신반포5차아파트 주택재건축정비사업 조합",
+        "official_external_id": "W8N045i7",
+        "source_system": "cleanup.seoul.go.kr",
+        "official_address": "서울특별시 서초구 잠원동 64-8",
+        "address_type": "LOT",
+        "address_source": "공식 사업장 목록 대표지번",
+        "address_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+        "address_verified": true,
+        "official_registry_row": true,
+        "raw_stage": "이전고시",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+        "content_hash": "a63f96aa30b927f5e00a780160040dd3e53da54a01d6fda1b05f50f26f956c32"
+      },
+      "candidate_count": 3,
+      "candidate_summary": [
+        {
+          "jibun_address": "서울특별시 서초구 잠원동 64-3",
+          "road_address": "서울특별시 서초구 잠원로 145-9",
+          "longitude": 127.0088581,
+          "latitude": 37.5161801,
+          "accuracy": "PARCEL",
+          "returned_lot": "64-3",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 서초구 잠원동 63-13 잠원씨제이빌리지",
+          "road_address": "서울특별시 서초구 잠원로 130 잠원씨제이빌리지",
+          "longitude": 127.0085698,
+          "latitude": 37.5147575,
+          "accuracy": "PARCEL",
+          "returned_lot": "63-13",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 서초구 잠원동 65-8 잠원한신그린아파트",
+          "road_address": "서울특별시 서초구 신반포로33길 71 잠원한신그린아파트",
+          "longitude": 127.0078811,
+          "latitude": 37.5133686,
+          "accuracy": "PARCEL",
+          "returned_lot": "65-8",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "recommended_action": "MANUAL_REVIEW",
+      "confidence": "LOW",
+      "reason": "어느 후보도 공식 지번 64-8을(를) 지지하지 않습니다. 돌려받은 지번은 64-3, 63-13, 65-8로 모두 인접 필지입니다.",
+      "proposed_coordinate": null
+    },
+    {
+      "project_id": "2501d1c5-9cfa-5a29-8828-4cc22d05dc45",
+      "project_name": "이화연립 주택재건축정비사업조합",
+      "current_status": "REVIEW_REQUIRED",
+      "official_evidence": {
+        "official_project_name": "이화연립 주택재건축정비사업조합",
+        "official_external_id": "Od1JsPE7",
+        "source_system": "cleanup.seoul.go.kr",
+        "official_address": "서울특별시 송파구 풍납동 153",
+        "address_type": "LOT",
+        "address_source": "공식 사업장 목록 대표지번",
+        "address_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+        "address_verified": true,
+        "official_registry_row": true,
+        "raw_stage": "조합해산",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+        "content_hash": "d3c4327055b9f0a9b4c3b27f769af1521d1dfc499e94df9a3d7b87503d62b480"
+      },
+      "candidate_count": 3,
+      "candidate_summary": [
+        {
+          "jibun_address": "서울특별시 송파구 풍납동 153-2",
+          "road_address": "",
+          "longitude": 127.1209136,
+          "latitude": 37.5361302,
+          "accuracy": "PARCEL",
+          "returned_lot": "153-2",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 풍납동 152-2",
+          "road_address": "서울특별시 송파구 바람드리길 52",
+          "longitude": 127.121373,
+          "latitude": 37.5371369,
+          "accuracy": "PARCEL",
+          "returned_lot": "152-2",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 풍납동 154",
+          "road_address": "서울특별시 송파구 풍성로25나길 6",
+          "longitude": 127.1202815,
+          "latitude": 37.5354881,
+          "accuracy": "PARCEL",
+          "returned_lot": "154",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "recommended_action": "MANUAL_REVIEW",
+      "confidence": "LOW",
+      "reason": "어느 후보도 공식 지번 153을(를) 지지하지 않습니다. 돌려받은 지번은 153-2, 152-2, 154로 모두 인접 필지입니다.",
+      "proposed_coordinate": null
+    },
+    {
+      "project_id": "ba93bd0e-a8f9-51b5-9000-e3f58f14354a",
+      "project_name": "마천4재정비촉진구역 주택재개발정비사업조합",
+      "current_status": "REVIEW_REQUIRED",
+      "official_evidence": {
+        "official_project_name": "마천4재정비촉진구역 주택재개발정비사업조합",
+        "official_external_id": "akcjs4",
+        "source_system": "cleanup.seoul.go.kr",
+        "official_address": "서울특별시 송파구 마천동 323",
+        "address_type": "LOT",
+        "address_source": "공식 사업장 목록 대표지번",
+        "address_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+        "address_verified": true,
+        "official_registry_row": true,
+        "raw_stage": "관리처분인가",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+        "content_hash": "67c71285f01361727f271c87b127482c2a8ab608d9c523e0f39ce5a1b3d22381"
+      },
+      "candidate_count": 3,
+      "candidate_summary": [
+        {
+          "jibun_address": "서울특별시 송파구 마천동 323-1",
+          "road_address": "서울특별시 송파구 마천로61마길 12-10",
+          "longitude": 127.1539594,
+          "latitude": 37.4928342,
+          "accuracy": "PARCEL",
+          "returned_lot": "323-1",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 322-1",
+          "road_address": "서울특별시 송파구 마천로61마길 10",
+          "longitude": 127.1544672,
+          "latitude": 37.4931815,
+          "accuracy": "PARCEL",
+          "returned_lot": "322-1",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 324",
+          "road_address": "서울특별시 송파구 성내천로 316",
+          "longitude": 127.1558017,
+          "latitude": 37.4924895,
+          "accuracy": "PARCEL",
+          "returned_lot": "324",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "recommended_action": "MANUAL_REVIEW",
+      "confidence": "LOW",
+      "reason": "어느 후보도 공식 지번 323을(를) 지지하지 않습니다. 돌려받은 지번은 323-1, 322-1, 324로 모두 인접 필지입니다.",
+      "proposed_coordinate": null
+    },
+    {
+      "project_id": "de10ea8a-e0ad-57ec-9adf-806ede5d38da",
+      "project_name": "마천3재정비촉진구역 주택재개발정비사업조합",
+      "current_status": "REVIEW_REQUIRED",
+      "official_evidence": {
+        "official_project_name": "마천3재정비촉진구역 주택재개발정비사업조합",
+        "official_external_id": "macheon3",
+        "source_system": "cleanup.seoul.go.kr",
+        "official_address": "서울특별시 송파구 마천동 283",
+        "address_type": "LOT",
+        "address_source": "공식 사업장 목록 대표지번",
+        "address_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+        "address_verified": true,
+        "official_registry_row": true,
+        "raw_stage": "사업시행인가",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+        "content_hash": "40fd2e2525f74e76a8db76fcf8bed19d40c38d6ee6e9c29962d47d2b953abb33"
+      },
+      "candidate_count": 3,
+      "candidate_summary": [
+        {
+          "jibun_address": "서울특별시 송파구 마천동 283-1",
+          "road_address": "서울특별시 송파구 성내천로49길 2-1",
+          "longitude": 127.1561031,
+          "latitude": 37.4937938,
+          "accuracy": "PARCEL",
+          "returned_lot": "283-1",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 282-2",
+          "road_address": "서울특별시 송파구 성내천로51길 13",
+          "longitude": 127.1575093,
+          "latitude": 37.4936066,
+          "accuracy": "PARCEL",
+          "returned_lot": "282-2",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        },
+        {
+          "jibun_address": "서울특별시 송파구 마천동 284-2",
+          "road_address": "서울특별시 송파구 성내천로49길 2",
+          "longitude": 127.1561878,
+          "latitude": 37.4936029,
+          "accuracy": "PARCEL",
+          "returned_lot": "284-2",
+          "district_match": true,
+          "dong_match": true,
+          "lot_match": false,
+          "failed_checks": [
+            "lot_match"
+          ]
+        }
+      ],
+      "recommended_action": "MANUAL_REVIEW",
+      "confidence": "LOW",
+      "reason": "어느 후보도 공식 지번 283을(를) 지지하지 않습니다. 돌려받은 지번은 283-1, 282-2, 284-2로 모두 인접 필지입니다.",
+      "proposed_coordinate": null
+    },
+    {
+      "project_id": "4726f9a9-9a76-5a8f-ac0a-4b05789f7f3a",
+      "project_name": "길동진흥아파트 주택재건축정비사업 조합",
+      "current_status": "FAILED",
+      "official_evidence": {
+        "official_project_name": "길동진흥아파트 주택재건축정비사업 조합",
+        "official_external_id": "rPjHkSQA",
+        "source_system": "cleanup.seoul.go.kr",
+        "official_address": "서울특별시 강동구 길동 298-1",
+        "address_type": "LOT",
+        "address_source": "공식 사업장 목록 대표지번",
+        "address_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+        "address_verified": true,
+        "official_registry_row": true,
+        "raw_stage": "조합해산",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+        "content_hash": "fcf18c01d9fb6f29284265faaf7b3d2f74aca3dc33d23205f3ace402ef1fe5ce"
+      },
+      "candidate_count": 0,
+      "candidate_summary": [],
+      "recommended_action": "NEEDS_OFFICIAL_DETAIL",
+      "confidence": "LOW",
+      "reason": "공식 주소는 있으나 지오코더가 해당 지번을 찾지 못했습니다(PROVIDER_RETURNED_NO_MATCH). 정비구역 고시의 지번 목록 등 공식 상세로 주소를 다시 확인해야 합니다.",
+      "proposed_coordinate": null
+    },
+    {
+      "project_id": "429dc953-a406-56ff-871d-0ced658be69f",
+      "project_name": "천호동 392-9",
+      "current_status": "NO_ADDRESS",
+      "official_evidence": {
+        "official_project_name": "천호동 392-9",
+        "official_external_id": null,
+        "source_system": "신속통합기획 재개발",
+        "official_address": null,
+        "address_type": null,
+        "address_source": null,
+        "address_source_url": null,
+        "address_verified": false,
+        "official_registry_row": false,
+        "raw_stage": "후보지선정",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "content_hash": "81340da8c250d896870c833d2168ca28963cc225411e68a0a78b2efc1a906dae",
+        "raw_source_text": [
+          "92",
+          "강동구",
+          "천호동 392-9",
+          "40,593",
+          "811",
+          "후보지선정",
+          "-"
+        ],
+        "lot_in_name": "천호동 392-9",
+        "registry_links": [],
+        "clue_conflict": false
+      },
+      "candidate_count": 0,
+      "candidate_summary": [],
+      "recommended_action": "OFFICIAL_ADDRESS_RECOVERED",
+      "confidence": "MEDIUM",
+      "reason": "사업명 자체가 지번(천호동 392-9)을 담고 있어 공식 목록만으로 주소를 복원할 수 있습니다. 동일성 확인 후 적용 대상입니다.",
+      "proposed_coordinate": null
+    },
+    {
+      "project_id": "8ab19fc2-5f02-54a8-9568-6a3ef0218ec4",
+      "project_name": "마천2",
+      "current_status": "NO_ADDRESS",
+      "official_evidence": {
+        "official_project_name": "마천2",
+        "official_external_id": null,
+        "source_system": "신속통합기획 재개발",
+        "official_address": null,
+        "address_type": null,
+        "address_source": null,
+        "address_source_url": null,
+        "address_verified": false,
+        "official_registry_row": false,
+        "raw_stage": "구역지정",
+        "stage_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "content_hash": "6b9ff78ab113e690da38a591c871807c1e7567b4339729ed4e8bfc509fd8badc",
+        "raw_source_text": [
+          "9",
+          "송파구",
+          "마천2",
+          "77,338",
+          "1,729",
+          "구역지정",
+          "2025-05-15"
+        ],
+        "lot_in_name": null,
+        "registry_links": [
+          {
+            "registry_project_name": "마천2재정비촉진구역 주택재개발정비사업",
+            "registry_address": "서울특별시 송파구 마천동 183-1",
+            "registry_project_id": "0cfa354d-f9ac-5516-aa2a-1f6767c0aa98",
+            "address_verified": true
+          }
+        ],
+        "clue_conflict": false
+      },
+      "candidate_count": 0,
+      "candidate_summary": [],
+      "recommended_action": "NEEDS_IDENTITY_REVIEW",
+      "confidence": "LOW",
+      "reason": "공식 목록 행에는 주소가 없지만 같은 자치구 등록 행 마천2재정비촉진구역 주택재개발정비사업(서울특별시 송파구 마천동 183-1)과 이름으로 연결됩니다. 동일성이 확인되어야 주소를 쓸 수 있습니다(Track B).",
+      "proposed_coordinate": null
+    }
+  ]
+}

@@ -1,0 +1,1812 @@
+{
+  "format": "zipon-fast-track-identity-v1",
+  "generated_at": "2026-09-28T04:15:25.219608+00:00",
+  "db_write": false,
+  "note": "IDENTITY_CONFIRMED만 주소 복원 후보입니다. PROBABLE과 CONFLICT는 DB에 반영하지 않습니다. 이 실행은 canonical을 수정하지 않습니다.",
+  "totals": {
+    "IDENTITY_CONFLICT": 4,
+    "NO_MATCH": 12,
+    "IDENTITY_CONFIRMED": 18,
+    "fast_track_total": 34,
+    "address_recoverable": 19,
+    "duplicate_risk": 1,
+    "in_database": 2
+  },
+  "items": [
+    {
+      "project_id": "ceacc5c4-8d2d-5ddf-928d-88fecec91925",
+      "project_name": "고덕주공9",
+      "official_candidate": null,
+      "district": "강동구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "54",
+          "자문",
+          "강동구",
+          "고덕주공9",
+          "76,091",
+          "1,861",
+          "정비계획고시",
+          "2026-07-02"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "고덕동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "e8fce8a3-a5ed-5a96-8d80-75a5dffeb4b3",
+            "registry_project_name": "고덕주공9단지아파트 재건축정비사업",
+            "registry_address": "서울특별시 강동구 명일동 257",
+            "registry_dong": "명일동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": false,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "명일동",
+              "fast_track_dong_tokens": [
+                "고덕동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFLICT",
+      "address_recoverable": false,
+      "conflict_reason": "사업명이 가리키는 동 ['고덕동']과(와) 등록 행의 동 명일동이(가) 다릅니다. 주소를 옮겨 적지 않습니다.",
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "사업명이 가리키는 동 ['고덕동']과(와) 등록 행의 동 명일동이(가) 다릅니다. 주소를 옮겨 적지 않습니다."
+    },
+    {
+      "project_id": "b8e34111-1352-5998-b4ae-8f79e6de5ffe",
+      "project_name": "고덕현대",
+      "official_candidate": null,
+      "district": "강동구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "14",
+          "기획",
+          "강동구",
+          "고덕현대",
+          "37,658",
+          "952",
+          "정비계획고시",
+          "2025-11-06"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "고덕동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "545ab0bf-f6e4-56e3-88ff-ebb79dcf97b2",
+            "registry_project_name": "고덕현대아파트 재건축정비사업",
+            "registry_address": "서울특별시 강동구 명일동 56",
+            "registry_dong": "명일동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": false,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "명일동",
+              "fast_track_dong_tokens": [
+                "고덕동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFLICT",
+      "address_recoverable": false,
+      "conflict_reason": "사업명이 가리키는 동 ['고덕동']과(와) 등록 행의 동 명일동이(가) 다릅니다. 주소를 옮겨 적지 않습니다.",
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "사업명이 가리키는 동 ['고덕동']과(와) 등록 행의 동 명일동이(가) 다릅니다. 주소를 옮겨 적지 않습니다."
+    },
+    {
+      "project_id": "8b732a9d-a2c8-5cad-8a4d-b26967a54317",
+      "project_name": "명일 신동아",
+      "official_candidate": null,
+      "district": "강동구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "24",
+          "자문",
+          "강동구",
+          "명일 신동아",
+          "39,559",
+          "947",
+          "정비계획고시",
+          "2025-11-06"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "명일동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "e1d272d0-cf48-54d0-9ee5-d19f1363c70a",
+      "project_name": "명일우성",
+      "official_candidate": "명일우성아파트 재건축정비사업",
+      "district": "강동구",
+      "dong": "명일동",
+      "official_address": "서울특별시 강동구 명일동 42",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "57",
+          "자문",
+          "강동구",
+          "명일우성",
+          "41,579",
+          "999",
+          "심의",
+          "2026-05-06"
+        ],
+        "fast_track_raw_stage": "심의",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "명일동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "38625430-ec34-529c-8a5d-5a8298d58795",
+            "registry_project_name": "명일우성아파트 재건축정비사업",
+            "registry_address": "서울특별시 강동구 명일동 42",
+            "registry_dong": "명일동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "명일동",
+              "fast_track_dong_tokens": [
+                "명일동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "5ccbcbdc-1b13-54de-8ba1-6d9c169dd3c8",
+      "project_name": "명일한양",
+      "official_candidate": "명일 한양아파트 재건축정비사업",
+      "district": "강동구",
+      "dong": "명일동",
+      "official_address": "서울특별시 강동구 명일동 54",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "28",
+          "자문",
+          "강동구",
+          "명일한양",
+          "42,244",
+          "1,160",
+          "정비계획고시",
+          "2026-07-02"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "명일동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "9d3ef8b8-56ea-58e1-a333-ba602f5fb5f3",
+            "registry_project_name": "명일 한양아파트 재건축정비사업",
+            "registry_address": "서울특별시 강동구 명일동 54",
+            "registry_dong": "명일동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "명일동",
+              "fast_track_dong_tokens": [
+                "명일동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "5110c858-0e90-5558-82a4-32eded2cdeed",
+      "project_name": "상일동빌라",
+      "official_candidate": "상일동 빌라단지 통합 재건축",
+      "district": "강동구",
+      "dong": "상일동",
+      "official_address": "서울특별시 강동구 상일동 174",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "68",
+          "자문",
+          "강동구",
+          "상일동빌라",
+          "80,675",
+          "1,513",
+          "구의회의견청취",
+          "2026-04-02"
+        ],
+        "fast_track_raw_stage": "구의회의견청취",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "상일동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "10a263ab-289b-571b-93a5-5ecd977c5abb",
+            "registry_project_name": "상일동 빌라단지 통합 재건축",
+            "registry_address": "서울특별시 강동구 상일동 174",
+            "registry_dong": "상일동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "상일동",
+              "fast_track_dong_tokens": [
+                "상일동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "03d67646-267c-54f9-a294-5a762414f009",
+      "project_name": "성내현대",
+      "official_candidate": "성내 현대아파트 재건축 정비사업",
+      "district": "강동구",
+      "dong": "성내동",
+      "official_address": "서울특별시 강동구 성내동 30-2",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "60",
+          "자문",
+          "강동구",
+          "성내현대",
+          "12,364",
+          "373",
+          "구의회의견청취",
+          "2026-04-02"
+        ],
+        "fast_track_raw_stage": "구의회의견청취",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "성내동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "4517bb03-f27b-5c9a-bb1b-050b28abb39f",
+            "registry_project_name": "성내 현대아파트 재건축 정비사업",
+            "registry_address": "서울특별시 강동구 성내동 30-2",
+            "registry_dong": "성내동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "성내동",
+              "fast_track_dong_tokens": [
+                "성내동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "85e282d7-3fc6-5a4c-b3da-8ec05f41b4d9",
+      "project_name": "천호3-1",
+      "official_candidate": "천호동 214-19번지 일대 재개발정비사업(천호 3-1구역)",
+      "district": "강동구",
+      "dong": "천호동",
+      "official_address": "서울특별시 강동구 천호동 214-19",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재개발",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "15",
+          "강동구",
+          "천호3-1",
+          "28,058",
+          "634",
+          "통심완료",
+          "2025-09-04"
+        ],
+        "fast_track_raw_stage": "통심완료",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "천호동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "1ca48798-0a29-553f-afac-46efd1c56293",
+            "registry_project_name": "천호동 214-19번지 일대 재개발정비사업(천호 3-1구역)",
+            "registry_address": "서울특별시 강동구 천호동 214-19",
+            "registry_dong": "천호동",
+            "registry_type": "REDEVELOPMENT",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "천호동",
+              "fast_track_dong_tokens": [
+                "천호동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "835dbf81-7d28-5481-afa3-e6d6f56d0ec1",
+      "project_name": "천호3-2",
+      "official_candidate": null,
+      "district": "강동구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재개발",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "6",
+          "강동구",
+          "천호3-2",
+          "19,292",
+          "420",
+          "통심완료",
+          "2022-07-21"
+        ],
+        "fast_track_raw_stage": "통심완료",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "천호동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "e03dc797-31ac-589b-b2aa-3f9cc311abe3",
+      "project_name": "천호3-3",
+      "official_candidate": null,
+      "district": "강동구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재개발",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "8",
+          "강동구",
+          "천호3-3",
+          "24,620",
+          "568",
+          "시행자지정(조합)",
+          "2023-07-27"
+        ],
+        "fast_track_raw_stage": "시행자지정(조합)",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "천호동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "87a5f7f2-7a33-54d4-99d7-dafb7c02309d",
+      "project_name": "천호A1-2",
+      "official_candidate": "천호동 461-31번지 일대 재개발정비사업(천호 A1-2)",
+      "district": "강동구",
+      "dong": "천호동",
+      "official_address": "서울특별시 강동구 천호동 461-31",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재개발",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "3",
+          "강동구",
+          "천호A1-2",
+          "30,700",
+          "781",
+          "시행자지정(조합)",
+          "2024-03-14"
+        ],
+        "fast_track_raw_stage": "시행자지정(조합)",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "천호동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "b28bbc74-337e-561e-bd4f-ab69e6fd66c6",
+            "registry_project_name": "천호동 461-31번지 일대 재개발정비사업(천호 A1-2)",
+            "registry_address": "서울특별시 강동구 천호동 461-31",
+            "registry_dong": "천호동",
+            "registry_type": "REDEVELOPMENT",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11740",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "천호동",
+              "fast_track_dong_tokens": [
+                "천호동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "429dc953-a406-56ff-871d-0ced658be69f",
+      "project_name": "천호동 392-9",
+      "official_candidate": null,
+      "district": "강동구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재개발",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "92",
+          "강동구",
+          "천호동 392-9",
+          "40,593",
+          "811",
+          "후보지선정",
+          "-"
+        ],
+        "fast_track_raw_stage": "후보지선정",
+        "lot_in_project_name": "천호동 392-9",
+        "dong_tokens": [
+          "천호동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": true,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "b0994645-743a-5c16-84d7-1c875fd291d3",
+      "project_name": "(방배)임광3차",
+      "official_candidate": null,
+      "district": "서초구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "29",
+          "자문",
+          "서초구",
+          "(방배)임광3차",
+          "12,271",
+          "379",
+          "정비계획고시",
+          "2025-07-17"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "방배동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "246da9b5-497f-53f2-8737-3a06116be474",
+      "project_name": "대우효령",
+      "official_candidate": "방배대우효령아파트 주택재건축정비사업 조합설립추진위원회",
+      "district": "서초구",
+      "dong": "방배동",
+      "official_address": "서울특별시 서초구 방배동 1038",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "79",
+          "자문",
+          "서초구",
+          "대우효령",
+          "19,311",
+          "505",
+          "주민공람",
+          "2026-02-19"
+        ],
+        "fast_track_raw_stage": "주민공람",
+        "lot_in_project_name": null,
+        "dong_tokens": [],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "3b2e34a3-e6e3-5803-8257-fdb5d7f58532",
+            "registry_project_name": "방배대우효령아파트 주택재건축정비사업 조합설립추진위원회",
+            "registry_address": "서울특별시 서초구 방배동 1038",
+            "registry_dong": "방배동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": false,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "방배동",
+              "fast_track_dong_tokens": []
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "2e97fcb8-c1e7-56a2-8964-fc4183f6f010",
+      "project_name": "반포미도2차",
+      "official_candidate": "반포미도2차아파트 재건축정비사업 조합설립추진위원회",
+      "district": "서초구",
+      "dong": "반포동",
+      "official_address": "서울특별시 서초구 반포동 60-5",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "32",
+          "자문",
+          "서초구",
+          "반포미도2차",
+          "18,864",
+          "559",
+          "재공람",
+          "2026-04-09"
+        ],
+        "fast_track_raw_stage": "재공람",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "반포동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "45864c99-b646-531f-a3d0-7dba9fcc8f49",
+            "registry_project_name": "반포미도2차아파트 재건축정비사업 조합설립추진위원회",
+            "registry_address": "서울특별시 서초구 반포동 60-5",
+            "registry_dong": "반포동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "반포동",
+              "fast_track_dong_tokens": [
+                "반포동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "73ca3d71-36de-53d2-962c-d19d4bf87c69",
+      "project_name": "방배삼호",
+      "official_candidate": "방배삼호아파트 주택재건축정비사업 조합설립추진위원회",
+      "district": "서초구",
+      "dong": "방배동",
+      "official_address": "서울특별시 서초구 방배동 758-4",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "53",
+          "자문",
+          "서초구",
+          "방배삼호",
+          "46,526",
+          "996",
+          "구의회의견청취",
+          "2024-05-03"
+        ],
+        "fast_track_raw_stage": "구의회의견청취",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "방배동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "4c399aba-0bfd-52d6-a64f-c178e22ef492",
+            "registry_project_name": "방배삼호아파트 주택재건축정비사업 조합설립추진위원회",
+            "registry_address": "서울특별시 서초구 방배동 758-4",
+            "registry_dong": "방배동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "방배동",
+              "fast_track_dong_tokens": [
+                "방배동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "0e723f58-c159-5f6d-a38b-6e16a32e8882",
+      "project_name": "서초진흥",
+      "official_candidate": "서초진흥아파트 주택재건축정비사업조합",
+      "district": "서초구",
+      "dong": "서초동",
+      "official_address": "서울특별시 서초구 서초동 1315",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "13",
+          "기획",
+          "서초구",
+          "서초진흥",
+          "41,947",
+          "857",
+          "정비계획고시",
+          "2025-01-23"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "서초동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "4b52530e-b2f5-5c51-ac76-6e1ce1c5cc65",
+            "registry_project_name": "서초진흥아파트 주택재건축정비사업조합",
+            "registry_address": "서울특별시 서초구 서초동 1315",
+            "registry_dong": "서초동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "서초동",
+              "fast_track_dong_tokens": [
+                "서초동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "46ee293a-af3e-568a-ba5d-b7fbd8ada6e9",
+      "project_name": "서초현대",
+      "official_candidate": null,
+      "district": "서초구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "78",
+          "자문",
+          "서초구",
+          "서초현대",
+          "19,959",
+          "524",
+          "주민공람",
+          "2026-02-26"
+        ],
+        "fast_track_raw_stage": "주민공람",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "서초동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "3e9705dd-2b30-5f53-ab65-ec03ca53f216",
+      "project_name": "신반포19차,25차",
+      "official_candidate": null,
+      "district": "서초구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "36",
+          "자문",
+          "서초구",
+          "신반포19차,25차",
+          "26,937",
+          "639",
+          "정비계획고시",
+          "2025-11-13"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "반포동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "d320a9a8-d064-520c-a193-22d467d223c2",
+      "project_name": "신반포2차",
+      "official_candidate": null,
+      "district": "서초구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "8",
+          "기획",
+          "서초구",
+          "신반포2차",
+          "85,331",
+          "2,057",
+          "통합심의",
+          "2024-07-11"
+        ],
+        "fast_track_raw_stage": "통합심의",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "반포동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "dde643d9-3840-5e4c-82da-90661137edb7",
+            "registry_project_name": "신반포2차아파트 재건축정비사업조합",
+            "registry_address": "서울특별시 서초구 잠원동 73",
+            "registry_dong": "잠원동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11650",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": false,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "잠원동",
+              "fast_track_dong_tokens": [
+                "반포동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFLICT",
+      "address_recoverable": false,
+      "conflict_reason": "사업명이 가리키는 동 ['반포동']과(와) 등록 행의 동 잠원동이(가) 다릅니다. 주소를 옮겨 적지 않습니다.",
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "사업명이 가리키는 동 ['반포동']과(와) 등록 행의 동 잠원동이(가) 다릅니다. 주소를 옮겨 적지 않습니다."
+    },
+    {
+      "project_id": "d91bba3e-3b28-5e39-8180-64af2c3475bb",
+      "project_name": "양재우성",
+      "official_candidate": null,
+      "district": "서초구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "87",
+          "자문",
+          "서초구",
+          "양재우성",
+          "51,441",
+          "1,280",
+          "정비계획제안",
+          "2026-05-29"
+        ],
+        "fast_track_raw_stage": "정비계획제안",
+        "lot_in_project_name": null,
+        "dong_tokens": [],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "b00c15ac-c515-5f5a-bb78-e101279f34d7",
+      "project_name": "잠원한강",
+      "official_candidate": null,
+      "district": "서초구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "66",
+          "자문",
+          "서초구",
+          "잠원한강",
+          "18,182",
+          "580",
+          "주민공람",
+          "2026-02-05"
+        ],
+        "fast_track_raw_stage": "주민공람",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "잠원동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "b61d0d95-b28c-5082-95dd-70b82256bbcd",
+      "project_name": "가락우창",
+      "official_candidate": null,
+      "district": "송파구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "31",
+          "자문",
+          "송파구",
+          "가락우창",
+          "17,236",
+          "471",
+          "정비계획고시",
+          "2025-10-02"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "가락동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "58afd20b-3369-50d3-a36c-75df2e29550e",
+            "registry_project_name": "가락우창아파트 재건축정비사업",
+            "registry_address": "서울특별시 송파구 오금동 164",
+            "registry_dong": "오금동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": false,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "오금동",
+              "fast_track_dong_tokens": [
+                "가락동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFLICT",
+      "address_recoverable": false,
+      "conflict_reason": "사업명이 가리키는 동 ['가락동']과(와) 등록 행의 동 오금동이(가) 다릅니다. 주소를 옮겨 적지 않습니다.",
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "사업명이 가리키는 동 ['가락동']과(와) 등록 행의 동 오금동이(가) 다릅니다. 주소를 옮겨 적지 않습니다."
+    },
+    {
+      "project_id": "8ab19fc2-5f02-54a8-9568-6a3ef0218ec4",
+      "project_name": "마천2",
+      "official_candidate": "마천2재정비촉진구역 주택재개발정비사업",
+      "district": "송파구",
+      "dong": "마천동",
+      "official_address": "서울특별시 송파구 마천동 183-1",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재개발",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "9",
+          "송파구",
+          "마천2",
+          "77,338",
+          "1,729",
+          "구역지정",
+          "2025-05-15"
+        ],
+        "fast_track_raw_stage": "구역지정",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "마천동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "0cfa354d-f9ac-5516-aa2a-1f6767c0aa98",
+            "registry_project_name": "마천2재정비촉진구역 주택재개발정비사업",
+            "registry_address": "서울특별시 송파구 마천동 183-1",
+            "registry_dong": "마천동",
+            "registry_type": "REDEVELOPMENT",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "마천동",
+              "fast_track_dong_tokens": [
+                "마천동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": true,
+      "candidate_in_database": true,
+      "duplicate_risk": true,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "a7d5adab-6b21-5d66-acee-c7d25e5ae7bf",
+      "project_name": "마천5",
+      "official_candidate": "마천5재정비촉진구역 재개발정비사업조합",
+      "district": "송파구",
+      "dong": "마천동",
+      "official_address": "서울특별시 송파구 마천동 45",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재개발",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "6",
+          "송파구",
+          "마천5",
+          "106,514",
+          "2,041",
+          "시행자지정(조합)",
+          "2024-09-12"
+        ],
+        "fast_track_raw_stage": "시행자지정(조합)",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "마천동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "87e3f394-d9a3-577c-9390-17717e24fc63",
+            "registry_project_name": "마천5재정비촉진구역 재개발정비사업조합",
+            "registry_address": "서울특별시 송파구 마천동 45",
+            "registry_dong": "마천동",
+            "registry_type": "REDEVELOPMENT",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "마천동",
+              "fast_track_dong_tokens": [
+                "마천동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "29599d13-7703-5e8a-bf98-fb4535f5218b",
+      "project_name": "송파한양1차",
+      "official_candidate": null,
+      "district": "송파구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "33",
+          "자문",
+          "송파구",
+          "송파한양1차",
+          "46,729",
+          "952",
+          "정비계회고시",
+          "2026-06-11"
+        ],
+        "fast_track_raw_stage": "정비계회고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "송파동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "fa21eb9f-8348-54d3-8d86-5a8a0d76eb86",
+      "project_name": "송파한양2차",
+      "official_candidate": "송파한양2차아파트 재건축정비사업 조합",
+      "district": "송파구",
+      "dong": "송파동",
+      "official_address": "서울특별시 송파구 송파동 151",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "17",
+          "기획",
+          "송파구",
+          "송파한양2차",
+          "57,386",
+          "1,346",
+          "정비계획고시",
+          "2025-05-01"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "송파동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "070e2349-2569-5652-8d56-bc8080b20304",
+            "registry_project_name": "송파한양2차아파트 재건축정비사업 조합",
+            "registry_address": "서울특별시 송파구 송파동 151",
+            "registry_dong": "송파동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "송파동",
+              "fast_track_dong_tokens": [
+                "송파동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": true,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "2f72ad85-8727-5708-8428-9e1355b61225",
+      "project_name": "오금대림",
+      "official_candidate": null,
+      "district": "송파구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "97",
+          "자문",
+          "송파구",
+          "오금대림",
+          "41,481",
+          "999",
+          "자문중",
+          "-"
+        ],
+        "fast_track_raw_stage": "자문중",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "오금동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "19ebf09c-e4ec-5255-99dd-b30c5353f502",
+      "project_name": "올림픽선수기자촌",
+      "official_candidate": "올림픽선수기자촌아파트 재건축정비사업 조합설립추진위원회",
+      "district": "송파구",
+      "dong": "방이동",
+      "official_address": "서울특별시 송파구 방이동 89",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "43",
+          "자문",
+          "송파구",
+          "올림픽선수기자촌",
+          "532,597",
+          "9,218",
+          "구의회의견청취",
+          "2026-06-10"
+        ],
+        "fast_track_raw_stage": "구의회의견청취",
+        "lot_in_project_name": null,
+        "dong_tokens": [],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "10329810-3b72-5eb0-acee-19150cf17522",
+            "registry_project_name": "올림픽선수기자촌아파트 재건축정비사업 조합설립추진위원회",
+            "registry_address": "서울특별시 송파구 방이동 89",
+            "registry_dong": "방이동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": false,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "방이동",
+              "fast_track_dong_tokens": []
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "8be78340-d0d9-554e-966c-5e6d0f927812",
+      "project_name": "올림픽훼밀리타운",
+      "official_candidate": "올림픽훼밀리타운 재건축정비사업 조합설립추진위원회",
+      "district": "송파구",
+      "dong": "문정동",
+      "official_address": "서울특별시 송파구 문정동 150",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "25",
+          "자문",
+          "송파구",
+          "올림픽훼밀리타운",
+          "334,702",
+          "6,752",
+          "심의",
+          "2026-04-10"
+        ],
+        "fast_track_raw_stage": "심의",
+        "lot_in_project_name": null,
+        "dong_tokens": [],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "a9d053a8-f67f-5d28-aeae-af7f77919ce7",
+            "registry_project_name": "올림픽훼밀리타운 재건축정비사업 조합설립추진위원회",
+            "registry_address": "서울특별시 송파구 문정동 150",
+            "registry_dong": "문정동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": false,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "문정동",
+              "fast_track_dong_tokens": []
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "4a15b332-f101-5010-ab66-3ab8fa1239ef",
+      "project_name": "잠실주공5단지",
+      "official_candidate": null,
+      "district": "송파구",
+      "dong": null,
+      "official_address": null,
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "1",
+          "자문",
+          "송파구",
+          "잠실주공5단지",
+          "358,077",
+          "6,411",
+          "통합심의",
+          "2024-09-05"
+        ],
+        "fast_track_raw_stage": "통합심의",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "잠실동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": []
+      },
+      "identity_status": "NO_MATCH",
+      "address_recoverable": false,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "같은 자치구에서 이름으로 이어지는 공식 등록 행이 없습니다."
+    },
+    {
+      "project_id": "cb0bc26f-513b-5c8e-8d2e-de065cc16b87",
+      "project_name": "장미1,2,3차",
+      "official_candidate": "장미1,2,3차아파트 주택재건축정비사업 조합",
+      "district": "송파구",
+      "dong": "신천동",
+      "official_address": "서울특별시 송파구 신천동 7",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "18",
+          "기획",
+          "송파구",
+          "장미1,2,3차",
+          "343,266",
+          "5,083",
+          "정비계획고시",
+          "2026-07-02"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "3eb1507c-7ea2-50bf-bf0f-6886e65b2189",
+            "registry_project_name": "장미1,2,3차아파트 주택재건축정비사업 조합",
+            "registry_address": "서울특별시 송파구 신천동 7",
+            "registry_dong": "신천동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": false,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "신천동",
+              "fast_track_dong_tokens": []
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "4ac6d330-9046-546e-9035-93a03de9438e",
+      "project_name": "풍납극동",
+      "official_candidate": "풍납극동아파트 재건축정비사업",
+      "district": "송파구",
+      "dong": "풍납동",
+      "official_address": "서울특별시 송파구 풍납동 391",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "37",
+          "자문",
+          "송파구",
+          "풍납극동",
+          "16,044",
+          "596",
+          "심의요청",
+          "2026-04-24"
+        ],
+        "fast_track_raw_stage": "심의요청",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "풍납동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "674c3cc2-3dc0-5be3-99d3-6aa54c8236db",
+            "registry_project_name": "풍납극동아파트 재건축정비사업",
+            "registry_address": "서울특별시 송파구 풍납동 391",
+            "registry_dong": "풍납동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "풍납동",
+              "fast_track_dong_tokens": [
+                "풍납동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    },
+    {
+      "project_id": "0d3e824d-64fb-5946-a219-4ccff857c211",
+      "project_name": "풍납미성",
+      "official_candidate": "풍납미성아파트 재건축정비사업",
+      "district": "송파구",
+      "dong": "풍납동",
+      "official_address": "서울특별시 송파구 풍납동 219",
+      "official_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+      "identity_evidence": {
+        "fast_track_source": "신속통합기획 재건축",
+        "fast_track_source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+        "fast_track_official_id": null,
+        "fast_track_raw_row": [
+          "30",
+          "자문",
+          "송파구",
+          "풍납미성",
+          "19,505",
+          "411",
+          "정비계획고시",
+          "2026-04-02"
+        ],
+        "fast_track_raw_stage": "정비계획고시",
+        "lot_in_project_name": null,
+        "dong_tokens": [
+          "풍납동"
+        ],
+        "program": "FAST_TRACK",
+        "candidates": [
+          {
+            "registry_project_id": "d69784f4-6c37-57e9-adf8-1936892f20f9",
+            "registry_project_name": "풍납미성아파트 재건축정비사업",
+            "registry_address": "서울특별시 송파구 풍납동 219",
+            "registry_dong": "풍납동",
+            "registry_type": "RECONSTRUCTION",
+            "registry_source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11710",
+            "signals": {
+              "name_contained": true,
+              "district_match": true,
+              "type_match": true,
+              "dong_agrees": true,
+              "dong_known": true,
+              "registry_is_official_row": true,
+              "registry_address_verified": true,
+              "registry_has_official_id": true,
+              "fast_track_has_official_id": false,
+              "registry_dong": "풍납동",
+              "fast_track_dong_tokens": [
+                "풍납동"
+              ]
+            }
+          }
+        ]
+      },
+      "identity_status": "IDENTITY_CONFIRMED",
+      "address_recoverable": true,
+      "conflict_reason": null,
+      "in_database": false,
+      "candidate_in_database": false,
+      "duplicate_risk": false,
+      "reason": "이름·자치구·유형·동 단서가 모두 일치하고 후보 등록 행이 하나뿐입니다."
+    }
+  ]
+}
