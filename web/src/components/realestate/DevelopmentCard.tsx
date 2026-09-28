@@ -46,7 +46,13 @@ export default function DevelopmentCard({
   const canMap = project.location_accuracy.code !== "NO_LOCATION";
 
   return (
-    <div className={`rounded-2xl border border-border bg-surface ${compact ? "p-3" : "p-3.5"}`}>
+    <div
+      className={`rounded-2xl border bg-surface transition ${compact ? "p-3" : "p-3.5"} ${
+        // 선택된 카드는 테두리와 배경으로 확실히 구분한다. 어느 카드를 보고 있는지가
+        // 목록에서 바로 보여야 지도와 연결이 끊기지 않는다.
+        selected ? "border-estate bg-estate-soft/40 shadow-sm" : "border-border"
+      }`}
+    >
       <div className="break-words text-[15px] font-extrabold leading-snug">{project.name}</div>
       <div className="mt-1 flex flex-wrap items-center gap-1.5">
         <span className="rounded-full bg-estate-soft px-2 py-0.5 text-[11px] font-bold text-estate">{project.type_label}</span>

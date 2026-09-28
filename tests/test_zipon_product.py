@@ -1093,8 +1093,11 @@ class MapFirstScreenTests(unittest.TestCase):
         self.assertIn('onSelect={selectFromMap}', tab)
         self.assertIn('scrollIntoView', tab)
         self.assertIn('setSelectedId(p.project_id)', tab)
-        self.assertIn('ring-2 ring-estate', tab)
         self.assertIn('selectedId={selectedId}', tab)
+        # 선택 강조는 카드가 직접 한다. 바깥 ring과 겹치지 않는다.
+        self.assertIn('aria-current={selectedId === p.project_id ? "true" : undefined}', tab)
+        self.assertIn('border-estate bg-estate-soft/40',
+                      read('components/realestate/DevelopmentCard.tsx'))
 
     def test_the_map_separates_property_type_programme_and_boundary(self):
         map_source = read('components/realestate/ZiponMap.tsx')
@@ -2846,3 +2849,102 @@ class PolygonSourceSurveyTests(unittest.TestCase):
         gap = self.document['blocking_gap']
         self.assertTrue(gap['problem'])
         self.assertTrue(gap['required_before_any_write'])
+
+
+class CheonhoApplyTests(unittest.TestCase):
+    """천호동 392-9 한 건만 반영하는 경로. 다른 사업을 건드리지 않는지."""
+
+    def setUp(self):
+        import apply_zipon_cheonho_392_9 as runner
+        self.runner = runner
+        self.source = (ROOT / 'scripts/apply_zipon_cheonho_392_9.py').read_text(encoding='utf-8')
+
+    def test_the_address_comes_from_the_official_row_not_a_guess(self):
+        row = self.runner.evidence()
+        self.assertEqual(row['project_name'], '천호동 392-9')
+        self.assertEqual(row['district'], '강동구')
+        # 사업명 칸 자체가 지번이다. 그래서 추정 없이 주소가 나온다.
+        self.assertEqual(row['lot_in_name'], '천호동 392-9')
+        self.assertIsNone(row['address_in_source'])
+        self.assertEqual(self.runner.ADDRESS, '서울특별시 강동구 천호동 392-9')
+        self.assertIn('천호동 392-9', row['raw_source_text'])
+        self.assertTrue(row['source_url'].startswith('https://cleanup.seoul.go.kr/'))
+
+    def test_it_touches_exactly_one_project(self):
+        self.assertEqual(self.runner.PROJECT_ID, '429dc953-a406-56ff-871d-0ced658be69f')
+        # project_id로만 지정한다. 이름이나 주소로 여러 행을 건드리지 않는다.
+        self.assertIn("'project_id': 'eq.' + PROJECT_ID", self.source)
+        self.assertNotIn('limit=', self.source.split('def main')[1].split('rest/v1')[1][:200])
+
+    def test_the_address_payload_carries_no_promotion(self):
+        row = self.runner.evidence()
+        payload = self.runner.address_payload(row, 1)
+        project = payload['p_project']
+        for forbidden in ('stage', 'stage_raw', 'status', 'validation_status', 'geometry',
+                          'location', 'project_type'):
+            self.assertNotIn(forbidden, project, forbidden)
+        self.assertEqual(project['address'], self.runner.ADDRESS)
+        self.assertEqual(project['dong'], '천호동')
+        self.assertEqual(payload['p_source']['source_type'], 'OFFICIAL_WEBSITE')
+        self.assertTrue(payload['p_source']['is_official'])
+        self.assertEqual(len(payload['p_source']['content_hash']), 64)
+
+    def test_it_writes_only_through_the_reviewed_rpcs(self):
+        self.assertEqual(self.runner.INGEST_RPC, 'rpc/zipon_ingest_candidate_v2')
+        self.assertEqual(self.runner.LOCATION_RPC, 'rpc/zipon_set_project_location')
+        for forbidden in ('requests.patch', 'requests.put', 'requests.delete'):
+            self.assertNotIn(forbidden, self.source)
+
+    def test_a_non_exact_geocode_keeps_the_address_and_stops(self):
+        # EXACT가 아니면 좌표를 쓰지 않고 MANUAL_REVIEW로 남긴다.
+        self.assertIn("if evaluation.get('geocode_confidence') != 'EXACT'", self.source)
+        self.assertIn("'MANUAL_REVIEW'", self.source)
+        stop = self.source.index("report['coordinate_status'] = 'MANUAL_REVIEW'")
+        self.assertLess(stop, self.source.index('LOCATION_RPC}'))
+
+    def test_an_existing_address_blocks_the_run(self):
+        self.assertIn("'ADDRESS_ALREADY_SET'", self.source)
+        self.assertIn("'DISTRICT_MISMATCH'", self.source)
+        self.assertIn("'PROJECT_NOT_IN_DATABASE'", self.source)
+
+    def test_without_credentials_nothing_is_written(self):
+        with patch.dict('os.environ', {'ZIPON_IMPORT_SUPABASE_URL': '',
+                                       'ZIPON_IMPORT_SUPABASE_KEY': ''}, clear=False):
+            with self.assertRaises(self.runner.Blocked) as caught:
+                self.runner.configuration()
+        self.assertEqual(caught.exception.reason, 'MISSING_ZIPON_IMPORT_SUPABASE_URL')
+
+
+class FastTrackDecisionTests(unittest.TestCase):
+    def setUp(self):
+        self.document = json.loads((DATA / 'fast_track_decisions_20260928.json')
+                                   .read_text(encoding='utf-8'))
+
+    def test_only_confirmed_links_reach_the_decision_table(self):
+        self.assertEqual(self.document['totals']['confirmed'], 18)
+        self.assertFalse(self.document['db_write'])
+        self.assertFalse(self.document['auto_import'])
+        review = json.loads((DATA / 'fast_track_identity_review_20260928.json')
+                            .read_text(encoding='utf-8'))
+        confirmed = {r['project_name'] for r in review['items']
+                     if r['identity_status'] == 'IDENTITY_CONFIRMED'}
+        self.assertEqual({r['fast_track_project'] for r in self.document['items']}, confirmed)
+
+    def test_every_row_states_what_a_person_must_decide(self):
+        for row in self.document['items']:
+            for field in ('fast_track_project', 'matched_official_project', 'official_address',
+                          'district', 'dong', 'identity_evidence', 'existing_canonical',
+                          'duplicate_risk', 'recommended_action', 'blocking_question'):
+                self.assertIn(field, row)
+            self.assertTrue(row['official_address'])
+            self.assertTrue(row['identity_evidence']['fast_track_source_url'])
+            self.assertTrue(row['identity_evidence']['single_candidate'])
+
+    def test_a_duplicate_is_not_offered_as_an_import(self):
+        duplicates = [r for r in self.document['items'] if r['duplicate_risk']]
+        self.assertEqual(len(duplicates), 1)
+        self.assertEqual(duplicates[0]['recommended_action'], 'RESOLVE_DUPLICATE_FIRST')
+        for row in self.document['items']:
+            if not row['duplicate_risk']:
+                self.assertEqual(row['recommended_action'], 'IMPORT_WITH_ADDRESS')
+                self.assertFalse(row['existing_canonical'])

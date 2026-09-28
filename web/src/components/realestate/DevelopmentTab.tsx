@@ -284,7 +284,8 @@ export default function DevelopmentTab({
                     cardRefs.current[p.project_id] = node;
                   }}
                   onClick={() => setSelectedId(p.project_id)}
-                  className={`rounded-2xl transition ${selectedId === p.project_id ? "ring-2 ring-estate" : ""}`}
+                  className="rounded-2xl"
+                  aria-current={selectedId === p.project_id ? "true" : undefined}
                 >
                   {/* 위치는 카드 안에서 보여준다. 좌표는 목록과 같은 응답의 point를 그대로 쓴다. */}
                   <DevelopmentCard
