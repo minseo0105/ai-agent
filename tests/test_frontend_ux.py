@@ -215,18 +215,39 @@ class StageGuideScreenTests(unittest.TestCase):
 
 
 class NaverLinkTests(unittest.TestCase):
-    """주변 매물 탐색 링크. 추측한 주소나 단지 ID를 만들지 않는다."""
+    """버튼이 말하는 곳으로 실제로 간다. 추측한 좌표나 단지 ID를 만들지 않는다."""
 
-    def test_an_address_makes_a_public_search_link(self):
+    def test_the_destination_is_the_real_estate_service_not_general_search(self):
+        link = pr.naver_real_estate_link({'address': '서울특별시 송파구 잠실동 101-1'})
+        self.assertEqual(link['url'], 'https://land.naver.com/')
+        self.assertEqual(link['destination'], 'NAVER_LAND')
+        # 통합검색으로 보내면서 '네이버부동산'이라고 적지 않는다.
+        self.assertNotIn('search.naver.com', link['url'])
+
+    def test_the_label_matches_what_the_link_actually_does(self):
+        link = pr.naver_real_estate_link({'address': '서울특별시 송파구 잠실동 101-1'})
+        # 좌표로 지도를 바로 여는 것이 아니라 서비스로 보내므로 '지역 검색'이라고 적는다.
+        self.assertEqual(link['label'], '네이버부동산에서 지역 검색')
+
+    def test_general_search_is_gone_from_the_whole_module(self):
+        source = (ROOT / 'services/development_presentation.py').read_text(encoding='utf-8')
+        code = '\n'.join(line for line in source.splitlines()
+                         if not line.lstrip().startswith('#'))
+        self.assertNotIn('search.naver.com', code)
+
+    def test_an_address_is_carried_so_the_user_can_search_it(self):
         link = pr.naver_real_estate_link({'address': '서울특별시 강동구 천호동 423-200'})
         self.assertEqual(link['basis'], 'ADDRESS')
-        self.assertTrue(link['url'].startswith('https://search.naver.com/search.naver?'))
-        self.assertIn('423-200', link['query'])
+        self.assertIn('423-200', link['search_query'])
 
     def test_a_district_and_dong_are_enough_when_there_is_no_address(self):
         link = pr.naver_real_estate_link({'sigungu': '송파구', 'dong': '마천동'})
         self.assertEqual(link['basis'], 'DISTRICT_DONG')
-        self.assertEqual(link['query'], '서울특별시 송파구 마천동')
+        self.assertEqual(link['search_query'], '서울특별시 송파구 마천동')
+
+    def test_the_card_shows_which_address_to_search(self):
+        card = web('components/realestate/DevelopmentCard.tsx')
+        self.assertIn('검색할 주소: {project.naver_real_estate.search_query}', card)
 
     def test_without_a_location_no_link_is_made(self):
         for row in ({}, {'sigungu': '송파구'}, {'dong': '마천동'},
@@ -237,8 +258,8 @@ class NaverLinkTests(unittest.TestCase):
         source = (ROOT / 'services/development_presentation.py').read_text(encoding='utf-8')
         block = source[source.index('def naver_real_estate_link('):]
         block = block[:block.index('\ndef ')]
-        for guessed in ('complexNo', 'complex_id', 'articleNo', 'm.land.naver.com',
-                        'new.land.naver.com', 'lat=', 'lon=', 'lng='):
+        for guessed in ('complexNo', 'complex_id', 'articleNo', 'lat=', 'lon=', 'lng=',
+                        'center=', 'zoom=', '?ms=', 'm.land.naver.com'):
             self.assertNotIn(guessed, block, guessed)
 
     def test_no_centroid_is_computed_for_the_link(self):
@@ -264,6 +285,14 @@ class NaverLinkTests(unittest.TestCase):
         card = web('components/realestate/DevelopmentCard.tsx')
         self.assertIn('공식 사업정보 ↗', card)
         self.assertIn('{project.naver_real_estate.label} ↗', card)
+
+    def test_no_coordinate_encoding_is_invented_for_the_url(self):
+        link = pr.naver_real_estate_link({'address': '서울특별시 송파구 잠실동 101-1',
+                                          'latitude': 37.5, 'longitude': 127.1})
+        # 좌표 딥링크 형식을 확인하지 못했으므로 URL에 좌표를 넣지 않는다.
+        self.assertNotIn('37.5', link['url'])
+        self.assertNotIn('127.1', link['url'])
+        self.assertEqual(link['url'], pr.NAVER_LAND_URL)
 
 
 class DeployVersionTests(unittest.TestCase):

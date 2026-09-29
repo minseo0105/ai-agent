@@ -182,25 +182,28 @@ def stage_guide(normalized_stage):
 # 아니다. 재개발·재건축·모아타운 사업이 어느 한 단지와 1:1이라고 가정하지 않으며,
 # 단지 ID를 지어내지 않는다.
 #
-# 주소 검색으로 연결한다. 좌표를 URL에 넣는 지도 딥링크 형식은 공개 문서로 확인하지
-# 못했고, 확인하지 못한 형식을 추측해서 만들면 엉뚱한 위치로 보내거나 조용히 깨진다.
-# 검색 주소는 사람이 눈으로 확인할 수 있고, 형식이 바뀌어도 링크가 무의미해지지 않는다.
+# 목적지는 네이버 부동산 서비스다. 예전에는 통합검색(search.naver.com)으로 보냈는데,
+# 버튼에 '네이버부동산에서 보기'라고 적어 두고 다른 곳으로 보내는 것은 사용자를 속이는
+# 것이다. 그래서 통합검색 경로는 없앴다.
+#
+# 좌표를 URL에 넣어 지도를 바로 여는 형식(center/zoom 등)은 이 실행환경에서
+# naver.com에 접근할 수 없어 확인하지 못했다. 확인하지 못한 형식을 추측해서 만들면
+# 엉뚱한 위치를 열거나 조용히 깨진다. 그래서 서비스 진입점으로 보내고, 어떤 주소를
+# 검색하면 되는지 화면에 함께 적어 준다. 버튼 문구도 그 동작에 맞춘다.
 #
 # 폴리곤 centroid는 쓰지 않는다. MultiPolygon이나 오목한 구역에서는 centroid가 구역
-# 밖에 놓일 수 있다. 위치가 필요할 때는 이미 검증된 대표좌표를 쓰고, 그것이 없으면
-# 링크를 만들지 않는다.
+# 밖에 놓일 수 있다. 위치는 검증된 대표주소를 쓰고, 그것이 없으면 링크를 만들지 않는다.
 # ---------------------------------------------------------------------------
-NAVER_SEARCH_URL = 'https://search.naver.com/search.naver'
-NAVER_LINK_LABEL = '네이버부동산에서 보기'
+# 네이버 부동산 서비스 진입점. 경로를 덧붙이지 않는다.
+NAVER_LAND_URL = 'https://land.naver.com/'
+NAVER_LINK_LABEL = '네이버부동산에서 지역 검색'
 
 
 def naver_real_estate_link(row):
-    """사업구역 주변을 찾아볼 수 있는 공개 검색 링크. 근거가 없으면 None.
+    """네이버 부동산으로 가는 링크와 거기서 검색할 주소. 근거가 없으면 None.
 
     basis: ADDRESS(대표주소) → DISTRICT_DONG(자치구+법정동) → 없으면 링크 없음.
     """
-    from urllib.parse import urlencode
-
     address = str(row.get('address') or '').strip()
     district = str(row.get('sigungu') or row.get('district') or '').strip()
     dong = str(row.get('dong') or '').strip()
@@ -211,9 +214,9 @@ def naver_real_estate_link(row):
     else:
         # 위치 근거가 없으면 링크를 만들지 않는다. 틀린 곳으로 보내지 않는다.
         return None
-    return {'url': f'{NAVER_SEARCH_URL}?{urlencode({"query": query + " 부동산"})}',
-            'label': NAVER_LINK_LABEL, 'basis': basis, 'query': query,
-            'note': '사업구역 주변 매물을 찾아보는 링크예요. 특정 단지를 지정하지 않습니다.'}
+    return {'url': NAVER_LAND_URL, 'label': NAVER_LINK_LABEL, 'basis': basis,
+            'search_query': query, 'destination': 'NAVER_LAND',
+            'note': '네이버 부동산에서 아래 주소로 검색하면 이 사업구역 주변 매물을 볼 수 있어요.'}
 
 
 def stage_label(normalized_stage, raw_stage=None):

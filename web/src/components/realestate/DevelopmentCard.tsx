@@ -176,6 +176,13 @@ export default function DevelopmentCard({
         )}
       </div>
 
+      {/* 어떤 주소로 검색하면 되는지 함께 적는다. 버튼이 지도를 바로 열지는 않기 때문이다. */}
+      {project.naver_real_estate && (
+        <p className="mt-1 break-words text-[11px] text-subtle">
+          검색할 주소: {project.naver_real_estate.search_query}
+        </p>
+      )}
+
       <CollapsibleDetails label="상세보기">
         {!!project.stage_history?.length && (
           <section className="mb-3" aria-label="공식 진행이력">

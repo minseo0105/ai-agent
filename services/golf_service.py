@@ -385,15 +385,29 @@ def vworld_place_search(query, api_key, domain):
 
 
 def geocode_departure(query):
-    """주소는 NAVER, 장소명은 VWorld 순으로 좌표를 찾는다. (좌표 dict 또는 None, 사용 가능한 키 여부)"""
+    """출발지를 좌표로 만든다. (좌표 dict 또는 None, 찾을 수단이 있는지)
+
+    주소만이 아니라 '강동구청'·'서울역' 같은 장소 이름도 받는다. 판정은
+    services/golf_departure.py에 있고, ZIP:ON의 엄격한 주소 검증기와는 분리되어 있다.
+    """
+    from services import golf_departure
+
     naver_key_id, naver_key = _naver_keys()
-    vworld_key = str(get_secret("VWORLD_API_KEY") or "").strip()
-    geo = None
-    if naver_key_id and naver_key:
-        geo = naver_geocode(query, naver_key_id, naver_key)
-    if geo is None and vworld_key:
-        geo = vworld_place_search(query, vworld_key, str(get_secret("VWORLD_DOMAIN") or "").strip())
-    return geo, bool((naver_key_id and naver_key) or vworld_key)
+
+    def by_address(text):
+        if not (naver_key_id and naver_key):
+            return None
+        return naver_geocode(text, naver_key_id, naver_key)
+
+    found, how = golf_departure.resolve(query, geocode_address=by_address)
+    available = bool((naver_key_id and naver_key)
+                     or str(get_secret("KAKAO_REST_API_KEY") or "").strip()
+                     or str(get_secret("VWORLD_API_KEY") or "").strip())
+    if found:
+        # 어디로 이해했는지 화면이 보여 줄 수 있게 함께 넘긴다.
+        found = dict(found, resolved_label=golf_departure.place_label(found),
+                     resolved_by=how.get('stage'))
+    return found, available
 
 
 @ttl_cache(60 * 60 * 24)
@@ -1246,6 +1260,7 @@ def build_condition(params):
             departure_geo.get("road_address") or departure_geo.get("jibun_address")
             if departure_geo else ""
         ),
+        "departure_label": departure_geo.get("resolved_label") if departure_geo else "",
         "caddie": params.get("caddie") or "전체",
         "budget": params.get("budget") if isinstance(params.get("budget"), int) else BUDGETS.get(params.get("budget")),
         "objective_features": objective_choice,
@@ -1260,11 +1275,15 @@ def build_condition(params):
     status = None
     if departure:
         if departure_geo:
-            address = departure_geo.get("road_address") or departure_geo.get("jibun_address") or departure
-            place = departure_geo.get("place_name")
-            status = "출발지 확인 · " + (f"{place} ({address})" if place else address)
+            # 어디로 이해했는지 그대로 보여 준다. 엉뚱한 곳이면 사용자가 바로 안다.
+            label = departure_geo.get("resolved_label")
+            if not label:
+                address = departure_geo.get("road_address") or departure_geo.get("jibun_address") or departure
+                place = departure_geo.get("place_name")
+                label = f"{place} ({address})" if place else address
+            status = "출발지 확인 · " + label
         elif not geocoder_available:
-            status = "출발지 거리계산 미사용 · NAVER Cloud Maps 또는 VWorld 키 필요"
+            status = "출발지 거리계산 미사용 · 장소 검색 키가 설정되지 않았습니다"
         else:
             status = "출발지 좌표 확인 실패 · 주소나 장소명을 조금 더 구체적으로 입력해 주세요"
     return cond, status
@@ -1729,6 +1748,8 @@ def _build_results(all_recs, cond, trace, sort, departure_status):
     return {
         "applied": _applied_chips(cond),
         "departure_status": departure_status,
+        # 어디로 이해했는지. 화면이 "출발지 확인: 강동구청 · 서울 강동구"처럼 보여 준다.
+        "departure_label": cond.get("departure_label") or "",
         "trace": trace,
         "sort": sort,
         "notice": notice,

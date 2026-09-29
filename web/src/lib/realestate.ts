@@ -173,7 +173,15 @@ export type DevelopmentProject = {
     checks_note: string;
   } | null;
   /** 사업구역 주변 매물 탐색 링크. 위치 근거가 없으면 null이다. */
-  naver_real_estate: { url: string; label: string; basis: string; query: string; note: string } | null;
+  naver_real_estate: {
+    url: string;
+    label: string;
+    basis: string;
+    /** 네이버 부동산에서 검색할 주소. 화면에 함께 보여 준다. */
+    search_query: string;
+    destination: string;
+    note: string;
+  } | null;
   spatial: { code: string; label: string; confirmed_boundary: boolean };
   distance_m: number | null;
   latitude: number | null;
