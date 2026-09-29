@@ -253,3 +253,94 @@ class WriteRequestsAreNotRetriedTests(unittest.TestCase):
         source = (ROOT / 'web/src/lib/coldStart.ts').read_text(encoding='utf-8')
         self.assertIn('읽기', source)
         self.assertIn('쓰기 요청은', source)
+
+
+class OriginSortTransitionTests(unittest.TestCase):
+    """출발지 입력 → 자동 거리순. 실제로 실행해서 전이를 확인한다.
+
+    A 출발지 없음 → 기본 정렬        B 출발지 입력 → 자동 거리순
+    C/D 출발지 변경 → 재계산          E 출발지 삭제 → 거리순 해제
+    F/G 빠른 연속 입력 → 최신이 이김   H 거리 오름차순
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        import json
+        import shutil
+        import subprocess
+        if shutil.which('node') is None:
+            raise unittest.SkipTest('node is not available')
+        check = ROOT / 'scripts/checks/golf_sort_check.mts'
+        result = subprocess.run(['node', '--experimental-strip-types', str(check)],
+                                capture_output=True, text=True, cwd=str(ROOT))
+        if result.returncode != 0:
+            raise unittest.SkipTest(f'sort check did not run: {result.stderr[:300]}')
+        cls.report = json.loads(result.stdout.strip().splitlines()[0])
+
+    def test_a_without_an_origin_the_default_sort_is_kept(self):
+        self.assertEqual(self.report['a_no_origin_sort'], '추천순')
+        self.assertEqual(self.report['a_no_origin_result_sort'], '추천순')
+
+    def test_b_entering_an_origin_sorts_by_distance_without_pressing_a_button(self):
+        self.assertEqual(self.report['b_origin_entered_sort'], '가까운순')
+        self.assertEqual(self.report['b_origin_entered_order'], ['A-가까움', 'B-중간', 'C-멂'])
+
+    def test_c_and_d_changing_the_origin_recalculates_from_the_new_one(self):
+        self.assertEqual(self.report['d_second_origin_sort'], '가까운순')
+        self.assertEqual(self.report['d_result_origin'], '판교역')
+        self.assertTrue(self.report['d_order_changed'], '출발지를 바꿨는데 순서가 그대로다')
+        self.assertNotEqual(self.report['c_first_origin_order'], self.report['d_second_origin_order'])
+
+    def test_e_clearing_the_origin_leaves_distance_mode(self):
+        self.assertEqual(self.report['e_cleared_sort'], '추천순')
+        self.assertEqual(self.report['e_cleared_order'], ['추천1', '추천2', '추천3'])
+
+    def test_an_explicit_choice_survives_a_resubmit_with_the_same_origin(self):
+        self.assertEqual(self.report['rule5_after_choice'], '추천순')
+        self.assertEqual(self.report['rule5_same_origin_resubmit'], '추천순')
+
+    def test_a_changed_origin_outranks_the_earlier_explicit_choice(self):
+        # 출발지를 새로 넣은 것은 "여기서 가까운 곳을 보고 싶다"는 새 요청이다.
+        self.assertEqual(self.report['rule5_origin_changed'], '가까운순')
+
+    def test_f_and_g_a_slow_earlier_origin_cannot_overwrite_the_newer_one(self):
+        self.assertEqual(self.report['fg_final_origin'], '판교역')
+        self.assertEqual(self.report['fg_final_order'], ['C-멂', 'B-중간', 'A-가까움'])
+        self.assertEqual(self.report['fg_final_sort'], '가까운순')
+        self.assertFalse(self.report['fg_loading'], '지난 검색이 로딩을 끄면 안 된다')
+
+    def test_a_failed_geocode_is_never_called_nearest(self):
+        self.assertEqual(self.report['geocode_failed_sort'], '추천순')
+
+
+class SortRuleContractTests(unittest.TestCase):
+    """정렬 규칙이 한 곳에 모여 있고, 화면이 그것을 쓰는지."""
+
+    def setUp(self):
+        self.screen = (ROOT / 'web/src/components/golf/GolfSearch.tsx').read_text(encoding='utf-8')
+        self.rule = (ROOT / 'web/src/lib/golfSort.ts').read_text(encoding='utf-8')
+
+    def test_the_submit_handler_asks_the_shared_rule(self):
+        self.assertIn('decideSort({', self.screen)
+        self.assertIn('previousOrigin: searchedOrigin.current', self.screen)
+        self.assertIn('userChose: userChoseSort.current', self.screen)
+        # 제출 버튼 안의 삼항 연산자로 규칙을 되돌리지 않는다.
+        self.assertNotIn('params.departure.trim() ? "가까운순" : "추천순"', self.screen)
+
+    def test_the_sort_button_marks_the_choice_as_the_users(self):
+        self.assertIn('userChoseSort.current = true', self.screen)
+
+    def test_the_screen_remembers_which_origin_the_last_search_used(self):
+        self.assertIn('searchedOrigin.current = search.mode === "condition"', self.screen)
+
+    def test_the_settled_sort_comes_from_the_shared_rule(self):
+        self.assertIn('setSort(settleSort(nextSort, r.has_departure))', self.screen)
+        self.assertIn('requested === DISTANCE_SORT && !hasDeparture', self.rule)
+
+    def test_the_race_protection_is_still_in_place(self):
+        # 이번 수정으로 지난 스프린트의 보호 장치가 사라지지 않았는지 확인한다.
+        for guard in ('const generation = useRef(0)', 'const mine = ++generation.current',
+                      'if (!current()) return;', 'inFlight.current?.abort()',
+                      'new AbortController()', 'signal: controller.signal',
+                      'setResult(null)', 'if (current()) setLoading(false)'):
+            self.assertIn(guard, self.screen, guard)

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { isTransient, withColdStartRetry } from "@/lib/coldStart";
+import { decideSort, settleSort } from "@/lib/golfSort";
 import {
   DEFAULT_PARAMS,
   golfApi,
@@ -99,6 +100,10 @@ export default function GolfSearch() {
   // 먼저 보낸 느린 검색의 응답이 나중에 도착해 새 조건의 결과를 덮어쓴다.
   const generation = useRef(0);
   const inFlight = useRef<AbortController | null>(null);
+  /** 사용자가 정렬 버튼으로 직접 고른 상태인지. 출발지를 새로 넣거나 바꾸면 풀린다. */
+  const userChoseSort = useRef(false);
+  /** 직전 검색에 쓴 출발지. 출발지가 바뀌었는지 이것으로 판단한다. */
+  const searchedOrigin = useRef<string | null>(null);
 
   // 최초 진입: 옵션 로드 + 이전 검색 상태 복원
   useEffect(() => {
@@ -128,6 +133,8 @@ export default function GolfSearch() {
       setVisible(s.visible);
       setResult(s.result);
       setLast(s.last);
+      // 돌아왔을 때도 '출발지가 바뀌었는지'를 이어서 판단할 수 있게 복원한다.
+      searchedOrigin.current = s.last?.mode === "condition" ? s.last.params.departure.trim() : null;
     }
     restored.current = true;
   }, []);
@@ -168,6 +175,8 @@ export default function GolfSearch() {
     // 진행 중인 검색을 끊는다. 끊지 않으면 바뀐 모드 화면에 이전 모드의 결과가 도착한다.
     inFlight.current?.abort();
     generation.current += 1;
+    userChoseSort.current = false;
+    searchedOrigin.current = null;
     setMode(m);
     setResult(null);
     setLast(null);
@@ -189,6 +198,8 @@ export default function GolfSearch() {
     // 남겨 두면 로딩 중에 옛 결과가 새 결과처럼 읽힌다.
     setResult(null);
     setSort(nextSort);
+    // 이번 검색이 어떤 출발지로 나갔는지 남긴다. 다음 검색이 출발지 변경인지 알아야 한다.
+    searchedOrigin.current = search.mode === "condition" ? search.params.departure.trim() : "";
     try {
       const r =
         search.mode === "text"
@@ -198,7 +209,7 @@ export default function GolfSearch() {
       setResult(r);
       setLast(search);
       // 출발지를 못 찾으면 서버가 추천순으로 돌려주므로 화면 표시도 맞춘다
-      setSort(nextSort === "가까운순" && !r.has_departure ? "추천순" : nextSort);
+      setSort(settleSort(nextSort, r.has_departure));
       if (scroll) {
         setFilter("전체");
         setVisible(6);
@@ -259,8 +270,16 @@ export default function GolfSearch() {
             className="mt-5 space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
-              // 출발지를 적었으면 가까운 곳부터 보여준다
-              run({ mode: "condition", params }, params.departure.trim() ? "가까운순" : "추천순");
+              // 출발지를 적었으면 버튼을 따로 누르지 않아도 가까운 곳부터 보여준다.
+              // 출발지를 바꾸면 그 전에 고른 정렬보다 방금의 입력을 따른다(golfSort 규칙).
+              const decision = decideSort({
+                origin: params.departure,
+                previousOrigin: searchedOrigin.current,
+                currentSort: sort,
+                userChose: userChoseSort.current,
+              });
+              userChoseSort.current = decision.keepUserChoice;
+              run({ mode: "condition", params }, decision.sort);
             }}
           >
             <p className="text-xs text-subtle">모두 비워두고 찾아도 됩니다 · 고를수록 범위가 좁아져요.</p>
@@ -392,7 +411,12 @@ export default function GolfSearch() {
             className="mt-5 space-y-3"
             onSubmit={(e) => {
               e.preventDefault();
-              if (text.trim()) run({ mode: "text", text: text.trim() }, "추천순");
+              if (text.trim()) {
+                // 문장 검색에는 출발지 입력이 없다. 기본 정렬로 시작한다.
+                userChoseSort.current = false;
+                searchedOrigin.current = null;
+                run({ mode: "text", text: text.trim() }, "추천순");
+              }
             }}
           >
             <textarea
@@ -541,7 +565,11 @@ export default function GolfSearch() {
                   value={sort}
                   // 가까운순은 출발지를 찾았을 때만 의미가 있다
                   options={(result.has_departure ? ["추천순", "가까운순", "가격순"] : ["추천순", "가격순"]) as Sort[]}
-                  onChange={(s) => last && run(last, s, false)}
+                  onChange={(s) => {
+                    // 사용자가 직접 고른 정렬은 같은 출발지에서 그대로 유지한다.
+                    userChoseSort.current = true;
+                    if (last) run(last, s, false);
+                  }}
                   ariaLabel="정렬"
                 />
               </div>
