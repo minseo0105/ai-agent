@@ -1,6 +1,6 @@
 {
   "format": "zipon-polygon-source-acquisition-v1",
-  "generated_at": "2026-09-28T23:56:54.928326+00:00",
+  "generated_at": "2026-09-29T00:58:58.890597+00:00",
   "db_write": false,
   "polygon_created": false,
   "polygon_written_to_production": false,
@@ -32,19 +32,31 @@
       "curl_code": "000",
       "proxy_detail": "gateway answered 403 to CONNECT (policy denial)",
       "outcome": "BLOCKED"
+    },
+    {
+      "host": null,
+      "url": null,
+      "method": "LOCAL_CHECKOUT",
+      "http_status": null,
+      "curl_code": null,
+      "proxy_detail": null,
+      "outcome": "NOT_IN_THIS_CONTAINER",
+      "note": "사용자가 로컬 작업본의 data/reference/ 에 공식 zip 을 두었다고 알렸다. 이 세션은 GitHub 에서 새로 clone 한 별도 컨테이너에서 돌고, data/reference/*.zip 은 gitignore 대상이라 파일이 여기로 오지 않는다. 컨테이너 전체를 검색해도 없다."
     }
   ],
   "conclusion": "SOURCE_FILE_NOT_PRESENT",
   "pipeline": {
     "script": "scripts/analyze_seoul_polygon_source.py",
     "verified_on": "SYNTHETIC_FIXTURE",
-    "fixture_note": "cp949 DBF / EPSG:5186 / 시계방향 외곽 ring 으로 만든 합성 SHP. 공식 파일이 아니며 폴리곤으로 사용하지 않는다.",
+    "fixture_note": "UPIS_C_UQ120 과 같은 모양의 합성 SHP: cp949/utf-8 DBF, EPSG:5186, 시계방향 외곽 ring, 영문 필드명(PRESENT_SN / DGM_NM / SIGNGU_SE / PROPEL_CD / CREATE_DAT)과 코드정의표. 공식 파일이 아니며 폴리곤으로 사용하지 않는다.",
     "tests": "tests/test_zipon_product.py::PolygonPipelineTests"
   },
   "user_action_required": {
     "step_1": "https://data.seoul.go.kr/dataList/OA-22712/S/1/datasetView.do 에서 '532_UQ120_도시계획사업(서울플랜+)_202609.zip' 를 내려받는다.",
     "step_2": "내려받은 zip 을 data/reference/ 에 그대로 둔다. 압축을 풀거나 수정하지 않는다.",
-    "step_3": "python scripts/analyze_seoul_polygon_source.py --archive data/reference/532_UQ120_도시계획사업(서울플랜+)_202609.zip --write",
-    "step_4": "data/development/polygon_match_review_20260928.json 의 EXACT 건만 사람이 검토한다. DB write 는 검토 이후 별도 단계다."
+    "step_3": "python scripts/analyze_seoul_polygon_source.py --archive \"data/reference/532_UQ120_도시계획사업(서울플랜+)_202609.zip\" --write",
+    "step_4": "data/development/polygon_match_review_20260928.json 의 EXACT 건만 사람이 검토한다. DB write 는 검토 이후 별도 단계다.",
+    "step_0": "이 컨테이너에서 분석하려면 공식 zip 이 컨테이너 안에 있어야 한다. 로컬에서 아래 명령을 그대로 실행하는 것이 가장 빠르다. 컨테이너에서 돌려야 한다면 zip 을 이 저장소에 git add -f 로 올려야 하고, 그 경우 원본 대용량 파일이 히스토리에 남는다.",
+    "step_5": "두 번째 판이 오면 --if-changed 를 붙인다. source_sha256 이 같으면 재분석하지 않는다."
   }
 }

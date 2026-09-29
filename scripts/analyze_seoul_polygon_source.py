@@ -5,9 +5,14 @@
 법적 효력 없음 / 참고자료.
 
   python scripts/analyze_seoul_polygon_source.py --archive data/reference/<파일>.zip --write
+  python scripts/analyze_seoul_polygon_source.py --archive <파일>.zip --if-changed --write
 
 원본은 수정하지 않는다. 폴리곤을 만들어 내지 않는다. 대표좌표에 buffer를 씌우지 않는다.
 매칭 등급이 EXACT여도 이 스크립트는 데이터베이스에 아무것도 쓰지 않는다.
+
+필드명을 추측하지 않는다. 뜻이 이름으로 분명한 필드만 매칭에 쓰고, 코드값 필드는
+압축 안의 코드정의표로 뜻을 확인한 것만 쓴다. 확인하지 못한 필드는 UNCONFIRMED로
+남겨 두고 사람이 볼 수 있게 표본만 적는다.
 
 등급:
   EXACT      공식 식별자가 같거나, 정규화 사업명이 같고 자치구까지 맞으며 후보가 하나뿐이다.
@@ -18,6 +23,8 @@
 보조 확인일 뿐이며 단독으로 동일성을 결정하지 않는다.
 """
 import argparse
+import hashlib
+import io
 import json
 from pathlib import Path
 import re
@@ -26,8 +33,19 @@ import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from services.development_official import compact, now
+from services.realestate_monitor import REGION_LAWD
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def shown(path):
+    """보고용 경로. 저장소 밖이면 그대로 적는다."""
+    try:
+        return str(Path(path).relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 DATA = ROOT / 'data/development'
 REFERENCE = ROOT / 'data/reference'
 REVIEW_FILE = DATA / 'polygon_match_review_20260928.json'
@@ -39,19 +57,52 @@ SOURCE = {'provider': '서울특별시',
           'file': '532_UQ120_도시계획사업(서울플랜+)_202609.zip',
           'portal_url': 'https://data.seoul.go.kr/dataList/OA-22712/S/1/datasetView.do',
           'legal_note': '법적 효력 없음 / 참고자료'}
-# 국내 공간정보가 흔히 쓰는 좌표계. .prj를 읽어 정하고, 못 읽으면 추정하지 않는다.
+# 변환 결과가 서울이어야 한다. 이 밖으로 나가면 좌표계를 잘못 읽은 것이므로 매칭하지 않는다.
+SANITY_LON = (126.0, 128.0)
+SANITY_LAT = (37.0, 38.0)
+# 서울 자치구 코드. services/realestate_monitor.py의 검증된 표에서 가져온다(추측 아님).
+SEOUL_SGG = {code: label.split(' > ')[1] for label, code in REGION_LAWD.items()
+             if label.startswith('서울 > ')}
+
+# 역할별 필드. 앞쪽은 이름 자체로 뜻이 분명한 필드, 뒤쪽은 공식 스펙에서 이름만 아는 필드로
+# 코드정의표나 검증된 코드 목록으로 뜻을 확인해야 매칭에 쓴다.
+ROLE_FIELDS = {
+    'name': (('사업명', '사업명칭', '지구명', 'PRJ_NM', 'BSNS_NM', 'SIGNGNM'),
+             ('DGM_NM', 'NAME', 'LDNM')),
+    'district': (('자치구', 'SGG_NM', 'SIGNGU_NM', 'GU'),
+                 ('SIGNGU_SE', 'SIGNGU_CD', 'SGG_CD')),
+    'dong': (('법정동', 'EMD_NM', 'LEGALDONG', 'DONG'), ('EMD_CD', 'LEGALDONG_CD')),
+    'type': (('사업구분', '사업유형', 'PRJ_SE', 'BSNS_SE'), ('PROPEL_CD', 'TYPE', 'UQ_CD')),
+    'official_id': (('관리번호', '고시번호', 'MNG_NO', 'PRJ_NO', 'NOTI_NO'),
+                    ('PRESENT_SN', 'ID')),
+    'address': (('주소', '소재지', '위치', 'ADDR', 'LOCATION'), ()),
+    'created': (('작성일', '생성일', '고시일'), ('CREATE_DAT', 'CREATE_DT')),
+}
+# 이름으로 뜻이 분명하거나 코드정의표로 확인된 역할만 매칭에 쓴다.
+CONFIRMED_BASES = ('FIELD_NAME', 'CODE_TABLE', 'CODE_TABLE_FIELD_LABEL', 'SEOUL_DISTRICT_CODE')
+# 코드정의표가 필드 설명을 줄 때, 그 설명으로 역할을 확인한다. 설명이 없으면 쓰지 않는다.
+FIELD_LABEL_KEYWORDS = {
+    'name': ('사업명', '지구명', '구역명', '도형명', '명칭'),
+    'district': ('자치구', '시군구', '구 코드', '구코드'),
+    'dong': ('법정동', '행정동', '읍면동'),
+    'type': ('사업구분', '사업유형', '추진구분', '추진', '용도지역지구'),
+    'official_id': ('관리번호', '고시번호', '일련번호', '순번'),
+    'address': ('주소', '소재지', '위치'),
+    'created': ('작성일', '생성일', '고시일', '입력일'),
+}
+# 하위 호환: 기존 호출부/테스트가 쓰는 이름.
+NAME_FIELDS = ROLE_FIELDS['name'][0] + ROLE_FIELDS['name'][1]
+TYPE_FIELDS = ROLE_FIELDS['type'][0] + ROLE_FIELDS['type'][1]
+DISTRICT_FIELDS = ROLE_FIELDS['district'][0] + ROLE_FIELDS['district'][1]
+DONG_FIELDS = ROLE_FIELDS['dong'][0] + ROLE_FIELDS['dong'][1]
+ID_FIELDS = ROLE_FIELDS['official_id'][0] + ROLE_FIELDS['official_id'][1]
 KNOWN_CRS = {'Korea 2000 / Central Belt 2010': 'EPSG:5186',
              'Korea 2000 / Unified Coordinate System': 'EPSG:5179',
              'Korea 2000 / Central Belt': 'EPSG:5181'}
-NAME_FIELDS = ('사업명', 'SIGGNM', 'PRJ_NM', 'BSNS_NM', 'NAME', 'LDNM')
-TYPE_FIELDS = ('사업구분', '사업유형', 'PRJ_SE', 'BSNS_SE', 'TYPE')
-DISTRICT_FIELDS = ('자치구', 'SGG_NM', 'SIGNGU_NM', 'GU')
-DONG_FIELDS = ('법정동', 'EMD_NM', 'LEGALDONG', 'DONG')
-ID_FIELDS = ('관리번호', '고시번호', 'MNG_NO', 'PRJ_NO', 'NOTI_NO', 'ID')
 
 
 def pick(record, names):
-    """필드명이 DBF의 10바이트 제한으로 잘려 있을 수 있어 양방향으로 본다."""
+    """필드명이 DBF의 길이 제한으로 잘려 있을 수 있어 양방향으로 본다."""
     for name in names:
         value = record.get(name)
         if value not in (None, '', ' '):
@@ -64,14 +115,37 @@ def pick(record, names):
     return None
 
 
+def field_for(fields, names):
+    """역할에 해당하는 실제 필드명을 돌려준다. 없으면 None.
+
+    DBF 필드명은 길이 제한으로 잘려 있을 수 있어 포함 관계도 본다. 다만 짧은 조각은
+    보지 않는다. 'GU'가 'SIGNGU_SE'에 걸리면 코드값 필드를 이름 필드로 착각한다.
+    """
+    for name in names:
+        if name in fields:
+            return name
+    for field in fields:
+        for name in names:
+            if not field or not name:
+                continue
+            if len(min(field, name, key=len)) < 4:
+                continue
+            if name in field or field in name:
+                return field
+    return None
+
+
+# --------------------------------------------------------------------------- 압축 읽기
+
 def read_archive(archive):
     """압축을 풀지 않고 읽는다. 원본 파일은 건드리지 않는다."""
     import shapefile
     with zipfile.ZipFile(archive) as bundle:
         names = bundle.namelist()
-        stem = next((n[:-4] for n in names if n.lower().endswith('.shp')), None)
-        if stem is None:
+        stems = sorted({n[:-4] for n in names if n.lower().endswith('.shp')})
+        if not stems:
             raise SystemExit('NO_SHP_IN_ARCHIVE')
+        stem = stems[0]
         parts = {}
         for extension in ('shp', 'dbf', 'shx'):
             match = next((n for n in names if n.lower() == f'{stem}.{extension}'.lower()), None)
@@ -80,38 +154,152 @@ def read_archive(archive):
             parts[extension] = bundle.read(match)
         prj = next((n for n in names if n.lower() == f'{stem}.prj'.lower()), None)
         projection = bundle.read(prj).decode('utf-8', 'replace') if prj else None
-    import io
-    # DBF 인코딩을 단정하지 않는다. 틀린 인코딩으로 읽으면 필드명이 깨지고, 그러면
+        tables = [n for n in names if n.lower().endswith(('.xlsx', '.xls', '.csv'))
+                  and not n.startswith('__MACOSX')]
+        code_table, field_labels, code_table_file = read_code_table(bundle, tables)
+        extra_shapefiles = stems[1:]
+    # DBF 인코딩을 단정하지 않는다. 틀린 인코딩으로 읽으면 값이 깨지고, 그러면
     # 오류 없이 조용히 '매칭 0건'이 나온다. 한글이 가장 잘 살아나는 것을 고른다.
-    best, chosen = None, None
+    # 필드명만 보면 안 된다. UPIS처럼 필드명이 모두 영문이면 어느 인코딩이든 점수가 0이라
+    # 순서상 먼저 온 것이 뽑히고, 정작 한글인 값이 깨진 채로 넘어간다. 값까지 본다.
+    best, chosen, chosen_encoding = None, None, None
     for encoding in ('cp949', 'utf-8', 'euc-kr', 'latin-1'):
         try:
             candidate = shapefile.Reader(shp=io.BytesIO(parts['shp']), dbf=io.BytesIO(parts['dbf']),
                                          shx=io.BytesIO(parts['shx']), encoding=encoding,
                                          encodingErrors='replace')
-            names = ''.join(f[0] for f in candidate.fields[1:])
+            sample = [f[0] for f in candidate.fields[1:]]
+            for index, record in enumerate(candidate.iterRecords()):
+                if index >= 20:
+                    break
+                sample.extend(str(value) for value in list(record))
         except Exception:
             continue
-        score = sum(1 for ch in names if '\uac00' <= ch <= '\ud7a3') - names.count('\ufffd') * 2
+        text = ''.join(sample)
+        score = sum(1 for ch in text if '가' <= ch <= '힣') - text.count('�') * 2
         if best is None or score > best:
             best, chosen, chosen_encoding = score, candidate, encoding
     if chosen is None:
         raise SystemExit('DBF_UNREADABLE')
-    return chosen, projection, stem, chosen_encoding
+    return {'reader': chosen, 'projection': projection, 'shapefile': stem,
+            'dbf_encoding': chosen_encoding, 'code_table': code_table,
+            'field_labels': field_labels,
+            'code_table_file': code_table_file, 'archive_files': sorted(names),
+            'extra_shapefiles': extra_shapefiles}
 
+
+def read_code_table(bundle, names):
+    """압축 안의 코드정의표. 코드값과 필드 설명의 뜻은 여기서만 가져온다.
+
+    (코드값 → 뜻, 필드명 → 설명, 읽은 파일) 을 돌려준다. 표가 없으면 비어 있다.
+    """
+    codes, labels, used = {}, {}, None
+    for name in names:
+        raw = bundle.read(name)
+        try:
+            rows = table_rows(name, raw)
+        except Exception:
+            continue
+        found_code, found_label = {}, {}
+        for row in rows:
+            cells = [('' if cell is None else str(cell)).strip() for cell in row]
+            cells = [cell for cell in cells if cell]
+            if len(cells) < 2:
+                continue
+            korean = next((c for c in cells[1:] if any('\uac00' <= ch <= '\ud7a3' for ch in c)), None)
+            head = cells[0]
+            if korean and re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{1,15}', head):
+                found_label.setdefault(head.upper(), korean)
+            elif korean and head != korean:
+                found_code.setdefault(head, korean)
+        if found_code or found_label:
+            codes.update(found_code)
+            labels.update(found_label)
+            used = used or name
+    return codes, labels, used
+
+
+def table_rows(name, raw):
+    if name.lower().endswith('.csv'):
+        for encoding in ('cp949', 'utf-8-sig', 'utf-8'):
+            try:
+                text = raw.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+            import csv
+            return list(csv.reader(io.StringIO(text)))
+        return []
+    import openpyxl
+    book = openpyxl.load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+    rows = []
+    for sheet in book.worksheets:
+        rows.extend(list(sheet.iter_rows(values_only=True)))
+    book.close()
+    return rows
+
+
+# --------------------------------------------------------------------------- 좌표계
 
 def source_crs(projection):
-    """.prj에서 좌표계를 읽는다. 읽지 못하면 추정하지 않고 None을 돌려준다."""
+    """.prj에서 좌표계를 읽는다. 읽지 못하면 추정하지 않고 None을 돌려준다.
+
+    낮은 신뢰도의 EPSG 추정은 받지 않는다. pyproj가 확신 없이 돌려주는 코드는
+    중부원점 계열끼리 서로 바뀌기 쉽고(5181 ↔ 5186), 그러면 좌표가 수백 m 어긋난 채로
+    정상처럼 보인다. 코드를 확정할 수 없으면 코드 대신 WKT 정의 자체로 변환한다.
+    """
     if not projection:
         return None, 'NO_PRJ_FILE'
     found = re.search(r'AUTHORITY\["EPSG","(\d+)"\]\s*\]\s*$', projection.strip())
     if found:
         return f'EPSG:{found.group(1)}', 'FROM_PRJ_AUTHORITY'
+    try:
+        from pyproj import CRS
+        parsed = CRS.from_wkt(projection)
+    except Exception:
+        parsed = None
+    if parsed is not None:
+        code = parsed.to_epsg()  # 기본 신뢰도(70)만 받는다.
+        if code:
+            return f'EPSG:{code}', 'FROM_PRJ_WKT_EPSG'
     for label, code in KNOWN_CRS.items():
         if label.lower() in projection.lower():
             return code, 'FROM_PRJ_NAME'
+    if parsed is not None:
+        # 코드는 확정하지 못했지만 WKT가 투영을 온전히 정의한다. 코드를 찍지 않고 그대로 쓴다.
+        return None, 'FROM_PRJ_WKT_NO_EPSG'
     return None, 'UNRECOGNISED_PRJ'
 
+
+def transformers(projection, crs, basis):
+    """(정방향, 역방향, 미터 단위 여부). 변환할 수 없으면 (None, None, False)."""
+    if basis == 'FROM_PRJ_WKT_NO_EPSG':
+        from pyproj import CRS, Transformer
+        parsed = CRS.from_wkt(projection)
+    elif crs and crs != 'EPSG:4326':
+        from pyproj import CRS, Transformer
+        parsed = CRS.from_user_input(crs)
+    else:
+        return None, None, False
+    forward = Transformer.from_crs(parsed, 'EPSG:4326', always_xy=True)
+    backward = Transformer.from_crs('EPSG:4326', parsed, always_xy=True)
+    metres = parsed.is_projected and all(
+        axis.unit_name in ('metre', 'meter') for axis in parsed.axis_info)
+    return forward.transform, backward.transform, metres
+
+
+def crs_label(crs, basis, projection):
+    if crs:
+        return crs
+    if basis == 'FROM_PRJ_WKT_NO_EPSG':
+        try:
+            from pyproj import CRS
+            return f'WKT:{CRS.from_wkt(projection).name}'
+        except Exception:
+            return 'WKT:UNNAMED'
+    return None
+
+
+# --------------------------------------------------------------------------- geometry
 
 def ring_area(ring):
     """부호 있는 면적. Shapefile 규약에서 외곽 ring은 시계방향이라 음수가 된다."""
@@ -148,9 +336,53 @@ def contains(point, outer, holes):
     return False
 
 
+def segment_distance(point, start, end):
+    px, py = point
+    x1, y1 = start
+    x2, y2 = end
+    dx, dy = x2 - x1, y2 - y1
+    if dx == 0 and dy == 0:
+        return ((px - x1) ** 2 + (py - y1) ** 2) ** 0.5
+    t = max(0.0, min(1.0, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)))
+    return ((px - (x1 + t * dx)) ** 2 + (py - (y1 + t * dy)) ** 2) ** 0.5
+
+
+def distance_to_rings(point, rings):
+    """가장 가까운 경계선까지의 거리. 좌표 단위를 그대로 쓴다(미터 좌표계면 미터)."""
+    best = None
+    for ring in rings:
+        for index in range(len(ring) - 1):
+            gap = segment_distance(point, ring[index], ring[index + 1])
+            best = gap if best is None else min(best, gap)
+    return best
+
+
 def wind(ring, clockwise):
     """GeoJSON(RFC 7946)은 외곽 반시계, 구멍 시계를 요구한다. 좌표는 그대로 두고 순서만 맞춘다."""
     return list(reversed(ring)) if (ring_area(ring) < 0) != clockwise else list(ring)
+
+
+def split_rings(shape):
+    """part 경계로 ring을 나눈다. 점이 4개 미만인 ring은 면이 아니므로 버린다."""
+    points = list(shape.points)
+    if not points:
+        return [], []
+    parts = list(shape.parts) + [len(points)]
+    rings = [points[parts[i]:parts[i + 1]] for i in range(len(parts) - 1)]
+    usable = [ring for ring in rings if len(ring) >= 4]
+    return rings, usable
+
+
+def classify_rings(rings):
+    """Shapefile 규약: 외곽은 시계방향(음수 면적), 구멍은 반시계방향."""
+    outer = [ring for ring in rings if ring_area(ring) < 0]
+    holes = [ring for ring in rings if ring_area(ring) >= 0]
+    if not outer:
+        # 규약을 지키지 않은 원천. 면적이 가장 큰 ring을 외곽으로 보고 나머지를 구멍으로 둔다.
+        largest = max(rings, key=lambda ring: abs(ring_area(ring)))
+        outer = [largest]
+        holes = [ring for ring in rings if ring is not largest]
+    return outer, holes
 
 
 def to_wgs84(shape, transformer):
@@ -159,20 +391,13 @@ def to_wgs84(shape, transformer):
     외곽/구멍 판정을 뒤집어 읽으면 서로 떨어진 두 구역이 '구멍 뚫린 한 구역'으로
     바뀐다. 그래서 Shapefile 규약(외곽=시계방향=음수 면적)을 그대로 따른다.
     """
-    points = [transformer(x, y) for x, y in shape.points] if transformer else list(shape.points)
-    parts = list(shape.parts) + [len(points)]
-    rings = [points[parts[i]:parts[i + 1]] for i in range(len(parts) - 1)]
-    rings = [ring for ring in rings if len(ring) >= 4]
+    _, rings = split_rings(shape)
     if not rings:
         return None, [], [], 'NO_RING'
+    if transformer:
+        rings = [[transformer(x, y) for x, y in ring] for ring in rings]
     closed = all(ring[0] == ring[-1] for ring in rings)
-    outer = [ring for ring in rings if ring_area(ring) < 0]
-    holes = [ring for ring in rings if ring_area(ring) >= 0]
-    if not outer:
-        # 규약을 지키지 않은 원천. 면적이 가장 큰 ring을 외곽으로 보고 나머지를 구멍으로 둔다.
-        largest = max(rings, key=lambda ring: abs(ring_area(ring)))
-        outer = [largest]
-        holes = [ring for ring in rings if ring is not largest]
+    outer, holes = classify_rings(rings)
     groups = [[wind(ring, False)] for ring in outer]
     for hole in holes:
         index = next((i for i, ring in enumerate(outer) if point_in_ring(hole[0], ring)), 0)
@@ -186,6 +411,86 @@ def to_wgs84(shape, transformer):
                                     for group in groups]}
     return geometry, outer, holes, ('VALID' if closed else 'RING_NOT_CLOSED')
 
+
+def within_sanity(rings):
+    """변환된 좌표가 서울 범위인지. 하나라도 벗어나면 좌표계를 잘못 읽은 것이다."""
+    for ring in rings:
+        for lng, lat in ring:
+            if not (SANITY_LON[0] <= lng <= SANITY_LON[1]):
+                return False
+            if not (SANITY_LAT[0] <= lat <= SANITY_LAT[1]):
+                return False
+    return True
+
+
+# --------------------------------------------------------------------------- schema
+
+def interpret_schema(fields, records, code_table, field_labels=None):
+    """역할마다 어떤 필드를 어떤 근거로 골랐는지 적는다. 근거 없이 매칭에 쓰지 않는다."""
+    report = {}
+    field_labels = field_labels or {}
+    for role, (plain, coded) in ROLE_FIELDS.items():
+        field = field_for(fields, plain)
+        basis, decode = ('FIELD_NAME', None) if field else ('UNRESOLVED', None)
+        if field is None:
+            field = field_for(fields, coded)
+        if field is None:
+            report[role] = {'field': None, 'basis': 'UNRESOLVED', 'field_label': None,
+                            'used_for_matching': False, 'samples': [], 'decode': None}
+            continue
+        values = [str(row[field]).strip() for row in records
+                  if row.get(field) not in (None, '', ' ')]
+        distinct = sorted(set(values))
+        label = field_labels.get(field.upper())
+        keywords = FIELD_LABEL_KEYWORDS.get(role, ())
+        if basis != 'FIELD_NAME':
+            if not distinct:
+                basis = 'EMPTY'
+            elif role == 'district' and all(value in SEOUL_SGG for value in distinct):
+                # 서울 자치구 코드 목록과 정확히 맞는다. 검증된 표로 풀어 쓴다.
+                basis, decode = 'SEOUL_DISTRICT_CODE', dict(SEOUL_SGG)
+            elif code_table and all(value in code_table for value in distinct):
+                basis, decode = 'CODE_TABLE', {v: code_table[v] for v in distinct}
+            elif label and any(word in label for word in keywords):
+                # 코드정의표가 이 필드의 뜻을 적어 두었다. 추측이 아니라 표를 따른다.
+                basis = 'CODE_TABLE_FIELD_LABEL'
+            elif any(any('\uac00' <= ch <= '\ud7a3' for ch in value) for value in distinct):
+                # 한글 값이지만 이 필드가 무엇을 뜻하는지 확인하지 못했다. 매칭에 쓰지 않는다.
+                basis = 'UNCONFIRMED_TEXT'
+            else:
+                basis = 'UNCONFIRMED_CODE'
+        samples = []
+        for value in values:
+            if value not in samples:
+                samples.append(value)
+            if len(samples) >= 5:
+                break
+        report[role] = {'field': field, 'basis': basis, 'field_label': label,
+                        'used_for_matching': basis in CONFIRMED_BASES,
+                        'samples': samples, 'decode': decode}
+    return report
+
+
+def role_value(row, schema, role):
+    """확인된 근거가 있는 역할만 값을 돌려준다. 코드값은 표로 풀어서 돌려준다."""
+    entry = schema.get(role) or {}
+    if not entry.get('used_for_matching') or not entry.get('field'):
+        return None
+    value = row.get(entry['field'])
+    if value in (None, '', ' '):
+        return None
+    text = str(value).strip()
+    decode = entry.get('decode')
+    return decode.get(text, text) if decode else text
+
+
+def schema_fingerprint(reader_fields):
+    """필드 이름·형식·길이를 한 줄로 요약한다. 다음 판과 비교할 때 쓴다."""
+    spec = ';'.join(f'{f[0]}:{f[1]}:{f[2]}' for f in reader_fields[1:])
+    return hashlib.sha256(spec.encode('utf-8')).hexdigest()
+
+
+# --------------------------------------------------------------------------- ZIP:ON
 
 def load_projects():
     canonical = json.loads((DATA / 'pilot_canonical_verified_20260927.json')
@@ -274,36 +579,75 @@ def match(project, records, protected):
             '신호는 있으나 자동 반영에 필요한 식별자 또는 정규화 사업명 일치가 부족합니다.')
 
 
+# --------------------------------------------------------------------------- 분석
+
 def analyse(archive):
-    reader, projection, stem, encoding = read_archive(archive)
-    crs, crs_basis = source_crs(projection)
-    transformer = None
-    if crs and crs != 'EPSG:4326':
-        from pyproj import Transformer
-        converter = Transformer.from_crs(crs, 'EPSG:4326', always_xy=True)
-        transformer = lambda x, y: converter.transform(x, y)
+    bundle = read_archive(archive)
+    reader = bundle['reader']
+    crs, crs_basis = source_crs(bundle['projection'])
+    forward, backward, metres = transformers(bundle['projection'], crs, crs_basis)
     fields = [f[0] for f in reader.fields[1:]]
-    records, geometry_kinds, invalid = [], {}, 0
+    raw_rows, shapes = [], []
     for shape_record in reader.iterShapeRecords():
-        attributes = dict(zip(fields, list(shape_record.record)))
-        geometry, outer, holes, validity = to_wgs84(shape_record.shape, transformer)
-        geometry_kinds[geometry['type'] if geometry else 'NONE'] = \
-            geometry_kinds.get(geometry['type'] if geometry else 'NONE', 0) + 1
+        raw_rows.append(dict(zip(fields, list(shape_record.record))))
+        shapes.append(shape_record.shape)
+    schema = interpret_schema(fields, raw_rows, bundle['code_table'],
+                              bundle['field_labels'])
+
+    records, kinds, invalid, empty, converted, outside = [], {}, 0, 0, 0, 0
+    for attributes, shape in zip(raw_rows, shapes):
+        geometry, outer, holes, validity = to_wgs84(shape, forward)
+        _, source_usable = split_rings(shape)
+        kind = geometry['type'] if geometry else 'NONE'
+        kinds[kind] = kinds.get(kind, 0) + 1
+        if geometry is None:
+            empty += 1
         if validity != 'VALID':
             invalid += 1
-        records.append({'name': pick(attributes, NAME_FIELDS),
-                        'official_id': pick(attributes, ID_FIELDS),
-                        'type': pick(attributes, TYPE_FIELDS),
-                        'district': pick(attributes, DISTRICT_FIELDS),
-                        'dong': pick(attributes, DONG_FIELDS),
-                        'address': pick(attributes, ('주소', '소재지', 'ADDR', 'LOCATION')),
-                        'attributes': attributes, 'geometry': geometry,
-                        'outer_rings': outer, 'hole_rings': holes,
-                        'geometry_valid': validity == 'VALID', 'validity': validity})
-    return {'shapefile': stem, 'dbf_encoding': encoding, 'fields': fields, 'record_count': len(records),
-            'geometry_types': geometry_kinds, 'invalid_geometry': invalid,
-            'source_crs': crs, 'source_crs_basis': crs_basis, 'projection_wkt': projection,
-            'converted_crs': 'EPSG:4326', 'records': records}
+        sane = bool(geometry) and within_sanity(outer + holes)
+        if geometry is not None:
+            converted += 1
+            if not sane:
+                outside += 1
+        records.append({
+            'name': role_value(attributes, schema, 'name'),
+            'official_id': role_value(attributes, schema, 'official_id'),
+            'type': role_value(attributes, schema, 'type'),
+            'district': role_value(attributes, schema, 'district'),
+            'dong': role_value(attributes, schema, 'dong'),
+            'address': role_value(attributes, schema, 'address'),
+            'attributes': attributes, 'geometry': geometry,
+            'outer_rings': outer, 'hole_rings': holes,
+            'source_rings': source_usable,
+            'geometry_valid': validity == 'VALID' and sane,
+            'validity': validity, 'within_seoul': sane})
+
+    identifiers = [r['official_id'] for r in records if r['official_id']]
+    shapes_seen = {}
+    for record in records:
+        if not record['geometry']:
+            continue
+        digest = hashlib.sha256(json.dumps(
+            [[[round(v, 7) for v in p] for p in ring] for ring in record['outer_rings']],
+            sort_keys=True).encode('utf-8')).hexdigest()
+        shapes_seen[digest] = shapes_seen.get(digest, 0) + 1
+    return {'shapefile': bundle['shapefile'], 'dbf_encoding': bundle['dbf_encoding'],
+            'archive_files': bundle['archive_files'],
+            'extra_shapefiles': bundle['extra_shapefiles'],
+            'code_table_file': bundle['code_table_file'],
+            'code_table_entries': len(bundle['code_table']),
+            'code_table_field_labels': len(bundle['field_labels']),
+            'fields': fields, 'field_spec': [list(f) for f in reader.fields[1:]],
+            'schema_fingerprint': schema_fingerprint(reader.fields),
+            'schema': schema, 'record_count': len(records), 'geometry_types': kinds,
+            'invalid_geometry': invalid, 'empty_geometry': empty,
+            'converted_to_epsg4326': converted, 'outside_seoul': outside,
+            'duplicate_identifiers': len(identifiers) - len(set(identifiers)),
+            'duplicate_geometry': sum(count - 1 for count in shapes_seen.values() if count > 1),
+            'source_crs': crs, 'source_crs_basis': crs_basis,
+            'source_crs_label': crs_label(crs, crs_basis, bundle['projection']),
+            'projection_wkt': bundle['projection'], 'converted_crs': 'EPSG:4326',
+            'source_units_metre': metres, 'to_source': backward, 'records': records}
 
 
 def build(archive):
@@ -314,14 +658,23 @@ def build(archive):
     for project in projects:
         status, chosen, signals, reason = match(project, survey['records'], protected)
         record = (chosen or {}).get('record') if chosen else None
-        inside, distance = None, None
+        inside, distance, basis = None, None, None
         if record and record['outer_rings'] and project['longitude'] is not None:
             point = (project['longitude'], project['latitude'])
             inside = contains(point, record['outer_rings'], record['hole_rings'])
-            distance = 0.0 if inside else None
+            distance, basis = point_distance(project, record, survey)
+        excluded = None
+        if status == 'EXACT':
+            if not record['geometry_valid']:
+                excluded = 'GEOMETRY_NOT_VALID'
+            elif inside is False:
+                excluded = 'REPRESENTATIVE_POINT_OUTSIDE_POLYGON'
+            elif inside is None:
+                excluded = 'NO_REPRESENTATIVE_POINT'
         rows.append({
             'zipon_project_id': project['project_id'],
             'zipon_project_name': project['project_name'],
+            'district': project['district'], 'dong': project['dong'],
             'project_type': project['project_type'], 'program': project['program'],
             'official_record_id': (record or {}).get('official_id'),
             'official_name': (record or {}).get('name'),
@@ -329,36 +682,135 @@ def build(archive):
             'match_status': status, 'match_signals': signals, 'confidence_reason': reason,
             'geometry_type': ((record or {}).get('geometry') or {}).get('type'),
             'geometry_valid': (record or {}).get('geometry_valid'),
-            'source_crs': survey['source_crs'], 'converted_crs': survey['converted_crs'],
+            'geometry_validity': (record or {}).get('validity'),
+            'source_crs': survey['source_crs_label'], 'converted_crs': survey['converted_crs'],
             'representative_point_inside_polygon': inside,
-            'distance_to_polygon_m': distance,
+            'distance_to_polygon_m': distance, 'distance_basis': basis,
+            'auto_apply_candidate': status == 'EXACT' and excluded is None,
+            'excluded_reason': excluded,
             'source_dataset': SOURCE['dataset'], 'source_version': SOURCE['version']})
-        if status == 'EXACT' and record and record['geometry']:
+        if status == 'EXACT' and excluded is None and record['geometry']:
             features.append({'type': 'Feature', 'geometry': record['geometry'],
                              'properties': {'zipon_project_id': project['project_id'],
                                             'zipon_project_name': project['project_name'],
                                             'official_name': record['name'],
                                             'official_record_id': record['official_id'],
                                             'representative_point_inside_polygon': inside,
+                                            'distance_to_polygon_m': distance,
                                             'review_only': True,
                                             'legal_note': SOURCE['legal_note']}})
     return survey, rows, features
 
 
-def register(archive):
-    """어떤 원천을 어떤 판으로 받았는지만 적는다. 원천 파일은 수정하지 않는다."""
+def point_distance(project, record, survey):
+    """대표좌표에서 폴리곤 경계까지의 거리(m). 단위를 확신할 수 없으면 None."""
+    inside = contains((project['longitude'], project['latitude']),
+                      record['outer_rings'], record['hole_rings'])
+    if inside:
+        return 0.0, 'INSIDE_POLYGON'
+    if survey['source_units_metre'] and survey['to_source'] and record['source_rings']:
+        x, y = survey['to_source'](project['longitude'], project['latitude'])
+        gap = distance_to_rings((x, y), record['source_rings'])
+        return (round(gap, 1) if gap is not None else None), 'SOURCE_CRS_METRES'
+    try:
+        from pyproj import Geod
+        geod = Geod(ellps='WGS84')
+        best = None
+        for ring in record['outer_rings']:
+            for lng, lat in ring:
+                _, _, gap = geod.inv(project['longitude'], project['latitude'], lng, lat)
+                best = gap if best is None else min(best, gap)
+        return (round(best, 1) if best is not None else None), 'GEOD_NEAREST_VERTEX'
+    except Exception:
+        return None, 'UNKNOWN_UNITS'
+
+
+# --------------------------------------------------------------------------- 산출
+
+def archive_digest(archive):
+    digest = hashlib.sha256()
+    with open(archive, 'rb') as handle:
+        for block in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def registry_entry(archive):
+    if not REGISTRY_FILE.exists():
+        return None
+    registry = json.loads(REGISTRY_FILE.read_text(encoding='utf-8'))
+    return next((s for s in registry.get('sources', [])
+                 if s.get('dataset_id') == SOURCE['dataset_id']), None)
+
+
+def register(archive, survey=None):
+    """어떤 원천을 어떤 판으로 받았는지 적는다. 원천 파일은 수정하지 않는다.
+
+    다음 판이 들어왔을 때 hash만 비교해서 다시 분석할지 판단할 수 있게 남긴다.
+    """
     registry = {'format': 'zipon-source-registry-v1', 'sources': []}
     if REGISTRY_FILE.exists():
         registry = json.loads(REGISTRY_FILE.read_text(encoding='utf-8'))
     entry = dict(SOURCE, archive=archive.name, acquired=True,
                  acquisition_status='PRESENT', modified=False,
-                 place_under=str(REFERENCE.relative_to(ROOT)))
+                 place_under=shown(REFERENCE),
+                 source_sha256=archive_digest(archive),
+                 source_bytes=archive.stat().st_size,
+                 recorded_at=now())
+    if survey:
+        entry.update({'shapefile': survey['shapefile'], 'dbf_encoding': survey['dbf_encoding'],
+                      'source_crs': survey['source_crs_label'],
+                      'source_crs_basis': survey['source_crs_basis'],
+                      'record_count': survey['record_count'],
+                      'schema_fingerprint': survey['schema_fingerprint'],
+                      'code_table_file': survey['code_table_file'],
+                      'analysed_at': now()})
     others = [s for s in registry.get('sources', [])
-              if (s.get('dataset_id'), s.get('version')) != (SOURCE['dataset_id'], SOURCE['version'])]
+              if s.get('dataset_id') != SOURCE['dataset_id']]
     registry['sources'] = others + [entry]
     registry['recorded_at'] = now()
+    registry['note'] = ('원천 파일은 수정하지 않는다. 다음 판이 오면 source_sha256을 비교해서 '
+                        '같으면 재분석하지 않고, 다르면 다시 분석한다.')
     REGISTRY_FILE.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n',
                              encoding='utf-8')
+    return entry
+
+
+def summarise(survey, rows, features, archive):
+    counts = {}
+    for row in rows:
+        counts[row['match_status']] = counts.get(row['match_status'], 0) + 1
+    exact = [r for r in rows if r['match_status'] == 'EXACT']
+    totals = dict(counts, zipon_projects=len(rows),
+                  exact_with_valid_polygon=sum(1 for r in exact if r['geometry_valid']),
+                  exact_valid_inside=sum(1 for r in exact if r['geometry_valid']
+                                         and r['representative_point_inside_polygon']),
+                  exact_valid_outside=sum(1 for r in exact if r['geometry_valid']
+                                          and r['representative_point_inside_polygon'] is False),
+                  exact_valid_no_point=sum(1 for r in exact if r['geometry_valid']
+                                           and r['representative_point_inside_polygon'] is None),
+                  exact_invalid_geometry=sum(1 for r in exact if not r['geometry_valid']),
+                  auto_apply_candidates=sum(1 for r in rows if r['auto_apply_candidate']),
+                  representative_point_inside=sum(
+                      1 for r in rows if r['representative_point_inside_polygon']))
+    shapefile_keys = ('shapefile', 'dbf_encoding', 'fields', 'field_spec', 'schema_fingerprint',
+                      'record_count', 'geometry_types', 'invalid_geometry', 'empty_geometry',
+                      'converted_to_epsg4326', 'outside_seoul', 'duplicate_identifiers',
+                      'duplicate_geometry', 'source_crs', 'source_crs_basis', 'source_crs_label',
+                      'source_units_metre', 'converted_crs', 'archive_files',
+                      'extra_shapefiles', 'code_table_file', 'code_table_entries',
+                      'code_table_field_labels')
+    return {'format': 'zipon-polygon-match-review-v1', 'generated_at': now(),
+            'db_write': False, 'polygon_written_to_production': False,
+            'source': dict(SOURCE, archive=archive.name,
+                           source_sha256=archive_digest(archive),
+                           source_bytes=archive.stat().st_size),
+            'shapefile': {k: survey[k] for k in shapefile_keys},
+            'schema': survey['schema'],
+            'totals': totals,
+            'exact': [r for r in exact],
+            'items': rows,
+            'review_geojson_features': len(features)}
 
 
 def main():
@@ -366,31 +818,37 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--archive', type=Path, help='서울시 공식 SHP zip 경로')
     ap.add_argument('--write', action='store_true')
+    ap.add_argument('--if-changed', action='store_true',
+                    help='registry의 source_sha256과 같으면 재분석하지 않는다')
     args = ap.parse_args()
     if args.archive is None or not args.archive.exists():
         print(json.dumps({'status': 'SOURCE_FILE_NOT_PRESENT', 'db_write': False,
                           'expected_file': SOURCE['file'],
                           'portal_url': SOURCE['portal_url'],
-                          'place_under': str(REFERENCE.relative_to(ROOT))}, ensure_ascii=False))
+                          'place_under': shown(REFERENCE)}, ensure_ascii=False))
         return 0
+    if args.if_changed:
+        known = registry_entry(args.archive)
+        if known and known.get('source_sha256') == archive_digest(args.archive) \
+                and REVIEW_FILE.exists():
+            print(json.dumps({'status': 'SOURCE_UNCHANGED', 'db_write': False,
+                              'source_sha256': known['source_sha256'],
+                              'review_file': shown(REVIEW_FILE)},
+                             ensure_ascii=False))
+            return 0
     survey, rows, features = build(args.archive)
-    counts = {}
-    for row in rows:
-        counts[row['match_status']] = counts.get(row['match_status'], 0) + 1
-    review = {'format': 'zipon-polygon-match-review-v1', 'generated_at': now(),
-              'db_write': False, 'polygon_written_to_production': False,
-              'source': dict(SOURCE, archive=args.archive.name),
-              'shapefile': {k: survey[k] for k in
-                            ('shapefile', 'dbf_encoding', 'fields', 'record_count', 'geometry_types',
-                             'invalid_geometry', 'source_crs', 'source_crs_basis',
-                             'converted_crs')},
-              'totals': dict(counts, zipon_projects=len(rows),
-                             exact_with_valid_polygon=sum(
-                                 1 for r in rows if r['match_status'] == 'EXACT'
-                                 and r['geometry_valid']),
-                             representative_point_inside=sum(
-                                 1 for r in rows if r['representative_point_inside_polygon'])),
-              'items': rows}
+    review = summarise(survey, rows, features, args.archive)
+    sane = survey['outside_seoul'] == 0 and survey['converted_to_epsg4326'] > 0
+    if not sane:
+        # 좌표계를 잘못 읽었다. 이 상태로 매칭 결과를 산출물로 남기지 않는다.
+        print(json.dumps({'status': 'CRS_SANITY_FAILED', 'db_write': False,
+                          'source_crs': survey['source_crs_label'],
+                          'source_crs_basis': survey['source_crs_basis'],
+                          'converted_to_epsg4326': survey['converted_to_epsg4326'],
+                          'outside_seoul': survey['outside_seoul'],
+                          'expected_longitude': list(SANITY_LON),
+                          'expected_latitude': list(SANITY_LAT)}, ensure_ascii=False))
+        return 2
     if args.write:
         REFERENCE.mkdir(parents=True, exist_ok=True)
         REVIEW_FILE.write_text(json.dumps(review, ensure_ascii=False, indent=2) + '\n',
@@ -399,10 +857,12 @@ def main():
             {'type': 'FeatureCollection', 'review_only': True,
              'legal_note': SOURCE['legal_note'], 'features': features},
             ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        register(args.archive)
-    print(json.dumps({'record_count': survey['record_count'],
+        register(args.archive, survey)
+    print(json.dumps({'status': 'ANALYSED', 'record_count': survey['record_count'],
                       'geometry_types': survey['geometry_types'],
-                      'source_crs': survey['source_crs'], 'totals': review['totals'],
+                      'source_crs': survey['source_crs_label'],
+                      'source_crs_basis': survey['source_crs_basis'],
+                      'totals': review['totals'],
                       'exact_features': len(features), 'db_write': False,
                       'written': bool(args.write)}, ensure_ascii=False))
     return 0
