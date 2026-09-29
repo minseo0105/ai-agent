@@ -46,3 +46,6 @@ reports/zipon-sql-review/
 /data/development/coordinate_*.pending
 /data/development/coordinate_*.tmp
 /reports/zipon-final-validation.json
+
+# 서울시 공식 공간정보 원본 압축본은 내려받아 두고 커밋하지 않는다.
+data/reference/*.zip

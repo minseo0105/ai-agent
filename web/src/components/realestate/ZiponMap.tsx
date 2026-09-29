@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DevelopmentMapPoint, MapConfig } from "@/lib/realestate";
 import { getProjectCoordinate, type ProjectCoordinate } from "@/lib/projectCoordinate";
+import { boundaryPoints, verifiedBoundaryPolygons } from "@/lib/projectBoundary";
 import {
   loadNaverMaps,
   type NaverInfoWindow,
@@ -113,6 +114,10 @@ export default function ZiponMap({
   bounds.current = onBoundsChange;
 
   /** 좌표는 공통 helper로만 읽는다. 메인 지도와 상세 지도가 같은 값을 쓴다. */
+  // points는 부모에서 매 렌더 새 배열로 올 수 있다. 내용이 같으면 같은 것으로 본다.
+  const signature = points
+    .map((point) => `${point.project_id}:${point.latitude},${point.longitude}`)
+    .join("|");
   const located = useMemo(
     () =>
       points
@@ -120,12 +125,18 @@ export default function ZiponMap({
         .filter((entry): entry is { point: DevelopmentMapPoint; coordinate: ProjectCoordinate } =>
           entry.coordinate !== null,
         ),
-    [points],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [signature],
   );
   const selectedEntry = useMemo(
     () => located.find((entry) => entry.point.project_id === selectedId) ?? null,
     [located, selectedId],
   );
+
+  // 생성 시점의 목표 중심. 상세 지도는 사업이 하나뿐이므로 처음부터 그 자리에서 연다.
+  const initialCentre = useRef<ProjectCoordinate | null>(null);
+  initialCentre.current =
+    initialCentre.current ?? (compact ? selectedEntry?.coordinate ?? located[0]?.coordinate ?? null : null);
 
   useEffect(() => {
     if (!sdk) return;
@@ -134,9 +145,12 @@ export default function ZiponMap({
     loadNaverMaps(sdk)
       .then((loaded) => {
         if (cancelled || !container.current) return;
+        const centre = initialCentre.current;
         created = new loaded.Map(container.current, {
-          center: new loaded.LatLng(SEOUL.lat, SEOUL.lng),
-          zoom: compact ? 16 : 12,
+          center: centre
+            ? new loaded.LatLng(centre.lat, centre.lng)
+            : new loaded.LatLng(SEOUL.lat, SEOUL.lng),
+          zoom: centre ? 17 : compact ? 16 : 12,
           mapTypeId: loaded.MapTypeId.NORMAL,
           scaleControl: false,
           logoControl: true,
@@ -200,21 +214,20 @@ export default function ZiponMap({
       // NAVER SDK는 (위도, 경도) 순서다. API는 longitude/latitude로 준다.
       const position = new api.LatLng(coordinate.lat, coordinate.lng);
       // 공식 경계가 확인된 사업만 면으로. 오늘은 해당 사업이 없어 아무 면도 그리지 않는다.
-      if (point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary) {
-        const paths = point.boundary as { coordinates?: number[][][] };
-        const ring = paths.coordinates?.[0];
-        if (ring) {
-          overlays.current.push(
-            new api.Polygon({
-              map: instance,
-              paths: [ring.map(([lng, lat]) => new api.LatLng(lat, lng))],
-              strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-              strokeWeight: 2,
-              fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-              fillOpacity: 0.12,
-            }),
-          );
-        }
+      // MultiPolygon이면 구역마다 하나씩 그린다. 첫 구역만 그리거나 떨어진 두 구역을
+      // 한 구역으로 합치지 않는다.
+      for (const part of verifiedBoundaryPolygons(point)) {
+        overlays.current.push(
+          new api.Polygon({
+            map: instance,
+            paths: part.map((shape) => shape.map(([lng, lat]) => new api.LatLng(lat, lng))),
+            strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+            strokeWeight: 2.5,
+            strokeOpacity: 0.95,
+            fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+            fillOpacity: 0.18,
+          }),
+        );
       }
       const selected = selectedId === point.project_id;
       const existing = markers.current.get(point.project_id);
@@ -274,10 +287,11 @@ export default function ZiponMap({
     }
     const { point, coordinate } = selectedEntry;
     const position = new api.LatLng(coordinate.lat, coordinate.lng);
+    // 확인된 공식 경계가 있으면 그 범위에 화면을 맞춘다. 없으면 대표 위치로 간다.
+    const verifiedBoundary = boundaryPoints(verifiedBoundaryPolygons(point));
     // 접혀 있던 영역에서 만들어진 지도는 크기가 0이라 중심이 어긋난다. 크기가 확정된
     // 다음 프레임에 resize를 알리고 다시 중심을 잡는다.
     const settle = () => {
-      api.Event.trigger(instance, "resize");
       if (compact) {
         instance.setCenter(position);
         instance.setZoom(17, false);
@@ -285,20 +299,39 @@ export default function ZiponMap({
         instance.panTo(position, { duration: 320 });
         if (instance.getZoom() < 15) instance.setZoom(15, true);
       }
+      // 접혀 있던 영역에서 만들어진 지도에 크기 변경을 알린다. 이 호출이 실패하더라도
+      // 중심은 위에서 이미 맞췄으므로 지도가 서울 한복판에 남지 않는다.
+      try {
+        api.Event.trigger(instance, "resize");
+        if (compact) instance.setCenter(position);
+      } catch {
+        // SDK 버전에 따라 trigger가 없을 수 있다. 중심 잡기는 영향받지 않는다.
+      }
     };
-    settle();
-    const frame = window.requestAnimationFrame(settle);
-    // 선택 사업 주변 표시. '대표위치 주변'이며 사업구역 경계가 아니다.
-    circle.current = new api.Circle({
-      map: instance,
-      center: position,
-      radius: 120,
-      strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-      strokeWeight: 1,
-      strokeOpacity: 0.7,
-      fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-      fillOpacity: 0.08,
+    if (!verifiedBoundary.length) settle();
+    const frame = window.requestAnimationFrame(() => {
+      if (verifiedBoundary.length) return;
+      settle();
     });
+    if (verifiedBoundary.length) {
+      // 공식 경계가 있으면 그것이 구역이다. 대표위치 원은 그리지 않는다. 원을 구역처럼
+      // 보이게 두면 반경 120m가 사업 범위인 것처럼 읽힌다.
+      const box = new api.LatLngBounds();
+      for (const [lng, lat] of verifiedBoundary) box.extend(new api.LatLng(lat, lng));
+      instance.fitBounds(box, { top: 16, right: 16, bottom: 16, left: 16 });
+    } else {
+      // 검증된 경계가 없을 때만. '대표위치 주변'이며 사업구역 경계가 아니다.
+      circle.current = new api.Circle({
+        map: instance,
+        center: position,
+        radius: 120,
+        strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+        strokeWeight: 1,
+        strokeOpacity: 0.7,
+        fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+        fillOpacity: 0.08,
+      });
+    }
     const marker = markers.current.get(point.project_id);
     if (info.current && marker) {
       info.current.setContent(infoHtml(point));

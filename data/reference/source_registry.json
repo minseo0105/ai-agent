@@ -1,0 +1,22 @@
+{
+  "format": "zipon-source-registry-v1",
+  "recorded_at": "2026-09-28T23:57:19.831886+00:00",
+  "note": "원천 파일은 수정하지 않는다. 이 파일은 어떤 원천을 어떤 판으로 받았는지만 적는다.",
+  "sources": [
+    {
+      "provider": "서울특별시",
+      "dataset": "도시계획사업 현황(서울플랜+) 공간정보",
+      "dataset_id": "OA-22712",
+      "version": "202609",
+      "file": "532_UQ120_도시계획사업(서울플랜+)_202609.zip",
+      "portal_url": "https://data.seoul.go.kr/dataList/OA-22712/S/1/datasetView.do",
+      "legal_note": "법적 효력 없음 / 참고자료",
+      "archive": null,
+      "acquired": false,
+      "acquisition_status": "BLOCKED_BY_NETWORK_POLICY",
+      "modified": false,
+      "place_under": "data/reference/",
+      "acquisition_note": "실행환경에서 data.seoul.go.kr / datafile.seoul.go.kr 로의 CONNECT 가 403 으로 거부된다. 비공식 자료로 대체하지 않았다."
+    }
+  ]
+}

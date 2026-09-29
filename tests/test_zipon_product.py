@@ -788,7 +788,9 @@ class MapScreenTests(unittest.TestCase):
 
     def test_only_a_verified_boundary_is_drawn_as_an_area(self):
         source = read('components/realestate/ZiponMap.tsx')
-        self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', source)
+        # 확인 여부 판정은 공통 helper 한 곳에만 있다.
+        self.assertIn('verifiedBoundaryPolygons(point)', source)
+        self.assertIn('boundary_status !== OFFICIAL', read('lib/projectBoundary.ts'))
         # 면은 Polygon으로만 그리고, 대표좌표 주변 원은 사업구역이라고 부르지 않는다.
         self.assertIn('api.Polygon', source)
         self.assertIn('api.Circle', source)
@@ -1104,7 +1106,7 @@ class MapFirstScreenTests(unittest.TestCase):
         self.assertIn('TYPE_COLOR', map_source)
         self.assertIn('PROGRAM_RING', map_source)
         self.assertIn('point.program_layer', map_source)
-        self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', map_source)
+        self.assertIn('verifiedBoundaryPolygons(point)', map_source)
         self.assertIn('선택 부동산', map_source)
 
     def test_the_legend_names_the_marker_kinds(self):
@@ -2600,7 +2602,7 @@ class NaverDynamicMapTests(unittest.TestCase):
         self.assertIn('대표위치 주변', self.map_source)
         # 면은 공식 경계가 확인된 사업만. 지금은 그런 사업이 없어 아무 면도 그려지지 않는다.
         polygon = self.map_source.split('api.Polygon', 1)[0]
-        self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', polygon)
+        self.assertIn('verifiedBoundaryPolygons(point)', polygon)
         # INSIDE는 주석에서 '하지 않는다'고 적는 것 말고 코드에 나오지 않아야 한다.
         code = [line for line in self.map_source.splitlines()
                 if 'INSIDE' in line and not line.lstrip().startswith(('*', '//', '/*'))]
@@ -3012,13 +3014,23 @@ class MiniMapLifecycleTests(unittest.TestCase):
         self.assertIn('}, [api, instance, selectedEntry, located, compact, property]);',
                       self.map_source)
 
-    def test_a_collapsed_container_is_resized_before_centring(self):
+    def test_a_collapsed_container_is_resized_after_the_centre_is_set(self):
         self.assertIn('api.Event.trigger(instance, "resize")', self.map_source)
-        self.assertIn('window.requestAnimationFrame(settle)', self.map_source)
+        self.assertIn('window.requestAnimationFrame(', self.map_source)
         self.assertIn('window.cancelAnimationFrame(frame)', self.map_source)
-        # resize가 중심 잡기보다 먼저여야 한다.
         settle = self.map_source.split('const settle = () => {', 1)[1]
-        self.assertLess(settle.index('resize'), settle.index('setCenter'))
+        # 중심을 먼저 잡고 resize는 보조로 한다. resize가 실패해도 지도가 서울에 남지 않는다.
+        self.assertLess(settle.index('setCenter'), settle.index('Event.trigger'))
+        self.assertIn('} catch {', settle)
+
+    def test_the_map_opens_already_centred_on_its_project(self):
+        # 나중 효과가 옮겨 주기를 기다리지 않는다. 그 효과가 한 번이라도 실패하면
+        # 서울 기본 중심이 그대로 남아 '다른 지역'이 보인다.
+        self.assertIn('const initialCentre = useRef<ProjectCoordinate | null>(null)',
+                      self.map_source)
+        self.assertIn('center: centre', self.map_source)
+        self.assertIn('new loaded.LatLng(centre.lat, centre.lng)', self.map_source)
+        self.assertIn('zoom: centre ? 17 :', self.map_source)
 
     def test_switching_projects_moves_the_existing_marker(self):
         self.assertIn('existing.setPosition(position)', self.map_source)
@@ -3037,3 +3049,405 @@ class MiniMapLifecycleTests(unittest.TestCase):
         # 카드는 좌표를 직접 만들지 않고 같은 point를 넘긴다.
         self.assertIn('points={[point]}', card)
         self.assertIn('pointById.get(p.project_id) ?? null', tab)
+
+
+POLYGON_PRJ = ('PROJCS["Korea 2000 / Central Belt 2010",GEOGCS["Korea 2000",'
+               'DATUM["Geocentric_datum_of_Korea",SPHEROID["GRS 1980",6378137,298.257222101]],'
+               'PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],'
+               'PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",38],'
+               'PARAMETER["central_meridian",127],PARAMETER["false_easting",200000],'
+               'PARAMETER["false_northing",600000],UNIT["metre",1],AUTHORITY["EPSG","5186"]]')
+# 실제 운영 좌표 위에 얹은 합성 원천이다. 공식 파일이 아니고, 폴리곤으로 쓰이지도 않는다.
+# 서울시 SHP와 같은 모양(cp949 DBF, EPSG:5186, 시계방향 외곽 ring)만 흉내낸다.
+POLYGON_FIXTURE = (
+    ('강동2단지아파트 재건축정비사업조합', '재건축', '강동구', '암사동', 'gangdong2',
+     '서울특별시 강동구 암사동 413', (37.5535291, 127.1395207), 'plain'),
+    ('마천2재정비촉진구역 주택재개발정비사업', '재개발', '송파구', '마천동', 'machun2',
+     '서울특별시 송파구 마천동 323', (37.4959174, 127.1515392), 'plain'),
+    ('고덕강일1역세권 재개발사업', '재개발', '강동구', '고덕동', 'gokang1-a',
+     '서울특별시 강동구 고덕동 294', (37.5606936, 127.1578851), 'hole'),
+    ('고덕강일1역세권 재개발사업', '재개발', '강동구', '고덕동', 'gokang1-b',
+     '서울특별시 강동구 고덕동 295', (37.5610000, 127.1580000), 'multi'),
+    ('강동역세권2구역 도시정비형 재개발사업 예정구역', '재개발', '', '', '', '',
+     (37.5349603, 127.1295532), 'plain'),
+)
+
+
+def polygon_square(x, y, half, clockwise=True):
+    ring = [(x - half, y - half), (x - half, y + half), (x + half, y + half),
+            (x + half, y - half), (x - half, y - half)]
+    return ring if clockwise else list(reversed(ring))
+
+
+def build_polygon_fixture(directory, encoding='cp949', with_prj=True):
+    """cp949 DBF + EPSG:5186 + 시계방향 ring 으로 된 SHP zip 을 만든다."""
+    import shapefile
+    import zipfile
+    from pyproj import Transformer
+    to_source = Transformer.from_crs('EPSG:4326', 'EPSG:5186', always_xy=True)
+    stem = directory / 'fixture'
+    writer = shapefile.Writer(str(stem), shapeType=shapefile.POLYGON, encoding=encoding)
+    for field in ('사업명', '사업구분', '자치구', '법정동', '관리번호', '소재지'):
+        writer.field(field, 'C', 80)
+    for name, kind, district, dong, official_id, address, (lat, lng), shape in POLYGON_FIXTURE:
+        x, y = to_source.transform(lng, lat)
+        if shape == 'plain':
+            parts = [polygon_square(x, y, 150)]
+        elif shape == 'hole':
+            # 외곽은 시계방향, 구멍은 반시계방향. Shapefile 규약 그대로다.
+            parts = [polygon_square(x, y, 300), polygon_square(x + 200, y + 200, 40, False)]
+        else:
+            parts = [polygon_square(x, y, 150), polygon_square(x + 600, y, 150)]
+        writer.poly(parts)
+        writer.record(name, kind, district, dong, official_id, address)
+    writer.close()
+    if with_prj:
+        Path(str(stem) + '.prj').write_text(POLYGON_PRJ, encoding='utf-8')
+    archive = directory / '532_UQ120_synthetic.zip'
+    with zipfile.ZipFile(archive, 'w') as bundle:
+        for extension in ('shp', 'dbf', 'shx') + (('prj',) if with_prj else ()):
+            bundle.write(str(stem) + '.' + extension,
+                         f'532_UQ120_도시계획사업(서울플랜+)_202609.{extension}')
+    return archive
+
+
+class PolygonPipelineTests(unittest.TestCase):
+    """서울시 공식 SHP를 읽고 130건과 맞추는 경로. 합성 원천으로 돌려 본다.
+
+    공식 파일은 이 실행환경에서 내려받을 수 없어서, 같은 모양의 합성 SHP로
+    파이프라인이 실제로 도는지를 고정한다. 이 테스트는 DB에 아무것도 쓰지 않는다.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        try:
+            import shapefile  # noqa: F401
+            import pyproj  # noqa: F401
+        except ImportError as error:  # pragma: no cover
+            raise unittest.SkipTest(f'shapefile/pyproj not available: {error}')
+        import tempfile
+        import analyze_seoul_polygon_source as pipeline
+        cls.pipeline = pipeline
+        cls.directory = tempfile.TemporaryDirectory()
+        cls.archive = build_polygon_fixture(Path(cls.directory.name))
+        cls.survey, cls.rows, cls.features = pipeline.build(cls.archive)
+        cls.by_id = {row['official_id']: row for row in cls.survey['records']}
+        cls.by_project = {row['zipon_project_id']: row for row in cls.rows}
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.directory.cleanup()
+
+    def status(self, name):
+        return next(row['match_status'] for row in self.rows if row['zipon_project_name'] == name)
+
+    def test_the_dbf_encoding_is_detected_so_field_names_do_not_silently_break(self):
+        # 인코딩을 단정해서 틀리면 필드명이 깨지고, 오류 없이 '매칭 0건'이 된다.
+        self.assertEqual(self.survey['dbf_encoding'], 'cp949')
+        self.assertEqual(self.survey['fields'],
+                         ['사업명', '사업구분', '자치구', '법정동', '관리번호', '소재지'])
+        self.assertEqual(self.survey['record_count'], len(POLYGON_FIXTURE))
+
+    def test_a_utf8_source_is_read_as_utf8(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            archive = build_polygon_fixture(Path(directory), encoding='utf-8')
+            survey = self.pipeline.analyse(archive)
+        self.assertEqual(survey['dbf_encoding'], 'utf-8')
+        self.assertIn('사업명', survey['fields'])
+
+    def test_a_truncated_field_name_still_resolves(self):
+        # DBF 필드명은 잘릴 수 있다. 양방향으로 봐야 '사업명'이 '사업'에도 걸린다.
+        self.assertEqual(self.pipeline.pick({'사업': '가락시영'}, self.pipeline.NAME_FIELDS),
+                         '가락시영')
+        self.assertIsNone(self.pipeline.pick({'사업명': ' '}, self.pipeline.NAME_FIELDS))
+
+    def test_the_crs_comes_from_the_prj_and_is_never_guessed(self):
+        self.assertEqual(self.survey['source_crs'], 'EPSG:5186')
+        self.assertEqual(self.survey['source_crs_basis'], 'FROM_PRJ_AUTHORITY')
+        self.assertEqual(self.survey['converted_crs'], 'EPSG:4326')
+        self.assertEqual(self.pipeline.source_crs(None), (None, 'NO_PRJ_FILE'))
+        self.assertEqual(self.pipeline.source_crs('PROJCS["nothing known"]'),
+                         (None, 'UNRECOGNISED_PRJ'))
+        self.assertEqual(
+            self.pipeline.source_crs('PROJCS["Korea 2000 / Unified Coordinate System"]'),
+            ('EPSG:5179', 'FROM_PRJ_NAME'))
+
+    def test_a_source_without_a_prj_is_not_converted_on_a_guess(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            archive = build_polygon_fixture(Path(directory), with_prj=False)
+            survey = self.pipeline.analyse(archive)
+        self.assertIsNone(survey['source_crs'])
+        self.assertEqual(survey['source_crs_basis'], 'NO_PRJ_FILE')
+
+    def test_the_converted_coordinates_land_in_seoul_in_lon_lat_order(self):
+        ring = self.by_id['gangdong2']['geometry']['coordinates'][0]
+        for longitude, latitude in ring:
+            self.assertTrue(126.7 < longitude < 127.3, longitude)
+            self.assertTrue(37.4 < latitude < 37.7, latitude)
+
+    def test_geometry_is_valid_and_typed_by_its_ring_layout(self):
+        self.assertEqual(self.survey['invalid_geometry'], 0)
+        self.assertEqual(self.survey['geometry_types'], {'Polygon': 4, 'MultiPolygon': 1})
+        hole = self.by_id['gokang1-a']
+        self.assertEqual(hole['geometry']['type'], 'Polygon')
+        self.assertEqual(len(hole['geometry']['coordinates']), 2)
+        self.assertEqual(len(hole['hole_rings']), 1)
+        separate = self.by_id['gokang1-b']
+        # 떨어져 있는 두 외곽 구역은 '구멍 뚫린 한 구역'이 되어서는 안 된다.
+        self.assertEqual(separate['geometry']['type'], 'MultiPolygon')
+        self.assertEqual(len(separate['geometry']['coordinates']), 2)
+        self.assertEqual(separate['hole_rings'], [])
+
+    def test_an_unclosed_ring_is_reported_not_repaired(self):
+        shape = Mock()
+        shape.points = [(0, 0), (0, 1), (1, 1), (1, 0)]
+        shape.parts = [0]
+        geometry, outer, holes, validity = self.pipeline.to_wgs84(shape, None)
+        self.assertEqual(validity, 'RING_NOT_CLOSED')
+        self.assertIsNotNone(geometry)
+        shape.points = [(0, 0), (0, 1)]
+        self.assertEqual(self.pipeline.to_wgs84(shape, None)[3], 'NO_RING')
+
+    def test_geojson_winds_the_outer_ring_anticlockwise_and_holes_clockwise(self):
+        rings = self.by_id['gokang1-a']['geometry']['coordinates']
+        self.assertGreater(self.pipeline.ring_area(rings[0]), 0)
+        self.assertLess(self.pipeline.ring_area(rings[1]), 0)
+
+    def test_a_point_in_a_hole_is_not_inside_the_area(self):
+        outer = [polygon_square(0, 0, 10)]
+        holes = [polygon_square(5, 5, 2, clockwise=False)]
+        self.assertTrue(self.pipeline.contains((1, 1), outer, holes))
+        self.assertFalse(self.pipeline.contains((5, 5), outer, holes))
+        self.assertFalse(self.pipeline.contains((50, 50), outer, holes))
+
+    def test_one_identifier_and_district_match_grades_exact(self):
+        self.assertEqual(self.status('강동2단지아파트 재건축정비사업조합'), 'EXACT')
+        row = self.by_project['3da15a55-833e-5bf9-ac4f-686a30391c0a']
+        self.assertEqual(row['official_record_id'], 'gangdong2')
+        self.assertIn('OFFICIAL_ID', row['match_signals'])
+        self.assertIn('DISTRICT', row['match_signals'])
+        self.assertTrue(row['geometry_valid'])
+
+    def test_two_official_candidates_grade_ambiguous(self):
+        self.assertEqual(self.status('고덕강일1역세권 재개발사업'), 'AMBIGUOUS')
+        row = self.by_project['e17699d4-d2a1-5908-aea7-c7b5363bb478']
+        self.assertIsNone(row['official_record_id'])
+        self.assertIn('2건', row['confidence_reason'])
+
+    def test_a_known_duplicate_is_never_resolved_by_a_polygon(self):
+        # 마천2 와 마천2재정비촉진구역 은 둘 다 이미 DB에 있다. 폴리곤으로 정하지 않는다.
+        protected = self.pipeline.conflicted_ids()
+        for project_id in ('8ab19fc2-5f02-54a8-9568-6a3ef0218ec4',
+                           '0cfa354d-f9ac-5516-aa2a-1f6767c0aa98'):
+            self.assertIn(project_id, protected)
+            row = self.by_project[project_id]
+            self.assertEqual(row['match_status'], 'AMBIGUOUS')
+            self.assertIsNone(row['official_record_id'])
+            self.assertIn('duplicate', row['confidence_reason'] + 'duplicate')
+
+    def test_a_name_that_is_only_contained_grades_probable_not_exact(self):
+        self.assertEqual(self.status('강동역세권2구역 도시정비형 재개발사업'), 'PROBABLE')
+
+    def test_every_project_is_graded_and_the_grades_are_the_only_four(self):
+        self.assertEqual(len(self.rows), 130)
+        self.assertEqual(set(row['match_status'] for row in self.rows),
+                         {'EXACT', 'PROBABLE', 'AMBIGUOUS', 'NO_MATCH'})
+        for row in self.rows:
+            self.assertTrue(row['confidence_reason'])
+            self.assertEqual(row['source_version'], '202609')
+
+    def test_only_exact_matches_reach_the_geojson_and_it_is_review_only(self):
+        exact = [row for row in self.rows if row['match_status'] == 'EXACT']
+        self.assertEqual(len(self.features), len(exact))
+        for feature in self.features:
+            self.assertTrue(feature['properties']['review_only'])
+            self.assertEqual(feature['properties']['legal_note'], '법적 효력 없음 / 참고자료')
+            self.assertIn(feature['geometry']['type'], ('Polygon', 'MultiPolygon'))
+
+    def test_the_representative_point_is_reported_but_never_decides_identity(self):
+        row = self.by_project['3da15a55-833e-5bf9-ac4f-686a30391c0a']
+        self.assertTrue(row['representative_point_inside_polygon'])
+        # 포함 여부는 신호 목록에 들어가지 않는다. 등급을 올리는 근거가 아니다.
+        for graded in self.rows:
+            self.assertNotIn('INSIDE', json.dumps(graded['match_signals'], ensure_ascii=False))
+
+    def test_the_pipeline_never_writes_to_the_database(self):
+        source = (ROOT / 'scripts/analyze_seoul_polygon_source.py').read_text(encoding='utf-8')
+        for forbidden in ('zipon_set_project_location', 'zipon_ingest_candidate',
+                          'supabase', 'SERVICE_ROLE', 'requests.post', 'httpx'):
+            self.assertNotIn(forbidden, source)
+        self.assertFalse(any(row.get('db_write') for row in self.rows))
+
+    def test_a_missing_source_file_reports_how_to_obtain_it(self):
+        import contextlib
+        import io as stream
+        buffer = stream.StringIO()
+        with patch.object(sys, 'argv', ['analyze', '--archive', str(ROOT / 'no-such.zip')]):
+            with contextlib.redirect_stdout(buffer):
+                self.assertEqual(self.pipeline.main(), 0)
+        reported = json.loads(buffer.getvalue())
+        self.assertEqual(reported['status'], 'SOURCE_FILE_NOT_PRESENT')
+        self.assertFalse(reported['db_write'])
+        self.assertEqual(reported['expected_file'],
+                         '532_UQ120_도시계획사업(서울플랜+)_202609.zip')
+        self.assertIn('data.seoul.go.kr', reported['portal_url'])
+
+
+class PolygonSafetyTests(unittest.TestCase):
+    """확인되지 않은 폴리곤이 운영 화면이나 INSIDE 판정으로 새지 않는지."""
+
+    def setUp(self):
+        self.map_source = read('components/realestate/ZiponMap.tsx')
+
+    def test_the_map_only_draws_an_officially_verified_boundary(self):
+        helper = read('lib/projectBoundary.ts')
+        self.assertIn('const OFFICIAL = "OFFICIAL_VERIFIED"', helper)
+        self.assertIn('boundary_status !== OFFICIAL', helper)
+        # 경계가 없으면 구역인 척하지 않고 대표 위치를 나타내는 원만 그린다.
+        self.assertIn('if (!verifiedBoundary.length) settle()', self.map_source)
+        self.assertIn('radius: 120', self.map_source)
+
+    def test_the_renderer_reads_a_ring_and_does_not_invent_one(self):
+        self.assertIn('verifiedBoundaryPolygons(point)', self.map_source)
+        self.assertNotIn('buffer', self.map_source.lower())
+
+    def test_the_map_and_the_marker_layer_share_one_boundary_reader(self):
+        self.assertEqual(self.map_source.count('verifiedBoundaryPolygons('), 2)
+        self.assertIn('from "@/lib/projectBoundary"', self.map_source)
+        # 첫 구역만 그리는 옛 방식이 다시 들어오지 않게 한다.
+        self.assertNotIn('coordinates?.[0]', self.map_source)
+
+    def test_inside_still_needs_a_verified_boundary(self):
+        unverified = pr.relation('INSIDE', boundary_verified=False)
+        self.assertNotEqual(unverified['code'], 'INSIDE')
+        self.assertFalse(unverified['confirmed_boundary'])
+        verified = pr.relation('INSIDE', boundary_verified=True)
+        self.assertEqual(verified['code'], 'INSIDE')
+        self.assertTrue(verified['confirmed_boundary'])
+
+    def test_a_representative_point_alone_never_produces_inside(self):
+        # 대표좌표만 있는 사업은 confirmed_boundary가 false다. 그래서 '내부'가 나오지 않는다.
+        point_only = pr.relation('INSIDE', boundary_verified=False)
+        verdict = pr.inside_verdict([{'name': '테스트', 'spatial': point_only}])
+        self.assertEqual(verdict['code'], 'NOT_DETERMINED')
+        self.assertEqual(verdict['notice'], pr.INSIDE_UNKNOWN_NOTICE)
+
+    def test_production_still_carries_no_polygon(self):
+        review = DATA / 'polygon_match_review_20260928.json'
+        if not review.exists():
+            self.skipTest('공식 원천이 아직 없어 review 산출물이 없다')
+        document = json.loads(review.read_text(encoding='utf-8'))
+        self.assertFalse(document['db_write'])
+        self.assertFalse(document['polygon_written_to_production'])
+
+
+class PolygonSourceRegistryTests(unittest.TestCase):
+    """원천을 어디서 어떤 판으로 받았는지, 아직 못 받았으면 못 받았다고 적혀 있는지."""
+
+    def setUp(self):
+        self.registry = json.loads((ROOT / 'data/reference/source_registry.json')
+                                   .read_text(encoding='utf-8'))
+        self.acquisition = json.loads((DATA / 'polygon_source_acquisition_20260928.json')
+                                      .read_text(encoding='utf-8'))
+
+    def test_the_registry_names_the_official_dataset_and_never_modifies_it(self):
+        entry = next(s for s in self.registry['sources'] if s['dataset_id'] == 'OA-22712')
+        self.assertEqual(entry['provider'], '서울특별시')
+        self.assertEqual(entry['version'], '202609')
+        self.assertEqual(entry['file'], '532_UQ120_도시계획사업(서울플랜+)_202609.zip')
+        self.assertIn('data.seoul.go.kr', entry['portal_url'])
+        self.assertEqual(entry['legal_note'], '법적 효력 없음 / 참고자료')
+        self.assertFalse(entry['modified'])
+
+    def test_a_source_that_was_not_obtained_is_recorded_as_not_obtained(self):
+        entry = next(s for s in self.registry['sources'] if s['dataset_id'] == 'OA-22712')
+        if entry['acquired']:
+            self.assertEqual(entry['acquisition_status'], 'PRESENT')
+            self.assertTrue(entry['archive'])
+            return
+        self.assertIsNone(entry['archive'])
+        self.assertEqual(entry['acquisition_status'], 'BLOCKED_BY_NETWORK_POLICY')
+        self.assertEqual(self.acquisition['conclusion'], 'SOURCE_FILE_NOT_PRESENT')
+
+    def test_no_unofficial_source_was_substituted(self):
+        self.assertFalse(self.acquisition['substituted_with_unofficial_source'])
+        self.assertFalse(self.acquisition['polygon_created'])
+        self.assertFalse(self.acquisition['polygon_written_to_production'])
+        self.assertFalse(self.acquisition['db_write'])
+        # 파이프라인이 통과한 것은 합성 원천이다. 공식 결과인 척하지 않는다.
+        self.assertEqual(self.acquisition['pipeline']['verified_on'], 'SYNTHETIC_FIXTURE')
+
+    def test_the_download_steps_are_written_down_for_the_person_who_can_reach_the_portal(self):
+        action = self.acquisition['user_action_required']
+        self.assertIn('data.seoul.go.kr', action['step_1'])
+        self.assertIn('data/reference/', action['step_2'])
+        self.assertIn('analyze_seoul_polygon_source.py', action['step_3'])
+        self.assertIn('--archive', action['step_3'])
+
+
+class PolygonReviewDocumentTests(unittest.TestCase):
+    def setUp(self):
+        self.document = (ROOT / 'docs/zipon_polygon_matching_review_2026-09.md') \
+            .read_text(encoding='utf-8')
+
+    def test_the_document_states_that_no_polygon_reached_production(self):
+        self.assertIn('운영 DB에 폴리곤을 쓰지 않았다', self.document)
+        self.assertIn('운영 화면의 폴리곤 수는 여전히 0', self.document)
+
+    def test_the_document_names_the_source_and_its_legal_status(self):
+        for expected in ('OA-22712', '532_UQ120_도시계획사업(서울플랜+)_202609.zip',
+                         'data.seoul.go.kr', '법적 효력 없음 / 참고자료', 'EPSG:5186'):
+            self.assertIn(expected, self.document)
+
+    def test_the_document_records_the_four_grades_and_the_duplicate_protection(self):
+        for expected in ('EXACT', 'PROBABLE', 'AMBIGUOUS', 'NO_MATCH', '마천2',
+                         '대표좌표의 폴리곤 포함 여부는 보조 확인일 뿐'):
+            self.assertIn(expected, self.document)
+
+    def test_the_document_does_not_claim_the_official_file_was_read(self):
+        self.assertIn('원천 미확보', self.document)
+        self.assertIn('비공식 자료로 대체하지 않았다', self.document)
+        self.assertIn('합성', self.document)
+
+
+class ProjectBoundaryHelperTests(unittest.TestCase):
+    """경계 helper를 실제로 실행해서 확인한다. 문자열 비교가 아니다."""
+
+    @classmethod
+    def setUpClass(cls):
+        import shutil
+        import subprocess
+        if shutil.which('node') is None:
+            raise unittest.SkipTest('node is not available')
+        check = ROOT / 'scripts/checks/project_boundary_check.mts'
+        result = subprocess.run(['node', '--experimental-strip-types', str(check)],
+                                capture_output=True, text=True, cwd=str(ROOT))
+        if result.returncode != 0:
+            raise unittest.SkipTest(f'boundary check did not run: {result.stderr[:200]}')
+        cls.report = json.loads(result.stdout.strip().splitlines()[0])
+
+    def test_a_polygon_and_its_holes_stay_one_area(self):
+        self.assertEqual(self.report['polygon_parts'], 1)
+        self.assertEqual(self.report['polygon_rings'], 1)
+        self.assertEqual(self.report['hole_rings'], 2)
+
+    def test_a_multipolygon_keeps_every_area(self):
+        # 떨어져 있는 두 구역이다. 첫 구역만 그리거나 하나로 합치면 사업 범위가 틀려진다.
+        self.assertEqual(self.report['multipolygon_parts'], 2)
+        self.assertEqual(self.report['untyped_parts'], 2)
+        self.assertEqual(self.report['points'], 10)
+
+    def test_an_unverified_boundary_is_never_drawn(self):
+        for key in ('unverified', 'no_status', 'no_boundary', 'empty'):
+            self.assertEqual(self.report[key], 0, key)
+
+    def test_an_unreadable_ring_is_dropped_instead_of_being_reshaped(self):
+        for key in ('too_few', 'not_numbers', 'out_of_range'):
+            self.assertEqual(self.report[key], 0, key)
+
+    def test_the_review_geojson_would_parse_if_it_existed(self):
+        if self.report['review_features'] is None:
+            self.skipTest('공식 원천이 아직 없어 EXACT GeoJSON이 없다')
+        self.assertEqual(self.report['review_parsed'], self.report['review_features'])

@@ -1,0 +1,50 @@
+{
+  "format": "zipon-polygon-source-acquisition-v1",
+  "generated_at": "2026-09-28T23:56:54.928326+00:00",
+  "db_write": false,
+  "polygon_created": false,
+  "polygon_written_to_production": false,
+  "substituted_with_unofficial_source": false,
+  "target": {
+    "provider": "서울특별시",
+    "dataset": "도시계획사업 현황(서울플랜+) 공간정보",
+    "dataset_id": "OA-22712",
+    "version": "202609",
+    "file": "532_UQ120_도시계획사업(서울플랜+)_202609.zip",
+    "portal_url": "https://data.seoul.go.kr/dataList/OA-22712/S/1/datasetView.do",
+    "legal_note": "법적 효력 없음 / 참고자료"
+  },
+  "attempts": [
+    {
+      "host": "data.seoul.go.kr",
+      "url": "https://data.seoul.go.kr/dataList/OA-22712/S/1/datasetView.do",
+      "method": "GET",
+      "http_status": null,
+      "curl_code": "000",
+      "proxy_detail": "gateway answered 403 to CONNECT (policy denial)",
+      "outcome": "BLOCKED"
+    },
+    {
+      "host": "datafile.seoul.go.kr",
+      "url": "https://datafile.seoul.go.kr/bigfile/iot/sheet/grid/publicquery/html/GRID.do",
+      "method": "GET",
+      "http_status": null,
+      "curl_code": "000",
+      "proxy_detail": "gateway answered 403 to CONNECT (policy denial)",
+      "outcome": "BLOCKED"
+    }
+  ],
+  "conclusion": "SOURCE_FILE_NOT_PRESENT",
+  "pipeline": {
+    "script": "scripts/analyze_seoul_polygon_source.py",
+    "verified_on": "SYNTHETIC_FIXTURE",
+    "fixture_note": "cp949 DBF / EPSG:5186 / 시계방향 외곽 ring 으로 만든 합성 SHP. 공식 파일이 아니며 폴리곤으로 사용하지 않는다.",
+    "tests": "tests/test_zipon_product.py::PolygonPipelineTests"
+  },
+  "user_action_required": {
+    "step_1": "https://data.seoul.go.kr/dataList/OA-22712/S/1/datasetView.do 에서 '532_UQ120_도시계획사업(서울플랜+)_202609.zip' 를 내려받는다.",
+    "step_2": "내려받은 zip 을 data/reference/ 에 그대로 둔다. 압축을 풀거나 수정하지 않는다.",
+    "step_3": "python scripts/analyze_seoul_polygon_source.py --archive data/reference/532_UQ120_도시계획사업(서울플랜+)_202609.zip --write",
+    "step_4": "data/development/polygon_match_review_20260928.json 의 EXACT 건만 사람이 검토한다. DB write 는 검토 이후 별도 단계다."
+  }
+}
