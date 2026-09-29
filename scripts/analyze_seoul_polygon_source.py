@@ -79,7 +79,11 @@ ROLE_FIELDS = {
     'created': (('작성일', '생성일', '고시일'), ('CREATE_DAT', 'CREATE_DT')),
 }
 # 이름으로 뜻이 분명하거나 코드정의표로 확인된 역할만 매칭에 쓴다.
-CONFIRMED_BASES = ('FIELD_NAME', 'CODE_TABLE', 'CODE_TABLE_FIELD_LABEL', 'SEOUL_DISTRICT_CODE')
+CONFIRMED_BASES = ('FIELD_NAME', 'OFFICIAL_DATASET_FIELD', 'CODE_TABLE',
+                   'CODE_TABLE_FIELD_LABEL', 'SEOUL_DISTRICT_CODE')
+# 이 역할들은 값 자체를 읽을 수 있어야 쓸 수 있다. 코드정의표로 풀리지 않은 코드값이면
+# 필드의 뜻을 알아도 값을 비교할 수 없으므로 매칭에 쓰지 않는다(PROPEL_CD의 PP0103 같은 경우).
+ROLES_NEEDING_DECODED_VALUES = ('name', 'district', 'dong', 'type', 'address')
 # 코드정의표가 필드 설명을 줄 때, 그 설명으로 역할을 확인한다. 설명이 없으면 쓰지 않는다.
 FIELD_LABEL_KEYWORDS = {
     'name': ('사업명', '지구명', '구역명', '도형명', '명칭'),
@@ -90,6 +94,36 @@ FIELD_LABEL_KEYWORDS = {
     'address': ('주소', '소재지', '위치'),
     'created': ('작성일', '생성일', '고시일', '입력일'),
 }
+# 이 데이터셋에 한정한 schema mapping. 다른 shapefile에 무조건 적용하지 않는다.
+# UQ120 레이어의 DGM_NM은 공식 도형/사업 명칭이고, PRESENT_SN은 원천 record 식별자다.
+DATASET_PROFILES = (
+    {'id': 'OA-22712/UPIS_C_UQ120',
+     'dataset_id': 'OA-22712',
+     'layer': 'UPIS_C_UQ120',
+     'match': ('UQ120',),
+     'roles': {'name': 'DGM_NM'},
+     'source_record_id': 'PRESENT_SN',
+     'note': '서울시 도시계획사업(서울플랜+) 공간정보 UQ120 레이어. '
+             'DGM_NM=공식 도형/사업 명칭, PRESENT_SN=원천 record 식별자(ZIP:ON id와 다른 namespace).'},
+)
+# 사업명 정규화. 표기 차이만 걷어내고 고유명칭은 남긴다. 규칙을 순서대로 적고 기록한다.
+# 너무 많이 지우면 서로 다른 사업이 같은 이름이 되므로, 지운 뒤 2글자 미만이면 되돌린다.
+NAME_ORG_SUFFIXES = ('조합설립추진위원회', '주민대표회의', '추진위원회', '준비위원회', '조합')
+NAME_SCHEME_SUFFIXES = (
+    '주택정비형재개발정비사업', '도시정비형재개발정비사업', '주택정비형재개발사업',
+    '도시정비형재개발사업', '주택재개발정비사업', '주택재건축정비사업',
+    '소규모재건축정비사업', '가로주택정비사업', '자율주택정비사업', '소규모주택정비사업',
+    '도시환경정비사업', '재개발정비사업', '재건축정비사업', '공공재개발정비사업',
+    '역세권장기전세주택', '장기전세주택', '정비사업', '재개발사업', '재건축사업', '개발사업')
+NAME_AREA_SUFFIXES = ('재정비촉진구역', '재정비촉진지구', '정비구역', '예정구역', '촉진구역',
+                      '정비예정구역', '번지일대', '구역', '지구', '일대', '번지')
+NAME_BUILDING_SUFFIXES = ('아파트', '연립주택', '연립', '빌라')
+NAME_RULES = (('ORG_SUFFIX', NAME_ORG_SUFFIXES),
+              ('SCHEME_SUFFIX', NAME_SCHEME_SUFFIXES),
+              ('AREA_SUFFIX', NAME_AREA_SUFFIXES),
+              ('BUILDING_SUFFIX', NAME_BUILDING_SUFFIXES))
+NAME_MIN_LENGTH = 2
+
 # 하위 호환: 기존 호출부/테스트가 쓰는 이름.
 NAME_FIELDS = ROLE_FIELDS['name'][0] + ROLE_FIELDS['name'][1]
 TYPE_FIELDS = ROLE_FIELDS['type'][0] + ROLE_FIELDS['type'][1]
@@ -99,6 +133,56 @@ ID_FIELDS = ROLE_FIELDS['official_id'][0] + ROLE_FIELDS['official_id'][1]
 KNOWN_CRS = {'Korea 2000 / Central Belt 2010': 'EPSG:5186',
              'Korea 2000 / Unified Coordinate System': 'EPSG:5179',
              'Korea 2000 / Central Belt': 'EPSG:5181'}
+
+
+def dataset_profile(stem, archive_name=None):
+    """이 원천이 알려진 공식 데이터셋인지. 아니면 None(일반 shapefile로 다룬다).
+
+    레이어 이름으로만 판단한다. 압축 파일명은 바뀌기 쉽고, 파일명만 비슷한 다른 레이어에
+    이 데이터셋 전용 mapping을 적용하면 엉뚱한 칸을 사업명으로 읽는다.
+    """
+    name = (stem or '').upper()
+    for profile in DATASET_PROFILES:
+        if any(token.upper() in name for token in profile['match']):
+            return profile
+    return None
+
+
+def normalize_name(value):
+    """사업명 정규화. (정규화된 이름, 적용한 규칙) 을 돌려준다.
+
+    공백과 괄호는 없애지만 괄호 안 내용은 남긴다('(1구역)'을 지우면 서로 다른 구역이
+    같은 이름이 된다). 사업 방식·조합 표기 같은 꼬리만 떼고 고유명칭과 숫자는 건드리지
+    않는다. 떼어 낸 뒤 너무 짧아지면 되돌린다.
+    """
+    if not value:
+        return None, []
+    rules = []
+    text = compact(value)
+    if text != value:
+        rules.append('COMPACT_WHITESPACE')
+    unwrapped = re.sub(r'[()\[\]{}〈〉<>「」『』]', '', text)
+    if unwrapped != text:
+        rules.append('UNWRAP_BRACKETS')
+        text = unwrapped
+    stripped = text.replace('·', '').replace('.', '').replace(',', '')
+    if stripped != text:
+        rules.append('DROP_PUNCTUATION')
+        text = stripped
+    changed = True
+    while changed:
+        changed = False
+        for label, suffixes in NAME_RULES:
+            for suffix in sorted(suffixes, key=len, reverse=True):
+                if text.endswith(suffix) and len(text) - len(suffix) >= NAME_MIN_LENGTH:
+                    text = text[:-len(suffix)]
+                    if label not in rules:
+                        rules.append(label)
+                    changed = True
+                    break
+            if changed:
+                break
+    return (text or None), rules
 
 
 def pick(record, names):
@@ -156,7 +240,7 @@ def read_archive(archive):
         projection = bundle.read(prj).decode('utf-8', 'replace') if prj else None
         tables = [n for n in names if n.lower().endswith(('.xlsx', '.xls', '.csv'))
                   and not n.startswith('__MACOSX')]
-        code_table, field_labels, code_table_file = read_code_table(bundle, tables)
+        code_table_rows, code_table_file = read_code_table(bundle, tables)
         extra_shapefiles = stems[1:]
     # DBF 인코딩을 단정하지 않는다. 틀린 인코딩으로 읽으면 값이 깨지고, 그러면
     # 오류 없이 조용히 '매칭 0건'이 나온다. 한글이 가장 잘 살아나는 것을 고른다.
@@ -182,41 +266,46 @@ def read_archive(archive):
     if chosen is None:
         raise SystemExit('DBF_UNREADABLE')
     return {'reader': chosen, 'projection': projection, 'shapefile': stem,
-            'dbf_encoding': chosen_encoding, 'code_table': code_table,
-            'field_labels': field_labels,
+            'dbf_encoding': chosen_encoding, 'code_table_rows': code_table_rows,
             'code_table_file': code_table_file, 'archive_files': sorted(names),
             'extra_shapefiles': extra_shapefiles}
 
 
 def read_code_table(bundle, names):
-    """압축 안의 코드정의표. 코드값과 필드 설명의 뜻은 여기서만 가져온다.
-
-    (코드값 → 뜻, 필드명 → 설명, 읽은 파일) 을 돌려준다. 표가 없으면 비어 있다.
-    """
-    codes, labels, used = {}, {}, None
+    """압축 안의 코드정의표를 줄 단위로 읽어 온다. 뜻의 해석은 필드 목록을 안 뒤에 한다."""
     for name in names:
-        raw = bundle.read(name)
         try:
-            rows = table_rows(name, raw)
+            rows = table_rows(name, bundle.read(name))
         except Exception:
             continue
-        found_code, found_label = {}, {}
-        for row in rows:
-            cells = [('' if cell is None else str(cell)).strip() for cell in row]
-            cells = [cell for cell in cells if cell]
-            if len(cells) < 2:
-                continue
-            korean = next((c for c in cells[1:] if any('\uac00' <= ch <= '\ud7a3' for ch in c)), None)
-            head = cells[0]
-            if korean and re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{1,15}', head):
-                found_label.setdefault(head.upper(), korean)
-            elif korean and head != korean:
-                found_code.setdefault(head, korean)
-        if found_code or found_label:
-            codes.update(found_code)
-            labels.update(found_label)
-            used = used or name
-    return codes, labels, used
+        if rows:
+            return rows, name
+    return [], None
+
+
+def split_code_table(rows, fields):
+    """코드정의표를 (코드값 → 뜻, 필드명 → 설명) 으로 나눈다.
+
+    실제 필드 목록과 맞는 줄만 필드 설명으로 본다. 그렇지 않으면 'PP0103' 같은 코드값이
+    영문 토큰처럼 보여 필드 설명으로 잘못 들어간다.
+    """
+    upper = {field.upper() for field in fields}
+    codes, labels = {}, {}
+    for row in rows:
+        cells = [('' if cell is None else str(cell)).strip() for cell in row]
+        cells = [cell for cell in cells if cell]
+        if len(cells) < 2:
+            continue
+        korean = next((c for c in cells[1:]
+                       if any('\uac00' <= ch <= '\ud7a3' for ch in c)), None)
+        if korean is None:
+            continue
+        head = cells[0]
+        if head.upper() in upper:
+            labels.setdefault(head.upper(), korean)
+        elif head != korean:
+            codes.setdefault(head, korean)
+    return codes, labels
 
 
 def table_rows(name, raw):
@@ -425,25 +514,35 @@ def within_sanity(rings):
 
 # --------------------------------------------------------------------------- schema
 
-def interpret_schema(fields, records, code_table, field_labels=None):
+def interpret_schema(fields, records, code_table, field_labels=None, profile=None):
     """역할마다 어떤 필드를 어떤 근거로 골랐는지 적는다. 근거 없이 매칭에 쓰지 않는다."""
     report = {}
     field_labels = field_labels or {}
+    mapped = (profile or {}).get('roles') or {}
+    record_id_field = (profile or {}).get('source_record_id')
     for role, (plain, coded) in ROLE_FIELDS.items():
         field = field_for(fields, plain)
         basis, decode = ('FIELD_NAME', None) if field else ('UNRESOLVED', None)
+        if field is None and mapped.get(role) in fields:
+            # 이 데이터셋에 한정한 공식 mapping. 다른 shapefile에는 적용되지 않는다.
+            field, basis = mapped[role], 'OFFICIAL_DATASET_FIELD'
         if field is None:
             field = field_for(fields, coded)
         if field is None:
             report[role] = {'field': None, 'basis': 'UNRESOLVED', 'field_label': None,
-                            'used_for_matching': False, 'samples': [], 'decode': None}
+                            'values_decoded': False, 'used_for_matching': False,
+                            'samples': [], 'decode': None}
             continue
         values = [str(row[field]).strip() for row in records
                   if row.get(field) not in (None, '', ' ')]
         distinct = sorted(set(values))
         label = field_labels.get(field.upper())
         keywords = FIELD_LABEL_KEYWORDS.get(role, ())
-        if basis != 'FIELD_NAME':
+        if role == 'official_id' and record_id_field and field == record_id_field:
+            # 원천 record 식별자다. ZIP:ON id와 같은 namespace라고 확인되지 않았으므로
+            # 보존만 하고 동일성 신호로 쓰지 않는다.
+            basis = 'SOURCE_RECORD_ID'
+        elif basis not in ('FIELD_NAME', 'OFFICIAL_DATASET_FIELD'):
             if not distinct:
                 basis = 'EMPTY'
             elif role == 'district' and all(value in SEOUL_SGG for value in distinct):
@@ -465,9 +564,34 @@ def interpret_schema(fields, records, code_table, field_labels=None):
                 samples.append(value)
             if len(samples) >= 5:
                 break
+        readable = bool(decode) or any(
+            any('\uac00' <= ch <= '\ud7a3' for ch in value) for value in distinct)
+        decoded = readable or role not in ROLES_NEEDING_DECODED_VALUES
+        if role in ROLES_NEEDING_DECODED_VALUES and not readable and distinct \
+                and basis in CONFIRMED_BASES:
+            # 필드의 뜻은 알지만 값이 아직 코드다. 추측해서 풀지 않는다.
+            basis = 'UNCONFIRMED_CODE'
         report[role] = {'field': field, 'basis': basis, 'field_label': label,
-                        'used_for_matching': basis in CONFIRMED_BASES,
+                        'values_decoded': decoded,
+                        'used_for_matching': basis in CONFIRMED_BASES and decoded,
                         'samples': samples, 'decode': decode}
+    if record_id_field and record_id_field in fields:
+        samples = []
+        for row in records:
+            value = row.get(record_id_field)
+            if value in (None, '', ' '):
+                continue
+            text = str(value).strip()
+            if text not in samples:
+                samples.append(text)
+            if len(samples) >= 5:
+                break
+        report['source_record_id'] = {
+            'field': record_id_field, 'basis': 'SOURCE_RECORD_ID',
+            'field_label': field_labels.get(record_id_field.upper()),
+            'values_decoded': True, 'used_for_matching': False,
+            'samples': samples, 'decode': None,
+            'note': 'ZIP:ON project identity를 바꾸는 근거로 쓰지 않는다.'}
     return report
 
 
@@ -507,9 +631,13 @@ def load_projects():
         if project_id not in stored:
             continue
         located = coordinates.get(project_id) or {}
+        name = project['identity']['official_project_name']
+        normalized, rules = normalize_name(name)
         projects.append({
             'project_id': project_id,
-            'project_name': project['identity']['official_project_name'],
+            'project_name': name,
+            'normalized_name': normalized,
+            'normalization_rules': rules,
             'official_external_id': project['identity']['official_external_id'],
             'project_type': project['classification']['canonical_project_type'],
             'program': project['classification']['program'],
@@ -540,43 +668,68 @@ def conflicted_ids():
     return ids
 
 
-def match(project, records, protected):
-    """식별자 → 정규화 사업명 → 사업명+자치구+동 → 주소 순으로 본다."""
-    signals, candidates = [], []
-    key = compact(project['project_name'])
+def match(project, records, protected, collisions=None, identity_comparable_id=False):
+    """정규화 사업명 + 자치구로 후보를 만들고, 모순이 없을 때만 EXACT로 본다.
+
+    geometry는 후보를 만든 뒤의 보조 검증이다. 여기서는 쓰지 않는다.
+    PRESENT_SN 같은 원천 record 식별자는 ZIP:ON id와 같은 namespace라고 확인되지 않으면
+    동일성 신호가 되지 않는다(identity_comparable_id=False).
+    """
+    collisions = collisions or {}
+    candidates = []
+    key = project['normalized_name']
+    raw = compact(project['project_name'])
     for record in records:
         hit = []
-        if project['official_external_id'] and record['official_id'] \
+        if identity_comparable_id and project['official_external_id'] and record['official_id'] \
                 and project['official_external_id'] == record['official_id']:
             hit.append('OFFICIAL_ID')
-        if record['name'] and compact(record['name']) == key:
+        official_key = record['normalized_name']
+        if key and official_key and official_key == key:
+            hit.append('NAME_NORMALIZED_EXACT')
+        elif record['name'] and compact(record['name']) == raw:
             hit.append('NAME_EXACT')
-        elif record['name'] and len(key) >= 3 and key in compact(record['name']):
+        elif key and official_key and len(key) >= 3 and key in official_key:
             hit.append('NAME_CONTAINED')
         if record['district'] and project['district'] and record['district'] == project['district']:
             hit.append('DISTRICT')
+        elif record['district'] and project['district']:
+            hit.append('DISTRICT_MISMATCH')
         if record['dong'] and project['dong'] and record['dong'] == project['dong']:
             hit.append('DONG')
         if project['lot_number'] and record['address'] and project['lot_number'] in record['address']:
             hit.append('LOT')
-        if any(s in hit for s in ('OFFICIAL_ID', 'NAME_EXACT', 'NAME_CONTAINED')):
+        named = any(s in hit for s in ('OFFICIAL_ID', 'NAME_NORMALIZED_EXACT', 'NAME_EXACT',
+                                       'NAME_CONTAINED'))
+        # 자치구가 서로 다르면 이름이 같아도 같은 사업으로 보지 않는다.
+        if named and 'DISTRICT_MISMATCH' not in hit:
             candidates.append({'record': record, 'signals': hit})
     if not candidates:
-        return 'NO_MATCH', None, signals, '이름이나 식별자로 이어지는 공식 record가 없습니다.'
+        return 'NO_MATCH', None, [], '정규화 사업명으로 이어지는 공식 record가 없습니다.'
     if project['project_id'] in protected:
         return ('AMBIGUOUS', None, [c['signals'] for c in candidates],
                 '기존 duplicate/identity 검토 대상이라 폴리곤으로 동일성을 정하지 않습니다.')
-    strong = [c for c in candidates
-              if 'OFFICIAL_ID' in c['signals']
-              or ('NAME_EXACT' in c['signals'] and 'DISTRICT' in c['signals'])]
-    if len(strong) == 1 and len(candidates) == 1:
-        return 'EXACT', strong[0], strong[0]['signals'], '공식 식별자 또는 정규화 사업명과 자치구가 일치하고 후보가 하나뿐입니다.'
     if len(candidates) > 1:
         return ('AMBIGUOUS', None, [c['signals'] for c in candidates],
-                f'공식 record 후보가 {len(candidates)}건이라 하나로 좁혀지지 않습니다.')
+                f'같은 자치구에서 공식 record 후보가 {len(candidates)}건이라 하나로 좁혀지지 않습니다.')
     single = candidates[0]
-    return ('PROBABLE', single, single['signals'],
-            '신호는 있으나 자동 반영에 필요한 식별자 또는 정규화 사업명 일치가 부족합니다.')
+    signals = single['signals']
+    if collisions.get((key, project['district']), 0) > 1:
+        return ('AMBIGUOUS', None, signals,
+                'ZIP:ON 안에서 정규화 사업명이 같은 사업이 둘 이상이라 어느 쪽인지 정할 수 없습니다.')
+    strong = 'OFFICIAL_ID' in signals or 'NAME_NORMALIZED_EXACT' in signals \
+        or 'NAME_EXACT' in signals
+    if strong and 'DISTRICT' in signals and key and len(key) >= 3:
+        return ('EXACT', single, signals,
+                '정규화 사업명과 자치구가 일치하고 같은 자치구 후보가 하나뿐이며 모순 신호가 없습니다.')
+    if not key or len(key) < 3:
+        return ('PROBABLE', single, signals,
+                f'정규화 사업명이 {len(key or "")}자로 짧아 이름만으로 확정하기 어렵습니다.')
+    if strong and 'DISTRICT' not in signals:
+        return ('PROBABLE', single, signals,
+                '정규화 사업명은 일치하지만 공식 record에 자치구가 없어 확인이 더 필요합니다.')
+    return ('PROBABLE', single, signals,
+            '이름이 부분적으로만 일치해 표기 차이인지 다른 사업인지 확인이 더 필요합니다.')
 
 
 # --------------------------------------------------------------------------- 분석
@@ -584,15 +737,16 @@ def match(project, records, protected):
 def analyse(archive):
     bundle = read_archive(archive)
     reader = bundle['reader']
+    profile = dataset_profile(bundle['shapefile'])
     crs, crs_basis = source_crs(bundle['projection'])
     forward, backward, metres = transformers(bundle['projection'], crs, crs_basis)
     fields = [f[0] for f in reader.fields[1:]]
+    code_table, field_labels = split_code_table(bundle['code_table_rows'], fields)
     raw_rows, shapes = [], []
     for shape_record in reader.iterShapeRecords():
         raw_rows.append(dict(zip(fields, list(shape_record.record))))
         shapes.append(shape_record.shape)
-    schema = interpret_schema(fields, raw_rows, bundle['code_table'],
-                              bundle['field_labels'])
+    schema = interpret_schema(fields, raw_rows, code_table, field_labels, profile)
 
     records, kinds, invalid, empty, converted, outside = [], {}, 0, 0, 0, 0
     for attributes, shape in zip(raw_rows, shapes):
@@ -609,8 +763,18 @@ def analyse(archive):
             converted += 1
             if not sane:
                 outside += 1
+        name = role_value(attributes, schema, 'name')
+        normalized, rules = normalize_name(name)
+        source_record_id = None
+        if 'source_record_id' in schema:
+            source_record_id = attributes.get(schema['source_record_id']['field'])
+            source_record_id = (str(source_record_id).strip()
+                                if source_record_id not in (None, '', ' ') else None)
         records.append({
-            'name': role_value(attributes, schema, 'name'),
+            'name': name,
+            'normalized_name': normalized,
+            'normalization_rules': rules,
+            'source_record_id': source_record_id,
             'official_id': role_value(attributes, schema, 'official_id'),
             'type': role_value(attributes, schema, 'type'),
             'district': role_value(attributes, schema, 'district'),
@@ -622,7 +786,8 @@ def analyse(archive):
             'geometry_valid': validity == 'VALID' and sane,
             'validity': validity, 'within_seoul': sane})
 
-    identifiers = [r['official_id'] for r in records if r['official_id']]
+    identifiers = [r['source_record_id'] or r['official_id'] for r in records
+                   if r['source_record_id'] or r['official_id']]
     shapes_seen = {}
     for record in records:
         if not record['geometry']:
@@ -632,11 +797,13 @@ def analyse(archive):
             sort_keys=True).encode('utf-8')).hexdigest()
         shapes_seen[digest] = shapes_seen.get(digest, 0) + 1
     return {'shapefile': bundle['shapefile'], 'dbf_encoding': bundle['dbf_encoding'],
+            'dataset_profile': (profile or {}).get('id'),
+            'dataset_profile_note': (profile or {}).get('note'),
             'archive_files': bundle['archive_files'],
             'extra_shapefiles': bundle['extra_shapefiles'],
             'code_table_file': bundle['code_table_file'],
-            'code_table_entries': len(bundle['code_table']),
-            'code_table_field_labels': len(bundle['field_labels']),
+            'code_table_entries': len(code_table),
+            'code_table_field_labels': len(field_labels),
             'fields': fields, 'field_spec': [list(f) for f in reader.fields[1:]],
             'schema_fingerprint': schema_fingerprint(reader.fields),
             'schema': schema, 'record_count': len(records), 'geometry_types': kinds,
@@ -654,9 +821,16 @@ def build(archive):
     survey = analyse(archive)
     projects = load_projects()
     protected = conflicted_ids()
+    # ZIP:ON 안에서 정규화 이름이 겹치는 사업은 어느 쪽인지 정할 수 없다.
+    collisions = {}
+    for project in projects:
+        pair = (project['normalized_name'], project['district'])
+        collisions[pair] = collisions.get(pair, 0) + 1
+    identity_id = bool((survey['schema'].get('official_id') or {}).get('used_for_matching'))
     rows, features = [], []
     for project in projects:
-        status, chosen, signals, reason = match(project, survey['records'], protected)
+        status, chosen, signals, reason = match(project, survey['records'], protected,
+                                               collisions, identity_id)
         record = (chosen or {}).get('record') if chosen else None
         inside, distance, basis = None, None, None
         if record and record['outer_rings'] and project['longitude'] is not None:
@@ -674,10 +848,15 @@ def build(archive):
         rows.append({
             'zipon_project_id': project['project_id'],
             'zipon_project_name': project['project_name'],
+            'zipon_normalized_name': project['normalized_name'],
+            'zipon_normalization_rules': project['normalization_rules'],
             'district': project['district'], 'dong': project['dong'],
             'project_type': project['project_type'], 'program': project['program'],
             'official_record_id': (record or {}).get('official_id'),
+            'official_source_record_id': (record or {}).get('source_record_id'),
             'official_name': (record or {}).get('name'),
+            'official_normalized_name': (record or {}).get('normalized_name'),
+            'official_normalization_rules': (record or {}).get('normalization_rules'),
             'official_type': (record or {}).get('type'),
             'match_status': status, 'match_signals': signals, 'confidence_reason': reason,
             'geometry_type': ((record or {}).get('geometry') or {}).get('type'),
@@ -694,6 +873,8 @@ def build(archive):
                              'properties': {'zipon_project_id': project['project_id'],
                                             'zipon_project_name': project['project_name'],
                                             'official_name': record['name'],
+                                            'official_normalized_name': record['normalized_name'],
+                                            'official_source_record_id': record['source_record_id'],
                                             'official_record_id': record['official_id'],
                                             'representative_point_inside_polygon': inside,
                                             'distance_to_polygon_m': distance,
@@ -793,7 +974,8 @@ def summarise(survey, rows, features, archive):
                   auto_apply_candidates=sum(1 for r in rows if r['auto_apply_candidate']),
                   representative_point_inside=sum(
                       1 for r in rows if r['representative_point_inside_polygon']))
-    shapefile_keys = ('shapefile', 'dbf_encoding', 'fields', 'field_spec', 'schema_fingerprint',
+    shapefile_keys = ('shapefile', 'dataset_profile', 'dataset_profile_note',
+                      'dbf_encoding', 'fields', 'field_spec', 'schema_fingerprint',
                       'record_count', 'geometry_types', 'invalid_geometry', 'empty_geometry',
                       'converted_to_epsg4326', 'outside_seoul', 'duplicate_identifiers',
                       'duplicate_geometry', 'source_crs', 'source_crs_basis', 'source_crs_label',

@@ -1,6 +1,6 @@
 {
   "format": "zipon-polygon-source-acquisition-v1",
-  "generated_at": "2026-09-29T00:58:58.890597+00:00",
+  "generated_at": "2026-09-29T01:26:45.211815+00:00",
   "db_write": false,
   "polygon_created": false,
   "polygon_written_to_production": false,
@@ -44,7 +44,7 @@
       "note": "사용자가 로컬 작업본의 data/reference/ 에 공식 zip 을 두었다고 알렸다. 이 세션은 GitHub 에서 새로 clone 한 별도 컨테이너에서 돌고, data/reference/*.zip 은 gitignore 대상이라 파일이 여기로 오지 않는다. 컨테이너 전체를 검색해도 없다."
     }
   ],
-  "conclusion": "SOURCE_FILE_NOT_PRESENT",
+  "conclusion": "SOURCE_FILE_NOT_PRESENT_IN_CONTAINER_ANALYSED_LOCALLY",
   "pipeline": {
     "script": "scripts/analyze_seoul_polygon_source.py",
     "verified_on": "SYNTHETIC_FIXTURE",
@@ -55,8 +55,65 @@
     "step_1": "https://data.seoul.go.kr/dataList/OA-22712/S/1/datasetView.do 에서 '532_UQ120_도시계획사업(서울플랜+)_202609.zip' 를 내려받는다.",
     "step_2": "내려받은 zip 을 data/reference/ 에 그대로 둔다. 압축을 풀거나 수정하지 않는다.",
     "step_3": "python scripts/analyze_seoul_polygon_source.py --archive \"data/reference/532_UQ120_도시계획사업(서울플랜+)_202609.zip\" --write",
-    "step_4": "data/development/polygon_match_review_20260928.json 의 EXACT 건만 사람이 검토한다. DB write 는 검토 이후 별도 단계다.",
+    "step_4": "수정된 파이프라인으로 로컬에서 다시 돌린다. schema 블록의 name 이 OFFICIAL_DATASET_FIELD 인지 먼저 확인한다.",
     "step_0": "이 컨테이너에서 분석하려면 공식 zip 이 컨테이너 안에 있어야 한다. 로컬에서 아래 명령을 그대로 실행하는 것이 가장 빠르다. 컨테이너에서 돌려야 한다면 zip 을 이 저장소에 git add -f 로 올려야 하고, 그 경우 원본 대용량 파일이 히스토리에 남는다.",
     "step_5": "두 번째 판이 오면 --if-changed 를 붙인다. source_sha256 이 같으면 재분석하지 않는다."
+  },
+  "local_first_run": {
+    "run_by": "user",
+    "run_at": "2026-09-29",
+    "environment": "local checkout",
+    "record_count": 2776,
+    "polygon": 2684,
+    "multipolygon": 92,
+    "source_crs": "EPSG:5174",
+    "layer": "UPIS_C_UQ120",
+    "match_result": "ALL_130_NO_MATCH",
+    "root_cause": "DGM_NM 이 UNCONFIRMED_TEXT 로 분류되어 사업명이 매칭에서 제외됐다. 자치구만 남아 후보가 만들어지지 않았다.",
+    "schema_observed": {
+      "name": {
+        "field": "DGM_NM",
+        "basis_before": "UNCONFIRMED_TEXT",
+        "basis_after": "OFFICIAL_DATASET_FIELD"
+      },
+      "district": {
+        "field": "SIGNGU_SE",
+        "basis": "SEOUL_DISTRICT_CODE"
+      },
+      "type": {
+        "field": "PROPEL_CD",
+        "basis": "UNCONFIRMED_CODE",
+        "samples": [
+          "PP0501",
+          "PP0702",
+          "PP0103",
+          "PP0206",
+          "PP0204"
+        ],
+        "note": "코드값의 뜻이 코드정의표에서 확인되지 않았다. 추측하지 않는다."
+      },
+      "official_id": {
+        "field": "PRESENT_SN",
+        "basis": "SOURCE_RECORD_ID",
+        "samples": [
+          "11530UQ120PS202608050002",
+          "11650UQ120PS202607150001",
+          "11740UQ120PS202604100001"
+        ],
+        "note": "ZIP:ON official id 와 같은 namespace 인지 확인되지 않았다."
+      },
+      "created": {
+        "field": "CREATE_DAT"
+      },
+      "dong": {
+        "field": null,
+        "basis": "UNRESOLVED"
+      },
+      "address": {
+        "field": null,
+        "basis": "UNRESOLVED"
+      }
+    },
+    "note": "이 값들은 사용자가 로컬에서 확인해 알려 준 것이다. 이 컨테이너가 원본을 읽은 것이 아니다."
   }
 }

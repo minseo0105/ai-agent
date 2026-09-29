@@ -19,28 +19,37 @@
 받은 사실은 `data/reference/source_registry.json`에 적는다. zip 자체는 커밋하지 않는다
 (`.gitignore`의 `data/reference/*.zip`).
 
-## 2. 이번 실행환경에서의 상태: 원천 미확보
+## 2. 실제 원본 1차 분석 결과 (2026-09-29, 로컬 실행)
 
-두 가지가 겹쳐 있다.
+사용자가 로컬에서 공식 원본을 분석했다. 확인된 값:
 
-1. 포털 차단. 이 컨테이너의 네트워크 정책이 `data.seoul.go.kr`와 `datafile.seoul.go.kr`로의
-   연결을 거부한다(CONNECT에 게이트웨이가 403).
-2. 로컬에 둔 파일은 여기로 오지 않는다. 이 세션은 GitHub에서 새로 clone한 별도 컨테이너에서
-   돌고, `data/reference/*.zip`은 `.gitignore` 대상이다. 로컬 작업본에 zip을 두어도
-   컨테이너에는 없다(컨테이너 전체를 검색해 확인했다).
+| 항목 | 값 |
+| --- | --- |
+| record 수 | 2776 |
+| Polygon | 2684 |
+| MultiPolygon | 92 |
+| source CRS | **EPSG:5174** (Korea 1985 / Modified Central Belt) |
+| 레이어 | `UPIS_C_UQ120` |
 
-근거는 `data/development/polygon_source_acquisition_20260928.json`에 남겼다.
+좌표계가 EPSG:5174였다. 합성 fixture가 가정했던 5186이 아니다. `.prj`에서만 읽는 규칙이
+그대로 맞춰 준 부분이다. 어디에도 5186을 박아 두지 않았다.
 
-그래서 **비공식 자료로 대체하지 않았다.** 폴리곤을 만들지도, 대표좌표에 버퍼를 씌우지도 않았다.
-원천이 있는 곳에서 아래 한 줄을 돌리면 같은 파이프라인이 그대로 돈다.
+**1차 실행에서는 130건 전부 NO_MATCH였다.** 원인은 사업명 칸이 매칭에서 빠져 있었기 때문이다.
+실제 schema는 이렇다.
 
-```
-python scripts/analyze_seoul_polygon_source.py \
-  --archive "data/reference/532_UQ120_도시계획사업(서울플랜+)_202609.zip" --write
-```
+| 역할 | 필드 | 1차 결과 |
+| --- | --- | --- |
+| name | `DGM_NM` | `UNCONFIRMED_TEXT` → **매칭 제외** |
+| district | `SIGNGU_SE` | `SEOUL_DISTRICT_CODE` → 정상 |
+| type | `PROPEL_CD` | 코드값 `PP0501` / `PP0702` / `PP0103` … |
+| official_id | `PRESENT_SN` | `11740UQ120PS202604100001` 형태 |
+| created | `CREATE_DAT` | |
+| dong / address | 없음 | `UNRESOLVED` |
 
-원천이 없으면 스크립트는 아무 일도 하지 않고 `SOURCE_FILE_NOT_PRESENT`와 내려받는 방법만 알린다.
-두 번째 판부터는 `--if-changed`를 붙인다. `source_sha256`이 같으면 재분석하지 않는다.
+`DGM_NM` 값은 실제 사업/도형 명칭이었다(`천호3-1`, `신당10`,
+`구로동 451번지 일대 가로주택정비사업`, `신반포26차아파트 소규모재건축정비사업` …).
+이름 칸이 빠지자 자치구만 남았고, 자치구만으로는 후보가 만들어지지 않아 전부 NO_MATCH가 됐다.
+안전장치가 의도대로 동작한 결과이지만, 이 데이터셋에서는 `DGM_NM`이 공식 명칭임을 등록해야 한다.
 
 ## 3. SHP 읽기와 schema 해석
 
@@ -53,10 +62,17 @@ python scripts/analyze_seoul_polygon_source.py \
   '매칭 0건'** 이 된다. 이번 작업에서 실제로 두 번 겪은 실패라서 둘 다 테스트로 고정했다.
 - **필드명을 추측하지 않는다.** 역할마다 어떤 필드를 어떤 근거로 골랐는지 적고, 근거가
   확인된 것만 매칭에 쓴다.
+- **데이터셋에 한정한 mapping을 둔다.** `DATASET_PROFILES`에 OA-22712 / `UPIS_C_UQ120`
+  하나만 있고, 레이어 이름에 `UQ120`이 들어갈 때만 적용된다. 이 프로필이 `DGM_NM`을
+  공식 도형/사업 명칭으로 등록한다(`OFFICIAL_DATASET_FIELD`). **다른 shapefile의
+  `DGM_NM`에는 이 뜻을 적용하지 않는다** — 압축 파일명이 아니라 레이어 이름으로만 판단한다.
+  파일명은 바뀌기 쉽고, 이름만 비슷한 다른 레이어에 적용하면 엉뚱한 칸을 사업명으로 읽는다.
 
 | 근거 | 뜻 | 매칭 사용 |
 | --- | --- | :-: |
 | `FIELD_NAME` | 필드명 자체가 뜻을 말한다(`사업명`, `SGG_NM` …) | O |
+| `OFFICIAL_DATASET_FIELD` | 이 데이터셋의 공식 mapping(`UQ120`의 `DGM_NM`) | O |
+| `SOURCE_RECORD_ID` | 원천 record 식별자(`PRESENT_SN`). 보존만 한다 | X |
 | `SEOUL_DISTRICT_CODE` | 값이 서울 25개 자치구 코드와 정확히 맞는다 | O |
 | `CODE_TABLE` | 값의 뜻이 압축 안 코드정의표에 있다 | O |
 | `CODE_TABLE_FIELD_LABEL` | 코드정의표가 그 필드의 설명을 적어 두었다 | O |
@@ -65,7 +81,15 @@ python scripts/analyze_seoul_polygon_source.py \
 | `UNRESOLVED` / `EMPTY` | 해당 필드가 없거나 비어 있다 | X |
 
   `UNCONFIRMED`는 표본 값만 적어 두고 매칭에서 제외한다. 확인되지 않은 필드로 EXACT를
-  만들지 않는다. 자치구 코드표는 저장소에 이미 검증되어 있는
+  만들지 않는다.
+- **필드의 뜻을 아는 것과 값의 뜻을 아는 것은 다르다.** 코드정의표가 `PROPEL_CD`를
+  "추진구분 코드"라고 적어 두었어도 `PP0103`이 무엇인지는 별개다. 값이 코드로 남아 있으면
+  `values_decoded: false`로 적고 `UNCONFIRMED_CODE`를 유지한다. 코드값을 추측해 풀지 않는다.
+  표가 코드값까지 설명할 때만 `CODE_TABLE`로 올라가고 보조 신호로 쓰인다.
+- **`PRESENT_SN`은 원천 record 식별자로만 보존한다.** ZIP:ON의 기존 official id와 같은
+  namespace인지 확인되지 않았다. 그래서 동일성 신호로 쓰지 않고, 이것을 근거로 기존
+  project id를 바꾸지 않는다. 실제 `관리번호`/`고시번호` 칸이 확인된 원천에서만
+  식별자 신호가 켜진다. 자치구 코드표는 저장소에 이미 검증되어 있는
   `services/realestate_monitor.py`의 25개 코드를 쓴다(새로 만들지 않는다).
 - **코드정의표(xlsx / csv)가 있으면 함께 읽는다.** 코드값의 뜻과 필드 설명은 여기서만 온다.
   `PRESENT_SN` / `DGM_NM` / `SIGNGU_SE` / `PROPEL_CD` / `CREATE_DAT`처럼 이름만으로는
@@ -97,21 +121,57 @@ Shapefile 규약에서 외곽 ring은 시계방향(부호 있는 면적이 음�
 
 ## 5. 130건과의 매칭
 
-신호는 이 순서로 본다: 공식 식별자 → 정규화 사업명 → 사업명 + 자치구 + 법정동 → 지번.
-`used_for_matching`이 아닌 필드는 신호를 만들지 않는다.
+정규화 사업명 + 자치구로 후보를 만든다. `used_for_matching`이 아닌 필드는 신호를 만들지 않는다.
+
+### 사업명 정규화
+
+같은 사업이 원천과 ZIP:ON에서 다르게 적힌다. 공식은 `천호3`, ZIP:ON은
+`천호3 주택재건축정비사업조합`이다. 그래서 표기 차이만 걷어낸다.
+
+| 규칙 | 하는 일 |
+| --- | --- |
+| `COMPACT_WHITESPACE` | 공백 제거 |
+| `UNWRAP_BRACKETS` | 괄호 기호만 제거. **안의 내용은 남긴다** |
+| `DROP_PUNCTUATION` | 가운뎃점·마침표·쉼표 제거 |
+| `ORG_SUFFIX` | 조합 / 주민대표회의 / 추진위원회 … |
+| `SCHEME_SUFFIX` | 주택재개발정비사업 / 주택정비형재개발사업 / 도시환경정비사업 / 재건축정비사업 … |
+| `AREA_SUFFIX` | 재정비촉진구역 / 정비구역 / 예정구역 / 구역 / 지구 / 일대 / 번지 |
+| `BUILDING_SUFFIX` | 아파트 / 연립 / 빌라 |
+
+꼬리만 뗀다. 고유명칭과 숫자는 건드리지 않는다(`천호3` ≠ `천호3-1`, `마천2` ≠ `마천3`,
+`신당10` ≠ `신당1`). 괄호 안을 지우면 `강동역세권(1구역)`과 `(2구역)`이 같아지므로 남긴다.
+떼어 낸 뒤 2글자 미만이 되면 되돌린다. 원본명 / 정규화명 / 적용한 규칙을 review JSON의
+`zipon_normalized_name`, `official_normalized_name`, `*_normalization_rules`에 적는다.
+
+정규화가 만들 수 있는 위험은 두 곳에서 막는다.
+
+1. **ZIP:ON 안의 충돌.** 정규화 결과가 같은 자치구에서 겹치는 사업이 있으면 어느 쪽인지
+   정할 수 없으므로 `AMBIGUOUS`다. 130건에서 겹치는 것은 이미 duplicate로 표시해 둔
+   `마천2` 두 건뿐이다.
+2. **짧은 이름.** 정규화 결과가 3글자 미만이면 `EXACT`가 되지 않는다. `현대`, `이화`처럼
+   흔한 두 글자로 사업을 확정하지 않는다(해당 8건).
+
+### 등급
 
 | 등급 | 조건 |
 | --- | --- |
-| `EXACT` | 공식 식별자가 같거나, 정규화 사업명이 같고 자치구까지 맞으며 **후보가 하나뿐** |
-| `PROBABLE` | 신호는 강하지만 식별자/정규화 사업명 일치가 부족 |
-| `AMBIGUOUS` | 후보가 둘 이상이거나, 기존 duplicate/identity 검토 대상 |
-| `NO_MATCH` | 안전한 공식 후보가 없음 |
+| `EXACT` | 정규화 사업명 일치 + 자치구 일치 + 같은 자치구 후보가 하나 + 모순 신호 없음 + 이름 3글자 이상 |
+| `PROBABLE` | 이름은 맞지만 공식 record에 자치구가 없거나, 부분 일치거나, 이름이 짧다 |
+| `AMBIGUOUS` | 같은 자치구에 후보가 둘 이상 / 기존 identity conflict·duplicate risk / ZIP:ON 안의 이름 충돌 |
+| `NO_MATCH` | 안전한 후보가 없음 |
 
-이름이 비슷하다는 이유만으로 `EXACT`가 되지 않는다.
-**대표좌표의 폴리곤 포함 여부는 보조 확인일 뿐이며 동일성을 결정하지 않는다.** 그래서
-포함 여부는 신호 목록에 넣지 않고 별도 칸(`representative_point_inside_polygon`)에만 적는다.
+자치구가 서로 다르면 이름이 같아도 후보로 만들지 않는다(`DISTRICT_MISMATCH`).
 `seoul-identity-v1`은 FROZEN이고 project identity는 이 작업에서 바뀌지 않는다.
 `project_type`과 `program`(FAST_TRACK = 신속통합기획)은 그대로 분리해서 둔다.
+
+### geometry는 후보를 만든 뒤의 보조 검증
+
+`match()`는 geometry를 보지 않는다. 이름과 자치구로 후보를 만든 다음에, 대표좌표가 있는
+122건에 대해 후보 폴리곤 안인지와 경계까지의 거리를 확인한다.
+**대표좌표의 폴리곤 포함 여부는 보조 확인일 뿐이며 동일성을 결정하지 않는다.** 그래서
+포함 여부는 신호 목록에 넣지 않고 별도 칸(`representative_point_inside_polygon`)에만 적는다.
+후보가 둘인 `AMBIGUOUS`를 geometry로 하나로 좁히지도 않는다. 반대 방향으로만 쓴다:
+안에 없으면 자동 반영 후보에서 뺀다.
 
 ### EXACT 추가 검증
 
@@ -180,15 +240,25 @@ review JSON에는 남지만 GeoJSON에는 들어가지 않는다.
 
 ## 8. 파이프라인 검증 방법
 
-공식 파일이 이 환경에 없어서, **UPIS와 같은 모양의 합성 SHP**로 파이프라인을 돌렸다.
-영문 필드명(`PRESENT_SN` / `DGM_NM` / `SIGNGU_SE` / `PROPEL_CD` / `CREATE_DAT`),
-코드정의표, cp949 및 utf-8 DBF, EPSG:5186, 시계방향 외곽 ring까지 같은 모양이다.
+공식 파일은 이 컨테이너에 없다(§2 참고: 로컬 작업본에 있고, `data/reference/*.zip`은
+`.gitignore` 대상이라 새 clone에는 오지 않는다). 그래서 **실제 원본과 같은 모양의 합성 SHP**로
+파이프라인을 돌린다. 레이어 이름 `UPIS_C_UQ120`, 실제 필드 구성
+(`PRESENT_SN` / `DGM_NM` / `SIGNGU_SE` / `PROPEL_CD` / `CREATE_DAT`, 주소·법정동 없음),
+실제 형태의 값(`11740UQ120PS202604100001`, `PP0103`, 짧은 이름과 긴 이름 혼재),
+코드정의표, cp949 및 utf-8 DBF, **EPSG:5174**, 시계방향 외곽 ring까지 맞췄다.
 합성 원천은 공식 결과가 아니고 폴리곤으로 쓰이지도 않는다.
-`tests/test_zipon_product.py`의 `PolygonPipelineTests` / `PolygonSourceChangeTests`가
-매번 그것을 만들어 확인한다.
+`tests/test_zipon_product.py`의 `PolygonPipelineTests` / `PolygonSourceChangeTests` /
+`NameNormalizationTests` / `PolygonMatchGuardTests`가 매번 그것을 만들어 확인한다.
 
 - 인코딩 탐지(cp949 / utf-8, 값까지 채점), 잘린 필드명, 짧은 조각 거부
+- `UQ120` 레이어에서만 `DGM_NM`이 공식 명칭이 되고, 다른 레이어에서는 되지 않는지
 - 코드정의표로 코드값과 필드 뜻 해석, 확인 안 된 필드는 매칭에서 제외
+- `PROPEL_CD`의 코드값이 표에 없으면 `UNCONFIRMED_CODE`로 남고, 표에 있으면 승격되는지
+- `PRESENT_SN`이 보존되지만 동일성 신호가 되지 않고 ZIP:ON id를 바꾸지 않는지
+- 사업명 정규화: 표기 차이 흡수, 숫자·괄호 내용 보존, 빈 이름 금지, 규칙 기록
+- 130건이 정규화 뒤에도 새 충돌을 만들지 않는지(마천2 두 건 외 없음)
+- 짧은 이름(3글자 미만)은 EXACT가 되지 않는지
+- 자치구가 다르면 이름이 같아도 후보가 되지 않는지
 - 자치구 코드 → 자치구명(검증된 25개 표)
 - `.prj`에서 좌표계 읽기, 낮은 신뢰도 EPSG 거부, WKT 정의만으로 변환, `.prj` 없으면 변환 안 함
 - 좌표계가 틀린 원천은 `CRS_SANITY_FAILED`로 멈추고 산출물을 쓰지 않음
@@ -215,7 +285,9 @@ review JSON에는 남지만 GeoJSON에는 들어가지 않는다.
 2. `CRS_SANITY_FAILED`가 나오면 매칭 결과를 보지 말고 좌표계부터 확인한다.
 3. `polygon_match_review_20260928.json`의 `schema` 블록을 먼저 읽는다.
    `UNCONFIRMED` / `UNRESOLVED`인 역할이 있으면 코드정의표를 보고 어떤 필드가 그 역할인지
-   확인한 뒤 `ROLE_FIELDS`에 이름을 추가한다(추측으로 채우지 않는다).
+   확인한 뒤 `ROLE_FIELDS` 또는 `DATASET_PROFILES`에 이름을 추가한다(추측으로 채우지 않는다).
+   `PROPEL_CD` 코드값(`PP0103` …)의 뜻이 표에 있으면 표를 그대로 두면 되고, 없으면
+   `UNCONFIRMED_CODE`로 남는 것이 맞다. 사업유형은 매칭에 필요하지 않다.
 4. `auto_apply_candidate`인 EXACT만 사람이 확인한다.
    `exact_valid_outside`는 왜 밖으로 나왔는지 따로 본다.
 5. DB write는 그 확인 뒤의 별도 단계다. 이 스프린트에는 포함되지 않는다.

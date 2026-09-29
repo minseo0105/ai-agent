@@ -3051,18 +3051,31 @@ class MiniMapLifecycleTests(unittest.TestCase):
         self.assertIn('pointById.get(p.project_id) ?? null', tab)
 
 
-POLYGON_PRJ = ('PROJCS["Korea 2000 / Central Belt 2010",GEOGCS["Korea 2000",'
-               'DATUM["Geocentric_datum_of_Korea",SPHEROID["GRS 1980",6378137,298.257222101]],'
+# 실제 원본은 EPSG:5174(Korea 1985 / Modified Central Belt)로 확인됐다. .prj에서 읽는다.
+POLYGON_PRJ = ('PROJCS["Korea 1985 / Modified Central Belt",GEOGCS["Korea 1985",'
+               'DATUM["Korean_Datum_1985",SPHEROID["Bessel 1841",6377397.155,299.1528128]],'
                'PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],'
                'PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",38],'
-               'PARAMETER["central_meridian",127],PARAMETER["false_easting",200000],'
-               'PARAMETER["false_northing",600000],UNIT["metre",1],AUTHORITY["EPSG","5186"]]')
-# 실제 운영 좌표 위에 얹은 합성 원천이다. 공식 파일이 아니고, 폴리곤으로 쓰이지도 않는다.
-# 서울시 UPIS_C_UQ120과 같은 모양을 흉내낸다: cp949 DBF, EPSG:5186, 시계방향 외곽 ring,
-# 그리고 뜻이 이름에 드러나지 않는 실제 필드명(PRESENT_SN / DGM_NM / SIGNGU_SE /
-# PROPEL_CD / CREATE_DAT)과 그 뜻을 적어 둔 코드정의표.
-POLYGON_FIELDS = ('PRESENT_SN', 'DGM_NM', 'SIGNGU_SE', 'PROPEL_CD', 'CREATE_DAT', 'ADDR')
-# 코드정의표. 필드 설명과 코드값의 뜻이 여기서만 온다. 추측하지 않는다.
+               'PARAMETER["central_meridian",127.0028902777778],'
+               'PARAMETER["scale_factor",1],PARAMETER["false_easting",200000],'
+               'PARAMETER["false_northing",500000],UNIT["metre",1],AUTHORITY["EPSG","5174"]]')
+# AUTHORITY가 없고 이름도 알려진 것이 아니며 pyproj가 기본 신뢰도로 코드를 못 정하는 .prj.
+# 그래도 투영은 온전히 정의되어 있어 변환은 정확하다(EPSG:5186과 같은 정의).
+POLYGON_PRJ_NO_AUTHORITY = (
+    'PROJCS["Korea 2000 Central Belt 2010 local",GEOGCS["Korea 2000",'
+    'DATUM["Geocentric_datum_of_Korea",SPHEROID["GRS 1980",6378137,298.257222101]],'
+    'PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]],'
+    'PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",38],'
+    'PARAMETER["central_meridian",127],PARAMETER["false_easting",200000],'
+    'PARAMETER["false_northing",600000],UNIT["metre",1]]')
+POLYGON_PRJ_NO_AUTHORITY_CRS = 'EPSG:5186' 
+# 좌표는 EPSG:5174인데 .prj가 EPSG:5179라고 말하는 원천. 변환하면 서울을 벗어난다.
+POLYGON_PRJ_WRONG = ('PROJCS["Korea 2000 / Unified Coordinate System",'
+                     'AUTHORITY["EPSG","5179"]]')
+POLYGON_SOURCE_CRS = 'EPSG:5174'
+# 실제 UPIS_C_UQ120 필드 구성. 주소와 법정동 컬럼은 없다.
+POLYGON_FIELDS = ('PRESENT_SN', 'DGM_NM', 'SIGNGU_SE', 'PROPEL_CD', 'CREATE_DAT')
+# 코드정의표. 필드 설명만 있고 PROPEL_CD 코드값의 뜻은 없다 — 실제로 확인되지 않은 상태다.
 POLYGON_CODE_TABLE = (
     ('필드명', '설명'),
     ('PRESENT_SN', '현황 일련번호'),
@@ -3070,23 +3083,23 @@ POLYGON_CODE_TABLE = (
     ('SIGNGU_SE', '자치구 코드'),
     ('PROPEL_CD', '추진구분 코드'),
     ('CREATE_DAT', '작성일자'),
-    ('코드', '값'),
-    ('1', '재개발'),
-    ('2', '재건축'),
 )
+# DGM_NM은 실제 원본처럼 짧은 것과 긴 것이 섞여 있다. 이름 정규화가 그 차이를 흡수해야 한다.
 POLYGON_FIXTURE = (
-    ('gangdong2', '강동2단지아파트 재건축정비사업조합', '11740', '2',
-     '서울특별시 강동구 암사동 413', (37.5535291, 127.1395207), 'plain'),
-    ('machun2', '마천2재정비촉진구역 주택재개발정비사업', '11710', '1',
-     '서울특별시 송파구 마천동 323', (37.4959174, 127.1515392), 'plain'),
-    ('gokang1-a', '고덕강일1역세권 재개발사업', '11740', '1',
-     '서울특별시 강동구 고덕동 294', (37.5606936, 127.1578851), 'hole'),
-    ('gokang1-b', '고덕강일1역세권 재개발사업', '11740', '1',
-     '서울특별시 강동구 고덕동 295', (37.5610000, 127.1580000), 'multi'),
-    ('cheonho1-far', '천호1 도시환경정비사업조합', '11740', '1',
-     '서울특별시 강동구 천호동 423-200', (37.5450000, 127.1330000), 'plain'),
-    ('', '강동역세권2구역 도시정비형 재개발사업 예정구역', '', '',
-     '', (37.5349603, 127.1295532), 'plain'),
+    ('11740UQ120PS202604100001', '천호3', '11740', 'PP0103',
+     (37.5426919, 127.1267054), 'plain'),
+    ('11710UQ120PS202607150001', '마천2재정비촉진구역 주택재개발정비사업', '11710', 'PP0103',
+     (37.4959174, 127.1515392), 'plain'),
+    ('11740UQ120PS202608050002', '고덕강일1역세권', '11740', 'PP0103',
+     (37.5606936, 127.1578851), 'hole'),
+    ('11740UQ120PS202608050003', '고덕강일1역세권 재개발사업', '11740', 'PP0103',
+     (37.5610000, 127.1580000), 'multi'),
+    ('11740UQ120PS202605200004', '천호1 도시환경정비사업', '11740', 'PP0206',
+     (37.5450000, 127.1330000), 'plain'),
+    ('11740UQ120PS202609010005', '강동역세권2구역 도시정비형 재개발사업', '', 'PP0501',
+     (37.5349603, 127.1295532), 'plain'),
+    ('11650UQ120PS202607150006', '이화연립 주택재건축정비사업', '11710', 'PP0702',
+     (37.5290000, 127.1150000), 'plain'),
 )
 
 
@@ -3096,28 +3109,19 @@ def polygon_square(x, y, half, clockwise=True):
     return ring if clockwise else list(reversed(ring))
 
 
-# AUTHORITY가 없고 이름도 알려진 것이 아닌 .prj. 코드는 확정할 수 없지만 투영은 온전하다.
-POLYGON_PRJ_NO_AUTHORITY = (POLYGON_PRJ
-                            .replace(',AUTHORITY["EPSG","5186"]', '')
-                            .replace('"Korea 2000 / Central Belt 2010"',
-                                     '"Korea 2000 Central Belt 2010 local"'))
-# 좌표는 EPSG:5186인데 .prj가 EPSG:5179라고 말하는 원천. 변환하면 서울을 벗어난다.
-POLYGON_PRJ_WRONG = ('PROJCS["Korea 2000 / Unified Coordinate System",'
-                     'AUTHORITY["EPSG","5179"]]')
-
-
 def build_polygon_fixture(directory, encoding='cp949', with_prj=True, with_code_table=True,
-                          prj=POLYGON_PRJ):
-    """UPIS와 같은 모양의 SHP zip을 만든다. 공식 파일이 아니다."""
+                          prj=POLYGON_PRJ, stem_name='UPIS_C_UQ120',
+                          source_crs=POLYGON_SOURCE_CRS):
+    """UPIS_C_UQ120과 같은 모양의 SHP zip을 만든다. 공식 파일이 아니다."""
     import shapefile
     import zipfile
     from pyproj import Transformer
-    to_source = Transformer.from_crs('EPSG:4326', 'EPSG:5186', always_xy=True)
-    stem = directory / 'UPIS_C_UQ120'
+    to_source = Transformer.from_crs('EPSG:4326', source_crs, always_xy=True)
+    stem = directory / stem_name
     writer = shapefile.Writer(str(stem), shapeType=shapefile.POLYGON, encoding=encoding)
     for field in POLYGON_FIELDS:
         writer.field(field, 'C', 80)
-    for serial, name, district, propel, address, (lat, lng), shape in POLYGON_FIXTURE:
+    for serial, name, district, propel, (lat, lng), shape in POLYGON_FIXTURE:
         x, y = to_source.transform(lng, lat)
         if shape == 'plain':
             parts = [polygon_square(x, y, 150)]
@@ -3127,7 +3131,7 @@ def build_polygon_fixture(directory, encoding='cp949', with_prj=True, with_code_
         else:
             parts = [polygon_square(x, y, 150), polygon_square(x + 600, y, 150)]
         writer.poly(parts)
-        writer.record(serial, name, district, propel, '20260901', address)
+        writer.record(serial, name, district, propel, '20260901')
     writer.close()
     if with_prj:
         Path(str(stem) + '.prj').write_text(prj, encoding='utf-8')
@@ -3136,10 +3140,10 @@ def build_polygon_fixture(directory, encoding='cp949', with_prj=True, with_code_
         table = directory / 'UQ120_코드정의표.csv'
         with open(table, 'w', encoding='cp949', newline='') as handle:
             csv.writer(handle).writerows(POLYGON_CODE_TABLE)
-    archive = directory / '532_UQ120_synthetic.zip'
+    archive = directory / f'{stem_name}_synthetic.zip'
     with zipfile.ZipFile(archive, 'w') as bundle:
         for extension in ('shp', 'dbf', 'shx') + (('prj',) if with_prj else ()):
-            bundle.write(str(stem) + '.' + extension, f'UPIS_C_UQ120.{extension}')
+            bundle.write(str(stem) + '.' + extension, f'{stem_name}.{extension}')
         if with_code_table:
             bundle.write(str(directory / 'UQ120_코드정의표.csv'), 'UQ120_코드정의표.csv')
     return archive
@@ -3167,7 +3171,8 @@ class PolygonPipelineTests(unittest.TestCase):
         cls.archive = build_polygon_fixture(Path(cls.directory.name))
         cls.survey, cls.rows, cls.features = pipeline.build(cls.archive)
         cls.review = pipeline.summarise(cls.survey, cls.rows, cls.features, cls.archive)
-        cls.by_id = {row['official_id']: row for row in cls.survey['records']}
+        cls.by_id = {row['source_record_id']: row for row in cls.survey['records']}
+        cls.by_name = {row['name']: row for row in cls.survey['records']}
         cls.by_project = {row['zipon_project_id']: row for row in cls.rows}
 
     @classmethod
@@ -3210,33 +3215,87 @@ class PolygonPipelineTests(unittest.TestCase):
         self.assertIsNone(self.pipeline.field_for(['SIGNGU_SE'], ('자치구', 'GU')))
         self.assertEqual(self.pipeline.field_for(['SIGNGU_NM'], ('SIGNGU_NM',)), 'SIGNGU_NM')
 
-    def test_the_code_table_supplies_the_meaning_of_coded_fields(self):
+    def test_dgm_nm_is_the_official_name_field_for_this_dataset_only(self):
+        # DGM_NM은 UQ120 레이어의 공식 도형/사업 명칭이다. 이 데이터셋에 한정해 등록한다.
+        self.assertEqual(self.survey['dataset_profile'], 'OA-22712/UPIS_C_UQ120')
+        schema = self.survey['schema']
+        self.assertEqual(schema['name']['field'], 'DGM_NM')
+        self.assertEqual(schema['name']['basis'], 'OFFICIAL_DATASET_FIELD')
+        self.assertTrue(schema['name']['used_for_matching'])
+        self.assertEqual(self.survey['records'][0]['name'], POLYGON_FIXTURE[0][1])
+
+    def test_dgm_nm_is_not_assumed_for_an_unrelated_shapefile(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            archive = build_polygon_fixture(Path(directory), stem_name='SOME_OTHER_LAYER',
+                                            with_code_table=False)
+            survey = self.pipeline.analyse(archive)
+        self.assertIsNone(survey['dataset_profile'])
+        self.assertEqual(survey['schema']['name']['basis'], 'UNCONFIRMED_TEXT')
+        self.assertFalse(survey['schema']['name']['used_for_matching'])
+
+    def test_the_code_table_supplies_the_meaning_of_the_coded_fields(self):
         self.assertEqual(self.survey['code_table_file'], 'UQ120_코드정의표.csv')
         self.assertGreater(self.survey['code_table_field_labels'], 0)
-        self.assertGreater(self.survey['code_table_entries'], 0)
         schema = self.survey['schema']
-        # 필드명만으로는 뜻을 알 수 없는 필드다. 코드정의표의 설명으로 확인한다.
-        self.assertEqual(schema['name']['field'], 'DGM_NM')
-        self.assertEqual(schema['name']['basis'], 'CODE_TABLE_FIELD_LABEL')
-        self.assertEqual(schema['name']['field_label'], '도형명')
-        # 코드값은 표로 풀어서 쓴다. 코드 그대로 비교하지 않는다.
+        self.assertEqual(schema['district']['field_label'], '자치구 코드')
+        self.assertEqual(schema['type']['field_label'], '추진구분 코드')
+
+    def test_an_undecoded_code_value_is_not_promoted_to_a_usable_field(self):
+        # PROPEL_CD가 무슨 칸인지는 표에 있지만 PP0103이 무엇인지는 표에 없다.
+        # 필드의 뜻을 안다고 값을 아는 것은 아니다. 추측해서 풀지 않는다.
+        schema = self.survey['schema']
         self.assertEqual(schema['type']['field'], 'PROPEL_CD')
-        self.assertEqual(schema['type']['basis'], 'CODE_TABLE')
-        self.assertEqual(self.by_id['gangdong2']['type'], '재건축')
+        self.assertEqual(schema['type']['basis'], 'UNCONFIRMED_CODE')
+        self.assertFalse(schema['type']['values_decoded'])
+        self.assertFalse(schema['type']['used_for_matching'])
+        self.assertEqual(schema['type']['samples'][0], 'PP0103')
+        self.assertIsNone(self.survey['records'][0]['type'])
+
+    def test_a_code_value_the_table_explains_is_promoted(self):
+        import tempfile
+        rows = POLYGON_CODE_TABLE + (('PP0103', '주택재개발'), ('PP0206', '도시환경정비'),
+                                     ('PP0501', '가로주택정비'), ('PP0702', '소규모재건축'))
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(sys.modules[__name__], 'POLYGON_CODE_TABLE', rows):
+                archive = build_polygon_fixture(Path(directory))
+            survey = self.pipeline.analyse(archive)
+        self.assertEqual(survey['schema']['type']['basis'], 'CODE_TABLE')
+        self.assertTrue(survey['schema']['type']['used_for_matching'])
+        self.assertEqual(survey['records'][0]['type'], '주택재개발')
 
     def test_a_district_code_is_resolved_from_the_verified_seoul_table(self):
         schema = self.survey['schema']
         self.assertEqual(schema['district']['field'], 'SIGNGU_SE')
         self.assertEqual(schema['district']['basis'], 'SEOUL_DISTRICT_CODE')
-        self.assertEqual(self.by_id['gangdong2']['district'], '강동구')
-        self.assertEqual(self.by_id['machun2']['district'], '송파구')
+        self.assertTrue(schema['district']['used_for_matching'])
+        self.assertEqual(self.by_name['천호3']['district'], '강동구')
+        self.assertEqual(self.by_name['마천2재정비촉진구역 주택재개발정비사업']['district'], '송파구')
         self.assertEqual(len(self.pipeline.SEOUL_SGG), 25)
+        self.assertEqual(self.pipeline.SEOUL_SGG['11740'], '강동구')
+
+    def test_the_source_record_id_is_preserved_but_never_changes_identity(self):
+        schema = self.survey['schema']
+        # PRESENT_SN은 ZIP:ON id와 같은 namespace라고 확인되지 않았다. 보존만 한다.
+        self.assertEqual(schema['source_record_id']['field'], 'PRESENT_SN')
+        self.assertEqual(schema['source_record_id']['basis'], 'SOURCE_RECORD_ID')
+        self.assertFalse(schema['source_record_id']['used_for_matching'])
+        self.assertFalse(schema['official_id']['used_for_matching'])
+        self.assertEqual(self.survey['records'][0]['source_record_id'],
+                         '11740UQ120PS202604100001')
+        for row in self.rows:
+            self.assertIsNone(row['official_record_id'])
+            self.assertNotIn('OFFICIAL_ID', json.dumps(row['match_signals']))
+        # 어떤 등급이든 ZIP:ON project id는 그대로다.
+        identifiers = [row['zipon_project_id'] for row in self.rows]
+        self.assertEqual(len(identifiers), len(set(identifiers)))
 
     def test_a_field_whose_meaning_is_unconfirmed_is_not_used_for_matching(self):
         import tempfile
         with tempfile.TemporaryDirectory() as directory:
-            # 코드정의표가 없으면 DGM_NM의 뜻을 확인할 길이 없다. 그러면 매칭에 쓰지 않는다.
-            archive = build_polygon_fixture(Path(directory), with_code_table=False)
+            # 데이터셋도 코드정의표도 모를 때는 어느 칸이 사업명인지 확인할 길이 없다.
+            archive = build_polygon_fixture(Path(directory), stem_name='UNKNOWN_LAYER',
+                                            with_code_table=False)  # noqa: E501
             survey = self.pipeline.analyse(archive)
         self.assertEqual(survey['schema']['name']['basis'], 'UNCONFIRMED_TEXT')
         self.assertFalse(survey['schema']['name']['used_for_matching'])
@@ -3257,7 +3316,7 @@ class PolygonPipelineTests(unittest.TestCase):
     # --- CRS --------------------------------------------------------------
 
     def test_the_crs_comes_from_the_prj_and_is_never_guessed(self):
-        self.assertEqual(self.survey['source_crs'], 'EPSG:5186')
+        self.assertEqual(self.survey['source_crs'], POLYGON_SOURCE_CRS)
         self.assertEqual(self.survey['source_crs_basis'], 'FROM_PRJ_AUTHORITY')
         self.assertEqual(self.survey['converted_crs'], 'EPSG:4326')
         self.assertTrue(self.survey['source_units_metre'])
@@ -3275,15 +3334,14 @@ class PolygonPipelineTests(unittest.TestCase):
         self.assertIsNone(crs)
         self.assertEqual(basis, 'FROM_PRJ_WKT_NO_EPSG')
         from pyproj import CRS
-        parsed = CRS.from_wkt(POLYGON_PRJ_NO_AUTHORITY)
-        # 기본 신뢰도로는 코드가 나오지 않는다. 기준을 낮추면 나오지만 그 값은 받지 않는다.
-        self.assertIsNone(parsed.to_epsg())
-        self.assertIsNotNone(parsed.to_epsg(min_confidence=20))
+        # 기본 신뢰도로는 코드가 나오지 않는다. 그래서 코드를 찍지 않고 WKT로 변환한다.
+        self.assertIsNone(CRS.from_wkt(POLYGON_PRJ_NO_AUTHORITY).to_epsg())
 
     def test_a_wkt_without_an_epsg_code_still_converts_correctly(self):
         import tempfile
         with tempfile.TemporaryDirectory() as directory:
-            archive = build_polygon_fixture(Path(directory), prj=POLYGON_PRJ_NO_AUTHORITY)
+            archive = build_polygon_fixture(Path(directory), prj=POLYGON_PRJ_NO_AUTHORITY,
+                                            source_crs=POLYGON_PRJ_NO_AUTHORITY_CRS)
             survey = self.pipeline.analyse(archive)
         self.assertEqual(survey['source_crs_basis'], 'FROM_PRJ_WKT_NO_EPSG')
         self.assertTrue(survey['source_crs_label'].startswith('WKT:'))
@@ -3318,7 +3376,7 @@ class PolygonPipelineTests(unittest.TestCase):
         self.assertEqual(reported['expected_longitude'], [126.0, 128.0])
 
     def test_the_converted_coordinates_land_in_seoul_in_lon_lat_order(self):
-        ring = self.by_id['gangdong2']['geometry']['coordinates'][0]
+        ring = self.by_name['천호3']['geometry']['coordinates'][0]
         for longitude, latitude in ring:
             self.assertTrue(126.0 < longitude < 128.0, longitude)
             self.assertTrue(37.0 < latitude < 38.0, latitude)
@@ -3328,12 +3386,12 @@ class PolygonPipelineTests(unittest.TestCase):
     def test_geometry_is_valid_and_typed_by_its_ring_layout(self):
         self.assertEqual(self.survey['invalid_geometry'], 0)
         self.assertEqual(self.survey['empty_geometry'], 0)
-        self.assertEqual(self.survey['geometry_types'], {'Polygon': 5, 'MultiPolygon': 1})
-        hole = self.by_id['gokang1-a']
+        self.assertEqual(self.survey['geometry_types'], {'Polygon': 6, 'MultiPolygon': 1})
+        hole = self.by_name['고덕강일1역세권']
         self.assertEqual(hole['geometry']['type'], 'Polygon')
         self.assertEqual(len(hole['geometry']['coordinates']), 2)
         self.assertEqual(len(hole['hole_rings']), 1)
-        separate = self.by_id['gokang1-b']
+        separate = self.by_name['고덕강일1역세권 재개발사업']
         # 떨어져 있는 두 외곽 구역은 '구멍 뚫린 한 구역'이 되어서는 안 된다.
         self.assertEqual(separate['geometry']['type'], 'MultiPolygon')
         self.assertEqual(len(separate['geometry']['coordinates']), 2)
@@ -3366,7 +3424,7 @@ class PolygonPipelineTests(unittest.TestCase):
         self.assertEqual(self.pipeline.to_wgs84(shape, None)[3], 'NO_RING')
 
     def test_geojson_winds_the_outer_ring_anticlockwise_and_holes_clockwise(self):
-        rings = self.by_id['gokang1-a']['geometry']['coordinates']
+        rings = self.by_name['고덕강일1역세권']['geometry']['coordinates']
         self.assertGreater(self.pipeline.ring_area(rings[0]), 0)
         self.assertLess(self.pipeline.ring_area(rings[1]), 0)
 
@@ -3384,12 +3442,17 @@ class PolygonPipelineTests(unittest.TestCase):
 
     # --- matching ---------------------------------------------------------
 
-    def test_one_identifier_and_district_match_grades_exact(self):
-        self.assertEqual(self.status('강동2단지아파트 재건축정비사업조합'), 'EXACT')
-        row = self.by_project['3da15a55-833e-5bf9-ac4f-686a30391c0a']
-        self.assertEqual(row['official_record_id'], 'gangdong2')
-        self.assertIn('OFFICIAL_ID', row['match_signals'])
+    def test_a_normalized_name_and_district_match_grades_exact(self):
+        # 공식 '천호3' 과 ZIP:ON '천호3 주택재건축정비사업조합' 은 표기만 다르다.
+        self.assertEqual(self.status('천호3 주택재건축정비사업조합'), 'EXACT')
+        row = self.by_project['1436e9a7-4b6e-5297-b048-b8743063a07b']
+        self.assertEqual(row['zipon_normalized_name'], '천호3')
+        self.assertEqual(row['official_normalized_name'], '천호3')
+        self.assertEqual(row['official_name'], '천호3')
+        self.assertIn('NAME_NORMALIZED_EXACT', row['match_signals'])
         self.assertIn('DISTRICT', row['match_signals'])
+        self.assertIn('ORG_SUFFIX', row['zipon_normalization_rules'])
+        self.assertIn('SCHEME_SUFFIX', row['zipon_normalization_rules'])
         self.assertTrue(row['geometry_valid'])
         self.assertTrue(row['auto_apply_candidate'])
 
@@ -3470,7 +3533,7 @@ class PolygonPipelineTests(unittest.TestCase):
             self.assertIn(feature['geometry']['type'], ('Polygon', 'MultiPolygon'))
 
     def test_the_representative_point_is_reported_but_never_decides_identity(self):
-        row = self.by_project['3da15a55-833e-5bf9-ac4f-686a30391c0a']
+        row = self.by_project['1436e9a7-4b6e-5297-b048-b8743063a07b']
         self.assertTrue(row['representative_point_inside_polygon'])
         # 포함 여부는 신호 목록에 들어가지 않는다. 등급을 올리는 근거가 아니다.
         for graded in self.rows:
@@ -3660,7 +3723,7 @@ class PolygonSourceRegistryTests(unittest.TestCase):
             return
         self.assertIsNone(entry['archive'])
         self.assertEqual(entry['acquisition_status'], 'BLOCKED_BY_NETWORK_POLICY')
-        self.assertEqual(self.acquisition['conclusion'], 'SOURCE_FILE_NOT_PRESENT')
+        self.assertIn('SOURCE_FILE_NOT_PRESENT', self.acquisition['conclusion'])
 
     def test_no_unofficial_source_was_substituted(self):
         self.assertFalse(self.acquisition['substituted_with_unofficial_source'])
@@ -3669,6 +3732,21 @@ class PolygonSourceRegistryTests(unittest.TestCase):
         self.assertFalse(self.acquisition['db_write'])
         # 파이프라인이 통과한 것은 합성 원천이다. 공식 결과인 척하지 않는다.
         self.assertEqual(self.acquisition['pipeline']['verified_on'], 'SYNTHETIC_FIXTURE')
+
+    def test_the_local_first_run_is_recorded_as_the_users_result_not_ours(self):
+        run = self.acquisition['local_first_run']
+        self.assertEqual(run['record_count'], 2776)
+        self.assertEqual(run['polygon'], 2684)
+        self.assertEqual(run['multipolygon'], 92)
+        self.assertEqual(run['source_crs'], 'EPSG:5174')
+        self.assertEqual(run['match_result'], 'ALL_130_NO_MATCH')
+        self.assertEqual(run['environment'], 'local checkout')
+        self.assertIn('DGM_NM', run['root_cause'])
+        self.assertIn('이 컨테이너가 원본을 읽은 것이 아니다', run['note'])
+        self.assertEqual(run['schema_observed']['name']['basis_after'],
+                         'OFFICIAL_DATASET_FIELD')
+        self.assertEqual(run['schema_observed']['type']['basis'], 'UNCONFIRMED_CODE')
+        self.assertEqual(run['schema_observed']['official_id']['basis'], 'SOURCE_RECORD_ID')
 
     def test_the_download_steps_are_written_down_for_the_person_who_can_reach_the_portal(self):
         action = self.acquisition['user_action_required']
@@ -3689,18 +3767,19 @@ class PolygonReviewDocumentTests(unittest.TestCase):
 
     def test_the_document_names_the_source_and_its_legal_status(self):
         for expected in ('OA-22712', '532_UQ120_도시계획사업(서울플랜+)_202609.zip',
-                         'data.seoul.go.kr', '법적 효력 없음 / 참고자료', 'EPSG:5186'):
+                         'data.seoul.go.kr', '법적 효력 없음 / 참고자료', 'EPSG:5174'):
             self.assertIn(expected, self.document)
 
     def test_the_document_records_the_four_grades_and_the_duplicate_protection(self):
         for expected in ('EXACT', 'PROBABLE', 'AMBIGUOUS', 'NO_MATCH', '마천2',
-                         '대표좌표의 폴리곤 포함 여부는 보조 확인일 뿐'):
+                         '보조 확인일 뿐이며 동일성을 결정하지 않는다'):
             self.assertIn(expected, self.document)
 
-    def test_the_document_does_not_claim_the_official_file_was_read(self):
-        self.assertIn('원천 미확보', self.document)
-        self.assertIn('비공식 자료로 대체하지 않았다', self.document)
-        self.assertIn('합성', self.document)
+    def test_the_document_does_not_claim_the_official_file_was_read_here(self):
+        # 로컬 1차 실행 결과는 인용하되, 이 컨테이너가 원본을 읽은 것처럼 적지 않는다.
+        self.assertIn('공식 파일은 이 컨테이너에 없다', self.document)
+        self.assertIn('합성 원천은 공식 결과가 아니고', self.document)
+        self.assertIn('로컬 실행', self.document)
 
 
 class ProjectBoundaryHelperTests(unittest.TestCase):
@@ -3826,5 +3905,169 @@ class PolygonDocumentSchemaTests(unittest.TestCase):
             self.assertIn(expected, self.document)
 
     def test_the_document_explains_why_the_local_file_is_not_in_this_container(self):
-        self.assertIn('로컬에 둔 파일은 여기로 오지 않는다', self.document)
+        self.assertIn('로컬 작업본에 있고', self.document)
         self.assertIn('.gitignore', self.document)
+
+    def test_the_document_records_the_first_real_run_and_its_root_cause(self):
+        for expected in ('2776', '2684', '92', 'EPSG:5174', 'UPIS_C_UQ120',
+                         '130건 전부 NO_MATCH', 'DGM_NM', 'OFFICIAL_DATASET_FIELD',
+                         'SOURCE_RECORD_ID', 'values_decoded'):
+            self.assertIn(expected, self.document)
+
+    def test_the_document_records_the_normalization_rules_and_their_guards(self):
+        for expected in ('COMPACT_WHITESPACE', 'UNWRAP_BRACKETS', 'ORG_SUFFIX',
+                         'SCHEME_SUFFIX', 'AREA_SUFFIX', 'BUILDING_SUFFIX',
+                         '안의 내용은 남긴다', 'ZIP:ON 안의 충돌', '3글자 미만',
+                         'DISTRICT_MISMATCH'):
+            self.assertIn(expected, self.document)
+
+
+class NameNormalizationTests(unittest.TestCase):
+    """사업명 정규화. 표기 차이만 걷어내고 고유명칭은 남기는지."""
+
+    def setUp(self):
+        import analyze_seoul_polygon_source as pipeline
+        self.normalize = pipeline.normalize_name
+        self.pipeline = pipeline
+
+    def test_presentation_differences_collapse_to_the_same_name(self):
+        pairs = (
+            ('천호1 도시환경정비사업조합', '천호1'),
+            ('천호3 주택재건축정비사업조합', '천호3'),
+            ('마천2재정비촉진구역 주택재개발정비사업', '마천2'),
+            ('고덕강일1역세권 재개발사업', '고덕강일1역세권'),
+            ('신반포5차아파트 주택재건축정비사업 조합', '신반포5차'),
+            ('신반포26차아파트 소규모재건축정비사업', '신반포26차'),
+            ('구로동 451번지 일대 가로주택정비사업', '구로동451'),
+            ('사근동 293번지 일대 주택정비형 재개발사업', '사근동293'),
+            ('천호동 397-419번지 일대 주택정비형재개발사업조합', '천호동397-419'),
+            ('천호 A1-1구역 공공재개발 정비사업 주민대표회의', '천호A1-1'),
+        )
+        for raw, expected in pairs:
+            self.assertEqual(self.normalize(raw)[0], expected, raw)
+
+    def test_the_core_name_and_its_numbers_are_never_dropped(self):
+        # 숫자가 사업을 가른다. '천호3'과 '천호3-1'은 서로 다른 사업이다.
+        self.assertNotEqual(self.normalize('천호3')[0], self.normalize('천호3-1')[0])
+        self.assertNotEqual(self.normalize('마천2')[0], self.normalize('마천3')[0])
+        self.assertNotEqual(self.normalize('신당10')[0], self.normalize('신당1')[0])
+        # 괄호는 없애지만 그 안의 내용은 남긴다. 지우면 서로 다른 구역이 같아진다.
+        self.assertEqual(self.normalize('강동역세권(1구역) SHIFT 장기전세주택')[0],
+                         '강동역세권1구역SHIFT')
+        self.assertNotEqual(self.normalize('강동역세권(1구역) 장기전세주택')[0],
+                            self.normalize('강동역세권(2구역) 장기전세주택')[0])
+
+    def test_normalization_never_strips_a_name_to_nothing(self):
+        for raw in ('조합', '정비사업', '아파트', '구역', '재정비촉진구역'):
+            normalized, _ = self.normalize(raw)
+            self.assertTrue(normalized, raw)
+            self.assertGreaterEqual(len(normalized), self.pipeline.NAME_MIN_LENGTH)
+        self.assertEqual(self.normalize(None), (None, []))
+        self.assertEqual(self.normalize('')[0], None)
+
+    def test_the_rules_that_were_applied_are_recorded(self):
+        _, rules = self.normalize('신반포5차아파트 주택재건축정비사업 조합')
+        self.assertEqual(rules, ['COMPACT_WHITESPACE', 'ORG_SUFFIX', 'SCHEME_SUFFIX',
+                                 'BUILDING_SUFFIX'])
+        self.assertEqual(self.normalize('천호3-1')[1], [])
+
+    def test_the_130_projects_normalize_without_new_collisions(self):
+        from analyze_seoul_polygon_source import load_projects
+        seen = {}
+        for project in load_projects():
+            key = (project['normalized_name'], project['district'])
+            seen.setdefault(key, []).append(project['project_name'])
+        collisions = {key: names for key, names in seen.items() if len(names) > 1}
+        # 유일하게 겹치는 것은 이미 duplicate로 표시해 둔 마천2 두 건이다.
+        self.assertEqual(list(collisions), [('마천2', '송파구')])
+        self.assertEqual(len(collisions[('마천2', '송파구')]), 2)
+
+    def test_a_short_name_cannot_reach_exact_on_its_own(self):
+        from analyze_seoul_polygon_source import load_projects
+        short = [p['project_name'] for p in load_projects()
+                 if p['normalized_name'] and len(p['normalized_name']) < 3]
+        # '현대', '이화'처럼 흔한 두 글자는 이름만으로 확정하지 않는다.
+        self.assertTrue(short)
+        record = {'name': '현대', 'normalized_name': '현대', 'district': '송파구',
+                  'dong': None, 'address': None, 'official_id': None}
+        project = {'project_id': 'x', 'project_name': '현대연립 주택재건축정비사업조합',
+                   'normalized_name': '현대', 'official_external_id': None,
+                   'district': '송파구', 'dong': None, 'lot_number': None}
+        status, _, _, reason = self.pipeline.match(project, [record], set())
+        self.assertEqual(status, 'PROBABLE')
+        self.assertIn('짧아', reason)
+
+
+class PolygonMatchGuardTests(unittest.TestCase):
+    """후보를 만든 뒤에 오는 검증이 등급을 올리지 못하게 막는지."""
+
+    def setUp(self):
+        import analyze_seoul_polygon_source as pipeline
+        self.pipeline = pipeline
+
+    def record(self, name, district='강동구', **extra):
+        base = {'name': name, 'normalized_name': self.pipeline.normalize_name(name)[0],
+                'district': district, 'dong': None, 'address': None, 'official_id': None}
+        base.update(extra)
+        return base
+
+    def project(self, name, district='강동구', **extra):
+        base = {'project_id': 'p1', 'project_name': name,
+                'normalized_name': self.pipeline.normalize_name(name)[0],
+                'official_external_id': None, 'district': district, 'dong': None,
+                'lot_number': None}
+        base.update(extra)
+        return base
+
+    def test_two_candidates_in_the_same_district_stay_ambiguous(self):
+        records = [self.record('천호3'), self.record('천호3 주택재건축정비사업')]
+        status, chosen, _, reason = self.pipeline.match(
+            self.project('천호3 주택재건축정비사업조합'), records, set())
+        self.assertEqual(status, 'AMBIGUOUS')
+        self.assertIsNone(chosen)
+        self.assertIn('2건', reason)
+
+    def test_a_name_match_in_another_district_is_not_a_candidate(self):
+        status, _, _, _ = self.pipeline.match(
+            self.project('천호3 주택재건축정비사업조합'),
+            [self.record('천호3', district='송파구')], set())
+        self.assertEqual(status, 'NO_MATCH')
+
+    def test_a_zipon_side_collision_stays_ambiguous(self):
+        project = self.project('마천2', district='송파구')
+        collisions = {('마천2', '송파구'): 2}
+        status, chosen, _, reason = self.pipeline.match(
+            project, [self.record('마천2', district='송파구')], set(), collisions)
+        self.assertEqual(status, 'AMBIGUOUS')
+        self.assertIsNone(chosen)
+        self.assertIn('ZIP:ON 안에서', reason)
+
+    def test_a_protected_project_stays_ambiguous_even_on_a_clean_hit(self):
+        project = self.project('마천2', district='송파구')
+        status, chosen, _, reason = self.pipeline.match(
+            project, [self.record('마천2', district='송파구')], {'p1'})
+        self.assertEqual(status, 'AMBIGUOUS')
+        self.assertIsNone(chosen)
+        self.assertIn('duplicate', reason)
+
+    def test_a_source_record_id_only_matches_when_the_namespace_is_comparable(self):
+        record = self.record('전혀다른이름', official_id='chunho3')
+        project = self.project('천호3 주택재건축정비사업조합', official_external_id='chunho3')
+        # 기본값: PRESENT_SN처럼 namespace가 확인되지 않은 식별자는 신호가 되지 않는다.
+        self.assertEqual(self.pipeline.match(project, [record], set())[0], 'NO_MATCH')
+        # 실제 관리번호 칸이 확인된 원천에서만 식별자를 신호로 쓴다.
+        status, _, signals, _ = self.pipeline.match(project, [record], set(), None, True)
+        self.assertEqual(status, 'EXACT')
+        self.assertIn('OFFICIAL_ID', signals)
+
+    def test_geometry_is_only_a_check_and_never_makes_a_candidate(self):
+        source = (ROOT / 'scripts/analyze_seoul_polygon_source.py').read_text(encoding='utf-8')
+        start = source.index('def match(')
+        body = source[start:source.index('# ------', start)]
+        # docstring을 걷어낸 실제 코드만 본다.
+        code = body.split('"""')[2]
+        code = '\n'.join(line for line in code.split('\n')
+                         if not line.lstrip().startswith('#'))
+        # match()는 geometry를 보지 않는다. 포함 여부로 후보를 만들거나 등급을 올리지 않는다.
+        for forbidden in ('contains(', 'point_in_ring(', 'outer_rings', 'geometry'):
+            self.assertNotIn(forbidden, code, forbidden)
