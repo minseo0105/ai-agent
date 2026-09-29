@@ -4525,3 +4525,148 @@ class BoundaryActivationDocumentTests(unittest.TestCase):
     def test_it_explains_the_fallback_so_install_order_cannot_empty_the_map(self):
         self.assertIn('boundary_source', self.document)
         self.assertIn('REST 조회로 되돌아가', self.document)
+
+
+class PostcheckFixtureConstraintTests(unittest.TestCase):
+    """postcheck의 fixture INSERT가 운영 CHECK 제약을 만족하는지 미리 확인한다.
+
+    한 번 겪은 실패다: validation_status='VERIFIED'만 넣고 verified_at / verified_by를
+    빼면 development_project_sources_check1에 걸려 Dashboard에서 postcheck가 죽는다.
+    제약을 완화하지 않고 fixture를 맞춘다. 이 테스트가 그것을 SQL 실행 전에 잡는다.
+    """
+
+    OFFICIAL_TYPES = ('OFFICIAL_API', 'OFFICIAL_NOTICE', 'OFFICIAL_WEBSITE', 'PUBLIC_INSTITUTION')
+    SOURCE_TYPES = OFFICIAL_TYPES + ('SEARCH_RESULT', 'OTHER')
+    VALIDATION = ('UNVERIFIED', 'VERIFIED', 'NEEDS_REVIEW', 'REJECTED')
+
+    @classmethod
+    def setUpClass(cls):
+        cls.base = (ROOT / 'supabase/migrations/20260926_zipon_base_and_development.sql') \
+            .read_text(encoding='utf-8')
+        cls.reviews = sorted((ROOT / 'supabase/review').glob('*.sql'))
+
+    @staticmethod
+    def split_arguments(text):
+        parts, depth, current = [], 0, ''
+        for character in text:
+            if character in '([':
+                depth += 1
+            elif character in ')]':
+                depth -= 1
+            if character == ',' and depth == 0:
+                parts.append(current.strip())
+                current = ''
+                continue
+            current += character
+        parts.append(current.strip())
+        return [part for part in parts if part]
+
+    @classmethod
+    def source_inserts(cls, sql):
+        """postcheck가 만드는 출처 행을 컬럼 → 값 표현식으로 읽어 온다."""
+        import re
+        rows = []
+        pattern = re.compile(
+            r'INSERT INTO public\.development_project_sources\(([^)]*)\)\s*\n\s*VALUES\((.*?)\);',
+            re.S)
+        for match in pattern.finditer(sql):
+            columns = [c.strip() for c in match.group(1).replace('\n', ' ').split(',') if c.strip()]
+            values = cls.split_arguments(match.group(2).replace('\n', ' '))
+            if len(columns) != len(values):
+                rows.append({'__arity__': (len(columns), len(values))})
+                continue
+            rows.append(dict(zip(columns, values)))
+        return rows
+
+    @staticmethod
+    def literal(expression):
+        """따옴표 안의 값만 문자열로 돌려준다. 그 밖은 None(실행 시 결정)."""
+        text = (expression or '').strip()
+        if text.startswith("'") and text.endswith("'") and text.count("'") == 2:
+            return text[1:-1]
+        return None
+
+    @classmethod
+    def present(cls, expression):
+        """NULL이 아니고 빈 문자열도 아닌 값인지."""
+        text = (expression or '').strip()
+        if not text or text.upper() == 'NULL':
+            return False
+        return cls.literal(text) != ''
+
+    def test_the_two_table_level_checks_are_the_ones_we_think_they_are(self):
+        # 이름 없는 테이블 CHECK는 선언 순서대로 _check, _check1이 된다.
+        body = self.base[self.base.index('CREATE TABLE IF NOT EXISTS public.development_project_sources ('):]
+        body = body[:body.index('\n);')]
+        checks = [line.strip() for line in body.split('\n') if line.strip().startswith('CHECK (')]
+        self.assertEqual(len(checks), 2, checks)
+        self.assertIn('NOT is_official OR source_type IN', checks[0])
+        self.assertIn("validation_status<>'VERIFIED'", checks[1])
+        self.assertIn('verified_at IS NOT NULL', checks[1])
+        self.assertIn('verified_by IS NOT NULL', checks[1])
+        self.assertIn('btrim(verified_by)<>', checks[1])
+
+    def test_every_postcheck_source_fixture_satisfies_check1(self):
+        seen = 0
+        for path in self.reviews:
+            for row in self.source_inserts(path.read_text(encoding='utf-8')):
+                self.assertNotIn('__arity__', row, f'{path.name}: columns and values differ')
+                seen += 1
+                where = f'{path.name}: {row}'
+                if self.literal(row.get('validation_status')) == 'VERIFIED':
+                    self.assertTrue(self.present(row.get('verified_at')), where)
+                    self.assertTrue(self.present(row.get('verified_by')), where)
+        self.assertGreaterEqual(seen, 3, 'postcheck 출처 fixture를 찾지 못했다')
+
+    def test_every_postcheck_source_fixture_satisfies_the_other_checks(self):
+        for path in self.reviews:
+            for row in self.source_inserts(path.read_text(encoding='utf-8')):
+                where = f'{path.name}: {row}'
+                kind = self.literal(row.get('source_type'))
+                if kind is not None:
+                    self.assertIn(kind, self.SOURCE_TYPES, where)
+                    if (row.get('is_official') or '').strip().lower() == 'true':
+                        self.assertIn(kind, self.OFFICIAL_TYPES, where)
+                status = self.literal(row.get('validation_status'))
+                if status is not None:
+                    self.assertIn(status, self.VALIDATION, where)
+                url = row.get('source_url') or ''
+                self.assertIn('https://', url, where)
+                self.assertNotIn(' ', self.literal(url.split('||')[0].strip()) or '', where)
+                digest = row.get('content_hash') or ''
+                # 64자리 소문자 16진수여야 한다. repeat('c',64) 같은 형태를 그대로 받는다.
+                self.assertRegex(digest.replace(' ', ''),
+                                 r"^(repeat\('[0-9a-f]',64\)|'[0-9a-f]{64}')$", where)
+                for required in ('project_id', 'source_name', 'source_type', 'source_url',
+                                 'content_hash'):
+                    self.assertIn(required, row, where)
+
+    def test_the_boundary_postcheck_uses_the_repository_fixture_shape(self):
+        sql = (ROOT / 'supabase/review/20260929_zipon_boundary_postcheck.sql') \
+            .read_text(encoding='utf-8')
+        row = self.source_inserts(sql)[0]
+        self.assertEqual(self.literal(row['source_type']), 'OFFICIAL_NOTICE')
+        self.assertEqual(self.literal(row['validation_status']), 'VERIFIED')
+        self.assertEqual(row['verified_at'], 'now()')
+        self.assertEqual(row['verified_by'], 'tag')
+        self.assertIn("'https://cleanup.seoul.go.kr/TEST/'||tag", row['source_url'])
+        self.assertEqual(row['content_hash'], "repeat('c',64)")
+        self.assertIn('TEST', row['raw_snapshot'])
+
+    def test_the_boundary_postcheck_does_not_depend_on_production_row_counts(self):
+        sql = (ROOT / 'supabase/review/20260929_zipon_boundary_postcheck.sql') \
+            .read_text(encoding='utf-8')
+        # 자치구로 물으면 운영 사업이 함께 나와 LIMIT에 밀릴 수 있다. 좌표 반경으로 묻는다.
+        for call in ('zipon_development_search(127.1275,37.5415,NULL,500,100)',
+                     'zipon_development_search(127.1305,37.5415,NULL,500,100)'):
+            self.assertIn(call, sql)
+        self.assertNotIn("zipon_development_search(127.1275,37.5415,'강동구'", sql)
+
+    def test_an_unexpected_error_still_reports_and_still_rolls_back(self):
+        sql = (ROOT / 'supabase/review/20260929_zipon_boundary_postcheck.sql') \
+            .read_text(encoding='utf-8')
+        handler = sql[sql.index(' EXCEPTION'):]
+        self.assertIn('WHEN others THEN RAISE NOTICE', handler)
+        # 다시 올려 보내므로 트랜잭션이 중단되고 fixture가 남지 않는다.
+        self.assertEqual(handler.count('RAISE;'), 2)
+        self.assertTrue(sql.rstrip().endswith('ROLLBACK;'))

@@ -69,10 +69,12 @@ BEGIN
  results:=results||jsonb_build_array(jsonb_build_object('check_item','refuses without canonical source','passed',ok,'answer',answer));
  IF NOT ok THEN RAISE EXCEPTION 'Postcheck assertion failed' USING ERRCODE='ZP002'; END IF;
 
- INSERT INTO public.development_project_sources(source_id,project_id,source_name,source_type,
-   source_url,is_official,validation_status,collected_at,content_hash)
- VALUES(sid,pid,tag,'OFFICIAL_WEBSITE','https://cleanup.seoul.go.kr/'||tag,true,'VERIFIED',now(),
-   repeat('b',64));
+ -- VERIFIED 출처 행은 verified_at과 verified_by가 함께 있어야 한다
+ -- (development_project_sources_check1). 기존 postcheck들과 같은 형태로 만든다.
+ INSERT INTO public.development_project_sources(source_id,project_id,source_name,source_type,source_url,
+   is_official,validation_status,verified_at,verified_by,collected_at,content_hash,raw_snapshot)
+ VALUES(sid,pid,tag,'OFFICIAL_NOTICE','https://cleanup.seoul.go.kr/TEST/'||tag,true,
+   'VERIFIED',now(),tag,now(),repeat('c',64),jsonb_build_object('TEST',tag));
  UPDATE public.development_projects SET canonical_source_id=sid,last_verified_at=now()
  WHERE project_id=pid;
  SELECT revision INTO rev FROM public.development_projects WHERE project_id=pid;
@@ -133,13 +135,15 @@ BEGIN
  IF NOT ok THEN RAISE EXCEPTION 'Postcheck assertion failed' USING ERRCODE='ZP002'; END IF;
 
  -- 이제서야 INSIDE가 켜진다. 경계 안의 점만 INSIDE다.
- SELECT relation INTO relation FROM public.zipon_development_search(127.1275,37.5415,'강동구',1000,30)
+ -- 자치구로 물으면 운영 사업이 함께 나와 LIMIT에 밀릴 수 있다. 좌표 반경으로만 묻는다.
+ SELECT relation INTO relation FROM public.zipon_development_search(127.1275,37.5415,NULL,500,100)
  WHERE project_id=pid;
  ok:=relation='INSIDE';
  results:=results||jsonb_build_array(jsonb_build_object('check_item','inside turns on for a point in the boundary','passed',ok,'relation',relation));
  IF NOT ok THEN RAISE EXCEPTION 'Postcheck assertion failed' USING ERRCODE='ZP002'; END IF;
 
- SELECT relation INTO relation FROM public.zipon_development_search(127.1400,37.5500,'강동구',3000,30)
+ -- 경계 바로 밖(약 130m)의 점. 가까이 있어도 INSIDE가 아니어야 한다.
+ SELECT relation INTO relation FROM public.zipon_development_search(127.1305,37.5415,NULL,500,100)
  WHERE project_id=pid;
  ok:=relation='NEARBY';
  results:=results||jsonb_build_array(jsonb_build_object('check_item','a point outside the boundary stays nearby','passed',ok,'relation',relation));
@@ -156,6 +160,9 @@ BEGIN
  EXCEPTION
  WHEN sqlstate 'ZP001' THEN RAISE NOTICE '%',SQLERRM;
  WHEN sqlstate 'ZP002' THEN RAISE NOTICE 'FAILED %',results::text; RAISE;
+ -- 예상하지 못한 오류(제약 위반 등)도 어디까지 통과했는지 남기고 그대로 올려 보낸다.
+ -- 다시 올려 보내므로 트랜잭션은 중단되고 fixture는 남지 않는다.
+ WHEN others THEN RAISE NOTICE 'UNEXPECTED %: % | %',SQLSTATE,SQLERRM,results::text; RAISE;
  END;
 END
 $test$;
