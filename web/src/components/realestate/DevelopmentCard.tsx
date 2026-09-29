@@ -77,10 +77,21 @@ export default function DevelopmentCard({
               {project.address && (
                 <p className="mt-1.5 break-words text-[11px] text-subtle">{project.address}</p>
               )}
-              <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-subtle">
-                <span aria-hidden className="inline-block size-2 rounded-full bg-estate" />
-                사업 대표위치
-              </p>
+              {/* 확인된 공식 경계가 있으면 면이 그려진다. 그때만 구역이라고 말한다. */}
+              {point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary ? (
+                <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-subtle">
+                  <span
+                    aria-hidden
+                    className="inline-block size-2 rounded-sm border border-estate bg-estate/20"
+                  />
+                  {point.boundary_status_label} · 공식 사업구역
+                </p>
+              ) : (
+                <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-subtle">
+                  <span aria-hidden className="inline-block size-2 rounded-full bg-estate" />
+                  사업 대표위치
+                </p>
+              )}
             </>
           ) : (
             // 좌표가 없으면 서울 중심 지도를 대신 띄우지 않는다. 가짜 위치를 만들지 않는다.

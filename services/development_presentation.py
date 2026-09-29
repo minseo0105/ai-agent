@@ -115,9 +115,9 @@ def present_project(row):
     if verified:
         stage_raw = verified['label']
         normalized = normalize_stage(stage_raw)['normalized_stage']
-    # 경계 검증 신호는 SQL에서만 온다. 대표좌표만으로는 절대 True가 되지 않는다.
-    verified_boundary = bool(row.get('boundary_verified') or row.get('geometry_verified')
-                             or row.get('evidence_verified'))
+    # 경계 검증 신호는 SQL의 geometry_verified에서만 온다. 대표좌표만으로는 True가 되지
+    # 않는다. 공식 출처의 verified_at(evidence_verified)은 경계 확인이 아니므로 쓰지 않는다.
+    verified_boundary = bool(row.get('boundary_verified') or row.get('geometry_verified'))
     spatial = relation(row.get('spatial_relation') or row.get('relation'),
                        boundary_verified=verified_boundary)
     latitude, longitude = row.get('latitude'), row.get('longitude')

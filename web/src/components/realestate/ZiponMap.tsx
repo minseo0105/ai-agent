@@ -341,6 +341,8 @@ export default function ZiponMap({
   }, [api, instance, selectedEntry, located, compact, property]);
 
   const mappable = located.length;
+  // 확인된 공식 경계를 가진 사업 수. 범례와 안내문은 이 값이 있을 때만 구역을 말한다.
+  const withBoundary = located.filter((entry) => verifiedBoundaryPolygons(entry.point).length > 0).length;
 
   if (!sdk?.configured || failed) {
     return (
@@ -385,6 +387,21 @@ export default function ZiponMap({
             />
             선택 부동산
           </span>
+          {/* 공식 경계가 실제로 그려질 때만 범례에 넣는다. 없는 것을 있다고 적지 않는다. */}
+          {withBoundary > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <span
+                aria-hidden
+                className="inline-block size-2.5 rounded-sm"
+                style={{
+                  border: `2px solid ${TYPE_COLOR.REDEVELOPMENT}`,
+                  background: `${TYPE_COLOR.REDEVELOPMENT}2E`,
+                  boxSizing: "border-box",
+                }}
+              />
+              공식 사업구역 {withBoundary}
+            </span>
+          )}
           <span className="ml-auto">
             지도 표시 {mappable}/{points.length}건
             {points.length > mappable && ` · 좌표 없는 ${points.length - mappable}건은 목록에만 표시`}

@@ -137,9 +137,15 @@ class PresentationTests(unittest.TestCase):
     def test_inside_needs_a_verified_boundary(self):
         self.assertEqual(self.project(spatial_relation='INSIDE')['spatial']['label'], '주변 개발사업')
         self.assertFalse(self.project(spatial_relation='INSIDE')['spatial']['confirmed_boundary'])
-        confirmed = self.project(spatial_relation='INSIDE', evidence_verified=True)
+        confirmed = self.project(spatial_relation='INSIDE', geometry_verified=True)
         self.assertEqual(confirmed['spatial']['label'], '정비구역 내부')
         self.assertTrue(confirmed['spatial']['confirmed_boundary'])
+
+    def test_an_official_sources_verified_at_is_not_a_verified_boundary(self):
+        # evidence_verified는 공식 출처를 언제 확인했는지다. 경계를 확인한 것이 아니다.
+        row = self.project(spatial_relation='INSIDE', evidence_verified=True)
+        self.assertEqual(row['spatial']['label'], '주변 개발사업')
+        self.assertFalse(row['spatial']['confirmed_boundary'])
 
     def test_a_project_without_location_gets_a_graceful_notice(self):
         project = self.project()
@@ -652,6 +658,18 @@ class MapEndpointTests(unittest.TestCase):
                  'location': ewkb if with_point else None, 'geometry_verified': False,
                  'last_verified_at': None}]
 
+    def map_rows(self, boundary=None, verified=False):
+        """zipon_development_map RPC가 돌려주는 모양. 경위도는 숫자, 경계는 GeoJSON."""
+        row = dict(self.rows()[0])
+        row.pop('location')
+        row.update({'longitude': 127.1, 'latitude': 37.5, 'boundary': boundary,
+                    'geometry_verified': verified,
+                    'geometry_source': '서울특별시 도시계획사업 현황(서울플랜+) 공간정보'
+                                       if verified else None,
+                    'geometry_verified_at': '2026-09-29T00:00:00+00:00' if verified else None,
+                    'boundary_area_m2': 42000.0 if verified else None})
+        return [row]
+
     def test_the_point_decoder_reads_a_geography_point(self):
         row = self.rows()[0]
         self.assertEqual(dev._point(row['location']), (127.1, 37.5))
@@ -661,10 +679,12 @@ class MapEndpointTests(unittest.TestCase):
     def test_the_map_endpoint_returns_a_light_payload(self):
         from api.realestate import development_map
         with patch.object(rm, '_using_remote_db', return_value=True), \
-             patch.object(rm, '_remote_request', return_value=self.rows()) as request:
+             patch.object(rm, '_remote_request', return_value=self.map_rows()) as request:
             result = asyncio.run(development_map(sigungu='강동구'))
-        self.assertEqual(request.call_args.args[0], 'GET')
-        self.assertNotIn('field_evidence', request.call_args.kwargs['params']['select'])
+        # 경계는 전용 읽기 RPC로만 온다. 확인된 것만 GeoJSON으로 내려온다.
+        self.assertEqual(request.call_args.args[:2], ('POST', 'rpc/zipon_development_map'))
+        self.assertEqual(request.call_args.kwargs['payload'],
+                         {'p_sigungu': '강동구', 'p_limit': 500})
         point = result['points'][0]
         self.assertEqual((point['latitude'], point['longitude']), (37.5, 127.1))
         self.assertEqual(point['accuracy'], 'REPRESENTATIVE_POINT')
@@ -960,6 +980,18 @@ class MapLayerTests(unittest.TestCase):
 
 
 class BboxApiTests(unittest.TestCase):
+    def map_rows(self):
+        """RPC 모양. 경위도는 숫자로 오고 경계는 확인된 것만 온다."""
+        rows = []
+        for row in self.rows():
+            row = dict(row)
+            longitude, latitude = dev._point(row.pop('location'))
+            row.update({'longitude': longitude, 'latitude': latitude, 'boundary': None,
+                        'geometry_source': None, 'geometry_verified_at': None,
+                        'boundary_area_m2': None})
+            rows.append(row)
+        return rows
+
     def rows(self):
         import binascii
         import struct
@@ -1006,14 +1038,39 @@ class BboxApiTests(unittest.TestCase):
     def test_the_map_payload_stays_light(self):
         from api.realestate import development_map
         with patch.object(rm, '_using_remote_db', return_value=True), \
-             patch.object(rm, '_remote_request', return_value=self.rows()) as request:
+             patch.object(rm, '_remote_request', return_value=self.map_rows()) as request:
             result = asyncio.run(development_map(sigungu='강동구'))
-        columns = request.call_args.kwargs['params']['select'].split(',')
-        # 폴리곤·원문 스냅샷 같은 무거운 컬럼은 지도 조회에 담지 않는다.
-        for heavy in ('field_evidence', 'raw_snapshot', 'geometry'):
-            self.assertNotIn(heavy, columns)
-        self.assertIn('geometry_verified', columns)
+        payload = request.call_args.kwargs['payload']
+        # 원문 스냅샷 같은 무거운 컬럼은 지도 조회에 담지 않는다.
+        self.assertEqual(set(payload), {'p_sigungu', 'p_limit'})
+        for heavy in ('field_evidence', 'raw_snapshot'):
+            self.assertNotIn(heavy, json.dumps(result['points'][0], ensure_ascii=False))
         self.assertLessEqual(len(json.dumps(result['points'][0], ensure_ascii=False)), 900)
+
+    def test_the_map_falls_back_to_rest_when_the_boundary_rpc_is_missing(self):
+        # 경계 RPC를 아직 설치하지 않은 서버에서도 지도는 이전처럼 나온다.
+        from api.realestate import development_map
+        calls = []
+
+        def answer(method, path, **kwargs):
+            calls.append((method, path))
+            if path == 'rpc/zipon_development_map':
+                raise RuntimeError('function does not exist')
+            if path == 'development_projects' and kwargs.get('params', {}).get('select', '') \
+                    .startswith('project_id,stage'):
+                return []
+            return self.rows()
+
+        with patch.object(rm, '_using_remote_db', return_value=True), \
+             patch.object(rm, '_remote_request', side_effect=answer):
+            result = asyncio.run(development_map(sigungu='강동구'))
+        self.assertIn(('POST', 'rpc/zipon_development_map'), calls)
+        self.assertIn(('GET', 'development_projects'), calls)
+        point = result['points'][0]
+        self.assertEqual((point['latitude'], point['longitude']), (37.55, 127.10))
+        self.assertIsNone(point['boundary'])
+        self.assertEqual(point['boundary_status'], 'PENDING')
+        self.assertFalse(point['allows_inside'])
 
 
 class TransactionToDevelopmentE2ETests(unittest.TestCase):
@@ -3668,7 +3725,8 @@ class PolygonSafetyTests(unittest.TestCase):
         self.assertNotIn('buffer', self.map_source.lower())
 
     def test_the_map_and_the_marker_layer_share_one_boundary_reader(self):
-        self.assertEqual(self.map_source.count('verifiedBoundaryPolygons('), 2)
+        # marker 레이어, 선택 효과, 범례 집계가 모두 같은 helper를 쓴다.
+        self.assertEqual(self.map_source.count('verifiedBoundaryPolygons('), 3)
         self.assertIn('from "@/lib/projectBoundary"', self.map_source)
         # 첫 구역만 그리는 옛 방식이 다시 들어오지 않게 한다.
         self.assertNotIn('coordinates?.[0]', self.map_source)
@@ -4071,3 +4129,399 @@ class PolygonMatchGuardTests(unittest.TestCase):
         # match()는 geometry를 보지 않는다. 포함 여부로 후보를 만들거나 등급을 올리지 않는다.
         for forbidden in ('contains(', 'point_in_ring(', 'outer_rings', 'geometry'):
             self.assertNotIn(forbidden, code, forbidden)
+
+
+BOUNDARY_SQL = (ROOT / 'supabase/migrations/20260929_zipon_boundary_rpc.sql').read_text(
+    encoding='utf-8')
+
+
+class BoundaryWriteRpcTests(unittest.TestCase):
+    """공식 경계를 반영하는 유일한 DB 경로. 무엇을 거절하고 무엇을 건드리지 않는지."""
+
+    def setUp(self):
+        self.sql = BOUNDARY_SQL
+        self.write = self.sql[self.sql.index('CREATE OR REPLACE FUNCTION public.zipon_set_project_boundary'):
+                              self.sql.index('REVOKE ALL ON FUNCTION public.zipon_set_project_boundary')]
+
+    def test_it_is_installed_in_one_transaction_and_only_for_the_service_role(self):
+        self.assertEqual(self.sql.count('BEGIN;'), 1)
+        self.assertTrue(self.sql.rstrip().endswith('COMMIT;'))
+        for function in ('zipon_set_project_boundary', 'zipon_development_map'):
+            self.assertIn(f'REVOKE ALL ON FUNCTION public.{function}', self.sql)
+            self.assertIn(f'GRANT EXECUTE ON FUNCTION public.{function}', self.sql)
+            self.assertIn('FROM PUBLIC,anon,authenticated', self.sql)
+        self.assertIn('TO service_role', self.sql)
+        self.assertIn('SECURITY INVOKER', self.write)
+        self.assertIn('SET search_path=pg_catalog,public,extensions,pg_temp', self.write)
+
+    def test_it_writes_only_the_boundary_columns(self):
+        update = self.write[self.write.index('UPDATE public.development_projects SET'):
+                            self.write.index('WHERE project_id=p_project_id RETURNING')]
+        for allowed in ('geometry=shape', 'geometry_source=p_geometry_source',
+                        'geometry_verified=true', 'geometry_verified_at=now()',
+                        "jsonb_build_object('boundary',evidence)", 'revision=next_revision'):
+            self.assertIn(allowed, update)
+        # 좌표·단계·상태·검증상태·identity는 이 RPC가 손대지 않는다.
+        for forbidden in ('location=', 'location_source=', 'stage=', 'stage_raw=', 'status=',
+                          'validation_status=', 'external_id=', 'official_authority=',
+                          'canonical_source_id=', 'confidence_level='):
+            self.assertNotIn(forbidden, update, forbidden)
+
+    def test_it_never_overwrites_a_verified_boundary(self):
+        self.assertIn("'BOUNDARY_ALREADY_VERIFIED'", self.write)
+        self.assertIn('oldrow.geometry_verified IS TRUE', self.write)
+        self.assertIn("'skipped'", self.write)
+        # verified가 아닌 geometry가 이미 있으면 덮어쓰지 않고 사람 검토로 넘긴다.
+        self.assertIn("'UNVERIFIED_GEOMETRY_PRESENT'", self.write)
+
+    def test_it_refuses_a_geometry_that_is_not_a_valid_polygon_in_seoul(self):
+        for reason in ('GEOMETRY_TYPE_NOT_ALLOWED', 'GEOMETRY_UNREADABLE', 'GEOMETRY_NOT_VALID',
+                       'BOUNDARY_OUTSIDE_SEOUL', 'BOUNDARY_AREA_IMPLAUSIBLE'):
+            self.assertIn(f"'{reason}'", self.write)
+        self.assertIn("p_geometry->>'type' NOT IN ('Polygon','MultiPolygon')", self.write)
+        self.assertIn('extensions.ST_IsValid(shape)', self.write)
+        self.assertIn('extensions.ST_NDims(shape)<>2', self.write)
+        # 좌표계를 잘못 읽은 polygon은 서울 bounding box에서 걸린다.
+        self.assertIn('126.734', self.write)
+        self.assertIn('127.270', self.write)
+        self.assertIn('37.413', self.write)
+        self.assertIn('37.715', self.write)
+        self.assertIn('area<100 OR area>5000000', self.write)
+
+    def test_it_refuses_when_the_stored_point_is_outside_the_boundary(self):
+        self.assertIn("'STORED_POINT_OUTSIDE_BOUNDARY'", self.write)
+        self.assertIn('NOT extensions.ST_Contains(shape,oldrow.location::extensions.geometry)',
+                      self.write)
+
+    def test_it_requires_reviewed_exact_evidence_with_provenance(self):
+        for reason in ('EXACT_AUTO_APPLY_EVIDENCE_REQUIRED', 'SOURCE_PROVENANCE_REQUIRED',
+                       'BOUNDARY_CHECKS_NOT_PASSED', 'NO_BOUNDARY_SOURCE'):
+            self.assertIn(f"'{reason}'", self.write)
+        self.assertIn("p_evidence->>'match_status' IS DISTINCT FROM 'EXACT'", self.write)
+        self.assertIn("p_evidence->'auto_apply_candidate' IS DISTINCT FROM 'true'::jsonb",
+                      self.write)
+        self.assertIn("p_evidence->'representative_point_inside_polygon' IS DISTINCT FROM 'true'::jsonb",
+                      self.write)
+        for check in ('geometry_valid', 'ring_closed', 'crs_converted', 'normalized_name_match',
+                      'district_match', 'single_candidate', 'not_identity_protected',
+                      'point_in_polygon'):
+            self.assertIn(f'"{check}":true', self.write)
+        # 하나라도 true가 아니면 거절한다.
+        self.assertIn("c.v IS DISTINCT FROM 'true'::jsonb", self.write)
+
+    def test_it_locks_the_row_and_checks_the_revision(self):
+        self.assertIn('FOR UPDATE', self.write)
+        self.assertIn("'REVISION_CONFLICT'", self.write)
+        self.assertIn("'DISTRICT_MISMATCH'", self.write)
+        self.assertIn("'NO_CANONICAL_SOURCE'", self.write)
+        self.assertIn("SET LOCAL lock_timeout='5s'", self.sql)
+
+    def test_it_reports_what_it_left_alone(self):
+        returning = self.write[self.write.index("'result','boundary_set'"):]
+        for field in ('location_untouched', 'stage_untouched', 'identity_untouched'):
+            self.assertIn(field, returning)
+
+
+class BoundaryReadRpcTests(unittest.TestCase):
+    """지도·탐색 RPC가 확인된 경계만 GeoJSON으로 내보내는지."""
+
+    def setUp(self):
+        self.sql = BOUNDARY_SQL
+        self.map = self.sql[self.sql.index('CREATE OR REPLACE FUNCTION public.zipon_development_map'):
+                            self.sql.index('REVOKE ALL ON FUNCTION public.zipon_development_map')]
+        self.search = self.sql[self.sql.index('CREATE OR REPLACE FUNCTION public.zipon_development_search'):]
+
+    def test_the_map_rpc_emits_a_boundary_only_when_it_is_verified(self):
+        self.assertIn('boundary jsonb', self.map)
+        self.assertIn('WHEN p.geometry_verified AND p.geometry IS NOT NULL', self.map)
+        self.assertIn('extensions.ST_AsGeoJSON(p.geometry)::jsonb', self.map)
+        self.assertEqual(self.map.count('extensions.ST_AsGeoJSON'), 1)
+        self.assertIn('STABLE', self.map)
+        # 무거운 컬럼은 지도 응답에 담지 않는다.
+        for heavy in ('field_evidence', 'raw_snapshot'):
+            self.assertNotIn(heavy, self.map)
+
+    def test_the_map_rpc_hands_back_plain_coordinates(self):
+        self.assertIn('extensions.ST_X(p.location::extensions.geometry)', self.map)
+        self.assertIn('extensions.ST_Y(p.location::extensions.geometry)', self.map)
+        self.assertIn('boundary_area_m2', self.map)
+
+    def test_the_search_rpc_keeps_the_same_inside_rule(self):
+        # INSIDE는 geometry_verified이고 점이 polygon 안에 있을 때만이다. 규칙은 그대로다.
+        self.assertIn(
+            "WHEN p.geometry_verified AND p.geometry IS NOT NULL AND extensions.ST_Contains(p.geometry,q) THEN 'INSIDE'",
+            self.search)
+        self.assertIn('boundary jsonb', self.search)
+        self.assertIn('geometry_verified boolean', self.search)
+        self.assertIn('extensions.ST_AsGeoJSON(c.geometry)::jsonb', self.search)
+
+    def test_the_search_rpc_is_replaced_cleanly_because_its_columns_changed(self):
+        self.assertIn('DROP FUNCTION IF EXISTS public.zipon_development_search', self.sql)
+        self.assertLess(self.sql.index('DROP FUNCTION IF EXISTS public.zipon_development_search'),
+                        self.sql.index('CREATE OR REPLACE FUNCTION public.zipon_development_search'))
+
+
+class PolygonApplyRunnerTests(unittest.TestCase):
+    """검토를 통과한 건만 계획에 들어가는지. DB 접속 없이 계획 단계만 돌린다."""
+
+    SQUARE = [[127.126, 37.540], [127.126, 37.543], [127.129, 37.543], [127.129, 37.540],
+              [127.126, 37.540]]
+
+    @classmethod
+    def setUpClass(cls):
+        import apply_zipon_polygons as runner
+        cls.runner = runner
+
+    def source(self):
+        return {'dataset': '도시계획사업 현황(서울플랜+) 공간정보', 'dataset_id': 'OA-22712',
+                'version': '202609', 'source_sha256': 'a' * 64, 'archive': 'z.zip',
+                'legal_note': '법적 효력 없음 / 참고자료'}
+
+    def row(self, project_id, **extra):
+        base = {'zipon_project_id': project_id, 'zipon_project_name': '천호1 도시환경정비사업조합',
+                'district': '강동구', 'zipon_normalized_name': '천호1',
+                'official_normalized_name': '천호1', 'official_name': '천호1',
+                'official_source_record_id': '11740UQ120PS202604100001',
+                'match_status': 'EXACT',
+                'match_signals': ['NAME_NORMALIZED_EXACT', 'DISTRICT'],
+                'geometry_valid': True, 'geometry_validity': 'VALID',
+                'converted_crs': 'EPSG:4326',
+                'representative_point_inside_polygon': True, 'auto_apply_candidate': True}
+        base.update(extra)
+        return base
+
+    def bundle(self, rows, features=None, geometry=None):
+        review = {'format': 'zipon-polygon-match-review-v1', 'db_write': False,
+                  'source': self.source(), 'items': rows}
+        if features is None:
+            features = [{'geometry': geometry or {'type': 'Polygon', 'coordinates': [self.SQUARE]},
+                         'properties': {'zipon_project_id': row['zipon_project_id']}}
+                        for row in rows]
+        return review, {'features': features}
+
+    def plan(self, rows, **kwargs):
+        review, geojson = self.bundle(rows, **kwargs)
+        return self.runner.plan(review, geojson, review['source'])
+
+    def test_only_auto_apply_candidates_are_selected(self):
+        selected, skipped = self.plan([
+            self.row('p1'),
+            self.row('p2', auto_apply_candidate=False, match_status='PROBABLE'),
+            self.row('p3', auto_apply_candidate=False, match_status='EXACT',
+                     representative_point_inside_polygon=False,
+                     excluded_reason='REPRESENTATIVE_POINT_OUTSIDE_POLYGON'),
+        ])
+        self.assertEqual([item['project_id'] for item in selected], ['p1'])
+        reasons = {row['project_id']: row['reason'] for row in skipped}
+        self.assertEqual(reasons['p2'], 'NOT_AUTO_APPLY_PROBABLE')
+        self.assertEqual(reasons['p3'], 'REPRESENTATIVE_POINT_OUTSIDE_POLYGON')
+
+    def test_a_candidate_without_a_geojson_feature_is_skipped(self):
+        selected, skipped = self.plan([self.row('p1')], features=[])
+        self.assertEqual(selected, [])
+        self.assertEqual(skipped[0]['reason'], 'NOT_IN_REVIEW_GEOJSON')
+
+    def test_an_unclosed_or_foreign_polygon_is_skipped(self):
+        open_ring = {'type': 'Polygon', 'coordinates': [self.SQUARE[:-1]]}
+        _, skipped = self.plan([self.row('p1')], geometry=open_ring)
+        self.assertEqual(skipped[0]['reason'], 'GEOMETRY_NOT_A_CLOSED_POLYGON')
+        far = [[129.0, 35.1], [129.0, 35.2], [129.1, 35.2], [129.1, 35.1], [129.0, 35.1]]
+        _, skipped = self.plan([self.row('p1')],
+                               geometry={'type': 'Polygon', 'coordinates': [far]})
+        self.assertEqual(skipped[0]['reason'], 'BOUNDARY_OUTSIDE_SEOUL')
+        point_like = [[127.126, 37.540], [127.126, 37.54001], [127.12601, 37.54001],
+                      [127.12601, 37.540], [127.126, 37.540]]
+        _, skipped = self.plan([self.row('p1')],
+                               geometry={'type': 'Polygon', 'coordinates': [point_like]})
+        self.assertEqual(skipped[0]['reason'], 'BOUNDARY_AREA_IMPLAUSIBLE')
+
+    def test_a_multipolygon_is_accepted_and_measured(self):
+        second = [[point[0] + 0.01, point[1]] for point in self.SQUARE]
+        geometry = {'type': 'MultiPolygon', 'coordinates': [[self.SQUARE], [second]]}
+        selected, _ = self.plan([self.row('p1')], geometry=geometry)
+        self.assertEqual(selected[0]['geometry_type'], 'MultiPolygon')
+        self.assertGreater(selected[0]['area_m2'], 100)
+
+    def test_the_evidence_carries_the_provenance_the_rpc_demands(self):
+        selected, _ = self.plan([self.row('p1')])
+        evidence = selected[0]['evidence']
+        self.assertEqual(evidence['match_status'], 'EXACT')
+        self.assertTrue(evidence['auto_apply_candidate'])
+        self.assertTrue(evidence['representative_point_inside_polygon'])
+        self.assertEqual(evidence['source_version'], '202609')
+        self.assertEqual(len(evidence['source_sha256']), 64)
+        self.assertTrue(all(evidence['checks'].values()), evidence['checks'])
+        self.assertEqual(set(evidence['checks']),
+                         {'geometry_valid', 'ring_closed', 'crs_converted',
+                          'normalized_name_match', 'district_match', 'single_candidate',
+                          'not_identity_protected', 'point_in_polygon'})
+
+    def test_a_review_artifact_from_another_source_edition_is_refused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            review = Path(directory) / 'review.json'
+            geojson = Path(directory) / 'exact.geojson'
+            registry = Path(directory) / 'registry.json'
+            body, features = self.bundle([self.row('p1')])
+            review.write_text(json.dumps(body), encoding='utf-8')
+            geojson.write_text(json.dumps(features), encoding='utf-8')
+            registry.write_text(json.dumps({'sources': [
+                {'dataset_id': 'OA-22712', 'version': '202609', 'source_sha256': 'b' * 64}]}),
+                encoding='utf-8')
+            with patch.object(self.runner, 'REVIEW_FILE', review), \
+                    patch.object(self.runner, 'GEOJSON_FILE', geojson), \
+                    patch.object(self.runner, 'REGISTRY_FILE', registry):
+                with self.assertRaises(self.runner.Blocked) as caught:
+                    self.runner.artifacts()
+        self.assertEqual(caught.exception.reason, 'SOURCE_HASH_DOES_NOT_MATCH_REGISTRY')
+
+    def test_the_point_check_excludes_a_hole(self):
+        hole = [[127.1265, 37.5405], [127.1265, 37.5408], [127.1268, 37.5408],
+                [127.1268, 37.5405], [127.1265, 37.5405]]
+        geometry = {'type': 'Polygon', 'coordinates': [self.SQUARE, hole]}
+        self.assertTrue(self.runner.point_inside(geometry, 127.1285, 37.5425))
+        self.assertFalse(self.runner.point_inside(geometry, 127.12665, 37.54065))
+        self.assertFalse(self.runner.point_inside(geometry, 127.20, 37.60))
+
+    def test_the_runner_writes_nothing_without_apply(self):
+        source = (ROOT / 'scripts/apply_zipon_polygons.py').read_text(encoding='utf-8')
+        self.assertIn("mode.add_argument('--dry-run'", source)
+        self.assertIn("mode.add_argument('--apply'", source)
+        self.assertIn("'db_write': bool(args.apply)", source)
+        # 쓰기는 이 RPC 한 곳으로만 간다. PATCH나 직접 UPDATE 경로가 없다.
+        self.assertIn('rpc/zipon_set_project_boundary', source)
+        for forbidden in ("session.patch", "'PATCH'", 'development_projects?', 'DELETE'):
+            self.assertNotIn(forbidden, source, forbidden)
+        self.assertEqual(source.count('session.post'), 1)
+
+    def test_it_verifies_that_nothing_else_changed(self):
+        for field in ('sigungu', 'stage', 'status', 'validation_status', 'external_id',
+                      'official_authority', 'canonical_source_id'):
+            self.assertIn(field, self.runner.UNTOUCHED)
+        source = (ROOT / 'scripts/apply_zipon_polygons.py').read_text(encoding='utf-8')
+        self.assertIn('unexpected_changes', source)
+        self.assertIn('location_untouched', source)
+
+
+class BoundaryOnScreenTests(unittest.TestCase):
+    """확인된 경계가 화면에서 구역으로 읽히고, 없을 때는 그렇지 않은지."""
+
+    def setUp(self):
+        self.map_source = read('components/realestate/ZiponMap.tsx')
+        self.card = read('components/realestate/DevelopmentCard.tsx')
+
+    def test_the_card_says_구역_only_when_a_verified_boundary_is_drawn(self):
+        self.assertIn('point.boundary_status === "OFFICIAL_VERIFIED" && point.boundary', self.card)
+        self.assertIn('공식 사업구역', self.card)
+        self.assertIn('사업 대표위치', self.card)
+        # 대표위치 문구가 경계 문구를 대신하지 않도록 두 갈래로 갈라져 있어야 한다.
+        self.assertIn(') : (', self.card.split('공식 사업구역', 1)[1][:400])
+
+    def test_the_legend_counts_boundaries_only_when_they_exist(self):
+        self.assertIn('const withBoundary = located.filter', self.map_source)
+        self.assertIn('withBoundary > 0 &&', self.map_source)
+        self.assertIn('공식 사업구역 {withBoundary}', self.map_source)
+
+    def test_the_map_payload_type_carries_the_boundary_contract(self):
+        types = read('lib/realestate.ts')
+        for field in ('boundary: unknown | null', 'boundary_status: string',
+                      'boundary_status_label: string', 'allows_inside: boolean'):
+            self.assertIn(field, types)
+
+    def test_a_verified_boundary_reaches_the_map_point(self):
+        boundary = {'type': 'Polygon', 'coordinates': [[[127.126, 37.540], [127.126, 37.543],
+                                                        [127.129, 37.543], [127.126, 37.540]]]}
+        point = pr.map_point({'project_id': 'p1', 'project_name': '천호1', 'sigungu': '강동구',
+                              'project_type': 'REDEVELOPMENT', 'latitude': 37.5415,
+                              'longitude': 127.1275, 'boundary': boundary,
+                              'geometry_verified': True,
+                              'geometry_source': '서울특별시 도시계획사업 현황(서울플랜+) 공간정보',
+                              'validation_status': 'VERIFIED'})
+        self.assertEqual(point['boundary_status'], 'OFFICIAL_VERIFIED')
+        self.assertEqual(point['boundary'], boundary)
+        self.assertTrue(point['allows_inside'])
+        self.assertEqual(point['accuracy'], 'OFFICIAL_BOUNDARY')
+
+    def test_an_unverified_boundary_never_reaches_the_map_point(self):
+        boundary = {'type': 'Polygon', 'coordinates': [[[127.126, 37.540]]]}
+        point = pr.map_point({'project_id': 'p1', 'project_name': '천호1', 'sigungu': '강동구',
+                              'project_type': 'REDEVELOPMENT', 'latitude': 37.5415,
+                              'longitude': 127.1275, 'boundary': boundary,
+                              'geometry_verified': False, 'validation_status': 'VERIFIED'})
+        self.assertIsNone(point['boundary'])
+        self.assertEqual(point['boundary_status'], 'NOT_AVAILABLE')
+        self.assertFalse(point['allows_inside'])
+        self.assertEqual(point['accuracy'], 'REPRESENTATIVE_POINT')
+
+
+class BoundaryPostcheckTests(unittest.TestCase):
+    """설치 후 확인 SQL이 실제로 되돌려지고, 무엇을 확인하는지."""
+
+    def setUp(self):
+        self.sql = (ROOT / 'supabase/review/20260929_zipon_boundary_postcheck.sql') \
+            .read_text(encoding='utf-8')
+
+    def test_it_rolls_back_every_fixture(self):
+        self.assertTrue(self.sql.rstrip().endswith('ROLLBACK;'))
+        self.assertIn('ZIPON_POSTCHECK_ROLLBACK', self.sql)
+        self.assertIn("WHEN sqlstate 'ZP001' THEN RAISE NOTICE", self.sql)
+        # 정리 목적의 삭제 경로를 두지 않는다. 롤백만으로 되돌린다(머리말 주석은 제외).
+        body = self.sql[self.sql.index('BEGIN;'):]
+        for forbidden in ('DELETE FROM', 'TRUNCATE', 'DROP TABLE'):
+            self.assertNotIn(forbidden, body)
+        self.assertIn('TEST_ZIPON_', self.sql)
+
+    def test_it_checks_each_refusal_and_the_one_success(self):
+        for reason in ('NO_CANONICAL_SOURCE', 'BOUNDARY_OUTSIDE_SEOUL',
+                       'BOUNDARY_AREA_IMPLAUSIBLE', 'BOUNDARY_CHECKS_NOT_PASSED',
+                       'DISTRICT_MISMATCH', 'REVISION_CONFLICT', 'BOUNDARY_ALREADY_VERIFIED'):
+            self.assertIn(reason, self.sql, reason)
+        self.assertIn("answer->>'result'='boundary_set'", self.sql)
+        self.assertIn("(answer->'location_untouched')::boolean", self.sql)
+        self.assertIn("(answer->'identity_untouched')::boolean", self.sql)
+
+    def test_it_proves_inside_turns_on_only_with_a_verified_boundary(self):
+        self.assertIn("ok:=relation='INSIDE'", self.sql)
+        self.assertIn("ok:=relation='NEARBY'", self.sql)
+        self.assertIn('map rpc emits the verified boundary', self.sql)
+
+
+class BoundaryActivationDocumentTests(unittest.TestCase):
+    """설치·반영 문서가 순서와 안전장치를 적고 있는지."""
+
+    def setUp(self):
+        self.document = (ROOT / 'docs/zipon_boundary_activation_2026-09-29.md') \
+            .read_text(encoding='utf-8')
+
+    def test_it_names_every_file_a_person_has_to_run(self):
+        for expected in ('supabase/migrations/20260929_zipon_boundary_rpc.sql',
+                         'supabase/review/20260929_zipon_boundary_postcheck.sql',
+                         'scripts/apply_zipon_polygons.py',
+                         'polygon_apply_journal_20260929.json'):
+            self.assertIn(expected, self.document)
+        self.assertIn('--dry-run', self.document)
+        self.assertIn('--apply --limit 1', self.document)
+
+    def test_it_says_which_rows_are_left_out(self):
+        for expected in ('auto_apply_candidate', 'exact_valid_outside',
+                         'exact_invalid_geometry', 'identity conflict', '15건'):
+            self.assertIn(expected, self.document)
+
+    def test_it_records_the_two_layers_of_checks_and_what_stays_untouched(self):
+        for expected in ('ST_Contains', 'ST_IsValid', 'ST_Area', 'revision',
+                         'unexpected_changes', 'canonical_source_id'):
+            self.assertIn(expected, self.document)
+        self.assertIn('좌표·단계·상태·', self.document)
+
+    def test_it_states_the_inside_rule_and_the_shortcut_that_was_removed(self):
+        self.assertIn('geometry_verified`이고 그 polygon이 점을 담을 때만 INSIDE', self.document)
+        self.assertIn('evidence_verified', self.document)
+        self.assertIn('출처 확인 시각은 경계 확인이 아니다', self.document)
+        self.assertIn('NOT_DETERMINED', self.document)
+
+    def test_it_states_that_this_container_wrote_nothing(self):
+        self.assertIn('이 컨테이너에서는 DB에 아무것도 쓰지 않았다', self.document)
+
+    def test_it_explains_the_fallback_so_install_order_cannot_empty_the_map(self):
+        self.assertIn('boundary_source', self.document)
+        self.assertIn('REST 조회로 되돌아가', self.document)

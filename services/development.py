@@ -77,31 +77,54 @@ def map_projects(sigungu=None, limit=500, bbox=None):
             raise ValueError('Invalid bbox')
     if not rm._using_remote_db():
         return {'status': 'unavailable', 'projects': [], 'reason': 'NOT_CONFIGURED'}
-    params = {'select': MAP_COLUMNS, 'limit': limit}
-    if sigungu:
-        params['sigungu'] = 'eq.' + sigungu
-    try:
-        rows = rm._remote_request('GET', 'development_projects', params=params)
-    except Exception:
+    rows, boundary_source = _map_rows(sigungu, limit)
+    if rows is None:
         return {'status': 'unavailable', 'projects': [], 'reason': 'DEVELOPMENT_UNAVAILABLE'}
     # 목록과 지도가 같은 응답을 쓰므로 단계 상세도 여기서 함께 채운다. 단계 판정 로직은
     # 건드리지 않고, 탐색 경로가 이미 쓰는 읽기 전용 배치를 그대로 재사용한다.
     rows = stage_metadata(rows)
     result = []
     for row in rows or []:
-        longitude, latitude = _point(row.get('location'))
+        longitude, latitude = _coordinates(row)
         if bbox is not None:
             if longitude is None or latitude is None:
                 continue
             if not (bbox['south'] <= latitude <= bbox['north']
                     and bbox['west'] <= longitude <= bbox['east']):
                 continue
-        # 검증된 경계 GeoJSON은 아직 제공 경로가 없다. 추정 polygon은 만들지 않는다.
-        result.append(dict(row, longitude=longitude, latitude=latitude, boundary=None))
+        # 경계는 RPC가 확인된 것만 GeoJSON으로 준다. 추정 polygon은 만들지 않는다.
+        result.append(dict(row, longitude=longitude, latitude=latitude,
+                           boundary=row.get('boundary')))
     return {'status': 'ok', 'projects': result, 'reason': None,
-            'bbox_filtered': bbox is not None}
+            'bbox_filtered': bbox is not None, 'boundary_source': boundary_source}
 
 
+def _map_rows(sigungu, limit):
+    """(행, 경계를 어디서 얻었는지). 경계 RPC가 없는 서버에서도 지도는 계속 나온다."""
+    try:
+        rows = rm._remote_request('POST', 'rpc/zipon_development_map', payload={
+            'p_sigungu': sigungu, 'p_limit': limit})
+        return rows, 'RPC'
+    except Exception:
+        # 경계 RPC가 아직 설치되지 않은 서버. 좌표만으로 이전과 같이 그린다.
+        pass
+    params = {'select': MAP_COLUMNS, 'limit': limit}
+    if sigungu:
+        params['sigungu'] = 'eq.' + sigungu
+    try:
+        rows = rm._remote_request('GET', 'development_projects', params=params)
+    except Exception:
+        return None, None
+    return [dict(row, boundary=None) for row in rows or []], 'NONE'
+
+
+def _coordinates(row):
+    """RPC는 경위도를 숫자로 주고, REST fallback은 geography hex를 준다."""
+    longitude, latitude = row.get('longitude'), row.get('latitude')
+    if isinstance(longitude, (int, float)) and isinstance(latitude, (int, float)) \
+            and math.isfinite(longitude) and math.isfinite(latitude):
+        return longitude, latitude
+    return _point(row.get('location'))
 
 
 def search_projects(*, longitude=None, latitude=None, sigungu=None, radius_m=1000, limit=30):
