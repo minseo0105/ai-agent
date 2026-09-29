@@ -1,5 +1,5 @@
 // FastAPI /api/realestate 클라이언트
-import { apiFetch } from "@/lib/access";
+import { apiFetch, toApiError, type ApiInit } from "@/lib/access";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
@@ -89,6 +89,12 @@ export type DevelopmentMapPoint = {
   accuracy_label: string;
   confidence: string;
   mappable: boolean;
+  /** 사업 생애주기. 단계와 별개이며 공식 종결 단계만 COMPLETED다. */
+  lifecycle: "ACTIVE" | "CONSTRUCTION" | "COMPLETED" | "CANCELLED" | "UNKNOWN";
+  lifecycle_label: string;
+  lifecycle_basis: string;
+  /** 기본 지도에 그리는 사업인지. 완료·취소만 false다. */
+  in_default_map: boolean;
 };
 
 export type DevelopmentMap = {
@@ -106,6 +112,13 @@ export type DevelopmentMap = {
   layers: Record<string, { label: string; marker: string; color: string; layer?: string }>;
   bbox_filtered: boolean;
   location_notice: string;
+  /** 완료사업을 포함해서 받은 응답인지 */
+  include_completed: boolean;
+  /** 기본 지도에서 빠진 완료·취소 사업 수 */
+  hidden_completed: number;
+  lifecycle_counts: Record<string, number>;
+  lifecycle_labels: Record<string, string>;
+  default_lifecycles: string[];
 };
 
 export type DevelopmentImpactBlock = {
@@ -238,19 +251,12 @@ export type Notification = {
   is_read: boolean;
 };
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+async function request<T>(path: string, init?: ApiInit): Promise<T> {
   const res = await apiFetch(`${API_URL}/api/realestate${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
   });
-  if (!res.ok) {
-    let message = `서버 응답 오류 (${res.status})`;
-    try {
-      const body = await res.json();
-      if (typeof body?.detail === "string") message = body.detail;
-    } catch {}
-    throw new Error(message);
-  }
+  if (!res.ok) throw await toApiError(res);
   return res.json() as Promise<T>;
 }
 
@@ -262,10 +268,17 @@ export const estateApi = {
     post<{ total: number; items: Subscription[] }>("/subscriptions", q),
   developmentSummary: () => request<DevelopmentSummary>("/development/summary"),
   mapConfig: () => request<MapConfig>("/map/config"),
-  developmentMap: (sigungu?: string, limit = 500, bbox?: { north: number; south: number; east: number; west: number }) =>
+  developmentMap: (
+    sigungu?: string,
+    limit = 500,
+    bbox?: { north: number; south: number; east: number; west: number },
+    options?: { includeCompleted?: boolean; init?: ApiInit },
+  ) =>
     request<DevelopmentMap>(
       `/development/map?limit=${limit}${sigungu ? `&sigungu=${encodeURIComponent(sigungu)}` : ""}` +
-        (bbox ? `&north=${bbox.north}&south=${bbox.south}&east=${bbox.east}&west=${bbox.west}` : ""),
+        (bbox ? `&north=${bbox.north}&south=${bbox.south}&east=${bbox.east}&west=${bbox.west}` : "") +
+        (options?.includeCompleted ? "&include_completed=true" : ""),
+      options?.init,
     ),
   developmentNearby: (q: { longitude: number; latitude: number; radius_m?: number; limit?: number }) =>
     post<DevelopmentSearch & { impact: DevelopmentImpactBlock }>("/development/nearby", q),

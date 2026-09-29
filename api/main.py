@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -18,6 +19,14 @@ from pydantic import BaseModel, Field
 
 from api.access import AccessMiddleware
 from api.access import router as access_router
+from api.readiness import readiness
+from api.reliability import (
+    RequestContextMiddleware,
+    configure_logging,
+    http_exception_handler,
+    unhandled_exception_handler,
+    validation_exception_handler,
+)
 from api.car_selector import router as car_selector_router
 from api.dreamcar import router as dreamcar_router
 from api.gif import router as gif_router
@@ -30,7 +39,12 @@ from services.agent import PROVIDERS, SEARCH_MODES, run_agent
 from services.config import get_secret
 from services.dreamcar import ASSET_DIR, IMAGE_DIR
 
+configure_logging()
 app = FastAPI(title="AI Lab API", version="0.1.0")
+# 처리되지 않은 예외가 raw 500이나 traceback으로 나가지 않게 한다. 오류를 200으로 숨기지도 않는다.
+app.add_exception_handler(HTTPException, http_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, unhandled_exception_handler)
 app.include_router(golf_router)
 app.include_router(realestate_router)
 app.include_router(report_router)
@@ -53,6 +67,8 @@ app.mount(car_selector.REAL_MEDIA, StaticFiles(directory=car_selector.FALLBACK_D
 _origins = os.environ.get("FRONTEND_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
 # 관리자 설정의 공개 범위를 서비스 API에 적용. CORS보다 먼저 추가해야(=안쪽) 차단 응답에도 CORS 헤더가 붙는다.
 app.add_middleware(AccessMiddleware)
+# request_id·접근 로그는 가장 바깥에 둔다. 접근 제어에서 막힌 요청도 같은 id로 추적된다.
+app.add_middleware(RequestContextMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in _origins.split(",") if o.strip()],
@@ -75,13 +91,18 @@ class ChatRequest(BaseModel):
 
 @app.get("/api/health")
 def health():
-    return {
-        "ok": True,
-        "providers": {
-            "claude": bool(get_secret("ANTHROPIC_API_KEY")),
-            "gpt": bool(get_secret("OPENAI_API_KEY")),
-        },
-    }
+    """프로세스가 살아 있는지만 본다. 바깥으로 아무것도 부르지 않고 바로 답한다.
+
+    의존성 상태는 /api/ready에 있다. 헬스체크가 외부 호출을 하면, 남의 장애 때문에
+    이 프로세스가 재시작된다.
+    """
+    return {"ok": True, "service": "ailab-api"}
+
+
+@app.get("/api/ready")
+def ready():
+    """의존성별 상태. 부가 의존성 하나가 죽어도 전체가 멈추지 않는다."""
+    return readiness()
 
 
 @app.get("/api/agent/options")
@@ -89,6 +110,11 @@ def agent_options():
     return {
         "providers": [{"id": k, "label": v} for k, v in PROVIDERS.items()],
         "search_modes": list(SEARCH_MODES),
+        # 어떤 모델을 쓸 수 있는지는 화면이 알아야 한다. 키 값은 절대 내보내지 않는다.
+        "available": {
+            "claude": bool(get_secret("ANTHROPIC_API_KEY")),
+            "gpt": bool(get_secret("OPENAI_API_KEY")),
+        },
     }
 
 

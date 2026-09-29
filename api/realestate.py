@@ -285,7 +285,8 @@ def geocode_bulk(offset: int = 0, size: int = bulk_geocode.DEFAULT_SLICE,
 @router.get('/development/map')
 async def development_map(sigungu: str | None = None, limit: int = 500,
                           north: float | None = None, south: float | None = None,
-                          east: float | None = None, west: float | None = None):
+                          east: float | None = None, west: float | None = None,
+                          include_completed: bool = False):
     """목록과 지도 마커의 공통 기준. 한 응답에서 둘을 같이 내려준다.
 
     화면이 자치구별 응답을 합쳐 '전체'를 만들면, 한 자치구가 실패했을 때 그 사업들이
@@ -305,10 +306,25 @@ async def development_map(sigungu: str | None = None, limit: int = 500,
     rows = result.get('projects') or []
     points = [presentation.map_point(row) for row in rows]
     projects = [presentation.present_project(row) for row in rows]
+    # 기본 지도는 앞으로 변화가 남은 사업만 그린다. 완료·취소는 [완료사업 보기]에서만.
+    # 판정 근거가 없는 UNKNOWN은 숨기지 않는다. 확인 못 한 것을 끝난 것으로 다루지 않는다.
+    by_id = {point['project_id']: point for point in points}
+    hidden = [point for point in points if not point['in_default_map']]
+    if not include_completed:
+        points = [point for point in points if point['in_default_map']]
+        projects = [row for row in projects if by_id.get(row['project_id'], {}).get('in_default_map', True)]
     mappable = sum(1 for point in points if point['mappable'])
+    lifecycles = {}
+    for point in by_id.values():
+        lifecycles[point['lifecycle']] = lifecycles.get(point['lifecycle'], 0) + 1
     return {'status': result['status'], 'reason': result['reason'], 'points': points,
             'projects': projects, 'total': len(points), 'mappable': mappable,
             'coordinateless': len(points) - mappable,
+            'include_completed': include_completed,
+            'lifecycle_counts': lifecycles,
+            'hidden_completed': len(hidden),
+            'lifecycle_labels': presentation.LIFECYCLE_LABELS,
+            'default_lifecycles': list(presentation.DEFAULT_LIFECYCLES),
             'bbox_filtered': result.get('bbox_filtered', False),
             'layers': presentation.MAP_LAYERS, 'legend': presentation.LOCATION_ACCURACY,
             'location_notice': presentation.NO_LOCATION_NOTICE,

@@ -5,6 +5,7 @@ import { Spinner, inputClass } from "@/components/golf/ui";
 import DevelopmentCard from "./DevelopmentCard";
 import RegionPicker from "./RegionPicker";
 import ZiponMap, { type MapBounds, type MapFocus } from "./ZiponMap";
+import { isTransient, withColdStartRetry } from "@/lib/coldStart";
 import {
   estateApi,
   type DevelopmentMapPoint,
@@ -53,6 +54,10 @@ export default function DevelopmentTab({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
+  /** 기본 지도는 앞으로 변화가 남은 사업만 보여준다. 완료사업은 켤 때만 함께 본다. */
+  const [includeCompleted, setIncludeCompleted] = useState(false);
+  const [hiddenCompleted, setHiddenCompleted] = useState(0);
+  const [waking, setWaking] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
@@ -63,13 +68,22 @@ export default function DevelopmentTab({
   // 그 사업들이 조용히 빠진 합계가 '전체'로 보인다. 지역 선택은 이 데이터를 화면에서
   // 거르는 것이고, 다시 조회하지 않는다.
   useEffect(() => {
-    let cancelled = false;
+    // 조건(완료사업 포함 여부)이 바뀌면 이전 요청은 끊는다. 끊지 않으면 늦게 도착한
+    // 이전 조건의 응답이 새 조건의 목록을 덮어쓴다.
+    const controller = new AbortController();
     setLoading(true);
     setError("");
-    estateApi
-      .developmentMap()
+    // 조건이 바뀐 순간 이전 목록은 이 조건의 결과가 아니다.
+    setProjects([]);
+    setPoints([]);
+    // 서버가 깨어나는 중일 수 있다. 읽기 요청이므로 잠깐 기다렸다가 다시 시도한다.
+    withColdStartRetry(
+      (signal) => estateApi.developmentMap(undefined, 500, undefined, { includeCompleted, init: { signal } }),
+      { signal: controller.signal, onRetry: () => setWaking(true) },
+    )
       .then((r) => {
-        if (cancelled) return;
+        if (controller.signal.aborted) return;
+        setWaking(false);
         if (r.status !== "ok") {
           setReady(false);
           setProjects([]);
@@ -79,17 +93,22 @@ export default function DevelopmentTab({
         setReady(true);
         setProjects(r.projects);
         setPoints(r.points);
+        setHiddenCompleted(r.hidden_completed ?? 0);
       })
       .catch((e) => {
-        if (!cancelled) setError((e as Error).message);
+        if (controller.signal.aborted) return;
+        setWaking(false);
+        setError(
+          isTransient(e)
+            ? "서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요."
+            : (e as Error).message,
+        );
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    return () => controller.abort();
+  }, [includeCompleted]);
 
   const search = keyword.trim();
   const selectedDistricts = useMemo(
@@ -220,8 +239,33 @@ export default function DevelopmentTab({
         />
       )}
 
-      {loading && <Spinner label="개발정보를 불러오고 있어요…" />}
+      {loading && <Spinner label={waking ? "서버를 깨우는 중이에요…" : "개발정보를 불러오고 있어요…"} />}
       {error && <p className="rounded-xl bg-red-500/10 px-3 py-2.5 text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+      {ready && (
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {/* 기본은 꺼짐. 완료·취소 사업은 지우지 않고 감춰 둘 뿐이다. */}
+          <button
+            type="button"
+            onClick={() => setIncludeCompleted((v) => !v)}
+            aria-pressed={includeCompleted}
+            className={`rounded-full border px-3 py-1.5 font-bold transition ${
+              includeCompleted
+                ? "border-estate bg-estate-soft text-estate"
+                : "border-border bg-surface text-muted hover:bg-surface-muted"
+            }`}
+          >
+            완료사업 보기
+          </button>
+          <span className="text-subtle">
+            {includeCompleted
+              ? "완료·취소된 사업을 함께 보고 있어요."
+              : hiddenCompleted > 0
+                ? `완료된 사업 ${hiddenCompleted}건은 숨겨져 있어요.`
+                : "앞으로 변화가 남은 사업만 보고 있어요."}
+          </span>
+        </div>
+      )}
       {!loading && unavailable && (
         <p className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-sm text-amber-800 dark:text-amber-300">
           개발정보를 지금 불러올 수 없어요. 잠시 후 다시 시도해 주세요.

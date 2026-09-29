@@ -422,7 +422,8 @@ class ScreenCompactnessTests(unittest.TestCase):
         tab = read('components/realestate/DevelopmentTab.tsx')
         self.assertIn('useEffect', tab)
         # 목록과 marker를 한 응답에서 받는다. 자치구별 조회를 합치지 않는다.
-        self.assertIn('estateApi\n      .developmentMap()', tab)
+        self.assertIn('estateApi.developmentMap(', tab)
+        self.assertEqual(tab.count('estateApi.developmentMap('), 1)
         self.assertNotIn('개발사업 찾기', tab)
         self.assertNotIn('estateApi.development(', tab)
 
@@ -698,7 +699,8 @@ class MapEndpointTests(unittest.TestCase):
                                        'last_checked', 'official_url', 'type_code', 'type_label',
                                        'program_code', 'program_label', 'stage_label', 'district',
                                        'dong', 'accuracy', 'accuracy_label', 'confidence',
-                                       'mappable'}, set())
+                                       'mappable', 'lifecycle', 'lifecycle_label',
+                                       'lifecycle_basis', 'in_default_map'}, set())
         self.assertEqual(result['mappable'], 1)
         self.assertIn('OFFICIAL_BOUNDARY', result['legend'])
 
@@ -2479,8 +2481,9 @@ class MapListConsistencyTests(unittest.TestCase):
 
     def test_the_stage_label_still_comes_from_the_official_value(self):
         rows = whole_city_rows()
+        # 준공인가는 완료 사업이라 기본 지도에서 빠진다. 단계 표기를 보려면 함께 요청한다.
         rows[0]['stage_raw'] = '준공인가'
-        result = self.call(rows)
+        result = self.call(rows, include_completed=True)
         labels = {p['project_id']: p['stage']['label'] for p in result['projects']}
         self.assertEqual(labels[SEOCHO_IDS[0]], '준공')
         self.assertEqual(labels[GANGDONG_LOCATED], '조합설립 인가')
@@ -2527,7 +2530,8 @@ class MapScreenConsistencyTests(unittest.TestCase):
         self.tab = read('components/realestate/DevelopmentTab.tsx')
 
     def test_the_tab_reads_one_endpoint_for_the_list_and_the_map(self):
-        self.assertIn('estateApi\n      .developmentMap()', self.tab)
+        self.assertIn('estateApi.developmentMap(', self.tab)
+        self.assertEqual(self.tab.count('estateApi.developmentMap('), 1)
         self.assertIn('setProjects(r.projects)', self.tab)
         self.assertIn('setPoints(r.points)', self.tab)
         # 목록 전용 탐색 호출과 자치구별 병렬 조회는 더 쓰지 않는다.

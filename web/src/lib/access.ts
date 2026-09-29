@@ -33,12 +33,54 @@ export function setToken(token: string | null) {
   if (typeof window !== "undefined") window.dispatchEvent(new Event(ACCESS_EVENT));
 }
 
-/** fetch + 로그인 토큰. 권한 오류의 {detail:{code,message}}는 다른 코드가 읽기 쉽게 {detail:message}로 바꿔 돌려준다. */
-export async function apiFetch(input: string, init: RequestInit = {}): Promise<Response> {
+/** 응답을 기다리는 기본 한계(ms). 이보다 오래 걸리면 화면이 영영 로딩에 머무르지 않게 끊는다. */
+export const DEFAULT_TIMEOUT_MS = 20000;
+
+/** 서버가 아직 깨어나지 않았거나 네트워크가 끊겼을 때의 오류. 화면이 구분해서 말할 수 있게 표시한다. */
+export class ConnectionError extends Error {
+  readonly kind: "timeout" | "offline";
+  constructor(kind: "timeout" | "offline", message: string) {
+    super(message);
+    this.name = "ConnectionError";
+    this.kind = kind;
+  }
+}
+
+export type ApiInit = RequestInit & { timeoutMs?: number };
+
+/**
+ * fetch + 로그인 토큰 + 시간제한 + 취소.
+ *
+ * 시간제한이 없으면 서버가 응답하지 않을 때 화면이 영영 로딩 상태로 남고, 취소가 없으면
+ * 지난 검색의 응답이 최신 결과를 덮어쓴다. 호출자가 준 signal과 시간제한을 함께 건다.
+ * 권한 오류의 {detail:{code,message}}는 다른 코드가 읽기 쉽게 {detail:message}로 바꿔 돌려준다.
+ */
+export async function apiFetch(input: string, init: ApiInit = {}): Promise<Response> {
   const token = getToken();
   const headers = new Headers(init.headers);
   if (token && !headers.has("Authorization")) headers.set("Authorization", `Bearer ${token}`);
-  const res = await fetch(input, { ...init, headers });
+  const { timeoutMs = DEFAULT_TIMEOUT_MS, signal, ...rest } = init;
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) controller.abort();
+    else signal.addEventListener("abort", abort, { once: true });
+  }
+  const timer = timeoutMs > 0 ? setTimeout(() => controller.abort(), timeoutMs) : null;
+  let res: Response;
+  try {
+    res = await fetch(input, { ...rest, headers, signal: controller.signal });
+  } catch (error) {
+    // 호출자가 취소한 것은 그대로 올려 보낸다. 최신 요청만 화면을 갱신하게 하는 장치다.
+    if (signal?.aborted) throw error;
+    if ((error as Error)?.name === "AbortError") {
+      throw new ConnectionError("timeout", "서버 응답이 늦어지고 있어요. 잠시 후 다시 시도해 주세요.");
+    }
+    throw new ConnectionError("offline", "서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.");
+  } finally {
+    if (timer) clearTimeout(timer);
+    signal?.removeEventListener("abort", abort);
+  }
   if (res.status === 401 || res.status === 403) {
     try {
       const j = await res.clone().json();
@@ -54,22 +96,31 @@ export async function apiFetch(input: string, init: RequestInit = {}): Promise<R
   return res;
 }
 
-async function json<T>(path: string, init: RequestInit = {}): Promise<T> {
+export type ApiError = Error & { status?: number; requestId?: string };
+
+/** 서버 오류를 화면이 쓸 수 있는 문장으로 바꾼다. request_id는 문의할 때 쓰도록 남긴다. */
+export async function toApiError(res: Response): Promise<ApiError> {
+  let message = `서버 응답 오류 (${res.status})`;
+  let requestId = res.headers.get("X-Request-Id") ?? undefined;
+  try {
+    const body = await res.json();
+    if (typeof body?.detail === "string") message = body.detail;
+    else if (Array.isArray(body?.detail)) message = "입력값을 확인해 주세요.";
+    if (typeof body?.request_id === "string") requestId = body.request_id;
+  } catch {}
+  if (res.status >= 500) message = message || "잠시 문제가 발생했어요. 잠시 후 다시 시도해 주세요.";
+  const err = new Error(message) as ApiError;
+  err.status = res.status;
+  err.requestId = requestId;
+  return err;
+}
+
+async function json<T>(path: string, init: ApiInit = {}): Promise<T> {
   const res = await apiFetch(`${API_URL}${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...(init.headers || {}) },
   });
-  if (!res.ok) {
-    let message = `서버 응답 오류 (${res.status})`;
-    try {
-      const j = await res.json();
-      if (typeof j?.detail === "string") message = j.detail;
-      else if (Array.isArray(j?.detail)) message = "입력값을 확인해 주세요.";
-    } catch {}
-    const err = new Error(message) as Error & { status?: number };
-    err.status = res.status;
-    throw err;
-  }
+  if (!res.ok) throw await toApiError(res);
   return res.json() as Promise<T>;
 }
 

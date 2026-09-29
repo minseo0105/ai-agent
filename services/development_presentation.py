@@ -5,7 +5,7 @@ ASSOCIATION_APPROVED, UNKNOWN_OFFICIAL_COLUMN). None of that belongs on screen,
 and neither does a claim the evidence does not support: a stage read from an
 official list is shown as list-based, never as confirmed.
 """
-from services.development_official import normalize_stage
+from services.development_official import STATUS_FROM_STAGE, STATUS_HYPOTHESIS, normalize_stage
 from services.development_stage import observation, stage_view, DESCRIPTIONS
 
 
@@ -263,7 +263,10 @@ def map_point(row):
     accuracy = location_accuracy(row)
     layers = map_layer_of(row)
     boundary = boundary_layer(row)
+    life = lifecycle(row)
     return {'project_id': row.get('project_id'), 'name': row.get('project_name'),
+            'lifecycle': life['code'], 'lifecycle_label': life['label'],
+            'lifecycle_basis': life['basis'], 'in_default_map': life['in_default_map'],
             'latitude': row.get('latitude'), 'longitude': row.get('longitude'),
             'boundary': boundary['geometry'],
             'boundary_status': boundary['boundary_status'],
@@ -315,6 +318,38 @@ def map_layer_of(row):
     if kind in ('MOATOWN', 'MOAHOUSE'):
         program = 'MOATOWN'
     return {'development': development, 'program': program}
+
+
+# 사업의 생애주기. 단계(stage)와 별개다. 공식 종결 단계만 COMPLETED로 본다.
+# 착공/공사중은 완료가 아니다. 애매하면 UNKNOWN으로 남기고 지도에서 숨기지 않는다.
+LIFECYCLE_LABELS = {'ACTIVE': '진행 중', 'CONSTRUCTION': '공사 중', 'COMPLETED': '사업 완료',
+                    'CANCELLED': '취소·해제', 'UNKNOWN': '진행 상태 확인 중'}
+# 기본 지도에 그리는 생애주기. 앞으로 변화가 남은 사업에 집중한다.
+DEFAULT_LIFECYCLES = ('ACTIVE', 'CONSTRUCTION', 'UNKNOWN')
+
+
+def lifecycle(row):
+    """공식 단계에서만 생애주기를 정한다. 사업명이나 오래됐다는 이유로 완료라고 하지 않는다.
+
+    근거가 없으면 UNKNOWN이다. UNKNOWN은 기본 지도에서 숨기지 않는다. 확인하지 못한 것을
+    끝난 것으로 다루면, 아직 진행 중인 사업이 지도에서 조용히 사라진다.
+    """
+    stored = str(row.get('lifecycle') or row.get('status') or '').strip().upper()
+    stage = row.get('normalized_stage') or normalize_stage(
+        row.get('stage_raw') or row.get('project_stage') or row.get('stage'))['normalized_stage']
+    from_stage = STATUS_FROM_STAGE.get(stage)
+    if from_stage:
+        code, basis = from_stage, 'OFFICIAL_TERMINAL_STAGE'
+    elif stage == 'CONSTRUCTION':
+        code, basis = 'CONSTRUCTION', 'OFFICIAL_STAGE'
+    elif stored in ('COMPLETED', 'CANCELLED', 'ACTIVE', 'SUSPENDED') and stored != 'UNKNOWN':
+        # 데이터베이스가 공식 근거로 이미 정해 둔 값. 단계와 충돌하지 않을 때만 쓴다.
+        code, basis = ('ACTIVE' if stored == 'SUSPENDED' else stored), 'STORED_STATUS'
+    else:
+        code, basis = 'UNKNOWN', 'UNRESOLVED'
+    return {'code': code, 'label': LIFECYCLE_LABELS[code], 'basis': basis,
+            'stage': stage, 'in_default_map': code in DEFAULT_LIFECYCLES,
+            'hypothesis': STATUS_HYPOTHESIS.get(stage) if code == 'UNKNOWN' else None}
 
 
 def boundary_layer(row):

@@ -1,5 +1,5 @@
 // FastAPI /api/golf 클라이언트 + 검색 상태 보관(sessionStorage)
-import { apiFetch } from "@/lib/access";
+import { apiFetch, toApiError, type ApiInit } from "@/lib/access";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
@@ -148,31 +148,36 @@ export type ClubDetail = {
   reviews: Reviews;
 };
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+async function request<T>(path: string, init?: ApiInit): Promise<T> {
   const res = await apiFetch(`${API_URL}${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
   });
-  if (!res.ok) {
-    let message = `서버 응답 오류 (${res.status})`;
-    try {
-      const body = await res.json();
-      if (typeof body?.detail === "string") message = body.detail;
-    } catch {}
-    throw new Error(message);
-  }
+  if (!res.ok) throw await toApiError(res);
   return res.json() as Promise<T>;
 }
 
 export const golfApi = {
-  options: () => request<GolfOptions>("/api/golf/options"),
-  find: (q: string) => request<{ items: { id: string; name: string; region: string; city: string }[] }>(`/api/golf/find?q=${encodeURIComponent(q)}`),
-  search: (params: ConditionParams, sort: Sort) =>
-    request<SearchResult>("/api/golf/search", { method: "POST", body: JSON.stringify({ params, sort }) }),
-  searchText: (text: string, sort: Sort, includeUnknown = false) =>
+  options: (init?: ApiInit) => request<GolfOptions>("/api/golf/options", init),
+  find: (q: string, init?: ApiInit) =>
+    request<{ items: { id: string; name: string; region: string; city: string }[] }>(
+      `/api/golf/find?q=${encodeURIComponent(q)}`,
+      init,
+    ),
+  // 검색은 계산이 있어 조금 더 기다린다. signal은 지난 검색을 끊는 데 쓴다.
+  search: (params: ConditionParams, sort: Sort, init?: ApiInit) =>
+    request<SearchResult>("/api/golf/search", {
+      method: "POST",
+      body: JSON.stringify({ params, sort }),
+      timeoutMs: 45000,
+      ...init,
+    }),
+  searchText: (text: string, sort: Sort, includeUnknown = false, init?: ApiInit) =>
     request<SearchResult>("/api/golf/search/text", {
       method: "POST",
       body: JSON.stringify({ text, sort, include_unknown: includeUnknown }),
+      timeoutMs: 45000,
+      ...init,
     }),
   detail: (id: string, search: LastSearch | null) =>
     request<ClubDetail>(`/api/golf/clubs/${encodeURIComponent(id)}`, {

@@ -2,7 +2,17 @@
 import json, re, hashlib, time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from openai import OpenAI
+
+
+def _openai_client(api_key):
+    """OpenAI 클라이언트. SDK는 실제로 부를 때 불러온다.
+
+    이 모듈은 상수(DIMS) 때문에 골프 검색 경로에서 함께 적재된다. SDK를 맨 위에서
+    불러오면 후기 분석을 쓰지 않는 요청까지 그 비용을 내고, 서버가 뜨는 시간이 그만큼
+    길어진다.
+    """
+    from openai import OpenAI
+    return OpenAI(api_key=api_key)
 
 DIMS={"difficulty":"난이도","fairway":"페어웨이","green":"그린","maintenance":"코스관리","facilities":"시설"}
 LABELS={
@@ -71,7 +81,7 @@ def _write_cache(key,data):
         pass  # Streamlit Cloud local disk is best-effort only.
 
 def _analyze_batch(api_key, batch, model, club_name):
-    client=OpenAI(api_key=api_key)
+    client=_openai_client(api_key)
     docs=[]
     for x in batch:
         docs.append({"id":x["id"],"title":x["title"],"date_hint":x["date_hint"],

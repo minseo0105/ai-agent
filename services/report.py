@@ -9,21 +9,49 @@ import io
 import textwrap
 from collections import Counter
 
-import anthropic
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.font_manager as fm  # noqa: E402
-import matplotlib.pyplot as plt  # noqa: E402
-from reportlab.lib.colors import HexColor  # noqa: E402
-from reportlab.lib.pagesizes import A4  # noqa: E402
-from reportlab.lib.utils import ImageReader  # noqa: E402
-from reportlab.pdfbase import pdfmetrics  # noqa: E402
-from reportlab.pdfbase.cidfonts import UnicodeCIDFont  # noqa: E402
-from reportlab.pdfgen import canvas  # noqa: E402
-
-from services.agent import TOOL_LABELS, _claude_client, load_corp_codes, search_law, web_search  # noqa: E402
+from services.agent import (  # noqa: E402
+    TOOL_LABELS,
+    _claude_client,
+    anthropic_sdk,
+    load_corp_codes,
+    search_law,
+    web_search,
+)
 from services.config import get_secret  # noqa: E402
+
+
+class _NoSdkErrors:
+    """anthropic이 없을 때 except 절이 아무것도 잡지 않도록 하는 자리표시자."""
+
+    class APIStatusError(Exception):
+        pass
+
+    class APIConnectionError(Exception):
+        pass
+
+
+def _anthropic():
+    return anthropic_sdk() or _NoSdkErrors
+
+
+# 차트·PDF 라이브러리는 실제로 그릴 때 불러온다. 보고서를 만들지 않는 요청까지
+# matplotlib·reportlab 적재 비용을 내면 cold start가 길어지고 첫 요청이 실패로 보인다.
+def _charting():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.font_manager as fm
+    import matplotlib.pyplot as plt
+    return fm, plt
+
+
+def _pdf_toolkit():
+    from reportlab.lib.colors import HexColor
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.utils import ImageReader
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+    from reportlab.pdfgen import canvas
+    return HexColor, A4, ImageReader, pdfmetrics, UnicodeCIDFont, canvas
 
 MODEL = "claude-sonnet-5"
 # Sonnet 5는 기본으로 생각(thinking)을 먼저 하고 그 토큰도 max_tokens에 포함된다.
@@ -587,10 +615,10 @@ def run_report(topic, report_style="CEO/임원 보고", report_depth="표준", r
                                                             "선택된 보고서 유형의 구조에 맞춰 최종 보고서를 작성해줘."})
                 response = client.messages.create(model=MODEL, max_tokens=max_tokens, system=system_prompt,
                                                   messages=messages)
-    except anthropic.APIStatusError as e:
+    except _anthropic().APIStatusError as e:
         yield {"type": "error", "message": f"보고서 생성 실패 ({e.status_code}): {e.message}"}
         return
-    except anthropic.APIConnectionError:
+    except _anthropic().APIConnectionError:
         yield {"type": "error", "message": "Claude API에 연결하지 못했어요. 잠시 후 다시 시도해 주세요."}
         return
 
@@ -627,6 +655,7 @@ def report_pdf(text, chart=None):
 # ============================================================
 
 def get_korean_font_name():
+    fm, _ = _charting()
     preferred = [
         "Malgun Gothic",
         "AppleGothic",
@@ -673,6 +702,7 @@ def build_monthly_disclosure_data(dates):
 
 
 def create_chart_image(company, dates):
+    _, plt = _charting()
     labels, values = build_monthly_disclosure_data(dates)
 
     if not labels:
@@ -773,6 +803,7 @@ def create_chart_image(company, dates):
 # PDF
 # ============================================================
 def create_pdf(report_text, chart_buffer=None):
+    HexColor, A4, ImageReader, pdfmetrics, UnicodeCIDFont, canvas = _pdf_toolkit()
     pdfmetrics.registerFont(
         UnicodeCIDFont("HYSMyeongJo-Medium")
     )

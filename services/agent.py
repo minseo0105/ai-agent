@@ -11,15 +11,12 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 from functools import lru_cache
 
-import anthropic
 import requests
 
-try:
-    from openai import OpenAI
-except ImportError:
-    OpenAI = None
-
 from services.config import PROJECT_ROOT, get_secret
+
+# 모델 SDK는 처음 쓸 때 불러온다. 서버가 뜨는 길목에서 부르면 cold start가 그만큼 길어지고,
+# 그 사이 들어온 첫 요청이 연결 실패로 보인다. 채팅을 쓰지 않는 요청은 이 비용을 내지 않는다.
 
 CLAUDE_MODEL = "claude-sonnet-5"
 GPT_MODEL = "gpt-5.6-terra"
@@ -44,15 +41,32 @@ TOOL_LABELS = {
 # 클라이언트
 # ==========================================
 @lru_cache(maxsize=1)
+def anthropic_sdk():
+    """anthropic 모듈. 설치되어 있지 않으면 None."""
+    try:
+        import anthropic
+    except ImportError:
+        return None
+    return anthropic
+
+
+@lru_cache(maxsize=1)
 def _claude_client():
     key = get_secret("ANTHROPIC_API_KEY")
-    return anthropic.Anthropic(api_key=key) if key else None
+    sdk = anthropic_sdk()
+    return sdk.Anthropic(api_key=key) if sdk and key else None
 
 
 @lru_cache(maxsize=1)
 def _gpt_client():
     key = get_secret("OPENAI_API_KEY")
-    return OpenAI(api_key=key) if OpenAI is not None and key else None
+    if not key:
+        return None
+    try:
+        from openai import OpenAI
+    except ImportError:
+        return None
+    return OpenAI(api_key=key)
 
 
 # ==========================================

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { isTransient, withColdStartRetry } from "@/lib/coldStart";
 import {
   DEFAULT_PARAMS,
   golfApi,
@@ -90,13 +91,32 @@ export default function GolfSearch() {
   const [showDetail, setShowDetail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  /** 서버가 깨어나기를 기다리는 중인지. 사용자가 할 수 없는 일을 시키지 않기 위한 구분이다. */
+  const [waking, setWaking] = useState(false);
   const restored = useRef(false);
   const resultsRef = useRef<HTMLDivElement>(null);
+  // 검색마다 번호를 매겨 '가장 마지막에 시작한 검색'만 화면을 갱신하게 한다. 번호가 없으면
+  // 먼저 보낸 느린 검색의 응답이 나중에 도착해 새 조건의 결과를 덮어쓴다.
+  const generation = useRef(0);
+  const inFlight = useRef<AbortController | null>(null);
 
   // 최초 진입: 옵션 로드 + 이전 검색 상태 복원
   useEffect(() => {
     if (restored.current) return; // StrictMode 재실행 시 방금 저장된 초기값으로 덮어쓰지 않도록
-    golfApi.options().then(setOptions).catch(() => setError("백엔드에 연결하지 못했어요. FastAPI 서버가 실행 중인지 확인해 주세요."));
+    // 서버가 깨어나는 중일 수 있다. 읽기 요청이므로 잠깐 기다렸다가 몇 번 더 시도한다.
+    withColdStartRetry((signal) => golfApi.options({ signal }), { onRetry: () => setWaking(true) })
+      .then((o) => {
+        setOptions(o);
+        setWaking(false);
+      })
+      .catch((e) => {
+        setWaking(false);
+        setError(
+          isTransient(e)
+            ? "서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요."
+            : (e as Error).message || "골프장 정보를 불러오지 못했어요.",
+        );
+      });
     const s = loadState();
     if (s) {
       setMode(s.mode);
@@ -112,6 +132,9 @@ export default function GolfSearch() {
     restored.current = true;
   }, []);
 
+  // 화면을 떠날 때 진행 중인 검색을 정리한다.
+  useEffect(() => () => inFlight.current?.abort(), []);
+
   useEffect(() => {
     if (restored.current) saveState({ mode, params, text, nameQuery, sort, filter, visible, result, last });
   }, [mode, params, text, nameQuery, sort, filter, visible, result, last]);
@@ -124,28 +147,54 @@ export default function GolfSearch() {
       setNameResults(null);
       return;
     }
+    const controller = new AbortController();
     const t = setTimeout(() => {
-      golfApi.find(q).then((r) => setNameResults(r.items)).catch(() => setNameResults([]));
+      golfApi
+        .find(q, { signal: controller.signal })
+        .then((r) => setNameResults(r.items))
+        .catch(() => {
+          // 입력이 이어져 취소된 요청은 화면을 건드리지 않는다.
+          if (!controller.signal.aborted) setNameResults([]);
+        });
     }, 250);
-    return () => clearTimeout(t);
+    return () => {
+      clearTimeout(t);
+      controller.abort();
+    };
   }, [nameQuery, mode]);
 
   function changeMode(m: SearchMode) {
     if (m === mode) return;
+    // 진행 중인 검색을 끊는다. 끊지 않으면 바뀐 모드 화면에 이전 모드의 결과가 도착한다.
+    inFlight.current?.abort();
+    generation.current += 1;
     setMode(m);
     setResult(null);
     setLast(null);
     setError("");
+    setLoading(false);
   }
 
   async function run(search: LastSearch, nextSort: Sort, scroll = true) {
+    // 조건이 바뀌면 이전 검색은 여기서 끝난다. 취소해야 응답이 늦게 와서 덮어쓰지 않는다.
+    inFlight.current?.abort();
+    const controller = new AbortController();
+    inFlight.current = controller;
+    const mine = ++generation.current;
+    const current = () => mine === generation.current;
+
     setLoading(true);
     setError("");
+    // 조건이 바뀐 순간 이전 결과는 더 이상 이 조건의 결과가 아니다. 새 결과가 올 때까지
+    // 남겨 두면 로딩 중에 옛 결과가 새 결과처럼 읽힌다.
+    setResult(null);
+    setSort(nextSort);
     try {
       const r =
         search.mode === "text"
-          ? await golfApi.searchText(search.text, nextSort, search.includeUnknown)
-          : await golfApi.search(search.params, nextSort);
+          ? await golfApi.searchText(search.text, nextSort, search.includeUnknown, { signal: controller.signal })
+          : await golfApi.search(search.params, nextSort, { signal: controller.signal });
+      if (!current()) return; // 더 새로운 검색이 이미 시작됐다. 이 결과는 버린다.
       setResult(r);
       setLast(search);
       // 출발지를 못 찾으면 서버가 추천순으로 돌려주므로 화면 표시도 맞춘다
@@ -156,9 +205,13 @@ export default function GolfSearch() {
         requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
       }
     } catch (e) {
+      // 우리가 취소한 요청은 오류가 아니다. 새 검색이 이미 화면을 맡고 있다.
+      if (controller.signal.aborted || !current()) return;
+      setLast(null);
       setError((e as Error).message || "검색 중 오류가 발생했어요.");
     } finally {
-      setLoading(false);
+      // 로딩 해제도 최신 검색만 한다. 지난 검색이 끄면 진행 중인 검색이 끝난 것처럼 보인다.
+      if (current()) setLoading(false);
     }
   }
 
@@ -408,6 +461,11 @@ export default function GolfSearch() {
           </div>
         )}
 
+        {waking && !options && (
+          <p className="mt-4 rounded-xl bg-golf-soft px-3 py-2.5 text-sm text-golf">
+            서버를 깨우는 중이에요. 잠시만 기다려 주세요…
+          </p>
+        )}
         {error && <p className="mt-4 rounded-xl bg-red-500/10 px-3 py-2.5 text-sm text-red-600 dark:text-red-400">{error}</p>}
       </div>
 
