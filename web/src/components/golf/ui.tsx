@@ -6,32 +6,57 @@ export function Segmented<T extends string>({
   onChange,
   full,
   ariaLabel,
+  disabled,
+  disabledReason,
 }: {
   value: T;
   options: readonly T[] | { value: T; label: string }[];
   onChange: (v: T) => void;
   full?: boolean;
   ariaLabel?: string;
+  /**
+   * 지금은 고를 수 없는 선택지. 목록에서 빼지 않고 흐리게 남긴다.
+   * 사라지면 사용자는 그 기능이 없다고 생각하고, 왜 없는지도 알 수 없다.
+   */
+  disabled?: readonly T[];
+  disabledReason?: string;
 }) {
   const opts = (options as (T | { value: T; label: string })[]).map((o) =>
     typeof o === "string" ? { value: o, label: o } : o,
   );
+  const off = (v: T) => (disabled ?? []).includes(v);
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className={`${full ? "flex w-full" : "inline-flex"} rounded-xl bg-surface-muted p-1`}>
-      {opts.map((o) => (
-        <button
-          key={o.value}
-          type="button"
-          role="radio"
-          aria-checked={value === o.value}
-          onClick={() => onChange(o.value)}
-          className={`${full ? "flex-1" : ""} whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition sm:py-1.5 ${
-            value === o.value ? "bg-surface text-fg shadow-sm" : "text-muted hover:text-fg"
-          }`}
-        >
-          {o.label}
-        </button>
-      ))}
+    <div
+      role="radiogroup"
+      aria-label={ariaLabel}
+      // 좁은 화면에서 밀려 잘리지 않게 한다. 넘치면 가로로만 스크롤된다.
+      className={`${full ? "flex w-full" : "inline-flex"} max-w-full shrink-0 overflow-x-auto rounded-xl bg-surface-muted p-1`}
+    >
+      {opts.map((o) => {
+        const isOff = off(o.value);
+        return (
+          <button
+            key={o.value}
+            type="button"
+            role="radio"
+            aria-checked={value === o.value}
+            aria-disabled={isOff || undefined}
+            disabled={isOff}
+            title={isOff ? disabledReason : undefined}
+            onClick={() => !isOff && onChange(o.value)}
+            // 손가락으로 누를 수 있는 크기를 지킨다(모바일 최소 40px).
+            className={`${full ? "flex-1" : ""} min-h-10 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition sm:min-h-0 sm:py-1.5 ${
+              isOff
+                ? "cursor-not-allowed text-subtle opacity-45"
+                : value === o.value
+                  ? "bg-surface text-fg shadow-sm"
+                  : "text-muted hover:text-fg"
+            }`}
+          >
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

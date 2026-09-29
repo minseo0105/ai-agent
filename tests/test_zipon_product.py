@@ -440,7 +440,7 @@ class ScreenCompactnessTests(unittest.TestCase):
         self.assertIn('project.trust.label', card)
         self.assertIn('공식 사업 ID', card)
         self.assertIn('정책 프로그램', card)
-        self.assertIn('서울시 공식자료 ↗', card)
+        self.assertIn('공식 사업정보 ↗', card)
         self.assertIn('StageTimeline', card)
         self.assertIn('{url && (', card)
         for token in ('NEEDS_REVIEW', 'UNVERIFIED', 'ASSOCIATION_APPROVED', 'RECONSTRUCTION'):
@@ -838,7 +838,7 @@ class MapScreenTests(unittest.TestCase):
     def test_the_development_card_shows_a_stage_timeline_and_ctas(self):
         source = read('components/realestate/DevelopmentCard.tsx')
         self.assertIn('StageTimeline', source)
-        self.assertIn('서울시 공식자료 ↗', source)
+        self.assertIn('공식 사업정보 ↗', source)
         self.assertIn('지도에서 보기', source)
         self.assertIn('location_accuracy', source)
         self.assertIn('{url && (', source)
@@ -2698,13 +2698,19 @@ class MapCardLinkTests(unittest.TestCase):
         # 카드 클릭과 marker 클릭이 같은 상태를 바꾼다.
         self.assertIn('onClick={() => setSelectedId(p.project_id)}', self.tab)
         self.assertIn('onSelect={selectFromMap}', self.tab)
-        self.assertIn('const selectFromMap = useCallback((projectId: string | null) => {\n    setSelectedId(projectId);\n  }, []);',
-                      self.tab)
+        selecting = self.tab[self.tab.index('const selectFromMap = useCallback('):]
+        selecting = selecting[:selecting.index('const scrollToCard')]
+        self.assertIn('setSelectedId(projectId)', selecting)
+        # 선택 상태를 따로 복제하지 않는다. 지도와 카드가 같은 하나를 본다.
+        self.assertNotIn('useState', selecting)
 
-    def test_a_marker_click_does_not_force_a_scroll(self):
-        # marker 클릭만으로 화면을 끌어올리지 않는다. 이동은 버튼으로 사용자가 고른다.
-        selecting = self.tab.split('const scrollToCard', 1)[0]
-        self.assertNotIn('scrollIntoView', selecting)
+    def test_a_marker_click_moves_to_that_project_card(self):
+        # 지도에서 고른 것이 어느 사업인지 바로 보이도록 그 카드로 이동한다.
+        self.assertIn('requestAnimationFrame(() => scrollToProject(projectId))', self.tab)
+        self.assertIn("node.scrollIntoView({ block: \"center\", behavior: \"smooth\" })", self.tab)
+        # 이동은 canonical id로만. 이름이 닮은 다른 사업으로 가지 않는다.
+        self.assertIn('cardRefs.current[projectId]', self.tab)
+        # 버튼으로도 여전히 이동할 수 있다.
         self.assertIn('사업정보 보기', self.tab)
         self.assertIn('onClick={scrollToCard}', self.tab)
 
@@ -2720,7 +2726,7 @@ class MapCardLinkTests(unittest.TestCase):
         self.assertIn('aria-label="사업 위치"', card)
         self.assertIn('<ZiponMap', card)
         # 기본정보(주소) 바로 아래, 현재 단계보다 위에 온다.
-        self.assertLess(card.index('aria-label="사업 위치"'), card.index('현재 단계'))
+        self.assertLess(card.index('aria-label="사업 위치"'), card.index('현재 사업단계'))
         self.assertLess(card.index('주소 확인 중'), card.index('aria-label="사업 위치"'))
         # 선택된 카드에서만 그린다. 목록 전체에 지도를 띄우지 않는다.
         self.assertIn('{selected && (', card)

@@ -217,17 +217,26 @@ export default function ZiponMap({
       // MultiPolygon이면 구역마다 하나씩 그린다. 첫 구역만 그리거나 떨어진 두 구역을
       // 한 구역으로 합치지 않는다.
       for (const part of verifiedBoundaryPolygons(point)) {
-        overlays.current.push(
-          new api.Polygon({
-            map: instance,
-            paths: part.map((shape) => shape.map(([lng, lat]) => new api.LatLng(lat, lng))),
-            strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-            strokeWeight: 2.5,
-            strokeOpacity: 0.95,
-            fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
-            fillOpacity: 0.18,
-          }),
-        );
+        const selectedArea = selectedId === point.project_id;
+        const area = new api.Polygon({
+          map: instance,
+          paths: part.map((shape) => shape.map(([lng, lat]) => new api.LatLng(lat, lng))),
+          strokeColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+          // 선택된 구역은 테두리와 채움을 진하게 해서 어느 구역을 보고 있는지 바로 보이게 한다.
+          strokeWeight: selectedArea ? 4 : 2.5,
+          strokeOpacity: selectedArea ? 1 : 0.95,
+          fillColor: TYPE_COLOR[point.development_layer ?? "OTHER_PROJECT"],
+          fillOpacity: selectedArea ? 0.3 : 0.18,
+          zIndex: selectedArea ? 900 : 100,
+          clickable: true,
+        });
+        // 구역(면)을 눌러도 marker와 똑같이 그 사업이 선택된다. canonical project_id로만 잇는다.
+        if (select.current) {
+          listeners.current.push(
+            api.Event.addListener(area, "click", () => select.current?.(point.project_id)),
+          );
+        }
+        overlays.current.push(area);
       }
       const selected = selectedId === point.project_id;
       const existing = markers.current.get(point.project_id);

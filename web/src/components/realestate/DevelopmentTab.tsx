@@ -163,14 +163,34 @@ export default function DevelopmentTab({
   const coordinateless = visible.length - mappable;
   const unavailable = !loading && !error && !ready;
 
-  // marker를 누르면 같은 selectedProject가 되고 카드도 선택 상태가 된다. 화면을 강제로
-  // 스크롤하지는 않고, 카드로 이동할지는 '사업정보 보기'로 사용자가 고른다.
-  const selectFromMap = useCallback((projectId: string | null) => {
-    setSelectedId(projectId);
+  /**
+   * 지도에서 고른 사업의 카드로 이동한다.
+   *
+   * canonical project_id로만 찾는다. 사업명 문자열로 찾으면 '마천2'와
+   * '마천2재정비촉진구역'처럼 이름이 닮은 다른 사업의 카드로 갈 수 있다.
+   * 화면 위 고정 영역에 카드가 가리지 않도록 카드를 화면 가운데에 둔다.
+   */
+  const scrollToProject = useCallback((projectId: string) => {
+    const node = cardRefs.current[projectId];
+    if (!node) return false;
+    node.scrollIntoView({ block: "center", behavior: "smooth" });
+    return true;
   }, []);
+
+  // marker나 확인된 사업구역을 누르면 같은 사업의 카드가 선택되고 그 카드로 이동한다.
+  // 지금 목록에 없는 사업(완료사업을 숨긴 경우 등)은 엉뚱한 카드로 보내지 않는다.
+  const selectFromMap = useCallback(
+    (projectId: string | null) => {
+      setSelectedId(projectId);
+      if (!projectId) return;
+      // 카드가 방금 선택 상태로 다시 그려지므로, 그린 뒤에 옮긴다.
+      requestAnimationFrame(() => scrollToProject(projectId));
+    },
+    [scrollToProject],
+  );
   const scrollToCard = useCallback(() => {
-    if (selectedId) cardRefs.current[selectedId]?.scrollIntoView({ block: "center", behavior: "smooth" });
-  }, [selectedId]);
+    if (selectedId) scrollToProject(selectedId);
+  }, [selectedId, scrollToProject]);
   const onBounds = useCallback((_bounds: MapBounds) => {
     // bbox 조회 준비: 지금은 서울시 전체를 한 번 받아 두고 화면 범위는 지도에서만 쓴다.
   }, []);
@@ -328,7 +348,8 @@ export default function DevelopmentTab({
                     cardRefs.current[p.project_id] = node;
                   }}
                   onClick={() => setSelectedId(p.project_id)}
-                  className="rounded-2xl"
+                  className="scroll-mt-24 rounded-2xl"
+                  data-project-id={p.project_id}
                   aria-current={selectedId === p.project_id ? "true" : undefined}
                 >
                   {/* 위치는 카드 안에서 보여준다. 좌표는 목록과 같은 응답의 point를 그대로 쓴다. */}

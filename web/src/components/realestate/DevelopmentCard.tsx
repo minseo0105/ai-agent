@@ -104,12 +104,37 @@ export default function DevelopmentCard({
 
       <div className="mt-2">
         <div className="flex items-baseline justify-between gap-2">
-          <span className="text-[11px] font-bold text-subtle">현재 단계</span>
+          {/* 행정 용어 대신 사용자가 읽는 말로. 값 자체는 공식 단계 그대로다. */}
+          <span className="text-[11px] font-bold text-subtle">현재 사업단계</span>
           <span className="text-xs font-extrabold">{project.stage.label}</span>
         </div>
         <StageTimeline timeline={project.stage_timeline} />
         {project.stage_description && <p className="mt-2 text-xs leading-relaxed text-muted">{project.stage_description}</p>}
       </div>
+
+      {project.stage_guide && (
+        <>
+          <div className="mt-2 rounded-xl bg-surface-muted px-3 py-2.5">
+            <div className="text-[11px] font-bold text-subtle">쉽게 말하면</div>
+            <p className="mt-0.5 text-xs leading-relaxed">{project.stage_guide.plain}</p>
+          </div>
+          <div className="mt-2">
+            <div className="text-[11px] font-bold text-subtle">매수 전 체크</div>
+            <ul className="mt-1 flex flex-wrap gap-1.5">
+              {project.stage_guide.checks.map((check) => (
+                <li
+                  key={check}
+                  className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted"
+                >
+                  {check}
+                </li>
+              ))}
+            </ul>
+            {/* 이 사업에서 확인된 값이 아니라는 것을 화면에서도 분명히 한다. */}
+            <p className="mt-1 text-[11px] text-subtle">{project.stage_guide.checks_note}</p>
+          </div>
+        </>
+      )}
 
       <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-subtle">
         <span>{project.stage_basis}</span>
@@ -134,7 +159,19 @@ export default function DevelopmentCard({
             rel="noopener noreferrer"
             className="inline-flex min-h-9 items-center rounded-xl border border-border px-3 text-xs font-bold text-muted transition hover:text-fg"
           >
-            서울시 공식자료 ↗
+            공식 사업정보 ↗
+          </a>
+        )}
+        {/* 주변 매물 탐색. 위치 근거가 없으면 서버가 링크를 만들지 않으므로 여기도 비어 있다. */}
+        {project.naver_real_estate && (
+          <a
+            href={project.naver_real_estate.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={project.naver_real_estate.note}
+            className="inline-flex min-h-9 items-center rounded-xl border border-border px-3 text-xs font-bold text-muted transition hover:text-fg"
+          >
+            {project.naver_real_estate.label} ↗
           </a>
         )}
       </div>

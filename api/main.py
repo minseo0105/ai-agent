@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field
 from api.access import AccessMiddleware
 from api.access import router as access_router
 from api.readiness import readiness
+from api.version import version_block
 from api.reliability import (
     RequestContextMiddleware,
     configure_logging,
@@ -96,7 +97,8 @@ def health():
     의존성 상태는 /api/ready에 있다. 헬스체크가 외부 호출을 하면, 남의 장애 때문에
     이 프로세스가 재시작된다.
     """
-    return {"ok": True, "service": "ailab-api"}
+    # 실제로 돌고 있는 판을 함께 알린다. 값은 runtime에서 읽으며 코드에 적지 않는다.
+    return {"ok": True, "service": "ailab-api", "version": version_block()}
 
 
 @app.get("/api/ready")

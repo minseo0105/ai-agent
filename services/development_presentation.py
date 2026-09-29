@@ -79,6 +79,143 @@ DATE_ROLE_LABELS = {'UNKNOWN_OFFICIAL_COLUMN': '공식 목록에 표기된 날�
 NO_LOCATION_NOTICE = '정확한 위치 확인 후 주변 개발정보를 연결할 수 있습니다.'
 
 
+
+# ---------------------------------------------------------------------------
+# 매수자 관점의 단계 해석.
+#
+# 공식 단계값(normalized_stage)은 그대로 두고, 그 위에 "쉽게 말하면"과
+# "매수 전 체크"만 덧붙인다. 새 단계를 만들거나 공식 데이터를 바꾸지 않는다.
+#
+# 지키는 선:
+#   * 투자 판단을 하지 않는다. 매수 적기·유망·수익 같은 말을 쓰지 않는다.
+#   * 단계가 뒤라고 더 좋은 매수 시점이라고 말하지 않는다.
+#   * 확인된 사실과 일반 체크포인트를 섞지 않는다. 금액·날짜를 지어내지 않는다.
+#   * 안전하게 해석할 수 없으면 해석하지 않는다.
+# ---------------------------------------------------------------------------
+STAGE_GUIDE = {
+    'CANDIDATE': (
+        '아직 사업 초기 단계예요. 개발 가능성은 있지만 실제 사업까지 오래 걸리거나 '
+        '계획이 바뀔 수도 있어요.',
+        ('실제 대상 구역인지 확인', '사업 추진 근거 확인', '앞으로의 일정 확인')),
+    'PLANNING': (
+        '개발계획이 구체화되고 있는 단계예요.',
+        ('예정 구역 범위 확인', '권리 기준 확인', '계획 변경 가능성 확인')),
+    'PLAN_DELIBERATION': (
+        '계획안을 심의받고 있는 단계예요. 내용이 조정될 수 있어요.',
+        ('심의 결과 확인', '구역 범위 변경 가능성 확인', '앞으로의 일정 확인')),
+    'PLAN_NOTICED': (
+        '정비계획이 공식적으로 고시된 단계예요.',
+        ('고시된 구역 범위 확인', '권리산정기준일 확인', '거래 관련 조건 확인')),
+    'DESIGNATED': (
+        '공식적인 정비사업 구역이 된 단계예요.',
+        ('보는 매물이 실제 구역 안인지 확인', '권리산정기준일 확인', '거래·권리 관련 조건 확인')),
+    'IMPLEMENTER_DESIGNATED': (
+        '사업을 시행할 주체가 정해진 단계예요.',
+        ('시행 주체 확인', '사업 방식 확인', '앞으로의 일정 확인')),
+    'SAFETY_DIAGNOSIS': (
+        '재건축을 위한 안전진단 절차가 진행되는 단계예요.',
+        ('진단 결과와 다음 절차 확인', '사업 추진 일정 확인', '권리 기준 확인')),
+    'COMMITTEE': (
+        '사업을 추진할 조직이 만들어지고 있는 단계예요.',
+        ('주민 동의 현황 확인', '사업 진행 속도 확인', '권리산정기준일 확인')),
+    'ASSOCIATION_APPROVED': (
+        '사업을 추진할 조합이 공식적으로 만들어져 사업이 본격화된 단계예요.',
+        ('조합원 지위 승계 가능 여부 확인', '권리산정기준일 확인', '추가분담금 확인')),
+    'IMPLEMENTATION_APPROVED': (
+        '어떻게 개발할지가 상당히 구체화된 단계예요.',
+        ('사업계획 확인', '예상 분담금 확인', '권리관계 확인', '앞으로의 일정 확인')),
+    'MANAGEMENT_DISPOSITION': (
+        '새 주택 배분과 비용 부담 구조가 상당히 구체화된 단계예요.',
+        ('입주권·분양권 관련 권리 확인', '조합원 지위 확인', '추가분담금 확인', '거래 가능 여부 확인')),
+    'SALES': (
+        '분양 절차가 진행되는 단계예요.',
+        ('취득하게 되는 권리의 종류 확인', '분양 조건 확인', '총 부담 비용 확인')),
+    'DEMOLITION': (
+        '기존 건물을 비우거나 철거하는 사업 후반 단계예요.',
+        ('취득하게 되는 권리의 종류 확인', '추가 비용 확인', '입주 예상 일정 확인')),
+    'CONSTRUCTION': (
+        '실제 공사가 시작된 단계예요.',
+        ('취득 권리 확인', '총 부담 비용 확인', '준공·입주 예상 일정 확인')),
+    'PARTIAL_COMPLETION': (
+        '일부가 준공된 단계예요. 남은 공정이 있을 수 있어요.',
+        ('남은 공정과 일정 확인', '취득 권리 확인', '입주 조건 확인')),
+    'COMPLETED': (
+        '정비사업이 사실상 완료된 단계예요.',
+        ('신축 주택 관점의 가격 확인', '입주·등기 상태 확인', '실제 매물 조건 확인')),
+    'TRANSFER_NOTICE': (
+        '새 주택의 소유권을 정리하는 절차까지 끝나가는 단계예요.',
+        ('등기 상태 확인', '실제 매물 조건 확인', '남은 정산 항목 확인')),
+    'ASSOCIATION_DISSOLVED': (
+        '조합이 해산된 상태로 기록되어 있어요. 사업이 끝났는지 중단됐는지는 '
+        '공식 자료로 확인이 필요해요.',
+        ('공식 사업정보에서 현재 상태 확인', '해산 사유 확인', '해당 구역의 현재 계획 확인')),
+    'ASSOCIATION_LIQUIDATION': (
+        '조합 청산 절차가 기록되어 있어요. 사업 종료 여부는 공식 자료로 확인이 필요해요.',
+        ('공식 사업정보에서 현재 상태 확인', '남은 정산 항목 확인', '해당 구역의 현재 계획 확인')),
+}
+# 해석할 근거가 없을 때. 억지로 풀지 않는다.
+STAGE_GUIDE_UNKNOWN = (
+    '공식 자료에서 현재 단계를 추가로 확인할 필요가 있어요.',
+    ('공식 사업정보를 먼저 확인',))
+# 일반 안내라는 것을 화면에서도 분명히 한다. 이 사업에서 확인된 값이 아니다.
+BUYER_CHECK_NOTE = '이 사업에서 확인된 값이 아니라, 이 단계에서 일반적으로 확인하는 항목이에요.'
+
+
+def stage_guide(normalized_stage):
+    """단계 하나에 대한 쉬운 설명과 매수 전 체크 항목.
+
+    확인된 사실(단계·인가일·출처)과 섞지 않도록 별도 블록으로 돌려준다.
+    투자 판단은 하지 않는다.
+    """
+    known = STAGE_GUIDE.get(normalized_stage)
+    plain, checks = known or STAGE_GUIDE_UNKNOWN
+    return {'stage': normalized_stage or 'UNKNOWN',
+            'label': STAGE_LABELS.get(normalized_stage or 'UNKNOWN', STAGE_LABELS['UNKNOWN']),
+            'plain': plain, 'checks': list(checks),
+            'interpreted': bool(known), 'checks_note': BUYER_CHECK_NOTE}
+
+
+# ---------------------------------------------------------------------------
+# 네이버부동산 연결.
+#
+# 목적은 "이 사업구역 주변의 실제 매물을 보러 가기"다. 특정 아파트 단지로 보내는 것이
+# 아니다. 재개발·재건축·모아타운 사업이 어느 한 단지와 1:1이라고 가정하지 않으며,
+# 단지 ID를 지어내지 않는다.
+#
+# 주소 검색으로 연결한다. 좌표를 URL에 넣는 지도 딥링크 형식은 공개 문서로 확인하지
+# 못했고, 확인하지 못한 형식을 추측해서 만들면 엉뚱한 위치로 보내거나 조용히 깨진다.
+# 검색 주소는 사람이 눈으로 확인할 수 있고, 형식이 바뀌어도 링크가 무의미해지지 않는다.
+#
+# 폴리곤 centroid는 쓰지 않는다. MultiPolygon이나 오목한 구역에서는 centroid가 구역
+# 밖에 놓일 수 있다. 위치가 필요할 때는 이미 검증된 대표좌표를 쓰고, 그것이 없으면
+# 링크를 만들지 않는다.
+# ---------------------------------------------------------------------------
+NAVER_SEARCH_URL = 'https://search.naver.com/search.naver'
+NAVER_LINK_LABEL = '네이버부동산에서 보기'
+
+
+def naver_real_estate_link(row):
+    """사업구역 주변을 찾아볼 수 있는 공개 검색 링크. 근거가 없으면 None.
+
+    basis: ADDRESS(대표주소) → DISTRICT_DONG(자치구+법정동) → 없으면 링크 없음.
+    """
+    from urllib.parse import urlencode
+
+    address = str(row.get('address') or '').strip()
+    district = str(row.get('sigungu') or row.get('district') or '').strip()
+    dong = str(row.get('dong') or '').strip()
+    if address:
+        query, basis = address, 'ADDRESS'
+    elif district and dong:
+        query, basis = f'서울특별시 {district} {dong}', 'DISTRICT_DONG'
+    else:
+        # 위치 근거가 없으면 링크를 만들지 않는다. 틀린 곳으로 보내지 않는다.
+        return None
+    return {'url': f'{NAVER_SEARCH_URL}?{urlencode({"query": query + " 부동산"})}',
+            'label': NAVER_LINK_LABEL, 'basis': basis, 'query': query,
+            'note': '사업구역 주변 매물을 찾아보는 링크예요. 특정 단지를 지정하지 않습니다.'}
+
+
 def stage_label(normalized_stage, raw_stage=None):
     label = STAGE_LABELS.get(normalized_stage or 'UNKNOWN', '세부 진행단계 확인 중')
     return {'label': label, 'official_text': (label if raw_stage in STAGE_LABELS and raw_stage != 'UNKNOWN'
@@ -130,6 +267,9 @@ def present_project(row):
         'district': row.get('sigungu'), 'dong': row.get('dong'),
         'address': row.get('address'),
         'stage': dict(stage_label(normalized, stage_raw), **({'label': verified['label']} if verified else {})),
+        # 확인된 사실(위)과 일반 안내(아래)를 섞지 않는다. 금액·날짜를 만들어 내지 않는다.
+        'stage_guide': stage_guide(normalized),
+        'naver_real_estate': naver_real_estate_link(row),
         'stage_description': verified['description'] if verified else DESCRIPTIONS.get(normalized),
         'stage_history': (detail or {}).get('milestones') or [],
         'stage_basis': '서울시 공식 상세정보 확인' if verified else STAGE_BASIS_LABELS.get(row.get('stage_basis'),

@@ -163,6 +163,17 @@ export type DevelopmentProject = {
   trust: { code: string; label: string; tone: string; note: string };
   official_source: { name: string | null; url: string | null };
   last_checked: string | null;
+  /** 매수자 관점의 단계 해석. 확인된 사실이 아니라 일반 안내다. */
+  stage_guide: {
+    stage: string;
+    label: string;
+    plain: string;
+    checks: string[];
+    interpreted: boolean;
+    checks_note: string;
+  } | null;
+  /** 사업구역 주변 매물 탐색 링크. 위치 근거가 없으면 null이다. */
+  naver_real_estate: { url: string; label: string; basis: string; query: string; note: string } | null;
   spatial: { code: string; label: string; confirmed_boundary: boolean };
   distance_m: number | null;
   latitude: number | null;

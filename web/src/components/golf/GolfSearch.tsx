@@ -533,6 +533,37 @@ export default function GolfSearch() {
             </div>
           )}
 
+          {/* 정렬은 결과 개수와 상관없이 늘 같은 자리에 둔다. 결과가 0건일 때 컨트롤이
+              통째로 사라지면, 출발지를 넣은 사용자가 '가까운순이 없어졌다'고 읽는다. */}
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-extrabold tracking-tight">검색 결과</h2>
+              {items.length === 0 && <p className="text-xs text-muted">조건에 맞는 곳을 찾지 못했어요.</p>}
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <Segmented
+                value={sort}
+                // 가까운순은 늘 보이되, 출발지를 찾지 못하면 고를 수 없게 흐리게 둔다.
+                options={["추천순", "가까운순", "가격순"] as Sort[]}
+                disabled={result.has_departure ? [] : (["가까운순"] as Sort[])}
+                disabledReason="출발지를 찾으면 가까운순으로 정렬할 수 있어요."
+                onChange={(s) => {
+                  // 사용자가 직접 고른 정렬은 같은 출발지에서 그대로 유지한다.
+                  userChoseSort.current = true;
+                  if (last) run(last, s, false);
+                }}
+                ariaLabel="정렬"
+              />
+              {!result.has_departure && (
+                <p className="text-[11px] text-subtle">
+                  {params.departure.trim()
+                    ? "출발지 위치를 찾지 못해 가까운순을 쓸 수 없어요."
+                    : "출발지를 입력하면 가까운순으로 볼 수 있어요."}
+                </p>
+              )}
+            </div>
+          </div>
+
           {items.length === 0 ? (
             <p className="rounded-2xl bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">
               {result.notice || "선택한 조건이 확인된 골프장이 없습니다."}
@@ -540,9 +571,8 @@ export default function GolfSearch() {
             </p>
           ) : (
             <>
-              <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
                 <div>
-                  <h2 className="text-lg font-extrabold tracking-tight">검색 결과</h2>
                   {trace && (
                     <details className="text-xs text-muted">
                       <summary className="cursor-pointer">
@@ -561,17 +591,6 @@ export default function GolfSearch() {
                     </details>
                   )}
                 </div>
-                <Segmented
-                  value={sort}
-                  // 가까운순은 출발지를 찾았을 때만 의미가 있다
-                  options={(result.has_departure ? ["추천순", "가까운순", "가격순"] : ["추천순", "가격순"]) as Sort[]}
-                  onChange={(s) => {
-                    // 사용자가 직접 고른 정렬은 같은 출발지에서 그대로 유지한다.
-                    userChoseSort.current = true;
-                    if (last) run(last, s, false);
-                  }}
-                  ariaLabel="정렬"
-                />
               </div>
               {result.notice && <p className="text-xs text-muted">{result.notice}</p>}
 
