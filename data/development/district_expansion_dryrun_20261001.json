@@ -1,0 +1,208 @@
+{
+  "format": "zipon-district-expansion-dryrun-v1",
+  "generated_at": "2026-10-01T12:23:25.996838+00:00",
+  "db_write": false,
+  "supabase_write": "NONE",
+  "input_mode": "STRUCTURAL_FIXTURE",
+  "synthetic_rows": true,
+  "districts": [
+    "성동구",
+    "마포구",
+    "용산구"
+  ],
+  "signgu_code_system": "행정표준코드 시군구코드(5)",
+  "signgu_code_source": "services.realestate_monitor.REGION_LAWD",
+  "baseline": "BASELINE_SNAPSHOT:lifecycle_audit_20260929.json",
+  "stages": {
+    "1_raw_rows": 27,
+    "2_normalized_canonical": 27,
+    "3_deduplicated_removed": 0,
+    "3b_probable_duplicate_pairs": 0,
+    "4_geocode": {
+      "attempted": 21,
+      "accepted": 16,
+      "rejected": 5,
+      "no_address": 6,
+      "provider": "LOCAL_SELFTEST_NOT_FOR_IMPORT",
+      "reasons": {
+        "GEOCODE_SIGUNGU_MISMATCH": 5
+      }
+    },
+    "5_type_classification": {
+      "모아타운": 3,
+      "신속통합기획": 3,
+      "재개발": 9,
+      "재건축": 12
+    },
+    "6_identity_generated": 27,
+    "7_existing_db_duplicates": 0,
+    "8_expected_insert": 27,
+    "8_expected_update": 0
+  },
+  "per_region": {
+    "성동구": {
+      "signgu_code": "11200",
+      "raw_rows": 9,
+      "normalized": 9,
+      "geocoded": 5,
+      "duplicates_merged": 0,
+      "new_projects": 9,
+      "update_projects": 0,
+      "reject_unknown": 0
+    },
+    "마포구": {
+      "signgu_code": "11440",
+      "raw_rows": 9,
+      "normalized": 9,
+      "geocoded": 6,
+      "duplicates_merged": 0,
+      "new_projects": 9,
+      "update_projects": 0,
+      "reject_unknown": 0
+    },
+    "용산구": {
+      "signgu_code": "11170",
+      "raw_rows": 9,
+      "normalized": 9,
+      "geocoded": 5,
+      "duplicates_merged": 0,
+      "new_projects": 9,
+      "update_projects": 0,
+      "reject_unknown": 0
+    }
+  },
+  "map_safety": {
+    "blocked_rows": 0,
+    "detail": []
+  },
+  "runs": [
+    {
+      "source": "seoul_moa",
+      "source_url": "https://news.seoul.go.kr/citybuild/moa-housing-town/policy/status",
+      "started_at": "2026-10-01T12:23:25.979600+00:00",
+      "dry_run": true,
+      "source_complete": false,
+      "new_count": 3,
+      "changed_count": 0,
+      "unchanged_count": 0,
+      "validation_failed_count": 0,
+      "errors": [],
+      "status": "SUCCEEDED",
+      "finished_at": "2026-10-01T12:23:25.985350+00:00"
+    },
+    {
+      "source": "seoul_shintong_redevelopment",
+      "source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do",
+      "started_at": "2026-10-01T12:23:25.985360+00:00",
+      "dry_run": true,
+      "source_complete": false,
+      "new_count": 3,
+      "changed_count": 0,
+      "unchanged_count": 0,
+      "validation_failed_count": 0,
+      "errors": [],
+      "status": "SUCCEEDED",
+      "finished_at": "2026-10-01T12:23:25.987119+00:00"
+    },
+    {
+      "source": "seoul_shintong_reconstruction",
+      "source_url": "https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do",
+      "started_at": "2026-10-01T12:23:25.987125+00:00",
+      "dry_run": true,
+      "source_complete": false,
+      "new_count": 3,
+      "changed_count": 0,
+      "unchanged_count": 0,
+      "validation_failed_count": 0,
+      "errors": [],
+      "status": "SUCCEEDED",
+      "finished_at": "2026-10-01T12:23:25.988295+00:00"
+    },
+    {
+      "source": "cleanup_11200",
+      "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11200",
+      "started_at": "2026-10-01T12:23:25.988299+00:00",
+      "dry_run": true,
+      "source_complete": false,
+      "new_count": 6,
+      "changed_count": 0,
+      "unchanged_count": 0,
+      "validation_failed_count": 0,
+      "errors": [],
+      "status": "PARTIAL",
+      "finished_at": "2026-10-01T12:23:25.991280+00:00"
+    },
+    {
+      "source": "cleanup_11440",
+      "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11440",
+      "started_at": "2026-10-01T12:23:25.991285+00:00",
+      "dry_run": true,
+      "source_complete": false,
+      "new_count": 6,
+      "changed_count": 0,
+      "unchanged_count": 0,
+      "validation_failed_count": 0,
+      "errors": [],
+      "status": "PARTIAL",
+      "finished_at": "2026-10-01T12:23:25.994099+00:00"
+    },
+    {
+      "source": "cleanup_11170",
+      "source_url": "https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=11170",
+      "started_at": "2026-10-01T12:23:25.994105+00:00",
+      "dry_run": true,
+      "source_complete": false,
+      "new_count": 6,
+      "changed_count": 0,
+      "unchanged_count": 0,
+      "validation_failed_count": 0,
+      "errors": [],
+      "status": "PARTIAL",
+      "finished_at": "2026-10-01T12:23:25.996828+00:00"
+    }
+  ],
+  "quality": {
+    "address": {
+      "count": 21,
+      "total": 27,
+      "percent": 77.78
+    },
+    "official_id": {
+      "count": 12,
+      "total": 27,
+      "percent": 44.44
+    },
+    "official_source": {
+      "count": 27,
+      "total": 27,
+      "percent": 100.0
+    },
+    "stage": {
+      "count": 0,
+      "total": 27,
+      "percent": 0.0
+    },
+    "observed_stage": {
+      "count": 24,
+      "total": 27,
+      "percent": 88.89
+    },
+    "known_status": {
+      "count": 0,
+      "total": 27,
+      "percent": 0.0
+    },
+    "coordinates": {
+      "count": 0,
+      "total": 27,
+      "percent": 0.0
+    },
+    "verified_polygon": {
+      "count": 0,
+      "total": 27,
+      "percent": 0.0
+    }
+  },
+  "duplicate_review_pairs": 0,
+  "identity_normalizer": "seoul-identity-v1"
+}

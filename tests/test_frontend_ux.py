@@ -66,6 +66,50 @@ class GolfSortVisibilityTests(unittest.TestCase):
         self.assertIn('settleSort(nextSort, r.has_departure)', self.screen)
 
 
+class RegionEmptyStateTests(unittest.TestCase):
+    """개발정보가 없는 자치구를 골랐을 때, 고장이 아니라 준비 중으로 읽히는지."""
+
+    def setUp(self):
+        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.picker = web('components/realestate/RegionPicker.tsx')
+
+    def test_every_seoul_district_is_selectable(self):
+        # 선택 목록은 하드코딩이 아니라 API가 준 regions를 그대로 쓴다.
+        self.assertIn('regions: { 서울: string[]; 경기: string[] }', self.picker)
+        self.assertIn('const pool = scope === "서울" ? regions.서울 : regions.경기', self.picker)
+
+    def test_zero_data_says_it_is_being_prepared(self):
+        self.assertIn('의 개발정보를 준비 중입니다.', self.tab)
+        self.assertIn('data-state="region-no-data"', self.tab)
+        self.assertIn('조회는 정상으로 끝났고', self.tab)
+
+    def test_zero_data_and_filtered_out_are_different_messages(self):
+        self.assertIn('data-state="filtered-empty"', self.tab)
+        self.assertIn('유형·진행단계·검색어를 바꿔 보세요', self.tab)
+        self.assertIn('noDataForRegion ? (', self.tab)
+
+    def test_zero_data_is_only_claimed_after_a_successful_response(self):
+        line = next(l for l in self.tab.splitlines() if 'const noDataForRegion' in l)
+        self.assertIn('ready &&', line)
+        self.assertIn('inRegion.length === 0', line)
+
+    def test_a_real_error_is_not_shown_as_zero_data(self):
+        catch = self.tab[self.tab.index('.catch((e) => {'):]
+        catch = catch[:catch.index('.finally(')]
+        # 실패한 조회에서 ready를 내려야 '준비 중' 문구가 뜨지 않는다.
+        self.assertIn('setReady(false)', catch)
+        self.assertIn('서버에 연결하지 못했어요', catch)
+        self.assertIn('bg-red-500/10', self.tab)
+        self.assertIn('개발정보를 지금 불러올 수 없어요', self.tab)
+
+    def test_it_names_the_districts_that_do_have_data(self):
+        self.assertIn('emptyDistricts', self.tab)
+        self.assertIn('의 개발정보를 보실 수 있어요', self.tab)
+
+    def test_zero_of_zero_is_not_printed_as_a_map_summary(self):
+        self.assertIn('표시할 사업이 없어요.', self.tab)
+
+
 class MapCardLinkingTests(unittest.TestCase):
     """지도에서 고른 사업과 카드가 canonical id로 이어지는지."""
 

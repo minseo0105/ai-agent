@@ -1,6 +1,9 @@
 import asyncio
+import json
 import tempfile
 import unittest
+import uuid
+from collections import Counter
 from pathlib import Path
 from unittest.mock import Mock, patch
 from services.supabase_auth import supabase_headers
@@ -55,9 +58,12 @@ class CollectorTests(unittest.TestCase):
         r={'address':'서울특별시 서초구 방배동'}
         self.assertNotIn('location',dc.geocode(r,{},lambda _:dict(result_status='MATCHED',accuracy='LOCALITY',longitude=127,latitude=37,source_url='https://example.invalid')))
     def test_exact_geocode_cache(self):
-        cache={};provider=Mock(return_value=dict(result_status='MATCHED',accuracy='PARCEL',longitude=127,latitude=37,source_url='https://example.invalid'))
-        r=dc.geocode({'address':'서울 방배동 1'},cache,provider);dc.geocode({'address':'서울 방배동 1'},cache,provider)
+        # 좌표 채택은 서울 bbox와 자치구 일치까지 통과해야 하므로 fixture도 그 모양이다.
+        cache={};provider=Mock(return_value=dict(result_status='MATCHED',accuracy='PARCEL',longitude=127.0324,latitude=37.4837,source_url='https://example.invalid',address_elements={'SIDO':'서울특별시','SIGUGUN':'서초구'}))
+        record={'address':'서울 방배동 1','sigungu':'서초구'}
+        r=dc.geocode(record,cache,provider);dc.geocode(record,cache,provider)
         self.assertIn('location',r);provider.assert_called_once()
+        self.assertEqual(r['location_sigungu'],'서초구')
     def test_atomic_import_contract(self):
         request=Mock(side_effect=[[{'revision':2}],{'result':'changed'}]);r=dc.parse_page(self.fixture(),dc.SOURCES[-1])[0]
         dc.import_candidate(r,request)
@@ -66,6 +72,136 @@ class CollectorTests(unittest.TestCase):
     def test_collection_failure_does_not_cancel(self):
         with patch.object(dc,'SOURCES',[dc.SOURCES[0]]):r=dc.collect(Mock(side_effect=TimeoutError()))
         self.assertEqual(r['records'],[]);self.assertFalse(r['runs'][0]['source_complete'])
+
+class RegionMasterTests(unittest.TestCase):
+    """서울 25개 자치구 코드는 REGION_LAWD 하나에서만 온다."""
+    def test_single_source_of_truth(self):
+        self.assertEqual(dc.SIGNGU_CODE_SOURCE,'services.realestate_monitor.REGION_LAWD')
+        expected={k.split(' > ',1)[1]:v for k,v in rm.REGION_LAWD.items() if k.startswith('서울 > ')}
+        self.assertEqual(dc.SEOUL_SIGNGU_CODE,expected);self.assertEqual(len(dc.SEOUL_DISTRICTS),25)
+    def test_codes_are_five_digit_seoul_and_unique(self):
+        codes=list(dc.SEOUL_SIGNGU_CODE.values())
+        self.assertTrue(all(len(c)==5 and c.startswith('11') and c.isdigit() for c in codes))
+        self.assertEqual(len(set(codes)),25)
+    def test_trade_lawd_and_signgu_code_agree_for_loaded_districts(self):
+        # 재사용 전제: 실거래 LAWD_CD와 정보몽땅 signguCode가 같은 체계라는 확인.
+        for district,code in {'강동구':'11740','송파구':'11710','서초구':'11650'}.items():
+            self.assertEqual(rm.REGION_LAWD['서울 > '+district],code)
+            self.assertEqual(dc.SEOUL_SIGNGU_CODE[district],code)
+            self.assertIn('signguCode='+code,[s['url'] for s in dc.build_sources(district)][-1])
+    def test_no_duplicate_region_dictionary(self):
+        source=Path('services/development_collector.py').read_text(encoding='utf-8')
+        self.assertNotIn("'강동구': '11740', '송파구': '11710', '서초구': '11650'",source)
+        self.assertEqual(source.count('11200'),0)  # 25개 코드를 다시 적지 않는다
+
+class CollectorScopeTests(unittest.TestCase):
+    """지역 선택이 수집 범위를 결정하고, 기본값은 기존 세 구 그대로다."""
+    def test_default_scope_unchanged(self):
+        self.assertEqual(dc.DISTRICTS,{'강동구':'11740','송파구':'11710','서초구':'11650'})
+        self.assertEqual([s['id'] for s in dc.SOURCES],
+            ['seoul_moa','seoul_shintong_redevelopment','seoul_shintong_reconstruction',
+             'cleanup_11740','cleanup_11710','cleanup_11650'])
+        self.assertEqual(dc.SOURCES[-1]['kind'],'directory')
+    def test_single_district(self):
+        sources=dc.build_sources('성동구')
+        self.assertEqual([s['id'] for s in sources][-1:],['cleanup_11200'])
+        self.assertEqual(len(sources),len(dc.CITYWIDE_SOURCES)+1)
+    def test_multiple_districts(self):
+        sources=dc.build_sources(['성동구','마포구','용산구'])
+        self.assertEqual([s['id'] for s in sources if s['kind']=='directory'],
+                         ['cleanup_11200','cleanup_11440','cleanup_11170'])
+    def test_all_seoul_is_opt_in_not_the_default(self):
+        self.assertEqual(len(dc.build_sources(dc.SEOUL_DISTRICTS)),len(dc.CITYWIDE_SOURCES)+25)
+        self.assertEqual(len(dc.SOURCES),len(dc.CITYWIDE_SOURCES)+3)
+    def test_region_label_form_accepted(self):
+        self.assertEqual(dc.normalize_districts(['서울 > 성동구','성동구']),('성동구',))
+    def test_unknown_district_refused(self):
+        with self.assertRaises(dc.UnknownDistrict):dc.normalize_districts(['성동'])
+        with self.assertRaises(dc.UnknownDistrict):dc.normalize_districts([])
+    def test_gyeonggi_not_collectable(self):
+        # 경기/전국 확장은 이 단계가 아니다. 코드 체계도 수집원도 다르다.
+        with self.assertRaises(dc.UnknownDistrict):dc.normalize_districts(['하남시'])
+        with self.assertRaises(dc.UnknownDistrict):dc.normalize_districts(['경기 > 하남시'])
+    def test_rows_outside_scope_are_dropped(self):
+        html='<table><tr><td>1</td><td>성동구</td><td>재건축</td><td>성동 시험</td><td>행당동 1</td><td>착공</td></tr></table>'
+        self.assertEqual(dc.parse_page(html,dc.SOURCES[-1]),[])
+        rows=dc.parse_page(html,dc.build_sources('성동구')[-1])
+        self.assertEqual(rows[0]['sigungu'],'성동구')
+    def test_collect_uses_requested_scope(self):
+        fetch=Mock(side_effect=TimeoutError())
+        r=dc.collect(fetch,districts=['성동구'])
+        self.assertEqual(r['districts'],['성동구'])
+        self.assertEqual(len(r['runs']),len(dc.CITYWIDE_SOURCES)+1)
+
+class GeocodeSigunguTests(unittest.TestCase):
+    """서울 bbox만으로는 통과하지 못한다. 사업 자치구와 응답 자치구가 같아야 한다."""
+    def matched(self,**over):
+        base=dict(result_status='MATCHED',accuracy='PARCEL',longitude=127.0369,latitude=37.5633,
+                  source_url='https://example.invalid',
+                  address_elements={'SIDO':'서울특별시','SIGUGUN':'성동구'})
+        base.update(over);return base
+    def record(self,district='성동구'):
+        return {'address':'서울특별시 '+district+' 행당동 1','sigungu':district}
+    def test_matching_district_accepted(self):
+        r=dc.geocode(self.record(),{},lambda _:self.matched())
+        self.assertIn('location',r);self.assertEqual(r['location_sigungu'],'성동구')
+    def test_mismatched_district_rejected(self):
+        r=dc.geocode(self.record('마포구'),{},lambda _:self.matched())
+        self.assertNotIn('location',r)
+        self.assertIn('GEOCODE_SIGUNGU_MISMATCH',r['location_review'])
+    def test_outside_seoul_rejected_even_when_inside_korea(self):
+        r=dc.geocode(self.record(),{},lambda _:self.matched(longitude=127.2,latitude=37.0,
+            address_elements={'SIDO':'서울특별시','SIGUGUN':'성동구'}))
+        self.assertIn('OUTSIDE_SEOUL_BBOX',r['location_review'])
+    def test_unreadable_district_is_review_not_pass(self):
+        r=dc.geocode(self.record(),{},lambda _:self.matched(address_elements=None))
+        self.assertIn('GEOCODE_SIGUNGU_UNVERIFIABLE',r['location_review'])
+    def test_district_read_from_returned_address_when_no_elements(self):
+        r=dc.geocode(self.record(),{},lambda _:self.matched(address_elements=None,
+            matched_address='서울특별시 성동구 행당동 1'))
+        self.assertIn('location',r)
+    def test_axis_swapped_rejected(self):
+        r=dc.geocode(self.record(),{},lambda _:self.matched(longitude=37.5633,latitude=127.0369))
+        self.assertIn('OUTSIDE_KOREA_BBOX',r['location_review'])
+    def test_rejection_reasons_are_kept_not_silently_dropped(self):
+        r=dc.geocode(self.record('마포구'),{},lambda _:self.matched())
+        self.assertTrue(r['location_review']);self.assertIsNone(r.get('location'))
+
+class ExistingDataRegressionTests(unittest.TestCase):
+    """이미 적재된 130건의 identity가 확대 후에도 그대로여야 한다."""
+    BASELINE=Path('data/development/lifecycle_audit_20260929.json')
+    CAPTURE=Path('data/development/pilot_20260927.json')
+    def load(self,path):
+        return json.loads(path.read_text(encoding='utf-8'))
+    def test_baseline_counts(self):
+        rows=self.load(self.BASELINE)['items']
+        self.assertEqual(len(rows),130)
+        self.assertEqual(Counter(r['district'] for r in rows),
+                         Counter({'서초구':56,'강동구':40,'송파구':34}))
+    def test_identity_reproduced_for_every_existing_row(self):
+        """캡처된 공식 근거를 지금 코드로 다시 통과시켜도 같은 project_id가 나온다."""
+        capture=self.load(self.CAPTURE)
+        by_url={s['url']:s for s in dc.build_sources(dc.SEOUL_DISTRICTS)}
+        regenerated=set()
+        for record in capture['records']:
+            source=by_url[record['field_evidence']['source_url']]
+            identity=('cleanup:'+record['external_id'] if record['external_id']
+                      else f"{source['id']}:{record['sigungu']}:{record['project_name']}")
+            regenerated.add(str(uuid.uuid5(uuid.NAMESPACE_URL,identity)))
+        existing={r['project_id'] for r in self.load(self.BASELINE)['items']}
+        self.assertEqual(existing-regenerated,set())
+    def test_expanding_scope_does_not_change_pilot_identities(self):
+        html=('<table><tr><td>58</td><td>강동구</td><td>재건축</td>'
+              '<td>고덕주공2단지아파트 주택재건축정비사업조합</td><td>고덕동 212</td>'
+              '<td>조합청산</td><td>3004건</td><td>-</td><td>-</td>'
+              '<td><a href="javascript:cafeOpenPopup(\'in814VyA\');">사업장 지도</a></td></tr></table>')
+        pick=lambda scope:next(s for s in dc.build_sources(scope) if s['id']=='cleanup_11740')
+        narrow=dc.parse_page(html,pick('강동구'))[0]
+        wide=dc.parse_page(html,pick(dc.SEOUL_DISTRICTS))[0]
+        self.assertEqual(narrow['project_id'],wide['project_id'])
+        self.assertEqual(narrow['source']['source_url'],wide['source']['source_url'])
+        self.assertEqual(narrow['source']['content_hash'],wide['source']['content_hash'])
+        self.assertIn(narrow['project_id'],{r['project_id'] for r in self.load(self.BASELINE)['items']})
 
 class ApiTests(unittest.TestCase):
     def test_unavailable_fallback(self):

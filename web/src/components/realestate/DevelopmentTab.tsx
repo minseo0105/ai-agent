@@ -98,6 +98,8 @@ export default function DevelopmentTab({
       .catch((e) => {
         if (controller.signal.aborted) return;
         setWaking(false);
+        // 실패한 조회를 '데이터 0건'으로 보이게 두지 않는다. 오류는 오류로만 보여야 한다.
+        setReady(false);
         setError(
           isTransient(e)
             ? "서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요."
@@ -162,6 +164,21 @@ export default function DevelopmentTab({
   const mappable = visiblePoints.filter((p) => p.latitude != null).length;
   const coordinateless = visible.length - mappable;
   const unavailable = !loading && !error && !ready;
+
+  // 빈 화면에는 세 가지 서로 다른 사정이 있고, 셋 다 같은 문장으로 보이면 안 된다.
+  //  1) 조회 자체가 실패했다(error / unavailable) — 다시 시도할 일이다.
+  //  2) 조회는 정상인데 고른 자치구에 등록된 사업이 0건이다 — 기다릴 일이다.
+  //  3) 자치구에는 사업이 있는데 유형·단계·검색어가 다 걸러냈다 — 조건을 바꿀 일이다.
+  const coveredDistricts = useMemo(
+    () => new Set(projects.map((p) => p.district).filter(Boolean) as string[]),
+    [projects],
+  );
+  const emptyDistricts = useMemo(
+    () => [...selectedDistricts].filter((d) => !coveredDistricts.has(d)).sort(),
+    [selectedDistricts, coveredDistricts],
+  );
+  // ready가 true일 때만 쓴다. 응답을 받지 못한 상태를 '0건'이라고 말하지 않는다.
+  const noDataForRegion = ready && selectedDistricts.size > 0 && inRegion.length === 0;
 
   /**
    * 지도에서 고른 사업의 카드로 이동한다.
@@ -315,10 +332,17 @@ export default function DevelopmentTab({
               </div>
             ) : (
               <p className="mt-1 text-xs text-muted">
-                {visible.length}건 중 {mappable}건이 지도에 표시됩니다.
-                {coordinateless > 0 && ` 좌표가 없는 ${coordinateless}건은 목록에만 남습니다.`}
-                {mappable === 0 && " 좌표를 확보하는 중이라 아직 지도에 핀이 없습니다."}
-                {" 지도나 아래 목록에서 사업을 선택하면 해석을 보여드려요."}
+                {visible.length === 0 ? (
+                  // 0건 중 0건이라는 말은 고장처럼 읽힌다. 아래 안내문이 사정을 설명한다.
+                  "표시할 사업이 없어요."
+                ) : (
+                  <>
+                    {visible.length}건 중 {mappable}건이 지도에 표시됩니다.
+                    {coordinateless > 0 && ` 좌표가 없는 ${coordinateless}건은 목록에만 남습니다.`}
+                    {mappable === 0 && " 좌표를 확보하는 중이라 아직 지도에 핀이 없습니다."}
+                    {" 지도나 아래 목록에서 사업을 선택하면 해석을 보여드려요."}
+                  </>
+                )}
               </p>
             )}
           </section>
@@ -336,9 +360,36 @@ export default function DevelopmentTab({
               서울시 전체 {projects.length}건을 보여드리고 있어요. 지역을 선택하면 해당 자치구만 남습니다.
             </p>
           )}
-          {visible.length === 0 && (
-            <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">조건에 맞는 개발사업이 없어요.</p>
-          )}
+          {visible.length === 0 &&
+            (noDataForRegion ? (
+              <div
+                role="status"
+                data-state="region-no-data"
+                className="rounded-xl border border-border bg-surface-muted px-3 py-3 text-sm"
+              >
+                <p className="font-extrabold text-fg">
+                  현재 {emptyDistricts.length > 0 ? emptyDistricts.join("·") : "이 지역"}의 개발정보를 준비 중입니다.
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  조회는 정상으로 끝났고, 이 지역에 등록된 사업이 아직 0건이에요. 서울시 공식 공개자료를
+                  자치구 단위로 넓혀가는 중입니다.
+                  {coveredDistricts.size > 0 &&
+                    ` 지금은 ${[...coveredDistricts].sort().join("·")}의 개발정보를 보실 수 있어요.`}
+                </p>
+                {!includeCompleted && hiddenCompleted > 0 && (
+                  <p className="mt-1 text-xs text-subtle">
+                    완료된 사업까지 포함해 보려면 ‘완료사업 보기’를 켜 주세요.
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p
+                data-state="filtered-empty"
+                className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted"
+              >
+                조건에 맞는 개발사업이 없어요. 유형·진행단계·검색어를 바꿔 보세요.
+              </p>
+            ))}
 
           <div className="grid gap-2.5 md:grid-cols-2">
             {visible.slice(0, MAX_CARDS).map((p) => (

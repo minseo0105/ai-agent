@@ -13,6 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from services.development_official import dong_from_address
+from services.realestate_monitor import REGION_LAWD
 
 # The identity seed is frozen: the pilot records and the canary rows already in
 # the database were derived from the project name verbatim. Parser fixes must not
@@ -20,17 +21,87 @@ from services.development_official import dong_from_address
 # and a mapping migration.
 IDENTITY_NORMALIZER_VERSION = 'seoul-identity-v1'
 
-DISTRICTS = {'강동구': '11740', '송파구': '11710', '서초구': '11650'}
-SOURCES = [
+# 자치구 코드는 새로 만들지 않는다. 실거래 조회가 쓰는 REGION_LAWD의 서울 25개 항목이
+# 그대로 정보몽땅 signguCode다. 두 값이 같은 체계라는 근거는 이미 적재된 세 구에서
+# 확인했다: 강동구 11740 / 송파구 11710 / 서초구 11650이 LAWD_CD와 정보몽땅
+# scupBsnsSttus.signguCode 양쪽에서 동일하고, 25개 모두 행정표준코드 시군구코드
+# 5자리(11xxx)이며 중복이 없다. 나머지 22개 구는 코드 체계가 같다는 것까지만
+# 확인된 상태이고 정보몽땅 응답으로 실측되지는 않았으므로, 실제 수집 실행에서
+# 구별 응답 건수를 확인해야 한다.
+SIGNGU_CODE_SYSTEM = '행정표준코드 시군구코드(5)'
+SIGNGU_CODE_SOURCE = 'services.realestate_monitor.REGION_LAWD'
+SEOUL_SIGNGU_CODE = {label.split(' > ', 1)[1]: code
+                     for label, code in REGION_LAWD.items() if label.startswith('서울 > ')}
+SEOUL_DISTRICTS = tuple(SEOUL_SIGNGU_CODE)
+
+# 이미 적재/검증된 세 구. 인자 없이 호출하면 동작이 바뀌지 않도록 기본값으로 둔다.
+# 서울 전체 수집은 --all-seoul처럼 호출자가 명시적으로 요청할 때만 일어난다.
+PILOT_DISTRICTS = ('강동구', '송파구', '서초구')
+DISTRICTS = {district: SEOUL_SIGNGU_CODE[district] for district in PILOT_DISTRICTS}
+
+CITYWIDE_SOURCES = (
  {'id': 'seoul_moa', 'name': '서울시 모아타운 추진현황', 'kind': 'moa',
   'url': 'https://news.seoul.go.kr/citybuild/moa-housing-town/policy/status'},
  {'id': 'seoul_shintong_redevelopment', 'name': '정보몽땅 신속통합기획 재개발', 'kind': 'shintong',
   'url': 'https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn.do'},
  {'id': 'seoul_shintong_reconstruction', 'name': '정보몽땅 신속통합기획 재건축', 'kind': 'reconstruction',
   'url': 'https://cleanup.seoul.go.kr/cleanup/view/publicIntgrPlanSttn2.do'},
-] + [{'id': 'cleanup_' + code, 'name': '정보몽땅 사업장 목록 ' + district, 'kind': 'directory',
-       'url': 'https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do?cpage=1&pageSize=100&scupBsnsSttus.signguCode=' + code}
-      for district, code in DISTRICTS.items()]
+)
+DIRECTORY_URL = ('https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do'
+                 '?cpage=1&pageSize=100&scupBsnsSttus.signguCode=')
+
+
+class UnknownDistrict(ValueError):
+    """Names a district the region master does not contain. No code is guessed."""
+
+
+def normalize_districts(districts=None):
+    """요청한 자치구 이름을 지역 마스터로 검증해 중복 없는 순서대로 돌려준다.
+
+    모르는 이름은 조용히 버리지 않고 거부한다. 오타 하나가 '그 구는 수집된 게
+    없다'로 보이는 것이 가장 나쁜 실패 방식이기 때문이다.
+    """
+    if districts is None:
+        districts = PILOT_DISTRICTS
+    if isinstance(districts, str):
+        districts = [districts]
+    names, unknown = [], []
+    for raw in districts:
+        name = (raw or '').strip()
+        if not name:
+            continue
+        # '서울 > 성동구'와 '성동구'를 모두 받는다. 지역 라벨 형식이 하나뿐이라고 가정하지 않는다.
+        name = name.split('>')[-1].strip()
+        if name not in SEOUL_SIGNGU_CODE:
+            unknown.append(name)
+        elif name not in names:
+            names.append(name)
+    if unknown:
+        raise UnknownDistrict('UNKNOWN_SEOUL_DISTRICT:' + ','.join(sorted(set(unknown))))
+    if not names:
+        raise UnknownDistrict('NO_DISTRICT_SELECTED')
+    return tuple(names)
+
+
+def build_sources(districts=None):
+    """선택한 자치구만 대상으로 하는 수집 source 목록.
+
+    시 전체 페이지(모아타운·신속통합기획)는 25개 구 행을 모두 돌려주므로 URL은
+    그대로 두고 source에 담긴 자치구 범위로 행을 고른다. 사업장 목록은 구별
+    signguCode URL이라 선택한 구만큼만 만든다.
+    """
+    names = normalize_districts(districts)
+    scope = {name: SEOUL_SIGNGU_CODE[name] for name in names}
+    sources = [dict(source, districts=dict(scope)) for source in CITYWIDE_SOURCES]
+    sources += [{'id': 'cleanup_' + code, 'name': '정보몽땅 사업장 목록 ' + district,
+                 'kind': 'directory', 'url': DIRECTORY_URL + code,
+                 'district': district, 'signgu_code': code, 'districts': {district: code}}
+                for district, code in scope.items()]
+    return sources
+
+
+# 기본 SOURCES는 지금까지와 같은 세 구다. 테스트와 기존 스크립트가 보는 모양을 바꾸지 않는다.
+SOURCES = build_sources(PILOT_DISTRICTS)
 
 def digest(value):
     return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
@@ -74,14 +145,21 @@ def number(raw):
     try: return float(raw.replace(',', '').replace('㎡', '').strip())
     except (ValueError, AttributeError): return None
 
-def parse_page(content, source, collected_at=None):
+def parse_page(content, source, collected_at=None, districts=None):
+    """source가 담고 있는 자치구 범위의 행만 기록으로 바꾼다.
+
+    districts를 주면 그것이 범위이고, 없으면 source['districts'], 그것도 없으면
+    기존 세 구(DISTRICTS)다. 범위를 명시하지 않은 호출의 동작은 바뀌지 않는다.
+    """
     text = decode_page(content) if isinstance(content, bytes) else content
     soup = BeautifulSoup(text, 'html.parser')
     stamp = collected_at or datetime.now(timezone.utc).isoformat()
+    scope = districts or source.get('districts') or DISTRICTS
+    if not isinstance(scope, dict): scope = {name: SEOUL_SIGNGU_CODE.get(name) for name in scope}
     records = []
     for table in soup.select('table'):
         for cells, markup in table_rows(table):
-            district = next((c for c in cells if c in DISTRICTS), None)
+            district = next((c for c in cells if c in scope), None)
             if not district: continue
             pos = cells.index(district)
             if len(cells) <= pos + 2: continue
@@ -127,8 +205,64 @@ def parse_page(content, source, collected_at=None):
             records.append(record)
     return records
 
+# 좌표 축이 뒤집혔는지 보기 위한 한반도 범위. 자치구 판정용이 아니다.
+KOREA_LONGITUDE = (124.0, 132.0)
+KOREA_LATITUDE = (33.0, 39.0)
+# 서울 bbox. services.development_geocode.SEOUL_BOUNDS와 같은 값을 쓴다.
+SEOUL_LONGITUDE = (126.734, 127.270)
+SEOUL_LATITUDE = (37.413, 37.715)
+DISTRICT_PATTERN = re.compile(r'([가-힣]{2,5}구)(?=\s|$|,)')
+
+
+def result_district(result):
+    """지오코딩 결과가 말하는 자치구. 못 읽으면 None이고, 추측하지 않는다."""
+    elements = (result or {}).get('address_elements') or {}
+    if elements.get('SIGUGUN'):
+        return elements['SIGUGUN'].strip()
+    for key in ('matched_address', 'jibun_address', 'road_address', 'address', 'returned_address'):
+        text = (result or {}).get(key)
+        if isinstance(text, str):
+            found = DISTRICT_PATTERN.search(text)
+            if found: return found.group(1)
+    return None
+
+
+def location_rejections(record, result):
+    """이 결과를 좌표로 채택하면 안 되는 이유를 전부 모아 돌려준다.
+
+    서울 bbox 안에 있다는 것만으로는 부족하다. 사업의 sigungu와 지오코딩이 답한
+    자치구가 같은지까지 봐야, 성동구 사업이 마포구 좌표를 들고 지도에 꽂히는 일을
+    막을 수 있다. 자치구를 읽을 수 없는 응답은 통과가 아니라 검토 대상이다.
+    """
+    reasons = []
+    if not result: return ['NO_GEOCODE_RESULT']
+    if result.get('result_status') != 'MATCHED': reasons.append('NOT_MATCHED')
+    if result.get('accuracy') not in ('BUILDING', 'PARCEL'): reasons.append('ACCURACY_NOT_EXACT')
+    if not result.get('source_url'): reasons.append('NO_SOURCE_URL')
+    lon, lat = result.get('longitude'), result.get('latitude')
+    if not (isinstance(lon, (int, float)) and isinstance(lat, (int, float))):
+        reasons.append('COORDINATE_NOT_NUMERIC')
+    else:
+        if not (KOREA_LONGITUDE[0] <= lon <= KOREA_LONGITUDE[1]
+                and KOREA_LATITUDE[0] <= lat <= KOREA_LATITUDE[1]):
+            reasons.append('OUTSIDE_KOREA_BBOX')
+        elif not (SEOUL_LONGITUDE[0] <= lon <= SEOUL_LONGITUDE[1]
+                  and SEOUL_LATITUDE[0] <= lat <= SEOUL_LATITUDE[1]):
+            reasons.append('OUTSIDE_SEOUL_BBOX')
+    wanted = record.get('sigungu')
+    answered = result_district(result)
+    if not wanted: reasons.append('PROJECT_SIGUNGU_MISSING')
+    elif answered is None: reasons.append('GEOCODE_SIGUNGU_UNVERIFIABLE')
+    elif answered != wanted: reasons.append('GEOCODE_SIGUNGU_MISMATCH')
+    return reasons
+
+
 def geocode(record, cache, provider=None):
-    """Exact address cache/provider contract; no provider configured means no guess."""
+    """Exact address cache/provider contract; no provider configured means no guess.
+
+    채택하지 못한 이유는 버리지 않고 location_review에 남긴다. 좌표가 없는 것과
+    좌표가 틀려서 뺀 것은 다른 사건이고, 보고서에서 구분되어야 한다.
+    """
     address = record.get('address')
     if not address: return record
     key = digest({'address': ' '.join(address.split()), 'normalizer': 'v1'})
@@ -136,17 +270,25 @@ def geocode(record, cache, provider=None):
     if result is None and provider:
         result = provider(address)
         cache[key] = result
-    if result and result.get('result_status') == 'MATCHED' and result.get('accuracy') in ('BUILDING','PARCEL') and result.get('source_url'):
-        lon, lat = result.get('longitude'), result.get('latitude')
-        if isinstance(lon,(int,float)) and isinstance(lat,(int,float)) and 124 <= lon <= 132 and 33 <= lat <= 39:
-            record = dict(record, location=f'SRID=4326;POINT({lon} {lat})', location_source=result['source_url'])
-    return record
+    if result is None: return record
+    reasons = location_rejections(record, result)
+    if reasons:
+        return dict(record, location_review=reasons)
+    return dict(record, location=f"SRID=4326;POINT({result['longitude']} {result['latitude']})",
+                location_source=result['source_url'], location_sigungu=result_district(result))
 
-def collect(fetch=None, *, geocode_provider=None, geocode_cache=None):
+def collect(fetch=None, *, geocode_provider=None, geocode_cache=None, districts=None, sources=None):
+    """선택한 자치구만 수집한다. 인자가 없으면 지금까지와 같은 세 구다.
+
+    districts=SEOUL_DISTRICTS로 서울 전체를, districts=['성동구']로 한 구만 돌릴 수
+    있다. 25개를 매번 무조건 도는 경로는 만들지 않는다.
+    """
     fetch = fetch or requests.get
     records, runs = {}, []
     cache = geocode_cache if geocode_cache is not None else {}
-    for source in SOURCES:
+    if sources is None:
+        sources = SOURCES if districts is None else build_sources(districts)
+    for source in sources:
         run = {'source': source['id'], 'source_url': source['url'], 'started_at': datetime.now(timezone.utc).isoformat(),
                'dry_run': True, 'source_complete': False, 'new_count': 0, 'changed_count': 0,
                'unchanged_count': 0, 'validation_failed_count': 0, 'errors': []}
@@ -169,7 +311,10 @@ def collect(fetch=None, *, geocode_provider=None, geocode_cache=None):
         except Exception as exc:
             run['status'] = 'FAILED';run['errors'].append(type(exc).__name__)
         run['finished_at'] = datetime.now(timezone.utc).isoformat();runs.append(run)
+    scope = sorted({d for source in sources for d in (source.get('districts') or {})})
     return {'collected_at': datetime.now(timezone.utc).isoformat(), 'records': list(records.values()), 'runs': runs,
+            'districts': scope, 'signgu_code_system': SIGNGU_CODE_SYSTEM,
+            'signgu_code_source': SIGNGU_CODE_SOURCE,
             'policy': 'LOCAL_CANDIDATES_ONLY; no business status inferred; no missing-record deletion'}
 
 def import_candidate(record, request, run_id=None):
