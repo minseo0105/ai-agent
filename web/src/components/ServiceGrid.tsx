@@ -69,9 +69,9 @@ export default function ServiceGrid() {
         </ServiceLink>
       )}
 
-      {/* 좁은 화면 2열 -> 태블릿 3열 -> 넓은 화면 4열. 카드 높이는 서로 맞춘다. */}
+      {/* 화면 폭과 카드 수에 맞춰 열을 채운다. 좁은 화면에서도 컨테이너 폭을 넘지 않는다. */}
       {main.length > 0 && (
-        <div className="grid grid-cols-2 items-stretch gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] items-stretch gap-3 sm:gap-4">
           {main.map((s) => (
             <ServiceLink
               key={s.id}

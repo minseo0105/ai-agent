@@ -199,8 +199,8 @@ class ServiceGridResponsiveTests(unittest.TestCase):
     def setUp(self):
         self.grid = web('components/ServiceGrid.tsx')
 
-    def test_the_grid_has_breakpoints(self):
-        self.assertIn('grid-cols-2 items-stretch gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4', self.grid)
+    def test_the_grid_adapts_to_available_width_and_card_count(self):
+        self.assertIn('grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))]', self.grid)
         self.assertNotIn('grid grid-cols-2 gap-3 lg:grid-cols-4', self.grid)
 
     def test_cards_share_a_height_and_do_not_overflow(self):
