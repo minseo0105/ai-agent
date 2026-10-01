@@ -67,6 +67,26 @@ class ImportArtifactTests(unittest.TestCase):
             if row['raw']:
                 self.assertIsNone(row['zero_reason'], district)
 
+    def test_a_project_without_a_coordinate_still_reaches_the_db(self):
+        """좌표가 없어도 공식 개발정보다. 적재 대상에서 빼지 않는다."""
+        rows = self.artifact['upsert']
+        without = [r for r in rows if not r['has_coordinate']]
+        self.assertTrue(without)
+        # no_coordinate는 별도 집계일 뿐이고, upsert에서 빠지지 않는다.
+        self.assertEqual(self.artifact['buckets']['no_coordinate'], len(without))
+        self.assertEqual(len(rows), self.artifact['totals']['valid_projects'])
+        self.assertEqual(self.artifact['buckets']['insert'] + self.artifact['buckets']['update'],
+                         len(rows))
+
+    def test_duplicate_pairs_are_preserved_not_merged(self):
+        pairs = self.artifact['duplicate_review']
+        self.assertEqual(len(pairs), self.artifact['buckets']['duplicate_review'])
+        self.assertTrue(all(pair['auto_merge'] is False for pair in pairs))
+        # 쌍에 걸린 사업도 upsert에 남는다. 자동 삭제/병합하지 않는다.
+        flagged = {pid for pair in pairs for pid in pair['candidate_ids']}
+        present = {row['project_id'] for row in self.artifact['upsert']}
+        self.assertEqual(flagged - present, set())
+
     def test_a_wrong_district_coordinate_is_rejected(self):
         record = {'project_id': 'x', 'project_name': 'n', 'project_type': 'RECONSTRUCTION',
                   'sigungu': '성동구', 'location': 'SRID=4326;POINT(126.9 37.56)',

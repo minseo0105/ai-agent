@@ -87,19 +87,30 @@ def main():
     if args.live and provider is None:
         # 자격증명이 없으면 추측하지 않고 멈춘다.
         parser.error(selection['blocker'])
-    resolution = geo.resolve([r['address'] for r in with_address], cache, provider)
+    # 공식 원본 주소는 record['address']에 그대로 남는다. 질의에만 정규화 주소를 쓴다.
+    queries = {r['project_id']: geo.geocode_address(r['address']) for r in with_address}
+    resolution = geo.resolve(list(queries.values()), cache, provider)
 
     tally = Counter()
     rows, by_district = [], {}
     for record in with_address:
-        evaluation = resolution['results'].get(geo.cache_key(record['address']))
+        query = queries[record['project_id']]
+        evaluation = resolution['results'].get(geo.cache_key(query))
         bucket, reasons = verdict(record, evaluation)
         tally[bucket] += 1
         stats = by_district.setdefault(record['sigungu'], Counter())
         stats[bucket] += 1
         row = {'project_id': record['project_id'], 'sigungu': record['sigungu'],
-               'project_name': record.get('project_name'), 'address': record['address'],
+               'project_name': record.get('project_name'),
+               # 원본 주소와 질의 주소를 둘 다 남긴다. 무엇을 떼어내고 물었는지 보이게 한다.
+               'address': record['address'], 'query_address': query,
+               'normalized': query != geo.normalize_address(record['address']),
                'bucket': bucket, 'reasons': reasons,
+               # 왜 막혔는지. passing==0이면 실제로 실패한 check가 여기 남는다.
+               'failed_checks': (evaluation or {}).get('failed_checks'),
+               'passing_candidates': (evaluation or {}).get('passing_candidates'),
+               'wanted_parts': (evaluation or {}).get('wanted_parts'),
+               'candidate_summaries': (evaluation or {}).get('candidate_summaries'),
                'geocode_source': (evaluation or {}).get('geocode_source'),
                'answered_sigungu': ((evaluation or {}).get('address_elements') or {}).get('SIGUGUN'),
                'candidates': (evaluation or {}).get('provider_candidate_count'),
@@ -124,6 +135,9 @@ def main():
                    'unverifiable': tally['unverifiable']},
         'provider_stats': resolution['stats'],
         'disambiguated': sum(1 for r in rows if r.get('disambiguation')),
+        'address_normalized': sum(1 for r in rows if r.get('normalized')),
+        'failed_check_counts': dict(sorted(Counter(
+            check for r in rows for check in (r.get('failed_checks') or [])).items())),
         'reject_reasons': dict(sorted(Counter(
             reason for r in rows if r['bucket'] != 'geocoded' for reason in r['reasons']).items())),
         'by_district': {d: dict(sorted(c.items())) for d, c in sorted(by_district.items())},
@@ -134,8 +148,8 @@ def main():
         args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n',
                             encoding='utf-8')
     print(json.dumps({k: report[k] for k in
-                      ('mode', 'provider', 'totals', 'disambiguated', 'provider_stats',
-                       'reject_reasons')},
+                      ('mode', 'provider', 'totals', 'disambiguated', 'address_normalized',
+                       'provider_stats', 'failed_check_counts', 'reject_reasons')},
                      ensure_ascii=False, indent=2))
 
 

@@ -49,6 +49,32 @@ def normalize_address(value):
     return re.sub(r'\s+', ' ', text).strip()
 
 
+# 공식 주소에 붙는 꼬리 표현. 지번 숫자를 가려 lot 추출을 막는 것들만 떼어낸다.
+# '외 N필지'는 대표 지번만 남긴다. 원본 주소는 바꾸지 않고, 지오코딩 질의에만 쓴다.
+LOT_TAIL = re.compile(r'(?<=\d)\s*번지(?=\s|$)')
+LOT_SUFFIX = re.compile(r'(?<=\d)\s*(?:일대|외\s*\d+\s*필지|외\s*\d+\s*개?\s*필지)\s*$')
+
+
+def geocode_address(value):
+    """지오코딩에만 쓰는 질의 주소. 번지 숫자가 실제로 있을 때만 꼬리를 떼어낸다.
+
+    '392-9번지 일대' -> '392-9'. 동명만 있는 주소는 손대지 않으므로 REGION 판정과
+    not_a_region_centroid 보호가 그대로 남는다. 비슷한 표현을 추측해서 맞추지 않는다.
+    """
+    text = normalize_address(value)
+    if not text:
+        return text
+    for _ in range(3):
+        before = text
+        text = LOT_TAIL.sub('', text)
+        text = LOT_SUFFIX.sub('', text)
+        text = re.sub(r'\s+', ' ', text).strip()
+        if text == before:
+            break
+    # 번지가 남지 않았다면 떼어낼 이유가 없었던 주소다. 원본 정규화 결과를 쓴다.
+    return text if re.search(r'\d+(?:-\d+)?\s*$', text) else normalize_address(value)
+
+
 def cache_key(address):
     return hashlib.sha256(f'{CACHE_VERSION}|{normalize_address(address)}'.encode()).hexdigest()[:32]
 
@@ -309,8 +335,14 @@ def evaluate(address, response):
         # 여러 동이라면 특정할 수 있다. 특정되지 않으면 그대로 검토로 보낸다.
         chosen, basis = disambiguate(parts, passing)
         if chosen is None:
-            return dict(result, geocode_confidence='GEOCODE_REVIEW',
-                        review_reason='MULTIPLE_PROVIDER_CANDIDATES',
+            # 통과한 후보가 없는 것과, 여럿이어서 못 고른 것은 다른 사건이다.
+            # 전자를 '후보가 여럿'이라고 적으면 실제 차단 사유가 라벨에 가려진다.
+            blocking = sorted({name for _, checks, _ in scored
+                               for name, ok in checks.items() if not ok})
+            reason = ('NO_CANDIDATE_PASSED_CHECKS:' + ','.join(blocking) if not passing
+                      else 'MULTIPLE_PROVIDER_CANDIDATES')
+            return dict(result, geocode_confidence='GEOCODE_REVIEW', review_reason=reason,
+                        failed_checks=blocking, passing_candidates=len(passing),
                         candidate_summaries=[_summary(c, checks) for c, checks, _ in scored])
     candidate, checks, orientation = chosen or (passing[0] if passing else scored[0])
     detail = {'matched_address': normalize_address(candidate.get('matched_address')),

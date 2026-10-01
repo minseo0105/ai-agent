@@ -383,7 +383,9 @@ class MultipleCandidateDisambiguationTests(unittest.TestCase):
         # 번지가 없으면 주소 단위를 만들 수 없다. 동 중심점이 채택되는 경로를 열지 않는다.
         r = self.result([self.candidate(building='가동'), self.candidate(building='나동')],
                         '서울특별시 성동구 행당동')
-        self.assertEqual(r['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+        self.assertEqual(r['geocode_confidence'], 'GEOCODE_REVIEW')
+        self.assertIn('not_a_region_centroid', r['review_reason'])
+        self.assertIsNone(r.get('disambiguation'))
 
     def test_a_single_candidate_path_is_unchanged(self):
         r = self.result([self.candidate()])
@@ -408,3 +410,62 @@ class MultipleCandidateDisambiguationTests(unittest.TestCase):
         self.assertEqual(dc.location_rejections({'sigungu': '성동구'}, flat), [])
         self.assertIn('GEOCODE_SIGUNGU_MISMATCH',
                       dc.location_rejections({'sigungu': '마포구'}, flat))
+
+
+class GeocodeAddressNormalizationTests(unittest.TestCase):
+    """지오코딩 질의용 주소만 다듬는다. 공식 원본 주소는 건드리지 않는다."""
+    def normalize(self, value):
+        from services import development_geocode as geo
+        return geo.geocode_address(value)
+    def test_the_deterministic_tails_are_removed(self):
+        base = '서울특별시 강동구 천호동 392-9'
+        for tail in ('392-9번지', '392-9 번지', '392-9 일대', '392-9번지 일대',
+                     '392-9 외 3필지', '392-9 외 12 필지'):
+            self.assertEqual(self.normalize('서울특별시 강동구 천호동 ' + tail), base, tail)
+    def test_a_dong_only_address_is_untouched(self):
+        # 번지가 없으면 떼어낼 것이 없다. REGION 판정 보호가 그대로 남는다.
+        self.assertEqual(self.normalize('서울특별시 성동구 행당동'), '서울특별시 성동구 행당동')
+        self.assertEqual(self.normalize('서울특별시 성동구 행당동 일대'), '서울특별시 성동구 행당동 일대')
+    def test_a_road_address_is_untouched(self):
+        self.assertEqual(self.normalize('서울특별시 중구 세종대로 110'), '서울특별시 중구 세종대로 110')
+    def test_nothing_is_invented_when_no_lot_remains(self):
+        self.assertEqual(self.normalize(''), '')
+        self.assertEqual(self.normalize(None), '')
+    def test_the_normalized_query_now_yields_a_lot(self):
+        from services import development_geocode as geo
+        raw = '서울특별시 강동구 천호동 392-9번지 일대'
+        self.assertIsNone(geo.wanted_parts(raw)['lot'])
+        self.assertEqual(geo.wanted_parts(geo.geocode_address(raw))['lot'], '392-9')
+    def test_the_runner_keeps_the_official_address_and_shows_the_query(self):
+        source = Path('scripts/geocode_zipon_seoul25.py').read_text(encoding='utf-8')
+        self.assertIn("'address': record['address'], 'query_address': query", source)
+        self.assertIn('geo.geocode_address(r[\'address\'])', source)
+
+
+class BlockedCheckReportingTests(unittest.TestCase):
+    """통과 후보가 0개인 것을 '후보가 여럿'이라고 적지 않는다."""
+    def evaluate(self, address, candidates):
+        from services import development_geocode as geo
+        return geo.evaluate(address, {'provider': 'naver:geocode', 'result_status': 'MATCHED',
+                                      'candidates': candidates})
+    def candidate(self, **elements):
+        return {'longitude': 127.0369, 'latitude': 37.5633, 'accuracy': 'PARCEL',
+                'matched_address': '서울특별시 성동구 행당동', 'address_elements':
+                dict({'SIDO': '서울특별시', 'SIGUGUN': '성동구', 'DONGMYUN': '행당동'}, **elements)}
+    def test_zero_passing_names_the_real_check(self):
+        r = self.evaluate('서울특별시 성동구 행당동',
+                          [self.candidate(), self.candidate(BUILDING_NAME='나')])
+        self.assertTrue(r['review_reason'].startswith('NO_CANDIDATE_PASSED_CHECKS:'))
+        self.assertIn('not_a_region_centroid', r['failed_checks'])
+        self.assertEqual(r['passing_candidates'], 0)
+    def test_candidate_summaries_and_wanted_parts_are_kept(self):
+        r = self.evaluate('서울특별시 성동구 행당동', [self.candidate(), self.candidate()])
+        self.assertEqual(len(r['candidate_summaries']), 2)
+        self.assertIn('failed_checks', r['candidate_summaries'][0])
+        self.assertEqual(r['wanted_parts']['district'], '성동구')
+    def test_several_passing_candidates_still_say_so(self):
+        far = dict(self.candidate(LAND_NUMBER='1'), longitude=127.09, latitude=37.59)
+        r = self.evaluate('서울특별시 성동구 행당동 1',
+                          [self.candidate(LAND_NUMBER='1'), far])
+        self.assertEqual(r['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+        self.assertEqual(r['passing_candidates'], 2)
