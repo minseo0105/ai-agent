@@ -469,3 +469,85 @@ class BlockedCheckReportingTests(unittest.TestCase):
                           [self.candidate(LAND_NUMBER='1'), far])
         self.assertEqual(r['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
         self.assertEqual(r['passing_candidates'], 2)
+
+
+class GeocodeResumeTests(unittest.TestCase):
+    """망 오류 하나가 전체 실행을 죽이지 않고, 재실행이 그것만 다시 시도하는지."""
+    def setUp(self):
+        from services import development_geocode as geo
+        self.geo = geo
+        self.folder = tempfile.TemporaryDirectory()
+        self.addressed = ['서울특별시 성동구 행당동 ' + str(n) for n in range(1, 6)]
+    def tearDown(self):
+        self.folder.cleanup()
+    def cache(self):
+        return self.geo.GeocodeCache(self.folder.name)
+    def answer(self, address):
+        lot = address.rsplit(' ', 1)[1]
+        return {'provider': 'naver:geocode', 'result_status': 'MATCHED', 'candidates': [
+            {'longitude': 127.0369, 'latitude': 37.5633, 'accuracy': 'PARCEL',
+             'matched_address': address, 'address_elements': {
+                 'SIDO': '서울특별시', 'SIGUGUN': '성동구', 'DONGMYUN': '행당동',
+                 'LAND_NUMBER': lot}}]}
+    def flaky(self, failing, error=None):
+        import requests
+        calls = []
+        def provider(address):
+            calls.append(address)
+            if address.endswith(' ' + failing):
+                raise (error or requests.exceptions.SSLError('handshake'))
+            return self.answer(address)
+        return provider, calls
+    def test_one_network_failure_does_not_stop_the_run(self):
+        provider, calls = self.flaky('3')
+        out = self.geo.resolve(self.addressed, self.cache(), provider)
+        self.assertEqual(len(calls), 5)
+        self.assertEqual(out['stats']['network_failures'], 1)
+        self.assertEqual(out['stats']['coordinate_verified'], 4)
+    def test_a_network_failure_is_not_cached_so_a_rerun_retries_it(self):
+        provider, _ = self.flaky('3')
+        self.geo.resolve(self.addressed, self.cache(), provider)
+        cached = {row['normalized_address'] for row in self.cache().rows()}
+        self.assertNotIn('서울특별시 성동구 행당동 3', cached)
+        self.assertEqual(len(cached), 4)
+        # 재실행: 성공한 4건은 cache hit, 끊긴 1건만 다시 호출한다.
+        second, calls = self.flaky('none')
+        out = self.geo.resolve(self.addressed, self.cache(), second)
+        self.assertEqual(calls, ['서울특별시 성동구 행당동 3'])
+        self.assertEqual(out['stats']['cache_hits'], 4)
+        self.assertEqual(len(self.cache().rows()), 5)
+    def test_a_provider_refusal_is_cached_and_not_retried(self):
+        # 망 문제가 아닌 실패는 주소에 대한 판정이므로 캐시에 남는다.
+        provider, _ = self.flaky('3', error=ValueError('bad key'))
+        self.geo.resolve(self.addressed, self.cache(), provider)
+        self.assertEqual(len(self.cache().rows()), 5)
+        again, calls = self.flaky('none')
+        self.geo.resolve(self.addressed, self.cache(), again)
+        self.assertEqual(calls, [])
+    def test_transient_errors_are_classified(self):
+        import requests
+        for error in (requests.exceptions.SSLError(), requests.exceptions.ConnectTimeout(),
+                      requests.exceptions.ReadTimeout(), requests.exceptions.ConnectionError(),
+                      TimeoutError(), OSError()):
+            self.assertTrue(self.geo.transient(error), type(error).__name__)
+        for error in (ValueError(), KeyError(), RuntimeError()):
+            self.assertFalse(self.geo.transient(error), type(error).__name__)
+    def test_progress_is_reported_every_fifty(self):
+        provider, _ = self.flaky('none')
+        seen = []
+        self.geo.resolve(['서울특별시 성동구 행당동 ' + str(n) for n in range(1, 121)],
+                         self.cache(), provider, on_progress=lambda *a: seen.append(a))
+        self.assertEqual([row[0] for row in seen], [50, 100, 120])
+        self.assertEqual(seen[-1][1], 120)
+    def test_connect_and_read_timeouts_are_explicit(self):
+        # 스칼라 하나로 주면 TLS handshake에서 멈춘 요청이 오래 매달린다.
+        self.assertEqual((self.geo.CONNECT_TIMEOUT, self.geo.READ_TIMEOUT), (5, 10))
+        source = Path('services/development_geocode.py').read_text(encoding='utf-8')
+        self.assertIn('timeout=timeout or (CONNECT_TIMEOUT, READ_TIMEOUT)', source)
+    def test_the_validation_rules_are_untouched(self):
+        # 자치구·bbox·disambiguation 경로는 이번 변경에서 건드리지 않았다.
+        provider, _ = self.flaky('none')
+        out = self.geo.resolve(['서울특별시 성동구 행당동 1'], self.cache(), provider)
+        row = out['results'][self.geo.cache_key('서울특별시 성동구 행당동 1')]
+        self.assertEqual(row['geocode_confidence'], 'EXACT')
+        self.assertTrue(row['coordinate_verified'])

@@ -89,7 +89,10 @@ def main():
         parser.error(selection['blocker'])
     # 공식 원본 주소는 record['address']에 그대로 남는다. 질의에만 정규화 주소를 쓴다.
     queries = {r['project_id']: geo.geocode_address(r['address']) for r in with_address}
-    resolution = geo.resolve(list(queries.values()), cache, provider)
+    def progress(processed, total, hits, verified, failed):
+        print(f'[GEOCODE] {processed}/{total} | cache {hits} | success {verified} | failed {failed}',
+              flush=True)
+    resolution = geo.resolve(list(queries.values()), cache, provider, on_progress=progress)
 
     tally = Counter()
     rows, by_district = [], {}
@@ -134,6 +137,8 @@ def main():
                    'sigungu_mismatch': tally['sigungu_mismatch'],
                    'unverifiable': tally['unverifiable']},
         'provider_stats': resolution['stats'],
+        # 캐시에 쓰지 않은 망 오류 건수. 같은 명령을 다시 실행하면 이것만 재시도한다.
+        'retryable': sum(1 for r in resolution['results'].values() if r.get('retryable')),
         'disambiguated': sum(1 for r in rows if r.get('disambiguation')),
         'address_normalized': sum(1 for r in rows if r.get('normalized')),
         'failed_check_counts': dict(sorted(Counter(
@@ -149,7 +154,8 @@ def main():
                             encoding='utf-8')
     print(json.dumps({k: report[k] for k in
                       ('mode', 'provider', 'totals', 'disambiguated', 'address_normalized',
-                       'provider_stats', 'failed_check_counts', 'reject_reasons')},
+                       'provider_stats', 'retryable', 'failed_check_counts',
+                       'reject_reasons')},
                      ensure_ascii=False, indent=2))
 
 

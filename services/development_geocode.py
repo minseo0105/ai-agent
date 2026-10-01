@@ -374,12 +374,35 @@ def _summary(candidate, checks):
             'failed_checks': sorted(name for name, ok in checks.items() if not ok)}
 
 
-def resolve(addresses, cache, provider=None):
-    """One provider call per normalized address at most; cache first."""
+# 망 문제로 실패한 호출. 주소에 대한 판정이 아니므로 캐시에 남기지 않는다.
+# 남기면 재실행이 cache hit로 건너뛰어, 끊긴 구간이 영구히 미해결로 굳는다.
+TRANSIENT_ERRORS = frozenset((
+    'Timeout', 'ConnectTimeout', 'ReadTimeout', 'ConnectionError', 'SSLError',
+    'SSLEOFError', 'SSLZeroReturnError', 'ProxyError', 'ChunkedEncodingError',
+    'ContentDecodingError', 'RemoteDisconnected', 'ProtocolError', 'IncompleteRead',
+    'NewConnectionError', 'MaxRetryError', 'socket.timeout', 'TimeoutError'))
+
+
+def transient(exc):
+    return type(exc).__name__ in TRANSIENT_ERRORS or isinstance(exc, (OSError, TimeoutError))
+
+
+def resolve(addresses, cache, provider=None, on_progress=None):
+    """One provider call per normalized address at most; cache first.
+
+    개별 호출이 망 오류로 실패해도 전체 실행을 멈추지 않는다. 그 주소는 FAILED로
+    기록하고 다음으로 넘어가며, 캐시에는 쓰지 않으므로 재실행이 그것만 다시 시도한다.
+    성공·판정 결과는 건별로 즉시 캐시에 저장되어 중단한 지점부터 이어갈 수 있다.
+    """
     results, log = {}, []
+    total = sum(1 for address in addresses if address)
+    # success는 좌표가 확정된 건수다. 검토로 간 건은 성공도 실패도 아니므로
+    # 어느 쪽에도 넣지 않는다. 망 오류만 failed로 센다.
+    processed, verified, failed = 0, 0, 0
     for address in addresses:
         if not address:
             continue
+        processed += 1
         key = cache_key(address)
         if key in results:
             cache.requests_avoided += 1
@@ -400,21 +423,37 @@ def resolve(addresses, cache, provider=None):
             log.append({'cache_key': key, 'status': 'NO_PROVIDER'})
             continue
         cache.requests += 1
+        retryable = False
         try:
             evaluation = evaluate(address, provider(normalize_address(address)))
         except Exception as exc:
+            retryable = transient(exc)
             evaluation = {'geocode_confidence': 'UNRESOLVED', 'coordinate_verified': False,
                           'latitude': None, 'longitude': None, 'geocode_source': None,
                           'geocoded_at': datetime.now(timezone.utc).isoformat(),
                           'address_used': normalize_address(address),
-                          'provider_candidate_count': 0, 'error_type': type(exc).__name__}
+                          'provider_candidate_count': 0, 'error_type': type(exc).__name__,
+                          'review_reason': ('NETWORK_' + type(exc).__name__ if retryable
+                                            else 'PROVIDER_' + type(exc).__name__)}
         evaluation.update(normalized_address=normalize_address(address), cache_version=CACHE_VERSION)
-        results[key] = cache.put(key, evaluation) | {k: v for k, v in evaluation.items()
-                                                     if k not in GeocodeCache.COLUMNS}
-        log.append({'cache_key': key, 'status': evaluation['geocode_confidence']})
+        if retryable:
+            # 캐시에 쓰지 않는다. 다음 실행이 이 주소만 다시 시도한다.
+            results[key] = dict(evaluation, retryable=True)
+            failed += 1
+        else:
+            results[key] = cache.put(key, evaluation) | {k: v for k, v in evaluation.items()
+                                                         if k not in GeocodeCache.COLUMNS}
+            verified += bool(evaluation.get('coordinate_verified'))
+        log.append({'cache_key': key, 'status': evaluation['geocode_confidence'],
+                    'retryable': retryable})
+        if on_progress and processed % 50 == 0:
+            on_progress(processed, total, cache.hits, verified, failed)
+    if on_progress and processed:
+        on_progress(processed, total, cache.hits, verified, failed)
     return {'results': results, 'log': log,
             'stats': {'provider_calls': cache.requests, 'cache_hits': cache.hits,
-                      'duplicates_avoided': cache.requests_avoided}}
+                      'duplicates_avoided': cache.requests_avoided,
+                      'network_failures': failed, 'coordinate_verified': verified}}
 
 
 def vworld_provider(api_key, domain, http_get):
@@ -578,10 +617,17 @@ def naver_provider(client_id, client_secret, http_get):
     return call
 
 
-def requests_get(url, params=None, headers=None, timeout=10):
+# (연결, 응답) 각각의 상한. 스칼라 하나로 주면 TLS handshake에서 멈춘 요청이
+# 오래 매달려 전체 실행을 세운다. 1,190건을 한 번에 돌리므로 짧게 끊고 넘어간다.
+CONNECT_TIMEOUT = 5
+READ_TIMEOUT = 10
+
+
+def requests_get(url, params=None, headers=None, timeout=None):
     """공통 HTTP GET. 오류 본문이나 헤더를 로그에 남기지 않는다."""
     import requests
-    response = requests.get(url, params=params, headers=headers, timeout=timeout)
+    response = requests.get(url, params=params, headers=headers,
+                            timeout=timeout or (CONNECT_TIMEOUT, READ_TIMEOUT))
     response.raise_for_status()
     return response.json()
 
