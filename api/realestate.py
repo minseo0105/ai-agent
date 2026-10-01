@@ -326,6 +326,8 @@ async def development_map(sigungu: str | None = None, limit: int = 500,
             'lifecycle_labels': presentation.LIFECYCLE_LABELS,
             'default_lifecycles': list(presentation.DEFAULT_LIFECYCLES),
             'bbox_filtered': result.get('bbox_filtered', False),
+            # limit에 닿은 응답은 더 있을 수 있다. 화면이 잘린 목록을 전체라고 말하지 않게 한다.
+            'truncated': result.get('truncated', False),
             'layers': presentation.MAP_LAYERS, 'legend': presentation.LOCATION_ACCURACY,
             'location_notice': presentation.NO_LOCATION_NOTICE,
             # 검증된 경계가 없으므로 대표 좌표로 구역 내부를 판정하지 않는다.

@@ -2530,29 +2530,36 @@ class MapScreenConsistencyTests(unittest.TestCase):
         self.tab = read('components/realestate/DevelopmentTab.tsx')
 
     def test_the_tab_reads_one_endpoint_for_the_list_and_the_map(self):
-        self.assertIn('estateApi.developmentMap(', self.tab)
+        # 서울 전체가 1,000건대가 되었으므로 선택한 자치구만 조회한다. 그래도 목록과
+        # marker는 여전히 한 응답에서 같이 온다 — 서로 다른 API를 합치지 않는다.
+        self.assertIn('estateApi.developmentMap(sigungu, 500, undefined', self.tab)
         self.assertEqual(self.tab.count('estateApi.developmentMap('), 1)
-        self.assertIn('setProjects(r.projects)', self.tab)
-        self.assertIn('setPoints(r.points)', self.tab)
-        # 목록 전용 탐색 호출과 자치구별 병렬 조회는 더 쓰지 않는다.
+        self.assertIn('mergedProjects.push(project)', self.tab)
+        self.assertIn('mergedPoints.push(...r.points', self.tab)
+        # 목록 전용 탐색 호출은 더 쓰지 않는다.
         self.assertNotIn('estateApi.development(', self.tab)
-        self.assertNotIn('names.map(', self.tab)
-        self.assertNotIn('Promise.all', self.tab)
 
     def test_a_failed_district_can_no_longer_be_dropped_silently(self):
         self.assertNotIn('r.status === "ok" ? r.projects : []', self.tab)
         self.assertNotIn('r.status === "ok" ? r.points : []', self.tab)
         self.assertNotIn('.flatMap(', self.tab)
-        # 불러오지 못하면 숫자를 반쯤 채우지 않고 못 불러왔다고 말한다.
-        self.assertIn('if (r.status !== "ok")', self.tab)
+        # 자치구별로 합치되, 빠진 자치구는 이름을 적는다. 반쯤 채운 숫자를 전체라고
+        # 부르지 않는 것이 합치기의 조건이다.
+        self.assertIn('setFailedDistricts(failed.filter', self.tab)
+        self.assertIn('아래 합계에는 빠져 있습니다', self.tab)
         self.assertIn('개발정보를 지금 불러올 수 없어요', self.tab)
+        # 전부 실패하면 ready를 내려 숫자를 아예 보여주지 않는다.
+        block = self.tab[self.tab.index('if (!ok.length) {'):]
+        self.assertIn('setReady(false)', block[:200])
 
     def test_the_default_view_is_the_whole_city(self):
         # 기본 상태에서 자치구를 미리 골라 두지 않는다. 그래야 전체가 전체를 뜻한다.
         self.assertNotIn('districts.slice(0, 3)', self.tab)
         self.assertNotIn('setDistricts(r.districts', self.tab)
         self.assertIn('selectedDistricts.size === 0', self.tab)
-        self.assertIn('서울시 전체 {projects.length}건', self.tab)
+        # 잘린 응답을 '전체 N건'이라고 말하지 않는다.
+        self.assertIn('서울시 전체 ${projects.length}건을 보여드리고 있어요', self.tab)
+        self.assertIn('truncated ? "서울시 전체 미리보기예요"', self.tab)
 
     def test_the_markers_follow_the_visible_list(self):
         self.assertIn('points.filter((point) => visibleIds.has(point.project_id))', self.tab)

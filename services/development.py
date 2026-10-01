@@ -95,8 +95,11 @@ def map_projects(sigungu=None, limit=500, bbox=None):
         # 경계는 RPC가 확인된 것만 GeoJSON으로 준다. 추정 polygon은 만들지 않는다.
         result.append(dict(row, longitude=longitude, latitude=latitude,
                            boundary=row.get('boundary')))
+    # limit에 정확히 닿았으면 더 있을 수 있다. 잘린 목록으로 '전체 N건'을 말하지 않도록
+    # 사실만 알린다. 서울 전체 조회가 1,000건대가 되면 이 신호가 필요하다.
     return {'status': 'ok', 'projects': result, 'reason': None,
-            'bbox_filtered': bbox is not None, 'boundary_source': boundary_source}
+            'bbox_filtered': bbox is not None, 'boundary_source': boundary_source,
+            'truncated': len(rows or []) >= limit}
 
 
 def _map_rows(sigungu, limit):

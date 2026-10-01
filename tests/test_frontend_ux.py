@@ -129,6 +129,40 @@ class RegionEmptyStateTests(unittest.TestCase):
         self.assertIn('표시할 사업이 없어요.', self.tab)
 
 
+class RegionScopedMapFetchTests(unittest.TestCase):
+    """서울 전체를 한 번에 받지 않고, 선택한 자치구만 조회하는지."""
+
+    def setUp(self):
+        self.tab = web('components/realestate/DevelopmentTab.tsx')
+
+    def test_the_request_carries_the_selected_district(self):
+        self.assertIn('estateApi.developmentMap(sigungu, 500, undefined', self.tab)
+        self.assertIn('requested.map((d) => load(d)', self.tab)
+        # 전체를 무조건 받던 호출은 남아 있지 않다.
+        self.assertNotIn('estateApi.developmentMap(undefined, 500, undefined, { includeCompleted', self.tab)
+
+    def test_changing_the_region_refetches(self):
+        self.assertIn('}, [includeCompleted, scopeKey]);', self.tab)
+
+    def test_a_failed_district_is_named_not_dropped(self):
+        self.assertIn('setFailedDistricts', self.tab)
+        self.assertIn('의 개발정보를 받지 못했어요', self.tab)
+        self.assertIn('아래 합계에는 빠져 있습니다', self.tab)
+
+    def test_merging_cannot_produce_two_cards_for_one_project(self):
+        self.assertIn('if (seen.has(project.project_id)) continue;', self.tab)
+
+    def test_a_capped_response_is_not_called_the_total(self):
+        self.assertIn('setTruncated', self.tab)
+        self.assertIn('표시 한도에 닿아 일부만 받았어요', self.tab)
+        self.assertIn('서울시 전체 미리보기예요', self.tab)
+
+    def test_the_district_ceiling_is_unchanged(self):
+        self.assertIn('const MAX_DISTRICTS = 5;', self.tab)
+        self.assertIn('const MAX_CARDS = 200;', self.tab)
+        self.assertIn('.slice(0, MAX_DISTRICTS)', self.tab)
+
+
 class MapCardLinkingTests(unittest.TestCase):
     """지도에서 고른 사업과 카드가 canonical id로 이어지는지."""
 

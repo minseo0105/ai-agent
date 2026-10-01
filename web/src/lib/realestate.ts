@@ -111,6 +111,8 @@ export type DevelopmentMap = {
   legend: Record<string, { label: string; note: string }>;
   layers: Record<string, { label: string; marker: string; color: string; layer?: string }>;
   bbox_filtered: boolean;
+  /** limit에 닿아 더 있을 수 있는 응답. 잘린 목록을 전체로 표시하지 않기 위한 신호. */
+  truncated: boolean;
   location_notice: string;
   /** 완료사업을 포함해서 받은 응답인지 */
   include_completed: boolean;

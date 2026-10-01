@@ -141,3 +141,117 @@ DEV 환경이 없고 적재도 하지 않았으므로 9개 자치구의 지역�
 marker 연결을 실데이터로 확인하지 못했습니다. 기존 3개 구(서초·송파·강동)의 이 경로는
 현재 Production에서 동작 중이며 이번 변경이 건드리지 않았습니다. 신규 6개 구는
 `region-no-data` 빈 화면이 뜨는 상태가 정상입니다.
+
+---
+
+# 1,190건 좌표·적재 준비 (2026-10-01, 2차)
+
+로컬 PC 수집 결과를 전달받았습니다: raw 1190 / accepted 1190 / rejected 0 /
+valid 1190 / insert 1060 / update 130 / duplicate 0 / canonical 1190 /
+probable_duplicate 102쌍 / zero_districts 0, 기존 130건 전부 update 매칭
+(`recreated_as_insert=0`).
+
+**두 artifact는 이 컨테이너에 없습니다** (`seoul25_raw_20261001.json`,
+`seoul25_import_artifact_20261001.json`은 로컬 PC에만 존재). 그리고 지오코딩
+자격증명이 이 환경에 하나도 없습니다 — `NAVER_MAP_CLIENT_ID/SECRET`,
+`KAKAO_REST_API_KEY`, `VWORLD_API_KEY` 전부 unset. 따라서 좌표 생성은 로컬에서
+실행해야 하고, 이번에는 **실행 도구와 검증만** 만들었습니다.
+
+## 1. 좌표 생성 — `scripts/geocode_zipon_seoul25.py`
+
+새 geocoder를 만들지 않았습니다. `services/development_geocode.py`를 그대로 씁니다:
+provider 우선순위 NAVER → Kakao → VWorld, 정규화 주소 1건당 호출 1회, 파일 캐시
+재사용, 후보가 여럿이면 채택하지 않음.
+
+그 위에 `development_collector.location_rejections()`를 그대로 통과시켜 **사업
+district와 지오코딩이 답한 자치구를 비교**합니다. 집계는 네 갈래입니다.
+
+| bucket | 뜻 |
+|---|---|
+| `geocoded` | EXACT + 서울 bbox + 자치구 일치 → 좌표 채택 |
+| `sigungu_mismatch` | 다른 자치구 좌표 → 버림 |
+| `unverifiable` | GEOCODE_REVIEW 또는 자치구를 읽을 수 없음 → 검토 |
+| `failed` | provider 오류·미해결 |
+
+좌표가 없어도 실행은 실패하지 않습니다. 해당 사업은 좌표 없이 목록에만 남습니다.
+`--check-config`(HTTP 없음) / `--dry-run`(호출 없음) / `--live` / `--limit N`
+(비용 통제)를 지원합니다. 실데이터 183건으로 dry-run 검증했습니다
+(with_address 149 / no_address 34).
+
+## 2. probable duplicate 102쌍
+
+자동 병합·삭제하지 않습니다. 1,190건을 identity 기준 그대로 유지하고, 102쌍은
+artifact의 `duplicate_review` 배열에 근거(이름·주소·유형·external_id·source_url)와
+함께 보존합니다. `auto_merge: false`가 각 쌍에 붙어 있습니다.
+
+## 3~4. 최종 artifact와 Supabase 반영 준비
+
+`scripts/build_zipon_seoul_import.py`에 추가한 것:
+
+* `--geocode` — 좌표 검증을 통과한 것만 붙입니다(`bucket == geocoded`). 이미 좌표가
+  있는 사업은 덮지 않습니다.
+* `buckets` — `insert` / `update` / `reject` / `no_coordinate` / `duplicate_review`
+* `schema` — `public.development_projects`의 36개 컬럼과 대조해 컬럼이 아닌 작업용
+  필드(`location_sigungu`, `location_review` 등)를 payload에서 떨어뜨리고 무엇을
+  떨어뜨렸는지 `non_column_fields_dropped`에 남깁니다.
+* `--batch-dir` — 기존 reviewed importer가 **그대로 받는** 배치 파일을 10건 단위로
+  씁니다.
+
+반영 방식: `rpc/zipon_ingest_candidate`의 **project_id UPSERT**
+(`p_expected_revision`으로 낙관적 잠금). DELETE·TRUNCATE·대량 UPDATE 없음.
+기존 130건은 update, 신규는 insert로 분류된 채 들어갑니다.
+
+실데이터 183건으로 검증: 19개 배치 파일 생성 → **19개 전부 기존
+`scripts/import_zipon_candidates.py`의 `validate_records`를 통과**했습니다
+(project_id UUID, project_name/type/sigungu, OFFICIAL_WEBSITE source,
+공식 host URL, 64자 content_hash, raw_snapshot). 즉 schema 호환이 말이 아니라
+기존 검증기로 확인된 상태입니다.
+
+## 5. 개발지도 조회 — 지역 단위로 변경
+
+`DevelopmentTab`이 더 이상 `developmentMap(undefined, 500, ...)`로 서울 전체를
+받지 않습니다.
+
+* 자치구를 고르면 **고른 자치구만** 각각 조회해 `project_id`로 합칩니다
+  (`MAX_DISTRICTS=5`이므로 최대 5요청). 카드가 두 장 생기지 않게 중복을 막습니다.
+* **실패한 자치구는 이름을 화면에 적습니다.** 기존 설계 주석이 경고한 "한 자치구가
+  실패하면 빠진 합계가 전체로 보인다"는 함정을 막는 조건입니다. 전부 실패하면
+  `ready`를 내려 숫자를 아예 보여주지 않습니다.
+* 아무 지역도 고르지 않으면 지금처럼 서울 전체를 한 번 받지만, `limit`에 닿으면
+  서버가 새로 보내는 `truncated` 신호로 "미리보기"라고 적습니다. 잘린 목록을
+  "전체 N건"이라고 말하지 않습니다.
+* `MAX_DISTRICTS=5` · `MAX_CARDS=200` · `limit=500` 모두 그대로입니다. 올리지
+  않았습니다 — 5개 구 기준에서는 충분합니다.
+
+서버 변경은 `truncated` 한 줄입니다(`services/development.py`, `api/realestate.py`).
+
+## 로컬 PC 실행 순서
+
+```bat
+cd "C:\Users\user\Desktop\ai-agent - 복사본"
+git pull origin claude/keen-clarke-m73n6h
+
+REM 1) 지오코더 자격증명 확인 (HTTP 없음)
+venv\Scripts\python.exe -B scripts\geocode_zipon_seoul25.py ^
+  --input data\development\seoul25_raw_20261001.json --check-config
+
+REM 2) 좌표 생성 (유료 호출. --limit으로 먼저 소규모 확인 권장)
+venv\Scripts\python.exe -B scripts\geocode_zipon_seoul25.py ^
+  --input data\development\seoul25_raw_20261001.json --live ^
+  --out data\development\seoul25_geocode_20261001.json
+
+REM 3) 최종 import artifact + 배치 파일
+venv\Scripts\python.exe -B scripts\build_zipon_seoul_import.py ^
+  --input data\development\seoul25_raw_20261001.json ^
+  --geocode data\development\seoul25_geocode_20261001.json ^
+  --out data\development\seoul25_import_artifact_20261001.json ^
+  --batch-dir data\development\seoul25_batches
+
+REM 4) 배치 검증 (DB 접속 없음). 통과 후에만 적재를 판단한다.
+venv\Scripts\python.exe -B scripts\import_zipon_candidates.py ^
+  data\development\seoul25_batches\batch_0001.json
+```
+
+4번까지가 이번 범위입니다. 실제 적재는 `--apply-new-db`와
+`ZIPON_IMPORT_SUPABASE_URL` / `ZIPON_IMPORT_SUPABASE_KEY`가 필요하며, 아직
+실행하지 않았습니다.

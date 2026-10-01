@@ -8,6 +8,7 @@ import ZiponMap, { type MapBounds, type MapFocus } from "./ZiponMap";
 import { isTransient, withColdStartRetry } from "@/lib/coldStart";
 import {
   estateApi,
+  type DevelopmentMap,
   type DevelopmentMapPoint,
   type DevelopmentProject,
   type EstateOptions,
@@ -58,42 +59,83 @@ export default function DevelopmentTab({
   const [includeCompleted, setIncludeCompleted] = useState(false);
   const [hiddenCompleted, setHiddenCompleted] = useState(0);
   const [waking, setWaking] = useState(false);
+  /** 합치기에서 빠진 자치구. 조용히 빠뜨리면 틀린 합계가 전체로 보인다. */
+  const [failedDistricts, setFailedDistricts] = useState<string[]>([]);
+  /** limit에 닿아 더 있을 수 있는 응답인지 */
+  const [truncated, setTruncated] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     estateApi.mapConfig().then(setConfig).catch(() => {});
   }, []);
 
-  // 목록과 marker를 한 응답에서 받는다. 자치구별 응답을 합치면 한 자치구가 실패했을 때
-  // 그 사업들이 조용히 빠진 합계가 '전체'로 보인다. 지역 선택은 이 데이터를 화면에서
-  // 거르는 것이고, 다시 조회하지 않는다.
+  // 선택한 자치구만 조회한다. 서울 전체를 한 번에 브라우저로 내려주면 자치구가
+  // 늘어날수록 응답이 그만큼 커지고, limit에 닿으면 조용히 잘린 목록이 '전체'가 된다.
+  //
+  // 자치구별 응답을 합칠 때의 함정은 그대로 남아 있다: 한 자치구가 실패하면 그
+  // 사업들이 빠진 합계가 전체로 보인다. 그래서 실패한 자치구를 따로 들고 화면에
+  // 이름을 적는다. 조용히 빠뜨리지 않는 것이 합치기의 조건이다.
+  const scope = useMemo(
+    () => districts.map((r) => r.replace(/^(서울|경기) > /, "")).slice(0, MAX_DISTRICTS),
+    [districts],
+  );
+  const scopeKey = scope.join(",");
+
   useEffect(() => {
-    // 조건(완료사업 포함 여부)이 바뀌면 이전 요청은 끊는다. 끊지 않으면 늦게 도착한
-    // 이전 조건의 응답이 새 조건의 목록을 덮어쓴다.
+    // 조건(지역·완료사업 포함 여부)이 바뀌면 이전 요청은 끊는다. 끊지 않으면 늦게
+    // 도착한 이전 조건의 응답이 새 조건의 목록을 덮어쓴다.
     const controller = new AbortController();
+    const requested = scopeKey ? scopeKey.split(",") : [];
     setLoading(true);
     setError("");
     // 조건이 바뀐 순간 이전 목록은 이 조건의 결과가 아니다.
     setProjects([]);
     setPoints([]);
+    setFailedDistricts([]);
+    setTruncated(false);
     // 서버가 깨어나는 중일 수 있다. 읽기 요청이므로 잠깐 기다렸다가 다시 시도한다.
-    withColdStartRetry(
-      (signal) => estateApi.developmentMap(undefined, 500, undefined, { includeCompleted, init: { signal } }),
-      { signal: controller.signal, onRetry: () => setWaking(true) },
-    )
-      .then((r) => {
+    const load = (sigungu: string | undefined) =>
+      withColdStartRetry(
+        (signal) => estateApi.developmentMap(sigungu, 500, undefined, { includeCompleted, init: { signal } }),
+        { signal: controller.signal, onRetry: () => setWaking(true) },
+      );
+    const pending = requested.length
+      ? Promise.all(requested.map((d) => load(d).then((r) => [d, r] as const).catch(() => [d, null] as const)))
+      : load(undefined).then((r) => [[null, r] as const]);
+    pending
+      .then((responses) => {
         if (controller.signal.aborted) return;
         setWaking(false);
-        if (r.status !== "ok") {
+        const failed = responses.filter(([, r]) => !r || r.status !== "ok").map(([d]) => d);
+        const ok = responses.filter(([, r]) => r && r.status === "ok") as [string | null, DevelopmentMap][];
+        if (!ok.length) {
           setReady(false);
           setProjects([]);
           setPoints([]);
+          setFailedDistricts(failed.filter((d): d is string => d !== null));
           return;
         }
+        // project_id로 합친다. 자치구별 응답이 겹칠 일은 없지만, 겹쳐도 카드가 두 장
+        // 생기지는 않게 한다.
+        const seen = new Set<string>();
+        const mergedProjects: DevelopmentProject[] = [];
+        const mergedPoints: DevelopmentMapPoint[] = [];
+        let hidden = 0;
+        for (const [, r] of ok) {
+          hidden += r.hidden_completed ?? 0;
+          for (const project of r.projects) {
+            if (seen.has(project.project_id)) continue;
+            seen.add(project.project_id);
+            mergedProjects.push(project);
+          }
+          mergedPoints.push(...r.points.filter((point) => seen.has(point.project_id)));
+        }
         setReady(true);
-        setProjects(r.projects);
-        setPoints(r.points);
-        setHiddenCompleted(r.hidden_completed ?? 0);
+        setProjects(mergedProjects);
+        setPoints(mergedPoints);
+        setHiddenCompleted(hidden);
+        setFailedDistricts(failed.filter((d): d is string => d !== null));
+        setTruncated(ok.some(([, r]) => r.truncated));
       })
       .catch((e) => {
         if (controller.signal.aborted) return;
@@ -110,13 +152,10 @@ export default function DevelopmentTab({
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [includeCompleted]);
+  }, [includeCompleted, scopeKey]);
 
   const search = keyword.trim();
-  const selectedDistricts = useMemo(
-    () => new Set(districts.map((r) => r.replace(/^(서울|경기) > /, "")).slice(0, MAX_DISTRICTS)),
-    [districts],
-  );
+  const selectedDistricts = useMemo(() => new Set(scope), [scope]);
   const visible = useMemo(
     () =>
       projects.filter((p) => {
@@ -303,6 +342,16 @@ export default function DevelopmentTab({
           </span>
         </div>
       )}
+      {!loading && failedDistricts.length > 0 && (
+        <p className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-sm text-amber-800 dark:text-amber-300">
+          {failedDistricts.join("·")}의 개발정보를 받지 못했어요. 아래 합계에는 빠져 있습니다.
+        </p>
+      )}
+      {!loading && ready && truncated && (
+        <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-xs text-muted">
+          표시 한도에 닿아 일부만 받았어요. 지역을 선택하면 그 자치구의 사업을 모두 볼 수 있습니다.
+        </p>
+      )}
       {!loading && unavailable && (
         <p className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-sm text-amber-800 dark:text-amber-300">
           개발정보를 지금 불러올 수 없어요. 잠시 후 다시 시도해 주세요.
@@ -357,7 +406,7 @@ export default function DevelopmentTab({
 
           {selectedDistricts.size === 0 && (
             <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">
-              서울시 전체 {projects.length}건을 보여드리고 있어요. 지역을 선택하면 해당 자치구만 남습니다.
+              {truncated ? "서울시 전체 미리보기예요" : `서울시 전체 ${projects.length}건을 보여드리고 있어요`}. 지역을 선택하면 그 자치구만 조회합니다.
             </p>
           )}
           {visible.length === 0 &&

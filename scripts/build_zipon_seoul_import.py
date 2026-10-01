@@ -26,6 +26,47 @@ DEFAULT_BASELINE = ROOT / 'data/development/lifecycle_audit_20260929.json'
 # 코드가 아는 project URL은 Production 하나뿐이다. 여기에 쓰지 않는다는 사실을 박아 둔다.
 PRODUCTION_URL = 'https://nnxtkvjpzqqhjlgnprzo.supabase.co'
 
+# public.development_projects의 컬럼(20260926_zipon_base_and_development.sql).
+# 수집·지오코딩이 만든 작업용 필드(location_sigungu, location_review 등)는 컬럼이
+# 아니므로 payload에서 떨어뜨리고, 무엇을 떨어뜨렸는지 artifact에 남긴다.
+PROJECT_COLUMNS = frozenset((
+    'project_id', 'project_type', 'project_name', 'official_authority', 'external_id',
+    'parent_project_id', 'related_types', 'sido', 'sigungu', 'dong', 'legal_dong_code',
+    'address', 'status', 'validation_status', 'stage', 'stage_raw', 'stage_mapping_version',
+    'selected_date', 'notice_date', 'area_m2', 'planned_units', 'planned_floor', 'planned_far',
+    'location', 'geometry', 'location_source', 'location_verified_at', 'geometry_source',
+    'geometry_verified', 'geometry_verified_at', 'canonical_source_id', 'confidence_level',
+    'field_evidence', 'source_date', 'last_verified_at', 'revision'))
+
+
+def attach_coordinates(records, path):
+    """좌표 검증을 통과한 것만 붙인다. 통과하지 못한 사업은 좌표 없이 남는다."""
+    if not path or not Path(path).exists():
+        return records, {'applied': 0, 'source': None}
+    report = json.loads(Path(path).read_text(encoding='utf-8'))
+    accepted = {i['project_id']: i for i in report.get('items') or []
+                if i.get('bucket') == 'geocoded' and i.get('location')}
+    applied = 0
+    out = []
+    for record in records:
+        hit = accepted.get(record['project_id'])
+        if hit and not record.get('location'):
+            record = dict(record, location=hit['location'],
+                          location_source=hit.get('geocode_source'),
+                          location_sigungu=hit.get('answered_sigungu') or record.get('sigungu'))
+            applied += 1
+        out.append(record)
+    return out, {'applied': applied, 'source': Path(path).name,
+                 'totals': report.get('totals'), 'mode': report.get('mode')}
+
+
+def payload(record):
+    """schema 컬럼만 남긴다. 알 수 없는 키는 조용히 보내지 않고 빼서 보고한다."""
+    kept = {k: v for k, v in record.items()
+            if k in PROJECT_COLUMNS and k != 'revision' and v is not None}
+    dropped = sorted(k for k in record if k not in PROJECT_COLUMNS and k != 'source')
+    return kept, dropped
+
 
 def existing_projects(path):
     if not Path(path).exists():
@@ -60,11 +101,16 @@ def main():
     parser.add_argument('--input', required=True, type=Path, help='collect() 결과 JSON')
     parser.add_argument('--baseline', type=Path, default=DEFAULT_BASELINE,
                         help='기존 project_id 비교용 읽기 전용 snapshot')
+    parser.add_argument('--geocode', type=Path, default=None,
+                        help='geocode_zipon_seoul25.py 결과. 검증 통과한 좌표만 붙인다')
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--batch-dir', type=Path, default=None,
+                        help='기존 importer가 그대로 받는 배치 파일을 여기에 쓴다')
     args = parser.parse_args()
 
     collected = json.loads(args.input.read_text(encoding='utf-8'))
     records = collected.get('records') or []
+    records, geocoding = attach_coordinates(records, args.geocode)
     scope = set(collected.get('districts') or dc.SEOUL_DISTRICTS)
     known = existing_projects(args.baseline)
 
@@ -130,6 +176,16 @@ def main():
         }
 
     empty = [d for d, v in coverage.items() if v['raw'] == 0]
+    no_coordinate = [r for r in inserts + updates if not r.get('location')]
+    dropped_keys = set()
+    upsert = []
+    for record in inserts + updates:
+        project, dropped = payload(record)
+        dropped_keys |= set(dropped)
+        upsert.append({'project_id': record['project_id'],
+                       'operation': 'update' if record['project_id'] in known else 'insert',
+                       'has_coordinate': bool(record.get('location')),
+                       'project': project, 'source': record['source']})
     artifact = {
         'format': 'zipon-seoul-import-artifact-v1',
         'generated_from': str(args.input.name),
@@ -158,20 +214,46 @@ def main():
         'coverage': coverage,
         'zero_districts': empty,
         'quality': quality['quality'],
-        'upsert': [{'project_id': r['project_id'], 'operation':
-                    'update' if r['project_id'] in known else 'insert',
-                    'project': {k: v for k, v in r.items()
-                                if k not in ('source', 'revision') and v is not None},
-                    'source': r['source']}
-                   for r in inserts + updates],
+        'geocoding': geocoding,
+        'buckets': {'insert': len(inserts), 'update': len(updates),
+                    'reject': len(rejected), 'no_coordinate': len(no_coordinate),
+                    'duplicate_review': len(review_doc['pairs'])},
+        'schema': {'table': 'public.development_projects',
+                   'upsert_key': 'project_id',
+                   'method': 'rpc/zipon_ingest_candidate (project_id UPSERT, expected_revision)',
+                   'columns_checked': len(PROJECT_COLUMNS),
+                   'non_column_fields_dropped': sorted(dropped_keys),
+                   'unknown_columns_sent': []},
+        'duplicate_review': review_doc['pairs'],
+        'import_command': ('python scripts/import_zipon_candidates.py '
+                           '<batch-dir>/batch_0001.json --apply-new-db'
+                           '   # project_id UPSERT via rpc/zipon_ingest_candidate, %d rows max'
+                           % dc.MAX_IMPORT_BATCH),
+        'upsert': upsert,
         'rejected': [{'project_id': r['project_id'], 'sigungu': r.get('sigungu'),
                       'project_name': r.get('project_name'),
                       'reasons': r['reject_reasons']} for r in rejected],
     }
+    # 기존 reviewed importer(scripts/import_zipon_candidates.py)가 받는 모양 그대로,
+    # MAX_IMPORT_BATCH 단위로 쪼개 쓴다. 한 파일이 한 번의 승인 단위다.
+    batches = []
+    if args.batch_dir:
+        args.batch_dir.mkdir(parents=True, exist_ok=True)
+        flat = [dict(row['project'], source=row['source']) for row in upsert]
+        for index in range(0, len(flat), dc.MAX_IMPORT_BATCH):
+            chunk = flat[index:index + dc.MAX_IMPORT_BATCH]
+            name = 'batch_%04d.json' % (index // dc.MAX_IMPORT_BATCH + 1)
+            (args.batch_dir / name).write_text(
+                json.dumps({'records': chunk}, ensure_ascii=False, indent=2) + '\n',
+                encoding='utf-8')
+            batches.append({'file': name, 'records': len(chunk)})
+        artifact['batches'] = {'directory': str(args.batch_dir), 'count': len(batches),
+                               'batch_size': dc.MAX_IMPORT_BATCH, 'files': batches}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(artifact, ensure_ascii=False, indent=2) + '\n',
                         encoding='utf-8')
-    summary = {k: artifact[k] for k in ('totals', 'reject_reasons', 'existing_baseline',
+    summary = {k: artifact[k] for k in ('totals', 'buckets', 'geocoding', 'schema',
+                                        'reject_reasons', 'existing_baseline',
                                         'zero_districts')}
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
