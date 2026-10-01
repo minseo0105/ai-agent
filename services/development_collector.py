@@ -8,7 +8,7 @@ import hashlib
 import json
 import re
 import uuid
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import requests
 from bs4 import BeautifulSoup
 
@@ -49,6 +49,12 @@ CITYWIDE_SOURCES = (
 )
 DIRECTORY_URL = ('https://cleanup.seoul.go.kr/cleanup/bsnssttus/lscrMainIndx.do'
                  '?cpage=1&pageSize=100&scupBsnsSttus.signguCode=')
+# 정보몽땅 사업장 목록은 cpage로 페이지를 넘긴다. pageSize=100 한 장만 받으면
+# 100건이 넘는 자치구가 조용히 잘린다. 상한은 100 x 40 = 4,000행으로, 자치구 하나가
+# 그보다 많을 가능성보다 응답이 cpage를 무시해 같은 장을 계속 주는 쪽이 현실적이다.
+DIRECTORY_PAGE_PARAM = 'cpage'
+DIRECTORY_PAGE_SIZE = 100
+MAX_DIRECTORY_PAGES = 40
 
 
 class UnknownDistrict(ValueError):
@@ -95,7 +101,9 @@ def build_sources(districts=None):
     sources = [dict(source, districts=dict(scope)) for source in CITYWIDE_SOURCES]
     sources += [{'id': 'cleanup_' + code, 'name': '정보몽땅 사업장 목록 ' + district,
                  'kind': 'directory', 'url': DIRECTORY_URL + code,
-                 'district': district, 'signgu_code': code, 'districts': {district: code}}
+                 'district': district, 'signgu_code': code, 'districts': {district: code},
+                 'page_param': DIRECTORY_PAGE_PARAM, 'page_size': DIRECTORY_PAGE_SIZE,
+                 'max_pages': MAX_DIRECTORY_PAGES}
                 for district, code in scope.items()]
     return sources
 
@@ -277,6 +285,53 @@ def geocode(record, cache, provider=None):
     return dict(record, location=f"SRID=4326;POINT({result['longitude']} {result['latitude']})",
                 location_source=result['source_url'], location_sigungu=result_district(result))
 
+def page_url(url, param, page):
+    """같은 URL의 page 번호만 바꾼다. 쿼리를 새로 짜지 않는다."""
+    parts = urlsplit(url)
+    query = parse_qsl(parts.query, keep_blank_values=True)
+    query = [(k, str(page) if k == param else v) for k, v in query]
+    if not any(k == param for k, _ in query): query.append((param, str(page)))
+    return urlunsplit(parts._replace(query=urlencode(query)))
+
+
+def fetch_source_pages(source, fetch):
+    """이 source의 모든 페이지를 돌려준다. 종료조건은 네 가지이고 전부 명시적이다.
+
+      * 응답이 pageSize보다 적은 행을 준다 -> 마지막 장이다 (정상 종료)
+      * 이 source에서 이미 본 문서와 같다 -> cpage를 무시하는 응답이다 (DUPLICATE_PAGE)
+      * 새 project_id가 하나도 늘지 않는다 -> 더 받을 것이 없다 (NO_NEW_ROWS)
+      * max_pages에 닿는다 -> 잘렸다는 사실을 오류로 남긴다 (PAGE_LIMIT_REACHED)
+
+    페이지 없는 source는 지금까지처럼 한 번만 받는다.
+    """
+    param, size = source.get('page_param'), source.get('page_size')
+    limit = source.get('max_pages') or 1
+    if not param or not size:
+        yield source['url'], fetch(source['url'], timeout=25), None
+        return
+    seen_documents, seen_ids, page = set(), set(), 1
+    while page <= limit:
+        url = page_url(source['url'], param, page)
+        response = fetch(url, timeout=25)
+        response.raise_for_status()
+        document = hashlib.sha256(response.content).hexdigest()
+        if document in seen_documents:
+            yield url, response, 'DUPLICATE_PAGE'
+            return
+        seen_documents.add(document)
+        rows = parse_page(response.content, source)
+        ids = {row['project_id'] for row in rows}
+        if page > 1 and not (ids - seen_ids):
+            yield url, response, 'NO_NEW_ROWS'
+            return
+        seen_ids |= ids
+        last = len(rows) < size
+        yield url, response, None if last else 'CONTINUE'
+        if last: return
+        page += 1
+    yield None, None, 'PAGE_LIMIT_REACHED'
+
+
 def collect(fetch=None, *, geocode_provider=None, geocode_cache=None, districts=None, sources=None):
     """선택한 자치구만 수집한다. 인자가 없으면 지금까지와 같은 세 구다.
 
@@ -293,12 +348,22 @@ def collect(fetch=None, *, geocode_provider=None, geocode_cache=None, districts=
                'dry_run': True, 'source_complete': False, 'new_count': 0, 'changed_count': 0,
                'unchanged_count': 0, 'validation_failed_count': 0, 'errors': []}
         try:
-            response = fetch(source['url'], timeout=25)
-            response.raise_for_status()
-            if urlsplit(response.url).hostname not in ('cleanup.seoul.go.kr','news.seoul.go.kr'):
-                raise ValueError('Unexpected official source redirect')
-            run['document_hash'] = hashlib.sha256(response.content).hexdigest()
-            found = parse_page(response.content, source)
+            hashes, found, truncated, pages = [], [], False, 0
+            for url, response, note in fetch_source_pages(source, fetch):
+                if note == 'PAGE_LIMIT_REACHED':
+                    run['errors'].append(note);truncated = True;break
+                response.raise_for_status()
+                if urlsplit(response.url).hostname not in ('cleanup.seoul.go.kr','news.seoul.go.kr'):
+                    raise ValueError('Unexpected official source redirect')
+                pages += 1
+                hashes.append(hashlib.sha256(response.content).hexdigest())
+                if note not in ('DUPLICATE_PAGE', 'NO_NEW_ROWS'):
+                    found += parse_page(response.content, source)
+                if note in ('DUPLICATE_PAGE', 'NO_NEW_ROWS'):
+                    # 페이지가 더 있다고 주장하는데 내용이 늘지 않는다. 받은 것만 쓴다.
+                    run['errors'].append(note);truncated = True
+            run['pages_fetched'] = pages
+            run['document_hash'] = hashes[0] if len(hashes) == 1 else digest(hashes)
             if not found: run['errors'].append('NO_PILOT_ROWS_OR_LAYOUT_CHANGED')
             for record in found:
                 if record['project_id'] in records:
@@ -306,8 +371,9 @@ def collect(fetch=None, *, geocode_provider=None, geocode_cache=None, districts=
                 else:
                     records[record['project_id']] = geocode(record, cache, geocode_provider)
                     run['new_count'] += 1
-            # Directory may paginate: incomplete coverage is explicit, never disappearance/cancellation.
-            run['status'] = 'PARTIAL' if run['errors'] or source['kind']=='directory' else 'SUCCEEDED'
+            # 끝까지 받았다고 말할 수 있을 때만 완전수집이다. 잘림은 누락이지 폐지가 아니다.
+            run['source_complete'] = bool(found) and not truncated and not run['errors']
+            run['status'] = 'SUCCEEDED' if run['source_complete'] else 'PARTIAL'
         except Exception as exc:
             run['status'] = 'FAILED';run['errors'].append(type(exc).__name__)
         run['finished_at'] = datetime.now(timezone.utc).isoformat();runs.append(run)

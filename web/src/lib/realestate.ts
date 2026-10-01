@@ -348,6 +348,14 @@ export function currentMonth() {
   return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+/**
+ * 실거래 화면에 처음 들어왔을 때의 계약년월.
+ *
+ * 이번 달로 두면 국토부 공개가 아직 안 된 달이라 빈 화면으로 시작한다.
+ * 사용자가 년월을 바꾸는 기능은 그대로이고, 저장된 선택값이 있으면 그것이 이긴다.
+ */
+export const DEFAULT_TRADE_MONTH = "202609";
+
 export type TradeSort = "최근 거래일 순" | "가격 낮은 순" | "가격 높은 순" | "면적 작은 순" | "면적 큰 순";
 export function sortTrades(items: Trade[], order: TradeSort): Trade[] {
   return [...items].sort((a, b) => {

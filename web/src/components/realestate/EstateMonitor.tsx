@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChoiceChips, Field, Segmented, Spinner, Tag, inputClass } from "@/components/golf/ui";
 import {
-  currentMonth,
+  DEFAULT_TRADE_MONTH,
   sortTrades,
   type TradeSort,
   estateApi,
@@ -134,7 +134,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
   const [filters, setFilters] = useState<TradeFilterValue>({
     types: ["아파트", "연립·다세대"],
     regions: ["서울 > 송파구", "서울 > 강동구", "경기 > 하남시"],
-    month: currentMonth(),
+    month: DEFAULT_TRADE_MONTH,
     maxPrice: "",
     maxArea: "",
     includeDevelopment: false,

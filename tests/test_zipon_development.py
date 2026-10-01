@@ -4,6 +4,7 @@ import tempfile
 import unittest
 import uuid
 from collections import Counter
+from urllib.parse import parse_qsl, urlsplit
 from pathlib import Path
 from unittest.mock import Mock, patch
 from services.supabase_auth import supabase_headers
@@ -132,6 +133,68 @@ class CollectorScopeTests(unittest.TestCase):
         r=dc.collect(fetch,districts=['성동구'])
         self.assertEqual(r['districts'],['성동구'])
         self.assertEqual(len(r['runs']),len(dc.CITYWIDE_SOURCES)+1)
+
+class DirectoryPaginationTests(unittest.TestCase):
+    """100건이 넘는 자치구가 조용히 잘리지 않고, 무한 loop도 돌지 않는지."""
+    def page(self,start,count,district='성동구'):
+        rows=''.join('<tr><td>'+str(start+i)+'</td><td>'+district+'</td><td>재건축</td>'
+                     '<td>'+district+' 시험 '+str(start+i)+'</td><td>행당동 '+str(start+i)+'</td>'
+                     '<td>착공</td><td><a href="javascript:cafeOpenPopup(\'id'+str(start+i)+'\');">지도</a></td></tr>'
+                     for i in range(count))
+        return '<table>'+rows+'</table>'
+    def transport(self,pages):
+        """cpage를 읽어 해당 장을 돌려주는 로컬 응답."""
+        calls=[]
+        def fetch(url,timeout=None):
+            query=dict(parse_qsl(urlsplit(url).query))
+            page=int(query.get('cpage',1))
+            calls.append(page)
+            body=pages(page)
+            return Mock(url=url,content=body.encode('utf-8'),raise_for_status=Mock())
+        return fetch,calls
+    def source(self):
+        return next(s for s in dc.build_sources('성동구') if s['kind']=='directory')
+    def test_page_url_only_changes_the_page_number(self):
+        url=dc.page_url(self.source()['url'],'cpage',3)
+        self.assertIn('cpage=3',url);self.assertIn('pageSize=100',url)
+        self.assertIn('scupBsnsSttus.signguCode=11200',url)
+    def test_a_district_over_one_page_is_fully_collected(self):
+        full={1:self.page(1,100),2:self.page(101,100),3:self.page(201,30)}
+        fetch,calls=self.transport(lambda p:full.get(p,'<table></table>'))
+        r=dc.collect(fetch,districts=['성동구'],sources=[self.source()])
+        self.assertEqual(calls,[1,2,3])
+        self.assertEqual(len(r['records']),230)
+        self.assertEqual(r['runs'][0]['pages_fetched'],3)
+        self.assertTrue(r['runs'][0]['source_complete'])
+        self.assertEqual(r['runs'][0]['status'],'SUCCEEDED')
+    def test_a_single_short_page_stops_immediately(self):
+        fetch,calls=self.transport(lambda p:self.page(1,12))
+        r=dc.collect(fetch,districts=['성동구'],sources=[self.source()])
+        self.assertEqual(calls,[1]);self.assertEqual(len(r['records']),12)
+    def test_a_site_ignoring_cpage_does_not_loop(self):
+        # 같은 장을 계속 주는 응답. 가장 현실적인 실패 방식이다.
+        fetch,calls=self.transport(lambda p:self.page(1,100))
+        r=dc.collect(fetch,districts=['성동구'],sources=[self.source()])
+        self.assertEqual(calls,[1,2])
+        self.assertIn('DUPLICATE_PAGE',r['runs'][0]['errors'])
+        self.assertEqual(len(r['records']),100)
+        self.assertFalse(r['runs'][0]['source_complete'])
+    def test_new_document_with_no_new_rows_stops(self):
+        # 문서는 매번 다르지만(순번 열이 바뀜) 사업은 그대로인 경우.
+        fetch,calls=self.transport(lambda p:self.page(1,100).replace('<table>','<table data-p="'+str(p)+'">'))
+        r=dc.collect(fetch,districts=['성동구'],sources=[self.source()])
+        self.assertEqual(calls,[1,2])
+        self.assertIn('NO_NEW_ROWS',r['runs'][0]['errors'])
+    def test_truncation_is_reported_not_hidden(self):
+        fetch,calls=self.transport(lambda p:self.page(1+(p-1)*100,100))
+        r=dc.collect(fetch,districts=['성동구'],sources=[self.source()])
+        self.assertEqual(len(calls),dc.MAX_DIRECTORY_PAGES)
+        self.assertIn('PAGE_LIMIT_REACHED',r['runs'][0]['errors'])
+        self.assertEqual(r['runs'][0]['status'],'PARTIAL')
+    def test_citywide_sources_are_not_paginated(self):
+        fetch,calls=self.transport(lambda p:self.page(1,100))
+        dc.collect(fetch,districts=['성동구'],sources=[dc.build_sources('성동구')[0]])
+        self.assertEqual(len(calls),1)
 
 class GeocodeSigunguTests(unittest.TestCase):
     """서울 bbox만으로는 통과하지 못한다. 사업 자치구와 응답 자치구가 같아야 한다."""

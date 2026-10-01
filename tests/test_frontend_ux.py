@@ -66,6 +66,25 @@ class GolfSortVisibilityTests(unittest.TestCase):
         self.assertIn('settleSort(nextSort, r.has_departure)', self.screen)
 
 
+class TradeDefaultMonthTests(unittest.TestCase):
+    """실거래 최초 진입의 기본 계약년월."""
+
+    def setUp(self):
+        self.monitor = web('components/realestate/EstateMonitor.tsx')
+        self.lib = web('lib/realestate.ts')
+
+    def test_default_is_202609(self):
+        self.assertIn('export const DEFAULT_TRADE_MONTH = "202609";', self.lib)
+        self.assertIn('month: DEFAULT_TRADE_MONTH,', self.monitor)
+        # 이번 달로 시작하면 아직 공개되지 않은 달이라 빈 화면이 된다.
+        self.assertNotIn('month: currentMonth()', self.monitor)
+
+    def test_choosing_another_month_still_works(self):
+        self.assertIn('month: filters.month,', self.monitor)
+        # 기본값은 초기 state일 뿐이고 선택을 덮어쓰지 않는다.
+        self.assertEqual(self.monitor.count('DEFAULT_TRADE_MONTH'), 2)
+
+
 class RegionEmptyStateTests(unittest.TestCase):
     """개발정보가 없는 자치구를 골랐을 때, 고장이 아니라 준비 중으로 읽히는지."""
 
