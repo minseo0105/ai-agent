@@ -5,6 +5,9 @@ ASSOCIATION_APPROVED, UNKNOWN_OFFICIAL_COLUMN). None of that belongs on screen,
 and neither does a claim the evidence does not support: a stage read from an
 official list is shown as list-based, never as confirmed.
 """
+import re
+from urllib.parse import quote
+
 from services.development_official import STATUS_FROM_STAGE, STATUS_HYPOTHESIS, normalize_stage
 from services.development_stage import observation, stage_view, DESCRIPTIONS
 
@@ -187,36 +190,68 @@ def stage_guide(normalized_stage):
 # 것이다. 그래서 통합검색 경로는 없앴다.
 #
 # 좌표를 URL에 넣어 지도를 바로 여는 형식(center/zoom 등)은 이 실행환경에서
-# naver.com에 접근할 수 없어 확인하지 못했다. 확인하지 못한 형식을 추측해서 만들면
-# 엉뚱한 위치를 열거나 조용히 깨진다. 그래서 서비스 진입점으로 보내고, 어떤 주소를
-# 검색하면 되는지 화면에 함께 적어 준다. 버튼 문구도 그 동작에 맞춘다.
+# 네이버부동산 연결. URL 형식을 새로 추측하지 않는다. 이 서비스의 실거래 화면이
+# 운영에서 쓰고 있는 경로(services.realestate_monitor.build_naver_land_url)와 같은
+# 검색결과 경로를 쓴다. 확인된 적 없는 좌표 deep-link 파라미터는 만들지 않는다.
 #
 # 폴리곤 centroid는 쓰지 않는다. MultiPolygon이나 오목한 구역에서는 centroid가 구역
-# 밖에 놓일 수 있다. 위치는 검증된 대표주소를 쓰고, 그것이 없으면 링크를 만들지 않는다.
+# 밖에 놓일 수 있다. 위치는 검증된 좌표의 대표주소를 쓰고, 근거가 없으면 링크를 만들지
+# 않는다 — 엉뚱한 지역으로 보내는 것보다 연결하지 않는 것이 낫다.
 # ---------------------------------------------------------------------------
-# 네이버 부동산 서비스 진입점. 경로를 덧붙이지 않는다.
-NAVER_LAND_URL = 'https://land.naver.com/'
-NAVER_LINK_LABEL = '네이버부동산에서 지역 검색'
+NAVER_LAND_SEARCH = 'https://m.land.naver.com/search/result/'
+NAVER_LINK_LABEL = '네이버부동산에서 이 위치 보기'
+NAVER_LINK_LABEL_DONG = '네이버부동산에서 이 동네 보기'
+NO_LOCATION_LINK_NOTE = '위치를 특정할 수 없어 네이버부동산으로 연결하지 않습니다.'
+
+
+def _place_query(district, dong, address):
+    """네이버부동산 검색에 넣을 지역 문자열. 실거래 링크와 같은 조립 방식이다.
+
+    '서울특별시'는 넣지 않는다(실거래 링크도 자치구부터 시작한다). 번지는 주소에
+    실제로 있을 때만 붙이고, 없는 값을 만들어 넣지 않는다.
+    """
+    text = re.sub(r'\s+', ' ', str(address or '')).strip()
+    text = re.sub(r'^서울특별시\s*', '', text)
+    lot = re.search(r'(\d+(?:-\d+)?)(?=\s|$)', text)
+    parts = [district, dong]
+    if lot and dong and dong in text:
+        parts.append(lot.group(1))
+    return ' '.join(part for part in parts if part)
 
 
 def naver_real_estate_link(row):
-    """네이버 부동산으로 가는 링크와 거기서 검색할 주소. 근거가 없으면 None.
+    """이 사업의 위치로 가는 네이버부동산 링크. 근거가 없으면 None.
 
-    basis: ADDRESS(대표주소) → DISTRICT_DONG(자치구+법정동) → 없으면 링크 없음.
+    basis: VERIFIED_LOCATION(검증된 좌표를 가진 사업의 대표주소)
+         → ADDRESS(대표주소) → DISTRICT_DONG(자치구+법정동) → 없으면 링크 없음.
+
+    검증된 좌표가 있어도 좌표를 URL에 싣지 않는다. 좌표 중심 지도를 여는 파라미터
+    형식을 이 환경에서 확인할 수 없었고, 확인하지 못한 형식을 넣으면 깨진 링크나
+    엉뚱한 위치가 된다. 좌표는 그 사업의 대표주소가 지오코더에서 자치구·동·번지까지
+    정확히 일치했다는 뜻이므로, 그 주소로 검색하면 같은 자리가 열린다.
     """
     address = str(row.get('address') or '').strip()
     district = str(row.get('sigungu') or row.get('district') or '').strip()
     dong = str(row.get('dong') or '').strip()
-    if address:
-        query, basis = address, 'ADDRESS'
+    latitude, longitude = row.get('latitude'), row.get('longitude')
+    located = isinstance(latitude, (int, float)) and isinstance(longitude, (int, float))
+    if address and district:
+        query = _place_query(district, dong, address)
+        basis = 'VERIFIED_LOCATION' if located else 'ADDRESS'
     elif district and dong:
-        query, basis = f'서울특별시 {district} {dong}', 'DISTRICT_DONG'
+        query, basis = _place_query(district, dong, ''), 'DISTRICT_DONG'
     else:
         # 위치 근거가 없으면 링크를 만들지 않는다. 틀린 곳으로 보내지 않는다.
         return None
-    return {'url': NAVER_LAND_URL, 'label': NAVER_LINK_LABEL, 'basis': basis,
-            'search_query': query, 'destination': 'NAVER_LAND',
-            'note': '네이버 부동산에서 아래 주소로 검색하면 이 사업구역 주변 매물을 볼 수 있어요.'}
+    if not query:
+        return None
+    note = ('검증된 위치의 대표주소로 네이버부동산 지도를 엽니다.' if basis == 'VERIFIED_LOCATION'
+            else '사업 대표주소로 네이버부동산 지도를 엽니다.' if basis == 'ADDRESS'
+            else '이 사업의 법정동으로 네이버부동산 지도를 엽니다.')
+    return {'url': NAVER_LAND_SEARCH + quote(query, safe=''),
+            'label': NAVER_LINK_LABEL if basis != 'DISTRICT_DONG' else NAVER_LINK_LABEL_DONG,
+            'basis': basis, 'search_query': query, 'destination': 'NAVER_LAND',
+            'coordinate_verified': located, 'note': note}
 
 
 def stage_label(normalized_stage, raw_stage=None):

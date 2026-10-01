@@ -179,9 +179,11 @@ export type DevelopmentProject = {
     url: string;
     label: string;
     basis: string;
-    /** 네이버 부동산에서 검색할 주소. 화면에 함께 보여 준다. */
+    /** 링크가 열어 주는 위치. 화면에 함께 보여 준다. */
     search_query: string;
     destination: string;
+    /** 검증된 좌표를 가진 사업인지. 좌표 자체는 URL에 싣지 않는다. */
+    coordinate_verified: boolean;
     note: string;
   } | null;
   spatial: { code: string; label: string; confirmed_boundary: boolean };
