@@ -1310,11 +1310,32 @@ class NaverGeocodeTests(unittest.TestCase):
         self.assertIn('not_a_region_centroid', evaluation['review_reason'])
 
     def test_two_candidates_are_never_resolved_by_taking_the_first(self):
+        # 같은 지번을 두 번 돌려준 응답은 주소 단위가 하나다. 첫 결과를 고르는 것이
+        # 아니라 하나로 접힌다는 근거를 남기고 채택한다.
         response = geo.naver_provider('id', 'secret', naver_response())(NAVER_ADDRESS)
         two = dict(response, candidates=response['candidates'] * 2)
         evaluation = geo.evaluate(NAVER_ADDRESS, two)
+        self.assertEqual(evaluation['geocode_confidence'], 'EXACT')
+        self.assertEqual(evaluation['disambiguation']['rule'],
+                         'SINGLE_ADDRESS_UNIT_MULTIPLE_BUILDINGS')
+        self.assertEqual(evaluation['disambiguation']['candidates_considered'], 2)
+
+    def test_two_scattered_answers_for_one_lot_are_still_never_resolved(self):
+        # 같은 번지라고 답했는데 좌표가 멀면 그 주장을 믿지 않는다. 첫 결과를 고르는
+        # 경로는 없다.
+        response = geo.naver_provider('id', 'secret', naver_response())(NAVER_ADDRESS)
+        first = response['candidates'][0]
+        far = dict(first, longitude=first['longitude'] + 0.05)
+        evaluation = geo.evaluate(NAVER_ADDRESS, dict(response, candidates=[first, far]))
         self.assertEqual(evaluation['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
         self.assertFalse(evaluation['coordinate_verified'])
+
+    def test_a_provider_without_address_elements_is_never_collapsed(self):
+        # Kakao/VWorld는 주소 문자열만 준다. 주소 단위를 확인할 수 없으면 고르지 않는다.
+        response = geo.naver_provider('id', 'secret', naver_response())(NAVER_ADDRESS)
+        bare = dict(response['candidates'][0], address_elements={})
+        evaluation = geo.evaluate(NAVER_ADDRESS, dict(response, candidates=[bare, bare]))
+        self.assertEqual(evaluation['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
 
     def test_a_road_address_is_checked_against_the_road_and_building_number(self):
         item = {'jibunAddress': '서울특별시 중구 태평로1가 31',
@@ -1787,7 +1808,8 @@ class GeocodeCanaryTests(unittest.TestCase):
                         {'types': ['SIGUGUN'], 'longName': parts['district']},
                         {'types': ['DONGMYUN'], 'longName': parts['dong']},
                         {'types': ['LAND_NUMBER'], 'longName': parts['lot']}]}
-            return {'status': 'OK', 'addresses': [item, dict(item, x=str(longitude + 0.002))]}
+            # 같은 번지라면서 좌표가 멀리 떨어진 두 답. 하나로 접지 않는다.
+            return {'status': 'OK', 'addresses': [item, dict(item, x=str(longitude + 0.05))]}
         result = self.run_canary(http_get)
         row = next(r for r in result['results'] if r['canonical_address'] == address)
         self.assertEqual(row['outcome'], 'REVIEW_REQUIRED')

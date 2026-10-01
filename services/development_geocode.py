@@ -204,6 +204,82 @@ def candidate_checks(parts, candidate):
     return checks, orientation
 
 
+# 같은 지번이라고 말할 수 있는 좌표 산포의 한계. 한 지번 위의 여러 동이라면 이보다
+# 멀어지지 않는다. 약 220m(위도) / 180m(경도, 서울 위도 기준).
+SAME_PARCEL_SPREAD = 0.002
+
+
+def parcel_key(parts, elements):
+    """이 후보가 가리키는 주소 단위. 우리가 요청한 형식에 맞춰 정확히 읽는다.
+
+    지번 주소를 요청했으면 자치구·동·리·번지, 도로명을 요청했으면 자치구·도로명·
+    건물번호다. 필요한 값이 하나라도 비면 None이고, 비슷한 값으로 메우지 않는다.
+    """
+    district = (elements.get('SIGUGUN') or '').strip()
+    if not district:
+        return None
+    if parts['lot']:
+        dong, lot = (elements.get('DONGMYUN') or '').strip(), (elements.get('LAND_NUMBER') or '').strip()
+        if not dong or not lot:
+            return None
+        return ('jibun', district, dong, (elements.get('RI') or '').strip(), lot)
+    if parts['building_number']:
+        road = (elements.get('ROAD_NAME') or '').strip()
+        number = (elements.get('BUILDING_NUMBER') or '').strip()
+        if not road or not number:
+            return None
+        return ('road', district, road, number)
+    return None
+
+
+def disambiguate(parts, passing):
+    """검증을 모두 통과한 후보가 여럿일 때 하나를 특정할 수 있는지 본다.
+
+    한 지번 위에 여러 동이 올라간 경우가 대부분이다. 그때는 후보가 여러 개라도
+    가리키는 주소 단위가 하나이므로 좌표를 채택할 수 있다. 특정할 수 없으면
+    None을 돌려주고 호출자가 기존처럼 검토로 보낸다 — 첫 결과를 고르지 않는다.
+
+    이름 유사도나 거리 최솟값으로 고르지 않는다. 판단 근거는 두 가지뿐이다:
+    자치구가 요청과 정확히 같은가, 주소 단위가 정확히 하나인가.
+    """
+    if len(passing) < 2 or not parts['district']:
+        return None, None
+    # 1) 요청한 자치구와 정확히 같은 후보만 남긴다.
+    same_district = [entry for entry in passing
+                     if (entry[0].get('address_elements') or {}).get('SIGUGUN', '').strip()
+                     == parts['district']]
+    if len(same_district) != len(passing) or not same_district:
+        return None, None
+    # 2) 주소 단위가 정확히 하나여야 한다.
+    keys = {parcel_key(parts, entry[0].get('address_elements') or {}) for entry in same_district}
+    if len(keys) != 1 or None in keys:
+        return None, None
+    # 3) 같은 지번이라면 좌표가 이만큼 흩어질 수 없다. 흩어졌으면 믿지 않는다.
+    longitudes = [entry[0].get('longitude') for entry in same_district]
+    latitudes = [entry[0].get('latitude') for entry in same_district]
+    if any(v is None for v in longitudes + latitudes):
+        return None, None
+    if (max(longitudes) - min(longitudes) > SAME_PARCEL_SPREAD
+            or max(latitudes) - min(latitudes) > SAME_PARCEL_SPREAD):
+        return None, None
+    # 지번 자체의 점(건물명이 없는 후보)을 우선하고, 없으면 주소 문자열로 결정한다.
+    # 입력 순서에 기대지 않기 위해 정렬로 고른다.
+    def order(entry):
+        elements = entry[0].get('address_elements') or {}
+        building = (elements.get('BUILDING_NAME') or '').strip()
+        # 건물명까지 정렬 키에 넣어야 입력 순서와 무관하게 같은 후보가 나온다.
+        return (bool(building), normalize_address(entry[0].get('matched_address')), building)
+    ordered = sorted(same_district, key=order)
+    key = next(iter(keys))
+    basis = {'rule': 'SINGLE_ADDRESS_UNIT_MULTIPLE_BUILDINGS',
+             'address_unit': list(key), 'candidates_considered': len(passing),
+             'collapsed_to': 1, 'district_match': parts['district'],
+             'coordinate_spread': {'longitude': round(max(longitudes) - min(longitudes), 6),
+                                   'latitude': round(max(latitudes) - min(latitudes), 6)},
+             'selected_building': (ordered[0][0].get('address_elements') or {}).get('BUILDING_NAME') or None}
+    return ordered[0], basis
+
+
 def evaluate(address, response):
     """Decide whether a provider response is an exact match for this address.
 
@@ -226,13 +302,17 @@ def evaluate(address, response):
                   result_status='MATCHED', wanted_parts=parts)
     scored = [(candidate,) + candidate_checks(parts, candidate) for candidate in candidates]
     passing = [entry for entry in scored if all(entry[1].values())]
+    chosen, basis = (None, None)
     if len(candidates) != 1 and len(passing) != 1:
         # Several official candidates for one address is exactly the case the
-        # first-result-wins geocoders get wrong.
-        return dict(result, geocode_confidence='GEOCODE_REVIEW',
-                    review_reason='MULTIPLE_PROVIDER_CANDIDATES',
-                    candidate_summaries=[_summary(c, checks) for c, checks, _ in scored])
-    candidate, checks, orientation = passing[0] if passing else scored[0]
+        # first-result-wins geocoders get wrong. 다만 그 여러 개가 같은 지번 위의
+        # 여러 동이라면 특정할 수 있다. 특정되지 않으면 그대로 검토로 보낸다.
+        chosen, basis = disambiguate(parts, passing)
+        if chosen is None:
+            return dict(result, geocode_confidence='GEOCODE_REVIEW',
+                        review_reason='MULTIPLE_PROVIDER_CANDIDATES',
+                        candidate_summaries=[_summary(c, checks) for c, checks, _ in scored])
+    candidate, checks, orientation = chosen or (passing[0] if passing else scored[0])
     detail = {'matched_address': normalize_address(candidate.get('matched_address')),
               'accuracy': candidate.get('accuracy'), 'checks': checks,
               'address_elements': candidate.get('address_elements') or None,
@@ -241,7 +321,8 @@ def evaluate(address, response):
               'jibun_address': candidate.get('jibun_address'),
               'english_address': candidate.get('english_address'),
               'distance_m': candidate.get('distance_m'),
-              'disambiguated_from': len(candidates) if len(candidates) > 1 else None}
+              'disambiguated_from': len(candidates) if len(candidates) > 1 else None,
+              'disambiguation': basis}
     failed = sorted(name for name, ok in checks.items() if not ok)
     if failed:
         return dict(result, geocode_confidence='GEOCODE_REVIEW',

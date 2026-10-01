@@ -296,3 +296,115 @@ class ApiTests(unittest.TestCase):
         with self.assertRaises(HTTPException):asyncio.run(development_search(DevelopmentQuery(longitude=127)))
 
 if __name__=='__main__':unittest.main()
+
+
+class MultipleCandidateDisambiguationTests(unittest.TestCase):
+    """후보가 여럿일 때, 같은 지번 위의 여러 동만 특정한다. 나머지는 검토로 남는다."""
+    ADDRESS = '서울특별시 성동구 행당동 1'
+
+    def candidate(self, lot='1', building=None, longitude=127.0369, latitude=37.5633,
+                  district='성동구', dong='행당동', road=None, number=None):
+        elements = {'SIDO': '서울특별시', 'SIGUGUN': district}
+        if road: elements.update(ROAD_NAME=road, BUILDING_NUMBER=number)
+        else: elements.update(DONGMYUN=dong, LAND_NUMBER=lot)
+        if building: elements['BUILDING_NAME'] = building
+        return {'longitude': longitude, 'latitude': latitude, 'accuracy': 'PARCEL',
+                'matched_address': f'서울특별시 {district} {dong} {lot}',
+                'address_elements': elements}
+
+    def result(self, candidates, address=None):
+        from services import development_geocode as geo
+        return geo.evaluate(address or self.ADDRESS,
+                            {'provider': 'naver:geocode', 'result_status': 'MATCHED',
+                             'candidates': candidates})
+
+    def test_one_parcel_many_buildings_is_resolved(self):
+        r = self.result([self.candidate(building='가동', longitude=127.0369),
+                         self.candidate(building='나동', longitude=127.0371),
+                         self.candidate()])
+        self.assertEqual(r['geocode_confidence'], 'EXACT')
+        self.assertTrue(r['coordinate_verified'])
+        self.assertEqual(r['disambiguation']['rule'], 'SINGLE_ADDRESS_UNIT_MULTIPLE_BUILDINGS')
+        self.assertEqual(r['disambiguation']['candidates_considered'], 3)
+
+    def test_the_basis_is_recorded(self):
+        r = self.result([self.candidate(building='가동'), self.candidate()])
+        basis = r['disambiguation']
+        self.assertEqual(basis['address_unit'], ['jibun', '성동구', '행당동', '', '1'])
+        self.assertEqual(basis['district_match'], '성동구')
+        self.assertIn('coordinate_spread', basis)
+
+    def test_the_parcel_point_is_preferred_over_a_named_building(self):
+        r = self.result([self.candidate(building='가동'), self.candidate()])
+        self.assertIsNone(r['disambiguation']['selected_building'])
+
+    def test_the_choice_does_not_depend_on_provider_order(self):
+        a = self.result([self.candidate(building='가동'), self.candidate(building='나동')])
+        b = self.result([self.candidate(building='나동'), self.candidate(building='가동')])
+        self.assertEqual((a['longitude'], a['latitude']), (b['longitude'], b['latitude']))
+        self.assertEqual(a['disambiguation']['selected_building'],
+                         b['disambiguation']['selected_building'])
+
+    def test_a_wrong_lot_is_excluded_by_the_element_check_not_collapsed(self):
+        # '1-2'는 요청한 '1'이 아니므로 애초에 검증을 통과하지 못한다. 통과한 하나만
+        # 남으므로 특정이 필요 없고, 합쳐진 것도 아니다.
+        r = self.result([self.candidate(lot='1'), self.candidate(lot='1-2')],
+                        '서울특별시 성동구 행당동 1')
+        self.assertEqual(r['geocode_confidence'], 'EXACT')
+        self.assertIsNone(r['disambiguation'])
+        self.assertEqual(r['address_elements']['LAND_NUMBER'], '1')
+
+    def test_two_passing_lots_cannot_happen_but_two_units_stay_unverifiable(self):
+        # 같은 번지를 요청했는데 동이 다르면 주소 단위가 둘이다. 고르지 않는다.
+        r = self.result([self.candidate(building='가동'),
+                         self.candidate(building='나동', dong='행당동')])
+        self.assertEqual(r['geocode_confidence'], 'EXACT')
+        r2 = self.result([self.candidate(building='가동'), self.candidate(building='나동'),
+                          self.candidate(longitude=127.09, latitude=37.59)])
+        self.assertEqual(r2['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+
+    def test_scattered_coordinates_stay_unverifiable(self):
+        r = self.result([self.candidate(), self.candidate(longitude=127.09, latitude=37.59)])
+        self.assertEqual(r['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+
+    def test_a_different_district_is_never_collapsed_in(self):
+        # 마포구 후보는 district_match에서 떨어진다. 성동구 하나만 남아 그것이 채택된다.
+        r = self.result([self.candidate(), self.candidate(district='마포구')])
+        self.assertEqual(r['address_elements']['SIGUGUN'], '성동구')
+        self.assertIsNone(r['disambiguation'])
+        # 자치구가 섞인 채로 합쳐지는 경로는 없다.
+        from services import development_geocode as geo
+        parts = geo.wanted_parts(self.ADDRESS)
+        mixed = [(self.candidate(), {}, 'X_IS_LONGITUDE'),
+                 (self.candidate(district='마포구'), {}, 'X_IS_LONGITUDE')]
+        self.assertEqual(geo.disambiguate(parts, mixed), (None, None))
+
+    def test_a_dong_only_address_is_still_a_centroid_risk(self):
+        # 번지가 없으면 주소 단위를 만들 수 없다. 동 중심점이 채택되는 경로를 열지 않는다.
+        r = self.result([self.candidate(building='가동'), self.candidate(building='나동')],
+                        '서울특별시 성동구 행당동')
+        self.assertEqual(r['review_reason'], 'MULTIPLE_PROVIDER_CANDIDATES')
+
+    def test_a_single_candidate_path_is_unchanged(self):
+        r = self.result([self.candidate()])
+        self.assertEqual(r['geocode_confidence'], 'EXACT')
+        self.assertIsNone(r['disambiguation'])
+
+    def test_road_addresses_collapse_on_road_and_building_number(self):
+        road = [self.candidate(road='왕십리로', number='222', building='A'),
+                self.candidate(road='왕십리로', number='222', building='B')]
+        r = self.result(road, '서울특별시 성동구 왕십리로 222')
+        self.assertEqual(r['geocode_confidence'], 'EXACT')
+        self.assertEqual(r['disambiguation']['address_unit'],
+                         ['road', '성동구', '왕십리로', '222'])
+
+    def test_the_seoul_bbox_and_mismatch_guards_still_apply(self):
+        from services import development_collector as dc
+        r = self.result([self.candidate(building='가동'), self.candidate()])
+        flat = {'result_status': 'MATCHED', 'accuracy': r['accuracy'],
+                'longitude': r['longitude'], 'latitude': r['latitude'],
+                'source_url': 'https://example.invalid',
+                'address_elements': r['address_elements']}
+        self.assertEqual(dc.location_rejections({'sigungu': '성동구'}, flat), [])
+        self.assertIn('GEOCODE_SIGUNGU_MISMATCH',
+                      dc.location_rejections({'sigungu': '마포구'}, flat))

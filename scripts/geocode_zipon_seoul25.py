@@ -101,7 +101,10 @@ def main():
                'project_name': record.get('project_name'), 'address': record['address'],
                'bucket': bucket, 'reasons': reasons,
                'geocode_source': (evaluation or {}).get('geocode_source'),
-               'answered_sigungu': ((evaluation or {}).get('address_elements') or {}).get('SIGUGUN')}
+               'answered_sigungu': ((evaluation or {}).get('address_elements') or {}).get('SIGUGUN'),
+               'candidates': (evaluation or {}).get('provider_candidate_count'),
+               # 복수 후보에서 하나를 고른 경우 그 근거를 남긴다.
+               'disambiguation': (evaluation or {}).get('disambiguation')}
         if bucket == 'geocoded':
             row['longitude'] = evaluation['longitude']
             row['latitude'] = evaluation['latitude']
@@ -120,6 +123,7 @@ def main():
                    'sigungu_mismatch': tally['sigungu_mismatch'],
                    'unverifiable': tally['unverifiable']},
         'provider_stats': resolution['stats'],
+        'disambiguated': sum(1 for r in rows if r.get('disambiguation')),
         'reject_reasons': dict(sorted(Counter(
             reason for r in rows if r['bucket'] != 'geocoded' for reason in r['reasons']).items())),
         'by_district': {d: dict(sorted(c.items())) for d, c in sorted(by_district.items())},
@@ -130,7 +134,8 @@ def main():
         args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n',
                             encoding='utf-8')
     print(json.dumps({k: report[k] for k in
-                      ('mode', 'provider', 'totals', 'provider_stats', 'reject_reasons')},
+                      ('mode', 'provider', 'totals', 'disambiguated', 'provider_stats',
+                       'reject_reasons')},
                      ensure_ascii=False, indent=2))
 
 
