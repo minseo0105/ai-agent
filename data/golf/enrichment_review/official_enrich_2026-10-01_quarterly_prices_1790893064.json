@@ -1,0 +1,356 @@
+{
+ "created_at": "2026-10-01",
+ "model": "claude-opus-5",
+ "label": "quarterly_prices",
+ "method": "official_homepage_crawl(v3: static+encoding_fix+edge+fee_images)+llm_extract+quote_verify",
+ "usage": {
+  "input_tokens": 22450,
+  "output_tokens": 2019
+ },
+ "results": [
+  {
+   "id": "kgba_라데나",
+   "name": "라데나 골프클럽",
+   "area": "강원권",
+   "official_url": "https://www.ladena.co.kr/",
+   "status": "no_content",
+   "observed_at": "2026-10-01",
+   "schema_version": 2,
+   "identity_verified": false,
+   "browser_pages": 0,
+   "pages": [],
+   "page_evidence": [],
+   "approved_source_urls": [
+    "https://www.ladena.co.kr/guide/charge"
+   ],
+   "images": [],
+   "error": "홈페이지 본문을 가져오지 못함 (접속 실패 또는 이미지/스크립트 렌더링 페이지)",
+   "seconds": 2.0
+  },
+  {
+   "id": "kgba_기흥",
+   "name": "기흥 컨트리클럽",
+   "area": "수도권",
+   "official_url": "https://ghcc.kr/",
+   "status": "pending_review",
+   "observed_at": "2026-10-01",
+   "schema_version": 2,
+   "identity_verified": false,
+   "browser_pages": 0,
+   "pages": [
+    {
+     "url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "chars": 1791
+    }
+   ],
+   "page_evidence": [
+    {
+     "url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "text": "기흥컨트리클럽 \n HOME \n 인사말 \n 공지&NEWS \n 운영방안 \n 요금안내 \n 예약안내 \n 위약규정 \n 예약하기 \n 포인트팀신청 \n 예약시간변경 및 취소 \n 조인게시판 \n 위약정보 \n 코스소개 \n 로컬룰 \n 클럽챔피언 선발전 로컬룰 \n 회원친선/챔피언대회 \n 요금안내 \n 18홀기준 요금안내 \n (단위:원) \n 구분 | \n 입장료 | \n 평일 | \n 주말 | \n 회원(M) | \n 95,000 | \n 100,000 | \n 지명예우자(F) | \n 95,000 | \n 300,000 | \n 비회원(V) | \n 230,000 | \n 300,000 | \n 카트이용료 \n (단위:원) \n 구분 | \n 5인승전동카트 \n | \n 카트료 | \n 100,000 (카트 1대당 이용요금) | \n 대여료 \n (단위:원) \n 구분 | \n 골프클럽(1Set) | \n 퍼터(1EA) | \n 골프화 | \n 대여료 | \n 30,000 | \n 5,000 | \n 5,000 | \n 기상이변으로 라운드 중단 시 요금안내 \n ※강설,폭우,안개,기타 천재지변등의 불가항력적인 사유로 인한 라운딩 중단시 아래와 같은 요금을 적용합니다. \n (단위:원) \n 구분 | \n 이용요금 | \n 카트료 | \n 회원 | \n 비회원 | \n 평일 | \n 주말 | \n 평일 | \n 주말 | \n 1홀 | \n 15,000 | \n 15,000 | \n 15,000 | \n 15,000 | \n 50,000 | \n 2홀 | \n 20,000 | \n 20,000 | \n 28,000 | \n 32,000 | \n 3홀 | \n 24,000 | \n 25,000 | \n 40,000 | \n 49,000 | \n 4홀 | \n 29,000 | \n 30,000 | \n 53,000 | \n 65,000 | \n 5홀 | \n 34,000 | \n 35,000 | \n 66,000 | \n 82,000 | \n 6홀 | \n 39,000 | \n 40,000 | \n 78,000 | \n 99,000 | \n 7홀 | \n 43,000 | \n 45,000 | \n 91,000 | \n 116,000 | \n 8홀 | \n 48,000 | \n 50,000 | \n 104,000 | \n 132,000 | \n 9홀 | \n 53,000 | \n 55,000 | \n 116,000 | \n 149,000 | \n 10홀 | \n 57,000 | \n 60,000 | \n 129,000 | \n 166,000 | \n 100,000 | \n 11홀 | \n 62,000 | \n 65,000 | \n 141,000 | \n 183,000 | \n 12홀 | \n 67,000 | \n 70,000 | \n 154,000 | \n 199,000 | \n 13홀 | \n 71,000 | \n 75,000 | \n 167,000 | \n 216,000 | \n 14홀 | \n 76,000 | \n 80,000 | \n 179,000 | \n 233,000 | \n 15홀 | \n 81,000 | \n 85,000 | \n 192,000 | \n 250,000 | \n 16홀 | \n 86,000 | \n 90,000 | \n 205,000 | \n 266,000 | \n 17홀 | \n 90,000 | \n 95,000 | \n 217,000 | \n 283,000 | \n 18홀 | \n 95,000 | \n 100,000 | \n 230,000 | \n 300,000 | \n (자세한 내용은 당사 이용약관 을 참조하시기 바랍니다.) \n ＊도우미 봉사료: 150,000원(18홀기준) \n 경기도 화성시 동탄구 풀무골로 106번길 244 (신동) 우)18465 ㅣ 대표번호: 031-376-4001(代) \n 서울시 서초구 사평대로361(반포동) 청원빌딩 5층 ㅣ 대표번호 : 02-3452-2550"
+    }
+   ],
+   "approved_source_urls": [
+    "https://www.ghcc.kr/mobile/manage/manage02.asp"
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [
+     {
+      "condition": "회원(M)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekday",
+      "session": "all",
+      "customer": "member",
+      "holes": 18,
+      "price_krw": 95000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "구분 | 입장료 | 평일 | 주말 | 회원(M) | 95,000 | 100,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     {
+      "condition": "회원(M)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekend",
+      "session": "all",
+      "customer": "member",
+      "holes": 18,
+      "price_krw": 100000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "구분 | 입장료 | 평일 | 주말 | 회원(M) | 95,000 | 100,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     {
+      "condition": "지명예우자(F)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekday",
+      "session": "all",
+      "customer": "unknown",
+      "holes": 18,
+      "price_krw": 95000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "지명예우자(F) | 95,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     {
+      "condition": "지명예우자(F)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekend",
+      "session": "all",
+      "customer": "unknown",
+      "holes": 18,
+      "price_krw": 300000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "지명예우자(F) | 95,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     {
+      "condition": "비회원(V)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 230000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "비회원(V) | 230,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     {
+      "condition": "비회원(V)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekend",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 300000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "비회원(V) | 230,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     }
+    ],
+    "caddie_fee": {
+     "condition": "18홀 기준 도우미 봉사료",
+     "fee_team_krw": 150000,
+     "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "quote": "＊도우미 봉사료: 150,000원(18홀기준)",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "condition": "5인승 전동카트, 카트 1대당 이용요금",
+     "fee_team_krw": 100000,
+     "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "quote": "카트이용료 (단위:원) 구분 | 5인승전동카트 | 카트료 | 100,000 (카트 1대당 이용요금) |",
+     "verified_quote": true
+    },
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": "기상이변(강설·폭우·안개 등)으로 라운드 중단 시 홀 수별 이용요금 및 카트료 별도 적용. 대여료: 골프클럽(1Set) 30,000원, 퍼터(1EA) 5,000원, 골프화 5,000원.",
+    "phone": {
+     "value": "031-376-4001",
+     "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "quote": "경기도 화성시 동탄구 풀무골로 106번길 244 (신동) 우)18465 ㅣ 대표번호: 031-376-4001(代)",
+     "condition": "",
+     "verified_quote": true
+    },
+    "course_description": null
+   },
+   "usage": {
+    "input_tokens": 5820,
+    "output_tokens": 1187
+   },
+   "seconds": 17.1
+  },
+  {
+   "id": "vworld_파인크리크c_c",
+   "name": "파인크리크 컨트리클럽",
+   "area": "수도권",
+   "official_url": "https://www.pinecreek.co.kr/",
+   "status": "pending_review",
+   "observed_at": "2026-10-01",
+   "schema_version": 2,
+   "identity_verified": false,
+   "browser_pages": 1,
+   "pages": [
+    {
+     "url": "https://www.pinecreek.co.kr/html_creek/company02.asp",
+     "chars": 626
+    }
+   ],
+   "page_evidence": [
+    {
+     "url": "https://www.pinecreek.co.kr/html_creek/company02.asp",
+     "text": "ERROR: The request could not be satisfied \n 403 ERROR \n The request could not be satisfied. \nThe Amazon CloudFront distribution is configured to block access from your country.\nWe can't connect to the server for this app or website at this time. There might be too much traffic or a configuration error. Try again later, or contact the app or website owner.\nIf you provide content to customers through CloudFront, you can find steps to troubleshoot and help prevent this error by reviewing the CloudFront documentation.\n Generated by cloudfront (CloudFront)\nRequest ID: bQjxc7rcIoB-NK6g5LZYj-LOboDt4x5R_pfO4io_RXiUjHKGq4fW2A=="
+    }
+   ],
+   "approved_source_urls": [
+    "https://www.pinecreek.co.kr/html_creek/company02.asp"
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": "",
+    "phone": null,
+    "course_description": null
+   },
+   "usage": {
+    "input_tokens": 4537,
+    "output_tokens": 93
+   },
+   "seconds": 28.3
+  },
+  {
+   "id": "vworld_마론뉴데이",
+   "name": "마론뉴데이cc",
+   "area": "충청권",
+   "official_url": "http://www.maronnewday.com",
+   "status": "pending_review",
+   "observed_at": "2026-10-01",
+   "schema_version": 2,
+   "identity_verified": false,
+   "browser_pages": 1,
+   "pages": [
+    {
+     "url": "http://www.maronnewday.com/",
+     "chars": 1311
+    },
+    {
+     "url": "http://www.maronnewday.com/html/guide02.asp",
+     "chars": 1347
+    }
+   ],
+   "page_evidence": [
+    {
+     "url": "http://www.maronnewday.com/",
+     "text": "마론CC \n 오늘 하루 동안 보이지 않기 × CLOSE \n 오늘 하루 동안 보이지 않기 × CLOSE \n 오늘 하루 동안 보이지 않기 × CLOSE \n 일반 로그인 \n 카카오 로그인 \n LOGIN \n JOIN \n LOGIN \n JOIN \n 클럽소개 \n 코스소개 \n 운영안내 \n 인터넷예약 \n 시설물안내 \n 정보마당 \n 클럽소개 \n 대표자인사말 \n 사업개요 \n 오시는길 \n 코스소개 \n 코스소개 \n 드림코스 \n 비전코스 \n 운영안내 \n 이용안내 \n 이용요금안내 \n 예약안내 \n 인터넷예약 \n 인터넷예약 \n 예약확인/취소 \n 위약규정 \n 시설물안내 \n 클럽하우스 \n 그늘집 \n 레스토랑/단체실 \n 사우나/락카룸 \n 프로샵 \n 정보마당 \n 마론소식 \n 골프규칙 \n 홀인원히스토리 \n 자료실 \n 채용정보 \n 대표자인사말 \n 사업개요 \n 오시는길 \n 코스소개 \n 드림코스 \n 비전코스 \n 이용안내 \n 이용요금안내 \n 예약안내 \n 실시간예약 \n 예약확인/취소 \n 위약규정 \n 클럽하우스 \n 그늘집 \n 레스토랑/단체실 \n 사우나/락카룸 \n 프로샵 \n 마론소식 \n 골프규칙 \n 홀인원히스토리 \n 자료실 \n 채용정보 \n 자료제공: 기상청 \n 오늘 \n 23.0℃ \n 내일 \n 21.0℃ \n 모레 \n 13.0℃ \n Previous 9월 예약 선오픈 안내 \n 10월 이용요금 안내 \n 쿠폰 이용방법 변경 안내 \n 9월 이용요금 안내 \n 9월 예약 선오픈 안내 \n 10월 이용요금 안내 \n 쿠폰 이용방법 변경 안내 \n 9월 이용요금 안내 \n 9월 예약 선오픈 안내 \n Next 1 \n 2 \n 3 \n 4 \n 이용약관 개인정보처리방침 이메일무단수집거부 \n 프론트 041-623-5500 예약실 041-623-5555 \n 마론컨트리클럽 충남 천안시 동남구 북면 납안5길 74 정동레저산업(주) \n 사업자등록번호 :156-86-01761 TEL : 041-623-5500 FAX : 041-623-5599 \n Copyright © 마론컨트리클럽 ALL RIGHTS RESERVED.\n 문의 가능 시간 09시 - 17시 (점심 시간 12시 - 13시) \n 주말, 공휴일 09시 - 15시 \n LOGIN \n JOIN \n 클럽소개 \n 코스소개 \n 운영안내 \n 인터넷예약 \n 시설물안내 \n 정보마당 \n 클럽소개 \n 대표자인사말 \n 사업개요 \n 오시는길 \n 코스소개 \n 코스소개 \n 드림코스 \n 비전코스 \n 운영안내 \n 이용안내 \n 이용요금안내 \n 예약안내 \n 인터넷예약 \n 인터넷예약 \n 예약확인/취소 \n 위약규정 \n 시설물안내 \n 클럽하우스 \n 그늘집 \n 레스토랑/단체실 \n 사우나/락카룸 \n 프로샵 \n 정보마당 \n 마론소식 \n 골프규칙 \n 홀인원히스토리 \n 자료실 \n 채용정보"
+    },
+    {
+     "url": "http://www.maronnewday.com/html/guide02.asp",
+     "text": "마론컨트리클럽 \n LOGIN \n JOIN \n LOGIN \n JOIN \n 클럽소개 \n 코스소개 \n 운영안내 \n 인터넷예약 \n 시설물안내 \n 정보마당 \n 클럽소개 \n 대표자인사말 \n 사업개요 \n 오시는길 \n 코스소개 \n 코스소개 \n 드림코스 \n 비전코스 \n 운영안내 \n 이용안내 \n 이용요금안내 \n 예약안내 \n 인터넷예약 \n 인터넷예약 \n 예약확인/취소 \n 위약규정 \n 시설물안내 \n 클럽하우스 \n 그늘집 \n 레스토랑/단체실 \n 사우나/락카룸 \n 프로샵 \n 정보마당 \n 마론소식 \n 골프규칙 \n 홀인원히스토리 \n 자료실 \n 채용정보 \n 대표자인사말 \n 사업개요 \n 오시는길 \n 코스소개 \n 드림코스 \n 비전코스 \n 이용안내 \n 이용요금안내 \n 예약안내 \n 실시간예약 \n 예약확인/취소 \n 위약규정 \n 클럽하우스 \n 그늘집 \n 레스토랑/단체실 \n 사우나/락카룸 \n 프로샵 \n 마론소식 \n 골프규칙 \n 홀인원히스토리 \n 자료실 \n 채용정보 \n 운영안내 \n 아름다운 자연속에서 느끼는 자유로움 \n 이용안내 \n 이용요금안내 \n 예약안내 \n 이용요금안내 \n 이용요금 | \n 월별 이용요금 공지 참조 | \n 카트비 | \n 100,000원 | \n 캐디피 | \n 160,000원 | \n 이용요금에는 클럽하우스 등 시설이용에 따른 기본요금 3만원이 포함. \n 입장절차를 마친 이용자가 임의로 취소 또는 중단한 경우 \n 구분 | \n 이용요금 | \n 경기 전 | \n 입장 절차를 마친후 \n 임의로 취소한 경우 | \n 이용요금의 50% | \n 경기 후 | \n 1홀~9홀 라운드 중 \n 임의로 중단한 경우 | \n 기본요금+(이용요금-기본요금)×75% | \n 10홀~18홀 라운드 중 \n 임의로 중단한 경우 | \n 이용요금의 100% | \n 홀별 정산시 이용요금은 월별 공지된 요금이 적용됩니다. \n 강설, 폭우, 안개 등 천재지변 또는 그밖에 불가항력적인 사유로 취소 또는 중단한 경우 \n 구분 | \n 이용요금 | \n 1홀 | \n 기본요금 | \n 2홀~18홀 \n 경기를 마치지 못한 경우 | \n 기본요금+{(이용요금-기본요금)×(기 이용한 홀수/전체홀수)} | \n 홀별 정산시 이용요금은 월별 공지된 요금이 적용됩니다. \n 티샷시 해당 홀까지의 요금 적용. \n 이용약관 개인정보처리방침 이메일무단수집거부 \n 프론트 041-623-5500 예약실 041-623-5555 \n 마론컨트리클럽 충남 천안시 동남구 북면 납안5길 74 정동레저산업(주) \n 사업자등록번호 :156-86-01761 TEL : 041-623-5500 FAX : 041-623-5599 \n Copyright © 마론컨트리클럽 ALL RIGHTS RESERVED.\n 문의 가능 시간 09시 - 17시 (점심 시간 12시 - 13시) \n 주말, 공휴일 09시 - 15시"
+    }
+   ],
+   "approved_source_urls": [
+    "http://www.maronnewday.com/",
+    "http://www.maronnewday.com/html/guide02.asp"
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": {
+     "condition": "",
+     "fee_team_krw": 160000,
+     "source_url": "http://www.maronnewday.com/html/guide02.asp",
+     "quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+     "verified_quote": true
+    },
+    "cart_fee": {
+     "condition": "",
+     "fee_team_krw": 100000,
+     "source_url": "http://www.maronnewday.com/html/guide02.asp",
+     "quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+     "verified_quote": true
+    },
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": "이용요금은 월별 이용요금 공지 참조. 이용요금에는 클럽하우스 등 시설이용에 따른 기본요금 3만원이 포함.",
+    "phone": {
+     "value": "041-623-5500",
+     "source_url": "http://www.maronnewday.com/html/guide02.asp",
+     "quote": "프론트 041-623-5500 예약실 041-623-5555 \n 마론컨트리클럽 충남 천안시 동남구 북면 납안5길 74 정동레저산업(주) \n 사업자등록번호 :156-86-01761 TEL : 041-623-5500 FAX : 041-623-5599",
+     "condition": "프론트/대표번호",
+     "verified_quote": true
+    },
+    "course_description": null
+   },
+   "usage": {
+    "input_tokens": 6941,
+    "output_tokens": 510
+   },
+   "seconds": 35.2
+  },
+  {
+   "id": "vworld_링크나인",
+   "name": "링크나인골프클럽",
+   "area": "수도권",
+   "official_url": "https://www.linknine.co.kr/",
+   "status": "pending_review",
+   "observed_at": "2026-10-01",
+   "schema_version": 2,
+   "identity_verified": false,
+   "browser_pages": 2,
+   "pages": [
+    {
+     "url": "https://www.linknine.co.kr/",
+     "chars": 925
+    },
+    {
+     "url": "https://www.linknine.co.kr/admin/board/news/img/26.9%EC%88%98.jpg",
+     "chars": 21
+    }
+   ],
+   "page_evidence": [
+    {
+     "url": "https://www.linknine.co.kr/",
+     "text": "링크나인 골프클럽에 오신것을 환영합니다 \n 오늘 하루 동안 보이지 않기 × CLOSE \n 1 \n 2 \n 3 \n 4 \n 로그인 폼 \n 아이디저장 \n | \n 아이디/비번찾기 \n | \n 회원가입 \n 2026.10 \n 미니캘린더 \n 일 | \n 월 | \n 화 | \n 수 | \n 목 | \n 금 | \n 토 | \n | \n | \n | \n | \n 01 | \n 02 | \n 03 | \n 04 | \n 05 | \n 06 | \n 07 | \n 08 | \n 09 | \n 10 | \n 11 | \n 12 | \n 13 | \n 14 | \n 15 | \n 16 | \n 17 | \n 18 | \n 19 | \n 20 | \n 21 | \n 22 | \n 23 | \n 24 | \n 25 | \n 26 | \n 27 | \n 28 | \n 29 | \n 30 | \n 31 | \n | \n | \n | \n | \n | \n | \n | \n [2026-09-20] 2026년 10월 고객 감사 이벤트 \n [2026-09-20] 2026년 10월 그린피 안내 \n [2026-08-23] 2026년 극한 폭염 극복! 링크나인 잔디~ \n [2026-08-20] 2026년 9월 한가위 이벤트! \n [2026-08-20] 2026년 9월 그린피 안내 \n [2026-09-15] 원정연 이글 \n [2026-09-06] 장경섭 홀인원 \n [2026-09-03] 정진교 홀인원 \n [2026-08-30] 조수형 홀인원 \n [2026-08-27] 임순민 홀인원 \n 개인정보처리방침 | \n 이메일무단수집거부 \n 경기도 화성시 만세구 마도면 해운로 630번길 49(링크나인gc) 주)금당개발 | 대표자 : 김상두,김창영 | 사업자등록번호 : 124-86-12368\n | Tel : 031-831-0900 | Fax : 031-831-0912 \n Copyright (c) LINKNINE COUNTRY CLUB. All Right Reserved."
+    },
+    {
+     "url": "https://www.linknine.co.kr/admin/board/news/img/26.9%EC%88%98.jpg",
+     "text": "26.9수.jpg (1010×1357)"
+    }
+   ],
+   "approved_source_urls": [
+    "https://www.linknine.co.kr/",
+    "https://www.linknine.co.kr/admin/board/news/img/26.9%EC%88%98.jpg"
+   ],
+   "images": [],
+   "extraction": {
+    "green_fees": [],
+    "caddie_fee": null,
+    "cart_fee": null,
+    "caddie_mode": "unknown",
+    "caddie_mode_quote": "",
+    "three_person": null,
+    "two_person": null,
+    "night_round": null,
+    "notes": "",
+    "phone": {
+     "value": "031-831-0900",
+     "source_url": "https://www.linknine.co.kr/",
+     "quote": "경기도 화성시 만세구 마도면 해운로 630번길 49(링크나인gc) 주)금당개발 | 대표자 : 김상두,김창영 | 사업자등록번호 : 124-86-12368 | Tel : 031-831-0900 | Fax : 031-831-0912",
+     "condition": "",
+     "verified_quote": true
+    },
+    "course_description": null
+   },
+   "usage": {
+    "input_tokens": 5152,
+    "output_tokens": 229
+   },
+   "seconds": 40.7
+  }
+ ]
+}

@@ -11035,7 +11035,7 @@
      "operations.cart.fee_team",
      "pricing.fee_records"
     ],
-    "checked_at": "2026-09-24"
+    "checked_at": "2026-10-01"
    }
   ],
   "automation": {
@@ -11242,9 +11242,164 @@
       }
      ],
      "recorded_at": "2026-09-24"
+    },
+    {
+     "field": "phone",
+     "previous": "031-376-4001",
+     "value": "031-376-4001",
+     "previous_evidence": {
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "evidence_quote": "화성시 골프장 주소 옆 대표전화. 서울 본사 전화와 구분.",
+      "checked_at": "2026-09-24",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source"
+     },
+     "evidence": {
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "evidence_quote": "경기도 화성시 동탄구 풀무골로 106번길 244 (신동) 우)18465 ㅣ 대표번호: 031-376-4001(代)",
+      "checked_at": "2026-10-01",
+      "confidence": "official_homepage_extracted_quote_verified",
+      "method": "exact_page_quote",
+      "condition": "",
+      "evidence_type": "excerpt"
+     },
+     "recorded_at": "2026-10-01"
     }
    ],
-   "candidates": [],
+   "candidates": [
+    {
+     "field": "operations.caddie.fee_team",
+     "value": 150000,
+     "source": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "evidence": "＊도우미 봉사료: 150,000원(18홀기준)",
+     "confidence": "needs_review",
+     "condition": "18홀 기준 도우미 봉사료",
+     "observed_at": "2026-10-01",
+     "reason": "unverified_or_conditional",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "06f7014b97df40649a01c0b67e43716b1e31b8bf9c9bc92976d5c1a38a33e6ef"
+    },
+    {
+     "field": "operations.cart.fee_team",
+     "value": 100000,
+     "source": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "evidence": "카트이용료 (단위:원) 구분 | 5인승전동카트 | 카트료 | 100,000 (카트 1대당 이용요금) |",
+     "confidence": "needs_review",
+     "condition": "5인승 전동카트, 카트 1대당 이용요금",
+     "observed_at": "2026-10-01",
+     "reason": "unverified_or_conditional",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "d5bd21ab5d8493633c7ca78fdc0a33e510e9647eafce8bee7a18a6f392edfe54"
+    },
+    {
+     "field": "pricing.fee_records",
+     "value": {
+      "condition": "지명예우자(F)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekday",
+      "session": "all",
+      "customer": "unknown",
+      "holes": 18,
+      "price_krw": 95000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "지명예우자(F) | 95,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     "source": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "evidence": "지명예우자(F) | 95,000 | 300,000 |",
+     "confidence": "needs_review",
+     "condition": "지명예우자(F)",
+     "observed_at": "2026-10-01",
+     "reason": "fee_scope_review",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "edbee0cea158ff09117c2d79798c6938be77bf1f45f6588a39cbca1df78182ab"
+    },
+    {
+     "field": "pricing.fee_records",
+     "value": {
+      "condition": "지명예우자(F)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekend",
+      "session": "all",
+      "customer": "unknown",
+      "holes": 18,
+      "price_krw": 300000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "지명예우자(F) | 95,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     "source": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "evidence": "지명예우자(F) | 95,000 | 300,000 |",
+     "confidence": "needs_review",
+     "condition": "지명예우자(F)",
+     "observed_at": "2026-10-01",
+     "reason": "fee_scope_review",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "ba9012f738b5639ca2b08923d28fae44b0fe6a8847dfe861193e5640d52d4a1e"
+    },
+    {
+     "field": "pricing.fee_records",
+     "value": {
+      "condition": "비회원(V)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekday",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 230000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "비회원(V) | 230,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     "source": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "evidence": "비회원(V) | 230,000 | 300,000 |",
+     "confidence": "needs_review",
+     "condition": "비회원(V)",
+     "observed_at": "2026-10-01",
+     "reason": "fee_scope_review",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "64a4e79fea48b05d8032269e71ff098cd3e37c64e7e99ebc981c592d27fcd3ee"
+    },
+    {
+     "field": "pricing.fee_records",
+     "value": {
+      "condition": "비회원(V)",
+      "valid_from": null,
+      "valid_to": null,
+      "day": "weekend",
+      "session": "all",
+      "customer": "nonmember",
+      "holes": 18,
+      "price_krw": 300000,
+      "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+      "quote": "비회원(V) | 230,000 | 300,000 |",
+      "verified_quote": true,
+      "from_image": false
+     },
+     "source": "https://www.ghcc.kr/mobile/manage/manage02.asp",
+     "evidence": "비회원(V) | 230,000 | 300,000 |",
+     "confidence": "needs_review",
+     "condition": "비회원(V)",
+     "observed_at": "2026-10-01",
+     "reason": "fee_scope_review",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "c553edbc1c8edc569d1abb5feca257ae035b8687c2858477928b6605f82035e5"
+    }
+   ],
    "approved_source_urls": [
     "https://www.ghcc.kr/mobile/manage/manage02.asp"
    ]
@@ -11252,12 +11407,12 @@
   "field_evidence": {
    "phone": {
     "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
-    "evidence_quote": "화성시 골프장 주소 옆 대표전화. 서울 본사 전화와 구분.",
-    "checked_at": "2026-09-24",
-    "confidence": "official_source_human_reviewed",
-    "method": "human_official_source",
+    "evidence_quote": "경기도 화성시 동탄구 풀무골로 106번길 244 (신동) 우)18465 ㅣ 대표번호: 031-376-4001(代)",
+    "checked_at": "2026-10-01",
+    "confidence": "official_homepage_extracted_quote_verified",
+    "method": "exact_page_quote",
     "condition": "",
-    "evidence_type": "paraphrase_of_observed_source"
+    "evidence_type": "excerpt"
    },
    "operations.caddie.fee_team": {
     "source_url": "https://www.ghcc.kr/mobile/manage/manage02.asp",
@@ -12587,7 +12742,7 @@
    {
     "source_type": "official_homepage",
     "source_url": "https://www.linknine.co.kr/",
-    "checked_at": "2026-09-24",
+    "checked_at": "2026-10-01",
     "confidence": "confirmed",
     "fields": [
      "official_name",
@@ -12758,6 +12913,30 @@
       "fresh_until": "2026-12-23"
      },
      "recorded_at": "2026-09-24"
+    },
+    {
+     "field": "phone",
+     "previous": "031-831-0900",
+     "value": "031-831-0900",
+     "previous_evidence": {
+      "source_url": "https://www.linknine.co.kr/",
+      "evidence_quote": "자 : 김상두,김창영 | 사업자등록번호 : 124-86-12368 | Tel : 031-831-0900 | Fax : 031-831-0912 Copyright (c)",
+      "checked_at": "2026-09-24",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "excerpt"
+     },
+     "evidence": {
+      "source_url": "https://www.linknine.co.kr/",
+      "evidence_quote": "경기도 화성시 만세구 마도면 해운로 630번길 49(링크나인gc) 주)금당개발 | 대표자 : 김상두,김창영 | 사업자등록번호 : 124-86-12368 | Tel : 031-831-0900 | Fax : 031-831-0912",
+      "checked_at": "2026-10-01",
+      "confidence": "official_homepage_extracted_quote_verified",
+      "method": "exact_page_quote",
+      "condition": "",
+      "evidence_type": "excerpt"
+     },
+     "recorded_at": "2026-10-01"
     }
    ],
    "candidates": [
@@ -12836,10 +13015,10 @@
   "field_evidence": {
    "phone": {
     "source_url": "https://www.linknine.co.kr/",
-    "evidence_quote": "자 : 김상두,김창영 | 사업자등록번호 : 124-86-12368 | Tel : 031-831-0900 | Fax : 031-831-0912 Copyright (c)",
-    "checked_at": "2026-09-24",
-    "confidence": "official_source_human_reviewed",
-    "method": "human_official_source",
+    "evidence_quote": "경기도 화성시 만세구 마도면 해운로 630번길 49(링크나인gc) 주)금당개발 | 대표자 : 김상두,김창영 | 사업자등록번호 : 124-86-12368 | Tel : 031-831-0900 | Fax : 031-831-0912",
+    "checked_at": "2026-10-01",
+    "confidence": "official_homepage_extracted_quote_verified",
+    "method": "exact_page_quote",
     "condition": "",
     "evidence_type": "excerpt"
    },
@@ -70243,25 +70422,25 @@
     "fee_team": 160000,
     "conditions": [],
     "source_url": "http://www.maronnewday.com/html/guide02.asp",
-    "evidence_quote": "공식 일반 이용요금의 캐디피 160,000원. 18홀 중도정산 안내와 구분.",
-    "checked_at": "2026-09-25",
-    "confidence": "official_source_human_reviewed",
-    "method": "human_official_source",
+    "evidence_quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+    "checked_at": "2026-10-01",
+    "confidence": "official_homepage_extracted_quote_verified",
+    "method": "exact_page_quote",
     "condition": "",
-    "evidence_type": "paraphrase_of_observed_source",
-    "fresh_until": "2026-12-24"
+    "evidence_type": "excerpt",
+    "fresh_until": "2026-12-30"
    },
    "cart": {
     "fee_team": 100000,
     "conditions": [],
     "source_url": "http://www.maronnewday.com/html/guide02.asp",
-    "evidence_quote": "공식 일반 이용요금의 카트비 100,000원. 18홀 중도정산 안내와 구분.",
-    "checked_at": "2026-09-25",
-    "confidence": "official_source_human_reviewed",
-    "method": "human_official_source",
+    "evidence_quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+    "checked_at": "2026-10-01",
+    "confidence": "official_homepage_extracted_quote_verified",
+    "method": "exact_page_quote",
     "condition": "",
-    "evidence_type": "paraphrase_of_observed_source",
-    "fresh_until": "2026-12-24"
+    "evidence_type": "excerpt",
+    "fresh_until": "2026-12-30"
    }
   },
   "pricing": {
@@ -70298,7 +70477,7 @@
      "operations.caddie.fee_team",
      "operations.cart.fee_team"
     ],
-    "checked_at": "2026-09-25"
+    "checked_at": "2026-10-01"
    }
   ],
   "automation": {
@@ -70472,9 +70651,75 @@
       "fresh_until": "2026-12-24"
      },
      "recorded_at": "2026-09-25"
+    },
+    {
+     "field": "operations.caddie.fee_team",
+     "previous": 160000,
+     "value": 160000,
+     "previous_evidence": {
+      "source_url": "http://www.maronnewday.com/html/guide02.asp",
+      "evidence_quote": "공식 일반 이용요금의 캐디피 160,000원. 18홀 중도정산 안내와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source",
+      "fresh_until": "2026-12-24"
+     },
+     "evidence": {
+      "source_url": "http://www.maronnewday.com/html/guide02.asp",
+      "evidence_quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+      "checked_at": "2026-10-01",
+      "confidence": "official_homepage_extracted_quote_verified",
+      "method": "exact_page_quote",
+      "condition": "",
+      "evidence_type": "excerpt",
+      "fresh_until": "2026-12-30"
+     },
+     "recorded_at": "2026-10-01"
+    },
+    {
+     "field": "operations.cart.fee_team",
+     "previous": 100000,
+     "value": 100000,
+     "previous_evidence": {
+      "source_url": "http://www.maronnewday.com/html/guide02.asp",
+      "evidence_quote": "공식 일반 이용요금의 카트비 100,000원. 18홀 중도정산 안내와 구분.",
+      "checked_at": "2026-09-25",
+      "confidence": "official_source_human_reviewed",
+      "method": "human_official_source",
+      "condition": "",
+      "evidence_type": "paraphrase_of_observed_source",
+      "fresh_until": "2026-12-24"
+     },
+     "evidence": {
+      "source_url": "http://www.maronnewday.com/html/guide02.asp",
+      "evidence_quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+      "checked_at": "2026-10-01",
+      "confidence": "official_homepage_extracted_quote_verified",
+      "method": "exact_page_quote",
+      "condition": "",
+      "evidence_type": "excerpt",
+      "fresh_until": "2026-12-30"
+     },
+     "recorded_at": "2026-10-01"
     }
    ],
-   "candidates": [],
+   "candidates": [
+    {
+     "field": "phone",
+     "value": "041-623-5500",
+     "source": "http://www.maronnewday.com/html/guide02.asp",
+     "evidence": "프론트 041-623-5500 예약실 041-623-5555 \n 마론컨트리클럽 충남 천안시 동남구 북면 납안5길 74 정동레저산업(주) \n 사업자등록번호 :156-86-01761 TEL : 041-623-5500 FAX : 041-623-5599",
+     "confidence": "needs_review",
+     "condition": "프론트/대표번호",
+     "observed_at": "2026-10-01",
+     "reason": "unverified_or_conditional",
+     "valid_from": null,
+     "valid_to": null,
+     "fingerprint": "61378bc3de584c631f8a359cc461a8a530fe8c0664c5f244bb8601f22dbabd1a"
+    }
+   ],
    "approved_source_urls": [
     "http://www.maronnewday.com/",
     "http://www.maronnewday.com/html/guide02.asp"
@@ -70492,23 +70737,23 @@
    },
    "operations.caddie.fee_team": {
     "source_url": "http://www.maronnewday.com/html/guide02.asp",
-    "evidence_quote": "공식 일반 이용요금의 캐디피 160,000원. 18홀 중도정산 안내와 구분.",
-    "checked_at": "2026-09-25",
-    "confidence": "official_source_human_reviewed",
-    "method": "human_official_source",
+    "evidence_quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+    "checked_at": "2026-10-01",
+    "confidence": "official_homepage_extracted_quote_verified",
+    "method": "exact_page_quote",
     "condition": "",
-    "evidence_type": "paraphrase_of_observed_source",
-    "fresh_until": "2026-12-24"
+    "evidence_type": "excerpt",
+    "fresh_until": "2026-12-30"
    },
    "operations.cart.fee_team": {
     "source_url": "http://www.maronnewday.com/html/guide02.asp",
-    "evidence_quote": "공식 일반 이용요금의 카트비 100,000원. 18홀 중도정산 안내와 구분.",
-    "checked_at": "2026-09-25",
-    "confidence": "official_source_human_reviewed",
-    "method": "human_official_source",
+    "evidence_quote": "이용요금 | 월별 이용요금 공지 참조 | 카트비 | 100,000원 | 캐디피 | 160,000원 |",
+    "checked_at": "2026-10-01",
+    "confidence": "official_homepage_extracted_quote_verified",
+    "method": "exact_page_quote",
     "condition": "",
-    "evidence_type": "paraphrase_of_observed_source",
-    "fresh_until": "2026-12-24"
+    "evidence_type": "excerpt",
+    "fresh_until": "2026-12-30"
    }
   }
  },
