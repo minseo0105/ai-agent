@@ -5,6 +5,7 @@ ASSOCIATION_APPROVED, UNKNOWN_OFFICIAL_COLUMN). None of that belongs on screen,
 and neither does a claim the evidence does not support: a stage read from an
 official list is shown as list-based, never as confirmed.
 """
+import math
 import re
 
 from services.development_official import STATUS_FROM_STAGE, STATUS_HYPOTHESIS, normalize_stage
@@ -177,41 +178,41 @@ def stage_guide(normalized_stage):
             'interpreted': bool(known), 'checks_note': BUYER_CHECK_NOTE}
 
 
-# ---------------------------------------------------------------------------
-# 네이버부동산 연결. 지금은 링크를 만들지 않는다.
-#
-# 이 프로젝트에서 실제로 동작이 확인된 네이버 링크는 두 가지뿐이고, 둘 다 이 화면에
-# 쓸 수 없다.
-#   * services.realestate_monitor.build_naver_land_url —
-#     m.land.naver.com/search/result/<검색어>. 운영에서 쓰이지만 검색어가 '잠실엘스
-#     아파트'처럼 단지명이다. 개발사업이 가진 것은 '천호동 423-200' 같은 지번이고,
-#     지번을 이 경로에 넣으면 엉뚱한 결과나 빈 화면이 된다(840a9dc의 실패 원인).
-#   * services.golf_service — map.naver.com/p/search/<검색어>. 네이버 지도이고
-#     네이버부동산이 아니다.
-#
-# 좌표를 중심으로 네이버부동산 지도를 여는 URL 구조는 이 저장소 어디에도 없고,
-# land.naver.com / new.land.naver.com / m.land.naver.com은 이 환경에서 접근할 수
-# 없어(HTTP 000) 형식을 확인할 수 없다. 확인하지 못한 파라미터를 넣으면 깨진 링크나
-# 엉뚱한 위치가 되므로, 추측 대신 링크를 제공하지 않는다. 화면은 버튼을 감추고
-# 이유를 적는다.
-#
-# 형식이 확인되면 아래 함수 하나만 고치면 된다. 호출부(present_project,
-# DevelopmentCard)는 이미 None을 다루고 있어 수정이 필요 없다.
-# 폴리곤 centroid는 쓰지 않는다. MultiPolygon이나 오목한 구역에서는 centroid가 구역
-# 밖에 놓일 수 있다.
-# ---------------------------------------------------------------------------
+# Npay center codec verified from deployed encodeCoordBase62/encodeCenter (2026-10-02).
+# https://property.pstatic.net/property-web/_next/static/chunks/1-26_9ph0tst0.js
+# https://property.pstatic.net/property-web/_next/static/chunks/1nkccqtmcs5eu.js
+# Stored longitude/latitude only; no address lookup or polygon centroid.
 NAVER_LINK_UNAVAILABLE = 'NAVER_LAND_DEEPLINK_FORMAT_UNVERIFIED'
-NO_LOCATION_LINK_NOTE = ('네이버부동산 지도를 이 사업 위치로 여는 링크 형식을 확인하지 '
-                         '못해 연결을 제공하지 않습니다.')
+NO_LOCATION_LINK_NOTE = '유효한 사업 좌표가 없어 네이버부동산 연결은 준비 중입니다.'
 
 
 def naver_real_estate_link(row):
-    """네이버부동산 링크. 확인된 deep-link 형식이 없으므로 항상 None이다.
+    """유효한 저장 좌표가 있을 때만 해당 위치의 Npay 부동산 지도를 연다."""
+    latitude, longitude = row.get('latitude'), row.get('longitude')
+    for value, limit in ((latitude, 90), (longitude, 180)):
+        if (isinstance(value, bool) or not isinstance(value, (int, float))
+                or not -limit <= value <= limit or not math.isfinite(value)):
+            return None
+    center = f'{_encode_npay_coordinate(longitude)}-{_encode_npay_coordinate(latitude)}'
+    return {
+        'url': f'https://fin.land.naver.com/map?center={center}&zoom=17',
+        'label': '네이버부동산에서 보기',
+        'basis': 'PROJECT_COORDINATES',
+        'search_query': f'위도 {latitude}, 경도 {longitude}',
+        'destination': 'NPAY_MAP',
+        'note': '저장된 사업 대표좌표 위치의 Npay 부동산 지도를 새 탭에서 엽니다.',
+    }
 
-    틀린 위치로 보내는 것보다 연결하지 않는 것이 낫다. 좌표나 주소를 검증되지 않은
-    URL 경로에 끼워 넣지 않는다.
-    """
-    return None
+
+def _encode_npay_coordinate(coordinate):
+    # Python round 대신 JavaScript Math.round와 같은 반올림 규칙을 쓴다.
+    alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    value = math.floor(coordinate * 10_000_000 + 0.5) + 2_000_000_000
+    encoded = ''
+    while value:
+        value, digit = divmod(value, 62)
+        encoded = alphabet[digit] + encoded
+    return encoded or '0'
 
 
 def stage_label(normalized_stage, raw_stage=None):

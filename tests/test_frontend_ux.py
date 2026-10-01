@@ -447,16 +447,44 @@ class StageGuideScreenTests(unittest.TestCase):
 
 
 class NaverLinkTests(unittest.TestCase):
-    """확인되지 않은 deep-link 형식으로는 링크를 만들지 않는다."""
+    """검증된 Npay 인코딩으로 저장 좌표만 연결한다."""
 
     LOCATED = {'address': '서울특별시 강동구 천호동 423-200', 'sigungu': '강동구',
                'dong': '천호동', 'latitude': 37.5401, 'longitude': 127.1238}
 
-    def test_no_link_is_produced_at_all(self):
-        # 좌표가 있어도 없어도 같다. 틀린 곳으로 보내는 것보다 연결하지 않는 쪽이다.
-        for row in (self.LOCATED, {'address': '서울특별시 송파구 잠실동 101-1'},
+    def test_verified_coordinate_examples(self):
+        for latitude, longitude, center in (
+            (37.5666103, 126.9783882, '3zhG9I-2AM3hd'),
+            (37.5414444, 127.1269883, '3znUJt-2AKZOc'),
+        ):
+            with self.subTest(center=center):
+                row = {'latitude': latitude, 'longitude': longitude}
+                link = pr.naver_real_estate_link(row)
+                self.assertEqual(link['url'],
+                                 f'https://fin.land.naver.com/map?center={center}&zoom=17')
+                self.assertEqual(link['label'], '네이버부동산에서 보기')
+                self.assertEqual(pr.present_project(row)['naver_real_estate'], link)
+
+    def test_missing_coordinates_produce_no_link(self):
+        for row in ({'latitude': None, 'longitude': None},
+                    {'latitude': 37.5666103}, {'longitude': 126.9783882},
+                    {'address': '서울특별시 송파구 잠실동 101-1'},
                     {'sigungu': '송파구', 'dong': '마천동'}, {}):
             self.assertIsNone(pr.naver_real_estate_link(row), row)
+
+    def test_invalid_coordinates_produce_no_link(self):
+        for bad in (None, True, False, '37.5', '', float('nan'), float('inf'),
+                    -float('inf'), 181, -181, 10**1000):
+            for field in ('latitude', 'longitude'):
+                row = dict(self.LOCATED, **{field: bad})
+                with self.subTest(field=field, value=str(bad)):
+                    self.assertIsNone(pr.naver_real_estate_link(row))
+        for latitude in (-90.1, 90.1):
+            self.assertIsNone(pr.naver_real_estate_link(dict(self.LOCATED, latitude=latitude)))
+
+    def test_address_does_not_change_the_link(self):
+        self.assertEqual(pr.naver_real_estate_link(self.LOCATED),
+                         pr.naver_real_estate_link(dict(self.LOCATED, address='다른 주소')))
 
     def test_the_rejected_search_path_is_gone(self):
         source = (ROOT / 'services/development_presentation.py').read_text(encoding='utf-8')
@@ -473,20 +501,18 @@ class NaverLinkTests(unittest.TestCase):
         code = '\n'.join(line for line in source.splitlines()
                          if not line.lstrip().startswith('#'))
         for guessed in ('complexNo', 'complex_id', 'articleNo', 'lat=', 'lon=', 'lng=',
-                        'center=', 'zoom=', '?ms='):
+                        'layer=', 'front-api', '?ms='):
             self.assertNotIn(guessed, code, guessed)
 
     def test_the_reason_is_recorded_in_the_code(self):
         self.assertEqual(pr.NAVER_LINK_UNAVAILABLE, 'NAVER_LAND_DEEPLINK_FORMAT_UNVERIFIED')
         source = (ROOT / 'services/development_presentation.py').read_text(encoding='utf-8')
-        block = source[source.index('# 네이버부동산 연결.'):source.index('def stage_label(')]
-        self.assertIn('build_naver_land_url', block)
-        self.assertIn('map.naver.com/p/search', block)
+        self.assertIn('NO_LOCATION_LINK_NOTE', source)
+        self.assertIsNone(pr.naver_real_estate_link({}))
 
     def test_no_centroid_is_computed_for_the_link(self):
         source = (ROOT / 'services/development_presentation.py').read_text(encoding='utf-8')
-        block = source[source.index('# 네이버부동산 연결.'):source.index('def stage_label(')]
-        self.assertIn('centroid는 쓰지 않는다', block)
+        block = source[source.index('# Npay center codec'):source.index('def stage_label(')]
         self.assertNotIn('centroid(', block)
 
     def test_the_card_explains_the_missing_button(self):
@@ -652,5 +678,7 @@ class MapCardApiBehaviourTests(unittest.TestCase):
     def test_every_card_that_has_a_location_gets_a_neighbourhood_link(self):
         result = self.call(include_completed=True)
         for row in result['projects']:
-            # 자치구는 있지만 법정동이 없으면 링크를 만들지 않는다.
-            self.assertIsNone(row['naver_real_estate'])
+            self.assertEqual(row['naver_real_estate'], pr.naver_real_estate_link(row))
+            if row['latitude'] is not None and row['longitude'] is not None:
+                self.assertTrue(row['naver_real_estate']['url'].startswith(
+                    'https://fin.land.naver.com/map?center='))
