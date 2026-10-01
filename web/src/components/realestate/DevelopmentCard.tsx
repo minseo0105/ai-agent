@@ -176,16 +176,15 @@ export default function DevelopmentCard({
         )}
       </div>
 
-      {/* 어느 위치로 열리는지 적는다. 그리고 위치를 특정할 수 없으면 그 사실을 적는다 —
-          버튼이 없는 이유를 모르는 것이 가장 나쁘다. */}
+      {/* 연결이 없으면 왜 없는지 적는다. 버튼이 사라진 이유를 모르는 것이 가장 나쁘다.
+          서버가 확인된 링크 형식을 갖출 때까지 이 자리에는 안내만 남는다. */}
       {project.naver_real_estate ? (
         <p className="mt-1 break-words text-[11px] text-subtle">
           연결 위치: {project.naver_real_estate.search_query}
-          {!project.naver_real_estate.coordinate_verified && " · 좌표 확인 중"}
         </p>
       ) : (
         <p className="mt-1 break-words text-[11px] text-subtle">
-          위치를 특정할 수 없어 네이버부동산으로 연결하지 않습니다.
+          네이버부동산 연결은 준비 중입니다. 위 지도에서 이 사업의 위치를 확인할 수 있어요.
         </p>
       )}
 

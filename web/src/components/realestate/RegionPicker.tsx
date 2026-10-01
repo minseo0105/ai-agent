@@ -50,7 +50,7 @@ export default function RegionPicker({
           <>
             {selectWholeScope && (
               <button type="button" onClick={() => onChange(all)} className={`${CHIP} border border-border text-muted hover:text-fg`}>
-                서울·경기 전체
+                {scopes.join("·")} 전체
               </button>
             )}
             <button type="button" onClick={() => setOpen(true)} className={`${CHIP} bg-estate px-3.5 text-white`}>
@@ -90,7 +90,8 @@ export default function RegionPicker({
           className={`${inputClass} min-w-0 flex-1 py-1.5`}
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="구·시 검색"
+          // 고를 수 있는 범위가 하나면 그 범위만 검색한다고 적는다.
+          placeholder={scopes.length > 1 ? "구·시 검색" : `${active} 자치구 검색`}
           aria-label="지역 검색"
         />
       </div>

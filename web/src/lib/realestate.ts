@@ -174,7 +174,13 @@ export type DevelopmentProject = {
     interpreted: boolean;
     checks_note: string;
   } | null;
-  /** 사업구역 주변 매물 탐색 링크. 위치 근거가 없으면 null이다. */
+  /**
+   * 사업 위치로 가는 네이버부동산 링크.
+   *
+   * 확인된 deep-link 형식이 없는 동안 서버는 항상 null을 준다. 추측한 URL을 내려주는
+   * 것보다 연결하지 않는 쪽이 낫기 때문이다. 형식이 확인되면 서버만 바뀌고 이 모양은
+   * 그대로 쓰인다.
+   */
   naver_real_estate: {
     url: string;
     label: string;
@@ -182,8 +188,6 @@ export type DevelopmentProject = {
     /** 링크가 열어 주는 위치. 화면에 함께 보여 준다. */
     search_query: string;
     destination: string;
-    /** 검증된 좌표를 가진 사업인지. 좌표 자체는 URL에 싣지 않는다. */
-    coordinate_verified: boolean;
     note: string;
   } | null;
   spatial: { code: string; label: string; confirmed_boundary: boolean };

@@ -6,7 +6,6 @@ and neither does a claim the evidence does not support: a stage read from an
 official list is shown as list-based, never as confirmed.
 """
 import re
-from urllib.parse import quote
 
 from services.development_official import STATUS_FROM_STAGE, STATUS_HYPOTHESIS, normalize_stage
 from services.development_stage import observation, stage_view, DESCRIPTIONS
@@ -179,79 +178,40 @@ def stage_guide(normalized_stage):
 
 
 # ---------------------------------------------------------------------------
-# 네이버부동산 연결.
+# 네이버부동산 연결. 지금은 링크를 만들지 않는다.
 #
-# 목적은 "이 사업구역 주변의 실제 매물을 보러 가기"다. 특정 아파트 단지로 보내는 것이
-# 아니다. 재개발·재건축·모아타운 사업이 어느 한 단지와 1:1이라고 가정하지 않으며,
-# 단지 ID를 지어내지 않는다.
+# 이 프로젝트에서 실제로 동작이 확인된 네이버 링크는 두 가지뿐이고, 둘 다 이 화면에
+# 쓸 수 없다.
+#   * services.realestate_monitor.build_naver_land_url —
+#     m.land.naver.com/search/result/<검색어>. 운영에서 쓰이지만 검색어가 '잠실엘스
+#     아파트'처럼 단지명이다. 개발사업이 가진 것은 '천호동 423-200' 같은 지번이고,
+#     지번을 이 경로에 넣으면 엉뚱한 결과나 빈 화면이 된다(840a9dc의 실패 원인).
+#   * services.golf_service — map.naver.com/p/search/<검색어>. 네이버 지도이고
+#     네이버부동산이 아니다.
 #
-# 목적지는 네이버 부동산 서비스다. 예전에는 통합검색(search.naver.com)으로 보냈는데,
-# 버튼에 '네이버부동산에서 보기'라고 적어 두고 다른 곳으로 보내는 것은 사용자를 속이는
-# 것이다. 그래서 통합검색 경로는 없앴다.
+# 좌표를 중심으로 네이버부동산 지도를 여는 URL 구조는 이 저장소 어디에도 없고,
+# land.naver.com / new.land.naver.com / m.land.naver.com은 이 환경에서 접근할 수
+# 없어(HTTP 000) 형식을 확인할 수 없다. 확인하지 못한 파라미터를 넣으면 깨진 링크나
+# 엉뚱한 위치가 되므로, 추측 대신 링크를 제공하지 않는다. 화면은 버튼을 감추고
+# 이유를 적는다.
 #
-# 좌표를 URL에 넣어 지도를 바로 여는 형식(center/zoom 등)은 이 실행환경에서
-# 네이버부동산 연결. URL 형식을 새로 추측하지 않는다. 이 서비스의 실거래 화면이
-# 운영에서 쓰고 있는 경로(services.realestate_monitor.build_naver_land_url)와 같은
-# 검색결과 경로를 쓴다. 확인된 적 없는 좌표 deep-link 파라미터는 만들지 않는다.
-#
+# 형식이 확인되면 아래 함수 하나만 고치면 된다. 호출부(present_project,
+# DevelopmentCard)는 이미 None을 다루고 있어 수정이 필요 없다.
 # 폴리곤 centroid는 쓰지 않는다. MultiPolygon이나 오목한 구역에서는 centroid가 구역
-# 밖에 놓일 수 있다. 위치는 검증된 좌표의 대표주소를 쓰고, 근거가 없으면 링크를 만들지
-# 않는다 — 엉뚱한 지역으로 보내는 것보다 연결하지 않는 것이 낫다.
+# 밖에 놓일 수 있다.
 # ---------------------------------------------------------------------------
-NAVER_LAND_SEARCH = 'https://m.land.naver.com/search/result/'
-NAVER_LINK_LABEL = '네이버부동산에서 이 위치 보기'
-NAVER_LINK_LABEL_DONG = '네이버부동산에서 이 동네 보기'
-NO_LOCATION_LINK_NOTE = '위치를 특정할 수 없어 네이버부동산으로 연결하지 않습니다.'
-
-
-def _place_query(district, dong, address):
-    """네이버부동산 검색에 넣을 지역 문자열. 실거래 링크와 같은 조립 방식이다.
-
-    '서울특별시'는 넣지 않는다(실거래 링크도 자치구부터 시작한다). 번지는 주소에
-    실제로 있을 때만 붙이고, 없는 값을 만들어 넣지 않는다.
-    """
-    text = re.sub(r'\s+', ' ', str(address or '')).strip()
-    text = re.sub(r'^서울특별시\s*', '', text)
-    lot = re.search(r'(\d+(?:-\d+)?)(?=\s|$)', text)
-    parts = [district, dong]
-    if lot and dong and dong in text:
-        parts.append(lot.group(1))
-    return ' '.join(part for part in parts if part)
+NAVER_LINK_UNAVAILABLE = 'NAVER_LAND_DEEPLINK_FORMAT_UNVERIFIED'
+NO_LOCATION_LINK_NOTE = ('네이버부동산 지도를 이 사업 위치로 여는 링크 형식을 확인하지 '
+                         '못해 연결을 제공하지 않습니다.')
 
 
 def naver_real_estate_link(row):
-    """이 사업의 위치로 가는 네이버부동산 링크. 근거가 없으면 None.
+    """네이버부동산 링크. 확인된 deep-link 형식이 없으므로 항상 None이다.
 
-    basis: VERIFIED_LOCATION(검증된 좌표를 가진 사업의 대표주소)
-         → ADDRESS(대표주소) → DISTRICT_DONG(자치구+법정동) → 없으면 링크 없음.
-
-    검증된 좌표가 있어도 좌표를 URL에 싣지 않는다. 좌표 중심 지도를 여는 파라미터
-    형식을 이 환경에서 확인할 수 없었고, 확인하지 못한 형식을 넣으면 깨진 링크나
-    엉뚱한 위치가 된다. 좌표는 그 사업의 대표주소가 지오코더에서 자치구·동·번지까지
-    정확히 일치했다는 뜻이므로, 그 주소로 검색하면 같은 자리가 열린다.
+    틀린 위치로 보내는 것보다 연결하지 않는 것이 낫다. 좌표나 주소를 검증되지 않은
+    URL 경로에 끼워 넣지 않는다.
     """
-    address = str(row.get('address') or '').strip()
-    district = str(row.get('sigungu') or row.get('district') or '').strip()
-    dong = str(row.get('dong') or '').strip()
-    latitude, longitude = row.get('latitude'), row.get('longitude')
-    located = isinstance(latitude, (int, float)) and isinstance(longitude, (int, float))
-    if address and district:
-        query = _place_query(district, dong, address)
-        basis = 'VERIFIED_LOCATION' if located else 'ADDRESS'
-    elif district and dong:
-        query, basis = _place_query(district, dong, ''), 'DISTRICT_DONG'
-    else:
-        # 위치 근거가 없으면 링크를 만들지 않는다. 틀린 곳으로 보내지 않는다.
-        return None
-    if not query:
-        return None
-    note = ('검증된 위치의 대표주소로 네이버부동산 지도를 엽니다.' if basis == 'VERIFIED_LOCATION'
-            else '사업 대표주소로 네이버부동산 지도를 엽니다.' if basis == 'ADDRESS'
-            else '이 사업의 법정동으로 네이버부동산 지도를 엽니다.')
-    return {'url': NAVER_LAND_SEARCH + quote(query, safe=''),
-            'label': NAVER_LINK_LABEL if basis != 'DISTRICT_DONG' else NAVER_LINK_LABEL_DONG,
-            'basis': basis, 'search_query': query, 'destination': 'NAVER_LAND',
-            'coordinate_verified': located, 'note': note}
+    return None
 
 
 def stage_label(normalized_stage, raw_stage=None):
