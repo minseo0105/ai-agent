@@ -26,8 +26,12 @@ export default function RegionPicker({
   const [open, setOpen] = useState(false);
   const [scope, setScope] = useState<"서울" | "경기">("서울");
   const [q, setQ] = useState("");
-  const all = [...regions.서울, ...regions.경기];
-  const pool = scope === "서울" ? regions.서울 : regions.경기;
+  // 비어 있는 범위는 탭으로도, 검색 대상으로도 올리지 않는다. 고를 수 없는 지역을
+  // 보여주면 눌러 본 사람에게 0건이 고장처럼 읽힌다.
+  const scopes = (["서울", "경기"] as const).filter((name) => regions[name].length > 0);
+  const active = scopes.includes(scope) ? scope : scopes[0] ?? "서울";
+  const all = scopes.flatMap((name) => regions[name]);
+  const pool = regions[active] ?? [];
   const keyword = q.trim();
   const visible = keyword ? all.filter((r) => r.includes(keyword)) : pool;
   const atLimit = typeof max === "number" && value.length >= max;
@@ -79,7 +83,9 @@ export default function RegionPicker({
   return (
     <div className="rounded-2xl border border-border bg-surface p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <Segmented value={scope} options={["서울", "경기"] as const} onChange={(next) => setScope(next)} ariaLabel="지역 범위" />
+        {scopes.length > 1 && (
+          <Segmented value={active} options={scopes} onChange={(next) => setScope(next)} ariaLabel="지역 범위" />
+        )}
         <input
           className={`${inputClass} min-w-0 flex-1 py-1.5`}
           value={q}
@@ -88,7 +94,7 @@ export default function RegionPicker({
           aria-label="지역 검색"
         />
       </div>
-      {keyword && <p className="mt-1.5 text-[11px] text-subtle">‘{keyword}’ 검색 결과 · 서울·경기 전체에서 찾습니다.</p>}
+      {keyword && <p className="mt-1.5 text-[11px] text-subtle">‘{keyword}’ 검색 결과 · {scopes.join("·")} 전체에서 찾습니다.</p>}
       <div className="mt-2.5 flex flex-wrap gap-1.5">
         {visible.map((r) => {
           const selected = value.includes(r);
@@ -113,7 +119,7 @@ export default function RegionPicker({
         <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted">
           {selectWholeScope && max !== 1 && (
             <button type="button" onClick={() => onChange([...new Set([...value, ...pool])])} className="hover:text-fg">
-              {scope} 전체 추가
+              {active} 전체 추가
             </button>
           )}
           {value.length > 0 && (

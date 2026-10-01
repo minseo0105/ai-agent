@@ -95,7 +95,8 @@ class RegionEmptyStateTests(unittest.TestCase):
     def test_every_seoul_district_is_selectable(self):
         # 선택 목록은 하드코딩이 아니라 API가 준 regions를 그대로 쓴다.
         self.assertIn('regions: { 서울: string[]; 경기: string[] }', self.picker)
-        self.assertIn('const pool = scope === "서울" ? regions.서울 : regions.경기', self.picker)
+        self.assertIn('const pool = regions[active] ?? [];', self.picker)
+        self.assertNotIn('const SEOUL_DISTRICTS = [', self.picker)
 
     def test_zero_data_says_it_is_being_prepared(self):
         self.assertIn('의 개발정보를 준비 중입니다.', self.tab)
@@ -127,6 +128,125 @@ class RegionEmptyStateTests(unittest.TestCase):
 
     def test_zero_of_zero_is_not_printed_as_a_map_summary(self):
         self.assertIn('표시할 사업이 없어요.', self.tab)
+
+
+class SeoulOnlyDevelopmentMapTests(unittest.TestCase):
+    """개발지도에는 서울 25개 자치구만 올린다."""
+
+    def setUp(self):
+        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.picker = web('components/realestate/RegionPicker.tsx')
+
+    def test_the_picker_is_given_seoul_only(self):
+        self.assertIn('경기: [] as string[]', self.tab)
+        self.assertIn('regions={seoulOnly}', self.tab)
+        self.assertNotIn('<RegionPicker regions={options.regions}', self.tab)
+
+    def test_an_empty_scope_is_not_offered_or_searched(self):
+        self.assertIn('const scopes = (["서울", "경기"] as const).filter', self.picker)
+        self.assertIn('{scopes.length > 1 && (', self.picker)
+        self.assertIn('const all = scopes.flatMap', self.picker)
+
+    def test_the_trade_screen_still_offers_both(self):
+        monitor = web('components/realestate/EstateMonitor.tsx')
+        filters = web('components/realestate/TradeFilters.tsx')
+        self.assertIn('regions={options.regions}', filters)
+        self.assertIn('regions={options.regions}', monitor)
+
+
+class MapInstanceReuseTests(unittest.TestCase):
+    """지도 인스턴스를 반복해서 만들지 않는지."""
+
+    def setUp(self):
+        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.map = web('components/realestate/ZiponMap.tsx')
+        self.loader = web('lib/naverMaps.ts')
+
+    def test_the_map_is_not_unmounted_while_loading(self):
+        # ready로 감싸면 지역을 바꾸거나 조회가 실패할 때마다 인스턴스가 파괴된다.
+        self.assertIn('{config && (\n        <ZiponMap', self.tab)
+        self.assertNotIn('{ready && (\n        <ZiponMap', self.tab)
+
+    def test_one_container_is_never_built_twice(self):
+        self.assertIn('const built = useRef<HTMLDivElement | null>(null);', self.map)
+        self.assertIn('if (built.current === container.current) return;', self.map)
+        self.assertIn('built.current = null;', self.map)
+
+    def test_the_sdk_is_loaded_once(self):
+        self.assertIn('if (window.naver?.maps) return Promise.resolve(window.naver.maps);', self.loader)
+        self.assertIn('if (pending) return pending;', self.loader)
+        self.assertIn('}, [sdk, compact]);', self.map)
+
+
+class ServiceGridResponsiveTests(unittest.TestCase):
+    """메인 서비스 카드가 화면 폭에 따라 열 수를 바꾸는지."""
+
+    def setUp(self):
+        self.grid = web('components/ServiceGrid.tsx')
+
+    def test_the_grid_has_breakpoints(self):
+        self.assertIn('grid-cols-2 items-stretch gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4', self.grid)
+        self.assertNotIn('grid grid-cols-2 gap-3 lg:grid-cols-4', self.grid)
+
+    def test_cards_share_a_height_and_do_not_overflow(self):
+        self.assertIn('flex h-full min-w-0 flex-col', self.grid)
+        self.assertIn('size-10 shrink-0', self.grid)
+        self.assertIn('break-keep', self.grid)
+
+
+class MonitorTabAdminOnlyTests(unittest.TestCase):
+    """모니터링 조건은 관리자에게만 보이고, 서버도 관리자만 받는다."""
+
+    def setUp(self):
+        self.monitor = web('components/realestate/EstateMonitor.tsx')
+        self.api = (ROOT / 'api/realestate.py').read_text(encoding='utf-8')
+
+    def test_it_reuses_the_existing_admin_check(self):
+        self.assertIn('status?.me?.role === "admin"', self.monitor)
+        self.assertIn('from "@/components/access/AccessProvider"', self.monitor)
+
+    def test_the_tab_and_the_panel_are_not_rendered_for_others(self):
+        # CSS 숨김이 아니라 렌더링 단계에서 뺀다. 버튼도 영역도 만들지 않는다.
+        self.assertIn('...(admin ? [{ value: "모니터링 조건" as const, label: "모니터링" }] : [])', self.monitor)
+        self.assertIn('{admin && (', self.monitor)
+        self.assertNotIn('hidden={tab !== "모니터링 조건"}>{tab === "모니터링 조건" && <MonitorTab options={options} />}</div>\n        <div hidden={tab !== "알림함"}', self.monitor)
+
+    def test_a_non_admin_is_moved_off_the_tab(self):
+        self.assertIn('if (!admin && tab === "모니터링 조건") setTab("개발지도");', self.monitor)
+
+    def test_the_server_requires_admin_too(self):
+        self.assertIn('from api.access import require_admin', self.api)
+        for route in ('@router.get("/monitor"', '@router.put("/monitor/auto"',
+                      '@router.post("/rules"', '@router.post("/rules/{rule_id}/toggle"',
+                      '@router.delete("/rules/{rule_id}"', '@router.post("/monitor/run"'):
+            self.assertIn(route + ', dependencies=[Depends(require_admin)])', self.api)
+
+    def test_a_request_without_an_admin_token_is_refused(self):
+        from unittest.mock import patch
+        from fastapi import FastAPI
+        from fastapi.testclient import TestClient
+        from services import realestate_monitor as rm
+        with patch.object(rm, 'init_db'):
+            from api.realestate import router
+        app = FastAPI()
+        app.include_router(router)
+        client = TestClient(app, raise_server_exceptions=False)
+        for method, path in (('get', '/api/realestate/monitor'),
+                             ('put', '/api/realestate/monitor/auto'),
+                             ('post', '/api/realestate/rules'),
+                             ('post', '/api/realestate/rules/1/toggle'),
+                             ('delete', '/api/realestate/rules/1'),
+                             ('post', '/api/realestate/monitor/run')):
+            kwargs = {} if method in ('get', 'delete') else {'json': {}}
+            response = getattr(client, method)(path, **kwargs)
+            self.assertEqual(response.status_code, 401, path)
+            self.assertEqual(response.json()['detail']['code'], 'admin_required', path)
+
+    def test_the_other_estate_endpoints_stay_open(self):
+        for route in ('@router.post("/trades")', "@router.get('/development/map')",
+                      '@router.get("/notifications")'):
+            self.assertIn(route, self.api)
+        self.assertNotIn("@router.get('/development/map', dependencies=", self.api)
 
 
 class RegionScopedMapFetchTests(unittest.TestCase):

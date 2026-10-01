@@ -138,6 +138,10 @@ export default function ZiponMap({
   initialCentre.current =
     initialCentre.current ?? (compact ? selectedEntry?.coordinate ?? located[0]?.coordinate ?? null : null);
 
+  // 이 컨테이너에 이미 지도를 만들었는지. StrictMode는 개발에서 effect를 두 번 돌리고,
+  // 그때 같은 자리에 인스턴스가 두 개 생겨 SDK 초기화와 타일 요청이 중복된다.
+  const built = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (!sdk) return;
     let cancelled = false;
@@ -145,6 +149,8 @@ export default function ZiponMap({
     loadNaverMaps(sdk)
       .then((loaded) => {
         if (cancelled || !container.current) return;
+        if (built.current === container.current) return;
+        built.current = container.current;
         const centre = initialCentre.current;
         created = new loaded.Map(container.current, {
           center: centre
@@ -190,6 +196,7 @@ export default function ZiponMap({
       circle.current?.setMap(null);
       circle.current = null;
       created?.destroy();
+      built.current = null;
       setInstance(null);
     };
     // 지도 인스턴스는 한 번만 만든다.

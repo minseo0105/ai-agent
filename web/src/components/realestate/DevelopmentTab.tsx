@@ -75,6 +75,12 @@ export default function DevelopmentTab({
   // 자치구별 응답을 합칠 때의 함정은 그대로 남아 있다: 한 자치구가 실패하면 그
   // 사업들이 빠진 합계가 전체로 보인다. 그래서 실패한 자치구를 따로 들고 화면에
   // 이름을 적는다. 조용히 빠뜨리지 않는 것이 합치기의 조건이다.
+  // 수집 범위가 서울 25개 자치구다. 경기는 출처·코드체계·bbox가 모두 달라 이 화면의
+  // 대상이 아니므로 선택지에 올리지 않는다.
+  const seoulOnly = useMemo(
+    () => ({ 서울: options.regions.서울, 경기: [] as string[] }),
+    [options.regions.서울],
+  );
   const scope = useMemo(
     () => districts.map((r) => r.replace(/^(서울|경기) > /, "")).slice(0, MAX_DISTRICTS),
     [districts],
@@ -262,7 +268,8 @@ export default function DevelopmentTab({
 
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
         <span className="text-xs font-bold text-subtle">지역</span>
-        <RegionPicker regions={options.regions} value={districts} onChange={setDistricts} max={MAX_DISTRICTS} />
+        {/* 개발정보는 서울시 공식자료만 있다. 경기를 고를 수 있게 두면 고르는 순간 0건이 된다. */}
+        <RegionPicker regions={seoulOnly} value={districts} onChange={setDistricts} max={MAX_DISTRICTS} />
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <input
@@ -303,7 +310,9 @@ export default function DevelopmentTab({
         ))}
       </div>
 
-      {ready && (
+      {/* 조회 상태와 무관하게 지도는 한 번 만들고 유지한다. ready로 감싸면 지역을
+          바꾸거나 조회가 실패할 때마다 인스턴스가 파괴되고 SDK 초기화가 다시 돈다. */}
+      {config && (
         <ZiponMap
           points={visiblePoints}
           property={property}

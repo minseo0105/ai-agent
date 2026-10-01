@@ -13,6 +13,7 @@ import {
   type Subscription,
   type Trade,
 } from "@/lib/realestate";
+import { useAccess } from "@/components/access/AccessProvider";
 import RegionPicker from "./RegionPicker";
 import DevelopmentTab from "./DevelopmentTab";
 import TradeFilters, { FilterChips, type TradeFilterValue } from "./TradeFilters";
@@ -500,7 +501,14 @@ function AlertTab({ onUnread }: { onUnread: (n: number) => void }) {
 
 // ------------------------------------------------------------------ 페이지
 
+/** 관리자 판별은 기존 접근 구조를 그대로 쓴다. 새 인증을 만들지 않는다. */
+function useIsAdmin() {
+  const { status } = useAccess();
+  return status?.me?.role === "admin";
+}
+
 export default function EstateMonitor() {
+  const admin = useIsAdmin();
   const [options, setOptions] = useState<EstateOptions | null>(null);
   const [tab, setTab] = useState<Tab>("개발지도");
   const [unread, setUnread] = useState(0);
@@ -510,6 +518,11 @@ export default function EstateMonitor() {
     estateApi.options().then(setOptions).catch(() => setError("백엔드에 연결하지 못했어요. FastAPI 서버가 실행 중인지 확인해 주세요."));
     estateApi.notifications().then((r) => setUnread(r.unread)).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    // 관리자 상태가 늦게 도착하거나 풀리면, 선택된 탭이 없는 탭으로 남지 않게 되돌린다.
+    if (!admin && tab === "모니터링 조건") setTab("개발지도");
+  }, [admin, tab]);
 
   if (error) return <ErrorBox message={error} />;
   if (!options) return <Spinner label="불러오는 중…" />;
@@ -531,7 +544,8 @@ export default function EstateMonitor() {
             { value: "개발지도" as const, label: "개발지도" },
             { value: "실거래 조회" as const, label: "실거래" },
             { value: "청약 조회" as const, label: "청약" },
-            { value: "모니터링 조건" as const, label: "모니터링" },
+            // 모니터링 조건은 관리 기능이다. 관리자가 아니면 탭 자체를 만들지 않는다.
+            ...(admin ? [{ value: "모니터링 조건" as const, label: "모니터링" }] : []),
             { value: "알림함" as const, label: unread ? `알림 ${unread}` : "알림" },
           ]}
         />
@@ -545,7 +559,10 @@ export default function EstateMonitor() {
           <TradeTab options={options} />
         </div>
         <div hidden={tab !== "개발지도"}>{tab === "개발지도" && <DevelopmentTab options={options} />}</div>
-        <div hidden={tab !== "모니터링 조건"}>{tab === "모니터링 조건" && <MonitorTab options={options} />}</div>
+        {/* 관리자가 아니면 영역도 만들지 않는다. CSS로 가리는 것이 아니라 렌더링하지 않는다. */}
+        {admin && (
+          <div hidden={tab !== "모니터링 조건"}>{tab === "모니터링 조건" && <MonitorTab options={options} />}</div>
+        )}
         <div hidden={tab !== "알림함"}>{tab === "알림함" && <AlertTab onUnread={setUnread} />}</div>
       </div>
       <p className="text-[11px] text-subtle">

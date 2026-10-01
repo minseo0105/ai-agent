@@ -69,21 +69,24 @@ export default function ServiceGrid() {
         </ServiceLink>
       )}
 
+      {/* 좁은 화면 2열 -> 태블릿 3열 -> 넓은 화면 4열. 카드 높이는 서로 맞춘다. */}
       {main.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 items-stretch gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
           {main.map((s) => (
             <ServiceLink
               key={s.id}
               service={s}
-              className="group flex flex-col rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
+              className="group flex h-full min-w-0 flex-col rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
             >
               <div className="flex items-start justify-between gap-1">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-surface-muted text-xl">{s.icon}</span>
-                {!s.href && <LegacyBadge />}
-                {locked(s) && <span title="등록된 분만 이용할 수 있어요">🔒</span>}
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-xl">{s.icon}</span>
+                <span className="flex shrink-0 items-center gap-1">
+                  {!s.href && <LegacyBadge />}
+                  {locked(s) && <span title="등록된 분만 이용할 수 있어요">🔒</span>}
+                </span>
               </div>
-              <div className="mt-3 text-[15px] font-bold leading-snug">{s.title}</div>
-              <p className="mt-1 hidden text-xs leading-relaxed text-muted sm:block">{s.desc}</p>
+              <div className="mt-3 break-keep text-[15px] font-bold leading-snug">{s.title}</div>
+              <p className="mt-1 hidden break-keep text-xs leading-relaxed text-muted sm:block">{s.desc}</p>
             </ServiceLink>
           ))}
         </div>

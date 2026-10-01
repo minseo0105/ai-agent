@@ -4,10 +4,11 @@ import time
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
+from api.access import require_admin
 from services import realestate_monitor as rm
 from services import development
 from services import development_presentation as presentation
@@ -141,7 +142,10 @@ def _clean_geocode_summary(resolved):
     return {k: v for k, v in resolved.items() if k != 'items'}
 
 
-@router.get("/monitor")
+# 모니터링 조건은 관리 기능이다. 화면에서 감추는 것만으로는 엔드포인트가 열려 있다.
+# 기존 require_admin을 그대로 쓰고 새 인증체계는 만들지 않는다. 예약 모니터는 HTTP가
+# 아니라 services.realestate_monitor를 직접 호출하므로 영향을 받지 않는다.
+@router.get("/monitor", dependencies=[Depends(require_admin)])
 def monitor():
     return {
         "auto_enabled": rm.get_auto_monitor_enabled(BASE_DIR),
@@ -154,7 +158,7 @@ class AutoToggle(BaseModel):
     enabled: bool
 
 
-@router.put("/monitor/auto")
+@router.put("/monitor/auto", dependencies=[Depends(require_admin)])
 def set_auto(body: AutoToggle):
     rm.set_auto_monitor_enabled(BASE_DIR, body.enabled)
     return monitor()
@@ -169,7 +173,7 @@ class RuleInput(BaseModel):
     min_area: float = Field(40.0, ge=0, le=500)
 
 
-@router.post("/rules")
+@router.post("/rules", dependencies=[Depends(require_admin)])
 def add_rules(body: RuleInput):
     if "신규실거래" in body.event_types and not body.property_types:
         raise HTTPException(400, "신규실거래를 선택했다면 주택유형도 1개 이상 선택해주세요.")
@@ -178,19 +182,19 @@ def add_rules(body: RuleInput):
     return monitor()
 
 
-@router.post("/rules/{rule_id}/toggle")
+@router.post("/rules/{rule_id}/toggle", dependencies=[Depends(require_admin)])
 def toggle_rule(rule_id: int):
     rm.toggle_alert_rule(BASE_DIR, rule_id)
     return monitor()
 
 
-@router.delete("/rules/{rule_id}")
+@router.delete("/rules/{rule_id}", dependencies=[Depends(require_admin)])
 def delete_rule(rule_id: int):
     rm.delete_alert_rule(BASE_DIR, rule_id)
     return monitor()
 
 
-@router.post("/monitor/run")
+@router.post("/monitor/run", dependencies=[Depends(require_admin)])
 async def run_now():
     try:
         return await run_in_threadpool(rm.run_monitoring_once, BASE_DIR)
