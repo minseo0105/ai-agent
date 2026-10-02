@@ -1,4 +1,5 @@
 "use client";
+import { trackUsage } from "@/lib/analytics";
 
 import CollapsibleDetails, { DetailRow } from "./CollapsibleDetails";
 import StageTimeline from "./StageTimeline";
@@ -155,6 +156,7 @@ export default function DevelopmentCard({
         {url && (
           <a
             href={url}
+            onClick={() => trackUsage("external_link_click", "official_source_click")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex min-h-9 items-center rounded-xl border border-border px-3 text-xs font-bold text-muted transition hover:text-fg"
@@ -166,6 +168,7 @@ export default function DevelopmentCard({
         {project.naver_real_estate && (
           <a
             href={project.naver_real_estate.url}
+            onClick={() => trackUsage("external_link_click", "naver_land_click")}
             target="_blank"
             rel="noopener noreferrer"
             title={project.naver_real_estate.note}

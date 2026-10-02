@@ -7,6 +7,7 @@
  * 결과를 JSON 한 줄로 찍는다. 테스트가 그 값을 확인한다.
  */
 import { existsSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { boundaryPoints, verifiedBoundaryPolygons } from "../../web/src/lib/projectBoundary.ts";
 
 const square = (lng: number, lat: number, size: number): Array<[number, number]> => [
@@ -25,7 +26,7 @@ const multi = {
 };
 const untyped = { coordinates: [[square(127.13, 37.55, 0.002)], [square(127.14, 37.56, 0.002)]] };
 
-const root = new URL("../../", import.meta.url).pathname;
+const root = fileURLToPath(new URL("../../", import.meta.url));
 const reviewPath = `${root}data/development/polygon_match_exact_20260928.geojson`;
 let reviewFeatures: number | null = null;
 let reviewParsed: number | null = null;

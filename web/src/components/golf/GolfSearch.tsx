@@ -1,4 +1,5 @@
 "use client";
+import { trackUsage } from "@/lib/analytics";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -185,6 +186,7 @@ export default function GolfSearch() {
   }
 
   async function run(search: LastSearch, nextSort: Sort, scroll = true) {
+    trackUsage("search", "golf_search");
     // 조건이 바뀌면 이전 검색은 여기서 끝난다. 취소해야 응답이 늦게 와서 덮어쓰지 않는다.
     inFlight.current?.abort();
     const controller = new AbortController();

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import AccessProvider from "@/components/access/AccessProvider";
 import SiteFooter from "@/components/SiteFooter";
+import UsageTracker from "@/components/UsageTracker";
 import { SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="flex min-h-dvh flex-col">
+        <UsageTracker />
         <AccessProvider>
           <div className="flex-1">{children}</div>
           <SiteFooter />

@@ -1,4 +1,5 @@
 "use client";
+import { trackUsage } from "@/lib/analytics";
 
 import { useEffect, useState } from "react";
 import { ChoiceChips, Field, Segmented, Spinner, Tag, inputClass } from "@/components/golf/ui";
@@ -52,6 +53,7 @@ function SubscriptionTab({ options }: { options: EstateOptions }) {
   const [error, setError] = useState("");
 
   async function search(kind: "apt" | "unsold") {
+    trackUsage("search", "subscription_search");
     setLoading(kind);
     setError("");
     try {
@@ -164,6 +166,7 @@ function TradeTab({ options }: { options: EstateOptions }) {
     setLoading(true);
     setResult(null);
     setProgress({ done: 0, total: filters.regions.length });
+    trackUsage("search", "trade_search");
     try {
       setResult(
         await estateApi.trades(

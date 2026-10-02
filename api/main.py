@@ -7,6 +7,7 @@
 import json
 import mimetypes
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 
@@ -18,6 +19,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from api.access import AccessMiddleware
+from api.analytics import router as analytics_router, UsageErrorsMiddleware
+from services.usage_events import collector
 from api.access import router as access_router
 from api.readiness import readiness
 from api.version import version_block
@@ -41,7 +44,17 @@ from services.config import get_secret
 from services.dreamcar import ASSET_DIR, IMAGE_DIR
 
 configure_logging()
-app = FastAPI(title="AI Lab API", version="0.1.0")
+@asynccontextmanager
+async def lifespan(app):
+    try:
+        await collector.start()
+    except Exception:
+        pass  # Optional telemetry must never prevent startup.
+    yield
+    await collector.stop()
+
+
+app = FastAPI(title="AI Lab API", version="0.1.0", lifespan=lifespan)
 # 처리되지 않은 예외가 raw 500이나 traceback으로 나가지 않게 한다. 오류를 200으로 숨기지도 않는다.
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
@@ -54,6 +67,7 @@ app.include_router(saju_router)
 app.include_router(car_selector_router)
 app.include_router(gif_router)
 app.include_router(access_router)
+app.include_router(analytics_router)
 
 # 드림카·차량 선택기 이미지 · 라이프스타일/페르소나 애니메이션 (base64 인라인 대신 파일로 서빙)
 # Windows 레지스트리에는 webp 매핑이 없어 octet-stream으로 나가므로 직접 등록
@@ -70,6 +84,7 @@ _origins = os.environ.get("FRONTEND_ORIGINS", "http://localhost:3000,http://127.
 app.add_middleware(AccessMiddleware)
 # request_id·접근 로그는 가장 바깥에 둔다. 접근 제어에서 막힌 요청도 같은 id로 추적된다.
 app.add_middleware(RequestContextMiddleware)
+app.add_middleware(UsageErrorsMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o.strip() for o in _origins.split(",") if o.strip()],

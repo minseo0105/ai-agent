@@ -6,9 +6,10 @@
  * 결과를 JSON 한 줄로 찍는다. 테스트가 그 값을 확인한다.
  */
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { getProjectCoordinate, coordinateProblem } from "../../web/src/lib/projectCoordinate.ts";
 
-const root = new URL("../../", import.meta.url).pathname;
+const root = fileURLToPath(new URL("../../", import.meta.url));
 const doc = JSON.parse(
   readFileSync(`${root}data/development/bulk_geocode_result_20260927.json`, "utf8"),
 );

@@ -1,4 +1,5 @@
 "use client";
+import { trackUsage } from "@/lib/analytics";
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Spinner, inputClass } from "@/components/golf/ui";
@@ -64,6 +65,7 @@ export default function DevelopmentTab({
   /** limit에 닿아 더 있을 수 있는 응답인지 */
   const [truncated, setTruncated] = useState(false);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const lastSearch = useRef("");
 
   useEffect(() => {
     estateApi.mapConfig().then(setConfig).catch(() => {});
@@ -245,6 +247,7 @@ export default function DevelopmentTab({
     (projectId: string | null) => {
       setSelectedId(projectId);
       if (!projectId) return;
+      trackUsage("map_click");
       // 카드가 방금 선택 상태로 다시 그려지므로, 그린 뒤에 옮긴다.
       requestAnimationFrame(() => scrollToProject(projectId));
     },
@@ -277,6 +280,10 @@ export default function DevelopmentTab({
           placeholder="사업명 · 동 · 유형 검색 (예: 천호동, 재개발)"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          onBlur={() => {
+            if (keyword.trim() && keyword !== lastSearch.current) trackUsage("search", "address_search");
+            lastSearch.current = keyword;
+          }}
           className={`${inputClass} min-w-0 flex-1`}
         />
         {stages.length > 1 && (
@@ -457,6 +464,9 @@ export default function DevelopmentTab({
                     cardRefs.current[p.project_id] = node;
                   }}
                   onClick={() => setSelectedId(p.project_id)}
+                  onClickCapture={(event) => {
+                    if (!(event.target as Element).closest("a, button, summary, .leaflet-container")) trackUsage("project_click");
+                  }}
                   className="scroll-mt-24 rounded-2xl"
                   data-project-id={p.project_id}
                   aria-current={selectedId === p.project_id ? "true" : undefined}
