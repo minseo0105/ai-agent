@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field
 
 from api.access import AccessMiddleware
 from api.analytics import router as analytics_router, UsageErrorsMiddleware
+from api.usage_dashboard import router as usage_dashboard_router
 from services.usage_events import collector
 from api.access import router as access_router
 from api.readiness import readiness
@@ -68,6 +69,7 @@ app.include_router(car_selector_router)
 app.include_router(gif_router)
 app.include_router(access_router)
 app.include_router(analytics_router)
+app.include_router(usage_dashboard_router)
 
 # 드림카·차량 선택기 이미지 · 라이프스타일/페르소나 애니메이션 (base64 인라인 대신 파일로 서빙)
 # Windows 레지스트리에는 webp 매핑이 없어 octet-stream으로 나가므로 직접 등록

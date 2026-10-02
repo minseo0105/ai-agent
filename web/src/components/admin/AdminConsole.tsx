@@ -38,7 +38,7 @@ function Card({ title, desc, children, right }: { title: string; desc?: string; 
   );
 }
 
-function AdminLogin({ onDone }: { onDone: () => void }) {
+export function AdminLogin({ onDone }: { onDone: () => void }) {
   const [configured, setConfigured] = useState<boolean | null>(null);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -252,6 +252,9 @@ export default function AdminConsole() {
           <p className="text-xs text-muted">마지막 저장 {fmt(data.updated_at || null)}</p>
         </div>
         <div className="flex gap-2">
+          <Link href="/admin/usage" className="rounded-xl bg-accent px-3 py-2 text-sm font-bold text-white">
+            운영현황
+          </Link>
           <Link href="/" className="rounded-xl border border-border px-3 py-2 text-sm font-bold hover:bg-surface-muted">
             사이트 보기
           </Link>
