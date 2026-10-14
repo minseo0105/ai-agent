@@ -215,7 +215,9 @@ export default function DevelopmentCard({
         <DetailRow label="정책 프로그램" value={project.program_label} />
         <DetailRow label="현재단계" value={`${project.stage.label} · ${project.stage_basis}`} />
         <DetailRow label="공식 단계 표기" value={project.stage.official_text} />
-        <DetailRow label="공식 출처" value={project.official_source.name} />
+          <DetailRow label="공식 출처" value={project.official_source.name} />
+          <DetailRow label="공식 기준일" value={project.source_date} />
+          <DetailRow label="고시일" value={project.notice_date} />
         <DetailRow label="최근 확인일" value={project.last_checked?.slice(0, 10)} />
         <DetailRow label="자료 신뢰수준" value={project.trust.note} />
         <DetailRow label="위치 정확도" value={project.location_accuracy.note} />

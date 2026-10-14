@@ -1,0 +1,81 @@
+name: ZIP development refresh
+
+on:
+  schedule:
+    - cron: '17 22 * * *'
+    - cron: '17 23 * * 0'
+    - cron: '17 0 1 * *'
+  workflow_dispatch:
+    inputs:
+      job:
+        type: choice
+        options: [canary, daily, weekly, monthly]
+        default: canary
+      apply:
+        type: boolean
+        default: false
+      limit:
+        type: number
+        default: 1
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zipon-development-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    # Disabled until migration, storage, secrets and a reconciled canary are verified.
+    if: github.event_name == 'workflow_dispatch' || (vars.ZIPON_REFRESH_ENABLED == 'true' && vars.ZIPON_CANARY_VERIFIED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      ZIPON_IMPORT_SUPABASE_URL: ${{ secrets.ZIPON_IMPORT_SUPABASE_URL }}
+      ZIPON_IMPORT_SUPABASE_KEY: ${{ secrets.ZIPON_IMPORT_SUPABASE_KEY }}
+      ZIPON_REFRESH_WRITE_ENABLED: ${{ vars.ZIPON_REFRESH_WRITE_ENABLED }}
+      NAVER_MAP_CLIENT_ID: ${{ secrets.NAVER_MAP_CLIENT_ID }}
+      NAVER_MAP_CLIENT_SECRET: ${{ secrets.NAVER_MAP_CLIENT_SECRET }}
+      KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+      VWORLD_API_KEY: ${{ secrets.VWORLD_API_KEY }}
+      VWORLD_DOMAIN: ${{ vars.VWORLD_DOMAIN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-zipon-refresh.txt
+      - name: Collect, validate and reconcile
+        env:
+          REQUEST_JOB: ${{ inputs.job }}
+          REQUEST_APPLY: ${{ inputs.apply }}
+          REQUEST_LIMIT: ${{ inputs.limit }}
+          EVENT: ${{ github.event_name }}
+          SCHEDULE: ${{ github.event.schedule }}
+        shell: bash
+        run: |
+          job="daily"
+          if [ "$SCHEDULE" = '17 23 * * 0' ]; then job="weekly"; fi
+          if [ "$SCHEDULE" = '17 0 1 * *' ]; then job="monthly"; fi
+          flags=()
+          limit=10
+          if [ "$EVENT" = 'workflow_dispatch' ]; then
+            job="$REQUEST_JOB"
+            limit="$REQUEST_LIMIT"
+            if [ "$REQUEST_APPLY" = 'true' ]; then flags+=(--apply); fi
+          else
+            flags+=(--apply)
+          fi
+          python -B scripts/refresh_zipon_live.py --job "$job" --limit "$limit" "${flags[@]}"
+      - name: Preserve failure or reconciliation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zipon-refresh-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/zipon-refresh/report.json
+          retention-days: 30
+      - name: Run summary
+        if: always()
+        run: |
+          echo 'ZIP development refresh: inspect the report artifact and /admin/zipon-data. A failed or partial run is not a freshness success.' >> "$GITHUB_STEP_SUMMARY"

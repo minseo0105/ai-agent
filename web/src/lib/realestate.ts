@@ -143,6 +143,8 @@ export type DevelopmentImpactBlock = {
 };
 
 export type DevelopmentProject = {
+  source_date?: string | null;
+  notice_date?: string | null;
   project_id: string;
   name: string;
   official_id: string | null;

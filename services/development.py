@@ -30,7 +30,7 @@ def stage_metadata(rows):
         chunk = unique[start:start + STAGE_BATCH]
         try:
             found = rm._remote_request('GET', 'development_projects', params={
-                'select':'project_id,stage,stage_raw,field_evidence,external_id,official_authority',
+                'select':'project_id,stage,stage_raw,stage_mapping_version,source_date,notice_date,last_verified_at,field_evidence,external_id,official_authority',
                 'project_id':'in.(' + ','.join(chunk) + ')', 'limit':len(chunk)})
         except Exception:
             # 한 묶음이 실패해도 나머지 단계 상세는 살린다. 단계를 추정하지는 않는다.

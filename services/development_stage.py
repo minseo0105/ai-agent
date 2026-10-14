@@ -22,6 +22,10 @@ def catalog():
 def observation(row):
     packaged = catalog().get(row.get('project_id'), {})
     stored = (row.get('field_evidence') or {}).get('official_stage') or {}
+    # An applied live DB observation always owns the master stage. Packaged fallback
+    # must never override it, even when its clock is newer or the detail is absent.
+    if row.get('stage_mapping_version') == 'zipon-refresh-policy-v1':
+        return stored if stage_view(stored) else None, {}
     details = [e for e in (stored, packaged) if stage_view(e)]
     # Preserve a more recent official observation already stored in the DB.
     detail = max(details, key=lambda e:e.get('fetched_at') or '', default=None)

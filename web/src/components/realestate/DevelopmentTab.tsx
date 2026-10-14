@@ -64,6 +64,7 @@ export default function DevelopmentTab({
   const [failedDistricts, setFailedDistricts] = useState<string[]>([]);
   /** limit에 닿아 더 있을 수 있는 응답인지 */
   const [truncated, setTruncated] = useState(false);
+  const [dataRevision, setDataRevision] = useState(0);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const lastSearch = useRef("");
 
@@ -88,6 +89,13 @@ export default function DevelopmentTab({
     [districts],
   );
   const scopeKey = scope.join(",");
+
+  useEffect(() => {
+    const refreshVisible = () => { if (!document.hidden) setDataRevision((v) => v + 1); };
+    const timer = setInterval(refreshVisible, 300000);
+    document.addEventListener("visibilitychange", refreshVisible);
+    return () => { clearInterval(timer); document.removeEventListener("visibilitychange", refreshVisible); };
+  }, []);
 
   useEffect(() => {
     // 조건(지역·완료사업 포함 여부)이 바뀌면 이전 요청은 끊는다. 끊지 않으면 늦게
@@ -160,7 +168,7 @@ export default function DevelopmentTab({
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [includeCompleted, scopeKey]);
+  }, [includeCompleted, scopeKey, dataRevision]);
 
   const search = keyword.trim();
   const selectedDistricts = useMemo(() => new Set(scope), [scope]);

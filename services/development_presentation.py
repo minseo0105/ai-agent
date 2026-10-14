@@ -288,6 +288,8 @@ def present_project(row):
                             'url': (detail or {}).get('evidence_url') or row.get('evidence_url') or row.get('source_url') or listed.get('source_url')},
         'last_checked': (detail or {}).get('fetched_at') or row.get('last_verified_at') or row.get('collected_at')
                         or row.get('verified_at') or listed.get('verified_at'),
+        'source_date': row.get('source_date'),
+        'notice_date': row.get('notice_date'),
         'spatial': spatial,
         'distance_m': row.get('meters') if row.get('meters') is not None else row.get('distance_m'),
         'distance_label': distance_bucket(

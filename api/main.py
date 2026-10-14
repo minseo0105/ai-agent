@@ -21,6 +21,7 @@ from pydantic import BaseModel, Field
 from api.access import AccessMiddleware
 from api.analytics import router as analytics_router, UsageErrorsMiddleware
 from api.usage_dashboard import router as usage_dashboard_router
+from api.zipon_data import router as zipon_data_router
 from services.usage_events import collector
 from api.access import router as access_router
 from api.readiness import readiness
@@ -61,6 +62,7 @@ app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(Exception, unhandled_exception_handler)
 app.include_router(golf_router)
+app.include_router(zipon_data_router)
 app.include_router(realestate_router)
 app.include_router(report_router)
 app.include_router(dreamcar_router)

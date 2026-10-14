@@ -277,7 +277,10 @@ class RegionScopedMapFetchTests(unittest.TestCase):
         self.assertNotIn('estateApi.developmentMap(undefined, 500, undefined, { includeCompleted', self.tab)
 
     def test_changing_the_region_refetches(self):
-        self.assertIn('}, [includeCompleted, scopeKey]);', self.tab)
+        self.assertIn('}, [includeCompleted, scopeKey, dataRevision]);', self.tab)
+        self.assertIn('setInterval(refreshVisible, 300000)', self.tab)
+        self.assertIn('document.hidden', self.tab)
+        self.assertIn('clearInterval(timer)', self.tab)
 
     def test_a_failed_district_is_named_not_dropped(self):
         self.assertIn('setFailedDistricts', self.tab)

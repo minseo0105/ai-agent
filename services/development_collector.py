@@ -325,7 +325,19 @@ def fetch_source_pages(source, fetch):
             yield url, response, 'NO_NEW_ROWS'
             return
         seen_ids |= ids
-        last = len(rows) < size
+        # The page also contains other business categories which parse_page()
+        # intentionally excludes. 85 accepted rows can still be a full 100-row
+        # page. Honour the official next-page links before using accepted count.
+        soup = BeautifulSoup(decode_page(response.content), 'html.parser')
+        linked_pages = []
+        for anchor in soup.select('a[href]'):
+            href = anchor.get('href', '')
+            values = dict(parse_qsl(urlsplit(href).query))
+            value = values.get(param)
+            if value and value.isdigit() and int(value) > page:
+                if urlsplit(href).path == urlsplit(source['url']).path:
+                    linked_pages.append(int(value))
+        last = len(rows) < size and not linked_pages
         yield url, response, None if last else 'CONTINUE'
         if last: return
         page += 1
@@ -375,7 +387,7 @@ def collect(fetch=None, *, geocode_provider=None, geocode_cache=None, districts=
             run['source_complete'] = bool(found) and not truncated and not run['errors']
             run['status'] = 'SUCCEEDED' if run['source_complete'] else 'PARTIAL'
         except Exception as exc:
-            run['status'] = 'FAILED';run['errors'].append(type(exc).__name__)
+            run['status'] = 'FAILED';run['errors'].append(getattr(exc, 'safe_code', type(exc).__name__))
         run['finished_at'] = datetime.now(timezone.utc).isoformat();runs.append(run)
     scope = sorted({d for source in sources for d in (source.get('districts') or {})})
     return {'collected_at': datetime.now(timezone.utc).isoformat(), 'records': list(records.values()), 'runs': runs,

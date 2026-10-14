@@ -229,7 +229,8 @@ def read_archive(archive):
         stems = sorted({n[:-4] for n in names if n.lower().endswith('.shp')})
         if not stems:
             raise SystemExit('NO_SHP_IN_ARCHIVE')
-        stem = stems[0]
+        preferred = [s for s in stems if 'UQ120' in s.upper()]
+        stem = preferred[0] if len(preferred) == 1 else stems[0]
         parts = {}
         for extension in ('shp', 'dbf', 'shx'):
             match = next((n for n in names if n.lower() == f'{stem}.{extension}'.lower()), None)
@@ -817,10 +818,10 @@ def analyse(archive):
             'source_units_metre': metres, 'to_source': backward, 'records': records}
 
 
-def build(archive):
+def build(archive, projects=None, protected=None):
     survey = analyse(archive)
-    projects = load_projects()
-    protected = conflicted_ids()
+    projects = load_projects() if projects is None else projects
+    protected = conflicted_ids() if protected is None else protected
     # ZIP:ON 안에서 정규화 이름이 겹치는 사업은 어느 쪽인지 정할 수 없다.
     collisions = {}
     for project in projects:
