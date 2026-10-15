@@ -16,28 +16,26 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="relative overflow-hidden rounded-3xl bg-navy px-6 py-8 text-white sm:px-10 sm:py-12">
+      <section className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#0a2540_0%,#0b4a9e_52%,#2f8cff_118%)] px-6 py-7 text-white shadow-[0_12px_32px_-16px_rgba(11,74,158,.5)] sm:px-12 sm:py-12">
+        <div aria-hidden className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full bg-[radial-gradient(circle,rgba(125,190,255,.45)_0%,rgba(125,190,255,0)_68%)]" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-28 left-1/4 size-80 rounded-full bg-[radial-gradient(circle,rgba(47,140,255,.35)_0%,rgba(47,140,255,0)_70%)]" />
         <div className="relative">
-          <div className="text-[11px] font-semibold tracking-[0.12em] text-blue-200/90">DIGITAL STRATEGY · AI LAB</div>
-          <h1 className="mt-3 break-keep text-[28px] font-extrabold leading-[1.25] tracking-[-0.02em] sm:text-[40px]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-blue-50">
+            <span aria-hidden className="size-1.5 rounded-full bg-sky-300" />
+            DIGITAL STRATEGY · AI LAB
+          </div>
+          <h1 className="mt-4 break-keep text-[26px] font-extrabold leading-[1.28] tracking-[-0.025em] sm:text-[40px] sm:leading-[1.22]">
             아이디어를 서비스로 만드는
             <br />
-            {SITE_NAME}
+            <span className="text-sky-200">{SITE_NAME}</span>
           </h1>
-          <p className="mt-4 max-w-xl break-keep text-sm leading-relaxed text-blue-100/85 sm:text-base">
+          <p className="mt-3 max-w-xl break-keep text-[13px] leading-relaxed text-blue-50/90 sm:mt-4 sm:text-base">
             AI Agent · API · Vibe Coding으로 만든 서비스들을 자유롭게 둘러보고 직접 체험해보세요.
           </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {["AI Agent", "API", "Vibe Coding", "Prototype"].map((b) => (
-              <span key={b} className="rounded-full border border-white/20 bg-white/[0.08] px-3 py-1 text-xs font-semibold text-blue-50">
-                {b}
-              </span>
-            ))}
-          </div>
         </div>
       </section>
 
-      <section id="services" className="mt-12 scroll-mt-6">
+      <section id="services" className="mt-10 scroll-mt-6 sm:mt-12">
         <h2 className="text-xl font-extrabold tracking-tight">AI LAB 서비스</h2>
         <p className="mb-5 mt-1 text-sm text-muted">새로운 서비스와 직접 만든 AI Prototype을 둘러보세요.</p>
         <ServiceGrid />

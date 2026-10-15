@@ -18,7 +18,7 @@ function Visual({ service }: { service: Service }) {
   const [failed, setFailed] = useState(false);
   // WebP가 실패하면 기존 SVG로 한 번 더 시도하고, 그것도 실패하면 단색 대체 면을 보인다.
   const [src, setSrc] = useState(service.image);
-  const box = "size-11 shrink-0 rounded-xl";
+  const box = "size-14 shrink-0 rounded-2xl sm:size-16";
   if (failed) {
     return (
       <div className={`${box} flex items-center justify-center bg-surface-muted text-lg`} aria-hidden>
@@ -29,13 +29,13 @@ function Visual({ service }: { service: Service }) {
   return (
     // 정적 내보내기(unoptimized)라 next/image 대신 img를 쓴다.
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt="" loading="lazy" decoding="async" width={44} height={44} onError={() => (service.imageFallback && src !== service.imageFallback ? setSrc(service.imageFallback) : setFailed(true))} className={`${box} object-cover`} />
+    <img src={src} alt="" loading="lazy" decoding="async" width={72} height={72} onError={() => (service.imageFallback && src !== service.imageFallback ? setSrc(service.imageFallback) : setFailed(true))} className={`${box} object-cover`} />
   );
 }
 
 function ArrowIcon() {
   return (
-    <svg viewBox="0 0 16 16" className="size-3 shrink-0 transition group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg viewBox="0 0 16 16" className="size-3.5 shrink-0 transition group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M3.5 8h9M8.5 4l4 4-4 4" />
     </svg>
   );
@@ -90,20 +90,20 @@ export default function ServiceGrid() {
             <ServiceLink
               key={s.id}
               service={s}
-              className="group flex min-h-[156px] min-w-0 flex-col rounded-2xl border border-border bg-surface p-4 transition duration-200 hover:border-woori/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:bg-surface-muted"
+              className="group flex min-h-[200px] min-w-0 flex-col rounded-3xl border border-border bg-surface p-4 transition duration-200 hover:-translate-y-0.5 hover:border-woori/40 hover:shadow-[0_8px_24px_-14px_rgba(37,99,235,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:bg-surface-muted sm:p-5"
             >
-              <div className="break-keep text-[15px] font-bold leading-snug tracking-tight">
+              <div className="flex items-start justify-between">
+                <Visual service={s} />
+                <span className="flex size-8 items-center justify-center rounded-full bg-surface-muted text-muted transition group-hover:bg-woori group-hover:text-white">
+                  <ArrowIcon />
+                </span>
+              </div>
+              <div className="mt-3 break-keep text-base font-bold leading-snug tracking-tight text-fg">
                 {name}
                 {locked(s) && <span className="ml-1 text-xs" title="등록된 분만 이용할 수 있어요">🔒</span>}
               </div>
-              <p className="mt-1 line-clamp-2 break-keep text-xs leading-relaxed text-muted">{tagline ? `${tagline} · ${s.desc}` : s.desc}</p>
-              <div className="mt-auto flex items-end justify-between gap-2 pt-3">
-                <span className="flex min-w-0 items-center gap-1 text-[11px] font-semibold text-subtle transition group-hover:text-woori">
-                  <span className="truncate">{!s.href ? "기존 버전" : s.category}</span>
-                  <ArrowIcon />
-                </span>
-                <Visual service={s} />
-              </div>
+              <p className="mt-1 break-keep text-[13px] leading-[1.5] text-muted">{tagline ? `${tagline} · ${s.desc}` : s.desc}</p>
+              <span className="mt-auto pt-3 text-xs font-semibold text-woori">{!s.href ? "기존 버전" : s.category}</span>
             </ServiceLink>
           );
         })}
