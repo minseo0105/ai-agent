@@ -16,9 +16,10 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#0a2540_0%,#0b4a9e_52%,#2f8cff_118%)] px-5 py-5 text-white shadow-[0_12px_32px_-16px_rgba(11,74,158,.5)] sm:px-12 sm:py-12">
+      <section className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#102a43_0%,#0d3a6b_55%,#0067c8_125%)] px-5 py-5 text-white shadow-[0_12px_32px_-16px_rgba(11,74,158,.5)] sm:px-12 sm:py-12">
         <div aria-hidden className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full bg-[radial-gradient(circle,rgba(125,190,255,.45)_0%,rgba(125,190,255,0)_68%)]" />
         <div aria-hidden className="pointer-events-none absolute -bottom-28 left-1/4 size-80 rounded-full bg-[radial-gradient(circle,rgba(47,140,255,.35)_0%,rgba(47,140,255,0)_70%)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,.08)_0%,rgba(255,255,255,0)_45%)]" />
         <div className="relative">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-blue-50">
             <span aria-hidden className="size-1.5 rounded-full bg-sky-300" />
@@ -32,6 +33,13 @@ export default function Home() {
           <p className="mt-2.5 max-w-xl break-keep text-[13px] leading-[1.6] text-white/90 sm:mt-4 sm:text-base">
             AI Agent · API · Vibe Coding으로 만든 서비스들을 자유롭게 둘러보고 직접 체험해보세요.
           </p>
+          <div className="mt-4 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
+            {["AI Agent", "API", "Vibe Coding", "Prototype"].map((b) => (
+              <span key={b} className="rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white sm:px-3 sm:text-xs">
+                {b}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 

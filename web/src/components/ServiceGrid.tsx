@@ -18,7 +18,7 @@ function Visual({ service }: { service: Service }) {
   const [failed, setFailed] = useState(false);
   // WebP가 실패하면 기존 SVG로 한 번 더 시도하고, 그것도 실패하면 단색 대체 면을 보인다.
   const [src, setSrc] = useState(service.image);
-  const box = "size-16 shrink-0 rounded-2xl";
+  const box = "size-16 shrink-0 rounded-2xl shadow-[0_2px_8px_-3px_rgba(15,23,42,.25)]";
   if (failed) {
     return (
       <div className={`${box} flex items-center justify-center bg-surface-muted text-lg`} aria-hidden>
@@ -32,6 +32,18 @@ function Visual({ service }: { service: Service }) {
     <img src={src} alt="" loading="lazy" decoding="async" width={72} height={72} onError={() => (service.imageFallback && src !== service.imageFallback ? setSrc(service.imageFallback) : setFailed(true))} className={`${box} object-cover`} />
   );
 }
+
+/** 서비스별 파스텔 배경·테두리·포인트 색. 서비스 데이터는 건드리지 않고 id로만 매핑한다. */
+const TONES: Record<string, { card: string; accent: string }> = {
+  golf: { card: "bg-[#eefaf1] border-[#cfeed9]", accent: "text-[#157a3c]" },
+  dreamcar: { card: "bg-[#edf5ff] border-[#cfe3fb]", accent: "text-[#1d55c4]" },
+  realestate: { card: "bg-[#fff3ef] border-[#fad9cf]", accent: "text-[#b03a22]" },
+  report: { card: "bg-[#f3f1ff] border-[#dcd6fa]", accent: "text-[#5535c9]" },
+  saju: { card: "bg-[#fff7e6] border-[#f4e2b8]", accent: "text-[#8a5208]" },
+  "car-selector": { card: "bg-[#eef2f8] border-[#d6dfec]", accent: "text-[#2f4a72]" },
+  gif: { card: "bg-[#fdf1f9] border-[#f4d6ea]", accent: "text-[#9d1b75]" },
+};
+const DEFAULT_TONE = { card: "bg-surface border-border", accent: "text-woori" };
 
 function ArrowIcon() {
   return (
@@ -86,15 +98,16 @@ export default function ServiceGrid() {
       <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
         {shown.map((s) => {
           const { name, tagline } = splitTitle(s.title);
+          const tone = TONES[s.id] ?? DEFAULT_TONE;
           return (
             <ServiceLink
               key={s.id}
               service={s}
-              className="group flex min-h-[176px] min-w-0 flex-col rounded-3xl border border-border bg-surface p-3.5 transition duration-200 hover:-translate-y-0.5 hover:border-woori/40 hover:shadow-[0_8px_24px_-14px_rgba(37,99,235,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:bg-surface-muted sm:p-4"
+              className={`group flex min-h-[176px] min-w-0 flex-col rounded-3xl border ${tone.card} p-3.5 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_26px_-14px_rgba(15,23,42,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:brightness-95 sm:p-4`}
             >
               <div className="flex items-start justify-between">
                 <Visual service={s} />
-                <span className="flex size-7 items-center justify-center rounded-full bg-surface-muted text-muted transition group-hover:bg-woori group-hover:text-white">
+                <span className="flex size-7 items-center justify-center rounded-full bg-white/80 text-slate-700 transition group-hover:bg-slate-900 group-hover:text-white">
                   <ArrowIcon />
                 </span>
               </div>
@@ -103,7 +116,7 @@ export default function ServiceGrid() {
                 {locked(s) && <span className="ml-1 text-xs" title="등록된 분만 이용할 수 있어요">🔒</span>}
               </div>
               <p className="mt-1 break-keep text-[13px] leading-[1.5] text-slate-600 dark:text-muted">{tagline ? `${tagline} · ${s.desc}` : s.desc}</p>
-              <span className="mt-auto pt-2.5 text-xs font-bold text-woori">{!s.href ? "기존 버전" : s.category}</span>
+              <span className={`mt-auto pt-2.5 text-xs font-bold ${tone.accent}`}>{!s.href ? "기존 버전" : s.category}</span>
             </ServiceLink>
           );
         })}
