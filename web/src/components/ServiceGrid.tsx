@@ -18,7 +18,7 @@ function Visual({ service }: { service: Service }) {
   const [failed, setFailed] = useState(false);
   // WebP가 실패하면 기존 SVG로 한 번 더 시도하고, 그것도 실패하면 단색 대체 면을 보인다.
   const [src, setSrc] = useState(service.image);
-  const box = "size-14 shrink-0 rounded-2xl sm:size-16";
+  const box = "size-16 shrink-0 rounded-2xl";
   if (failed) {
     return (
       <div className={`${box} flex items-center justify-center bg-surface-muted text-lg`} aria-hidden>
@@ -90,20 +90,20 @@ export default function ServiceGrid() {
             <ServiceLink
               key={s.id}
               service={s}
-              className="group flex min-h-[200px] min-w-0 flex-col rounded-3xl border border-border bg-surface p-4 transition duration-200 hover:-translate-y-0.5 hover:border-woori/40 hover:shadow-[0_8px_24px_-14px_rgba(37,99,235,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:bg-surface-muted sm:p-5"
+              className="group flex min-h-[176px] min-w-0 flex-col rounded-3xl border border-border bg-surface p-3.5 transition duration-200 hover:-translate-y-0.5 hover:border-woori/40 hover:shadow-[0_8px_24px_-14px_rgba(37,99,235,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:bg-surface-muted sm:p-4"
             >
               <div className="flex items-start justify-between">
                 <Visual service={s} />
-                <span className="flex size-8 items-center justify-center rounded-full bg-surface-muted text-muted transition group-hover:bg-woori group-hover:text-white">
+                <span className="flex size-7 items-center justify-center rounded-full bg-surface-muted text-muted transition group-hover:bg-woori group-hover:text-white">
                   <ArrowIcon />
                 </span>
               </div>
-              <div className="mt-3 break-keep text-base font-bold leading-snug tracking-tight text-fg">
+              <div className="mt-2.5 break-keep text-base font-extrabold leading-snug tracking-tight text-slate-950 dark:text-fg">
                 {name}
                 {locked(s) && <span className="ml-1 text-xs" title="등록된 분만 이용할 수 있어요">🔒</span>}
               </div>
-              <p className="mt-1 break-keep text-[13px] leading-[1.5] text-muted">{tagline ? `${tagline} · ${s.desc}` : s.desc}</p>
-              <span className="mt-auto pt-3 text-xs font-semibold text-woori">{!s.href ? "기존 버전" : s.category}</span>
+              <p className="mt-1 break-keep text-[13px] leading-[1.5] text-slate-600 dark:text-muted">{tagline ? `${tagline} · ${s.desc}` : s.desc}</p>
+              <span className="mt-auto pt-2.5 text-xs font-bold text-woori">{!s.href ? "기존 버전" : s.category}</span>
             </ServiceLink>
           );
         })}

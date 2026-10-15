@@ -16,7 +16,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#0a2540_0%,#0b4a9e_52%,#2f8cff_118%)] px-6 py-7 text-white shadow-[0_12px_32px_-16px_rgba(11,74,158,.5)] sm:px-12 sm:py-12">
+      <section className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#0a2540_0%,#0b4a9e_52%,#2f8cff_118%)] px-5 py-5 text-white shadow-[0_12px_32px_-16px_rgba(11,74,158,.5)] sm:px-12 sm:py-12">
         <div aria-hidden className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full bg-[radial-gradient(circle,rgba(125,190,255,.45)_0%,rgba(125,190,255,0)_68%)]" />
         <div aria-hidden className="pointer-events-none absolute -bottom-28 left-1/4 size-80 rounded-full bg-[radial-gradient(circle,rgba(47,140,255,.35)_0%,rgba(47,140,255,0)_70%)]" />
         <div className="relative">
@@ -24,12 +24,12 @@ export default function Home() {
             <span aria-hidden className="size-1.5 rounded-full bg-sky-300" />
             DIGITAL STRATEGY · AI LAB
           </div>
-          <h1 className="mt-4 break-keep text-[26px] font-extrabold leading-[1.28] tracking-[-0.025em] sm:text-[40px] sm:leading-[1.22]">
+          <h1 className="mt-3 break-keep text-[24px] font-extrabold leading-[1.3] tracking-[-0.025em] sm:text-[40px] sm:leading-[1.22]">
             아이디어를 서비스로 만드는
             <br />
             <span className="text-sky-200">{SITE_NAME}</span>
           </h1>
-          <p className="mt-3 max-w-xl break-keep text-[13px] leading-relaxed text-blue-50/90 sm:mt-4 sm:text-base">
+          <p className="mt-2.5 max-w-xl break-keep text-[13px] leading-[1.6] text-white/90 sm:mt-4 sm:text-base">
             AI Agent · API · Vibe Coding으로 만든 서비스들을 자유롭게 둘러보고 직접 체험해보세요.
           </p>
         </div>
