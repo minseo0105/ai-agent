@@ -16,8 +16,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#102a43_0%,#0d3a6b_58%,#0067c8_130%)] px-6 py-9 text-white sm:px-10 sm:py-14">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,.07)_0%,rgba(255,255,255,0)_45%)]" />
+      <section className="relative overflow-hidden rounded-3xl bg-navy px-6 py-8 text-white sm:px-10 sm:py-12">
         <div className="relative">
           <div className="text-[11px] font-semibold tracking-[0.12em] text-blue-200/90">DIGITAL STRATEGY · AI LAB</div>
           <h1 className="mt-3 break-keep text-[28px] font-extrabold leading-[1.25] tracking-[-0.02em] sm:text-[40px]">
