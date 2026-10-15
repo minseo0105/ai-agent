@@ -52,6 +52,9 @@
   --color-golf-soft: var(--golf-soft);
   --color-estate: var(--estate);
   --color-estate-soft: var(--estate-soft);
+  /* 홈 프리미엄 포털용 색. 기존 토큰은 건드리지 않는다. */
+  --color-navy: #102a43;
+  --color-woori: #0067c8;
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 

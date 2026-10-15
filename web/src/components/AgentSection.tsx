@@ -9,7 +9,11 @@ export default function AgentSection() {
   const s = status?.services.agent;
   if (s && !s.visible) return null;
   return (
-    <section id="agent" className="mt-10 scroll-mt-6">
+    <section id="agent" className="mt-12 scroll-mt-6">
+      <div className="mb-4 overflow-hidden rounded-2xl border border-border">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/ailab/agent.svg" alt="" loading="lazy" decoding="async" width={1280} height={360} className="h-24 w-full object-cover sm:h-32" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+      </div>
       <h2 className="text-xl font-extrabold tracking-tight">AI 에이전트</h2>
       <p className="mb-4 mt-1 text-sm text-muted">공시·법령·웹 검색을 필요한 순간에 호출하는 도구형 에이전트입니다.</p>
       {s && !s.allowed ? (

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf7ec"/><stop offset="1" stop-color="#ead9b4"/></linearGradient>
+<radialGradient id="sun" cx="18%" cy="8%" r="65%"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ecd49a"/><stop offset="1" stop-color="#b98b3d"/></linearGradient>
+<radialGradient id="halo" cx="50%" cy="50%" r="50%"><stop offset=".6" stop-color="#f3e2b4" stop-opacity=".7"/><stop offset="1" stop-color="#f3e2b4" stop-opacity="0"/></radialGradient>
+<linearGradient id="ink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3a52"/><stop offset="1" stop-color="#102a43"/></linearGradient>
+</defs>
+<rect width="640" height="480" fill="url(#bg)"/><rect width="640" height="480" fill="url(#sun)"/>
+<circle cx="320" cy="240" r="190" fill="url(#halo)"/>
+<circle cx="320" cy="240" r="150" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity=".8"/>
+<circle cx="320" cy="240" r="118" fill="none" stroke="url(#gold)" stroke-width="1" opacity=".55" stroke-dasharray="2 7"/>
+<circle cx="320" cy="240" r="76" fill="url(#ink)"/>
+<path d="M320 164A76 76 0 0 1 320 316A38 38 0 0 1 320 240A38 38 0 0 0 320 164Z" fill="url(#gold)"/>
+<circle cx="320" cy="202" r="9" fill="#2b3a52"/><circle cx="320" cy="278" r="9" fill="#ecd49a"/>
+<g fill="url(#gold)"><circle cx="320" cy="90" r="7"/><circle cx="462" cy="193" r="7"/><circle cx="408" cy="360" r="7"/><circle cx="232" cy="360" r="7"/><circle cx="178" cy="193" r="7"/></g>
+<path d="M320 90L462 193L408 360L232 360L178 193Z" fill="none" stroke="#b98b3d" stroke-width="1" opacity=".5"/>
+</svg>

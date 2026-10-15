@@ -2,12 +2,19 @@
 // streamlitPath: 아직 Next.js로 옮기지 않은 서비스는 기존 Streamlit 페이지로 연결한다.
 // href: Next.js로 옮긴 서비스는 streamlitPath 대신 href를 채우면 된다.
 
+export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search";
+export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search"];
+
 export type Service = {
   id: string;
   icon: string;
   title: string;
   desc: string;
   tags?: string[];
+  /** 홈 필터 분류 */
+  category: ServiceCategory;
+  /** public/ailab 아래 텍스트 없는 비주얼. 서비스명·설명은 항상 HTML로 따로 그린다. */
+  image: string;
   featured?: boolean;
   secondary?: boolean;
   href?: string;
@@ -17,6 +24,8 @@ export type Service = {
 export const SERVICES: Service[] = [
   {
     id: "golf",
+    category: "API·Search",
+    image: "/ailab/tee.svg",
     icon: "⛳",
     title: "TEE:PICK · 오늘, 어디서 칠까?",
     desc: "지역 · 시간 · 라운드 조건만 골라주세요. 내 조건에 맞는 골프장을 AI가 찾아드립니다.",
@@ -26,6 +35,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: "dreamcar",
+    category: "Prototype",
+    image: "/ailab/dream.svg",
     icon: "🚙",
     title: "내차에서 드림카까지",
     desc: "내 차 시세를 확인하고 다음 차량을 탐색·추천받습니다.",
@@ -33,6 +44,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: "realestate",
+    category: "API·Search",
+    image: "/ailab/zip.svg",
     icon: "🏠",
     title: "ZIP:ON · 부동산 변화를 한눈에",
     desc: "실거래가 · 청약 · 재개발을 확인하고 관심지역의 변화를 모니터링합니다.",
@@ -41,6 +54,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: "report",
+    category: "AI Agent",
+    image: "/ailab/report.svg",
     icon: "📄",
     title: "보고서 작성기",
     desc: "업무 내용을 경영진 보고 구조로 정리합니다.",
@@ -48,6 +63,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: "saju",
+    category: "AI Agent",
+    image: "/ailab/saju.svg",
     icon: "🔮",
     title: "AI 사주 · 대운 분석",
     desc: "사주팔자 · 오행 · 대운 흐름을 분석합니다.",
@@ -55,6 +72,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: "car-selector",
+    category: "Prototype",
+    image: "/ailab/car-selector.svg",
     icon: "🚗",
     title: "차량 선택기",
     desc: "조건에 맞는 차량을 골라봅니다.",
@@ -63,6 +82,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: "gif",
+    category: "Prototype",
+    image: "/ailab/gif.svg",
     icon: "🎞️",
     title: "GIF 변환기",
     desc: "이미지를 GIF로 변환합니다.",
