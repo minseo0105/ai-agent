@@ -15,6 +15,8 @@ export type Service = {
   category: ServiceCategory;
   /** public/ailab 아래 텍스트 없는 비주얼. 서비스명·설명은 항상 HTML로 따로 그린다. */
   image: string;
+  /** image 로드에 실패하면 대신 쓰는 이미지(기존 SVG). */
+  imageFallback?: string;
   featured?: boolean;
   secondary?: boolean;
   href?: string;
@@ -25,7 +27,8 @@ export const SERVICES: Service[] = [
   {
     id: "golf",
     category: "API·Search",
-    image: "/ailab/tee.svg",
+    image: "/ailab/tee.webp",
+    imageFallback: "/ailab/tee.svg",
     icon: "⛳",
     title: "TEE:PICK · 오늘, 어디서 칠까?",
     desc: "지역 · 시간 · 라운드 조건만 골라주세요. 내 조건에 맞는 골프장을 AI가 찾아드립니다.",
@@ -36,7 +39,8 @@ export const SERVICES: Service[] = [
   {
     id: "dreamcar",
     category: "Prototype",
-    image: "/ailab/dream.svg",
+    image: "/ailab/dream.webp",
+    imageFallback: "/ailab/dream.svg",
     icon: "🚙",
     title: "내차에서 드림카까지",
     desc: "내 차 시세를 확인하고 다음 차량을 탐색·추천받습니다.",
@@ -45,7 +49,8 @@ export const SERVICES: Service[] = [
   {
     id: "realestate",
     category: "API·Search",
-    image: "/ailab/zip.svg",
+    image: "/ailab/zip.webp",
+    imageFallback: "/ailab/zip.svg",
     icon: "🏠",
     title: "ZIP:ON · 부동산 변화를 한눈에",
     desc: "실거래가 · 청약 · 재개발을 확인하고 관심지역의 변화를 모니터링합니다.",

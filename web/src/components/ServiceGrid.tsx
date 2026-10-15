@@ -16,6 +16,8 @@ function splitTitle(title: string): { name: string; tagline?: string } {
 /** 이미지는 장식이다(서비스명·설명은 HTML 텍스트). 로드에 실패하면 같은 자리에 단색 대체 면을 보인다. */
 function Visual({ service, className }: { service: Service; className: string }) {
   const [failed, setFailed] = useState(false);
+  // WebP가 실패하면 기존 SVG로 한 번 더 시도하고, 그것도 실패하면 단색 대체 면을 보인다.
+  const [src, setSrc] = useState(service.image);
   if (failed) {
     return (
       <div className={`${className} flex items-center justify-center bg-gradient-to-br from-navy to-woori text-3xl`} aria-hidden>
@@ -27,13 +29,13 @@ function Visual({ service, className }: { service: Service; className: string })
     // 정적 내보내기(unoptimized)라 next/image 대신 img를 쓴다. SVG는 이미 경량이다.
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={service.image}
+      src={src}
       alt=""
       loading="lazy"
       decoding="async"
       width={640}
       height={480}
-      onError={() => setFailed(true)}
+      onError={() => (service.imageFallback && src !== service.imageFallback ? setSrc(service.imageFallback) : setFailed(true))}
       className={`${className} object-cover`}
     />
   );
