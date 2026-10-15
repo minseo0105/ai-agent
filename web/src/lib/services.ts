@@ -95,11 +95,20 @@ export const SERVICES: Service[] = [
     secondary: true,
     href: "/gif",
   },
+  {
+    id: "moneyon",
+    category: "Prototype",
+    image: "/ailab/money.svg",
+    icon: "🐷",
+    title: "MONEY · 우루미와 함께하는 어린이 금융 놀이터",
+    desc: "용돈을 받고, 쓰고, 저축하면서 이자 보너스를 배워요.",
+    href: "https://minseo2-moneyon-demo.hf.space/",
+  },
 ];
 
 const STREAMLIT_URL = (process.env.NEXT_PUBLIC_STREAMLIT_URL || "http://localhost:8501").replace(/\/$/, "");
 
 export function serviceLink(s: Service): { href: string; external: boolean } {
-  if (s.href) return { href: s.href, external: false };
+  if (s.href) return { href: s.href, external: /^https?:\/\//.test(s.href) };
   return { href: `${STREAMLIT_URL}/${encodeURI(s.streamlitPath ?? "")}`, external: true };
 }
