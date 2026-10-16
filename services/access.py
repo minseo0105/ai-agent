@@ -44,6 +44,8 @@ SERVICE_CATALOG = [
     {"id": "saju", "icon": "🔮", "title": "AI 사주 · 대운 분석", "page": "/saju", "api": ["/api/saju"]},
     {"id": "car-selector", "icon": "🚗", "title": "차량 선택기", "page": "/car-selector", "api": ["/api/car-selector"]},
     {"id": "gif", "icon": "🎞️", "title": "GIF 변환기", "page": "/gif", "api": ["/api/gif"]},
+    # 외부(Hugging Face Space) 서비스: 이 사이트에 화면·API가 없어 공개 설정(홈 노출)만 연결한다.
+    {"id": "moneyon", "icon": "🐷", "title": "MONEY", "page": "https://minseo2-moneyon-demo.hf.space/", "api": []},
 ]
 SERVICE_IDS = [s["id"] for s in SERVICE_CATALOG]
 
