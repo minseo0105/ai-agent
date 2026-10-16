@@ -2,8 +2,8 @@
 // streamlitPath: 아직 Next.js로 옮기지 않은 서비스는 기존 Streamlit 페이지로 연결한다.
 // href: Next.js로 옮긴 서비스는 streamlitPath 대신 href를 채우면 된다.
 
-export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search" | "어린이 금융교육";
-export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search", "어린이 금융교육"];
+export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search";
+export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search"];
 
 export type Service = {
   id: string;
@@ -97,12 +97,12 @@ export const SERVICES: Service[] = [
   },
   {
     id: "moneyon",
-    category: "어린이 금융교육",
+    category: "Prototype",
     image: "/ailab/money.webp",
     imageFallback: "/ailab/money.svg",
     icon: "🐷",
-    title: "MONEY:ON · 용돈을 아끼면 이자가 쑥쑥!",
-    desc: "용돈을 쓰고, 모으고, 남은 돈에 이자까지! 아이들이 직접 경험하며 배우는 나만의 용돈 통장.",
+    title: "MONEY:ON",
+    desc: "용돈을 관리하고, 남은 돈에 이자까지!",
     href: "https://minseo2-moneyon-demo.hf.space/",
   },
 ];
