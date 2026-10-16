@@ -58,6 +58,19 @@ class EndpointTests(unittest.TestCase):
             self.assertEqual(self.client.post('/api/analytics/events', json={'events': [event()]}).status_code, 204)
             self.assertEqual(self.client.get('/api/realestate/example').json(), {'ok': True})
 
+    def test_moneyon_card_click_is_accepted_once_and_cannot_be_forged_elsewhere(self):
+        click = event(service='moneyon', route='/moneyon', event_type='external_link_click',
+                      metadata={'action': 'moneyon_card_click'})
+        with patch.object(api.collector, 'offer') as offer:
+            self.assertEqual(self.client.post('/api/analytics/events', json={'events': [click]}).status_code, 204)
+            self.assertEqual(offer.call_count, 1)
+            for change in [{'service': 'realestate'}, {'route': '/realestate'}, {'event_type': 'search'},
+                           {'metadata': {'action': 'moneyon_card_click', 'x': 'y'}}]:
+                api.budget = api.Budget()
+                r = self.client.post('/api/analytics/events', json={'events': [{**click, **change}]})
+                self.assertEqual(r.status_code, 400, change)
+            self.assertEqual(offer.call_count, 1)
+
     def test_invalid_and_forbidden_values_are_rejected_without_echo(self):
         changes = [{'metadata': {'email': 'private@example.com'}},
                    {'metadata': {'action': 'private@example.com'}},

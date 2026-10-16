@@ -20,6 +20,12 @@ function Value({ value, unit = "회" }: { value: number | null; unit?: string })
 }
 
 function Metrics({ service }: { service: UsageService }) {
+  // MONEY:ON은 외부 앱이라 방문 세션·페이지 조회를 알 수 없다. 홈 카드 클릭만 따로 보인다.
+  if (service.service === "moneyon") {
+    return <div className="space-y-2"><dl className="grid grid-cols-2 gap-x-5 gap-y-3 text-sm">
+      <div className="min-w-0"><dt className="text-xs text-muted">홈 카드 클릭</dt><dd className="mt-0.5 font-extrabold"><Value value={service.card_clicks ?? 0} /></dd></div>
+    </dl><p className="text-xs text-muted">MONEY:ON 앱의 실제 방문·이용은 집계하지 않아요. 클릭은 홈에서 카드를 누른 횟수예요.</p></div>;
+  }
   const rows: [string, number | null, string?][] = [
     ["방문 세션", service.visits, "세션"], ["페이지 조회", service.page_views],
     [service.feature_label, service.features],
@@ -124,13 +130,13 @@ export default function UsageDashboard() {
     {error && <div className={`${panel} border-amber-500/30`} role="alert"><p className="font-bold">{error}</p><p className="mt-2 text-sm text-muted">집계 오류를 0건으로 표시하지 않습니다. 서비스 이용에는 영향을 주지 않아요.</p></div>}
     {data && <>
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-5" aria-label="기간 요약">{kpis.map(([label, key, unit]) => <div key={key} className="rounded-2xl border border-border bg-surface p-4"><div className="text-xs font-bold text-muted">{label}</div><div className={`mt-2 text-2xl font-extrabold ${key === "errors" && data.totals.errors ? "text-estate" : "text-fg"}`}><Value value={data.totals[key]} unit={unit} /></div></div>)}</section>
-      <p className="text-xs leading-relaxed text-muted">방문 세션은 페이지에 진입한 익명 브라우저 세션입니다. 사람 수와 다릅니다. 기능 실행은 현재 수집 중인 ZIP:ON·Golf의 검색 실행만, 외부 이동은 ZIP:ON의 네이버부동산·공식 자료 링크만 집계합니다.</p>
+      <p className="text-xs leading-relaxed text-muted">방문 세션은 페이지에 진입한 익명 브라우저 세션입니다. 사람 수와 다릅니다. 기능 실행은 현재 수집 중인 ZIP:ON·Golf의 검색 실행만, 외부 이동은 ZIP:ON의 네이버부동산·공식 자료 링크 이동과 MONEY:ON 홈 카드 클릭만 집계합니다.</p>
       {Object.values(data.totals).every((count) => count === 0) && <p className="rounded-2xl bg-accent-soft p-4 text-sm text-accent" role="status">선택한 기간에 수집된 활동이 없습니다.</p>}
       <section className={panel} aria-label="어떤 서비스를 이용했나요?">
         <h2 className="text-lg font-extrabold">어떤 서비스를 이용했나요?</h2><p className="mt-1 text-xs text-muted">서비스별 이용현황 · 페이지를 누르면 상세 지표가 펼쳐집니다.</p>
         <div className="mt-5 grid grid-cols-[minmax(0,1fr)_3.5rem_3.5rem_3.5rem] gap-1 border-b border-border pb-2 text-right text-[10px] font-bold text-muted sm:grid-cols-[minmax(0,1fr)_5rem_5rem_5rem]"><span className="text-left">서비스 / 페이지</span><span>방문 세션</span><span>페이지 조회</span><span>기능 실행</span></div>
         {data.pages.map((page) => <details key={page.route} className="border-b border-border last:border-0">
-          <summary className="grid min-h-16 cursor-pointer list-none grid-cols-[minmax(0,1fr)_3.5rem_3.5rem_3.5rem] items-center gap-1 py-3 text-right text-sm marker:hidden sm:grid-cols-[minmax(0,1fr)_5rem_5rem_5rem]"><span className="min-w-0 break-words pr-1 text-left text-xs font-bold sm:text-sm">{page.label}<span className="ml-1 text-subtle" aria-hidden>⌄</span></span><span className="tabular-nums">{number(page.visits)}</span><span className="tabular-nums">{number(page.page_views)}</span><span className="tabular-nums">{page.features === null ? <span className="text-[10px] text-muted" aria-label="집계 준비 중">준비 중</span> : number(page.features)}</span></summary>
+          <summary className="grid min-h-16 cursor-pointer list-none grid-cols-[minmax(0,1fr)_3.5rem_3.5rem_3.5rem] items-center gap-1 py-3 text-right text-sm marker:hidden sm:grid-cols-[minmax(0,1fr)_5rem_5rem_5rem]"><span className="min-w-0 break-words pr-1 text-left text-xs font-bold sm:text-sm">{page.label}<span className="ml-1 text-subtle" aria-hidden>⌄</span></span>{page.service === "moneyon" ? <><span className="text-[10px] text-muted">집계 안 함</span><span className="text-[10px] text-muted">집계 안 함</span><span className="tabular-nums" aria-label="홈 카드 클릭 수"><span className="mr-0.5 text-[10px] text-muted">클릭</span>{number(data.services.find((s) => s.service === "moneyon")?.card_clicks ?? 0)}</span></> : <><span className="tabular-nums">{number(page.visits)}</span><span className="tabular-nums">{number(page.page_views)}</span><span className="tabular-nums">{page.features === null ? <span className="text-[10px] text-muted" aria-label="집계 준비 중">준비 중</span> : number(page.features)}</span></>}</summary>
           <div className="mb-4 rounded-2xl bg-surface-muted p-4"><p className="mb-3 text-xs font-bold text-muted">{data.services.find((s) => s.service === page.service)?.label ?? page.label} 서비스 전체 지표</p>{data.services.find((s) => s.service === page.service) && <Metrics service={data.services.find((s) => s.service === page.service)!} />}</div>
         </details>)}
         <p className="mt-4 text-xs leading-relaxed text-muted">0회는 수집 중인 이벤트가 없는 경우, ‘준비 중’은 아직 수집하지 않는 기능입니다. 같은 세션의 재방문은 페이지 조회만 늘어납니다. 미등록 경로는 기존 수집 기준에 따라 /other로 합산됩니다.</p>

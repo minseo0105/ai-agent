@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAccess } from "@/components/access/AccessProvider";
+import { trackMoneyCardClick } from "@/lib/analytics";
 import { CATEGORIES, SERVICES, serviceLink, type Service, type ServiceCategory } from "@/lib/services";
 
 type Filter = "전체" | ServiceCategory;
@@ -56,7 +57,7 @@ function ArrowIcon() {
 function ServiceLink({ service, className, children }: { service: Service; className: string; children: React.ReactNode }) {
   const { href, external } = serviceLink(service);
   return (
-    <a href={href} className={className} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+    <a href={href} className={className} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} onClick={service.id === "moneyon" ? trackMoneyCardClick : undefined}>
       {children}
     </a>
   );

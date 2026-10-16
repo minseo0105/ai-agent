@@ -14,10 +14,10 @@ from services.usage_events import collector
 router = APIRouter()
 ROUTES = {'/': 'home', '/realestate': 'realestate', '/golf': 'golf',
           '/golf/club': 'golf', '/dreamcar': 'dreamcar', '/report': 'report',
-          '/saju': 'saju', '/car-selector': 'car-selector', '/gif': 'gif', '/other': 'other'}
+          '/saju': 'saju', '/car-selector': 'car-selector', '/gif': 'gif', '/moneyon': 'moneyon', '/other': 'other'}
 DETAILS = {'page_view': set(), 'search': {'address_search', 'golf_search', 'trade_search', 'subscription_search'},
            'project_click': set(), 'map_click': set(),
-           'external_link_click': {'naver_land_click', 'official_source_click'}}
+           'external_link_click': {'naver_land_click', 'official_source_click', 'moneyon_card_click'}}
 
 
 class Event(BaseModel):

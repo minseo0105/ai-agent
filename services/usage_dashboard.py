@@ -20,7 +20,7 @@ PAGES = {
     '/golf': ('golf', 'Golf'), '/golf/club': ('golf', 'Golf · 골프장 상세'),
     '/dreamcar': ('dreamcar', '내차에서 드림카까지'), '/report': ('report', '보고서 작성기'),
     '/saju': ('saju', 'AI 사주 · 대운 분석'), '/car-selector': ('car-selector', '차량 선택기'),
-    '/gif': ('gif', 'GIF 변환기'), '/other': ('other', '기타 페이지 (/other)'),
+    '/gif': ('gif', 'GIF 변환기'), '/moneyon': ('moneyon', 'MONEY:ON'), '/other': ('other', '기타 페이지 (/other)'),
 }
 LABELS = {service: label for route, (service, label) in PAGES.items() if route != '/golf/club'}
 FEATURE_LABELS = {'realestate': '부동산 검색', 'golf': '골프장 검색'}
@@ -127,6 +127,8 @@ def activity_label(row):
             return '네이버부동산 이동'
         if row.action == 'official_source_click':
             return '공식 자료 이동'
+        if row.action == 'moneyon_card_click':
+            return 'MONEY:ON 카드 클릭'
         return '외부 이동'
     return {'page_view': '페이지 방문', 'map_click': '지도에서 개발사업 확인',
             'project_click': '개발사업 상세 확인', 'api_error': '서비스 오류'}.get(row.event_type, '기록된 활동')
@@ -176,6 +178,8 @@ def present_summary(raw, period):
             'feature_label': FEATURE_LABELS.get(sid, '핵심 기능'), 'used_sessions': used,
             'feature_rate': round(used / row.visits * 100, 1) if collected and row.visits else None,
             'external': row.external if sid == 'realestate' else None, 'errors': row.errors,
+            # MONEY:ON은 외부 앱이라 방문을 알 수 없다. 홈 카드 클릭(외부 이동)만 별도 지표로 낸다.
+            'card_clicks': row.external if sid == 'moneyon' else None,
             'map_clicks': row.map_clicks if sid == 'realestate' else None,
             'project_clicks': row.project_clicks if sid == 'realestate' else None,
             'naver': row.naver if sid == 'realestate' else None,

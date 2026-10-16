@@ -4,10 +4,10 @@ const SESSION_KEY = "ailab-usage-session-v1";
 const ROUTES: Record<string, string> = {
   "/": "home", "/realestate": "realestate", "/golf": "golf", "/golf/club": "golf",
   "/dreamcar": "dreamcar", "/report": "report", "/saju": "saju",
-  "/car-selector": "car-selector", "/gif": "gif", "/other": "other",
+  "/car-selector": "car-selector", "/gif": "gif", "/moneyon": "moneyon", "/other": "other",
 };
 export type UsageEvent = "page_view" | "search" | "project_click" | "map_click" | "external_link_click";
-export type UsageAction = "address_search" | "golf_search" | "trade_search" | "subscription_search" | "naver_land_click" | "official_source_click";
+export type UsageAction = "address_search" | "golf_search" | "trade_search" | "subscription_search" | "naver_land_click" | "official_source_click" | "moneyon_card_click";
 type Event = { session_id: string; service: string; route: string; event_type: UsageEvent; metadata: { action?: UsageAction } };
 let session: string | undefined;
 let lastPath: string | undefined;
@@ -78,4 +78,15 @@ export function recordPageView(pathname: string): void {
   if (lastPath === pathname) return;
   lastPath = pathname;
   trackUsage("page_view", undefined, pathname);
+}
+
+// MONEY:ON은 외부 앱이라 이 사이트에서는 방문이 아닌 "홈 카드 클릭"만 알 수 있다.
+// 기록 실패는 조용히 무시한다. 카드 이동(링크)은 이 함수와 무관하게 동작한다.
+export function trackMoneyCardClick(): void {
+  try {
+    if (typeof window === "undefined" || queue.length >= 64) return;
+    queue.push({ session_id: sessionId(), service: "moneyon", route: "/moneyon", event_type: "external_link_click",
+      metadata: { action: "moneyon_card_click" } });
+    schedule();
+  } catch { /* Telemetry must never affect navigation. */ }
 }

@@ -9,6 +9,8 @@ export type UsageService = {
   used_sessions: number | null; feature_rate: number | null; external: number | null;
   errors: number; map_clicks: number | null; project_clicks: number | null; naver: number | null;
   session_funnel: number[] | null;
+  /** MONEY:ON 전용: 홈 카드 클릭 수(방문 수가 아님). 다른 서비스는 null. */
+  card_clicks?: number | null;
 };
 export type UsageDay = { day: string; service: string; visits: number; page_views: number; features: number };
 export type UsageSummary = {

@@ -79,6 +79,23 @@ class PresentationTests(unittest.TestCase):
         for forbidden in ('session_id', 'do-not-return', 'metadata', 'request_id', 'private'):
             self.assertNotIn(forbidden, output)
 
+    def test_moneyon_reports_card_clicks_separately_from_visits(self):
+        value = raw()
+        zeros = {k: 0 for k in usage.ServiceCounts.model_fields if k != 'service'}
+        value['services'].append({**zeros, 'service': 'moneyon', 'external': 4})
+        value['pages'].append({'service': 'moneyon', 'route': '/moneyon', 'visits': 0, 'page_views': 0, 'features': 0})
+        data = usage.present_summary(value, 'today')
+        money = next(s for s in data['services'] if s['service'] == 'moneyon')
+        self.assertEqual((money['label'], money['card_clicks'], money['visits'], money['page_views']), ('MONEY:ON', 4, 0, 0))
+        self.assertIsNone(money['external'])
+        for other in data['services']:
+            if other['service'] != 'moneyon':
+                self.assertIsNone(other['card_clicks'])
+        page = next(p for p in data['pages'] if p['route'] == '/moneyon')
+        self.assertEqual((page['visits'], page['page_views']), (0, 0))
+        zero = usage.present_summary(raw(), 'today')
+        self.assertEqual(next(s for s in zero['services'] if s['service'] == 'moneyon')['card_clicks'], 0)
+
     def test_activity_labels_use_real_taxonomy(self):
         for service, event, action, expected in [
             ('realestate', 'search', 'address_search', '부동산 검색'),
@@ -88,6 +105,7 @@ class PresentationTests(unittest.TestCase):
             ('realestate', 'project_click', None, '개발사업 상세 확인'),
             ('realestate', 'external_link_click', 'naver_land_click', '네이버부동산 이동'),
             ('realestate', 'external_link_click', 'official_source_click', '공식 자료 이동'),
+            ('moneyon', 'external_link_click', 'moneyon_card_click', 'MONEY:ON 카드 클릭'),
         ]:
             row = usage.Activity(created_at=datetime.now(timezone.utc), service=service, route='/', event_type=event, action=action)
             self.assertEqual(usage.activity_label(row), expected)
