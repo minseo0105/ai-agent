@@ -98,7 +98,8 @@ export const SERVICES: Service[] = [
   {
     id: "moneyon",
     category: "Prototype",
-    image: "/ailab/money.svg",
+    image: "/ailab/money.webp",
+    imageFallback: "/ailab/money.svg",
     icon: "🐷",
     title: "MONEY · 우루미와 함께하는 어린이 금융 놀이터",
     desc: "용돈을 받고, 쓰고, 저축하면서 이자 보너스를 배워요.",
