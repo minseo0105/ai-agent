@@ -101,7 +101,7 @@ export const SERVICES: Service[] = [
     image: "/ailab/money.webp",
     imageFallback: "/ailab/money.svg",
     icon: "🐷",
-    title: "MONEY",
+    title: "MONEY:ON",
     desc: "용돈을 관리하고, 남은 돈에 이자까지!",
     href: "https://minseo2-moneyon-demo.hf.space/",
   },
