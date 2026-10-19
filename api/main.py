@@ -14,6 +14,7 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -84,6 +85,9 @@ app.mount(car_selector.REAL_MEDIA, StaticFiles(directory=car_selector.FALLBACK_D
 
 # 프론트엔드 주소. 배포 시 FRONTEND_ORIGINS="https://my-site.vercel.app" 처럼 쉼표로 지정
 _origins = os.environ.get("FRONTEND_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+# 텍스트 응답(JS·CSS·HTML·JSON)을 gzip으로 보낸다. SSE(text/event-stream)와 이미지는 Starlette가 기본 제외한다.
+# 가장 안쪽에 둔다. 바깥 BaseHTTPMiddleware를 거치면 응답이 스트림으로 바뀌어 minimum_size가 무시된다.
+app.add_middleware(GZipMiddleware, minimum_size=500)
 # 관리자 설정의 공개 범위를 서비스 API에 적용. CORS보다 먼저 추가해야(=안쪽) 차단 응답에도 CORS 헤더가 붙는다.
 app.add_middleware(AccessMiddleware)
 # request_id·접근 로그는 가장 바깥에 둔다. 접근 제어에서 막힌 요청도 같은 id로 추적된다.
@@ -171,8 +175,19 @@ def chat(req: ChatRequest):
 # ==========================================
 WEB_DIST = Path(os.environ.get("WEB_DIST") or Path(__file__).resolve().parent.parent / "web" / "out").resolve()
 
+
+class NextAssets(StaticFiles):
+    """/_next/static 아래 파일은 이름에 해시가 들어 있어 내용이 바뀌면 이름도 바뀐다 → 1년 캐시."""
+
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        if path.replace("\\", "/").startswith("static/") and response.status_code in (200, 304):
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        return response
+
+
 if (WEB_DIST / "index.html").is_file():
-    app.mount("/_next", StaticFiles(directory=WEB_DIST / "_next"), name="next-assets")
+    app.mount("/_next", NextAssets(directory=WEB_DIST / "_next"), name="next-assets")
 
     @app.get("/{path:path}", include_in_schema=False)
     def web_page(path: str):
