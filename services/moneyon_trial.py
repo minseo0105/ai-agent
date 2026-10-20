@@ -21,7 +21,28 @@ from services.moneyon_banking import MockBankingAdapter
 from services import moneyon_savings as savings
 
 # Pre-seeded sample workspaces wait under this owner until a visitor claims one.
-POOL = 'pool'
+# The suffix is the seed rules version: samples made under older rules (owner
+# 'pool') are never handed out and are removed by cleanup.
+POOL = 'pool:v2'
+LEGACY_POOLS = ('pool',)
+# New trials: interest in whole 100원 (amounts under 100원 are dropped) and the
+# child presses "이자 받기" after the weekly settlement instead of automatic payment.
+UNIT = 100
+
+
+def split(total, weights, unit=1, ids=()):
+    """Share total by weights in whole units; leftover units go to the largest remainders, ties by id."""
+    whole = sum(weights)
+    if not whole:
+        return [0] * len(weights)
+    units = total // unit
+    shares = [units * w // whole for w in weights]
+    ids = list(ids) or list(range(len(weights)))
+    for n in sorted(range(len(weights)), key=lambda n: (-(units * weights[n] % whole), ids[n]))[:units - sum(shares)]:
+        shares[n] += 1
+    shares = [s * unit for s in shares]
+    shares[0] += total - units * unit
+    return shares
 # Lookups that scanned whole tables once many visitors had accumulated.
 INDEXES = (
     'CREATE INDEX IF NOT EXISTS transactions_cycle ON transactions(cycle)',
@@ -116,7 +137,7 @@ class TrialLedger(Ledger):
             items.append(dict(cycle_id=cycle['id'], start=cycle['start'], end=cycle['end'],
                               reward_type=kind, base=max(0, base), amount=amount,
                               destination='wallet' if kind == 'allowance_bonus' else 'vault',
-                              rate_bps=rule['rate_bps'], cap=rule['cap'],
+                              rate_bps=rule['rate_bps'], cap=rule['cap'], unit=rule.get('unit', 1),
                               status='paid' if paid else 'awaiting_approval' if ended else 'estimated',
                               paid_amount=paid['amount'] if paid else 0,
                               paid_at=paid['paid_at'] if paid else None,
@@ -146,15 +167,11 @@ class TrialLedger(Ledger):
                 state['rewards'] = dict(items=items, estimates={i['reward_type']: i['amount'] for i in estimates},
                                         expected_total=sum(i['amount'] for i in estimates), destination='separate')
                 # Split the one aggregate estimate, never calculate the capped rate anew for every book.
-                total_base=sum(b['balance'] for b in state['books'])
                 total_interest=state['rewards']['estimates'].get('savings_interest',0)
-                assigned=0
-                for book in state['books']:
-                    book['interest']=total_interest*book['balance']//total_base if total_base else 0
-                    assigned+=book['interest']
-                if total_base:
-                    for book in sorted(state['books'],key=lambda b:(-(total_interest*b['balance']%total_base),b['id']))[:total_interest-assigned]:
-                        book['interest']+=1
+                unit=next((i['unit'] for i in estimates if i['reward_type']=='savings_interest'),1)
+                shares=split(total_interest,[b['balance'] for b in state['books']],unit,[b['id'] for b in state['books']])
+                for book,share in zip(state['books'],shares):
+                    book['interest']=share
                 if current:
                     tx = [t for t in state['transactions'] if current['start'] <= t['created'][:10] < current['end']]
                     state['education'] = dict(start=current['start'], end=current['end'],
@@ -209,10 +226,8 @@ class TrialLedger(Ledger):
                     db.execute('DELETE FROM moneyon_book_entries WHERE transaction_id=?',(transaction,))
                     weights=[max(0,db.execute('''SELECT COALESCE(SUM(e.amount),0) FROM moneyon_book_entries e JOIN transactions t ON t.id=e.transaction_id
                         WHERE e.book=? AND substr(t.created,1,10)<?''',(b['id'],cycle['end'])).fetchone()[0]) for b in books]
-                    total=sum(weights); amounts=[item['amount']*w//total if total else 0 for w in weights]
-                    if total:
-                        for index in sorted(range(len(books)),key=lambda n:(-(item['amount']*weights[n]%total),books[n]['id']))[:item['amount']-sum(amounts)]: amounts[index]+=1
-                    else: amounts[0]=item['amount']
+                    amounts=split(item['amount'],weights,item['unit'],[b['id'] for b in books])
+                    if not sum(weights): amounts[0]=item['amount']
                     for book,amount in zip(books,amounts):
                         if amount: db.execute('INSERT INTO moneyon_book_entries VALUES(?,?,?)',(transaction,book['id'],amount))
                 db.execute('INSERT INTO trial_rewards VALUES(?,?,?,?,?,?,?)',
@@ -263,8 +278,10 @@ class TrialLedger(Ledger):
 
 
 class Trials:
-    def __init__(self, ledger):
-        self.ledger = ledger
+    def __init__(self, ledger, unit=UNIT, payment='manual'):
+        # Rules for newly seeded trials. Existing trials keep the rules stored with them;
+        # unit=1, payment='automatic' reproduces the earlier trial rules.
+        self.ledger, self.unit, self.payment = ledger, unit, payment
 
     @staticmethod
     def digest(token):
@@ -311,17 +328,21 @@ class Trials:
             adapter.transfer_to_savings(family, child, 'seed-savings', 15000, day)
             policy['dual_rewards'] = {'allowance_bonus': {'rate_bps': 1000, 'cap': None},
                                       'savings_interest': {'rate_bps': 200, 'cap': 2000}}
+            if self.unit != 1:
+                for rule in policy['dual_rewards'].values():
+                    rule['unit'] = self.unit
             dbledger.save_child(family, dict(name='하늘', grade=2, avatar='🪙', theme='moneyon'), policy, child)
             db.execute('UPDATE cycles SET policy=? WHERE child=? AND settled=0', (json.dumps(policy), child))
             dbledger.goal(family, child, '나의 첫 자전거', 30000)
             savings.migrate(db,child)
-            db.execute('INSERT INTO moneyon_payment_rules VALUES(?,?,?)',(child,day.isoformat(),'automatic'))
+            db.execute('INSERT INTO moneyon_payment_rules VALUES(?,?,?)',(child,day.isoformat(),self.payment))
         return family, child
 
     def workspace(self, owner):
         """Claim a pre-seeded sample when one is waiting, otherwise seed now. Both are identical seeds."""
         with self.ledger.db() as db:
-            row = db.execute('SELECT family FROM moneyon_demo_workspaces WHERE owner=? AND active=1 ORDER BY rowid LIMIT 1', (POOL,)).fetchone()
+            # Waiting samples follow the default rules; other rules always seed fresh.
+            row = (self.unit, self.payment) == (UNIT, 'manual') and db.execute('SELECT family FROM moneyon_demo_workspaces WHERE owner=? AND active=1 ORDER BY rowid LIMIT 1', (POOL,)).fetchone()
             if not row:
                 return self.seed(owner)
             db.execute('UPDATE moneyon_demo_workspaces SET owner=? WHERE family=?', (owner, row['family']))
@@ -364,6 +385,9 @@ class Trials:
                                                          (now, now - idle, min(excess, limit - len(doomed))))]
             for capability in doomed:
                 self._purge(db, capability)
+            for owner in LEGACY_POOLS:
+                if db.execute('SELECT 1 FROM moneyon_demo_workspaces WHERE owner=? LIMIT 1', (owner,)).fetchone():
+                    self._purge(db, owner)
             return len(doomed)
 
     @staticmethod
@@ -406,6 +430,22 @@ class Trials:
             db.execute('UPDATE trial_visitors SET family=?,child=?,generation=generation+1,reset_key=? WHERE capability=?',
                        (family, child, key, row['capability']))
             return self.snapshot(self.resolve(token))
+
+    def claim(self, row, key):
+        """Pay every finished week's waiting interest in one transaction ("이자 받기").
+
+        Only items still waiting are paid, so a repeated or concurrent claim never pays twice;
+        a retry with the same key finds them paid and returns the same state."""
+        day = self.day(row)
+        with self.ledger.db() as db:
+            paid = 0
+            for cycle in db.execute('SELECT * FROM cycles WHERE child=? AND end<=? ORDER BY start', (row['child'], day.isoformat())).fetchall():
+                for item in self.ledger.reward_items(db, row['child'], dict(cycle), day):
+                    if item['status'] != 'awaiting_approval':
+                        continue
+                    self.ledger.settle_rewards(row['family'], row['child'], cycle['id'], f"{key}:{cycle['id']}", day, item['reward_type'])
+                    paid += item['amount']
+            return paid
 
     def allowance(self, row, amount, key):
         if type(amount) is not int or not 100 <= amount <= 10000000 or amount % 100:

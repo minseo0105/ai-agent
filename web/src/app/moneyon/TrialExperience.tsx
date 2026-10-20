@@ -6,7 +6,8 @@ import TrialSheet from "./TrialSheet";
 import Izani from "./Izani";
 import RewardSaving from "./RewardSaving";
 import { PRACTICE, PracticeNote, monthDay, weekRange } from "./WeeklyJourney";
-import type { Child, ChildTransaction, State, RewardItem } from "./types";
+import { FROM, formula } from "./TrialHome";
+import type { Child, ChildTransaction, State } from "./types";
 
 export const TRIAL_STORAGE="moneyon-trial-v1";
 type Snapshot={token?:string;child:Child;state:State;day:string;generation:number;expires:number};
@@ -36,8 +37,8 @@ export function TrialStatus({error,onExit,quiet}:{error?:string;onExit?:()=>void
 
 export default function TrialExperience({onExit}:{onExit:()=>void}) {
   const [snapshot,setSnapshot]=useState<Snapshot|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState(""),[expired,setExpired]=useState(false);
-  const [panel,setPanel]=useState(""),[amount,setAmount]=useState(""),[message,setMessage]=useState("");
-  const [approval,setApproval]=useState(false);
+  // amount: 엄마 화면에서 보낼 용돈(10,000원으로 시작).
+  const [panel,setPanel]=useState(""),[amount,setAmount]=useState("10000"),[message,setMessage]=useState("");
   const [rewardTab,setRewardTab]=useState<"allowance_bonus"|"savings_interest">("allowance_bonus");
   const [celebrating,setCelebrating]=useState(false);
   // 시간을 옮기거나 이자를 받은 직후의 한 줄 장면: 무슨 일이 있었는지와 들어온 이자(통장별).
@@ -72,63 +73,80 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
   function exit(){sessionStorage.removeItem(TRIAL_STORAGE);onExit();}
   function key(signature:string){if(retry.current?.signature!==signature)retry.current={signature,key:crypto.randomUUID()};return retry.current.key;}
 
-  async function transact(payload:ChildTransaction){let ok=false;await run(async()=>{const state=await api(`/children/${snapshot!.child.id}/transactions`,{...payload,key:key(JSON.stringify(payload))});retry.current=null;setSnapshot(s=>s?{...s,state}:s);setMessage(payload.kind==="expense"?`${won(payload.amount)}을 썼어. 남은 돈에 이자가 붙어!`:payload.kind==="deposit"?`저축통장에 ${won(payload.amount)} 저금했어!`:`내 용돈통장으로 ${won(payload.amount)} 꺼냈어!`);ok=true;});return ok;}
-  async function action(kind:"allowance"|"date"|"month"|"approve"|"reset",item?:RewardItem){
+  async function transact(payload:ChildTransaction){let ok=false;await run(async()=>{const state=await api(`/children/${snapshot!.child.id}/transactions`,{...payload,key:key(JSON.stringify(payload))});retry.current=null;setSnapshot(s=>s?{...s,state}:s);setMessage(payload.kind==="expense"?`${payload.category?payload.category+"에 ":""}${won(payload.amount)}을 썼다고 적었어!`:payload.kind==="deposit"?`저축통장에 ${won(payload.amount)} 저금했어!`:`내 용돈통장으로 ${won(payload.amount)} 꺼냈어!`);ok=true;});return ok;}
+  async function action(kind:"allowance"|"date"|"month"|"claim"|"reset"){
     await run(async()=>{
-      const cycle=snapshot!.state.cycles.find(c=>c.ended&&!c.settled);
-      const body=kind==="allowance"?{amount:Number(amount),key:key("allowance:"+amount)}:kind==="date"?{day:nextWeek(snapshot!.day)}:kind==="month"?{day:addDays(snapshot!.day,28)}:kind==="approve"?{cycle_id:item?.cycle_id??cycle?.id,reward_type:item?.reward_type,approved:true,key:key("approve:"+(item?.cycle_id??cycle?.id)+":"+item?.reward_type)}:{key:key("reset:"+snapshot!.generation)};
+      const body=kind==="allowance"?{amount:Number(amount),key:key("allowance:"+amount)}:kind==="date"?{day:nextWeek(snapshot!.day)}:kind==="month"?{day:addDays(snapshot!.day,28)}:kind==="claim"?{key:key("claim:"+snapshot!.day+":"+snapshot!.generation)}:{key:key("reset:"+snapshot!.generation)};
       const next:Snapshot=await api(kind==="reset"?"/reset":`/children/${snapshot!.child.id}/${kind==="month"?"date":kind}`,body);
-      // 시간을 옮긴 뒤 이자가 실제로 들어왔으면 바로 축하 화면을 보여준다.
-      const travel=kind==="date"||kind==="month",span=kind==="month"?"한 달":"일주일";
       const interest=(s:State)=>s.transactions.filter(t=>t.kind==="allowance_bonus"||t.kind==="savings_interest");
-      const arrived=travel&&interest(next.state).length>interest(snapshot!.state).length;
       const sum=(s:State,to:"wallet"|"vault")=>interest(s).reduce((n,t)=>n+t[to],0);
       const wallet=Math.max(0,sum(next.state,"wallet")-sum(snapshot!.state,"wallet")),vault=Math.max(0,sum(next.state,"vault")-sum(snapshot!.state,"vault"));
-      const waiting=next.state.rewards?.items.find(i=>i.status==="awaiting_approval");
-      const headline=kind==="approve"?"이자가 들어왔어요!":`${span}이 지났어요! ${arrived?"이자가 들어왔어요":waiting?(waiting.payment_mode==="automatic"?"엄마 통장 잔액을 기다려요":"엄마 확인을 기다려요"):"이번에는 이자가 없어요"}`;
-      if(travel||kind==="approve")setScene({headline,wallet,vault});
-      apply(next);setCelebrating(kind==="approve"||arrived);retry.current=null;setPanel(kind==="approve"||travel?"reward":"");setAmount("");setApproval(false);
-      if(travel)setRewardTab("allowance_bonus");
-      setMessage(kind==="allowance"?`용돈 ${won(Number(amount))}이 들어왔어!`:travel||kind==="approve"?(wallet+vault?`이자 ${won(wallet+vault)}이 들어와서 내 돈이 늘었어!`:headline):"처음 통장으로 돌아왔어!");
+      const travel=kind==="date"||kind==="month",waiting=(next.state.rewards?.items??[]).some(i=>i.status==="awaiting_approval");
+      apply(next);retry.current=null;
+      // 시간을 옮기면 먼저 "이번 주 정산"을 보여주고, 아이가 "이자 받기"를 눌러야 통장에 들어온다.
+      if(kind==="claim"){setScene({headline:wallet+vault?`이자 ${won(wallet+vault)}이 들어왔어요!`:"정산을 마쳤어요",wallet,vault});setCelebrating(wallet+vault>0);setPanel("reward");}
+      else setPanel(travel&&waiting?"settle":"");
+      setMessage(kind==="allowance"?`엄마가 용돈 ${won(Number(amount))}을 보내줬어!`:travel?`${kind==="month"?"한 달":"일주일"}이 지났어! 정산을 보고 이자를 받아 봐.`:kind==="claim"?(wallet+vault?`이자 ${won(wallet+vault)}이 들어왔어! 남은 용돈이 늘었지?`:"정산을 마쳤어!"):"처음 통장으로 돌아왔어!");
     });
   }
   // 만료·재시작은 저장된 체험을 지우고, 잠깐 바쁜 오류는 체험을 남겨 두어 다시 들어오면 이어진다.
   if(expired)return <TrialStatus error={EXPIRED} onExit={exit}/>;
   if(!snapshot)return busy?<TrialStatus/>:<TrialStatus error={error} onExit={onExit}/>;
-  const paid=snapshot.state.transactions.filter(t=>t.kind==="interest");
-  const items=snapshot.state.rewards?.items??[];
-  const needsApproval=items.some(i=>i.status==="awaiting_approval"&&i.payment_mode!=="automatic");
-  const automatic=snapshot.state.payment_rule?.current==="automatic";
-  const openBank=()=>{setPanel("allowance");setAmount("10000");setMessage("");setCelebrating(false);setScene(null);};
+  const state=snapshot.state;
+  const paid=state.transactions.filter(t=>t.kind==="interest");
+  const items=state.rewards?.items??[];
+  const waiting=items.filter(i=>i.status==="awaiting_approval");
+  const pendingTotal=waiting.reduce((n,i)=>n+i.amount,0);
+  const weeks=[...new Set(waiting.map(i=>i.cycle_id))].map(id=>({id,allowance:waiting.find(i=>i.cycle_id===id&&i.reward_type==="allowance_bonus"),saving:waiting.find(i=>i.cycle_id===id&&i.reward_type==="savings_interest")}));
+  const spentIn=(start:string,end:string)=>-state.transactions.filter(t=>(t.kind==="expense"||t.kind==="expense_cancel")&&start<=t.created.slice(0,10)&&t.created.slice(0,10)<end).reduce((n,t)=>n+t.wallet,0);
   const openReward=()=>{setPanel("reward");setRewardTab("allowance_bonus");setMessage("");setCelebrating(false);setScene(null);};
-  // 체험마다 날짜가 따로 있어 시간을 옮겨도 다른 사람의 체험은 그대로다.
-  const weekButton=<button className="mk-week-button" disabled={busy||nextWeek(snapshot.day)>LAST_DAY} onClick={()=>void action("date")}><span aria-hidden="true">⏩</span>일주일 뒤 보기</button>;
-  const approvalCheck=<label className="mk-trial-check"><input type="checkbox" checked={approval} onChange={e=>setApproval(e.target.checked)}/>엄마 확인(체험용)에 동의해요</label>;
-  const controls=<div className="mk-trial-tools">
-    <details className="mk-trial-settings"><summary>체험 설정</summary><p>체험 속 날짜 {monthDay(snapshot.day)} · 실제 날짜와 달라요. 시간을 옮겨도 다른 사람 체험에는 영향이 없어요.</p><button className="mk-button secondary" disabled={busy||addDays(snapshot.day,28)>LAST_DAY} onClick={()=>void action("month")}>한 달 뒤 보기</button><button className="mk-text-button" disabled={busy} onClick={()=>setPanel("reset")}>처음 상태로 돌아가기</button><details><summary>체험 기록은 언제까지 남나요?</summary><p>새로고침하면 24시간 동안 이어져요. 일반 새 탭·다른 브라우저는 새 체험이에요. 복제·복원 탭은 같은 체험과 초기화를 공유할 수 있어요.</p>{process.env.NEXT_PUBLIC_MONEYON_EPHEMERAL==="1"&&<p>Hugging Face Space 서버가 다시 만들어지거나 재배포되면 체험 기록이 사라질 수 있어요.</p>}</details></details>
+  const openSettle=()=>{setPanel("settle");setScene(null);};
+  // 체험 도구: 시간 이동·초기화는 아이 홈이 아니라 발표자용 작은 메뉴에. 체험마다 날짜가 따로라 다른 사람에게는 영향이 없다.
+  const toolsButton=<button className="mk-tools-button" aria-label="체험 도구" onClick={()=>setPanel("tools")}><span aria-hidden="true">🧰</span></button>;
+  const sent=state.transactions.filter(t=>t.kind==="payment"||t.kind==="allowance_bonus"||t.kind==="savings_interest").sort((x,y)=>y.created.localeCompare(x.created)).slice(0,3);
+  const parentView=<section className="mk-parent-view" aria-label="엄마 화면">
+    <p className="mk-caption">엄마가 쓰는 화면이에요(체험). 아이에게 용돈을 보내면 아이 기록에 &lsquo;엄마가 보내줬어요&rsquo;로 남아요.</p>
+    <div className="mk-parent-balance"><span>엄마 통장</span><strong data-testid="parent-balance">{won(state.education?.parent_balance??0)}</strong></div>
+    <form className="mk-spend-form" onSubmit={e=>{e.preventDefault();void action("allowance");}}>
+      <label>아이에게 보낼 용돈<span className="mk-bank-amount"><input required type="number" inputMode="numeric" min={100} max={10000000} step={100} placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)}/><span>원</span></span></label>
+      <div className="mk-amount-presets">{[3000,10000,30000].map(n=><button type="button" key={n} aria-pressed={amount===String(n)} onClick={()=>setAmount(String(n))}>{won(n)}</button>)}</div>
+      <button className="mk-button full" disabled={busy}>{won(Number(amount)||0)} 보내기</button>
+    </form>
+    <section className="mk-week-records"><div className="mk-section-title"><h2>최근에 보낸 돈</h2></div><ul>{sent.map(t=><li key={t.id}><span className="mk-record-icon" aria-hidden="true">{t.kind==="payment"?"💸":"✨"}</span><span className="mk-record-name">{t.kind==="payment"?"용돈을 보냈어요":t.kind==="allowance_bonus"?"용돈 이자를 보냈어요":"저축 이자를 보냈어요"}<small>{monthDay(t.created.slice(0,10))}</small></span><span className="mk-record-amount">{won(t.wallet+t.vault)}</span></li>)}</ul></section>
+  </section>;
+  const settle=<div className="mk-settle">
+    {weeks.length===1?(()=>{const w=weeks[0],item=w.allowance??w.saving!;return <>
+      <p className="mk-settle-week">{weekRange(item.start,item.end)} 정산</p>
+      <dl className="mk-settle-sum"><div><dt>이번 주 쓴 돈</dt><dd>−{won(spentIn(item.start,item.end))}</dd></div><div><dt>남은 용돈</dt><dd>{won(w.allowance?.base??0)}</dd></div></dl>
+    </>;})():<p className="mk-settle-week">{weeks.length}주 정산이 밀려 있어요</p>}
+    <ul className="mk-settle-lines">{weeks.map(w=>[w.allowance,w.saving].map(i=>i&&<li key={i.cycle_id+i.reward_type}><span>{weeks.length>1&&<small>{weekRange(i.start,i.end)}</small>}{i.reward_type==="allowance_bonus"?"용돈 이자":"저축 이자"}<small>{i.amount?formula(i):FROM[i.reward_type]}</small></span><b>{won(i.amount)}</b></li>))}</ul>
+    <p className="mk-caption">100원 미만은 버려요.</p>
+    <PracticeNote/>
+    <button className="mk-button full" disabled={busy} onClick={()=>void action("claim")}>{pendingTotal?`이자 ${won(pendingTotal)} 받기`:"확인"}</button>
   </div>;
-  const sheet=panel&&<TrialSheet title={panel==="allowance"?"엄마 통장에서 용돈 받기":panel==="reward"?"이자 받기":"처음 상태로 돌아가기"} onClose={()=>setPanel("")}>
+  const sheet=panel&&<TrialSheet title={panel==="settle"?"이번 주 정산":panel==="reward"?(scene?"이자 받기":"이자 기록"):panel==="tools"?"체험 도구":"처음 상태로 돌아가기"} onClose={()=>setPanel("")}>
       {error&&<p className="mk-sheet-error" role="alert">{error}</p>}
-      {panel==="allowance"&&<form className="mk-bank-form" onSubmit={e=>{e.preventDefault();void action("allowance");}}>
-        <p className="mk-bank-line">엄마 통장 {won(snapshot.state.education?.parent_balance??0)} <span aria-hidden="true">→</span> 내 용돈통장</p>
-        <label>얼마를 받을까요?<span className="mk-bank-amount"><input required type="number" inputMode="numeric" min={100} max={10000000} step={100} placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)}/><span>원</span></span></label>
-        <div className="mk-amount-presets">{[3000,10000,30000].map(n=><button type="button" key={n} aria-pressed={amount===String(n)} onClick={()=>setAmount(String(n))}>{won(n)}</button>)}</div>
-        <button className="mk-button full" disabled={busy}>{won(Number(amount)||0)} 용돈 받기</button>
-      </form>}
+      {panel==="settle"&&settle}
+      {panel==="tools"&&<div className="mk-tools">
+        <p className="mk-caption">발표·시연용 도구예요. 체험 속 날짜 {monthDay(snapshot.day)} · 실제 날짜와 달라요. 시간을 옮겨도 다른 사람 체험에는 영향이 없어요.</p>
+        <button className="mk-button full" disabled={busy||nextWeek(snapshot.day)>LAST_DAY} onClick={()=>void action("date")}>일주일 뒤 보기</button>
+        <button className="mk-button secondary full" disabled={busy||addDays(snapshot.day,28)>LAST_DAY} onClick={()=>void action("month")}>한 달 뒤 보기</button>
+        <button className="mk-text-button" disabled={busy} onClick={()=>setPanel("reset")}>처음 상태로 돌아가기</button>
+        <details className="mk-reward-policy"><summary>체험 기록은 언제까지 남나요?</summary><p>새로고침하면 24시간 동안 이어져요. 일반 새 탭·다른 브라우저는 새 체험이에요. 복제·복원 탭은 같은 체험과 초기화를 공유할 수 있어요.</p>{process.env.NEXT_PUBLIC_MONEYON_EPHEMERAL==="1"&&<p>Hugging Face Space 서버가 다시 만들어지거나 재배포되면 체험 기록이 사라질 수 있어요.</p>}</details>
+      </div>}
       {panel==="reward"&&<div className="mk-reward-flow">
         {scene&&<><section className="mk-paid-celebration" role="status"><Izani mood={scene.wallet+scene.vault?"celebration":"greeting"}/><h3>{scene.headline}</h3>{scene.wallet+scene.vault>0&&<><strong className="mk-arrived">+{won(scene.wallet+scene.vault)}</strong><p>{[scene.wallet&&`용돈통장 +${won(scene.wallet)}`,scene.vault&&`저축통장 +${won(scene.vault)}`].filter(Boolean).join(" · ")}</p></>}</section>
-        <PracticeNote/><button className="mk-button full" onClick={()=>setPanel("")}>확인</button></>}
+        <button className="mk-button full" onClick={()=>setPanel("")}>확인</button></>}
         {(()=>{const detail=<>
+        {!scene&&waiting.length>0&&<button className="mk-button full" onClick={openSettle}>{`이자 ${won(pendingTotal)} 받기`}</button>}
         <div className="mk-filter" aria-label="이자 종류">{([['allowance_bonus','용돈 이자'],['savings_interest','저축 이자']] as const).map(([key,label])=><button key={key} aria-pressed={rewardTab===key} onClick={()=>setRewardTab(key)}>{label}</button>)}</div>
-        <p className="mk-caption">{rewardTab==="allowance_bonus"?"남긴 용돈의 10%를 다음 주 내 용돈통장으로 받아요.":"저축통장에 모은 돈은 2%를 따로 계산해서 저축통장으로 받아요."} 쌓이는 중인 이자는 아직 내 돈이 아니에요.</p>{!scene&&<PracticeNote/>}
-        {needsApproval&&approvalCheck}
-        <ul className="mk-reward-items">{items.filter(i=>i.reward_type===rewardTab).map(item=><li key={item.cycle_id+item.reward_type} data-payment-state={item.status}><div className="mk-reward-item-head"><small>{weekRange(item.start,item.end)}</small><span>{item.status==="paid"?"들어왔어요":item.status==="awaiting_approval"?(item.payment_mode==="automatic"?"엄마 통장 잔액을 기다려요":"엄마 확인을 기다려요"):"쌓이는 중"}</span></div><p>{won(item.base)} × {item.rate_bps/100}%</p><strong>{item.status==="paid"?"받은 이자 ":item.status==="awaiting_approval"?"정해진 이자 ":"예상 이자 "}{won(item.status==="paid"?item.paid_amount:item.amount)}</strong><small>{item.destination==="wallet"?"엄마 통장 → 내 용돈통장":"엄마 통장 → 저축통장"}{item.paid_at&&` · ${monthDay(item.paid_at.slice(0,10))} 들어옴`}</small>{item.status==="awaiting_approval"&&<button className="mk-button full" disabled={busy||!approval} onClick={()=>void action("approve",item)}>{item.reward_type==="allowance_bonus"?"엄마 확인: 용돈 이자 보내기":"엄마 확인: 저축 이자 보내기"}</button>}</li>)}</ul>
-        {snapshot.state.payout_choices?.map(p=><RewardSaving key={p.payout} payout={p} state={snapshot.state} child={snapshot.child.id} api={api} run={run} busy={busy} onState={state=>setSnapshot(s=>s?{...s,state}:s)}/>)}
-        <details className="mk-reward-policy"><summary>이자 받는 방식 바꾸기 (체험용)</summary><p>지금은 {automatic?"월요일에 자동으로":"엄마가 확인하면"} 들어와요 · 바꾸면 다음 주부터 적용돼요. 엄마 통장 잔액이 모자라면 기다려요.</p>{snapshot.state.payment_rule?.scheduled.map(r=><p key={r.effective}>{monthDay(r.effective)}부터 {r.mode==="automatic"?"월요일에 자동으로":"엄마가 확인하면"}</p>)}{!needsApproval&&approvalCheck}<button className="mk-button secondary" disabled={busy||!approval} onClick={()=>void run(async()=>{const state=await api(`/children/${snapshot.child.id}/payment-rule`,{mode:automatic?"manual":"automatic",approved:true}) as State;setSnapshot(s=>s?{...s,state}:s);})}>다음 주부터 받는 방식 바꾸기</button></details>
-        <details className="mk-reward-policy"><summary>이자 규칙과 이전 기록</summary><p>{PRACTICE}. 월요일에 정해진 금액은 바뀌지 않고, 같은 주 이자는 한 번만 받아요. 용돈 이자는 1원 미만을 버려요. 저축 이자는 2%이고 한 주에 최대 2,000원까지예요.</p><ul>{paid.map(t=><li key={t.id}>{t.created.slice(0,10)} · 이전 용돈 이자 {won(t.wallet)}</li>)}</ul></details>
-        </>;return scene?<details className="mk-reward-more" open={needsApproval}><summary>이자 자세히 보기</summary>{detail}</details>:detail;})()}
+        <p className="mk-caption">{rewardTab==="allowance_bonus"?"남긴 용돈의 10%를 다음 주 내 용돈통장으로 받아요.":"저축통장에 모은 돈은 2%를 따로 계산해서 저축통장으로 받아요."} 정산 뒤 &lsquo;이자 받기&rsquo;를 눌러야 내 돈이 돼요.</p>{!scene&&<PracticeNote/>}
+        <ul className="mk-reward-items">{items.filter(i=>i.reward_type===rewardTab).map(item=><li key={item.cycle_id+item.reward_type} data-payment-state={item.status}><div className="mk-reward-item-head"><small>{weekRange(item.start,item.end)}</small><span>{item.status==="paid"?"들어왔어요":item.status==="awaiting_approval"?"받기를 기다려요":"쌓이는 중"}</span></div><p>{item.amount||item.status==="paid"?formula(item):FROM[item.reward_type]}</p><strong>{item.status==="paid"?"받은 이자 ":item.status==="awaiting_approval"?"정해진 이자 ":"예상 이자 "}{won(item.status==="paid"?item.paid_amount:item.amount)}</strong><small>{item.destination==="wallet"?"엄마 통장 → 내 용돈통장":"엄마 통장 → 저축통장"}{item.paid_at&&` · ${monthDay(item.paid_at.slice(0,10))} 들어옴`}</small></li>)}</ul>
+        {state.payout_choices?.map(p=><RewardSaving key={p.payout} payout={p} state={state} child={snapshot.child.id} api={api} run={run} busy={busy} onState={next=>setSnapshot(s=>s?{...s,state:next}:s)}/>)}
+        <details className="mk-reward-policy"><summary>이자 규칙과 이전 기록</summary><p>{PRACTICE}. 월요일에 정해진 금액은 바뀌지 않고, 같은 주 이자는 한 번만 받아요. 이자는 100원 미만을 버려요({FROM.allowance_bonus}, {FROM.savings_interest}). 저축 이자는 2%이고 한 주에 최대 2,000원까지예요.</p><ul>{paid.map(t=><li key={t.id}>{t.created.slice(0,10)} · 이전 용돈 이자 {won(t.wallet)}</li>)}</ul></details>
+        </>;return scene?<details className="mk-reward-more"><summary>이자 자세히 보기</summary>{detail}</details>:detail;})()}
       </div>}
       {panel==="reset"&&<section aria-describedby="trial-reset-description"><Izani mood="help"/><p id="trial-reset-description">체험한 내용만 처음 상태로 돌아가요.</p><div className="mk-main-actions"><button className="mk-button" disabled={busy} onClick={()=>void action("reset")}>확인하고 초기화</button><button className="mk-button secondary" disabled={busy} onClick={()=>setPanel("")}>계속 체험하기</button></div></section>}
     </TrialSheet>;
-  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={snapshot.state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={state=>setSnapshot(s=>s?{...s,state}:s)} onTransact={transact} trialControls={controls} trialTime={weekButton} trialRecords={<button type="button" className="mk-text-button" onClick={openReward}>이자 기록 보기</button>} trialOverlay={sheet} trialAllowance={<button className="mk-quick-bank" disabled={busy} onClick={openBank}><span aria-hidden="true">↓</span>용돈 받기</button>} trialCelebrating={celebrating} onHome={onExit} trialMessage={message}/>;
+  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={next=>setSnapshot(s=>s?{...s,state:next}:s)} onTransact={transact} trialControls={toolsButton} trialParent={parentView} trialPending={waiting.length?pendingTotal:null} onSettle={openSettle} trialRecords={<button type="button" className="mk-text-button" onClick={openReward}>이자 기록 보기</button>} trialOverlay={sheet} trialCelebrating={celebrating} onHome={onExit} trialMessage={message}/>;
 }

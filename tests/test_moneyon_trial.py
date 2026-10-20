@@ -19,7 +19,9 @@ class TrialTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.ledger = TrialLedger(os.path.join(self.tmp.name, 'trial.db'))
-        self.trials = Trials(self.ledger)
+        # The earlier trial rules (1원 interest, automatic payment) stay supported for
+        # trials created before the 100원 rules; these engine tests keep covering them.
+        self.trials = Trials(self.ledger, unit=1, payment='automatic')
         app = FastAPI()
         app.include_router(api.router)
         app.dependency_overrides[api.trials] = lambda: self.trials

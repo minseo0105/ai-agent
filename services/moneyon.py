@@ -30,7 +30,10 @@ def period(today, policy):
 
 def reward(eligible, policy):
     amount = max(0, eligible) * policy['rate_bps'] // 10000
-    return amount if policy['cap'] is None else min(amount, policy['cap'])
+    amount = amount if policy['cap'] is None else min(amount, policy['cap'])
+    # Optional rounding unit (trial: 100, drops amounts under 100원). Without it every won counts.
+    unit = policy.get('unit', 1)
+    return amount // unit * unit
 
 
 class Ledger:

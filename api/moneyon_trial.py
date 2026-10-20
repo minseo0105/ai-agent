@@ -240,6 +240,15 @@ def approve(child: str, req: Approval, auth=Depends(Auth), service=Depends(trial
     return execute(service, auth, child, operation, True)
 
 
+@router.post('/children/{child}/claim')
+def claim(child: str, req: Reset, auth=Depends(Auth), service=Depends(trials)):
+    # "이자 받기": every finished week's waiting interest, once.
+    def operation(row, ctx):
+        service.claim(row, req.key)
+        return service.snapshot(row)
+    return execute(service, auth, child, operation, True)
+
+
 @router.post('/children/{child}/goals')
 def goal(child: str, req: core.Goal, auth=Depends(Auth), service=Depends(trials)):
     return execute(service, auth, child, lambda row, ctx: core.goal(child, req, ctx), True)

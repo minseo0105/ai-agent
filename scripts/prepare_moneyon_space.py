@@ -14,7 +14,7 @@ RUNTIME=[
 ]
 WEB=['package.json','package-lock.json','tsconfig.json','next-env.d.ts','next.config.ts','postcss.config.mjs',
      'src/app/globals.css','src/lib/access.ts','src/lib/moneyonCoach.ts','public/moneyon/characters/izani-bee.png']
-CHILD=['SavingsBooks.tsx','RewardSaving.tsx','TrialExperience.tsx','ChildExperience.tsx','WeeklyJourney.tsx','Banking.tsx','KidIcon.tsx','Woorumi.tsx','Izani.tsx','TrialSheet.tsx','TrialHome.tsx','blue.css','types.ts','child.css','moneyon.css','banking.css']
+CHILD=['SavingsBooks.tsx','RewardSaving.tsx','TrialExperience.tsx','ChildExperience.tsx','WeeklyJourney.tsx','Banking.tsx','KidIcon.tsx','Woorumi.tsx','Izani.tsx','TrialSheet.tsx','TrialHome.tsx','TrialActions.tsx','blue.css','types.ts','child.css','moneyon.css','banking.css']
 
 
 def prepare(destination):

@@ -100,7 +100,7 @@ class WeeklyEducationTests(unittest.TestCase):
         second=self.client.post(self.base+'/start').json()
         self.approve(cycle)
         from services.moneyon_trial import TrialLedger,Trials
-        restarted=Trials(TrialLedger(self.ledger.path))
+        restarted=Trials(TrialLedger(self.ledger.path), unit=1, payment='automatic')
         first=restarted.snapshot(restarted.resolve(self.first['token']))
         other=restarted.snapshot(restarted.resolve(second['token']))
         self.assertEqual(first['state']['wallet'],31350)
