@@ -91,3 +91,19 @@
 .mk .mk-error-actions button{min-height:44px;padding:0 16px;border-radius:var(--mo-radius-sm);border:1px solid var(--mo-primary);background:var(--mo-white);color:var(--mo-primary);font-weight:750;cursor:pointer}
 .mk .mk-error-actions button:first-child{background:var(--mo-primary);color:#fff}
 .mk-entry [role=alert]+.mk-button{margin-top:20px}
+
+/* 연습용 이자 안내, 체험 모드 표시, 시간 지나 보기, 한 장짜리 저축통장 개설 */
+.mk-practice-note{display:block;margin:6px 0 2px;font-size:12px;line-height:1.5;color:var(--mo-muted);font-weight:600}
+.mk-entry .mk-practice-note{margin:0 0 12px}
+.mk-entry .mk-demo-label,.mk-sheet .mk-demo-label{display:block;font-size:11px;color:var(--mo-muted);letter-spacing:.2px;margin-top:4px}
+.mk-time-actions{display:grid;gap:8px;margin:14px 0}
+.mk-time-actions .mk-button{width:100%;font-size:16px}
+.mk-time-actions .mk-caption{margin:2px 0 0}
+.mk-time-actions .mk-text-button{justify-self:start;min-height:44px}
+.mk-amount-presets{flex-wrap:wrap}
+.mk-amount-presets button{min-height:44px;min-width:calc(33% - 8px)}
+.mk-amount-presets button[aria-pressed=true]{background:var(--mo-primary);color:#fff}
+.mk-book-created{text-align:center}
+.mk-book-created h4{margin:14px 0 8px;font-size:15px}
+.mk-book-style summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--mo-primary);font-weight:700}
+.mk-week-label span{letter-spacing:0}
