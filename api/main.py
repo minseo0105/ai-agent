@@ -40,6 +40,8 @@ from api.golf import router as golf_router
 from api.realestate import router as realestate_router
 from api.report import router as report_router
 from api.saju import router as saju_router
+from api.moneyon import router as moneyon_router
+from api.moneyon_trial import router as moneyon_trial_router
 from services import car_selector
 from services.agent import PROVIDERS, SEARCH_MODES, run_agent
 from services.config import get_secret
@@ -62,6 +64,8 @@ app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(Exception, unhandled_exception_handler)
 app.include_router(golf_router)
+app.include_router(moneyon_router)
+app.include_router(moneyon_trial_router)
 app.include_router(zipon_data_router)
 app.include_router(realestate_router)
 app.include_router(report_router)

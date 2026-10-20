@@ -1,0 +1,49 @@
+name: Deploy MONEY only to existing Docker Space
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: moneyon-space-only
+  cancel-in-progress: false
+jobs:
+  build-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check upload manifest
+        run: python -c "from tools.sync_moneyon import validate; print(len(validate('.')), 'reviewed files')"
+      - name: Build MONEY Docker image
+        run: docker build -t moneyon-trial:reviewed .
+      - name: Run and verify sample accounts
+        run: |
+          docker run -d --name moneyon-check -p 127.0.0.1:7860:7860 moneyon-trial:reviewed
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:7860/api/health; then break; fi
+            sleep 2
+          done
+          python tools/check_moneyon_space.py --url http://127.0.0.1:7860
+      - name: Stop temporary container
+        if: always()
+        run: docker rm -f moneyon-check || true
+  upload:
+    needs: build-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: moneyon-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Hub client (no CLI login)
+        run: python -m pip install huggingface_hub==1.33.0
+      - name: Sync only reviewed MONEY source
+        env:
+          MONEYON_HF_TOKEN: ${{ secrets.MONEYON_HF_TOKEN }}
+          MONEYON_HF_SPACE: ${{ vars.MONEYON_HF_SPACE }}
+        run: python tools/sync_moneyon.py

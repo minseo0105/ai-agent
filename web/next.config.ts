@@ -5,6 +5,7 @@ import type { NextConfig } from "next";
 const staticExport = process.env.STATIC_EXPORT === "1";
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_BUILD_DIR || ".next",
   reactStrictMode: true,
   ...(staticExport ? { output: "export" as const, images: { unoptimized: true } } : {}),
 };

@@ -6,6 +6,7 @@ realestate_monitor.db
 # 관리자 설정(구성원·접속코드 해시)과 토큰 서명 키
 data/admin/
 .venv/
+.venv-moneyon-deploy/
 venv/
 .rembg/
 __pycache__/
@@ -18,6 +19,7 @@ _archive/
 # Next.js frontend build output and dependencies.
 web/node_modules/
 web/.next/
+web/.next-moneyon/
 web/.env.local
 *.tsbuildinfo
 
@@ -34,6 +36,7 @@ test.py
 dart_test.py
 law_test.py
 web/out/
+data/moneyon/
 
 # Isolated ZIP REST test dependencies and credential-free recovery journals
 reports/zipon-rest-venv/
@@ -46,6 +49,8 @@ reports/zipon-sql-review/
 /data/development/coordinate_*.pending
 /data/development/coordinate_*.tmp
 /reports/zipon-final-validation.json
+/reports/moneyon-space-candidate*/
+/reports/moneyon-web-upload*/
 
 # 서울시 공식 공간정보 원본 압축본은 내려받아 두고 커밋하지 않는다.
 data/reference/*.zip

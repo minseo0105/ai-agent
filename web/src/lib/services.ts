@@ -16,6 +16,11 @@ export type Service = {
 
 export const SERVICES: Service[] = [
   {
+    id: "moneyon", icon: "🐷", title: "MONEY",
+    desc: "우루미와 함께하는 어린이 금융 놀이터",
+    tags: ["금융교육", "용돈 기록", "저축 실험실"], href: "https://minseo2-moneyon-demo.hf.space/",
+  },
+  {
     id: "golf",
     icon: "⛳",
     title: "TEE:PICK · 오늘, 어디서 칠까?",
@@ -74,6 +79,6 @@ export const SERVICES: Service[] = [
 const STREAMLIT_URL = (process.env.NEXT_PUBLIC_STREAMLIT_URL || "http://localhost:8501").replace(/\/$/, "");
 
 export function serviceLink(s: Service): { href: string; external: boolean } {
-  if (s.href) return { href: s.href, external: false };
+  if (s.href) return { href: s.href, external: /^https?:\/\//.test(s.href) };
   return { href: `${STREAMLIT_URL}/${encodeURI(s.streamlitPath ?? "")}`, external: true };
 }

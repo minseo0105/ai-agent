@@ -1,0 +1,35 @@
+name: Validate MONEY Docker Space (no deployment)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  docker-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare credential-free source bundle
+        run: python scripts/prepare_moneyon_space.py --output "$RUNNER_TEMP/moneyon"
+      - name: Build Docker image
+        run: docker build --tag moneyon-trial:check "$RUNNER_TEMP/moneyon"
+      - name: Run trial-only container
+        run: |
+          docker run --detach --name moneyon-check --publish 127.0.0.1:7860:7860 moneyon-trial:check
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:7860/api/health; then exit 0; fi
+            sleep 2
+          done
+          docker logs moneyon-check
+          exit 1
+      - name: Check static pages, ledger, isolation and reset
+        run: python scripts/check_moneyon_space.py --url http://127.0.0.1:7860
+      - name: Container logs
+        if: failure()
+        run: docker logs moneyon-check
+      - name: Stop disposable container
+        if: always()
+        run: docker rm --force moneyon-check || true

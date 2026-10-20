@@ -164,6 +164,7 @@ export const adminApi = {
 /** 화면 경로 → 서비스 id (접근 게이트용). 홈("/")과 /admin은 null */
 export function serviceForPath(pathname: string): string | null {
   const map: [string, string][] = [
+    ["/moneyon", "moneyon"],
     ["/golf", "golf"],
     ["/dreamcar", "dreamcar"],
     ["/realestate", "realestate"],
