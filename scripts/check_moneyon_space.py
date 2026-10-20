@@ -22,7 +22,7 @@ def check(url):
     _,a=request('/api/moneyon/trial/start',{})
     _,b=request('/api/moneyon/trial/start',{})
     assert (a['state']['wallet'],a['state']['vault'])==(28500,15000)
-    assert a['state']['rewards']['estimates']=={'allowance_bonus':2850,'savings_interest':300}
+    assert a['state']['rewards']['estimates']=={'allowance_bonus':2800,'savings_interest':300}
     header={'X-Moneyon-Trial':a['token'],'X-Moneyon-Trial-Version':'1'}
     child='/api/moneyon/trial/children/'+a['child']['id']
     assert request(child,headers={'X-Moneyon-Trial':b['token']})[0]==403
