@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAccess } from "@/components/access/AccessProvider";
-import { CREDIT, SITE_NAME } from "@/lib/site";
+import { SITE_NAME } from "@/lib/site";
 
 export default function SiteFooter() {
   const { status, logout } = useAccess();
@@ -11,7 +11,6 @@ export default function SiteFooter() {
     <footer className="mx-auto max-w-5xl px-4 pb-6 pt-2 text-center sm:px-6">
       <div className="border-t border-border pt-5">
         <div className="text-[13px] font-extrabold tracking-tight text-muted">{SITE_NAME}</div>
-        <div className="mt-1 text-[10px] font-semibold tracking-[0.12em] text-subtle">{CREDIT}</div>
         <div className="mt-3 flex items-center justify-center gap-3 text-[11px] text-subtle">
           {me && (
             <>
