@@ -8,13 +8,14 @@ import KidIcon from "./KidIcon";
 import Izani from "./Izani";
 import WeeklyJourney from "./WeeklyJourney";
 import SavingsBooks from "./SavingsBooks";
-import { PRACTICE, PracticeNote } from "./WeeklyJourney";
+import { PRACTICE, PracticeNote, WeekDetails } from "./WeeklyJourney";
+import TrialHome from "./TrialHome";
 import "./child.css";
 import "./blue.css";
 
 type View="home"|"account"|"savings"|"record"|"growth"|"interest";
 type Experiment={left:number;eligible:number;interest:number;total:number};
-type Props={child:Child;state:State;api:MoneyApi;run:RunAction;busy:boolean;error:string;demo:boolean;onLock:()=>void;onState:(state:State)=>void;onTransact:(payload:ChildTransaction)=>Promise<boolean>;onDismissError:()=>void;trialControls?:ReactNode;trialMessage?:string;trialReceipt?:ReactNode;trialAllowance?:ReactNode;trialCelebrating?:boolean;onHome?:()=>void;trialTime?:ReactNode;trialOverlay?:ReactNode};
+type Props={child:Child;state:State;api:MoneyApi;run:RunAction;busy:boolean;error:string;demo:boolean;onLock:()=>void;onState:(state:State)=>void;onTransact:(payload:ChildTransaction)=>Promise<boolean>;onDismissError:()=>void;trialControls?:ReactNode;trialMessage?:string;trialReceipt?:ReactNode;trialAllowance?:ReactNode;trialCelebrating?:boolean;onHome?:()=>void;trialTime?:ReactNode;trialOverlay?:ReactNode;trialRecords?:ReactNode};
 const won=(value:number)=>value.toLocaleString("ko-KR")+"원";
 const categories=["간식","문구","장난감","게임","책","선물","기타"];
 const merchants=[{name:"편의점",amount:2000},{name:"문구점",amount:4000},{name:"서점",amount:5000},{name:"게임",amount:3000}];
@@ -51,7 +52,8 @@ function TransactionRow({transaction:t,detail=false,busy,onCategory}:{transactio
   </div></details></li>;
 }
 
-export default function ChildExperience({child,state,api,run,busy,error,demo,onLock,onState,onTransact,onDismissError,trialControls,trialMessage,trialReceipt,trialAllowance,trialCelebrating,onHome,trialTime,trialOverlay}:Props) {
+export default function ChildExperience({child,state,api,run,busy,error,demo,onLock,onState,onTransact,onDismissError,trialControls,trialMessage,trialReceipt,trialAllowance,trialCelebrating,onHome,trialTime,trialOverlay,trialRecords}:Props) {
+  const trial=!!trialControls;
   const [view,setView]=useState<View>("home");const [feedback,setFeedback]=useState("");
   const [amount,setAmount]=useState("");const [note,setNote]=useState("");const [category,setCategory]=useState("간식");
   const [filter,setFilter]=useState("전체");const [categoryFilter,setCategoryFilter]=useState("전체");
@@ -97,7 +99,8 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
   async function refresh(){onState(await api(`/children/${child.id}`) as State);}
   async function record(){if(await onTransact({kind:"expense",amount:Number(amount),note,category})){setView("home");setAmount("");setNote("");setFeedback("기록 완료! 쓴 돈을 통장에 적었어요.");}}
   async function transfer(){if(!savingAction)return;if(await onTransact({kind:savingAction,amount:Number(amount),...(state.books?{book_id:selectedBook||state.books?.[0]?.id}:{})})){setFeedback(savingAction==="deposit"?"기록 완료! 저축통장에 저금했어요.":"기록 완료! 내 용돈통장으로 꺼냈어요.");setSavingAction(null);setAmount("");}}
-  async function depositTo(book:string,value:number){const ok=await onTransact({kind:"deposit",amount:value,book_id:book});if(ok)setFeedback("기록 완료! 새 저축통장에 저금했어요.");return ok;}
+  // 새 통장에 바로 저금하면 홈으로 돌아가 "내 돈 모두"와 이자니 말풍선으로 결과를 보여준다.
+  async function depositTo(book:string,value:number){const ok=await onTransact({kind:"deposit",amount:value,book_id:book});if(ok)setView("home");return ok;}
   async function purchase(merchant:string,price:number){if(await onTransact({kind:"expense",amount:price,merchant})){setView("account");setFeedback("기록 완료! 통장에 쓴 돈을 적었어요.");}}
   async function changeCategory(t:BankTransaction,next:string){await run(async()=>{onState(await api(`/children/${child.id}/transactions/${t.transaction_id}/category`,{category:next},undefined,"PATCH") as State);setFeedback("분류를 바꿨어요. 남은 돈은 그대로예요.");});}
   async function answer(quest:string,value:number){await run(async()=>{const result=await api(`/children/${child.id}/quiz`,{quest,answer:value}) as {correct:boolean;message:string};setFeedback(result.correct?"정답! 새로운 금융 이야기를 배웠어요.":quest==="needs"?"다시 생각해 볼까? 생활에 꼭 필요한 것을 골라 봐!":child.profile.grade<=3?"다시 생각해 볼까? 10%는 똑같이 나눈 열 조각 중 하나야.":"다시 생각해 볼까? 5%는 똑같이 나눈 백 조각 중 다섯이야.");await refresh();});}
@@ -107,19 +110,20 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
   const rows=transactions.filter(t=>(filter==="전체"||(filter==="받은 돈"?t.amount>0:filter==="쓴 돈"?["SIMULATED_PURCHASE","MANUAL_EXPENSE","PURCHASE_REVERSAL"].includes(t.transaction_type):t.transaction_type.startsWith("SAVINGS")))&&(categoryFilter==="전체"||t.category===categoryFilter));
   const rewardCoach=ruleBasedCoach.explain("interest",cycle?{eligible:cycle.eligible,interest:cycle.interest}:{});
 
-  return <main className={`mk ${child.profile.theme}`} data-testid="child-experience" data-theme={child.profile.theme} aria-busy={busy}>
+  return <main className={`mk ${child.profile.theme}${trial?" mk-trial":""}`} data-testid="child-experience" data-theme={child.profile.theme} aria-busy={busy}>
     <div className="mk-container">
-      <header className="mk-header"><a href="/" aria-label="AI LAB으로 가기"><span className="mk-brand-dot"/>MONEY:ON</a><button className="mk-parent-button" aria-label={trialControls?"체험 나가기":"잠그기 🔒"} onClick={onLock}><KidIcon name="lock"/>{trialControls?"나가기":"부모님"}</button></header>
-      {demo&&<span className="mk-demo-label">{trialControls?"체험 모드 · 가상 돈이에요":"DEMO · 연습용 통장이에요"}</span>}
-      <div className="mk-page-heading">{!["home","account","savings"].includes(view)&&<button className="mk-back" onClick={()=>navigate(view==="interest"?"savings":"home")} aria-label={view==="interest"?"저축으로 돌아가기":"홈으로 돌아가기"}><KidIcon name="back"/></button>}<div><h1 ref={heading} tabIndex={-1}>{title}</h1>{view==="home"&&<p>이자니와 함께, 용돈이 자라는 일주일</p>}</div>{view==="home"&&trialControls?<Izani mood="greeting" className="mk-header-character"/>:view==="home"&&<span className="mk-profile" aria-label={`${child.profile.name}의 캐릭터`}>{child.profile.avatar==="🪙"?<span className="mk-profile-coin">₩</span>:child.profile.avatar==="🧑‍🚀"?<svg viewBox="0 0 44 44" width="37" height="37" role="img" aria-label="우주인 캐릭터"><path d="M13 35v5h18v-5" fill="#b5cbe7" stroke="#6483af" strokeWidth="1.5"/><circle cx="22" cy="21" r="17" fill="#dceaf6" stroke="#6483af" strokeWidth="1.5"/><rect x="9" y="12" width="26" height="21" rx="10" fill="#7898be"/><ellipse cx="22" cy="24" rx="9" ry="8" fill="#fff0d5"/><circle cx="18" cy="23" r="1.2" fill="#294953"/><circle cx="26" cy="23" r="1.2" fill="#294953"/><path d="M19 27q3 3 6 0" fill="none" stroke="#294953" strokeWidth="1.3" strokeLinecap="round"/><path d="M13 12q8-5 17-1" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>:child.profile.avatar}</span>}</div>
+      <header className="mk-header"><a href="/" aria-label="AI LAB으로 가기"><span className="mk-brand-dot"/>MONEY:ON</a>{trial&&<span className="mk-demo-label mk-demo-badge">체험 · 가상 돈</span>}<button className="mk-parent-button" aria-label={trialControls?"체험 나가기":"잠그기 🔒"} onClick={onLock}><KidIcon name="lock"/>{trialControls?"나가기":"부모님"}</button></header>
+      {demo&&!trial&&<span className="mk-demo-label">DEMO · 연습용 통장이에요</span>}
+      <div className="mk-page-heading">{!["home","account","savings"].includes(view)&&<button className="mk-back" onClick={()=>navigate(view==="interest"?"savings":"home")} aria-label={view==="interest"?"저축으로 돌아가기":"홈으로 돌아가기"}><KidIcon name="back"/></button>}<div><h1 ref={heading} tabIndex={-1}>{title}</h1>{view==="home"&&!trial&&<p>이자니와 함께, 용돈이 자라는 일주일</p>}</div>{view==="home"&&trial?null:view==="home"&&<span className="mk-profile" aria-label={`${child.profile.name}의 캐릭터`}>{child.profile.avatar==="🪙"?<span className="mk-profile-coin">₩</span>:child.profile.avatar==="🧑‍🚀"?<svg viewBox="0 0 44 44" width="37" height="37" role="img" aria-label="우주인 캐릭터"><path d="M13 35v5h18v-5" fill="#b5cbe7" stroke="#6483af" strokeWidth="1.5"/><circle cx="22" cy="21" r="17" fill="#dceaf6" stroke="#6483af" strokeWidth="1.5"/><rect x="9" y="12" width="26" height="21" rx="10" fill="#7898be"/><ellipse cx="22" cy="24" rx="9" ry="8" fill="#fff0d5"/><circle cx="18" cy="23" r="1.2" fill="#294953"/><circle cx="26" cy="23" r="1.2" fill="#294953"/><path d="M19 27q3 3 6 0" fill="none" stroke="#294953" strokeWidth="1.3" strokeLinecap="round"/><path d="M13 12q8-5 17-1" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>:child.profile.avatar}</span>}</div>
 
       {error&&<section className="mk-error" role="alert"><Izani mood="help"/><div><strong>{COACH_BRAND.displayName}가 도와줄게!</strong><p>{error}</p><div className="mk-error-actions"><button onClick={()=>void run(refresh)} disabled={busy}>통장 다시 보기</button>{onHome&&<button onClick={onHome}>처음으로</button>}</div></div></section>}
       {feedback&&!trialControls&&<p className="mk-feedback" role="status"><KidIcon name="check"/>{feedback}</p>}
-      {(trialMessage||feedback)&&trialControls&&<div role="status"><CoachCard compact message={{text:trialMessage||feedback,mood:trialCelebrating?"celebration":"greeting"}}/></div>}
+      {(trialMessage||feedback)&&trial&&view!=="home"&&<div role="status"><CoachCard compact message={{text:trialMessage||feedback,mood:trialCelebrating?"celebration":"greeting"}}/></div>}
       {trialReceipt}
       {!wallet||!vault?<section className="mk-panel"><CoachCard message={ruleBasedCoach.explain("help")}/><button className="mk-button" disabled={busy} onClick={()=>void run(refresh)}>통장을 다시 불러오기</button></section>:<>
 
-      {view==="home"&&<>
+      {view==="home"&&trial&&dual&&<TrialHome state={state} say={trialMessage||feedback||"남긴 용돈에는 다음 주에 이자가 붙어!"} mood={trialCelebrating?"celebration":trialMessage||feedback?"allowance":"interest"} actions={<>{trialAllowance}<button className="primary" onClick={()=>navigate("savings")}><KidIcon name="savings"/>저금하기</button><button onClick={()=>navigate("record")}><KidIcon name="edit"/>돈 쓰기</button></>} week={trialTime} records={trialRecords} settings={trialControls}/>}
+      {view==="home"&&!(trial&&dual)&&<>
         {dual?dualCards:<><section className="mk-balance-card" aria-label="내 통장 잔액"><div><span>내 통장에 있는 돈</span><strong key={wallet.balance} className="mk-money-change" data-testid="child-balance">{won(wallet.balance)}</strong><small>가상 통장 · 실제 금융 거래 아님</small></div><div className="mk-balance-art" aria-hidden="true"><KidIcon name="account"/><span/><i/></div></section>
         <div className="mk-two-stats"><section className="mk-mini-stat mint"><span><KidIcon name="savings"/>저금통에 모은 돈</span><strong key={vault.balance} className="mk-money-change" data-testid="child-vault">{won(vault.balance)}</strong></section><section className="mk-mini-stat blue"><span><KidIcon name="gift"/>받을 수 있는 보상</span><strong key={reward} className="mk-money-change" data-testid="child-reward">{won(reward)}</strong><small>예상 금액 · 아직 안 들어왔어요</small></section></div></>}
         {!dual&&<><div className="mk-main-actions"><button className="mk-button" onClick={()=>navigate("record")}><KidIcon name="edit"/>돈 썼어요</button><button className="mk-button secondary" onClick={()=>navigate("account")}><KidIcon name="account"/>통장 보기</button></div>
@@ -130,13 +134,13 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
       </>}
 
       {view==="account"&&<>
-        <section className="mk-account-balance"><span>내 용돈통장에 있는 돈</span><strong key={wallet.balance} className="mk-money-change" data-testid="child-balance">{won(wallet.balance)}</strong><small>가상 통장 · 실제 금융 거래 아님</small></section>
-        <div className="mk-account-totals"><div><KidIcon name="down"/><span>받은 돈<strong>{won(received)}</strong></span></div><div><KidIcon name="up"/><span>사용한 돈<strong>{won(spent)}</strong></span></div></div><p className="mk-caption">전체 기록 기준 · 저축통장으로 옮긴 돈은 쓴 돈에 넣지 않아요</p>
+        <section className="mk-account-balance"><span>내 용돈통장에 있는 돈</span><strong key={wallet.balance} className="mk-money-change" data-testid="child-balance">{won(wallet.balance)}</strong>{!trial&&<small>가상 통장 · 실제 금융 거래 아님</small>}</section>
+        <div className="mk-account-totals"><div><KidIcon name="down"/><span>받은 돈<strong>{won(received)}</strong></span></div><div><KidIcon name="up"/><span>사용한 돈<strong>{won(spent)}</strong></span></div></div><p className="mk-caption">전체 기록 기준 · 저축통장으로 옮긴 돈은 쓴 돈에 넣지 않아요</p>{trial&&dual&&<div className="mk-week-summary"><WeekDetails state={state}/></div>}
         <div className="mk-section-title"><h2>입출금 내역</h2><button className="mk-text-button" onClick={()=>navigate("record")}><KidIcon name="plus"/>직접 기록</button></div>
         <div className="mk-filter" aria-label="거래 구분">{["전체","받은 돈","쓴 돈","저축"].map(f=><button key={f} aria-pressed={filter===f} onClick={()=>setFilter(f)}>{f}</button>)}</div>
         <details className="mk-category-filter"><summary>소비 분류로 찾아보기</summary><label>소비 분류<select value={categoryFilter} onChange={e=>setCategoryFilter(e.target.value)}>{["전체",...categories].map(c=><option key={c}>{c}</option>)}</select></label></details>
         <ul className="mk-transactions" data-testid="account-transactions">{rows.map(t=><TransactionRow key={`${t.transfer_id}:${t.account_id}`} transaction={t} detail busy={busy} onCategory={(entry,c)=>void changeCategory(entry,c)}/>)}</ul>{!rows.length&&<p className="mk-empty">이 분류의 기록은 아직 없어요.</p>}
-        <details className="mk-account-info"><summary>내 가상 통장 정보</summary><p>{wallet.id}</p><small>가상 계좌 · 실제 금융 거래 아님</small></details>
+        <details className="mk-account-info"><summary>내 가상 통장 정보</summary><p>{wallet.id}</p>{!trial&&<small>가상 계좌 · 실제 금융 거래 아님</small>}</details>
       </>}
 
       {view==="record"&&<>
@@ -146,16 +150,15 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
       </>}
 
       {view==="savings"&&<>
-        <section className="mk-savings-balance"><div><span>내가 모은 돈</span><strong key={vault.balance} className="mk-money-change" data-testid="child-vault">{won(vault.balance)}</strong><small>{state.books?"저축통장 전체":"내 저금통"}</small></div><div className="mk-pig-art" aria-hidden="true"><KidIcon name="savings"/></div></section>
-        <div className="mk-main-actions"><button className="mk-button" onClick={()=>{setSelectedBook(state.books?.[0]?.id??"");setSavingAction("deposit");setAmount("");}}>{state.books?"저금하기":"저금통에 넣기"}</button><button className="mk-button secondary" onClick={()=>{setSelectedBook(state.books?.[0]?.id??"");setSavingAction("withdraw");setAmount("");}}>꺼내기</button></div>
+        {!(trial&&(state.books?.length??0)<2)&&<section className="mk-savings-balance"><div><span>내가 모은 돈</span><strong key={vault.balance} className="mk-money-change" data-testid="child-vault">{won(vault.balance)}</strong><small>{state.books?"저축통장 전체":"내 저금통"}</small></div><div className="mk-pig-art" aria-hidden="true"><KidIcon name="savings"/></div></section>}
+        {!trial&&<div className="mk-main-actions"><button className="mk-button" onClick={()=>{setSelectedBook(state.books?.[0]?.id??"");setSavingAction("deposit");setAmount("");}}>{state.books?"저금하기":"저금통에 넣기"}</button><button className="mk-button secondary" onClick={()=>{setSelectedBook(state.books?.[0]?.id??"");setSavingAction("withdraw");setAmount("");}}>꺼내기</button></div>}
         {savingAction&&<form className="mk-panel" onSubmit={e=>{e.preventDefault();void transfer();}}><label>{savingAction==="deposit"?(state.books?"저축통장에 얼마를 저금할까요?":"저금통에 얼마를 넣을까요?"):(state.books?"내 용돈통장으로 얼마를 꺼낼까요?":"통장으로 얼마를 꺼낼까요?")}<input autoFocus required type="number" inputMode="numeric" min={trialControls?100:1} max={savingAction==="deposit"?wallet.balance:(state.books?.find(b=>b.id===(selectedBook||state.books?.[0]?.id))?.balance??vault.balance)} step={trialControls?100:1} value={amount} onChange={e=>setAmount(e.target.value)}/></label><p className="mk-caption">{state.books?.find(b=>b.id===(selectedBook||state.books?.[0]?.id))?.name} {trialControls&&"100원 단위로 입력해 주세요."}</p><div className="mk-main-actions"><button className="mk-button" disabled={busy}>{state.books?(savingAction==="deposit"?"저금하기":"꺼내기"):"옮기기"}</button><button className="mk-button secondary" type="button" onClick={()=>setSavingAction(null)}>나중에</button></div></form>}
         {state.books?<SavingsBooks state={state} child={child.id} api={api} run={run} busy={busy} onState={onState} onTransfer={(id,kind)=>{setSelectedBook(id);setSavingAction(kind);setAmount("");}} onDeposit={trialControls?depositTo:undefined}/>:<>
         <section className="mk-section"><div className="mk-section-title"><h2>나의 저축 목표</h2><button className="mk-text-button" onClick={()=>setGoalOpen(!goalOpen)}><KidIcon name="plus"/>목표 만들기</button></div>{state.goals.map(g=><article className="mk-goal" key={g.id}><div><KidIcon name="star"/><h3>{g.name}</h3><span>{Math.min(100,Math.floor(vault.balance/g.amount*100))}%</span></div><progress value={Math.min(vault.balance,g.amount)} max={g.amount} aria-label={`${g.name} 달성률`}/><p>{won(vault.balance)} <span>/ {won(g.amount)}</span></p>{vault.balance>=g.amount&&<span className="mk-goal-done"><KidIcon name="check"/>목표를 이뤘어요!</span>}</article>)}{!state.goals.length&&<p className="mk-empty">갖고 싶은 것, 해 보고 싶은 것을 목표로 정해 봐요.</p>}{state.goals.length>1&&<small className="mk-caption">각 목표는 같은 저금통 금액과 비교해요.</small>}
         {goalOpen&&<form className="mk-panel" onSubmit={e=>{e.preventDefault();void run(async()=>{await api(`/children/${child.id}/goals`,{name:goalName,amount:Number(goalAmount)});await refresh();setGoalOpen(false);setGoalName("");setGoalAmount("");setFeedback("목표를 만들었어요. 천천히 모아 봐요!");});}}><label>목표 이름<input required maxLength={60} value={goalName} onChange={e=>setGoalName(e.target.value)} placeholder="예: 나의 첫 자전거"/></label><label>목표 금액<input required type="number" inputMode="numeric" min={1} max={10000000} step={1} value={goalAmount} onChange={e=>setGoalAmount(e.target.value)}/></label><button className="mk-button full" disabled={busy}>목표 저장</button></form>}</section>
         </>}
-        {trialTime}
-        {dual? <section className="mk-panel"><h2>저축 이자</h2><strong data-testid="savings-interest">{won(piggyInterest)}</strong><PracticeNote/><p>다음 주 예상 금액 · 월요일에 저축통장으로 들어와요.</p><p>용돈 이자 {won(bonus)}는 따로 계산해서 내 용돈통장으로 받아요.</p><ul>{state.banking.transactions.filter(t=>t.account_id===vault.id&&["PIGGY_BANK_INTEREST"].includes(t.transaction_type)).map(t=><TransactionRow key={t.transfer_id} transaction={t}/>)}</ul></section>:<section className="mk-reward-panel"><span className="mk-reward-icon"><KidIcon name="gift"/></span><div><h2>받을 수 있는 보상</h2><strong data-testid="child-reward">{won(reward)}</strong><p>예상 금액이에요. 부모님이 확인하면 통장에 들어와요.</p></div></section>}
-        <button className="mk-discovery-link" aria-label="이자 알아보기" onClick={()=>navigate("interest")}><KidIcon name="help"/><span>이자 알아보기<small>돈을 남기면 어떤 일이 생길까?</small></span><KidIcon name="arrow"/></button>
+        {dual?trial?null:<section className="mk-panel"><h2>저축 이자</h2><strong data-testid="savings-interest">{won(piggyInterest)}</strong><PracticeNote/><p>다음 주 예상 금액 · 월요일에 저축통장으로 들어와요.</p><p>용돈 이자 {won(bonus)}는 따로 계산해서 내 용돈통장으로 받아요.</p><ul>{state.banking.transactions.filter(t=>t.account_id===vault.id&&["PIGGY_BANK_INTEREST"].includes(t.transaction_type)).map(t=><TransactionRow key={t.transfer_id} transaction={t}/>)}</ul></section>:<section className="mk-reward-panel"><span className="mk-reward-icon"><KidIcon name="gift"/></span><div><h2>받을 수 있는 보상</h2><strong data-testid="child-reward">{won(reward)}</strong><p>예상 금액이에요. 부모님이 확인하면 통장에 들어와요.</p></div></section>}
+        {trial?<button className="mk-text-button" onClick={()=>navigate("interest")}>이자 알아보기<KidIcon name="arrow"/></button>:<button className="mk-discovery-link" aria-label="이자 알아보기" onClick={()=>navigate("interest")}><KidIcon name="help"/><span>이자 알아보기<small>돈을 남기면 어떤 일이 생길까?</small></span><KidIcon name="arrow"/></button>}
         {!dual&&!error&&!(trialControls&&(trialMessage||feedback))&&<CoachCard compact message={rewardCoach}/>}
       </>}
 
@@ -177,7 +180,7 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
       </>}
 
       {busy&&<p className="mk-caption" role="status">안전하게 기록하고 있어요…</p>}
-      <footer className="mk-footer"><p>가상 계좌 · 실제 금융 거래 아님</p><details><summary>{COACH_BRAND.displayName} 소개</summary><p>{COACH_BRAND.tagline}</p><p>{COACH_BRAND.notice}</p></details></footer>
+      {!trial&&<footer className="mk-footer"><p>가상 계좌 · 실제 금융 거래 아님</p><details><summary>{COACH_BRAND.displayName} 소개</summary><p>{COACH_BRAND.tagline}</p><p>{COACH_BRAND.notice}</p></details></footer>}
     </div>
     {trialOverlay}
     <nav className="mk-bottom-nav" aria-label="어린이 주요 메뉴">{([{key:"home",name:"홈",icon:"home"},{key:"account",name:"통장",icon:"account"},{key:"savings",name:"저축",icon:"savings"}] as const).map(t=><button key={t.key} aria-current={primary===t.key?"page":undefined} onClick={()=>navigate(t.key)}><KidIcon name={t.icon}/><span>{t.name}</span></button>)}</nav>

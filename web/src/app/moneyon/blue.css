@@ -107,3 +107,36 @@
 .mk-book-created h4{margin:14px 0 8px;font-size:15px}
 .mk-book-style summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--mo-primary);font-weight:700}
 .mk-week-label span{letter-spacing:0}
+
+/* 화면 단순화(체험): 한 화면에 메시지 하나. 주인공은 "내 돈 모두"와 이자니 한 줄, 큰 버튼은 화면당 하나. */
+.mk-header .mk-demo-badge,.mk-sheet .mk-demo-badge{display:inline-block;margin:0 auto 0 8px;padding:3px 9px;border-radius:999px;background:var(--mo-light);color:var(--mo-deep);font-size:11px;font-weight:650;letter-spacing:0;white-space:nowrap}
+.mk-sheet .mk-demo-badge{margin:6px 0 0}
+.mk-trial .mk-page-heading{min-height:0;margin:14px 0 12px}.mk-trial .mk-page-heading h1{font-size:20px}
+.mk-trial-home{display:grid;gap:12px;margin-bottom:12px}
+.mk-total{border-radius:var(--mo-radius);padding:16px 20px 4px;background:linear-gradient(115deg,var(--mo-primary),var(--mo-deep));color:var(--mo-white);box-shadow:var(--mo-hero-shadow)}
+.mk-say{display:flex;align-items:center;gap:8px}.mk .mk-say .mk-mascot{width:58px;height:58px}
+.mk-say p{background:var(--mo-white);color:var(--mo-deep);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:14px;font-weight:650;line-height:1.5}
+.mk-total-label{display:block;margin-top:14px;font-size:14px;color:var(--mo-light)}
+.mk-total-number{display:block;font-size:var(--mo-amount);line-height:1.2;letter-spacing:-1.6px;margin:2px 0 10px;overflow-wrap:anywhere}
+.mk-total-detail{border-top:1px solid rgb(255 255 255 / 22%)}
+.mk .mk-total-detail>summary{display:flex;flex-wrap:wrap;align-items:center;gap:2px 14px;min-height:46px;font-size:13px;color:var(--mo-light);cursor:pointer;list-style:none}
+.mk-total-detail>summary::-webkit-details-marker{display:none}
+.mk-total-detail>summary::after{content:"▾";margin-left:auto;font-size:14px}.mk-total-detail[open]>summary::after{content:"▴"}
+.mk-total-detail b{color:var(--mo-white);font-weight:750}
+.mk-total-interest{display:grid;gap:4px;margin:2px 0 14px;padding:14px 16px;border-radius:var(--mo-radius-sm);background:var(--mo-white);color:var(--mo-ink);font-size:14px}
+.mk-total-interest strong{color:var(--mo-primary)}.mk-total-interest small{color:var(--mo-muted)}.mk-total-interest .mk-text-button{justify-self:start}
+.mk-home-actions{display:flex;gap:8px}
+.mk-home-actions>button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:0 8px;border:1px solid var(--mo-line);border-radius:14px;background:var(--mo-white);color:var(--mo-deep);font-size:14px;font-weight:750}
+.mk-home-actions>button.primary{background:var(--mo-primary);border-color:var(--mo-primary);color:var(--mo-white)}
+.mk .mk-home-actions .mk-icon,.mk-home-actions .mk-quick-bank>span{width:18px;height:18px;font-size:17px;line-height:18px;color:inherit}
+.mk-week-button{justify-self:center;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 18px;border:1px solid var(--mo-line);border-radius:999px;background:var(--mo-white);color:var(--mo-primary);font-size:14px;font-weight:700}
+.mk-trial-home .mk-trial-tools{justify-content:center}
+.mk-trial-settings[open]{display:grid;gap:6px}.mk-trial-settings .mk-button{min-height:44px;font-size:14px;padding:0 16px;justify-self:start}
+.mk-trial-settings .mk-text-button{justify-self:start}
+.mk-bank-line{font-size:14px;color:var(--mo-muted);padding:6px 0 2px}
+.mk .mk-paid-celebration .mk-mascot,.mk-sheet .mk-paid-celebration .mk-mascot{width:88px;height:88px}
+.mk-paid-celebration .mk-arrived{display:block;margin-top:6px;font-size:34px;line-height:1.2;color:var(--mo-primary);letter-spacing:-1px}
+.mk-reward-more>summary{display:flex;align-items:center;min-height:44px;color:var(--mo-primary);font-weight:700;cursor:pointer}
+.mk-reward-more[open]{display:grid;gap:16px}
+.mk-trial .mk-book .mk-main-actions .mk-button{min-height:44px;font-size:14px}
+.mk-trial .mk-container{width:100%}.mk-home-actions>button{white-space:nowrap}

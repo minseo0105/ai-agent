@@ -29,24 +29,25 @@ class WebPackageTests(unittest.TestCase):
     def test_exact_web_archive_and_no_wrapper_folder(self):
         with zipfile.ZipFile(self.output/'moneyon-huggingface-web.zip') as z:
             files=z.namelist()
-        self.assertEqual(len(files),48)
+        self.assertEqual(len(files),49)
         self.assertIn('Dockerfile',files)
         self.assertIn('web/src/app/moneyon/TrialExperience.tsx',files)
+        self.assertIn('web/src/app/moneyon/TrialHome.tsx',files)
         self.assertEqual(sorted(files),(self.output/'UPLOAD_FILES.txt').read_text(encoding='utf-8').splitlines())
         self.assertFalse(any('.github' in p or 'tools/' in p or '.env' in p or 'sqlite' in p or 'secrets' in p for p in files))
 
     def test_github_archive_is_separate(self):
         with zipfile.ZipFile(self.output/'moneyon-github-web.zip') as z:files=z.namelist()
-        self.assertEqual(len(files),51)
+        self.assertEqual(len(files),52)
         self.assertIn('.github/workflows/deploy-moneyon.yml',files)
         self.assertIn('tools/sync_moneyon.py',files)
-        self.assertEqual(len(sync_module.validate(self.output/'github-upload')),48)
+        self.assertEqual(len(sync_module.validate(self.output/'github-upload')),49)
 
     def test_sync_never_uploads_controller_or_deletes_or_creates(self):
         sync_module.sync(self.output/'github-upload','money-owner/moneyon-demo',self.api)
         args=self.api.upload_folder.call_args.kwargs
         self.assertEqual(args['repo_id'],'money-owner/moneyon-demo')
-        self.assertEqual(len(args['allow_patterns']),48)
+        self.assertEqual(len(args['allow_patterns']),49)
         self.assertFalse(any(p.startswith(('tools/','.github/')) for p in args['allow_patterns']))
         self.assertNotIn('delete_patterns',args)
         self.api.create_repo.assert_not_called()

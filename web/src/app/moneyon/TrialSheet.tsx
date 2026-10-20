@@ -10,7 +10,7 @@ export default function TrialSheet({title,onClose,children}:{title:string;onClos
     return()=>{node.close();document.body.style.overflow=overflow;previous?.focus();};
   },[]);
   return <dialog ref={dialog} className="mk-sheet" aria-label={title} onCancel={e=>{e.preventDefault();onClose();}}>
-    <header className="mk-sheet-header"><div><h2>{title}</h2><span className="mk-demo-label">체험 모드 · 가상 돈이에요</span></div><button type="button" className="mk-sheet-close" aria-label="닫기" onClick={onClose}>×</button></header>
+    <header className="mk-sheet-header"><div><h2>{title}</h2><span className="mk-demo-label mk-demo-badge">체험 · 가상 돈</span></div><button type="button" className="mk-sheet-close" aria-label="닫기" onClick={onClose}>×</button></header>
     <div className="mk-sheet-body">{children}</div>
   </dialog>;
 }

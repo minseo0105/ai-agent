@@ -2,7 +2,6 @@
 import {useRef,useState} from "react";
 import TrialSheet from "./TrialSheet";
 import Izani from "./Izani";
-import {PracticeNote} from "./WeeklyJourney";
 import type {MoneyApi,RunAction,State} from "./types";
 const won=(n:number)=>n.toLocaleString("ko-KR")+"원";
 const NAMES=["여행 자금","닌텐도 모으기","갖고 싶은 장난감","미래의 내 꿈"],TARGETS=[10000,30000,50000],DEPOSITS=[1000,3000,5000];
@@ -20,10 +19,9 @@ export function BookWizard({child,api,run,busy,onState,onClose,onCreated,onDepos
       <label>모으고 싶은 돈<input required type="number" inputMode="numeric" min={100} max={10000000} step={100} value={target} onChange={e=>setTarget(e.target.value)}/></label>
       <div className="mk-amount-presets" aria-label="목표 금액 고르기">{TARGETS.map(n=><button type="button" key={n} aria-pressed={target===String(n)} onClick={()=>setTarget(String(n))}>{won(n)}</button>)}</div>
       <details className="mk-book-style"><summary>통장 꾸미기 (선택)</summary><div className="mk-filter" aria-label="통장 아이콘">{["🐷","🎮","✈️","🎁","⭐"].map(i=><button key={i} type="button" aria-pressed={icon===i} onClick={()=>setIcon(i)}>{i}</button>)}</div><label>통장 색상<select value={color} onChange={e=>setColor(e.target.value)}>{[["blue","블루"],["mint","민트"],["purple","보라"],["pink","분홍"]].map(([v,n])=><option key={v} value={v}>{n}</option>)}</select></label><label>통장 별명<input maxLength={20} value={nickname} onChange={e=>setNickname(e.target.value)}/></label></details>
-      <p className="mk-caption">100원 단위로 정해요. 새 통장은 0원부터 시작하고, 원래 있던 저축은 그대로 남아요.</p>
       <button className="mk-button full" disabled={busy}>통장 만들기</button>
     </form>:<section className="mk-panel mk-book-created" aria-live="polite"><Izani mood="celebration"/><h3>축하해! 너만의 저축통장이 생겼어!</h3><p>{icon} {name} · 목표 {won(Number(target))}</p>
-      {onDeposit&&affordable.length?<form onSubmit={e=>{e.preventDefault();void onDeposit(created.current,Number(deposit)).then(onClose);}}><h4>이 통장에 바로 저금해 볼까?</h4><div className="mk-amount-presets" aria-label="저금할 돈 고르기">{affordable.map(n=><button type="button" key={n} aria-pressed={deposit===String(n)} onClick={()=>setDeposit(String(n))}>{won(n)}</button>)}</div><PracticeNote/><div className="mk-main-actions"><button className="mk-button" disabled={busy||!deposit}>{won(Number(deposit))} 저금하기</button><button type="button" className="mk-button secondary" onClick={onClose}>나중에</button></div></form>
+      {onDeposit&&affordable.length?<form onSubmit={e=>{e.preventDefault();void onDeposit(created.current,Number(deposit)).then(onClose);}}><h4>이 통장에 바로 저금해 볼까?</h4><div className="mk-amount-presets" aria-label="저금할 돈 고르기">{affordable.map(n=><button type="button" key={n} aria-pressed={deposit===String(n)} onClick={()=>setDeposit(String(n))}>{won(n)}</button>)}</div><div className="mk-main-actions"><button className="mk-button" disabled={busy||!deposit}>{won(Number(deposit))} 저금하기</button><button type="button" className="mk-button secondary" onClick={onClose}>나중에</button></div></form>
       :<div className="mk-main-actions"><button type="button" className="mk-button" onClick={onClose}>통장 보기</button></div>}
     </section>}
   </TrialSheet>;
