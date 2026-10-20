@@ -6,26 +6,68 @@ is intentionally ephemeral; a lost workspace asks the visitor to start again.
 import os
 import time
 from collections import OrderedDict, deque
+from contextlib import asynccontextmanager
 from pathlib import Path
-from threading import Lock
+from threading import Event, Lock, Thread
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
-from api.moneyon_trial import router
+from api.moneyon_trial import router, trials
 
-app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+POOL_TARGET = int(os.environ.get('MONEYON_TRIAL_POOL', '0') or 0)
+KEEP = int(os.environ.get('MONEYON_TRIAL_KEEP', '3000') or 3000)
+last_request = [0.0]
+
+
+def maintain(stop):
+    # Seeds waiting samples and removes expired visitors only while no API
+    # request arrived for a second, so it never competes with a busy demo.
+    next_cleanup = 0.0
+    while not stop.wait(0.2):
+        try:
+            if time.monotonic() - last_request[0] < 1:
+                continue
+            service = trials()
+            if service.refill(POOL_TARGET):
+                continue
+            if time.monotonic() >= next_cleanup:
+                # A full batch means more are waiting: continue on the next idle tick.
+                removed = service.cleanup(limit=50, keep=KEEP)
+                next_cleanup = time.monotonic() + (0 if removed >= 50 else 60)
+        except Exception:
+            stop.wait(5)
+
+
+@asynccontextmanager
+async def lifespan(app):
+    stop = Event()
+    if POOL_TARGET > 0:
+        Thread(target=maintain, args=(stop,), name='moneyon-maintenance', daemon=True).start()
+    yield
+    stop.set()
+
+
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 app.include_router(router)
 STATIC = Path(os.environ.get('MONEYON_STATIC_DIR', 'web/out')).resolve()
 lock = Lock()
 windows = OrderedDict()
 
 
+@app.exception_handler(Exception)
+async def unexpected(request: Request, exc: Exception):
+    # Never show a traceback or a non-JSON body; the screen turns this into a friendly notice.
+    return JSONResponse({'detail':'서버가 잠시 바빠요. 잠시 후 다시 시도해 주세요.'},status_code=500,headers={'Cache-Control':'no-store'})
+
+
 @app.middleware('http')
 async def boundary(request: Request, call_next):
     path = request.url.path
     if path.startswith('/api/'):
+        if path != '/api/health':
+            last_request[0] = time.monotonic()
         if path != '/api/health' and not path.startswith('/api/moneyon/trial/'):
             return JSONResponse({'detail':'체험 전용 Space예요.'},status_code=404)
         if request.method in ('POST','PATCH'):

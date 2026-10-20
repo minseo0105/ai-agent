@@ -53,11 +53,15 @@ class Ledger:
             db.execute('BEGIN IMMEDIATE')
             accounts.migrate(db)
 
-    @contextmanager
-    def db(self):
+    def _connect(self):
         db = sqlite3.connect(self.path, timeout=15)
         db.row_factory = sqlite3.Row
         db.execute('PRAGMA foreign_keys=ON')
+        return db
+
+    @contextmanager
+    def db(self):
+        db = self._connect()
         try:
             db.execute('BEGIN IMMEDIATE')
             yield db

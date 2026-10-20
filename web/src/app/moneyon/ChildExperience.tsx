@@ -13,7 +13,7 @@ import "./blue.css";
 
 type View="home"|"account"|"savings"|"record"|"growth"|"interest";
 type Experiment={left:number;eligible:number;interest:number;total:number};
-type Props={child:Child;state:State;api:MoneyApi;run:RunAction;busy:boolean;error:string;demo:boolean;onLock:()=>void;onState:(state:State)=>void;onTransact:(payload:ChildTransaction)=>Promise<boolean>;onDismissError:()=>void;trialControls?:ReactNode;trialMessage?:string;trialReceipt?:ReactNode;trialAllowance?:ReactNode;trialCelebrating?:boolean};
+type Props={child:Child;state:State;api:MoneyApi;run:RunAction;busy:boolean;error:string;demo:boolean;onLock:()=>void;onState:(state:State)=>void;onTransact:(payload:ChildTransaction)=>Promise<boolean>;onDismissError:()=>void;trialControls?:ReactNode;trialMessage?:string;trialReceipt?:ReactNode;trialAllowance?:ReactNode;trialCelebrating?:boolean;onHome?:()=>void};
 const won=(value:number)=>value.toLocaleString("ko-KR")+"원";
 const categories=["간식","문구","장난감","게임","책","선물","기타"];
 const merchants=[{name:"편의점",amount:2000},{name:"문구점",amount:4000},{name:"서점",amount:5000},{name:"게임",amount:3000}];
@@ -50,7 +50,7 @@ function TransactionRow({transaction:t,detail=false,busy,onCategory}:{transactio
   </div></details></li>;
 }
 
-export default function ChildExperience({child,state,api,run,busy,error,demo,onLock,onState,onTransact,onDismissError,trialControls,trialMessage,trialReceipt,trialAllowance,trialCelebrating}:Props) {
+export default function ChildExperience({child,state,api,run,busy,error,demo,onLock,onState,onTransact,onDismissError,trialControls,trialMessage,trialReceipt,trialAllowance,trialCelebrating,onHome}:Props) {
   const [view,setView]=useState<View>("home");const [feedback,setFeedback]=useState("");
   const [amount,setAmount]=useState("");const [note,setNote]=useState("");const [category,setCategory]=useState("간식");
   const [filter,setFilter]=useState("전체");const [categoryFilter,setCategoryFilter]=useState("전체");
@@ -111,7 +111,7 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
       {demo&&<span className="mk-demo-label">DEMO · 연습용 통장이에요</span>}
       <div className="mk-page-heading">{!["home","account","savings"].includes(view)&&<button className="mk-back" onClick={()=>navigate(view==="interest"?"savings":"home")} aria-label={view==="interest"?"저축으로 돌아가기":"홈으로 돌아가기"}><KidIcon name="back"/></button>}<div><h1 ref={heading} tabIndex={-1}>{title}</h1>{view==="home"&&<p>이자니와 함께, 용돈이 자라는 일주일</p>}</div>{view==="home"&&trialControls?<Izani mood="greeting" className="mk-header-character"/>:view==="home"&&<span className="mk-profile" aria-label={`${child.profile.name}의 캐릭터`}>{child.profile.avatar==="🪙"?<span className="mk-profile-coin">₩</span>:child.profile.avatar==="🧑‍🚀"?<svg viewBox="0 0 44 44" width="37" height="37" role="img" aria-label="우주인 캐릭터"><path d="M13 35v5h18v-5" fill="#b5cbe7" stroke="#6483af" strokeWidth="1.5"/><circle cx="22" cy="21" r="17" fill="#dceaf6" stroke="#6483af" strokeWidth="1.5"/><rect x="9" y="12" width="26" height="21" rx="10" fill="#7898be"/><ellipse cx="22" cy="24" rx="9" ry="8" fill="#fff0d5"/><circle cx="18" cy="23" r="1.2" fill="#294953"/><circle cx="26" cy="23" r="1.2" fill="#294953"/><path d="M19 27q3 3 6 0" fill="none" stroke="#294953" strokeWidth="1.3" strokeLinecap="round"/><path d="M13 12q8-5 17-1" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>:child.profile.avatar}</span>}</div>
 
-      {error&&<section className="mk-error" role="alert"><Izani mood="help"/><div><strong>{COACH_BRAND.displayName}가 도와줄게!</strong><p>{error}</p><button onClick={()=>void run(refresh)} disabled={busy}>통장 다시 보기</button></div></section>}
+      {error&&<section className="mk-error" role="alert"><Izani mood="help"/><div><strong>{COACH_BRAND.displayName}가 도와줄게!</strong><p>{error}</p><div className="mk-error-actions"><button onClick={()=>void run(refresh)} disabled={busy}>통장 다시 보기</button>{onHome&&<button onClick={onHome}>처음으로</button>}</div></div></section>}
       {feedback&&!trialControls&&<p className="mk-feedback" role="status"><KidIcon name="check"/>{feedback}</p>}
       {(trialMessage||feedback)&&trialControls&&<div role="status"><CoachCard compact message={{text:trialMessage||feedback,mood:trialCelebrating?"celebration":"greeting"}}/></div>}
       {trialReceipt}

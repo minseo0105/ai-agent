@@ -6,27 +6,69 @@ ledger, reward calculation and double-entry Mock Banking postings are reused.
 import hashlib
 import json
 import secrets
+import sqlite3
+import threading
 import time
 import uuid
 from contextlib import contextmanager
 from contextvars import ContextVar
 from datetime import date, timedelta
+from pathlib import Path
 
 from services.moneyon import Ledger, reward, period
 from services import moneyon_accounts as accounts
 from services.moneyon_banking import MockBankingAdapter
 from services import moneyon_savings as savings
 
+# Pre-seeded sample workspaces wait under this owner until a visitor claims one.
+POOL = 'pool'
+# Lookups that scanned whole tables once many visitors had accumulated.
+INDEXES = (
+    'CREATE INDEX IF NOT EXISTS transactions_cycle ON transactions(cycle)',
+    'CREATE INDEX IF NOT EXISTS bank_accounts_child ON bank_accounts(child)',
+    'CREATE INDEX IF NOT EXISTS book_entries_book ON moneyon_book_entries(book)',
+    'CREATE INDEX IF NOT EXISTS goals_child ON goals(child)',
+    'CREATE INDEX IF NOT EXISTS bank_events_family ON bank_events(family)',
+    'CREATE INDEX IF NOT EXISTS children_family ON children(family)',
+    'CREATE INDEX IF NOT EXISTS category_changes_child ON bank_category_changes(child)',
+    'CREATE INDEX IF NOT EXISTS trial_visitors_expires ON trial_visitors(expires)',
+    'CREATE INDEX IF NOT EXISTS trial_visitors_seen ON trial_visitors(last_seen)',
+)
+_locks = {}
+_locks_guard = threading.Lock()
+
+
+def _path_lock(path):
+    # One process serves the Space. Queueing writers here wakes them in turn
+    # instead of letting SQLite's busy handler sleep-poll past its timeout.
+    with _locks_guard:
+        return _locks.setdefault(str(Path(path).resolve()), threading.RLock())
+
 
 class TrialLedger(Ledger):
     def __init__(self, path):
         self.connection = ContextVar('trial_connection', default=None)
+        self.lock = _path_lock(path)
+        # One connection is reused while requests are queued and closed once the
+        # queue empties: closing the last WAL connection checkpoints the file.
+        self.shared = None
+        self.queued = 0
+        self.queue_guard = threading.Lock()
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        # WAL is a property of the file and must be set outside a transaction.
+        wal = sqlite3.connect(str(path), timeout=30)
+        try:
+            wal.execute('PRAGMA journal_mode=WAL')
+        finally:
+            wal.close()
         super().__init__(path)
         with self.db() as db:
             savings.install(db)
             db.execute('''CREATE TABLE IF NOT EXISTS trial_visitors(
                 capability TEXT PRIMARY KEY, family TEXT NOT NULL, child TEXT NOT NULL,
                 expires INTEGER NOT NULL, generation INTEGER NOT NULL, reset_key TEXT)''')
+            if 'last_seen' not in {r['name'] for r in db.execute('PRAGMA table_info(trial_visitors)')}:
+                db.execute('ALTER TABLE trial_visitors ADD COLUMN last_seen INTEGER NOT NULL DEFAULT 0')
             db.execute('''CREATE TABLE IF NOT EXISTS trial_rewards(
                 child TEXT NOT NULL, cycle TEXT NOT NULL, reward_type TEXT NOT NULL,
                 base INTEGER NOT NULL, amount INTEGER NOT NULL, transaction_id TEXT NOT NULL,
@@ -35,6 +77,17 @@ class TrialLedger(Ledger):
                 child TEXT NOT NULL, cycle TEXT NOT NULL, reward_type TEXT NOT NULL,
                 base INTEGER NOT NULL, amount INTEGER NOT NULL,
                 PRIMARY KEY(child,cycle,reward_type))''')
+            for statement in INDEXES:
+                db.execute(statement)
+
+    def _connect(self):
+        # Shared between request threads, always under self.lock.
+        db = sqlite3.connect(self.path, timeout=30, check_same_thread=False)
+        db.row_factory = sqlite3.Row
+        db.execute('PRAGMA foreign_keys=ON')
+        db.execute('PRAGMA busy_timeout=30000')
+        db.execute('PRAGMA synchronous=NORMAL')
+        return db
 
     def reward_items(self, db, child, cycle, today):
         policy = json.loads(cycle['policy']) if isinstance(cycle['policy'], str) else cycle['policy']
@@ -182,12 +235,31 @@ class TrialLedger(Ledger):
                 current.execute('RELEASE ' + savepoint)
                 raise
         else:
-            with super().db() as db:
-                token = self.connection.set(db)
+            with self.queue_guard:
+                self.queued += 1
+            with self.lock:
                 try:
-                    yield db
+                    if self.shared is None:
+                        self.shared = self._connect()
+                    db = self.shared
+                    token = self.connection.set(db)
+                    try:
+                        db.execute('BEGIN IMMEDIATE')
+                        try:
+                            yield db
+                            db.commit()
+                        except BaseException:
+                            db.rollback()
+                            raise
+                    finally:
+                        self.connection.reset(token)
                 finally:
-                    self.connection.reset(token)
+                    with self.queue_guard:
+                        self.queued -= 1
+                        idle = self.queued == 0
+                    if idle and self.shared is not None:
+                        self.shared.close()
+                        self.shared = None
 
 
 class Trials:
@@ -200,12 +272,15 @@ class Trials:
 
     def resolve(self, token, child=None, generation=None):
         with self.ledger.db() as db:
+            now = int(time.time())
             row = db.execute('SELECT * FROM trial_visitors WHERE capability=? AND expires>?',
-                             (self.digest(token), int(time.time()))).fetchone()
+                             (self.digest(token), now)).fetchone()
             if not token or not row or (child is not None and row['child'] != child):
                 raise PermissionError('체험 세션이 없거나 만료됐어요. 새 체험을 시작해 주세요.')
             if generation is not None and row['generation'] != generation:
                 raise ValueError('초기화된 통장이에요. 새로고침하고 다시 해 주세요.')
+            if row['last_seen'] < now - 60:
+                db.execute('UPDATE trial_visitors SET last_seen=? WHERE capability=?', (now, row['capability']))
             return dict(row)
 
     def day(self, row):
@@ -243,18 +318,80 @@ class Trials:
             db.execute('INSERT INTO moneyon_payment_rules VALUES(?,?,?)',(child,day.isoformat(),'automatic'))
         return family, child
 
-    def start(self):
+    def workspace(self, owner):
+        """Claim a pre-seeded sample when one is waiting, otherwise seed now. Both are identical seeds."""
+        with self.ledger.db() as db:
+            row = db.execute('SELECT family FROM moneyon_demo_workspaces WHERE owner=? AND active=1 ORDER BY rowid LIMIT 1', (POOL,)).fetchone()
+            if not row:
+                return self.seed(owner)
+            db.execute('UPDATE moneyon_demo_workspaces SET owner=? WHERE family=?', (owner, row['family']))
+            return row['family'], db.execute('SELECT id FROM children WHERE family=?', (row['family'],)).fetchone()[0]
+
+    def pooled(self):
+        with self.ledger.db() as db:
+            return db.execute('SELECT COUNT(*) FROM moneyon_demo_workspaces WHERE owner=? AND active=1', (POOL,)).fetchone()[0]
+
+    def refill(self, target):
+        """Seed one waiting sample if fewer than target are ready. Returns True when one was added."""
+        if self.pooled() >= target:
+            return False
+        self.seed(POOL)
+        return True
+
+    def start(self, cleanup=5):
         token = secrets.token_urlsafe(32)
         digest = self.digest(token)
+        now = int(time.time())
         with self.ledger.db() as db:
-            family, child = self.seed(digest)
-            db.execute('INSERT INTO trial_visitors VALUES(?,?,?,?,1,NULL)', (digest, family, child, int(time.time()) + 86400))
-            return dict(token=token, **self.snapshot(self.resolve(token)))
+            family, child = self.workspace(digest)
+            db.execute('INSERT INTO trial_visitors(capability,family,child,expires,generation,reset_key,last_seen) VALUES(?,?,?,?,1,NULL,?)',
+                       (digest, family, child, now + 86400, now))
+            result = dict(token=token, **self.snapshot(self.resolve(token)))
+            # Indexed probe; the rare cleanup shares this transaction instead of opening another.
+            if cleanup and db.execute('SELECT 1 FROM trial_visitors WHERE expires<=? LIMIT 1', (now,)).fetchone():
+                self.cleanup(now, limit=cleanup)
+        return result
+
+    def cleanup(self, now=None, limit=20, keep=None, idle=7200):
+        """Delete expired visitors, then the longest-idle ones above keep. Visitors seen within idle are never removed."""
+        now = int(time.time()) if now is None else now
+        with self.ledger.db() as db:
+            doomed = [r[0] for r in db.execute('SELECT capability FROM trial_visitors WHERE expires<=? ORDER BY expires LIMIT ?', (now, limit))]
+            if keep is not None and len(doomed) < limit:
+                excess = db.execute('SELECT COUNT(*) FROM trial_visitors WHERE expires>?', (now,)).fetchone()[0] - keep
+                if excess > 0:
+                    doomed += [r[0] for r in db.execute('SELECT capability FROM trial_visitors WHERE expires>? AND last_seen<? ORDER BY last_seen LIMIT ?',
+                                                         (now, now - idle, min(excess, limit - len(doomed))))]
+            for capability in doomed:
+                self._purge(db, capability)
+            return len(doomed)
+
+    @staticmethod
+    def _purge(db, capability):
+        # Every workspace this capability ever owned, including ones archived by reset.
+        for (family,) in db.execute('SELECT family FROM moneyon_demo_workspaces WHERE owner=?', (capability,)).fetchall():
+            children = [r[0] for r in db.execute('SELECT id FROM children WHERE family=?', (family,))]
+            accounts_ = [r[0] for r in db.execute('SELECT id FROM bank_accounts WHERE family=?', (family,))]
+            for account in accounts_:
+                db.execute('DELETE FROM bank_postings WHERE account_id=?', (account,))
+            for table in ('bank_events', 'bank_accounts', 'bank_category_changes', 'sessions'):
+                db.execute(f'DELETE FROM {table} WHERE family=?', (family,))
+            for child in children:
+                db.execute('DELETE FROM moneyon_book_entries WHERE book IN (SELECT id FROM moneyon_books WHERE child=?)', (child,))
+                for table in ('moneyon_books', 'moneyon_reward_choices', 'moneyon_payment_rules', 'trial_rewards',
+                              'trial_closings', 'quest_progress', 'goals', 'transactions', 'cycles'):
+                    db.execute(f'DELETE FROM {table} WHERE child=?', (child,))
+            db.execute('DELETE FROM children WHERE family=?', (family,))
+            db.execute('DELETE FROM families WHERE id=?', (family,))
+            db.execute('DELETE FROM moneyon_demo_workspaces WHERE family=?', (family,))
+        db.execute('DELETE FROM trial_visitors WHERE capability=?', (capability,))
 
     def snapshot(self, row):
-        return dict(child=next(c for c in self.ledger.children(row['family']) if c['id'] == row['child']),
-                    state=self.ledger.state(row['family'], row['child'], self.day(row)),
-                    day=self.day(row).isoformat(), generation=row['generation'], expires=row['expires'])
+        with self.ledger.db():
+            day = self.day(row)
+            return dict(child=next(c for c in self.ledger.children(row['family']) if c['id'] == row['child']),
+                        state=self.ledger.state(row['family'], row['child'], day),
+                        day=day.isoformat(), generation=row['generation'], expires=row['expires'])
 
     def reset(self, token, generation, key):
         with self.ledger.db() as db:
@@ -262,7 +399,7 @@ class Trials:
             if row['reset_key'] == key and row['generation'] == generation + 1:
                 return self.snapshot(row)
             self.resolve(token, generation=generation)
-            family, child = self.seed(row['capability'])
+            family, child = self.workspace(row['capability'])
             # Old rows remain an isolated audit archive; the capability can no
             # longer address them. No family/user DB is opened here.
             db.execute('UPDATE moneyon_demo_workspaces SET active=0 WHERE family=?', (row['family'],))

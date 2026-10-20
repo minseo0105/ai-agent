@@ -19,7 +19,8 @@ RUN mkdir -p /home/user/app/runtime && chown user:user /home/user/app/runtime
 USER user
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 APP_ENV=production \
     MONEYON_TRIAL_ENABLED=1 MONEYON_LOCAL_DEV=0 MONEYON_DEMO=0 \
-    MONEYON_TRIAL_DB=/home/user/app/runtime/trial.sqlite3
+    MONEYON_TRIAL_DB=/home/user/app/runtime/trial.sqlite3 \
+    MONEYON_TRIAL_POOL=120 MONEYON_TRIAL_KEEP=3000
 EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:7860/api/health', timeout=4)"
 CMD ["uvicorn", "space_app:app", "--host", "0.0.0.0", "--port", "7860", "--workers", "1", "--no-access-log"]

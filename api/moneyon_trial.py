@@ -37,6 +37,13 @@ def trials():
     return Trials(store(str(path)))
 
 
+BUSY = '지금 체험하는 사람이 많아요. 잠시 후 다시 눌러 주세요.'
+
+
+def busy():
+    return HTTPException(503, BUSY, headers={'Retry-After': '5'})
+
+
 class Auth:
     def __init__(self, x_moneyon_trial: str = Header(default='', max_length=100),
                  x_moneyon_trial_version: int = Header(default=0)):
@@ -54,11 +61,16 @@ def execute(service, auth, child, operation, write=False):
         raise HTTPException(403, str(e))
     except (ValueError, sqlite3.IntegrityError) as e:
         raise HTTPException(409, str(e))
+    except sqlite3.OperationalError:
+        raise busy()
 
 
 @router.post('/start')
 def start(service=Depends(trials)):
-    return service.start()
+    try:
+        return service.start()
+    except sqlite3.OperationalError:
+        raise busy()
 
 
 @router.get('/state')
@@ -78,6 +90,8 @@ def reset(req: Reset, auth=Depends(Auth), service=Depends(trials)):
         raise HTTPException(403, str(e))
     except ValueError as e:
         raise HTTPException(409, str(e))
+    except sqlite3.OperationalError:
+        raise busy()
 
 
 @router.get('/children/{child}')

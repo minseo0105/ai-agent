@@ -11,15 +11,27 @@ export const TRIAL_STORAGE="moneyon-trial-v1";
 type Snapshot={token?:string;child:Child;state:State;day:string;generation:number;expires:number};
 export function nextWeek(day:string){const value=new Date(day+"T00:00:00Z");value.setUTCDate(value.getUTCDate()+7);return value.toISOString().slice(0,10);}
 const won=(n:number)=>n.toLocaleString("ko-KR")+"원";
+const BUSY="서버가 잠시 바빠요. 잠시 후 다시 시도해 주세요.";
+const EXPIRED="체험 시간이 끝났거나 서버가 새로 시작됐어요. 처음부터 다시 체험해 볼까요?";
+// expired: 이 체험 통장을 더 이상 쓸 수 없어 처음부터 시작해야 하는 오류.
+class TrialError extends Error{constructor(message:string,readonly expired=false){super(message);}}
+// 서버 응답을 아이가 읽을 수 있는 안내로 바꾼다. JSON이 아닌 응답(재시작 중 HTML 등)의 원문은 보여주지 않는다.
+function trialError(status:number,data:{detail?:unknown}|null){
+  const detail=typeof data?.detail==="string"?data.detail:"";
+  if(status===403)return new TrialError(EXPIRED,true);
+  if(status>=500||!data)return new TrialError(status===503&&detail?detail:BUSY);
+  if(status===429)return new TrialError(detail||"지금 체험하는 사람이 많아요. 잠시 후 다시 눌러 주세요.");
+  return new TrialError(detail||"입력 내용을 확인해 주세요.");
+}
 
 // 첫 화면(mk-entry)과 같은 파란 레이아웃의 대기·오류 화면. 화면 전환 사이에 다른 디자인이 끼지 않게 한다.
 // quiet: 체험 여부를 확인하는 아주 짧은 순간이라 문구 없이 로고·이자니만 보인다.
 export function TrialStatus({error,onExit,quiet}:{error?:string;onExit?:()=>void;quiet?:boolean}) {
-  return <main className="mk-entry" aria-busy={!error}><div className="mk-entry-shell"><span className="mk-entry-logo">MONEY:ON</span><div className="mk-entry-art"><Izani mood="greeting"/></div>{error?<><p role="alert" className="mk-entry-copy">{error}</p><button className="mk-button" onClick={onExit}>처음 화면으로</button></>:quiet?null:<p role="status" className="mk-entry-copy">통장을 준비하고 있어요…</p>}</div></main>;
+  return <main className="mk-entry" aria-busy={!error}><div className="mk-entry-shell"><span className="mk-entry-logo">MONEY:ON</span><div className="mk-entry-art"><Izani mood={error?"help":"greeting"}/></div>{error?<><p role="alert" className="mk-entry-copy">{error}</p><button className="mk-button" onClick={onExit}>처음으로</button></>:quiet?null:<p role="status" className="mk-entry-copy">통장을 준비하고 있어요…</p>}</div></main>;
 }
 
 export default function TrialExperience({onExit}:{onExit:()=>void}) {
-  const [snapshot,setSnapshot]=useState<Snapshot|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState("");
+  const [snapshot,setSnapshot]=useState<Snapshot|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState(""),[expired,setExpired]=useState(false);
   const [panel,setPanel]=useState(""),[amount,setAmount]=useState(""),[message,setMessage]=useState("");
   const [approval,setApproval]=useState(false);
   const [rewardTab,setRewardTab]=useState<"allowance_bonus"|"savings_interest">("allowance_bonus");
@@ -32,10 +44,13 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
   const retry=useRef<{signature:string;key:string}|null>(null);
   async function api(path:string,body?:unknown,_auth?:string,method="POST") {
     const response=await apiFetch(`${API_URL}/api/moneyon/trial${path}`,{method:body===undefined?"GET":method,headers:{"Content-Type":"application/json","X-Moneyon-Trial":credentials.current.token,"X-Moneyon-Trial-Version":String(credentials.current.generation)},...(body===undefined?{}:{body:JSON.stringify(body)})});
-    const data=await response.json();if(!response.ok)throw new Error(typeof data.detail==="string"?data.detail:"입력 내용을 확인해 주세요.");return data;
+    let data=null;try{data=await response.json();}catch{}
+    if(!response.ok||data===null)throw trialError(response.status,data);
+    return data;
   }
+  function fail(e:unknown){if(e instanceof TrialError&&e.expired)setExpired(true);else setError((e as Error).message||BUSY);}
   function apply(next:Snapshot){credentials.current.generation=next.generation;setSnapshot(next);}
-  async function run(action:()=>Promise<void>){if(running.current)return;running.current=true;setBusy(true);setError("");setMessage("");setCelebrating(false);try{await action();}catch(e){setError((e as Error).message);}finally{running.current=false;setBusy(false);}}
+  async function run(action:()=>Promise<void>){if(running.current)return;running.current=true;setBusy(true);setError("");setMessage("");setCelebrating(false);try{await action();}catch(e){fail(e);}finally{running.current=false;setBusy(false);}}
   useEffect(()=>{
     let current=true;
     async function open(){
@@ -45,7 +60,7 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
         if(!current)return;
         if(next.token){credentials.current.token=next.token;sessionStorage.setItem(TRIAL_STORAGE,next.token);}
         apply(next);
-      }catch(e){if(current)setError((e as Error).message);}finally{if(current)setBusy(false);}
+      }catch(e){if(current)fail(e);}finally{if(current)setBusy(false);}
     }
     void open();return()=>{current=false;};
   },[]);
@@ -63,7 +78,9 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
       setMessage(kind==="allowance"?"엄마 은행에서 용돈이 도착했어!":kind==="date"?`체험 속 날짜가 ${next.day}로 이동했어! 지난주를 마감했어. 도착한 이자와 지급 상태를 확인해 봐.`:kind==="approve"?"승인한 이자를 한 번 받았어. 용돈 이자는 내 통장, 저금통 이자는 저금통으로 들어와!":"처음 통장으로 돌아왔어! 다시 자유롭게 체험해 봐.");
     });
   }
-  if(!snapshot)return busy?<TrialStatus/>:<TrialStatus error={error} onExit={exit}/>;
+  // 만료·재시작은 저장된 체험을 지우고, 잠깐 바쁜 오류는 체험을 남겨 두어 다시 들어오면 이어진다.
+  if(expired)return <TrialStatus error={EXPIRED} onExit={exit}/>;
+  if(!snapshot)return busy?<TrialStatus/>:<TrialStatus error={error} onExit={onExit}/>;
   const paid=snapshot.state.transactions.filter(t=>t.kind==="interest");
   const openBank=()=>{setPanel("allowance");setAmount("");setMessage("");setCelebrating(false);};
   const controls=<div className="mk-trial-tools">
@@ -92,5 +109,5 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
       {panel==="reset"&&<section aria-describedby="trial-reset-description"><Izani mood="help"/><p id="trial-reset-description">체험한 내용만 처음 상태로 돌아가요.</p><div className="mk-main-actions"><button className="mk-button" disabled={busy} onClick={()=>void action("reset")}>확인하고 초기화</button><button className="mk-button secondary" disabled={busy} onClick={()=>setPanel("")}>계속 체험하기</button></div></section>}
     </TrialSheet>}
   </div>;
-  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={snapshot.state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={state=>setSnapshot(s=>s?{...s,state}:s)} onTransact={transact} trialControls={controls} trialAllowance={<button className="mk-quick-bank" disabled={busy} onClick={openBank}><span aria-hidden="true">↓</span>용돈 받기</button>} trialCelebrating={celebrating} trialMessage={message} trialReceipt={receipt&&<section className="mk-change-receipt" aria-label="거래 전후 변화"><h2>{receipt.title}</h2><dl>{([ ["남은 용돈",receipt.before.wallet,receipt.after.wallet],["예상 용돈 이자",receipt.before.rewards?.estimates.allowance_bonus??0,receipt.after.rewards?.estimates.allowance_bonus??0],["저금통",receipt.before.vault,receipt.after.vault],["예상 저금통 이자",receipt.before.rewards?.estimates.savings_interest??0,receipt.after.rewards?.estimates.savings_interest??0],["엄마 은행",receipt.before.education?.parent_balance??0,receipt.after.education?.parent_balance??0] ] as const).filter(([,before,after])=>before!==after).map(([label,before,after])=><div key={label}><dt>{label}</dt><dd>{won(before)} → {won(after)}</dd></div>)}</dl><p>필요한 곳에는 쓰고, 남은 돈도 잘 관리해 보자.</p></section>}/>;
+  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={snapshot.state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={state=>setSnapshot(s=>s?{...s,state}:s)} onTransact={transact} trialControls={controls} trialAllowance={<button className="mk-quick-bank" disabled={busy} onClick={openBank}><span aria-hidden="true">↓</span>용돈 받기</button>} trialCelebrating={celebrating} onHome={onExit} trialMessage={message} trialReceipt={receipt&&<section className="mk-change-receipt" aria-label="거래 전후 변화"><h2>{receipt.title}</h2><dl>{([ ["남은 용돈",receipt.before.wallet,receipt.after.wallet],["예상 용돈 이자",receipt.before.rewards?.estimates.allowance_bonus??0,receipt.after.rewards?.estimates.allowance_bonus??0],["저금통",receipt.before.vault,receipt.after.vault],["예상 저금통 이자",receipt.before.rewards?.estimates.savings_interest??0,receipt.after.rewards?.estimates.savings_interest??0],["엄마 은행",receipt.before.education?.parent_balance??0,receipt.after.education?.parent_balance??0] ] as const).filter(([,before,after])=>before!==after).map(([label,before,after])=><div key={label}><dt>{label}</dt><dd>{won(before)} → {won(after)}</dd></div>)}</dl><p>필요한 곳에는 쓰고, 남은 돈도 잘 관리해 보자.</p></section>}/>;
 }

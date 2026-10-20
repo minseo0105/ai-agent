@@ -84,3 +84,10 @@
 .mk-book-pink{border-left:4px solid #e5a1bd}
 .mk-book details{margin-top:14px;font-size:13px}
 .mk-book details ul{padding-left:18px;overflow-wrap:anywhere}
+
+/* 오류 안내도 파란 디자인으로: 무엇이 잘못됐는지 쉬운 말과 다시 하기·처음으로 버튼. */
+.mk .mk-error{border:1px solid var(--mo-line);border-left:4px solid var(--mo-bright);background:var(--mo-light);color:var(--mo-ink)}
+.mk .mk-error-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.mk .mk-error-actions button{min-height:44px;padding:0 16px;border-radius:var(--mo-radius-sm);border:1px solid var(--mo-primary);background:var(--mo-white);color:var(--mo-primary);font-weight:750;cursor:pointer}
+.mk .mk-error-actions button:first-child{background:var(--mo-primary);color:#fff}
+.mk-entry [role=alert]+.mk-button{margin-top:20px}
