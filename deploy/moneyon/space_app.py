@@ -3,6 +3,7 @@
 Only the phase-4 trial router is registered. No secrets are needed. SQLite
 is intentionally ephemeral; a lost workspace asks the visitor to start again.
 """
+import hashlib
 import os
 import time
 from collections import OrderedDict, deque
@@ -54,6 +55,18 @@ app.include_router(router)
 STATIC = Path(os.environ.get('MONEYON_STATIC_DIR', 'web/out')).resolve()
 lock = Lock()
 windows = OrderedDict()
+# Per minute. Starts and token-less writes count per peer; writes from a trial
+# the server has already accepted count per trial (one visitor's taps no longer
+# share a quota with everyone behind the same HF proxy peer).
+START_LIMIT, WRITE_LIMIT, TRIAL_LIMIT = 300, 600, 300
+# sha256 of tokens that got a 2xx answer. Unknown or wrong tokens never get their
+# own bucket, so inventing tokens cannot escape the peer limit.
+verified = OrderedDict()
+
+
+def trial_digest(request):
+    token = request.headers.get('x-moneyon-trial', '')
+    return hashlib.sha256(token.encode()).hexdigest() if 0 < len(token) <= 100 else None
 
 
 @app.exception_handler(Exception)
@@ -95,17 +108,31 @@ async def boundary(request: Request, call_next):
             # enforce visitor isolation independently of this coarse limit.
             peer=request.client.host if request.client else 'unknown'
             category='start' if path.endswith('/start') else 'write'
+            digest=None if category=='start' else trial_digest(request)
             now=time.monotonic()
             with lock:
-                key=(peer,category)
+                trial=digest is not None and digest in verified
+                key=('trial',digest) if trial else (peer,category)
                 queue=windows.setdefault(key,deque())
                 windows.move_to_end(key)
                 while queue and queue[0] < now-60:queue.popleft()
-                if len(queue)>=(60 if category=='start' else 600):
+                if len(queue)>=(START_LIMIT if category=='start' else TRIAL_LIMIT if trial else WRITE_LIMIT):
                     return JSONResponse({'detail':'잠시 쉬었다가 다시 체험해 주세요.'},status_code=429,headers={'Retry-After':'60'})
                 queue.append(now)
-                while len(windows)>4096:windows.popitem(last=False)
+                while len(windows)>8192:windows.popitem(last=False)
     response=await call_next(request)
+    if path.startswith('/api/moneyon/trial/') and not path.endswith('/start'):
+        # Every route except /start resolves the token, so 2xx proves it is live
+        # and 403 means it expired or never existed.
+        digest=trial_digest(request)
+        if digest:
+            with lock:
+                if 200<=response.status_code<300:
+                    verified[digest]=True
+                    verified.move_to_end(digest)
+                    while len(verified)>8192:verified.popitem(last=False)
+                elif response.status_code==403:
+                    verified.pop(digest,None)
     response.headers['X-Content-Type-Options']='nosniff'
     response.headers['Referrer-Policy']='same-origin'
     if path.startswith('/api/'):response.headers['Cache-Control']='no-store'

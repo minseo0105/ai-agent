@@ -97,7 +97,7 @@ class SpaceTests(unittest.TestCase):
         with self.module.lock:
             from collections import deque
             import time
-            self.module.windows[('testclient','start')]=deque([time.monotonic()]*60)
+            self.module.windows[('testclient','start')]=deque([time.monotonic()]*300)
         response=self.client.post('/api/moneyon/trial/start',headers={'X-Forwarded-For':'different'})
         self.assertEqual(response.status_code,429)
         self.assertEqual(response.headers['Retry-After'],'60')
