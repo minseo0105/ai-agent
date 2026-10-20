@@ -1,116 +1,70 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useAccess } from "@/components/access/AccessProvider";
-import { SERVICES, serviceLink, type Service } from "@/lib/services";
+import { serviceLink } from "@/lib/services";
+import AgentSection from "./AgentSection";
+import ServiceArtwork from "./home/ServiceArtwork";
+import { AGENT, CATALOG, CATEGORIES, type Category, type CatalogItem } from "./home/catalog";
+import styles from "./home/Home.module.css";
 
-function LegacyBadge() {
-  return (
-    <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-semibold text-subtle">
-      기존 버전
-    </span>
-  );
-}
-
-function LockBadge() {
-  return (
-    <span className="rounded-full border border-border bg-surface px-2 py-0.5 text-[10px] font-semibold text-subtle" title="등록된 분만 이용할 수 있어요">
-      🔒 등록자 전용
-    </span>
-  );
-}
-
-function ServiceLink({ service, className, children }: { service: Service; className: string; children: React.ReactNode }) {
-  const { href, external } = serviceLink(service);
-  return (
-    <a href={href} className={className} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-      {children}
-    </a>
-  );
+function Arrow() {
+  return <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
 export default function ServiceGrid() {
   const { status } = useAccess();
-  // 관리자 설정에서 숨긴 서비스는 빼고, 권한이 없는 서비스는 자물쇠 표시 (들어가면 접속 코드 입력 화면)
-  const visible = SERVICES.filter((s) => status?.services[s.id]?.visible ?? true);
-  const locked = (s: Service) => status?.services[s.id]?.allowed === false;
-  const featured = visible.find((s) => s.featured);
-  const main = visible.filter((s) => !s.featured && !s.secondary);
-  const secondary = visible.filter((s) => s.secondary);
+  const [category, setCategory] = useState<Category>("전체");
+  const [agentOpen, setAgentOpen] = useState(false);
+  useEffect(() => {
+    const openAgent = () => { setAgentOpen(true); setCategory(current => current === "전체" ? current : "AI Agent"); };
+    const openFromHash = () => { if (window.location.hash === "#agent") openAgent(); };
+    const openFromLink = (event: MouseEvent) => { if (event.target instanceof Element && event.target.closest('a[href="#agent"]')) openAgent(); };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    document.addEventListener("click", openFromLink);
+    return () => { window.removeEventListener("hashchange", openFromHash); document.removeEventListener("click", openFromLink); };
+  }, []);
+  const visible = [...CATALOG, AGENT].filter(item => status?.services[item.service.id]?.visible ?? true);
+  const filtered = visible.filter(item => category === "전체" || item.category === category);
 
-  if (!visible.length) return <p className="rounded-2xl border border-border bg-surface px-4 py-6 text-center text-sm text-muted">지금 공개된 서비스가 없어요.</p>;
-
-  return (
-    <div className="space-y-3">
-      {featured && (
-        <ServiceLink
-          service={featured}
-          className="group relative block overflow-hidden rounded-3xl border border-golf/25 bg-gradient-to-br from-surface to-golf-soft p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-6"
-        >
-          <div className="mb-2 flex items-center gap-2">
-            <span className="rounded-full bg-golf px-2 py-0.5 text-[10px] font-extrabold tracking-wider text-white">NEW</span>
-            <span className="text-xs font-bold tracking-wide text-muted">GOLF INTELLIGENCE</span>
-            {!featured.href && <LegacyBadge />}
-            {locked(featured) && <LockBadge />}
-          </div>
-          <h3 className="text-xl font-extrabold tracking-tight sm:text-2xl">
-            {featured.icon} {featured.title}
-          </h3>
-          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted">{featured.desc}</p>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {featured.tags?.map((t) => (
-              <span key={t} className="rounded-full border border-border bg-surface/80 px-2.5 py-1 text-[11px] font-semibold text-muted">
-                {t}
-              </span>
-            ))}
-          </div>
-          <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-golf">
-            둘러보기 <span className="transition group-hover:translate-x-0.5">→</span>
-          </span>
-        </ServiceLink>
-      )}
-
-      {/* 화면 폭과 카드 수에 맞춰 열을 채운다. 좁은 화면에서도 컨테이너 폭을 넘지 않는다. */}
-      {main.length > 0 && (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] items-stretch gap-3 sm:gap-4">
-          {main.map((s) => (
-            <ServiceLink
-              key={s.id}
-              service={s}
-              className="group flex h-full min-w-0 flex-col rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between gap-1">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-xl">{s.icon}</span>
-                <span className="flex shrink-0 items-center gap-1">
-                  {!s.href && <LegacyBadge />}
-                  {locked(s) && <span title="등록된 분만 이용할 수 있어요">🔒</span>}
-                </span>
-              </div>
-              <div className="mt-3 break-keep text-[15px] font-bold leading-snug">{s.title}</div>
-              <p className="mt-1 hidden break-keep text-xs leading-relaxed text-muted sm:block">{s.desc}</p>
-            </ServiceLink>
-          ))}
+  function card(item: CatalogItem) {
+    const { service } = item;
+    const { href, external } = serviceLink(service);
+    const locked = status?.services[service.id]?.allowed === false;
+    const featured = Boolean(service.featured);
+    return <a key={service.id} href={href} data-service={service.id} data-category={item.category}
+      aria-label={`${item.name} · ${item.subtitle}${locked ? " · 등록자 전용" : ""}`}
+      className={`${styles.card} ${styles[item.artwork]} ${featured ? styles.featured : ""}`}
+      onClick={service.id === "agent" ? () => setAgentOpen(true) : undefined}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+      <div className={styles.visual}><ServiceArtwork kind={item.artwork} /></div>
+      <div className={styles.cardBody}>
+        <div className={styles.cardTop}><span className={styles.category}>{featured ? "FEATURED" : item.category}</span>
+          {locked && <span className={styles.lock} title="등록된 분만 이용할 수 있어요" aria-label="등록자 전용"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="2" stroke="currentColor" /><path d="M5 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" /></svg></span>}
+          {!service.href && <span className={styles.legacy}>기존 버전</span>}
         </div>
-      )}
+        <h3>{item.name}</h3>
+        <p className={styles.subtitle}>{item.subtitle}</p>
+        <p className={styles.capability}>{item.capability}</p>
+        <span className={styles.cardAction}>{featured && <span>서비스 둘러보기</span>}<span className={styles.arrow}><Arrow /></span></span>
+      </div>
+    </a>;
+  }
 
-      {secondary.length > 0 && (
-        <details className="group rounded-2xl border border-border bg-surface px-4 py-3">
-          <summary className="cursor-pointer list-none text-sm font-semibold text-muted marker:hidden">
-            기타 도구 <span className="inline-block transition group-open:rotate-90">›</span>
-          </summary>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {secondary.map((s) => (
-              <ServiceLink
-                key={s.id}
-                service={s}
-                className="rounded-xl border border-border px-3 py-2 text-sm font-semibold transition hover:border-accent/40 hover:bg-accent-soft"
-              >
-                {s.icon} {s.title}
-                {locked(s) && " 🔒"}
-              </ServiceLink>
-            ))}
-          </div>
-        </details>
-      )}
+  return <>
+    <div className={styles.filterRow}>
+      <div className={styles.filters} role="group" aria-label="서비스 카테고리">
+        {CATEGORIES.map(value => <button key={value} type="button" aria-pressed={category === value}
+          onClick={() => setCategory(value)}>{value}</button>)}
+      </div>
+      <span className={styles.resultCount} role="status" aria-live="polite">{filtered.length}개 서비스</span>
     </div>
-  );
+    {filtered.length ? <div className={styles.grid} aria-label={`${category} 서비스 목록`}>{filtered.map(card)}</div>
+      : <p className={styles.empty}>이 카테고리에 공개된 서비스가 없어요.</p>}
+    {/* Closing/filtering keeps the existing chat mounted and preserves its state. */}
+    <div hidden={category !== "전체" && category !== "AI Agent"}>
+      <AgentSection open={agentOpen} onOpenChange={setAgentOpen} />
+    </div>
+  </>;
 }

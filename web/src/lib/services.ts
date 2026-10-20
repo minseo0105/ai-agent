@@ -69,11 +69,18 @@ export const SERVICES: Service[] = [
     secondary: true,
     href: "/gif",
   },
+  {
+    id: "moneyon",
+    icon: "🐷",
+    title: "MONEY:ON",
+    desc: "용돈을 관리하고, 남은 돈에 이자까지!",
+    href: "https://minseo2-moneyon-demo.hf.space/",
+  },
 ];
 
 const STREAMLIT_URL = (process.env.NEXT_PUBLIC_STREAMLIT_URL || "http://localhost:8501").replace(/\/$/, "");
 
 export function serviceLink(s: Service): { href: string; external: boolean } {
-  if (s.href) return { href: s.href, external: false };
+  if (s.href) return { href: s.href, external: /^https?:\/\//.test(s.href) };
   return { href: `${STREAMLIT_URL}/${encodeURI(s.streamlitPath ?? "")}`, external: true };
 }

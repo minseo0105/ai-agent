@@ -200,13 +200,20 @@ class ServiceGridResponsiveTests(unittest.TestCase):
         self.grid = web('components/ServiceGrid.tsx')
 
     def test_the_grid_adapts_to_available_width_and_card_count(self):
-        self.assertIn('grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))]', self.grid)
-        self.assertNotIn('grid grid-cols-2 gap-3 lg:grid-cols-4', self.grid)
+        # 모바일 1열 → 768px 2열 → 1024px 이상 3열, 추천 카드는 태블릿부터 2칸.
+        css = web('components/home/Home.module.css')
+        self.assertIn('.grid{display:grid;grid-template-columns:minmax(0,1fr)', css)
+        for columns in (2, 3):
+            self.assertIn(f'grid-template-columns:repeat({columns},minmax(0,1fr))', css)
+        self.assertIn('.featured{grid-column:span 2', css)
+        self.assertIn('@media(min-width:768px)', css)
+        self.assertIn('@media(min-width:1024px)', css)
 
     def test_cards_share_a_height_and_do_not_overflow(self):
-        self.assertIn('flex h-full min-w-0 flex-col', self.grid)
-        self.assertIn('size-10 shrink-0', self.grid)
-        self.assertIn('break-keep', self.grid)
+        self.assertIn('serviceLink(service)', self.grid)
+        self.assertIn('status?.services[item.service.id]?.visible', self.grid)
+        self.assertIn('item.category === category', self.grid)
+        self.assertIn('aria-pressed={category === value}', self.grid)
 
 
 class MonitorTabAdminOnlyTests(unittest.TestCase):
