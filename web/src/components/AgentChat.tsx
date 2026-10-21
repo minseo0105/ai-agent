@@ -40,7 +40,7 @@ function Segmented<T extends string>({
           type="button"
           disabled={disabled}
           onClick={() => onChange(o.value)}
-          className={`min-h-11 rounded-lg px-3 py-1.5 text-[13px] font-bold transition sm:text-sm ${
+          className={`rounded-lg px-3 py-1.5 text-xs font-bold transition sm:text-sm ${
             value === o.value ? "bg-surface text-fg shadow-sm" : "text-muted hover:text-fg"
           } disabled:opacity-60`}
         >
@@ -58,14 +58,14 @@ function ToolSteps({ tools, running }: { tools: ToolEvent[]; running?: boolean }
       {tools.map((t, i) => {
         const arg = Object.values(t.input ?? {})[0];
         return (
-          <span key={i} className="rounded-full bg-accent-soft px-2.5 py-1 text-[13px] font-semibold text-accent">
+          <span key={i} className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent">
             ✓ {t.label}
             {typeof arg === "string" && arg ? ` · ${arg.length > 24 ? arg.slice(0, 24) + "…" : arg}` : ""}
           </span>
         );
       })}
       {running && (
-        <span className="animate-pulse rounded-full bg-surface-muted px-2.5 py-1 text-[13px] font-semibold text-muted">
+        <span className="animate-pulse rounded-full bg-surface-muted px-2.5 py-1 text-[11px] font-semibold text-muted">
           {tools.length ? "결과를 정리하는 중…" : "생각하는 중…"}
         </span>
       )}
@@ -161,12 +161,12 @@ export default function AgentChat() {
           ]}
         />
         {messages.length > 0 && (
-          <button type="button" onClick={reset} className="ml-auto inline-flex min-h-11 items-center px-2 text-[13px] font-semibold text-muted hover:text-fg">
+          <button type="button" onClick={reset} className="ml-auto text-xs font-semibold text-muted hover:text-fg">
             ↺ 대화 초기화
           </button>
         )}
       </div>
-      <p className="mt-2 text-[13px] text-subtle">
+      <p className="mt-2 text-xs text-subtle">
         {searchMode === "심층 검색"
           ? "웹 결과 최대 8건 · 본문 확대 · 긴 답변"
           : "웹 결과 최대 5건 · 빠른 검색과 핵심 답변"}
@@ -177,8 +177,8 @@ export default function AgentChat() {
           <div key={c.title} className="flex flex-col items-center gap-1 rounded-xl border border-border px-2 py-2.5 text-center sm:flex-row sm:gap-2.5 sm:px-3 sm:text-left">
             <span className="text-base">{c.icon}</span>
             <div>
-              <div className="text-[13px] font-extrabold">{c.title}</div>
-              <div className="hidden text-[13px] text-subtle sm:block">{c.desc}</div>
+              <div className="text-[11px] font-extrabold sm:text-xs">{c.title}</div>
+              <div className="hidden text-[11px] text-subtle sm:block">{c.desc}</div>
             </div>
           </div>
         ))}
@@ -192,7 +192,7 @@ export default function AgentChat() {
                 key={ex}
                 type="button"
                 onClick={() => send(ex)}
-                className="inline-flex min-h-11 items-center rounded-full border border-border px-3 py-1.5 text-[13px] font-medium text-muted transition hover:border-accent/40 hover:text-accent"
+                className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-accent/40 hover:text-accent"
               >
                 {ex}
               </button>
@@ -209,7 +209,7 @@ export default function AgentChat() {
             </div>
           ) : (
             <div key={i} className="rounded-2xl rounded-bl-md border border-border bg-surface-muted/60 px-4 py-3">
-              <div className="mb-1.5 text-[13px] font-semibold text-subtle">
+              <div className="mb-1.5 text-[11px] font-semibold text-subtle">
                 {m.provider ? PROVIDER_LABELS[m.provider] : ""} · {m.searchMode}
               </div>
               <ToolSteps tools={m.tools ?? []} />
@@ -253,12 +253,12 @@ export default function AgentChat() {
           }}
           rows={1}
           placeholder="예: 삼성전자 최근 공시 알려줘 / 전자금융거래법 검색해줘"
-          className="max-h-40 min-h-11 flex-1 resize-none bg-transparent px-2 py-2 text-base outline-none placeholder:text-subtle sm:text-sm"
+          className="max-h-40 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm outline-none placeholder:text-subtle"
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="min-h-11 rounded-xl bg-accent px-4 py-2 text-sm font-bold text-white transition hover:bg-accent-strong disabled:opacity-40"
+          className="rounded-xl bg-accent px-4 py-2 text-sm font-bold text-white transition hover:bg-accent-strong disabled:opacity-40"
         >
           보내기
         </button>

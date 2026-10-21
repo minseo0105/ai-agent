@@ -75,7 +75,7 @@ export default function ServiceGrid() {
 
   return (
     <div>
-      <div role="group" aria-label="서비스 분류" className="mb-5 flex flex-wrap gap-2">
+      <div role="group" aria-label="서비스 분류" className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {FILTERS.filter((f) => count(f) > 0).map((f) => {
           const on = filter === f;
           return (
@@ -84,12 +84,12 @@ export default function ServiceGrid() {
               type="button"
               aria-pressed={on}
               onClick={() => setFilter(f)}
-              className={`min-h-11 shrink-0 rounded-full border px-4 text-[13px] font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori ${
+              className={`min-h-10 shrink-0 rounded-full border px-4 text-[13px] font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori ${
                 on ? "border-navy bg-navy text-white shadow-sm" : "border-border bg-surface text-muted hover:border-woori/50 hover:text-fg"
               }`}
             >
               {f}
-              <span className={`ml-1.5 text-[13px] ${on ? "text-white/70" : "text-subtle"}`}>{count(f)}</span>
+              <span className={`ml-1.5 text-[11px] ${on ? "text-white/70" : "text-subtle"}`}>{count(f)}</span>
             </button>
           );
         })}
@@ -103,7 +103,7 @@ export default function ServiceGrid() {
             <ServiceLink
               key={s.id}
               service={s}
-              className={`group flex min-h-[176px] min-w-0 flex-col rounded-3xl border ${tone.card} p-3.5 transition duration-200 motion-safe:hover:-translate-y-0.5 hover:shadow-[0_10px_26px_-14px_rgba(15,23,42,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:brightness-95 sm:p-4`}
+              className={`group flex min-h-[176px] min-w-0 flex-col rounded-3xl border ${tone.card} p-3.5 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_26px_-14px_rgba(15,23,42,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:brightness-95 sm:p-4`}
             >
               <div className="flex items-start justify-between">
                 <Visual service={s} />
@@ -116,7 +116,7 @@ export default function ServiceGrid() {
                 {locked(s) && <span className="ml-1 text-xs" title="등록된 분만 이용할 수 있어요">🔒</span>}
               </div>
               <p className="mt-1 break-keep text-[13px] leading-[1.5] text-slate-600 dark:text-muted">{tagline ? `${tagline} · ${s.desc}` : s.desc}</p>
-              <span className={`mt-auto pt-2.5 text-[13px] font-bold ${tone.accent}`}>{!s.href ? "기존 버전" : s.category}</span>
+              <span className={`mt-auto pt-2.5 text-xs font-bold ${tone.accent}`}>{!s.href ? "기존 버전" : s.category}</span>
             </ServiceLink>
           );
         })}
