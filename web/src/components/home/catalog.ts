@@ -17,7 +17,7 @@ const presentation: Record<string, Omit<CatalogItem, "service">> = {
 };
 
 // Presentation only. Keep every registered service and its original navigation.
-const displayOrder = ["golf", "dreamcar", "realestate", "report", "saju"];
+const displayOrder = ["golf", "dreamcar", "realestate", "report", "saju", "moneyon"];
 export const CATALOG: CatalogItem[] = [...SERVICES].sort((a, b) => {
   const rank = (id: string) => { const index = displayOrder.indexOf(id); return index < 0 ? displayOrder.length : index; };
   return rank(a.id) - rank(b.id);
