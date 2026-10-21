@@ -1,6 +1,8 @@
 streamlit==1.63.0
 fastapi==0.141.1
 uvicorn==0.53.0
+httpx>=0.28,<1
+python-multipart==0.0.32
 anthropic==1.0.0
 openai==3.13.0
 requests==2.34.2
