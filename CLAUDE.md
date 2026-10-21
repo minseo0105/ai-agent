@@ -1,7 +1,7 @@
 # Golf enrichment handoff
 
-작업 폴더는 `C:\Users\user\Desktop\ai-agent`이다. 이전 복사본은 `ai-agent_old`로 보관 중이며 쓰지 않는다.
-docs/에 나오는 옛 폴더("ai-agent - 복사본") 설명은 과거 기록이다.
+Continue in this directory: `C:\Users\user\Desktop\ai-agent - 복사본`.
+The sibling `ai-agent` directory is a different checkout; enrichment staging there is not the active app.
 
 Before changing golf data, read `docs/golf_handoff_2026-09-24.md` and `docs/golf_enrichment_policy.md`.
 Preserve working features and unrelated local changes. Check consumers before schema changes.
