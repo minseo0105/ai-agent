@@ -6,7 +6,6 @@ realestate_monitor.db
 # 관리자 설정(구성원·접속코드 해시)과 토큰 서명 키
 data/admin/
 .venv/
-.venv-moneyon-deploy/
 venv/
 .rembg/
 __pycache__/
@@ -19,7 +18,6 @@ _archive/
 # Next.js frontend build output and dependencies.
 web/node_modules/
 web/.next/
-web/.next-moneyon/
 web/.env.local
 *.tsbuildinfo
 
@@ -36,7 +34,6 @@ test.py
 dart_test.py
 law_test.py
 web/out/
-data/moneyon/
 
 # Isolated ZIP REST test dependencies and credential-free recovery journals
 reports/zipon-rest-venv/
@@ -52,14 +49,3 @@ reports/zipon-sql-review/
 
 # 서울시 공식 공간정보 원본 압축본은 내려받아 두고 커밋하지 않는다.
 data/reference/*.zip
-
-# 복사본에서 가져온 골프 옛 백업·런타임 (이력 보관용, 커밋하지 않음)
-data/golf_legacy_from_copy/
-
-# 이 PC에서만 쓰는 것: 옛 가상환경, git worktree 작업 폴더,
-# 따로 관리하는 BOOK:ON 저장소(bookon, bookon-quest — 각자 .git이 있음)와 실행 기록.
-venv_old/
-.worktrees/
-bookon/
-bookon-quest/
-_bookon_run/
