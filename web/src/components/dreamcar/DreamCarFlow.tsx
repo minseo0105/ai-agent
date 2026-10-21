@@ -39,39 +39,6 @@ const INITIAL: State = {
 const KEY = "dreamcar-flow-v1";
 const won = (v: number) => `${Math.round(v).toLocaleString("ko-KR")}만원`;
 
-// 공식 차량 사진(scripts/prepare_dreamcar_photos.py → dreamcar_assets/cars, 16:10 webp 800·1200px).
-// 엑셀의 이미지 이름(avante_white …)을 그대로 쓰고, 파일이 없으면 예전 이미지로 돌아간다.
-const BRAND: Record<string, string> = {
-  avante: "현대자동차", sonata: "현대자동차", grandeur: "현대자동차", tucson: "현대자동차", santafe: "현대자동차", palisade: "현대자동차",
-  k5: "기아", k8: "기아", sportage: "기아", sorento: "기아", carnival: "기아", gv70: "제네시스", gv80: "제네시스",
-};
-// 색 변형이 어색해 대표 사진 한 장만 쓰는 차종(prepare_dreamcar_photos.py --keep-color 와 같게).
-const ONE_PHOTO = new Set(["k5", "sportage", "sorento", "palisade", "carnival"]);
-const photoStem = (path?: string | null) => path?.split("/").pop()?.replace(/\.\w+$/, "") ?? "";
-const carKey = (path?: string | null) => photoStem(path).split("_")[0];
-
-function CarPhoto({ path, alt, sizes, lazy }: { path?: string | null; alt: string; sizes: string; lazy?: boolean }) {
-  const [failed, setFailed] = useState(false);
-  const stem = photoStem(path);
-  if (!stem) return null;
-  const base = media("/media/dreamcar/cars");
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={failed ? media(path) : `${base}/w800/${stem}.webp`}
-      srcSet={failed ? undefined : `${base}/w800/${stem}.webp 800w, ${base}/w1200/${stem}.webp 1200w`}
-      sizes={sizes}
-      alt={alt}
-      width={1200}
-      height={750}
-      loading={lazy ? "lazy" : undefined}
-      decoding="async"
-      onError={() => setFailed(true)}
-      className="aspect-[16/10] w-full bg-surface-muted object-cover"
-    />
-  );
-}
-
 function FlowBar({ step }: { step: Step }) {
   const current = { tradein: 1, persona: 2, result: 3 }[step];
   const labels = ["내 차 가치 확인", "라이프스타일 분석", "드림카 추천", "교체 견적"];
@@ -82,8 +49,8 @@ function FlowBar({ step }: { step: Step }) {
         const active = current >= n;
         return (
           <li key={l} className={`rounded-xl px-2 py-2 text-center ${active ? "bg-accent text-white" : "bg-surface-muted text-subtle"}`}>
-            <div className="text-[13px] font-extrabold tracking-wide">STEP 0{i + 1}</div>
-            <div className="text-[13px] font-semibold leading-tight">{l}</div>
+            <div className="text-[10px] font-extrabold tracking-wider">STEP 0{i + 1}</div>
+            <div className="text-[11px] font-semibold leading-tight sm:text-xs">{l}</div>
           </li>
         );
       })}
@@ -165,7 +132,7 @@ export default function DreamCarFlow() {
       {s.step === "tradein" && (
         <section className="space-y-4 rounded-3xl border border-border bg-surface p-5 shadow-sm sm:p-7">
           <div>
-            <div className="text-[13px] font-bold tracking-[0.12em] text-accent">MY CURRENT CAR</div>
+            <div className="text-[11px] font-bold tracking-[0.12em] text-accent">MY CURRENT CAR</div>
             <h2 className="mt-1 text-xl font-extrabold tracking-tight">지금 타고 있는 차가 있으신가요?</h2>
             <p className="mt-1 text-sm text-muted">차량이 있다면 번호판으로 예상 중고차 시세를 확인하고, 없다면 바로 드림카 찾기로 넘어갑니다.</p>
           </div>
@@ -206,12 +173,12 @@ export default function DreamCarFlow() {
               {s.owned && (
                 <div className="grid gap-3 rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-900 p-5 text-white sm:grid-cols-2">
                   <div>
-                    <div className="text-[13px] font-bold tracking-widest text-indigo-200">MY CAR ESTIMATED VALUE</div>
+                    <div className="text-[10px] font-bold tracking-widest text-indigo-200">MY CAR ESTIMATED VALUE</div>
                     <div className="mt-1 text-lg font-extrabold">{s.owned.model}</div>
-                    <div className="text-[13px] text-indigo-200">
+                    <div className="text-xs text-indigo-200">
                       {s.owned.plate} · {s.owned.year}년식
                     </div>
-                    <div className="mt-3 text-[13px] text-indigo-200">예상 중고차 시세</div>
+                    <div className="mt-3 text-xs text-indigo-200">예상 중고차 시세</div>
                     <div className="text-3xl font-extrabold">{won(s.owned.market)}</div>
                   </div>
                   <dl className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-1">
@@ -221,14 +188,14 @@ export default function DreamCarFlow() {
                       ["차량 상태", s.owned.grade],
                     ].map(([k, v]) => (
                       <div key={k} className="rounded-xl bg-white/10 px-3 py-2">
-                        <dt className="text-[13px] text-indigo-200">{k}</dt>
+                        <dt className="text-[11px] text-indigo-200">{k}</dt>
                         <dd className="font-bold">{v}</dd>
                       </div>
                     ))}
                   </dl>
                 </div>
               )}
-              <p className="text-[13px] text-subtle">현재 차량 조회와 시세는 프로토타입 시연용 데이터입니다. 실제 서비스에서는 차량등록정보·중고차 시세 API로 교체할 수 있어요.</p>
+              <p className="text-[11px] text-subtle">현재 차량 조회와 시세는 프로토타입 시연용 데이터입니다. 실제 서비스에서는 차량등록정보·중고차 시세 API로 교체할 수 있어요.</p>
             </div>
           )}
           {s.hasCar === false && <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-sm text-muted">보상판매 금액 없이 신차 전체 가격을 기준으로 견적을 계산합니다.</p>}
@@ -255,7 +222,7 @@ export default function DreamCarFlow() {
         return (
           <section className="space-y-4">
             <div className="rounded-3xl border border-border bg-surface p-5 shadow-sm">
-              <div className="flex items-center justify-between text-[13px] font-bold">
+              <div className="flex items-center justify-between text-xs font-bold">
                 <span className="tracking-widest text-accent">MY DREAM CAR SIGNAL {idx + 1}</span>
                 <span className="text-muted">
                   {idx + 1} / {config.questions.length}
@@ -277,11 +244,11 @@ export default function DreamCarFlow() {
                   className="group overflow-hidden rounded-3xl border border-border bg-surface text-left shadow-sm transition hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md disabled:opacity-60"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={media(o.art)} alt="" width={800} height={450} loading="lazy" decoding="async" className="aspect-[16/9] w-full bg-surface-muted object-cover" />
-                  <div className="p-4 pt-3">
+                  <img src={media(o.art)} alt="" loading="lazy" className="aspect-[4/3] w-full bg-surface-muted object-cover" />
+                  <div className="p-4">
                     <div className="font-extrabold">{o.label}</div>
-                    <div className="mt-0.5 text-[13px] text-muted">{o.desc}</div>
-                    <div className="mt-2 text-[13px] font-bold text-accent transition group-hover:translate-x-0.5">이 선택으로 진행 →</div>
+                    <div className="mt-0.5 text-xs text-muted">{o.desc}</div>
+                    <div className="mt-2 text-xs font-bold text-accent transition group-hover:translate-x-0.5">이 선택으로 진행 →</div>
                   </div>
                 </button>
               ))}
@@ -290,7 +257,7 @@ export default function DreamCarFlow() {
             <button
               type="button"
               onClick={() => (s.answers.length ? update({ answers: s.answers.slice(0, -1) }) : update({ step: "tradein" }))}
-              className="inline-flex min-h-11 items-center px-2 text-sm font-semibold text-muted hover:text-fg"
+              className="text-sm font-semibold text-muted hover:text-fg"
             >
               ← 이전
             </button>
@@ -313,9 +280,9 @@ export default function DreamCarFlow() {
           <section className="space-y-5">
             <div className="flex flex-col gap-4 overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-800 p-5 text-white shadow-lg sm:flex-row sm:items-center sm:p-7">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={media(rec.persona.art)} alt="" width={320} height={320} decoding="async" className="aspect-square w-full max-w-40 rounded-2xl object-cover sm:w-40" />
+              <img src={media(rec.persona.art)} alt="" className="aspect-square w-full max-w-40 rounded-2xl object-cover sm:w-40" />
               <div>
-                <div className="text-[13px] font-bold tracking-widest text-indigo-200">YOUR MOBILITY PERSONA</div>
+                <div className="text-[10px] font-bold tracking-widest text-indigo-200">YOUR MOBILITY PERSONA</div>
                 <div className="mt-1 text-2xl font-extrabold tracking-tight">{rec.persona.name}</div>
                 <div className="text-sm font-semibold text-indigo-100">{rec.persona.sub}</div>
                 <p className="mt-2 text-sm leading-relaxed text-indigo-100/90">{rec.persona.copy}</p>
@@ -325,8 +292,7 @@ export default function DreamCarFlow() {
 
             <div>
               <h2 className="text-lg font-extrabold tracking-tight">당신에게 가장 잘 맞는 드림카 TOP 3</h2>
-              <p className="text-[13px] text-muted">총 {rec.total_models}개 차종을 비교해 가장 적합한 3대만 추천했어요. 카드를 눌러 견적을 바꿔 보세요.</p>
-              <p className="mt-1 text-[13px] text-subtle">내부 프로토타입 · 이미지는 예시이며 실제 차량과 다를 수 있어요</p>
+              <p className="text-xs text-muted">총 {rec.total_models}개 차종을 비교해 가장 적합한 3대만 추천했어요. 카드를 눌러 견적을 바꿔 보세요.</p>
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 {rec.top.map((t, i) => {
                   const selected = t.model === car.model;
@@ -340,19 +306,20 @@ export default function DreamCarFlow() {
                         selected ? "border-accent ring-2 ring-accent/30" : "border-border hover:border-accent/40"
                       }`}
                     >
-                      <CarPhoto key={t.colors[0]?.image} path={t.colors[0]?.image} alt={t.model} sizes="(min-width: 640px) 290px, 100vw" lazy={i > 0} />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={media(t.colors[0]?.image)} alt={t.model} loading="lazy" className="aspect-[16/10] w-full bg-surface-muted object-cover" />
                       <div className="flex items-start justify-between gap-2 p-4">
                         <div className="min-w-0">
-                          <div className="text-[13px] font-extrabold tracking-widest text-accent">
+                          <div className="text-[10px] font-extrabold tracking-widest text-accent">
                             TOP {i + 1}
                             {selected ? " · 선택됨" : ""}
                           </div>
                           <div className="truncate font-extrabold">{t.model}</div>
-                          <div className="text-[13px] text-muted">{t.tagline}</div>
+                          <div className="text-xs text-muted">{t.tagline}</div>
                         </div>
                         <div className="shrink-0 text-right">
                           <div className="text-lg font-extrabold text-accent">{t.match}%</div>
-                          <div className="text-[13px] text-muted">{won(t.price)}</div>
+                          <div className="text-[11px] text-muted">{won(t.price)}</div>
                         </div>
                       </div>
                     </button>
@@ -364,47 +331,40 @@ export default function DreamCarFlow() {
             <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-sm">
               <div className="flex items-start justify-between gap-3 p-5 sm:p-6">
                 <div>
-                  <span className="rounded-full bg-accent-soft px-2.5 py-1 text-[13px] font-extrabold tracking-widest text-accent">YOUR DREAM CAR</span>
+                  <span className="rounded-full bg-accent-soft px-2.5 py-1 text-[10px] font-extrabold tracking-widest text-accent">YOUR DREAM CAR</span>
                   <div className="mt-2 text-2xl font-extrabold tracking-tight">{car.model}</div>
-                  <div className="text-[13px] text-muted">
+                  <div className="text-xs text-muted">
                     {[car.segment, car.seats].filter(Boolean).join(" · ")} · 내 라이프스타일에 가장 잘 맞는 선택
                   </div>
                 </div>
-                <div className="shrink-0 rounded-2xl bg-accent-soft px-3 py-2 text-center">
-                  <div className="text-[13px] font-extrabold leading-tight text-accent">LIFESTYLE<br />MATCH</div>
+                <div className="rounded-2xl bg-accent-soft px-3 py-2 text-center">
+                  <div className="text-[9px] font-extrabold tracking-widest text-accent">LIFESTYLE MATCH</div>
                   <div className="text-2xl font-extrabold text-accent">{car.match}%</div>
                 </div>
               </div>
-              {color.image ? (
-                <figure>
-                  <CarPhoto key={color.image} path={color.image} alt={`${car.model} ${color.color}`} sizes="(min-width: 896px) 860px, 100vw" />
-                  <figcaption className="flex justify-between gap-2 px-5 pt-2 text-[13px] text-subtle sm:px-6">
-                    <span>{ONE_PHOTO.has(carKey(color.image)) ? "사진은 대표 색상이에요" : ""}</span>
-                    <span>사진: {BRAND[carKey(color.image)] ?? "제조사"}</span>
-                  </figcaption>
-                </figure>
-              ) : null}
-              <div className="grid gap-2 p-5 sm:grid-cols-3 sm:p-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {color.image ? <img src={media(color.image)} alt={`${car.model} ${color.color}`} className="aspect-[16/9] w-full bg-surface-muted object-cover" /> : null}
+              <div className="grid grid-cols-3 gap-2 p-5 sm:p-6">
                 {car.reasons.map((r, i) => (
                   <div key={r} className="rounded-2xl bg-surface-muted px-3 py-2.5">
-                    <div className="text-[13px] font-extrabold tracking-wide text-accent">MATCH 0{i + 1}</div>
-                    <div className="text-sm font-bold leading-snug">{r}</div>
+                    <div className="text-[9px] font-extrabold tracking-widest text-accent">MATCH 0{i + 1}</div>
+                    <div className="text-xs font-bold leading-snug sm:text-sm">{r}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="space-y-4 rounded-3xl border border-border bg-surface p-5 shadow-sm sm:p-6 [&_[role=radio]]:min-h-11">
+            <div className="space-y-4 rounded-3xl border border-border bg-surface p-5 shadow-sm sm:p-6">
               <div>
                 <h3 className="text-base font-extrabold">내 견적 조건</h3>
-                <p className="text-[13px] text-muted">색상 · 할부기간 · 보증금을 고르면 월 할부금이 바로 다시 계산돼요.</p>
+                <p className="text-xs text-muted">색상 · 할부기간 · 보증금을 고르면 월 할부금이 바로 다시 계산돼요.</p>
               </div>
               <div className="space-y-1.5">
-                <div className="text-[13px] font-bold text-muted">색상</div>
+                <div className="text-xs font-bold text-muted">색상</div>
                 <Segmented value={color.color} options={car.colors.map((c) => c.color)} onChange={(v) => update({ color: v })} full ariaLabel="색상" />
               </div>
               <div className="space-y-1.5">
-                <div className="text-[13px] font-bold text-muted">할부기간</div>
+                <div className="text-xs font-bold text-muted">할부기간</div>
                 <Segmented
                   value={String(s.months)}
                   options={config.terms.map((t) => ({ value: String(t), label: `${t}개월` }))}
@@ -414,7 +374,7 @@ export default function DreamCarFlow() {
                 />
               </div>
               <div className="space-y-1.5">
-                <div className="text-[13px] font-bold text-muted">보증금 <span className="font-medium text-subtle">교체 필요금액 기준</span></div>
+                <div className="text-xs font-bold text-muted">보증금 <span className="font-medium text-subtle">교체 필요금액 기준</span></div>
                 <Segmented
                   value={String(s.deposit)}
                   options={config.deposit_rates.map((d) => ({ value: String(d), label: `${d}%` }))}
@@ -428,14 +388,14 @@ export default function DreamCarFlow() {
             <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-900 p-5 text-white shadow-lg sm:p-7">
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <div>
-                  <div className="text-[13px] font-bold tracking-widest text-indigo-200">DREAM CAR CHANGE QUOTE</div>
+                  <div className="text-[10px] font-bold tracking-widest text-indigo-200">DREAM CAR CHANGE QUOTE</div>
                   <div className="text-sm text-indigo-100">보상판매 반영 예상 월 할부금</div>
                   <div className="mt-1 text-4xl font-extrabold tracking-tight">
                     월 {monthly.toLocaleString("ko-KR", { maximumFractionDigits: 1 })}
                     <span className="text-xl">만원</span>
                   </div>
                 </div>
-                <span className="rounded-full bg-white/15 px-3 py-1 text-[13px] font-bold">
+                <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
                   {s.months}개월 · 연 {config.apr.toFixed(1)}%
                 </span>
               </div>
@@ -451,12 +411,12 @@ export default function DreamCarFlow() {
                   ["할부기간", `${s.months}개월`],
                 ].map(([k, v]) => (
                   <div key={k} className="rounded-xl bg-white/10 px-3 py-2">
-                    <dt className="text-[13px] text-indigo-200">{k}</dt>
+                    <dt className="text-[11px] text-indigo-200">{k}</dt>
                     <dd className="font-bold">{v}</dd>
                   </div>
                 ))}
               </dl>
-              <p className="mt-3 text-[13px] text-indigo-200">※ 프로토타입 기준 · 실제 시세·금리·수수료·신용도·옵션에 따라 달라질 수 있습니다.</p>
+              <p className="mt-3 text-[11px] text-indigo-200">※ 프로토타입 기준 · 실제 시세·금리·수수료·신용도·옵션에 따라 달라질 수 있습니다.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -466,7 +426,7 @@ export default function DreamCarFlow() {
                   update({ step: "persona", answers: [], rec: null, model: null, color: null });
                   scrollTop();
                 }}
-                className="min-h-12 rounded-xl border border-border py-3 text-sm font-bold hover:bg-surface-muted"
+                className="rounded-xl border border-border py-2.5 text-sm font-bold hover:bg-surface-muted"
               >
                 추천 다시 받기
               </button>
@@ -476,7 +436,7 @@ export default function DreamCarFlow() {
                   setS(INITIAL);
                   scrollTop();
                 }}
-                className="min-h-12 rounded-xl border border-border py-3 text-sm font-bold hover:bg-surface-muted"
+                className="rounded-xl border border-border py-2.5 text-sm font-bold hover:bg-surface-muted"
               >
                 처음부터
               </button>
