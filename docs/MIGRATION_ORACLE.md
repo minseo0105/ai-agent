@@ -71,3 +71,16 @@ curl -s localhost/api/health            # Caddy 경유
 
 - 이전 후 HF Space·GitHub `HF_TOKEN` 정리, 자동 배포 워크플로 비활성화.
 - `reports/` 아래 `moneyon-*` Dockerfile들은 다른 Space용이며 이번 구성과 무관.
+
+## 6. 서버 확인 기록 (2026-10-23)
+
+| 항목 | 내용 |
+|---|---|
+| IP | `161.33.167.69` (Oracle Linux Server 9.8, 접속 사용자 `opc`) |
+| 종류 | **E2 Micro (x86_64)** — ARM(A1.Flex)이 아님 |
+| 사양 | 2 코어, 메모리 약 0.5GB(사용 가능 약 230MB), 스왑 0.5GB, 디스크 30GB 중 5.3GB 사용 |
+| 설치 상태 | docker/podman/git 없음 |
+| 판정 | **이전 대상 아님.** 메모리가 부족해 rembg·Next.js 빌드 불가. 접속 외에 변경한 것 없음 |
+| 상태 | ARM 서버는 아직 확보하지 못해 VM 작업(Docker 설치·빌드·재시작 테스트)은 보류. 이 PC의 `known_hosts`에는 위 서버가 등록됨 |
+
+보류 중인 작업은 ARM 서버 확보 후 3번 절차부터 이어서 진행합니다. compose·Caddy 구성은 Docker 환경에서 아직 실행해 보지 못했습니다.
