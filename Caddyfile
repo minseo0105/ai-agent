@@ -1,0 +1,8 @@
+# SITE_ADDRESS가 비어 있으면 :80 (HTTP, 도메인 없이 IP 접속). 도메인을 넣으면 HTTPS 자동.
+{$SITE_ADDRESS::80} {
+	encode zstd gzip
+	# SSE(AI 채팅) 응답이 버퍼링되지 않도록 즉시 전달
+	reverse_proxy ailab:7860 {
+		flush_interval -1
+	}
+}

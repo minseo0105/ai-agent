@@ -1,0 +1,29 @@
+# 허용 목록 방식: 전부 제외하고 서버 실행에 필요한 것만 연다. (scripts/deploy_space.py의 ALLOW와 같은 범위)
+# 로컬에서 `docker build`할 때 .env, secrets.toml, venv, reports(수 GB) 등이 이미지에 들어가지 않게 한다.
+*
+!Dockerfile
+!requirements-api.txt
+!corp_codes.json
+!sample_cars_v2.xlsx
+!sample_cars_v3.xlsx
+!api/
+!services/
+!web/
+!data/
+!car_images_mobile_39/
+!car_images_cutout/
+!car_images_real/
+!dreamcar_assets/
+
+**/__pycache__
+**/*.pyc
+web/node_modules
+web/.next
+web/.next-moneyon
+web/out
+web/.env*
+data/golf/backups
+data/golf/runtime
+data/admin
+data/moneyon
+**/secrets.toml

@@ -63,3 +63,6 @@ venv_old/
 bookon/
 bookon-quest/
 _bookon_run/
+
+# 오라클 VM/docker compose용 비밀값 파일 (.env.example을 복사해서 만든다)
+.env.docker

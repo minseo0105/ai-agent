@@ -15,8 +15,11 @@ NAVER Dynamic Map은 웹 지도 SDK이므로 Client ID가 브라우저 요청에
 따로 모아 둔다.
 """
 
+import os
+
 # NAVER 콘솔에 등록해야 하는 Web 서비스 URL. 여기 없는 도메인에서는 지도가 뜨지 않는다.
-NAVER_WEB_SERVICE_URL = 'https://minseo2-digital-ai-lab.hf.space'
+# 이전(HF -> 자체 서버) 때는 NAVER_WEB_SERVICE_URL 환경변수로 새 주소를 준다. 비어 있으면 HF 주소.
+NAVER_WEB_SERVICE_URL = (os.environ.get('NAVER_WEB_SERVICE_URL') or 'https://minseo2-digital-ai-lab.hf.space').strip().rstrip('/')
 # Dynamic Map v3 로더. 브라우저가 직접 불러야 하므로 Client ID가 이 URL에 실린다.
 NAVER_MAPS_SCRIPT = 'https://oapi.map.naver.com/openapi/v3/maps.js'
 # 신 콘솔은 ncpKeyId, 구 콘솔은 ncpClientId를 쓴다. 어느 쪽인지 브라우저에서 확인할 수

@@ -31,6 +31,8 @@ RUN pip install --no-cache-dir --user -r requirements-api.txt
 
 COPY --chown=user . .
 COPY --from=web --chown=user /web/out ./web/out
+# 관리자 설정 저장 폴더. 미리 만들어 둬야 docker 볼륨이 user(1000) 소유로 만들어진다
+RUN mkdir -p data/admin
 
 # 배경 제거 모델을 미리 받아 첫 요청이 느려지지 않게 한다
 RUN python -c "from rembg import new_session; new_session('u2net')"
