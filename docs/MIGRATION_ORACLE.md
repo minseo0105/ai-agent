@@ -100,7 +100,53 @@ curl -s localhost/api/health            # Caddy 경유
 
 세팅 후 디스크 `/` 30G 중 11G 사용, 메모리 사용 가능 약 9.9GiB.
 
-다음 작업은 3번 절차의 저장소 clone(이전 작업은 `main` 기준 `oracle-migration` 브랜치에 있음. main 병합 전이면 `git clone -b oracle-migration`) → `.env.docker` 작성 → `docker compose up -d --build` → healthcheck·재시작 테스트입니다. compose·Caddy 구성과 ARM 이미지 빌드(rembg/onnxruntime 포함)는 아직 실행해 보지 못했습니다.
+### 6-2. 첫 배포 (2026-10-27)
+
+주소: **https://140-245-88-198.sslip.io** (도메인 없이 sslip.io로 IP를 이름으로 씀)
+
+| 항목 | 결과 |
+|---|---|
+| 코드 | 서버 `~/ailab`에 `git clone -b oracle-migration` (커밋 `5dd9d12`) |
+| `.env.docker` | 내 PC 파일을 이름만 점검(템플릿 항목 모두 있음, 필수 `ADMIN_PASSWORD`·`SUPABASE_URL`·`SUPABASE_SERVICE_ROLE_KEY` 채워짐, 따옴표 없음) 후 업로드, 권한 600. 올리는 사본만 CRLF→LF, `NAVER_API_KEY` 앞 공백 제거(코드에서 안 쓰는 키) |
+| `.env` (compose용) | 내 PC `.env`를 복사하지 않고 서버에서 새로 만듦: `SITE_ADDRESS=140-245-88-198.sslip.io` 한 줄, 권한 600 |
+| 빌드 | `docker compose up -d --build` ARM(aarch64) 빌드 성공. Next.js·onnxruntime·rembg(u2net 176MB 내장) 포함 |
+| 컨테이너 | `ailab` healthy, `ailab-caddy` Up. 볼륨 `ailab_ailab-admin`, `ailab_caddy-data`, `ailab_caddy-config` |
+| HTTPS | Caddy가 Let's Encrypt 인증서 자동 발급(만료 2027-01-24, 자동 갱신). http → https 308 |
+| 외부 확인(내 PC) | `/` 200(gzip), `/api/health` 200, 7860 직접 접속 차단 |
+| `/api/ready` | **ready** (supabase ok 163ms, naver/tavily/llm ok) |
+| 메모리 | 실행 중 사용 약 1.1GiB, 사용 가능 약 9.5GiB |
+
+배포 중 발견·해결:
+- 처음 `.env.docker`의 `SUPABASE_SERVICE_ROLE_KEY`·`ZIPON_SUPABASE_SERVICE_ROLE_KEY`가 **공개용 키(`sb_publishable_…`)**여서 `services/supabase_auth.py`가 거부 → `/api/ready` not_ready(`ValueError`). 둘 다 비밀 키(`sb_secret_…`)로 바꾼 뒤 `docker compose up -d --force-recreate --no-deps ailab`(재빌드 없음)로 해결. 점검 스크립트는 이름만 보므로 **키 종류(sb_secret/JWT/publishable)도 따로 확인**해야 함.
+- `docker compose run`으로 임시 컨테이너를 띄우면 앱의 고정 IP(172.28.0.10)와 충돌함 → 일회성 점검은 `docker run --rm --env-file .env.docker ailab:latest ...` 사용.
+- 서버를 띄우자마자 `/api/.env`를 찾는 외부 스캔이 들어옴(404). 비밀값 파일은 이미지·정적 경로에 없음.
+
+### 6-3. HF와 같은 운영 Supabase를 함께 쓰는 동안 (병행 기간)
+
+`SUPABASE_URL`·`ZIPON_SUPABASE_URL` 모두 `nnxtkvjpzqqhjlgnprzo`로 HF와 같은 프로젝트.
+
+| 작업 | 실행 위치 | 오라클 추가로 중복? |
+|---|---|---|
+| 부동산 모니터 (`scheduler.py --once`, 6시간마다) | GitHub Actions `realestate-monitor.yml` | 아니오 — 앱 서버 안에서 돌지 않음 |
+| ZIP:ON 개발사업 갱신 (매일/매주/매월) | GitHub Actions `zipon-development-refresh.yml` (`ZIPON_IMPORT_*` 사용, 오라클 `.env.docker`에 없음) | 아니오 |
+| 골프 분기 갱신 | GitHub Actions `golf-quarterly-refresh.yml` (저장소 파일 갱신, Supabase 아님) | 아니오 |
+| 알림 발송 | 없음 — `notifications` 테이블에 저장만 하고 메일·메신저 발송 코드 없음 | 해당 없음 |
+| 앱 시작 시 백그라운드 | `usage_events` 수집기 하나(`api/main.py` lifespan) — 그 서버에 온 실제 방문(브라우저 이벤트)과 서비스 API 오류만 기록. healthcheck·정적 파일은 기록 안 함 | 중복은 아니지만 **오라클 접속(테스트 포함)이 HF와 같은 사용량 통계에 섞임** |
+| 접속 관리 서명 키 | Supabase `app_settings.access_secret`에 이미 있음(존재만 확인, 값 조회 안 함). 오라클 `ACCESS_SECRET`은 비어 있어 이 값을 읽음 → 새로 만들지 않음 | 아니오. 단 HF가 `ACCESS_SECRET`을 Secrets로 따로 쓰고 있다면 두 서버 서명 키가 달라짐 → 오라클에서 기존 접속 코드로 로그인되는지 한 번 확인 |
+| 관리자 화면 수정(접속 코드·구성원, 부동산 알림 규칙) | 사람이 직접 | 두 곳에서 동시에 고치면 마지막 저장이 이김(`access_settings`는 한 JSON 통째 저장) → **병행 기간에는 관리자 수정을 HF 한 곳에서만** |
+
+결론: 자동 작업이 두 곳에서 중복 실행되는 것은 없어서 지금 꺼 둘 것은 없음. 사용량 통계 섞임을 피하고 싶다면 선택지:
+1. 오라클 `.env.docker`에 별도 분석용 프로젝트 `ANALYTICS_SUPABASE_URL`/`ANALYTICS_SUPABASE_SERVICE_ROLE_KEY`를 넣기 (코드가 이미 지원, 운영 통계와 분리)
+2. 수집기를 끄는 환경변수(예: `USAGE_EVENTS_DISABLED=1`)를 `services/usage_events.py`에 추가 — 코드 변경이라 별도 작업
+3. 병행 기간이 짧으면 그대로 두고, 전환 후 HF를 끄면 자연히 해결
+
+### 6-4. 남은 일
+
+- 재시작 테스트: `docker kill ailab` 후 자동 재기동, 서버 재부팅 후 컨테이너 자동 기동 확인(아직 안 함).
+- `NAVER_WEB_SERVICE_URL`이 비어 있음 → 네이버 콘솔에 새 주소 등록 후 채워야 새 주소에서 지도가 뜸.
+- 오라클에서 기존 접속 코드로 로그인 확인(위 서명 키 항목).
+- 전환 결정 후: `oracle-migration`을 `main`에 병합(병합 시 HF 자동 배포 1회 실행), HF Space·`HF_TOKEN` 정리, `deploy-space.yml` 비활성화.
+- 서버 갱신 방법: `cd ~/ailab && git pull && docker compose up -d --build`.
 
 ### 사용하지 않는 서버 (기록용)
 
