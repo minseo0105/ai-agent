@@ -66,3 +66,8 @@ _bookon_run/
 
 # 오라클 VM/docker compose용 비밀값 파일 (.env.example을 복사해서 만든다)
 .env.docker
+
+# 비밀값·키 파일은 어느 PC/서버에서 clone해도 커밋되지 않게 한다 (.env.example은 값 없는 템플릿이라 추적)
+.env
+*.key
+*.pem

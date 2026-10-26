@@ -72,15 +72,36 @@ curl -s localhost/api/health            # Caddy 경유
 - 이전 후 HF Space·GitHub `HF_TOKEN` 정리, 자동 배포 워크플로 비활성화.
 - `reports/` 아래 `moneyon-*` Dockerfile들은 다른 Space용이며 이번 구성과 무관.
 
-## 6. 서버 확인 기록 (2026-10-23)
+## 6. 이전 대상 서버 (2026-10-26 확인)
 
 | 항목 | 내용 |
 |---|---|
-| IP | `161.33.167.69` (Oracle Linux Server 9.8, 접속 사용자 `opc`) |
-| 종류 | **E2 Micro (x86_64)** — ARM(A1.Flex)이 아님 |
-| 사양 | 2 코어, 메모리 약 0.5GB(사용 가능 약 230MB), 스왑 0.5GB, 디스크 30GB 중 5.3GB 사용 |
-| 설치 상태 | docker/podman/git 없음 |
-| 판정 | **이전 대상 아님.** 메모리가 부족해 rembg·Next.js 빌드 불가. 접속 외에 변경한 것 없음 |
-| 상태 | ARM 서버는 아직 확보하지 못해 VM 작업(Docker 설치·빌드·재시작 테스트)은 보류. 이 PC의 `known_hosts`에는 위 서버가 등록됨 |
+| IP | `140.245.88.198` (호스트명 `instance-20261026-1648`, 사용자 `opc`) |
+| OS | Oracle Linux Server 9.8 |
+| Shape | **VM.Standard.A1.Flex (aarch64)**, 2 OCPU, 12GB (OS에서 보이는 메모리 약 10.6GiB, 사용 가능 약 9.9GiB) |
+| 스왑 | 4GB (`/.swapfile`) |
+| 디스크 | `/` 30GB 중 9.9GB 사용 (20GB 여유) |
+| 접속 | 이 PC에서 `ssh ailab` (`~/.ssh/config`, 키 `~/.ssh/ailab-a1.key`) |
 
-보류 중인 작업은 ARM 서버 확보 후 3번 절차부터 이어서 진행합니다. compose·Caddy 구성은 Docker 환경에서 아직 실행해 보지 못했습니다.
+향후 같은 서버에 드림카(`/dreamcar`), MONEY:ON(`/moneyon`)을 경로로 함께 올릴 계획입니다(Caddyfile 경로 라우팅 추가 필요).
+
+### 6-1. 기본 세팅 (2026-10-26 완료)
+
+| 단계 | 결과 |
+|---|---|
+| 0. 디스크 확장 | **불필요.** 부트 볼륨 46.6G = `/boot/efi` 100M + `/boot` 2G + LVM PV 44.5G(VG 여유 0). PV가 `root` 29.5G(XFS, `/`)와 `oled` 15G(`/var/oled`, 오라클 기본 진단 로그 볼륨)로 전부 할당돼 있어 `oci-growfs`로 늘릴 미할당 공간 없음 |
+| 1. 시스템 업데이트 | `dnf -y update` 완료. 커널 `6.12.0-207.111.5.1` → `6.12.0-207.111.5.6.el9uek` (재부팅으로 적용) |
+| 2. Docker | Docker 공식 RHEL 저장소(`docker-ce.repo`)로 설치: docker-ce 29.9.2, containerd.io 2.4.2, buildx 0.38.1, compose 플러그인 v5.6.1 (모두 aarch64). podman 미설치 |
+| 3. 자동 시작 | `systemctl enable --now docker containerd` → 재부팅 후 `enabled/active` 확인 |
+| 4. sudo 없이 docker | `usermod -aG docker opc` (opc 그룹: opc, adm, systemd-journal, docker) |
+| 5. firewalld | `http`, `https` 영구 허용 → 허용 서비스 `dhcpv6-client http https ssh` (재부팅 후 유지 확인). 7860은 열지 않음 |
+| 6. git | git 2.52.0 |
+| 확인 | 재부팅 후 opc로 sudo 없이 `docker run --rm hello-world` → "Hello from Docker!" (arm64v8 이미지), exit 0 |
+
+세팅 후 디스크 `/` 30G 중 11G 사용, 메모리 사용 가능 약 9.9GiB.
+
+다음 작업은 3번 절차의 저장소 clone(이전 작업은 `main` 기준 `oracle-migration` 브랜치에 있음. main 병합 전이면 `git clone -b oracle-migration`) → `.env.docker` 작성 → `docker compose up -d --build` → healthcheck·재시작 테스트입니다. compose·Caddy 구성과 ARM 이미지 빌드(rembg/onnxruntime 포함)는 아직 실행해 보지 못했습니다.
+
+### 사용하지 않는 서버 (기록용)
+
+예전 E2 Micro 서버 `161.33.167.69`(x86_64, 메모리 약 0.5GB)는 사양 부족으로 이전 대상에서 제외했고 이전 키와 함께 더 이상 쓰지 않습니다.
