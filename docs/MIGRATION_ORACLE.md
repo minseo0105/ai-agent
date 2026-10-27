@@ -224,6 +224,10 @@ curl -s localhost/api/health            # Caddy 경유
 - `oracle-migration` 브랜치는 `main`과 같은 커밋으로 맞춰 두었고 더 쓰지 않음(정리는 별도 결정).
 - 오라클 `/api/health`의 `commit`은 `null`(이미지에 `.git`이 없어 `NO_GIT_DIRECTORY`). 버전 표시가 필요하면 빌드 때 `AILAB_BUILD_ID`를 넣는 방법을 검토.
 
+### 6-9. MONEY:ON PC 배치 (2026-10-27)
+
+오라클 `/moneyon`만 PC(1024px 이상)에서 본문 1120px·왼쪽 세로 메뉴·두 칸 화면으로 변경(`apps/moneyon/.../desktop.css`, 커밋 `ce55e376`). 휴대폰 390px은 배포 전/후 픽셀 차이 0, 1023px 이하 원본 그대로. 머니온 컨테이너만 재빌드(ailab·caddy 그대로). HF MONEY:ON Space는 변경 없음. 자세한 내용은 `docs/MULTI_APP_PLAN.md` 8절.
+
 ### 사용하지 않는 서버 (기록용)
 
 예전 E2 Micro 서버 `161.33.167.69`(x86_64, 메모리 약 0.5GB)는 사양 부족으로 이전 대상에서 제외했고 이전 키와 함께 더 이상 쓰지 않습니다.
