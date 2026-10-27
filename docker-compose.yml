@@ -47,6 +47,10 @@ services:
     networks:
       web:
         ipv4_address: 172.28.0.11
+    # AI 3기능 키·스위치(ANTHROPIC_API_KEY 등)는 서버 전용 파일에만 둔다. 없으면 AI 꺼진 채로 뜬다
+    env_file:
+      - path: .env.moneyon
+        required: false
     volumes:
       # 체험 장부 SQLite. 재빌드·컨테이너 재생성 후에도 남긴다(24시간 만료·KEEP 정리는 앱이 함)
       - moneyon-runtime:/home/user/app/runtime

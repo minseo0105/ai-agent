@@ -13,7 +13,10 @@
 	# 나머지 /moneyon/... 는 접두사를 떼고 넘긴다 (컨테이너 안 앱은 루트 기준 그대로)
 	handle_path /moneyon/* {
 		request_header -Authorization
-		reverse_proxy moneyon:7860
+		# AI 글이 SSE로 흘러오므로 버퍼링 없이 즉시 전달
+		reverse_proxy moneyon:7860 {
+			flush_interval -1
+		}
 	}
 
 	# 나머지는 AI LAB
