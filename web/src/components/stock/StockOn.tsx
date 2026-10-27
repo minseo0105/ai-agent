@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Heatmap from "@/components/stock/Heatmap";
 import {
-  arrow, dateLabel, eok, pct, stockApi, timeLabel, tone, won,
+  arrow, basisLabel, dateLabel, eok, pct, stockApi, timeLabel, tone, won,
   type EventItem, type Fx, type IndexCard, type Market, type NewsItem, type Overview, type Source, type Stock, type Why,
 } from "@/lib/stock";
 
@@ -92,7 +92,7 @@ function Spark({ series }: { series: { c: number | null }[] }) {
   );
 }
 
-function IndexTile({ card, fx, asOf }: { card?: IndexCard; fx?: Fx | null; asOf?: string }) {
+function IndexTile({ card, fx, asOf, basis }: { card?: IndexCard; fx?: Fx | null; asOf?: string; basis?: string }) {
   if (fx !== undefined) {
     return (
       <div className="min-w-[44%] flex-1 rounded-2xl bg-surface-muted p-3 sm:min-w-0">
@@ -116,7 +116,7 @@ function IndexTile({ card, fx, asOf }: { card?: IndexCard; fx?: Fx | null; asOf?
       <div className="mt-1 text-xl font-extrabold tabular-nums">{card.close.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
       <div className={`text-xs font-bold tabular-nums ${tone(card.rate)}`}>{arrow(card.rate)} {card.change != null ? Math.abs(card.change).toFixed(2) : "—"} ({pct(card.rate)})</div>
       <Spark series={card.series || []} />
-      <div className="text-[10px] text-subtle">{dateLabel(card.as_of)} 종가 · 최근 30거래일</div>
+      <div className="text-[10px] text-subtle">{basis ?? `${dateLabel(card.as_of)} 종가`} · 최근 30거래일</div>
       {asOf && card.as_of !== asOf && (
         <div className="mt-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-300">지수 자료가 아직 {dateLabel(asOf)} 전이에요</div>
       )}
@@ -170,7 +170,7 @@ function NewsList({ items, limit }: { items: NewsItem[]; limit?: number }) {
   );
 }
 
-function WhyBody({ stock, why, error, loading }: { stock: Stock; why: Why | null; error: string; loading: boolean }) {
+function WhyBody({ stock, why, error, loading, live }: { stock: Stock; why: Why | null; error: string; loading: boolean; live?: boolean }) {
   return (
     <div>
       <div className="flex items-baseline justify-between gap-2">
@@ -184,6 +184,9 @@ function WhyBody({ stock, why, error, loading }: { stock: Stock; why: Why | null
         </div>
       </div>
       <p className="mt-0.5 text-[11px] text-subtle">{stock.market} · 시가총액 {eok(stock.cap)} · 거래대금 {eok(stock.value)}</p>
+      {why && live && (
+        <p className="mt-2 text-[11px] font-bold text-amber-700 dark:text-amber-300">아래 설명은 {dateLabel(why.as_of)}(전일) 움직임 기준이에요. 위 가격은 오늘 키움 시세예요.</p>
+      )}
       <div className="mt-3 rounded-2xl bg-surface-muted p-3">
         {loading && <p className="text-sm text-muted">불러오는 중…</p>}
         {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
@@ -220,12 +223,39 @@ function WhyBody({ stock, why, error, loading }: { stock: Stock; why: Why | null
   );
 }
 
+const BASIS_TONE = {
+  live: "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300",
+  auction: "bg-violet-500/15 text-violet-800 dark:text-violet-300",
+  closed: "bg-slate-500/15 text-slate-700 dark:text-slate-300",
+  prev: "bg-amber-500/15 text-amber-800 dark:text-amber-300",
+};
+
 function Freshness({ market }: { market?: Market | null }) {
-  if (!market) return null;
+  const b = basisLabel(market);
+  if (!b) return null;
   return (
-    <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-extrabold text-amber-800 dark:text-amber-300">
-      전일 기준 · {dateLabel(market.as_of)} 종가
+    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-extrabold ${BASIS_TONE[b.tone]}`}>
+      {b.tone === "live" && <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-emerald-500" />}
+      {b.text}
     </span>
+  );
+}
+
+function FlowList({ title, rows, sell }: { title: string; rows: { name: string; amount: number }[]; sell?: boolean }) {
+  return (
+    <div className="rounded-2xl bg-surface-muted p-3">
+      <div className="mb-1 text-xs font-extrabold text-muted">{title}</div>
+      {rows.length ? (
+        <ol className="space-y-1 text-sm">
+          {rows.map((r, i) => (
+            <li key={`${r.name}-${i}`} className="flex justify-between gap-2">
+              <span className="truncate font-bold">{i + 1}. {r.name}</span>
+              <span className={`shrink-0 tabular-nums text-xs font-bold ${sell ? "text-blue-600 dark:text-blue-400" : "text-rose-600 dark:text-rose-400"}`}>{eok(r.amount)}</span>
+            </li>
+          ))}
+        </ol>
+      ) : <p className="text-xs text-subtle">자료 없음</p>}
+    </div>
   );
 }
 
@@ -258,6 +288,7 @@ export default function StockOn() {
       setError("");
       return d;
     } catch (e) {
+      // 이미 보이는 화면이 있으면 지우지 않는다(장 상태가 바뀌는 순간·일시 오류에도 화면이 비지 않게).
       setError((e as Error).message);
       return null;
     }
@@ -267,8 +298,9 @@ export default function StockOn() {
     let timer: ReturnType<typeof setTimeout>;
     const tick = async () => {
       const d = await load();
-      // 처음 자료를 모으는 동안에는 5초마다 다시 본다(최대 2분).
-      if (d?.enabled && d.refreshing && polls.current++ < 24) timer = setTimeout(tick, 5000);
+      // 처음 자료를 모으는 동안에는 5초마다(최대 2분), 그 뒤에는 1분마다 저장된 스냅샷을 다시 읽는다.
+      const firstFill = d?.enabled && d.refreshing && !d.market && polls.current++ < 24;
+      timer = setTimeout(tick, firstFill ? 5000 : 60000);
     };
     tick();
     return () => clearTimeout(timer);
@@ -289,7 +321,7 @@ export default function StockOn() {
     }
   }
 
-  if (error) return <p className="rounded-xl bg-red-500/10 px-3 py-2.5 text-sm text-red-600 dark:text-red-400">{error}</p>;
+  if (error && !data) return <p className="rounded-xl bg-red-500/10 px-3 py-2.5 text-sm text-red-600 dark:text-red-400">{error}</p>;
   if (!data) return <p className="py-10 text-center text-sm text-muted">불러오는 중…</p>;
   if (!data.enabled) {
     return (
@@ -306,14 +338,18 @@ export default function StockOn() {
   const cats = news?.categories || [];
   const cat = cats.find((c) => c.id === newsTab) || cats[0];
   const usedSources = briefing ? [...new Set(briefing.sentences.flatMap((s) => s.sources))].sort((a, b) => a - b) : [];
-  const marketSource = market ? `${market.source.name} · ${dateLabel(market.as_of)} 종가` : "";
+  const basis = basisLabel(market);
+  const marketSource = market && basis ? `${market.source.name} · ${basis.text}` : "";
+  const live = data.price_source === "kiwoom";
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-full border border-[#13315C]/30 bg-[#13315C]/5 px-2.5 py-1 text-[11px] font-extrabold text-[#13315C] dark:border-sky-300/30 dark:text-sky-200">ⓘ {data.disclaimer}</span>
         <Freshness market={market} />
+        {live && <span className="text-[11px] font-bold text-muted">{market?.source.name}</span>}
         <span className="text-[11px] text-subtle">갱신 {timeLabel(market?.fetched_ts)}{data.refreshing ? " · 새 자료 확인 중…" : ""}</span>
+        {error && <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300">· 최신 자료를 잠시 못 불러왔어요(이전 화면 유지)</span>}
       </div>
 
       <nav aria-label="섹션 바로가기" className="sticky top-0 z-20 -mx-4 flex gap-1.5 overflow-x-auto bg-bg/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
@@ -329,7 +365,7 @@ export default function StockOn() {
       )}
 
       <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr]">
-        <Section id="brief" eyebrow="MARKET BRIEF" title="AI 브리핑 3줄" meta={briefing ? `${briefing.ai ? "AI 요약" : "자동 문장"} · ${timeLabel(briefing.fetched_ts)}` : undefined}>
+        <Section id="brief" eyebrow="MARKET BRIEF" title="AI 브리핑 3줄" meta={briefing ? `${briefing.ai ? "AI 요약" : "자동 문장"} · ${dateLabel(briefing.as_of)} 시장 기준 · ${timeLabel(briefing.fetched_ts)}` : undefined}>
           {briefing ? (
             <>
               <Sentences sentences={briefing.sentences} sources={briefing.sources} numbered />
@@ -342,8 +378,8 @@ export default function StockOn() {
 
         <Section id="indices" eyebrow="INDICES" title="지수 · 환율" meta={market ? marketSource : undefined}>
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible">
-            <IndexTile card={market?.indices.find((i) => i.name === "코스피")} asOf={market?.as_of} />
-            <IndexTile card={market?.indices.find((i) => i.name === "코스닥")} asOf={market?.as_of} />
+            <IndexTile card={market?.indices.find((i) => i.name === "코스피")} asOf={market?.as_of} basis={live ? basis?.text : undefined} />
+            <IndexTile card={market?.indices.find((i) => i.name === "코스닥")} asOf={market?.as_of} basis={live ? basis?.text : undefined} />
             <IndexTile fx={fx ?? null} />
           </div>
           {market && <p className="mt-2 text-[11px] text-muted">상승 {market.breadth.up.toLocaleString()} · 하락 {market.breadth.down.toLocaleString()} · 보합 {market.breadth.flat.toLocaleString()} (전체 {market.breadth.total.toLocaleString()}종목)</p>}
@@ -359,7 +395,7 @@ export default function StockOn() {
           </Section>
           <div ref={panelRef} className="hidden lg:block">
             <section className="sticky top-14 rounded-3xl border border-border bg-surface p-5 shadow-sm">
-              {picked ? <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} /> : (
+              {picked ? <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} live={live} /> : (
                 <div className="py-10 text-center text-sm text-muted">
                   <div className="text-3xl">🔍</div>
                   <p className="mt-2 font-bold">히트맵이나 순위에서 종목을 눌러 보세요</p>
@@ -373,7 +409,7 @@ export default function StockOn() {
 
       {market && (
         <div className="grid gap-4 lg:grid-cols-2">
-          <Section id="movers" eyebrow="MOVERS" title="등락 상위" meta={`거래대금 ${eok(market.mover_min_value)} 이상 종목 · ${dateLabel(market.as_of)}`}>
+          <Section id="movers" eyebrow="MOVERS" title="등락 상위" meta={`거래대금 ${eok(market.mover_min_value)} 이상 종목 · ${basis?.text ?? ""}`}>
             <Tabs label="순위 종류" value={moverTab} onChange={(v) => { setMoverTab(v); setMoversAll(false); }} options={[["up", "상승률"], ["down", "하락률"], ["value", "거래대금"]]} />
             <ol>
               {movers.slice(0, moversAll ? 10 : 5).map((s, i) => <StockRow key={s.code} s={s} rank={i + 1} onWhy={openWhy} />)}
@@ -382,12 +418,21 @@ export default function StockOn() {
               <button type="button" onClick={() => setMoversAll(true)} className="mt-1 w-full rounded-xl py-2 text-xs font-bold text-muted hover:bg-surface-muted">TOP 10 더 보기 ▾</button>
             )}
           </Section>
-          <Section id="flows" eyebrow="FLOWS" title="외국인 · 기관 동향">
-            <div className="flex min-h-40 flex-col items-center justify-center rounded-2xl bg-surface-muted p-6 text-center">
-              <div className="text-2xl">🧭</div>
-              <p className="mt-2 text-sm font-bold">2단계(키움증권 API 연동) 후 제공</p>
-              <p className="mt-1 text-xs text-muted">공공데이터에는 투자자별 매매 자료가 없어요. 장중 순매수·순매도 상위를 준비 중이에요.</p>
-            </div>
+          <Section id="flows" eyebrow="FLOWS" title="외국인 · 기관 동향" meta={market.flows ? `순매수·순매도 금액 상위 · ${marketSource}` : undefined}>
+            {market.flows ? (
+              <div className="grid grid-cols-2 gap-2">
+                <FlowList title="외국인 순매수" rows={market.flows.foreign_buy} />
+                <FlowList title="외국인 순매도" rows={market.flows.foreign_sell} sell />
+                <FlowList title="기관 순매수" rows={market.flows.inst_buy} />
+                <FlowList title="기관 순매도" rows={market.flows.inst_sell} sell />
+              </div>
+            ) : (
+              <div className="flex min-h-40 flex-col items-center justify-center rounded-2xl bg-surface-muted p-6 text-center">
+                <div className="text-2xl">🧭</div>
+                <p className="mt-2 text-sm font-bold">키움증권 API 시세일 때 제공</p>
+                <p className="mt-1 text-xs text-muted">공공데이터(전일 기준)에는 투자자별 매매 자료가 없어요.</p>
+              </div>
+            )}
           </Section>
         </div>
       )}
@@ -483,7 +528,7 @@ export default function StockOn() {
           <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl bg-surface p-5 pb-8 shadow-2xl">
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-border" />
             <button type="button" onClick={() => setPicked(null)} className="absolute right-4 top-4 rounded-full px-2 text-lg text-muted" aria-label="닫기">✕</button>
-            <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} />
+            <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} live={live} />
           </div>
         </div>
       )}

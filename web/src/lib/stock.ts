@@ -4,7 +4,13 @@ import { API_URL, apiFetch, toApiError, type ApiInit } from "@/lib/access";
 export type Source = { name: string; url: string };
 export type Stock = { code: string; name: string; market: string; close: number; change: number | null; rate: number | null; volume?: number | null; value: number | null; cap: number | null };
 export type IndexCard = { name: string; status?: string; as_of?: string; close?: number | null; change?: number | null; rate?: number | null; series?: { d: string; c: number | null }[]; source?: Source };
+export type FlowRow = { code: string; name: string; amount: number };
+export type Session = "pre" | "open" | "closing_auction" | "closed" | "holiday";
 export type Market = {
+  kind?: "kiwoom";
+  session?: Session;
+  session_label?: string;
+  flows?: Record<"foreign_buy" | "foreign_sell" | "inst_buy" | "inst_sell", FlowRow[]>;
   as_of: string;
   source: Source;
   indices: IndexCard[];
@@ -28,6 +34,8 @@ export type Overview = {
   oracle_url: string;
   refreshing?: boolean;
   market?: Market | null;
+  price_source?: "kiwoom" | "public";
+  public_as_of?: string | null;
   fx?: Fx | null;
   briefing?: Briefing | null;
   news?: News | null;
@@ -68,7 +76,10 @@ export type AdminStatus = {
   ai: Record<"briefing" | "why" | "news_summary", AiTaskStatus>;
   models: Record<"briefing" | "why" | "news_summary", string>;
   watchlist: { code: string; name: string }[];
-  kiwoom: { connected: boolean; mode?: string; price_source?: string; mock_key_expires?: string | null; days_left?: number | null; last_ok?: string | null; fails?: number };
+  kiwoom: {
+    connected: boolean; mode?: string; price_source?: string; showing?: "kiwoom" | "public"; mock_key_expires?: string | null;
+    days_left?: number | null; last_ok?: string | null; fails?: number; last_error?: string | null; session?: string | null; updated?: string | null;
+  };
 };
 export const stockAdminApi = {
   status: () => get<AdminStatus>("/api/stock/admin/status"),
@@ -89,5 +100,19 @@ export function eok(v?: number | null): string {
   if (jo >= 1) return `${jo >= 10 ? jo.toFixed(0) : jo.toFixed(1)}조`;
   return `${Math.round(v / 1e8).toLocaleString("ko-KR")}억`;
 }
+export const hhmm = (ts?: number | null) =>
+  ts ? new Date(ts * 1000).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: false }) : "";
+
+/** 시세 기준 배지 문구. 키움: 장중·마감 동시호가·마감 기준, 공공데이터: 전일 기준. */
+export function basisLabel(m?: Market | null): { text: string; tone: "live" | "auction" | "closed" | "prev" } | null {
+  if (!m) return null;
+  if (m.kind === "kiwoom") {
+    if (m.session === "open") return { text: `장중 · ${hhmm(m.fetched_ts)} 반영`, tone: "live" };
+    if (m.session === "closing_auction") return { text: `마감 동시호가 · ${hhmm(m.fetched_ts)} (체결 전 가격)`, tone: "auction" };
+    return { text: `마감 기준 · ${dateLabel(m.as_of)} 15:30`, tone: "closed" };
+  }
+  return { text: `전일 기준 · ${dateLabel(m.as_of)} 종가`, tone: "prev" };
+}
+
 export const timeLabel = (ts?: number | null) =>
   ts ? new Date(ts * 1000).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";

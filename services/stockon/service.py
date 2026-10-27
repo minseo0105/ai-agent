@@ -337,17 +337,37 @@ def _public(snapshot: dict | None) -> dict | None:
     return {k: v for k, v in snapshot.items() if k not in ("summaries",)}
 
 
+KIWOOM_STALE_SEC = 10 * 60  # 장중 키움 스냅샷이 이보다 오래되면 공공데이터로 자동 복귀
+
+
+def active_market() -> tuple[dict | None, str]:
+    """화면에 쓸 시세 스냅샷과 그 출처('kiwoom' | 'public').
+
+    키움은 수집기 상태의 price_source가 kiwoom이고, 오늘 날짜이며, 장중이면 10분 안에 갱신된 것만 쓴다.
+    장 마감 뒤 '마감 기준' 스냅샷은 그날 하루 쓴다. 어느 하나라도 아니면 공공데이터(전일 기준)."""
+    public = store.read("market")
+    kiwoom = store.read("market_kiwoom")
+    status = store.read("kiwoom_status", {}) or {}
+    if status.get("price_source") == "kiwoom" and kiwoom and kiwoom.get("as_of") == _now().strftime("%Y%m%d"):
+        if kiwoom.get("session") == "closed" or _age(kiwoom) <= KIWOOM_STALE_SEC:
+            return kiwoom, "kiwoom"
+    return public, "public"
+
+
 def overview() -> dict:
     base = {"enabled": enabled(), "disclaimer": DISCLAIMER, "oracle_url": ORACLE_URL}
     if not enabled():
         return base
-    # 읽기만 한다. 갱신은 스케줄러가 한다.
+    # 읽기만 한다. 갱신은 스케줄러(공공·뉴스·AI)와 키움 수집기(별도 컨테이너)가 한다.
     status = store.read("status", {}) or {}
-    market = store.read("market")
+    market, price_source = active_market()
+    public = store.read("market") or {}
     return {
         **base,
         "refreshing": refreshing(),
         "market": market,
+        "price_source": price_source,
+        "public_as_of": public.get("as_of"),  # 브리핑·왜 움직였나의 기준일(전일)
         "fx": store.read("fx"),
         "briefing": store.read("briefing"),
         "news": _public(store.read("news")),
@@ -415,8 +435,10 @@ def kiwoom_status() -> dict:
             days_left = (datetime.strptime(expires, "%Y-%m-%d").date() - _now().date()).days
         except ValueError:
             pass
-    return {"connected": True, "mode": data.get("mode"), "price_source": data.get("price_source"),
-            "mock_key_expires": expires, "days_left": days_left, "last_ok": data.get("last_ok"), "fails": data.get("fails", 0)}
+    _, showing = active_market()
+    return {"connected": True, "mode": data.get("mode"), "price_source": data.get("price_source"), "showing": showing,
+            "mock_key_expires": expires, "days_left": days_left, "last_ok": data.get("last_ok"), "fails": data.get("fails", 0),
+            "last_error": data.get("last_error"), "session": data.get("session"), "updated": data.get("updated")}
 
 
 def _ai_status() -> dict:

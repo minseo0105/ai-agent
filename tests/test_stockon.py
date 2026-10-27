@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import tempfile
+import time
 import unittest
 from datetime import date, datetime
 from pathlib import Path
@@ -333,6 +334,141 @@ class BriefingNewsRuleTest(TempStore):
         self.assertIn("뉴스·공시", tasks[1].split("주의:")[-1])
         self.assertTrue(any(3 in s["sources"] for s in out["sentences"]))
         self.assertTrue(out["ai"])
+
+
+class FakeKiwoomHttp:
+    """키움 공식 스펙 예시 응답을 돌려주는 가짜 전송기. 호출 기록만 남긴다(키 값은 비교만)."""
+
+    RESP = {
+        "au10001": {"expires_dt": "20991231235959", "token_type": "bearer", "token": "TOKEN-SENTINEL", "return_code": 0},
+        "au10002": {"return_code": 0},
+        "ka20001": {"cur_prc": "-2394.49", "pred_pre": "-278.47", "flu_rt": "-10.42", "rising": "17", "upl": "0",
+                    "stdns": "183", "fall": "130", "lst": "3", "return_code": 0},
+        "ka10095": {"atn_stk_infr": [{"stk_cd": "005930", "stk_nm": "삼성전자", "cur_prc": "+156600", "pred_pre": "+34900",
+                                      "flu_rt": "+28.68", "trde_prica": "14889", "dt": "20261117"},
+                                     {"stk_cd": "000660", "stk_nm": "SK하이닉스", "cur_prc": "-200000", "pred_pre": "-1000",
+                                      "flu_rt": "-0.50", "trde_prica": "9000", "dt": "20261117"}], "return_code": 0},
+        "ka10027": {"pred_pre_flu_rt_upper": [{"stk_cd": "247540", "stk_nm": "에코프로비엠", "cur_prc": "+74800",
+                                               "pred_pre": "+17200", "flu_rt": "+29.86"}], "return_code": 0},
+        "ka10032": {"trde_prica_upper": [{"stk_cd": "005930", "stk_nm": "삼성전자", "cur_prc": "-152000", "pred_pre": "-100",
+                                          "flu_rt": "-0.07", "trde_prica": "5308092"}], "return_code": 0},
+        "ka90009": {"frgnr_orgn_trde_upper": [{"for_netprps_stk_nm": "삼성전자", "for_netprps_amt": "130811",
+                                               "for_netslmt_stk_nm": "SK하이닉스", "for_netslmt_amt": "-5000",
+                                               "orgn_netprps_stk_nm": "에코프로비엠", "orgn_netprps_amt": "800",
+                                               "orgn_netslmt_stk_nm": "삼성전자", "orgn_netslmt_amt": "-300"}], "return_code": 0},
+    }
+
+    def __init__(self, override=None):
+        self.calls, self.override = [], override or {}
+
+    def __call__(self, url, json=None, headers=None, timeout=None):
+        api = headers["api-id"]
+        self.calls.append((url, api, dict(headers)))
+        payload = self.override.get(api, self.RESP[api])
+        resp = FakeResp(payload, 200)
+        resp.headers = {}
+        return resp
+
+
+class KiwoomClientTest(unittest.TestCase):
+    def _client(self, http, mode="mock"):
+        from services.stockon.kiwoom_client import KiwoomClient
+        self.t = [0.0]
+        self.slept = []
+        return KiwoomClient(mode, "APPKEY-SENTINEL", "SECRET-SENTINEL", http=http, clock=lambda: self.t[0],
+                            sleep=lambda s: (self.slept.append(s), self.t.__setitem__(0, self.t[0] + s)))
+
+    def test_allowlist_blocks_before_network(self):
+        from services.stockon.kiwoom_client import KiwoomError
+        http = FakeKiwoomHttp()
+        c = self._client(http)
+        for bad in ("ka99999", "au10001", "../ordr", ""):
+            with self.assertRaises(KiwoomError) as cm:
+                c.query(bad, {})
+            self.assertEqual(cm.exception.code, "not_allowed")
+        self.assertEqual(http.calls, [])
+
+    def test_host_token_reuse_and_throttle(self):
+        http = FakeKiwoomHttp()
+        c = self._client(http)
+        c.query("ka20001", {"mrkt_tp": "0", "inds_cd": "001"})
+        c.query("ka20001", {"mrkt_tp": "1", "inds_cd": "101"})  # 같은 TR → 1.1초 기다림(모의)
+        self.assertEqual([a for _, a, _ in http.calls], ["au10001", "ka20001", "ka20001"])  # 토큰은 한 번만
+        self.assertTrue(all(u.startswith("https://mockapi.kiwoom.com/") for u, _, _ in http.calls))
+        self.assertEqual(http.calls[1][2]["authorization"], "Bearer TOKEN-SENTINEL")
+        self.assertAlmostEqual(sum(self.slept), 1.1, places=3)
+        real = FakeKiwoomHttp()
+        self._client(real, "real").query("ka10032", {})
+        self.assertTrue(real.calls[-1][0].startswith("https://api.kiwoom.com/api/dostk/rkinfo"))
+
+    def test_errors_carry_code_only(self):
+        from services.stockon.kiwoom_client import KiwoomError, price
+        http = FakeKiwoomHttp({"au10001": {"return_code": 8010, "return_msg": "Token을 발급받은 IP와 서비스를 요청한 IP가 동일하지 않습니다"}})
+        c = self._client(http)
+        with self.assertRaises(KiwoomError) as cm:
+            c.check_token()
+        self.assertEqual(cm.exception.code, "8010")
+        text = str(cm.exception) + repr(c)
+        self.assertNotIn("APPKEY-SENTINEL", text)
+        self.assertNotIn("SECRET-SENTINEL", text)
+        self.assertEqual((price("+156600"), price("-2394.49")), (156600.0, 2394.49))
+
+
+class KiwoomCollectorTest(TempStore):
+    def test_session_boundaries(self):
+        from services.stockon.kiwoom_collector import session_state
+        at = lambda h, m: datetime(2026, 11, 17, h, m, tzinfo=KST)  # 화요일
+        self.assertEqual([session_state(at(8, 59)), session_state(at(9, 0)), session_state(at(15, 19)),
+                          session_state(at(15, 20)), session_state(at(15, 29)), session_state(at(15, 30))],
+                         ["pre", "open", "open", "closing_auction", "closing_auction", "closed"])
+        self.assertEqual(session_state(datetime(2026, 11, 15, 10, 0, tzinfo=KST)), "holiday")
+
+    def test_snapshot_shape_and_auto_fallback(self):
+        from services.stockon import kiwoom_collector as kc
+        from services.stockon.kiwoom_client import KiwoomClient
+        with mock.patch.dict(os.environ, {"PUBLIC_DATA_API_KEY": "k"}):
+            market, directory = public_data.fetch_market(http=fake_http)
+        store.write("market", {**market, "fetched_ts": 1})
+        client = KiwoomClient("mock", "a", "b", http=FakeKiwoomHttp(), clock=lambda: 0.0, sleep=lambda s: None)
+        now = datetime(2026, 11, 17, 14, 30, tzinfo=KST)
+        snap = kc.build_snapshot(client, market, directory["stocks"], now)
+        self.assertEqual((snap["kind"], snap["session"], snap["as_of"]), ("kiwoom", "open", "20261117"))
+        self.assertEqual(snap["source"]["name"], "KRX 기준 · 키움증권 API")
+        kospi = {s["code"]: s for s in snap["heatmap"]["KOSPI"]}
+        self.assertEqual((kospi["005930"]["close"], kospi["005930"]["rate"]), (156600.0, 28.68))
+        self.assertEqual(kospi["005930"]["cap"], 400_000_000_000_000)  # 칸 크기는 공공데이터 시가총액
+        self.assertEqual(snap["movers"]["up"][0]["name"], "에코프로비엠")
+        self.assertEqual(snap["flows"]["foreign_buy"][0], {"code": None, "name": "삼성전자", "amount": 1_308_110_000_000})
+        self.assertEqual(snap["indices"][0]["close"], 2394.49)
+        self.assertEqual(snap["breadth"]["total"], 2 * (17 + 183 + 130 + 3))
+
+        snap["fetched_ts"] = time.time()
+        store.write("market_kiwoom", snap)
+        cfg = {"mode": "mock", "price_source": "kiwoom", "mock_key_expires": "2026-11-27"}
+        kc.write_status(cfg)
+        with mock.patch.object(service, "_now", lambda: now):
+            self.assertEqual(service.active_market()[1], "kiwoom")
+            store.write("market_kiwoom", {**snap, "fetched_ts": time.time() - 11 * 60})  # 10분 넘게 갱신 없음
+            self.assertEqual(service.active_market()[1], "public")
+            store.write("market_kiwoom", {**snap, "session": "closed", "fetched_ts": time.time() - 3 * 3600})
+            self.assertEqual(service.active_market()[1], "kiwoom")  # 마감 기준은 그날 하루 유지
+            kc.write_status({**cfg, "price_source": "public"})
+            self.assertEqual(service.active_market()[1], "public")  # 설정 하나로 복귀
+        with mock.patch.object(service, "_now", lambda: datetime(2026, 11, 18, 9, 5, tzinfo=KST)):
+            kc.write_status(cfg)
+            self.assertEqual(service.active_market()[1], "public")  # 다음 날 → 어제 키움 스냅샷은 쓰지 않음
+
+    def test_public_mode_never_calls_kiwoom(self):
+        from services.stockon import kiwoom_collector as kc
+        with mock.patch.dict(os.environ, {"STOCKON_PRICE_SOURCE": "public", "KIWOOM_MOCK_APP_KEY": "a", "KIWOOM_MOCK_APP_SECRET": "b",
+                                          "KIWOOM_MOCK_KEY_EXPIRES": "2026-11-27"}):
+            cfg = kc.config()
+        self.assertEqual((cfg["price_source"], cfg["mode"]), ("public", "mock"))
+        kc.write_status(cfg, session="open")
+        st = store.read("kiwoom_status")
+        self.assertEqual(st["mock_key_expires"], "2026-11-27")
+        self.assertNotIn("a", [st.get("appkey"), st.get("secret")])
+        self.assertEqual(set(st) & {"appkey", "secret", "token"}, set())
 
 
 class AccessTest(unittest.TestCase):

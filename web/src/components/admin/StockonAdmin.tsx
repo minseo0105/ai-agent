@@ -224,7 +224,11 @@ export default function StockonAdmin() {
       <Card title="키움증권 연동 (2단계)" desc="키움 키는 수집기 전용 파일(.env.stockon)에만 있고 이 화면·앱에는 오지 않아요. 여기에는 날짜·상태만 보여요.">
         {data.kiwoom.connected ? (
           <ul className="space-y-1 text-sm">
-            <li>모드 <b>{data.kiwoom.mode === "real" ? "실전" : "모의"}</b> · 시세 출처 <b>{data.kiwoom.price_source === "kiwoom" ? "키움" : "공공데이터"}</b></li>
+            <li>모드 <b>{data.kiwoom.mode === "real" ? "실전" : "모의"}</b> · 설정 <b>{data.kiwoom.price_source === "kiwoom" ? "키움" : "공공데이터"}</b> · 지금 화면 <b>{data.kiwoom.showing === "kiwoom" ? "키움 시세" : "공공데이터(전일)"}</b>{data.kiwoom.session && ` · 장 상태 ${data.kiwoom.session}`}</li>
+            {data.kiwoom.price_source === "kiwoom" && data.kiwoom.showing !== "kiwoom" && (
+              <li className="text-xs font-bold text-amber-700 dark:text-amber-300">설정은 키움이지만 새 키움 스냅샷이 없어 공공데이터로 보이고 있어요(장 시간 외, 수집 실패 또는 10분 이상 갱신 없음).</li>
+            )}
+            {data.kiwoom.last_error && <li className="text-xs font-bold text-red-600 dark:text-red-400">마지막 오류 · {data.kiwoom.last_error}</li>}
             <li>모의 키 만료일 <b>{data.kiwoom.mock_key_expires ?? "미입력"}</b>{notice && <span className={`ml-2 text-xs font-bold ${notice.level === "ok" ? "text-muted" : notice.level === "warn" ? "text-amber-700 dark:text-amber-300" : "text-red-600"}`}>{notice.text}</span>}</li>
             <li className="text-xs text-muted">마지막 성공 {data.kiwoom.last_ok ?? "—"} · 연속 실패 {data.kiwoom.fails ?? 0}회</li>
           </ul>

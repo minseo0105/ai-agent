@@ -56,6 +56,28 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # STOCK:ON 키움 수집기(조회 전용). AI LAB 이미지를 쓰고 명령만 다르다. 키는 .env.stockon에만 있고
+  # ailab 컨테이너에는 넣지 않는다. STOCKON_PRICE_SOURCE=public이면 키움을 부르지 않고 상태(만료일)만 쓴다.
+  # 전환·복귀 방법: docs/STOCKON_PLAN.md '시연 당일 키움 전환'
+  stockon-collector:
+    image: ailab:latest
+    container_name: stockon-collector
+    restart: always
+    command: ["python", "-m", "services.stockon.kiwoom_collector"]
+    env_file:
+      - path: .env.stockon
+        required: false        # 파일이 없으면 public 모드로 상태만 쓴다
+    networks:
+      web:
+        ipv4_address: 172.28.0.12
+    volumes:
+      - ailab-admin:/home/user/app/data/admin   # 스냅샷을 ailab과 같이 쓴다(market_kiwoom.json, kiwoom_status.json)
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   caddy:
     image: caddy:2
     container_name: ailab-caddy
