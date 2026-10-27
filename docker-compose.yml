@@ -34,12 +34,35 @@ services:
         max-size: "10m"
         max-file: "5"
 
+  # MONEY:ON 체험 (/moneyon). 원본은 HF Space, 출처는 apps/moneyon/SOURCE.md. 비밀값 없음
+  moneyon:
+    build:
+      context: ./apps/moneyon
+      dockerfile: Dockerfile.oracle
+    image: moneyon:latest
+    container_name: moneyon
+    restart: always
+    expose:
+      - "7860"
+    networks:
+      web:
+        ipv4_address: 172.28.0.11
+    volumes:
+      # 체험 장부 SQLite. 재빌드·컨테이너 재생성 후에도 남긴다(24시간 만료·KEEP 정리는 앱이 함)
+      - moneyon-runtime:/home/user/app/runtime
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   caddy:
     image: caddy:2
     container_name: ailab-caddy
     restart: always
     depends_on:
       - ailab
+      - moneyon
     ports:
       - "80:80"
       - "443:443"
@@ -67,5 +90,6 @@ networks:
 
 volumes:
   ailab-admin:
+  moneyon-runtime:
   caddy-data:
   caddy-config:

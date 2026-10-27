@@ -1,8 +1,26 @@
 # SITE_ADDRESS가 비어 있으면 :80 (HTTP, 도메인 없이 IP 접속). 도메인을 넣으면 HTTPS 자동.
 {$SITE_ADDRESS::80} {
 	encode zstd gzip
-	# SSE(AI 채팅) 응답이 버퍼링되지 않도록 즉시 전달
-	reverse_proxy ailab:7860 {
-		flush_interval -1
+
+	# MONEY:ON 체험 (별도 컨테이너, docs/MULTI_APP_PLAN.md)
+	redir /moneyon /moneyon/ 308
+	# 꿀벌 이미지는 화면 코드에 /moneyon/characters/... 로 고정돼 있어 접두사를 떼지 않고 넘긴다
+	handle /moneyon/characters/* {
+		# 같은 주소의 AI LAB 로그인 토큰이 머니온으로 넘어가지 않게 한다
+		request_header -Authorization
+		reverse_proxy moneyon:7860
+	}
+	# 나머지 /moneyon/... 는 접두사를 떼고 넘긴다 (컨테이너 안 앱은 루트 기준 그대로)
+	handle_path /moneyon/* {
+		request_header -Authorization
+		reverse_proxy moneyon:7860
+	}
+
+	# 나머지는 AI LAB
+	handle {
+		# SSE(AI 채팅) 응답이 버퍼링되지 않도록 즉시 전달
+		reverse_proxy ailab:7860 {
+			flush_interval -1
+		}
 	}
 }

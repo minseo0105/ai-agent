@@ -1,0 +1,26 @@
+FROM node:22-slim AS web
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY web/ ./
+ENV STATIC_EXPORT=1 NEXT_PUBLIC_API_URL="" NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_MONEYON_EPHEMERAL=1
+RUN npm run build
+
+FROM python:3.12-slim
+RUN useradd -m -u 1000 user
+WORKDIR /home/user/app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY --chown=user api/ ./api/
+COPY --chown=user services/ ./services/
+COPY --chown=user space_app.py ./space_app.py
+COPY --from=web --chown=user /web/out ./web/out
+RUN mkdir -p /home/user/app/runtime && chown user:user /home/user/app/runtime
+USER user
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 APP_ENV=production \
+    MONEYON_TRIAL_ENABLED=1 MONEYON_LOCAL_DEV=0 MONEYON_DEMO=0 \
+    MONEYON_TRIAL_DB=/home/user/app/runtime/trial.sqlite3 \
+    MONEYON_TRIAL_POOL=120 MONEYON_TRIAL_KEEP=3000
+EXPOSE 7860
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:7860/api/health', timeout=4)"
+CMD ["uvicorn", "space_app:app", "--host", "0.0.0.0", "--port", "7860", "--workers", "1", "--no-access-log"]
