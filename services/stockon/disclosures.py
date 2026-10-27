@@ -43,6 +43,9 @@ def recent(name: str, days: int = 14, http=requests.get, now: datetime | None = 
         except (requests.RequestException, ValueError):
             continue
         if data.get("status") == "000" and data.get("list"):
+            # 회사가 직접 낸 공시만. 임원·주요주주 소유상황보고서(개인 제출), 대량보유보고서(다른 회사 제출)는
+            # 같은 제목으로 여러 종목에 겹쳐 보여서 뺀다.
+            own = [i for i in data["list"] if i.get("rcept_no") and (i.get("flr_nm") or "").strip() == (i.get("corp_name") or "").strip()]
             return [{"title": i.get("report_nm", "").strip(), "date": i.get("rcept_dt"),
-                     "url": view_url(i.get("rcept_no", ""))} for i in data["list"][:5] if i.get("rcept_no")]
+                     "url": view_url(i.get("rcept_no", ""))} for i in own[:5]]
     return []

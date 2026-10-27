@@ -155,18 +155,59 @@ function Tabs<T extends string>({ value, options, onChange, label }: { value: T;
   );
 }
 
-function NewsList({ items, limit }: { items: NewsItem[]; limit?: number }) {
+/** 기사 발행일(한국시간) YYYYMMDD */
+const kstDay = (iso?: string | null) =>
+  iso ? new Date(iso).toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" }).replaceAll("-", "") : "";
+
+function NewsList({ items, limit, basis }: { items: NewsItem[]; limit?: number; basis?: string }) {
   if (!items.length) return <p className="py-4 text-center text-xs text-subtle">관련 뉴스가 없어요.</p>;
   return (
     <ul className="divide-y divide-border">
-      {items.slice(0, limit).map((n) => (
-        <li key={n.url} className="py-2.5">
-          <a href={n.url} target="_blank" rel="noopener noreferrer" className="text-sm font-bold leading-snug hover:underline">{n.title}</a>
-          {n.summary && <p className="mt-0.5 text-xs leading-relaxed text-muted"><span className="mr-1 rounded bg-[#13315C]/10 px-1 text-[10px] font-extrabold text-[#1E4E8C] dark:bg-sky-400/10 dark:text-sky-300">AI 요약</span>{n.summary}</p>}
-          <p className="mt-0.5 text-[10px] text-subtle">{n.press}{n.pub ? ` · ${new Date(n.pub).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}` : ""}</p>
-        </li>
-      ))}
+      {items.slice(0, limit).map((n) => {
+        const day = kstDay(n.pub);
+        const after = !!basis && !!day && day > basis;
+        return (
+          <li key={n.url} className="py-2.5">
+            <a href={n.url} target="_blank" rel="noopener noreferrer" className="text-sm font-bold leading-snug hover:underline">{n.title}</a>
+            {n.summary && <p className="mt-0.5 text-xs leading-relaxed text-muted"><span className="mr-1 rounded bg-[#13315C]/10 px-1 text-[10px] font-extrabold text-[#1E4E8C] dark:bg-sky-400/10 dark:text-sky-300">AI 요약</span>{n.summary}</p>}
+            <p className="mt-0.5 flex flex-wrap items-center gap-1 text-[10px] text-subtle">
+              {day && (
+                <span className={`rounded px-1 font-extrabold ${after ? "bg-amber-500/15 text-amber-800 dark:text-amber-300" : "bg-surface-muted text-muted"}`}>
+                  {dateLabel(day)}{after ? " · 시세 기준일 이후" : ""}
+                </span>
+              )}
+              {n.press}{n.pub ? ` · ${new Date(n.pub).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Seoul" })}` : ""}
+            </p>
+          </li>
+        );
+      })}
     </ul>
+  );
+}
+
+/** 카테고리 뉴스: 시세 기준일 이후 기사와 그 이전 기사를 나눠 보여 준다(지수는 전일 하락인데 오늘 급등 기사가 섞여 헷갈리지 않게). */
+function SplitNews({ items, basis }: { items: NewsItem[]; basis?: string }) {
+  const later = basis ? items.filter((n) => kstDay(n.pub) > basis) : [];
+  const upto = basis ? items.filter((n) => !(kstDay(n.pub) > basis)) : items;
+  if (!later.length || !upto.length) {
+    return (
+      <>
+        {later.length > 0 && <p className="mb-1 rounded-lg bg-amber-500/10 px-2 py-1 text-[11px] font-bold text-amber-800 dark:text-amber-300">모두 시세 기준일({dateLabel(basis)}) 이후 기사예요. 위 지수·종목 숫자보다 나중 소식이에요.</p>}
+        <NewsList items={items} basis={basis} />
+      </>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      <div>
+        <h3 className="text-xs font-extrabold text-amber-800 dark:text-amber-300">시세 기준일({dateLabel(basis)}) 이후 새 소식</h3>
+        <NewsList items={later} basis={basis} />
+      </div>
+      <div>
+        <h3 className="text-xs font-extrabold text-muted">{dateLabel(basis)}까지 소식 · 위 시세와 같은 시점</h3>
+        <NewsList items={upto} basis={basis} />
+      </div>
+    </div>
   );
 }
 
@@ -376,11 +417,12 @@ export default function StockOn() {
           )}
         </Section>
 
-        <Section id="indices" eyebrow="INDICES" title="지수 · 환율" meta={market ? marketSource : undefined}>
-          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible">
+        <Section id="indices" eyebrow="INDICES" title={fx && fx.status !== "not_configured" ? "지수 · 환율" : "지수"} meta={market ? marketSource : undefined}>
+          {/* 환율 키(KOREAEXIM_API_KEY)가 없으면 원/달러 카드는 숨기고 지수 두 칸만 */}
+          <div className={`-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:grid sm:overflow-visible ${fx?.status === "not_configured" || !fx ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
             <IndexTile card={market?.indices.find((i) => i.name === "코스피")} asOf={market?.as_of} basis={live ? basis?.text : undefined} />
             <IndexTile card={market?.indices.find((i) => i.name === "코스닥")} asOf={market?.as_of} basis={live ? basis?.text : undefined} />
-            <IndexTile fx={fx ?? null} />
+            {fx && fx.status !== "not_configured" && <IndexTile fx={fx} />}
           </div>
           {market && <p className="mt-2 text-[11px] text-muted">상승 {market.breadth.up.toLocaleString()} · 하락 {market.breadth.down.toLocaleString()} · 보합 {market.breadth.flat.toLocaleString()} (전체 {market.breadth.total.toLocaleString()}종목)</p>}
         </Section>
@@ -456,7 +498,7 @@ export default function StockOn() {
                     </span>
                   )}
                 </button>
-                <NewsList items={w.news} limit={2} />
+                <NewsList items={w.news} limit={2} basis={market?.as_of} />
                 {w.disclosures[0] && (
                   <p className="mt-1 border-t border-border pt-2 text-xs">
                     <span className="mr-1 rounded bg-surface-muted px-1 text-[10px] font-extrabold text-muted">공시</span>
@@ -475,7 +517,7 @@ export default function StockOn() {
           {news?.status === "ok" && cat ? (
             <>
               <Tabs label="뉴스 카테고리" value={cat.id} onChange={setNewsTab} options={cats.map((c) => [c.id, c.label] as [string, string])} />
-              <NewsList items={cat.items} />
+              <SplitNews items={cat.items} basis={market?.as_of} />
               <p className="mt-2 text-[10px] text-subtle">제목·링크는 언론사 원문 그대로이고, &lsquo;AI 요약&rsquo;은 검색 요약문만으로 만든 한 줄이에요.</p>
             </>
           ) : (

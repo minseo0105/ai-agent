@@ -313,6 +313,29 @@ class NewsWindowTest(unittest.TestCase):
         self.assertEqual(pages, [1, 101])
 
 
+class WatchFiltersTest(TempStore):
+    def test_only_company_filed_disclosures(self):
+        from services.stockon import disclosures
+        rows = [{"rcept_no": "1", "rcept_dt": "20261026", "corp_name": "삼성전자", "flr_nm": "이헌", "report_nm": "임원ㆍ주요주주특정증권등소유상황보고서"},
+                {"rcept_no": "2", "rcept_dt": "20261023", "corp_name": "삼성전자", "flr_nm": "삼성물산", "report_nm": "주식등의대량보유상황보고서(일반)"},
+                {"rcept_no": "3", "rcept_dt": "20261022", "corp_name": "삼성전자", "flr_nm": "삼성전자", "report_nm": "분기보고서"}]
+        with mock.patch.dict(os.environ, {"DART_API_KEY": "k"}), mock.patch.object(disclosures, "corp_codes_for", lambda n: ["00126380"]):
+            got = disclosures.recent("삼성전자", http=lambda *a, **k: FakeResp({"status": "000", "list": rows}))
+        self.assertEqual([d["title"] for d in got], ["분기보고서"])
+
+    def test_watch_news_needs_name_in_title(self):
+        with mock.patch.dict(os.environ, {"PUBLIC_DATA_API_KEY": "k"}):
+            market, directory = public_data.fetch_market(http=fake_http)
+        store.write("stocks", directory)
+        store.save_watchlist([{"code": "005930", "name": "삼성전자"}])
+        found = [{"title": "[기획] AI 투자 부채의 역습…반도체 중심 경고등", "url": "https://n/1", "press": "", "pub": None},
+                 {"title": "삼성전자, HBM5 전시", "url": "https://n/2", "press": "", "pub": None}]
+        with mock.patch("services.stockon.news.configured", lambda: True), mock.patch("services.stockon.news.search", lambda *a, **k: found), \
+                mock.patch("services.stockon.disclosures.recent", lambda *a, **k: []):
+            service._task_watch()
+        self.assertEqual([n["title"] for n in store.read("watch")["items"][0]["news"]], ["삼성전자, HBM5 전시"])
+
+
 class BriefingNewsRuleTest(TempStore):
     def test_briefing_retries_until_a_news_sentence_exists(self):
         with mock.patch.dict(os.environ, {"PUBLIC_DATA_API_KEY": "k"}):

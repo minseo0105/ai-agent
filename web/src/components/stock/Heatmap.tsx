@@ -43,9 +43,10 @@ function squarify(items: Stock[], W = 100, H = 100): Rect[] {
 
 /** 등락률 → 배경색. 상승 빨강·하락 파랑, ±5%에서 가장 진하다. */
 function fill(rate: number | null): string {
-  if (!rate) return "rgb(100 116 139 / 0.55)";
+  if (!rate) return "rgb(100 116 139 / 0.7)";
   const t = Math.min(Math.abs(rate) / 5, 1);
-  const alpha = (0.28 + t * 0.67).toFixed(2);
+  // 등락이 작아도 흰 글자가 보이도록 최소 진하기를 0.55로 둔다(예전 0.28은 -1% 안팎에서 글자가 묻혔다)
+  const alpha = (0.55 + t * 0.4).toFixed(2);
   return rate > 0 ? `rgb(225 29 72 / ${alpha})` : `rgb(37 99 235 / ${alpha})`;
 }
 
@@ -79,7 +80,7 @@ export default function Heatmap({ items, selected, onSelect }: { items: Stock[];
             aria-label={`${item.name} ${pct(item.rate)}, 왜 움직였나 보기`}
             aria-pressed={selected === item.code}
             className={`absolute flex flex-col items-center justify-center overflow-hidden border border-white/70 p-0.5 text-center text-white transition hover:z-10 hover:brightness-110 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white dark:border-black/40 ${selected === item.code ? "z-10 ring-2 ring-inset ring-yellow-300" : ""}`}
-            style={{ left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%`, background: fill(item.rate) }}
+            style={{ left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%`, background: fill(item.rate), textShadow: "0 1px 2px rgb(0 0 0 / 0.45)" }}
           >
             {mid && <span className={`max-w-full truncate font-extrabold leading-tight ${big ? "text-sm sm:text-base" : "text-[10px] sm:text-xs"}`}>{item.name}</span>}
             {small && (

@@ -106,6 +106,26 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 | 네트워크 | 청중에게 **휴대폰 데이터(LTE/5G)** 사용 안내. 강의장 Wi-Fi는 같은 IP로 묶이고 필터가 있을 수 있어 사전 확인(11/12 리허설에 은행 휴대폰 1대 포함) |
 | 인앱 브라우저 | 카카오톡·네이버 앱 QR 스캔 → 인앱 브라우저에서 동작 확인(머니온 sessionStorage, SSE 스트리밍) |
 
+### 5-1. 도메인을 받으면 바꿀 것 (체크리스트)
+
+도메인 예: `새도메인` (사용자가 구매 후 알려 줌). sslip.io 주소는 **예비로 계속 동작**하게 둔다(Caddy에 두 주소 모두).
+
+| 순서 | 할 일 | 어디서 | 확인 |
+|---|---|---|---|
+| 1 | DNS A 레코드: `새도메인`(필요하면 `www`도) → `140.245.88.198`, TTL 300 | 도메인 구입처 DNS 관리 | `nslookup 새도메인` 결과가 서버 IP |
+| 2 | 서버 `~/ailab/.env`의 `SITE_ADDRESS=새도메인, 140-245-88-198.sslip.io`(쉼표로 두 주소) | 서버 | Caddy 문법 `caddy adapt`로 먼저 확인 |
+| 3 | Caddy만 반영: `docker compose up -d --no-deps --force-recreate caddy` (환경변수라 reload로는 안 바뀜, 수 초 끊김) | 서버 | `curl -I https://새도메인` 200, 인증서 발급 로그(Let's Encrypt) |
+| 4 | 네이버 지도 콘솔 → Maps 애플리케이션 → Web 서비스 URL에 `https://새도메인` 추가(기존 sslip.io는 남김) | 네이버 클라우드 콘솔 | ZIP:ON 지도 네이버로 표시 |
+| 5 | `NAVER_WEB_SERVICE_URL=https://새도메인`(안내 문구용) | PC `.env.docker` → 서버 업로드 | — |
+| 6 | 코드 2곳: `web/src/lib/services.ts`의 `MONEYON_URL`, `services/stockon/service.py`의 `ORACLE_URL` → `https://새도메인/…` | 커밋 → main push(HF 자동 배포로 HF 홈 카드도 새 주소) | HF·오라클 홈 카드 링크 |
+| 7 | AI LAB 앱만 재빌드(6 반영) | 서버 | `/`·`/stock`·`/moneyon` |
+| 8 | QR 코드 새로 생성: `https://새도메인/demo`(오류 정정 H, PNG 1024px) + 짧은 주소 글자 | PC(파이썬 `qrcode` 패키지) | 휴대폰 3대 스캔(카카오톡·기본 카메라) |
+| 9 | 슬라이드·인쇄물 QR 교체, 예비 슬라이드에 sslip.io QR | 발표 자료 | — |
+| 10 | 문서의 주소 갱신(`MIGRATION_ORACLE.md`, 이 문서) | 커밋 | — |
+
+- 머니온·STOCK:ON·AI LAB은 상대 경로(`/moneyon`, `/stock`)를 쓰므로 그 밖의 코드는 바꿀 필요 없다.
+- 키움 포털 IP 등록은 IP 기준이라 도메인과 무관(바꿀 것 없음).
+
 ---
 
 ## 6. 전체 일정 (11/17까지)

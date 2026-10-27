@@ -149,7 +149,9 @@ def _task_watch():
     for w in settings["watchlist"]:
         item = {"code": w["code"], "name": w["name"], "price": directory.get(w["code"])}
         try:
-            item["news"] = news.search(f'"{w["name"]}"', display=WATCH_NEWS) if news.configured() else []
+            # 제목에 종목명이 직접 나오는 기사만(여러 종목을 한꺼번에 다룬 기사가 관심 종목마다 겹치지 않게)
+            found = news.search(f'"{w["name"]}"', display=30) if news.configured() else []
+            item["news"] = [n for n in found if w["name"] in n["title"]][:WATCH_NEWS]
         except news.NewsError:
             item["news"] = []
         item["disclosures"] = disclosures.recent(w["name"])
