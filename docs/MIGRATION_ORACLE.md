@@ -175,7 +175,7 @@ curl -s localhost/api/health            # Caddy 경유
 필수(전환 전):
 - 오라클 주소에서 기존 접속 코드로 로그인 확인 — HF가 `ACCESS_SECRET`을 Secrets로 따로 쓰면 서명 키가 달라 실패함(6-3).
 - 병행 기간 동안 관리자 수정(접속 코드·구성원, 부동산 알림 규칙)은 HF 한 곳에서만(6-3).
-- 전환 결정 후: `oracle-migration`을 `main`에 병합(병합 시 HF 자동 배포 1회 실행) → 서버를 `main`으로 전환(`git checkout main && git pull && docker compose up -d --build`) → HF Space·GitHub `HF_TOKEN` 정리, `deploy-space.yml` 비활성화.
+- ~~`oracle-migration`을 `main`에 병합, 서버를 `main`으로 전환~~ → 완료(6-8). HF Space는 끄지 않고 예비로 유지하기로 함 → `HF_TOKEN`·`deploy-space.yml`은 그대로(main push 때 HF도 갱신).
 
 선택:
 - 사용량 통계 분리: 오라클에 `ANALYTICS_SUPABASE_*` 별도 프로젝트 지정, 또는 HF 종료 후 자연 해결(6-3).
@@ -204,6 +204,25 @@ curl -s localhost/api/health            # Caddy 경유
 | 확인 | 머니온 화면·정적 파일·꿀벌 이미지·체험 시작/조회 API 200, 다른 출처 POST 403, 헤드리스 Chrome 체험 시작 정상. AI LAB `/`·`/realestate`·`/dreamcar` 200, `/api/ready` ready, 지도 naver |
 | 무중단 | AI LAB·Caddy 컨테이너 재시작 없음 |
 | HF 영향 | 없음 — `apps/`·`Caddyfile`·`docker-compose.yml`은 HF AI LAB 배포 트리거·업로드 목록·이미지에 포함되지 않음, HF MONEY:ON Space에는 업로드 안 함 |
+
+### 6-8. 완전 전환 1·2단계: 머니온 링크, main 병합, 서버 main 전환 (2026-10-27)
+
+| 단계 | 결과 |
+|---|---|
+| 머니온 링크 | `web/src/lib/services.ts`의 `MONEYON_URL = "https://140-245-88-198.sslip.io/moneyon"` **한 곳**에서 관리(도메인 변경 시 이 줄만). `services/access.py` 관리자 목록의 moneyon `page`는 HF 전체 주소 대신 사이트 경로 `/moneyon`(화면 표시·접근 제어에 안 쓰이는 값). 커밋 `bbd9ce8a` |
+| 오라클 반영 | `docker compose up -d --build --no-deps ailab` — AI LAB만 재빌드·재생성, caddy·moneyon 시작 시각 그대로. 홈 카드 클릭 → 새 탭 `/moneyon/` 체험 화면 |
+| 검사 | `tsc --noEmit` 통과. `tests.test_frontend_ux` 83개 중 홈 그리드 반응형 2개 실패 — **`origin/main`에서도 같은 2개 실패하는 기존 문제**(이번 변경과 무관, 미수정). HF 배포 워크플로는 테스트를 돌리지 않음 |
+| main 병합 | `git push origin oracle-migration:main` — fast-forward `2618149f → bbd9ce8a`(9커밋). 직전 HF 배포가 `2618149f`였으므로 HF로 나간 변경은 이번 것뿐 |
+| HF 자동 배포 | GitHub Actions `deploy-space.yml` 성공(18초, run 40432936396). HF 업로드 대상 변경 4개: `web/src/lib/services.ts`(카드 링크), `services/access.py`, `services/map_providers.py`(환경변수 없으면 기존 HF 주소 그대로), `Dockerfile`(`mkdir data/admin`). `apps/`·`Caddyfile`·`docker-compose.yml`·`docs/`·`.dockerignore`·`.env.example`은 업로드 대상 아님. 약 2분 뒤 HF 재기동(HF 커밋 `1c46cef` → `0d39696`) |
+| HF 확인 | `/`·`/realestate`·`/dreamcar` 200, `/api/ready` ready, 지도 naver(web_service_url은 HF 주소). **HF AI LAB 홈의 머니온 카드도 오라클 `/moneyon/`으로 열림**(헤드리스 Chrome 클릭 확인). HF 머니온 Space는 예비로 그대로(카드에서 더는 연결 안 됨) |
+| 오라클 확인 | `/`·`/realestate`·`/dreamcar`·`/moneyon/` 200, `/api/ready` ready, 지도 naver |
+| 서버 브랜치 | `~/ailab`을 `oracle-migration` → `main`(`origin/main` 추적)으로 `git switch`. 같은 커밋이라 파일 변경 0, `Caddyfile` inode·컨테이너 시작 시각 그대로, **재빌드 없음**. `.env`·`.env.docker`(600) 그대로 |
+
+이후 운영:
+- 브랜치는 `main` 하나. 서버 갱신은 `cd ~/ailab && git pull` 후 6-6 운영 메모대로 서비스별 `--no-deps` 재빌드.
+- `main` push에 `api/ services/ web/ Dockerfile` 등이 포함되면 HF 예비 AI LAB도 자동 갱신됨.
+- `oracle-migration` 브랜치는 `main`과 같은 커밋으로 맞춰 두었고 더 쓰지 않음(정리는 별도 결정).
+- 오라클 `/api/health`의 `commit`은 `null`(이미지에 `.git`이 없어 `NO_GIT_DIRECTORY`). 버전 표시가 필요하면 빌드 때 `AILAB_BUILD_ID`를 넣는 방법을 검토.
 
 ### 사용하지 않는 서버 (기록용)
 
