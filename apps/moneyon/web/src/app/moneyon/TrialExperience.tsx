@@ -8,6 +8,7 @@ import RewardSaving from "./RewardSaving";
 import { PRACTICE, PracticeNote, monthDay, weekRange } from "./WeeklyJourney";
 import { FROM, formula } from "./TrialHome";
 import type { Child, ChildTransaction, State } from "./types";
+import AiCard, { type AiFeature, type AiStream } from "./AiCard";
 
 export const TRIAL_STORAGE="moneyon-trial-v1";
 type Snapshot={token?:string;child:Child;state:State;day:string;generation:number;expires:number};
@@ -35,7 +36,11 @@ export function TrialStatus({error,onExit,quiet}:{error?:string;onExit?:()=>void
   return <main className="mk-entry" aria-busy={!error}><div className="mk-entry-shell"><span className="mk-entry-logo">MONEY:ON</span><span className="mk-demo-label">체험 모드 · 가상 돈이에요</span><div className="mk-entry-art"><Izani mood={error?"help":"greeting"}/></div>{error?<><p role="alert" className="mk-entry-copy">{error}</p><button className="mk-button" onClick={onExit}>처음으로</button></>:quiet?null:<p role="status" className="mk-entry-copy">통장을 준비하고 있어요…</p>}</div></main>;
 }
 
-export default function TrialExperience({onExit}:{onExit:()=>void}) {
+export default function TrialExperience({onExit,startDemo=false}:{onExit:()=>void;startDemo?:boolean}) {
+  // AI 기능(오라클): 서버가 켠 기능만 보인다. 꺼져 있으면 화면은 예전과 같다.
+  const [aiFeatures,setAiFeatures]=useState<AiFeature[]>([]);
+  useEffect(()=>{let live=true;void apiFetch(`${API_URL}/api/moneyon/trial/ai/config`).then(r=>r.ok?r.json():null).then(c=>{if(live&&c?.enabled)setAiFeatures(c.features);}).catch(()=>{});return()=>{live=false;};},[]);
+  const aiStream:AiStream=(feature,body,signal)=>apiFetch(`${API_URL}/api/moneyon/trial/ai/${feature}`,{method:"POST",signal,timeoutMs:30000,headers:{"Content-Type":"application/json","X-Moneyon-Trial":credentials.current.token,"X-Moneyon-Trial-Version":String(credentials.current.generation)},body:JSON.stringify(body)});
   const [snapshot,setSnapshot]=useState<Snapshot|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState(""),[expired,setExpired]=useState(false);
   // amount: 엄마 화면에서 보낼 용돈(10,000원으로 시작).
   const [panel,setPanel]=useState(""),[amount,setAmount]=useState("10000"),[message,setMessage]=useState("");
@@ -61,8 +66,10 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
     let current=true;
     async function open(){
       try{
+        // 시연 모드: 저장된 체험 대신 시연 데이터가 채워진 새 체험 통장(각자 자기 복사본)
+        if(startDemo)sessionStorage.removeItem(TRIAL_STORAGE);
         credentials.current.token=sessionStorage.getItem(TRIAL_STORAGE)||"";
-        const next:Snapshot=await api(credentials.current.token?"/state":"/start",credentials.current.token?undefined:{});
+        const next:Snapshot=await api(credentials.current.token?"/state":startDemo?"/demo":"/start",credentials.current.token?undefined:{});
         if(!current)return;
         if(next.token){credentials.current.token=next.token;sessionStorage.setItem(TRIAL_STORAGE,next.token);}
         apply(next);
@@ -106,6 +113,7 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
   const sent=state.transactions.filter(t=>t.kind==="payment"||t.kind==="allowance_bonus"||t.kind==="savings_interest").sort((x,y)=>y.created.localeCompare(x.created)).slice(0,3);
   const parentView=<section className="mk-parent-view" aria-label="엄마 화면">
     <p className="mk-caption">엄마가 쓰는 화면이에요(체험). 아이에게 용돈을 보내면 아이 기록에 &lsquo;엄마가 보내줬어요&rsquo;로 남아요.</p>
+    {aiFeatures.includes("parent")&&<AiCard feature="parent" stream={aiStream} audience="parent" title="이번 주 리포트" button="이번 주 리포트 받기" again="리포트 다시 받기" className="mk-ai-parent"/>}
     <div className="mk-parent-balance"><span>엄마 통장</span><strong data-testid="parent-balance">{won(state.education?.parent_balance??0)}</strong></div>
     <form className="mk-spend-form" onSubmit={e=>{e.preventDefault();void action("allowance");}}>
       <label>아이에게 보낼 용돈<span className="mk-bank-amount"><input required type="number" inputMode="numeric" min={100} max={10000000} step={100} placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)}/><span>원</span></span></label>
@@ -148,5 +156,7 @@ export default function TrialExperience({onExit}:{onExit:()=>void}) {
       </div>}
       {panel==="reset"&&<section aria-describedby="trial-reset-description"><Izani mood="help"/><p id="trial-reset-description">체험한 내용만 처음 상태로 돌아가요.</p><div className="mk-main-actions"><button className="mk-button" disabled={busy} onClick={()=>void action("reset")}>확인하고 초기화</button><button className="mk-button secondary" disabled={busy} onClick={()=>setPanel("")}>계속 체험하기</button></div></section>}
     </TrialSheet>;
-  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={next=>setSnapshot(s=>s?{...s,state:next}:s)} onTransact={transact} trialControls={toolsButton} trialParent={parentView} trialPending={waiting.length?pendingTotal:null} onSettle={openSettle} trialRecords={<button type="button" className="mk-text-button" onClick={openReward}>이자 기록 보기</button>} trialOverlay={sheet} trialCelebrating={celebrating} onHome={onExit} trialMessage={message}/>;
+  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={next=>setSnapshot(s=>s?{...s,state:next}:s)} onTransact={transact} trialControls={toolsButton} trialParent={parentView} trialPending={waiting.length?pendingTotal:null} onSettle={openSettle} trialRecords={<button type="button" className="mk-text-button" onClick={openReward}>이자 기록 보기</button>} trialOverlay={sheet} trialCelebrating={celebrating} onHome={onExit} trialMessage={message}
+    trialLetter={aiFeatures.includes("letter")?<AiCard feature="letter" stream={aiStream} title="꿀벌의 주간 편지" button="꿀벌 편지 받기" again="편지 다시 받기" className="mk-ai-letter"/>:undefined}
+    aiStream={aiFeatures.includes("coach")?aiStream:undefined}/>;
 }

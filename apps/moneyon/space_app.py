@@ -16,6 +16,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from api.moneyon_trial import router, trials
+from api.moneyon_ai import router as ai_router
 
 POOL_TARGET = int(os.environ.get('MONEYON_TRIAL_POOL', '0') or 0)
 KEEP = int(os.environ.get('MONEYON_TRIAL_KEEP', '3000') or 3000)
@@ -46,12 +47,18 @@ async def lifespan(app):
     stop = Event()
     if POOL_TARGET > 0:
         Thread(target=maintain, args=(stop,), name='moneyon-maintenance', daemon=True).start()
+    # AI를 켰으면 첫 요청 전에 SDK를 불러 두고 클라이언트를 만든다(첫 버튼의 '첫 글자' 지연을 줄인다)
+    from services import moneyon_ai
+    if moneyon_ai.config()['enabled'] and not moneyon_ai.config()['fake']:
+        moneyon_ai.async_client()
     yield
     stop.set()
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
 app.include_router(router)
+# AI 기능(오라클 전용, MONEYON_AI_ENABLED=1일 때만 동작). HF Space에는 이 사본을 올리지 않는다.
+app.include_router(ai_router)
 STATIC = Path(os.environ.get('MONEYON_STATIC_DIR', 'web/out')).resolve()
 lock = Lock()
 windows = OrderedDict()

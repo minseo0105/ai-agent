@@ -16,6 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY --chown=user api/ ./api/
 COPY --chown=user services/ ./services/
 COPY --chown=user space_app.py ./space_app.py
+COPY --chown=user data/ai_prepared.json ./data/ai_prepared.json
 COPY --from=web --chown=user /web/out ./web/out
 RUN mkdir -p /home/user/app/runtime && chown user:user /home/user/app/runtime
 USER user

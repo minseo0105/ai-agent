@@ -31,7 +31,7 @@ export function formula(item:RewardItem){
 }
 
 // 체험 홈: 용돈기록장이 주인공. 이번 주 남은 용돈 + 쓴 돈 기록하기, 저축·예상 이자 카드, 이번 주 기록, 저금하기.
-export default function TrialHome({state,walletId,say,mood,pending,records,onSpend,onDeposit,onSavings,onAll,onSettle}:{state:State;walletId:string;say:string;mood:CoachMood;pending:number|null;records:ReactNode;onSpend:()=>void;onDeposit:()=>void;onSavings:()=>void;onAll:()=>void;onSettle:()=>void}) {
+export default function TrialHome({state,walletId,say,mood,pending,records,onSpend,onDeposit,onSavings,onAll,onSettle,ai}:{state:State;walletId:string;say:string;mood:CoachMood;pending:number|null;records:ReactNode;onSpend:()=>void;onDeposit:()=>void;onSavings:()=>void;onAll:()=>void;onSettle:()=>void;ai?:ReactNode}) {
   const [open,setOpen]=useState(false);
   const week=state.education;
   const estimate=(kind:RewardItem["reward_type"])=>state.rewards?.items.find(i=>i.status==="estimated"&&i.reward_type===kind);
@@ -40,6 +40,7 @@ export default function TrialHome({state,walletId,say,mood,pending,records,onSpe
   const rows=state.banking.transactions.filter(t=>t.account_id===walletId&&(!week||(week.start<=t.occurred_at.slice(0,10)&&t.occurred_at.slice(0,10)<week.end))).slice(0,5);
   return <div className="mk-trial-home">
     <div className="mk-say" role="status"><Izani mood={mood}/><p>{say}</p></div>
+    {ai}
     <section className="mk-week-card" aria-label="이번 주 남은 용돈">
       <div className="mk-week-card-top"><span>이번 주 남은 용돈</span>{week&&<small>{weekRange(week.start,week.end)}</small>}</div>
       <strong key={state.wallet} className="mk-week-number mk-money-change" data-testid="child-balance">{won(state.wallet)}</strong>

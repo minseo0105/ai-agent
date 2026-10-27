@@ -14,6 +14,9 @@
 - `web/src/app/moneyon/desktop.css` 추가(2026-10-27): PC(1024px 이상) 전용 배치. 본문 1120px, 하단 탭바 → 왼쪽 세로 메뉴,
   첫 화면·홈·기록·저축(통장 2개 이상)·엄마 화면을 두 칸으로. 모든 규칙이 `@media (min-width:1024px)` 안에 있어
   1023px 이하(휴대폰·태블릿)는 원본과 픽셀 단위로 같음. `page.tsx`, `moneyon/page.tsx`에 import 한 줄씩 추가.
+- AI 기능 추가(2026-10-27, 오라클 전용, HF Space에는 올리지 않음): `services/moneyon_ai.py`, `api/moneyon_ai.py`(space_app에 라우터 등록),
+  `web/src/app/moneyon/AiCard.tsx`·`AiCoach.tsx`·`ai.css`, 홈·저축·엄마 화면과 첫 화면 '시연 데이터로 시작' 연결, `requirements.txt`에 `anthropic`,
+  `Dockerfile.oracle`에 `data/ai_prepared.json` 복사. `MONEYON_AI_ENABLED`가 없으면 화면·동작은 원본과 같음(픽셀 비교 0). 계획·결과는 `docs/MONEYON_AI_PLAN.md`.
 - 원본의 `.gitattributes`(HF LFS 규칙)는 넣지 않음. `README.md`(HF 메타데이터)와 `manifest.json`(실제 파일과 일부 다름)은 원본 그대로 보관.
 
 배포·경로 규칙은 `docs/MULTI_APP_PLAN.md` 참고.

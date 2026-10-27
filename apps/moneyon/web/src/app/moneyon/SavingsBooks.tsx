@@ -2,6 +2,8 @@
 import {useRef,useState} from "react";
 import TrialSheet from "./TrialSheet";
 import Izani from "./Izani";
+import AiCoach, { CoachButton } from "./AiCoach";
+import type { AiStream } from "./AiCard";
 import type {MoneyApi,RunAction,State} from "./types";
 const won=(n:number)=>n.toLocaleString("ko-KR")+"원";
 const NAMES=["여행 자금","닌텐도 모으기","갖고 싶은 장난감","미래의 내 꿈"],TARGETS=[10000,30000,50000],DEPOSITS=[1000,3000,5000];
@@ -27,10 +29,13 @@ export function BookWizard({child,api,run,busy,onState,onClose,onCreated,onDepos
   </TrialSheet>;
 }
 
-export default function SavingsBooks({state,child,api,run,busy,onState,onTransfer,onDeposit}:{state:State;child:string;api:MoneyApi;run:RunAction;busy:boolean;onState:(s:State)=>void;onTransfer:(id:string,kind:"deposit"|"withdraw")=>void;onDeposit?:(id:string,amount:number)=>Promise<boolean>}){
+export default function SavingsBooks({state,child,api,run,busy,onState,onTransfer,onDeposit,aiStream}:{state:State;child:string;api:MoneyApi;run:RunAction;busy:boolean;onState:(s:State)=>void;onTransfer:(id:string,kind:"deposit"|"withdraw")=>void;onDeposit?:(id:string,amount:number)=>Promise<boolean>;aiStream?:AiStream}){
  const [open,setOpen]=useState(false);
+ const [coach,setCoach]=useState("");
+ const coachBook=state.books?.find(b=>b.id===coach);
  return <section className="mk-section"><div className="mk-section-title"><h2>나의 저축통장</h2><button className="mk-text-button" onClick={()=>setOpen(true)}>+ 새 저축통장 만들기</button></div>
- {state.books?.map(b=><article className={`mk-goal mk-book mk-book-${b.color}`} key={b.id}><div><span aria-hidden="true">{b.icon}</span><h3>{b.name}</h3><span>{Math.min(100,Math.floor(b.balance/b.target*100))}%</span></div>{b.nickname&&<p>{b.nickname}</p>}<progress value={Math.min(b.balance,b.target)} max={b.target} aria-label={`${b.name} 달성률`}/><p>{won(b.balance)} <span>/ {won(b.target)}</span></p><p className="mk-caption">다음 주 예상 저축 이자 {won(b.interest??0)}</p><div className="mk-main-actions"><button className="mk-button" disabled={busy} onClick={()=>onTransfer(b.id,"deposit")}>저금하기</button><button className="mk-button secondary" disabled={busy||b.balance<100} onClick={()=>onTransfer(b.id,"withdraw")}>꺼내기</button></div><details><summary>저축 내역과 받은 이자</summary><ul>{b.history.map(t=><li key={t.id}>{t.created.slice(0,10)} · {t.kind==="savings_interest"?"저축 이자":t.amount>0?"저금":"꺼냄"} {won(t.amount)}</li>)}</ul></details></article>)}
+ {state.books?.map(b=><article className={`mk-goal mk-book mk-book-${b.color}`} key={b.id}><div><span aria-hidden="true">{b.icon}</span><h3>{b.name}</h3><span>{Math.min(100,Math.floor(b.balance/b.target*100))}%</span></div>{b.nickname&&<p>{b.nickname}</p>}<progress value={Math.min(b.balance,b.target)} max={b.target} aria-label={`${b.name} 달성률`}/><p>{won(b.balance)} <span>/ {won(b.target)}</span></p><p className="mk-caption">다음 주 예상 저축 이자 {won(b.interest??0)}</p><div className="mk-main-actions"><button className="mk-button" disabled={busy} onClick={()=>onTransfer(b.id,"deposit")}>저금하기</button><button className="mk-button secondary" disabled={busy||b.balance<100} onClick={()=>onTransfer(b.id,"withdraw")}>꺼내기</button></div>{aiStream&&b.balance<b.target&&<CoachButton onOpen={()=>setCoach(b.id)}/>}<details><summary>저축 내역과 받은 이자</summary><ul>{b.history.map(t=><li key={t.id}>{t.created.slice(0,10)} · {t.kind==="savings_interest"?"저축 이자":t.amount>0?"저금":"꺼냄"} {won(t.amount)}</li>)}</ul></details></article>)}
+ {aiStream&&coachBook&&<AiCoach book={coachBook} stream={aiStream} onClose={()=>setCoach("")}/>}
  {open&&<BookWizard child={child} api={api} run={run} busy={busy} onState={onState} onDeposit={onDeposit} wallet={state.wallet} onClose={()=>setOpen(false)}/>}
  </section>;
 }
