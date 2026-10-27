@@ -231,3 +231,13 @@ curl -s localhost/api/health            # Caddy 경유
 ### 사용하지 않는 서버 (기록용)
 
 예전 E2 Micro 서버 `161.33.167.69`(x86_64, 메모리 약 0.5GB)는 사양 부족으로 이전 대상에서 제외했고 이전 키와 함께 더 이상 쓰지 않습니다.
+
+### 6-10. STOCK:ON 1단계 + 키움 수집기(public) 반영 (2026-10-27, 계획 10/29~30에서 앞당김)
+
+- main `36670370` push → HF 자동 배포 성공(Actions 20초, HF 재시작 후 `/api/ready` ready, HF의 `/stock`은 "오라클 서버에서 제공" 안내 — `STOCKON_ENABLED` 없음).
+- 서버: `.env.docker` 다시 올림(PC 원본 → CRLF·앞뒤 공백 정리 + `STOCKON_ENABLED=1` 추가, 기존 파일은 `.env.docker.bak`), `.env.stockon` 새로 올림(600, `STOCKON_PRICE_SOURCE=public`, `KIWOOM_MODE=mock`).
+  → PC `.env.docker`에도 `STOCKON_ENABLED=1` 한 줄을 넣어 두면 다음 업로드 때 빠지지 않는다.
+- `git pull` → `docker compose build ailab`(2분 42초) → `up -d --no-deps ailab` → `up -d --no-deps stockon-collector`. moneyon·ailab-caddy 시작 시각 그대로(건드리지 않음).
+- 첫 수집 약 2분: 시세 기준일 10/26, 브리핑(Sonnet 5.5)·왜 움직였나 10건·뉴스 요약(Haiku 5.5), 작업 6개 오류 0. 팀 관심 종목은 관리자 화면에서 지정 필요(운영 Supabase, 현재 0개).
+- 키움 `--check`(토큰 발급 1회 + 즉시 폐기, 시세 조회 없음): 서버(등록 IP) 성공, **PC(미등록 IP)에서도 성공 → 모의 키는 IP 등록 없이 인증된다.**
+- 키움 시세 전환·복귀는 `docs/STOCKON_PLAN.md` '시연 당일 키움 전환'.
