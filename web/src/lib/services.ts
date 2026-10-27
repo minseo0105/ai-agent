@@ -2,6 +2,10 @@
 // streamlitPath: 아직 Next.js로 옮기지 않은 서비스는 기존 Streamlit 페이지로 연결한다.
 // href: Next.js로 옮긴 서비스는 streamlitPath 대신 href를 채우면 된다.
 
+// MONEY:ON(별도 앱) 주소는 여기 한 곳에서만 관리한다. 도메인을 바꾸면 이 줄만 고친다.
+// HF AI LAB에서도 같은 주소(오라클)로 연결된다. HF 체험 Space(minseo2-moneyon-demo)는 예비로 남겨 둔다.
+export const MONEYON_URL = "https://140-245-88-198.sslip.io/moneyon";
+
 export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search";
 export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search"];
 
@@ -103,7 +107,7 @@ export const SERVICES: Service[] = [
     icon: "🐷",
     title: "MONEY:ON",
     desc: "용돈을 관리하고, 남은 돈에 이자까지!",
-    href: "https://minseo2-moneyon-demo.hf.space/",
+    href: MONEYON_URL,
   },
 ];
 
