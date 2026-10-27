@@ -1,9 +1,18 @@
 # 시연 준비: 동시 접속·부하·접속 방법·일정 (2026-11-17 은행 임원 강의)
 
-## 다음 할 일 (2026-10-28 세션 종료 시점)
+## 다음 할 일 (2026-10-28 세션 종료 시점, 아이 화면 개선 반영)
 
-**완료**: STOCK:ON 1단계·화면 수정·키움 수집기(public) 오라클 반영 · 모의 키 IP 등록 불필요 확인 · **머니온 AI 3기능 오라클 배포(모델 Haiku 5.5 `claude-haiku-5-5` 확정)**.
+**완료**: STOCK:ON 1단계·화면 수정·키움 수집기(public) 오라클 반영 · 모의 키 IP 등록 불필요 확인 · **머니온 AI 3기능 오라클 배포(모델 Haiku 5.5 `claude-haiku-5-5` 확정)** · **머니온 아이 화면 개선 오라클 배포(커밋 `d3bf3db`)**.
 **미완료**: AI LAB AI 문지기·입력 차단 · 도메인·QR·`/demo` · STOCK:ON 3순위(종목 검색·온도계 권장, 테마·자금흐름은 보류) · 키움 장중 시험(11/4·11/6) · 부하 테스트(머니온은 `MONEYON_AI_FAKE=1`로).
+
+**2026-10-28 머니온 아이 화면 개선 기록** (`apps/moneyon`만, HF Space 무관)
+- 이자 카운터 `InterestTicker.tsx`: "이번 주 쌓이는 이자"는 **연출용 표시**(계산은 `web/src/lib/interestTicker.ts`, 서버 `reward()`와 같은 식에 버리기 전 값). 체험 날짜 진행률 + 1.4초마다 0.01원, 화면 열 때 0→현재값 1.5초 시작 연출, "D-n"(정산일 `education.end`까지), 예상 이자 설명 기본 펼침. 기록 직후 "다음 주 이자 ±N원 ⬆️⬇️"(같은 주 안에서 예상 이자가 바뀔 때만, 서버 변경 없음).
+- 금액 버튼 누적(+1,000원 두 번 = 2,000원, 남은 용돈 넘으면 잠김) + "다시 입력", 쓴 돈·저금 화면 모두.
+- 저축 목표: 장난감 / 자전거·킥보드 / 책·학용품 / 엄마·아빠 생일 선물 / 친구 선물 / 직접 입력. 서버 아이콘 허용 목록 확장(`ICONS`, 기존 5개 유지). **AI 목표 코치에는 목표 목록이 없고** 선택한 통장의 이름·금액만 읽어서 코드 변경 없음.
+- 엄마 승인: 새 표 `moneyon_book_approvals`(체험 장부 SQLite 안, 볼륨 `ailab_moneyon-runtime`, `savings.install()`의 `CREATE TABLE IF NOT EXISTS`). **행이 없는 통장 = 승인됨**이라 기존 체험 데이터는 그대로. `POST /children/{child}/books/{book}/approve`(자기 체험 토큰만). 승인 대기 통장은 저금·꺼내기·이자 저축·AI 코치 차단. 아이 화면 알림 → 카드 "엄마 승인 기다리는 중" → 승인 시 축하, 엄마 화면 "승인 요청" 카드. 시연 모드(`startDemo`)는 요청 5초 뒤 자동 승인(새로고침해도 서버 `waited`로 이어 셈). 승인 취소 버튼은 범위 밖.
+- 테스트: 서버 `tests/test_moneyon_books.py` 8개 + 기존 14개 = 22개 통과, 이자 계산 `node --test web/src/lib/interestTicker.test.mjs` 5개. PC 레이아웃 주의: `ai.css`가 홈·엄마 화면 `grid-template-areas`를 다시 정의하므로 영역을 추가하면 `desktop.css`와 `ai.css` 둘 다 고칠 것.
+- 오라클 확인: 공개 주소에서 통장 생성(pending) → 대기 중 저금 409 → 승인 200 → 저금 200. `ailab`·`stockon-collector` 10-27 07:15:49, `ailab-caddy` 10-27 00:05:56 그대로(재시작 0), `moneyon` 10-27 23:54:02(UTC)로 재생성, 기존 통장 행 151개 보존.
+- 로컬 미리보기는 정적 빌드 + FastAPI 한 프로세스로 확인 후 종료. `apps/moneyon/web`에는 `node_modules`가 없어서 루트 `web/node_modules`를 junction으로 연결해 `next build --webpack`(Turbopack은 junction 거부)로 빌드했고, 끝나고 junction·`out`·`.next`를 지움.
 
 **2026-10-28 머니온 AI 배포 기록**
 - main push → 서버 `git pull --ff-only` → compose `moneyon.env_file`에 `.env.moneyon`(`required: false`) 추가, Caddy `/moneyon/*`에 `flush_interval -1` 추가(저장소 커밋으로 반영, 서버 직접 수정 없음) → `caddy adapt` 확인 → stdin reload → `docker compose build moneyon && up -d --no-deps moneyon`.
@@ -13,7 +22,7 @@
 - 참고: git pull 뒤 Caddy 컨테이너 안 Caddyfile은 옛 내용이라(bind mount inode) `caddy reload --config /dev/stdin --adapter caddyfile < Caddyfile`로 호스트 파일을 넣어야 한다.
 
 **다음 세션 첫 단계**
-1. 휴대폰(카카오톡 인앱 포함)에서 `/moneyon/` 시연 모드로 3기능 화면(글자 쓰기·배지) 눈으로 확인.
+1. 휴대폰(카카오톡 인앱 포함)에서 `/moneyon/` 시연 모드로 AI 3기능 화면(글자 쓰기·배지)과 새 이자 카운터·승인 흐름을 눈으로 확인(PC 헤드리스 Chrome으로는 확인함).
 2. AI LAB 쪽 AI 문지기·입력 차단(1·3절) → 도메인·QR·`/demo`(5절).
 3. 부하 테스트 전에 머니온 `MONEYON_AI_FAKE=1`을 `.env.moneyon`에 임시로 넣는 방법 정리(끝나면 제거).
 
