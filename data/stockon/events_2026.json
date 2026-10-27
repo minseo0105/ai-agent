@@ -1,0 +1,8 @@
+{
+  "note": "공식 출처로 확인한 일정만 넣는다. 매년 12월에 다음 해 파일을 추가한다. 옵션 만기일은 규칙(매월 둘째 목요일)으로 계산한다.",
+  "events": [
+    {"date": "2026-11-26", "title": "한국은행 금융통화위원회 통화정책방향 결정", "kind": "rate", "source": {"name": "한국은행", "url": "https://www.bok.or.kr"}},
+    {"date": "2026-10-29", "title": "미국 FOMC 금리 결정 발표(현지 10/28)", "kind": "rate", "source": {"name": "미국 연방준비제도", "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"}},
+    {"date": "2026-12-10", "title": "미국 FOMC 금리 결정 발표(현지 12/9)", "kind": "rate", "source": {"name": "미국 연방준비제도", "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"}}
+  ]
+}

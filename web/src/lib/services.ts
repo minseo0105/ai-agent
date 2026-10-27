@@ -62,6 +62,16 @@ export const SERVICES: Service[] = [
     href: "/realestate",
   },
   {
+    id: "stockon",
+    category: "API·Search",
+    image: "/ailab/stock.svg",
+    icon: "📈",
+    title: "STOCK:ON · 오늘 시장을 3줄로",
+    desc: "지수 · 시가총액 히트맵 · 등락 상위 · 팀 관심 종목 뉴스와 공시를 한 화면에서 봅니다.",
+    tags: ["전일 기준", "히트맵", "AI 브리핑", "로그인 전용"],
+    href: "/stock",
+  },
+  {
     id: "report",
     category: "AI Agent",
     image: "/ailab/report.svg",

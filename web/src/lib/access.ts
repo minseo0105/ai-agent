@@ -171,6 +171,7 @@ export function serviceForPath(pathname: string): string | null {
     ["/saju", "saju"],
     ["/car-selector", "car-selector"],
     ["/gif", "gif"],
+    ["/stock", "stockon"],
   ];
   const hit = map.find(([p]) => pathname === p || pathname.startsWith(p + "/"));
   return hit ? hit[1] : null;

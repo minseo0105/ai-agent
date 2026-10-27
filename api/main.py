@@ -41,10 +41,12 @@ from api.golf import router as golf_router
 from api.realestate import router as realestate_router
 from api.report import router as report_router
 from api.saju import router as saju_router
+from api.stock import router as stock_router
 from services import car_selector
 from services.agent import PROVIDERS, SEARCH_MODES, run_agent
 from services.config import get_secret
 from services.dreamcar import ASSET_DIR, IMAGE_DIR
+from services.stockon import service as stockon_service
 
 configure_logging()
 @asynccontextmanager
@@ -53,6 +55,7 @@ async def lifespan(app):
         await collector.start()
     except Exception:
         pass  # Optional telemetry must never prevent startup.
+    stockon_service.start_scheduler()  # STOCKON_ENABLED일 때만. 외부 호출은 이 스케줄러만 한다
     yield
     await collector.stop()
 
@@ -68,6 +71,7 @@ app.include_router(realestate_router)
 app.include_router(report_router)
 app.include_router(dreamcar_router)
 app.include_router(saju_router)
+app.include_router(stock_router)
 app.include_router(car_selector_router)
 app.include_router(gif_router)
 app.include_router(access_router)

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef4fb"/><stop offset="1" stop-color="#b9cce6"/></linearGradient>
+<radialGradient id="sun" cx="15%" cy="8%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".92"/><stop offset="1" stop-color="#fff" stop-opacity=".4"/></linearGradient>
+<linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1E4E8C"/><stop offset="1" stop-color="#13315C"/></linearGradient>
+<filter id="b10"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="640" height="480" fill="url(#bg)"/><rect width="640" height="480" fill="url(#sun)"/>
+<rect x="150" y="82" width="360" height="330" rx="24" fill="#13315C" opacity=".25" filter="url(#b10)"/>
+<rect x="120" y="60" width="360" height="330" rx="24" fill="url(#glass)" stroke="#fff" stroke-opacity=".85"/>
+<g>
+<rect x="148" y="92" width="150" height="104" rx="6" fill="#e11d48" opacity=".78"/>
+<rect x="302" y="92" width="76" height="104" rx="6" fill="#2563eb" opacity=".62"/>
+<rect x="382" y="92" width="70" height="50" rx="6" fill="#e11d48" opacity=".45"/>
+<rect x="382" y="146" width="70" height="50" rx="6" fill="#64748b" opacity=".45"/>
+<rect x="148" y="200" width="96" height="58" rx="6" fill="#2563eb" opacity=".4"/>
+<rect x="248" y="200" width="130" height="58" rx="6" fill="#e11d48" opacity=".55"/>
+<rect x="382" y="200" width="70" height="58" rx="6" fill="#2563eb" opacity=".75"/>
+</g>
+<polyline points="150,350 196,322 236,334 280,296 322,308 366,272 410,284 452,248" fill="none" stroke="url(#line)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="452" cy="248" r="9" fill="#13315C" stroke="#fff" stroke-width="3"/>
+<rect x="420" y="300" width="150" height="104" rx="20" fill="url(#glass)" stroke="#fff" stroke-opacity=".9"/>
+<g fill="#13315C"><rect x="440" y="322" width="80" height="9" rx="4.5" opacity=".75"/><rect x="440" y="342" width="110" height="7" rx="3.5" opacity=".4"/><rect x="440" y="358" width="96" height="7" rx="3.5" opacity=".4"/><rect x="440" y="374" width="104" height="7" rx="3.5" opacity=".4"/></g>
+</svg>

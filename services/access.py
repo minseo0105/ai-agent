@@ -44,6 +44,8 @@ SERVICE_CATALOG = [
     {"id": "saju", "icon": "🔮", "title": "AI 사주 · 대운 분석", "page": "/saju", "api": ["/api/saju"]},
     {"id": "car-selector", "icon": "🚗", "title": "차량 선택기", "page": "/car-selector", "api": ["/api/car-selector"]},
     {"id": "gif", "icon": "🎞️", "title": "GIF 변환기", "page": "/gif", "api": ["/api/gif"]},
+    # 화면·API는 저장된 스냅샷만 읽는다(방문자 요청이 외부 호출을 만들지 않음). 관리 API는 별도로 관리자만.
+    {"id": "stockon", "icon": "📈", "title": "STOCK:ON", "page": "/stock", "api": ["/api/stock"]},
     # 별도 앱(오라클 /moneyon 컨테이너): AI LAB에 화면·API가 없어 공개 설정(홈 노출)만 연결한다.
     # 홈 카드가 여는 실제 주소는 web/src/lib/services.ts의 MONEYON_URL 한 곳에서만 관리한다.
     {"id": "moneyon", "icon": "🐷", "title": "MONEY:ON", "page": "/moneyon", "api": []},
