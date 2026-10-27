@@ -140,9 +140,18 @@ curl -s localhost/api/health            # Caddy 경유
 2. 수집기를 끄는 환경변수(예: `USAGE_EVENTS_DISABLED=1`)를 `services/usage_events.py`에 추가 — 코드 변경이라 별도 작업
 3. 병행 기간이 짧으면 그대로 두고, 전환 후 HF를 끄면 자연히 해결
 
-### 6-4. 남은 일
+### 6-4. 재시작 테스트 (2026-10-27)
 
-- 재시작 테스트: `docker kill ailab` 후 자동 재기동, 서버 재부팅 후 컨테이너 자동 기동 확인(아직 안 함).
+| 테스트 | 결과 |
+|---|---|
+| `docker kill ailab` | **자동 재기동 안 됨(정상 동작).** Docker는 `docker kill`/`docker stop`처럼 사용자가 직접 멈춘 컨테이너에는 `restart: always`를 적용하지 않음(데몬 재시작·수동 시작 전까지 꺼진 채 유지). 90초 동안 `exited`(137), 그 사이 외부 502. `docker start ailab`으로 복구(약 2분 중단, 그 동안 `/realestate` 사용 중이던 실제 방문 요청이 502를 받음) |
+| 장애 흉내: 호스트에서 컨테이너 메인 프로세스 `sudo kill -9 <PID>` | **자동 재기동 확인.** 즉시 재시작(RestartCount 0→1), 6초 뒤 healthy, 외부 `/api/ready` ready |
+| 서버 재부팅 `sudo systemctl reboot` | **자동 기동 확인.** SSH 40초, 외부 `/api/ready` ready 53초. `ailab`(healthy)·`ailab-caddy` 모두 부팅 후 자동 시작(시작 시각 갱신), 인증서는 볼륨(`caddy-data`)에 남아 재발급 없음(만료 2027-01-24 그대로) |
+
+주의: 운영 중 컨테이너를 일부러 멈출 때는 `docker kill`/`stop` 후 반드시 `docker start` 또는 `docker compose up -d`로 다시 켜야 함. 재시작 정책 테스트는 `docker kill`이 아니라 프로세스 강제 종료로 해야 함.
+
+### 6-5. 남은 일
+
 - `NAVER_WEB_SERVICE_URL`이 비어 있음 → 네이버 콘솔에 새 주소 등록 후 채워야 새 주소에서 지도가 뜸.
 - 오라클에서 기존 접속 코드로 로그인 확인(위 서명 키 항목).
 - 전환 결정 후: `oracle-migration`을 `main`에 병합(병합 시 HF 자동 배포 1회 실행), HF Space·`HF_TOKEN` 정리, `deploy-space.yml` 비활성화.
