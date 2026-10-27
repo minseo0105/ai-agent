@@ -83,7 +83,7 @@ curl -s localhost/api/health            # Caddy 경유
 | 디스크 | `/` 30GB 중 9.9GB 사용 (20GB 여유) |
 | 접속 | 이 PC에서 `ssh ailab` (`~/.ssh/config`, 키 `~/.ssh/ailab-a1.key`) |
 
-향후 같은 서버에 드림카(`/dreamcar`), MONEY:ON(`/moneyon`)을 경로로 함께 올릴 계획입니다(Caddyfile 경로 라우팅 추가 필요).
+같은 서버에 MONEY:ON을 `/moneyon` 경로로 함께 올렸습니다(2026-10-27, 6-7). 드림카(`/dreamcar`)는 AI LAB 안의 페이지라 따로 올릴 필요 없이 이미 열립니다.
 
 ### 6-1. 기본 세팅 (2026-10-26 완료)
 
@@ -180,14 +180,30 @@ curl -s localhost/api/health            # Caddy 경유
 선택:
 - 사용량 통계 분리: 오라클에 `ANALYTICS_SUPABASE_*` 별도 프로젝트 지정, 또는 HF 종료 후 자연 해결(6-3).
 - 도메인 연결: 서버 `.env`의 `SITE_ADDRESS`를 도메인으로 바꾸고 `docker compose up -d`(인증서 자동 발급) → 네이버 콘솔 Web 서비스 URL과 `NAVER_WEB_SERVICE_URL`도 함께 변경.
-- 드림카(`/dreamcar`)·MONEY:ON(`/moneyon`) 경로 추가: Caddyfile 경로 라우팅과 compose 서비스 추가.
+- ~~드림카·MONEY:ON 경로 추가~~ → MONEY:ON 완료(6-7). 드림카는 AI LAB 페이지라 해당 없음.
+- AI LAB 홈 카드의 MONEY:ON 링크를 오라클 `/moneyon`으로 바꿀지(지금은 HF 유지, `docs/MULTI_APP_PLAN.md` 7-6).
 - `.env.docker`의 `NAVER_API_KEY` 앞 공백은 업로드 사본에서만 지우고 있음 → 내 PC 원본도 정리하면 이후 업로드가 단순해짐(코드에서 쓰지 않는 키).
 
 운영 메모:
-- 서버 갱신: `cd ~/ailab && git pull && docker compose up -d --build`.
+- 서버 갱신(AI LAB만): `cd ~/ailab && git pull && docker compose up -d --build --no-deps ailab`. MONEY:ON만: `... --no-deps moneyon`. 서비스 이름 없이 `up -d`를 하면 caddy도 재생성될 수 있음(6-7).
+- Caddyfile을 바꿨을 때: `git pull` 후 `docker exec -i ailab-caddy caddy reload --config /dev/stdin --adapter caddyfile < Caddyfile`(파일 하나 bind mount라 `--config /etc/caddy/Caddyfile`로는 옛 파일을 읽음). 적용 전 일회용 컨테이너로 `caddy adapt` 확인.
 - 환경변수만 바꿀 때: `.env.docker` 업로드 후 `docker compose up -d --force-recreate --no-deps ailab`(재빌드 없음).
 - 일회성 점검 컨테이너는 `docker compose run` 대신 `docker run --rm --env-file .env.docker ailab:latest ...`(고정 IP 충돌, 6-2).
 - 컨테이너를 `docker kill`/`stop`으로 멈추면 자동 재시작되지 않음 → 반드시 다시 켤 것(6-4).
+
+### 6-7. MONEY:ON `/moneyon` 추가 (2026-10-27)
+
+자세한 조사·계획·결과는 `docs/MULTI_APP_PLAN.md`(7절). 요약:
+
+| 항목 | 내용 |
+|---|---|
+| 주소 | https://140-245-88-198.sslip.io/moneyon (HF Space `MINSEO2/moneyon-demo`는 강의 시연용으로 그대로 둠) |
+| 소스 | `apps/moneyon/` = HF Space 커밋 `1b409936` 그대로 + `next.config.ts`(`NEXT_BASE_PATH`일 때만 basePath) + `Dockerfile.oracle`(웹 빌드 ENV만 다름) |
+| 컨테이너 | `moneyon`(172.28.0.11, `moneyon-runtime` 볼륨에 체험 SQLite 보존, 비밀값 없음, 메모리 약 40MiB) |
+| Caddy | `/moneyon`→`/moneyon/` 308, `/moneyon/characters/*`는 접두사 유지, `/moneyon/*`는 접두사 제거, 둘 다 `Authorization` 헤더 제거(같은 주소의 AI LAB 로그인 토큰 차단), 나머지 AI LAB. `caddy adapt`로 순서 확인 후 표준입력 `caddy reload`로 무중단 반영 |
+| 확인 | 머니온 화면·정적 파일·꿀벌 이미지·체험 시작/조회 API 200, 다른 출처 POST 403, 헤드리스 Chrome 체험 시작 정상. AI LAB `/`·`/realestate`·`/dreamcar` 200, `/api/ready` ready, 지도 naver |
+| 무중단 | AI LAB·Caddy 컨테이너 재시작 없음 |
+| HF 영향 | 없음 — `apps/`·`Caddyfile`·`docker-compose.yml`은 HF AI LAB 배포 트리거·업로드 목록·이미지에 포함되지 않음, HF MONEY:ON Space에는 업로드 안 함 |
 
 ### 사용하지 않는 서버 (기록용)
 
