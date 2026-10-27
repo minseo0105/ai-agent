@@ -115,6 +115,7 @@ def transaction(child: str, req: Transaction, auth=Depends(Auth), service=Depend
             if req.kind in ('deposit','withdraw'):
                 own=next((b for b in savings.balances(db,child) if b['id']==book),None)
                 if not own: raise ValueError('내 저축통장을 선택해 주세요.')
+                if own['status']=='pending': raise ValueError('엄마가 승인하면 이 통장을 쓸 수 있어요.')
                 if not previous and req.kind=='withdraw' and req.amount>own['balance']: raise ValueError('이 저축통장의 잔액이 부족해요.')
             # Do not call core.transaction here: its state refresh would migrate the new entry before assignment.
             from services.moneyon_banking import MERCHANTS
@@ -140,7 +141,17 @@ class Book(Reset):
 def book(child:str,req:Book,auth=Depends(Auth),service=Depends(trials)):
     def operation(row,ctx):
         with service.ledger.db() as db:
-            savings.create(db,child,req.name,req.target,req.icon,req.color,req.nickname,req.key)
+            savings.create(db,child,req.name,req.target,req.icon,req.color,req.nickname,req.key,approval=True)
+        return service.snapshot(row)['state']
+    return execute(service,auth,child,operation,True)
+
+
+@router.post('/children/{child}/books/{book}/approve')
+def approve_book(child:str,book:str,auth=Depends(Auth),service=Depends(trials)):
+    # 체험에서는 아이 화면과 엄마 화면이 한 체험 안에 있다. 이 체험의 토큰으로 자기 통장만 승인할 수 있다(execute가 확인).
+    def operation(row,ctx):
+        with service.ledger.db() as db:
+            savings.approve(db,child,book)
         return service.snapshot(row)['state']
     return execute(service,auth,child,operation,True)
 

@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
 import type { ReactNode } from "react";
 import type { CoachMood } from "@/lib/moneyonCoach";
 import type { BankTransaction } from "./Banking";
 import type { RewardItem, State } from "./types";
 import Izani from "./Izani";
+import InterestTicker from "./InterestTicker";
 import { CATEGORY_ICONS } from "./TrialActions";
 import { PracticeNote, weekRange } from "./WeeklyJourney";
 const won=(n:number)=>n.toLocaleString("ko-KR")+"원";
@@ -31,8 +31,7 @@ export function formula(item:RewardItem){
 }
 
 // 체험 홈: 용돈기록장이 주인공. 이번 주 남은 용돈 + 쓴 돈 기록하기, 저축·예상 이자 카드, 이번 주 기록, 저금하기.
-export default function TrialHome({state,walletId,say,mood,pending,records,onSpend,onDeposit,onSavings,onAll,onSettle,ai}:{state:State;walletId:string;say:string;mood:CoachMood;pending:number|null;records:ReactNode;onSpend:()=>void;onDeposit:()=>void;onSavings:()=>void;onAll:()=>void;onSettle:()=>void;ai?:ReactNode}) {
-  const [open,setOpen]=useState(false);
+export default function TrialHome({state,walletId,say,mood,pending,records,onSpend,onDeposit,onSavings,onAll,onSettle,ai,day}:{state:State;walletId:string;say:string;mood:CoachMood;pending:number|null;records:ReactNode;onSpend:()=>void;onDeposit:()=>void;onSavings:()=>void;onAll:()=>void;onSettle:()=>void;ai?:ReactNode;day?:string}) {
   const week=state.education;
   const estimate=(kind:RewardItem["reward_type"])=>state.rewards?.items.find(i=>i.status==="estimated"&&i.reward_type===kind);
   const allowance=estimate("allowance_bonus"),saving=estimate("savings_interest");
@@ -46,16 +45,19 @@ export default function TrialHome({state,walletId,say,mood,pending,records,onSpe
       <strong key={state.wallet} className="mk-week-number mk-money-change" data-testid="child-balance">{won(state.wallet)}</strong>
       <button className="mk-spend-button" onClick={onSpend}><span aria-hidden="true">✏️</span>쓴 돈 기록하기</button>
     </section>
+    <InterestTicker state={state} day={day}/>
     <div className="mk-mini-cards">
       <button onClick={onSavings}><span>🐷 저축통장</span><strong data-testid="child-vault">{won(state.vault)}</strong></button>
-      <button aria-expanded={open} aria-controls="mk-interest-detail" onClick={()=>setOpen(!open)}><span>✨ 다음 주 예상 이자</span><strong data-testid="trial-interest">+{won(total)}</strong>{total===0&&<small>{FROM.allowance_bonus}</small>}</button>
+      <div className="mk-mini-card"><span>✨ 다음 주 예상 이자</span><strong data-testid="trial-interest">+{won(total)}</strong>{total===0&&<small>{FROM.allowance_bonus}</small>}</div>
     </div>
-    {open&&<div className="mk-interest-detail" id="mk-interest-detail">
+    {/* 예상 이자 설명은 눌러야 보이던 것을 기본으로 펼쳐 둔다 */}
+    <div className="mk-interest-detail" id="mk-interest-detail">
+      <h3 className="mk-interest-detail-title">이자는 이렇게 계산해요</h3>
       {[allowance,saving].map(item=>item&&<p key={item.reward_type}><b>{item.reward_type==="allowance_bonus"?"용돈 이자":"저축 이자"}</b>{item.amount?<span data-testid={item.reward_type==="allowance_bonus"?"interest-formula":undefined}>{formula(item)}</span>:<span>{FROM[item.reward_type]}</span>}</p>)}
       <small>100원 미만은 버려요. 다음 주 월요일에 정산하고, 내가 &lsquo;이자 받기&rsquo;를 눌러야 들어와요.</small>
       <PracticeNote/>
       {records}
-    </div>}
+    </div>
     {pending!==null&&<section className="mk-settle-banner" aria-label="정산 알림"><span><span aria-hidden="true">📬</span> 지난주 정산이 왔어요</span><button onClick={onSettle}>{pending?`이자 ${won(pending)} 받기`:"정산 보기"}</button></section>}
     <section className="mk-week-records" aria-label="이번 주 기록">
       <div className="mk-section-title"><h2>이번 주 기록</h2><button className="mk-text-button" onClick={onAll}>모두 보기</button></div>

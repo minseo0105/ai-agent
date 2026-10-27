@@ -35,9 +35,10 @@
   .mk.mk-trial .mk-bottom-nav button .mk-icon{width:24px;height:24px;flex:none}
 
   /* ---- 홈: 왼쪽 잔액·카드, 오른쪽 이번 주 기록 ---- */
-  .mk.mk-trial .mk-trial-home{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-areas:"say rec" "week rec" "mini rec" "detail rec" "dep rec" "settle rec";column-gap:32px;row-gap:18px;align-items:start}
+  .mk.mk-trial .mk-trial-home{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-areas:"say rec" "week rec" "tick rec" "mini rec" "detail rec" "dep rec" "settle rec";column-gap:32px;row-gap:18px;align-items:start}
   .mk.mk-trial .mk-trial-home>.mk-say{grid-area:say}
   .mk.mk-trial .mk-trial-home>.mk-week-card{grid-area:week}
+  .mk.mk-trial .mk-trial-home>.mk-interest-ticker{grid-area:tick;padding:22px 28px}
   .mk.mk-trial .mk-trial-home>.mk-mini-cards{grid-area:mini}
   .mk.mk-trial .mk-trial-home>.mk-interest-detail{grid-area:detail}
   .mk.mk-trial .mk-trial-home>.mk-settle-banner{grid-area:settle}
@@ -50,7 +51,13 @@
   .mk.mk-trial .mk-week-card-top small{font-size:15px}
   .mk.mk-trial .mk-week-number{font-size:66px}
   .mk.mk-trial .mk-spend-button{min-height:58px;font-size:18px}
-  .mk.mk-trial .mk-mini-cards>button{min-height:104px;padding:20px}
+  .mk.mk-trial .mk-mini-cards>button,.mk.mk-trial .mk-mini-cards>.mk-mini-card{min-height:104px;padding:20px}
+  .mk.mk-trial .mk-interest-ticker-top{font-size:17px}
+  .mk.mk-trial .mk-interest-ticker-number{font-size:48px}
+  .mk.mk-trial .mk-interest-ticker-note,.mk.mk-trial .mk-payday-chip{font-size:14px}
+  .mk.mk-trial .mk-interest-delta{font-size:17px}
+  .mk.mk-trial .mk-approval-card{padding:18px 22px}
+  .mk.mk-trial .mk-approval-card>div{font-size:16px}
   .mk.mk-trial .mk-mini-cards span{font-size:15px}
   .mk.mk-trial .mk-mini-cards strong{font-size:28px}
   .mk.mk-trial .mk-week-records .mk-section-title h2{font-size:21px}

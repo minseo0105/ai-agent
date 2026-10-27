@@ -11,7 +11,8 @@ function AmountField({label,amount,setAmount,max,presets}:{label:string;amount:s
   const hint=!amount?"":value%100?"100원 단위로 적어요.":value>max?`${won(max)}까지 적을 수 있어요.`:"";
   return <>
     <label>{label}<span className="mk-bank-amount"><input type="number" inputMode="numeric" min={100} max={max} step={100} placeholder="0" value={amount} onChange={e=>setAmount(e.target.value)}/><span>원</span></span></label>
-    <div className="mk-amount-presets">{presets.map(n=><button type="button" key={n} disabled={n>max} aria-pressed={amount===String(n)} onClick={()=>setAmount(String(n))}>{won(n)}</button>)}</div>
+    {/* 금액 버튼은 누를 때마다 더해진다(1,000원 두 번 = 2,000원). 넘치면 그 버튼은 잠기고, 처음부터 다시 하려면 '다시 입력' */}
+    <div className="mk-amount-presets" aria-label="금액 더하기">{presets.map(n=><button type="button" key={n} disabled={value+n>max} onClick={()=>setAmount(String(value+n))}>+{won(n)}</button>)}<button type="button" className="mk-amount-reset" disabled={!amount} onClick={()=>setAmount("")}>다시 입력</button></div>
     {hint&&<p className="mk-caption" role="status">{hint}</p>}
   </>;
 }
@@ -32,7 +33,8 @@ export function SpendSheet({wallet,busy,onClose,onSave}:{wallet:number;busy:bool
 
 // 저금하기: 내 용돈통장에서 저축통장으로. 통장이 여러 개면 고른다.
 export function DepositSheet({state,busy,onClose,onSave}:{state:State;busy:boolean;onClose:()=>void;onSave:(p:ChildTransaction)=>Promise<boolean>}) {
-  const books=state.books??[];
+  // 엄마 승인을 기다리는 통장에는 저금할 수 없다
+  const books=(state.books??[]).filter(b=>b.status!=="pending");
   const [book,setBook]=useState(books[0]?.id??"");
   const [amount,setAmount]=useState(state.wallet>=3000?"3000":"");
   const target=books.find(b=>b.id===book);

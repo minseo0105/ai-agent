@@ -127,6 +127,8 @@ def coach_facts(state, book_id, weekly):
     book = next((b for b in state.get('books') or [] if b['id'] == book_id), None)
     if not book:
         raise ValueError('저축통장을 찾을 수 없어요.')
+    if book.get('status') == 'pending':
+        raise ValueError('엄마가 승인하면 코치를 받을 수 있어요.')
     if type(weekly) is not int or not 0 <= weekly <= 1000000 or weekly % 100:
         raise ValueError('일주일 저금액은 100원 단위로 골라 주세요.')
     rate, cap, unit = _savings_rule(state)

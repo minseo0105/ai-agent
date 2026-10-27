@@ -35,9 +35,13 @@
 /* PC(1024px 이상): 두 칸 배치에 자리 잡기(desktop.css의 grid-template-areas와 함께) */
 @media (min-width:1024px){
   /* AI 카드가 있을 때만 줄을 더한다(꺼져 있으면 예전 배치 그대로) */
-  .mk.mk-trial .mk-trial-home:has(>.mk-ai-letter){grid-template-areas:"say rec" "ai rec" "week rec" "mini rec" "detail rec" "dep rec" "settle rec"}
+  .mk.mk-trial .mk-trial-home:has(>.mk-ai-letter){grid-template-areas:"say rec" "ai rec" "week rec" "tick rec" "mini rec" "detail rec" "dep rec" "settle rec"}
   .mk.mk-trial .mk-trial-home>.mk-ai-letter{grid-area:ai}
   .mk.mk-trial .mk-parent-view:has(>.mk-ai-parent){grid-template-areas:"cap cap" "ai ai" "bal rec" "form rec"}
   .mk.mk-trial .mk-parent-view>.mk-ai-parent{grid-area:ai}
+  /* 엄마 승인 요청 카드: 있을 때만 맨 위에 한 줄을 더한다 */
+  .mk.mk-trial .mk-parent-view>.mk-approval-card{grid-area:appr}
+  .mk.mk-trial .mk-parent-view:has(>.mk-approval-card){grid-template-areas:"cap cap" "appr appr" "bal rec" "form rec"}
+  .mk.mk-trial .mk-parent-view:has(>.mk-approval-card):has(>.mk-ai-parent){grid-template-areas:"cap cap" "appr appr" "ai ai" "bal rec" "form rec"}
   .mk-ai-text p{font-size:17px}
 }

@@ -402,7 +402,7 @@ class Trials:
                 db.execute(f'DELETE FROM {table} WHERE family=?', (family,))
             for child in children:
                 db.execute('DELETE FROM moneyon_book_entries WHERE book IN (SELECT id FROM moneyon_books WHERE child=?)', (child,))
-                for table in ('moneyon_books', 'moneyon_reward_choices', 'moneyon_payment_rules', 'trial_rewards',
+                for table in ('moneyon_book_approvals', 'moneyon_books', 'moneyon_reward_choices', 'moneyon_payment_rules', 'trial_rewards',
                               'trial_closings', 'quest_progress', 'goals', 'transactions', 'cycles'):
                     db.execute(f'DELETE FROM {table} WHERE child=?', (child,))
             db.execute('DELETE FROM children WHERE family=?', (family,))

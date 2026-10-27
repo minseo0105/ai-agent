@@ -1,5 +1,9 @@
 """Additive savings subledger. Original wallet/vault postings remain authoritative."""
+import time
 import uuid
+
+# 새 저축통장 꾸미기 아이콘(아이 눈높이 목표: 장난감·탈것·책·생일 선물·친구 선물). 앞의 5개는 예전 통장 때문에 유지.
+ICONS = ('🐷', '🎮', '✈️', '🎁', '⭐', '🧸', '🚲', '📚', '🎂', '💝')
 
 
 def install(db):
@@ -10,6 +14,10 @@ def install(db):
     db.execute('''CREATE TABLE IF NOT EXISTS moneyon_book_entries(
         transaction_id TEXT NOT NULL, book TEXT NOT NULL, amount INTEGER NOT NULL,
         PRIMARY KEY(transaction_id,book))''')
+    # 엄마 승인 상태. 행이 없는 통장(승인 기능 이전에 만든 것, 기본 통장)은 '승인됨'으로 본다.
+    db.execute('''CREATE TABLE IF NOT EXISTS moneyon_book_approvals(
+        book TEXT PRIMARY KEY, child TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('pending','approved')),
+        requested_at INTEGER NOT NULL, approved_at INTEGER)''')
     db.execute('''CREATE TABLE IF NOT EXISTS moneyon_reward_choices(
         payout TEXT PRIMARY KEY, child TEXT NOT NULL, choice TEXT NOT NULL,
         amount INTEGER NOT NULL, book TEXT, transaction_id TEXT, request_key TEXT NOT NULL,
@@ -33,17 +41,21 @@ def migrate(db, child):
 
 def balances(db, child):
     migrate(db, child)
-    return [dict(r) for r in db.execute('''SELECT b.*,COALESCE(SUM(e.amount),0) balance
+    now = int(time.time())
+    return [dict(r) for r in db.execute('''SELECT b.*,COALESCE(SUM(e.amount),0) balance,
+        COALESCE(a.status,'approved') status,
+        CASE WHEN a.status='pending' THEN MAX(0,?-a.requested_at) END waited
         FROM moneyon_books b LEFT JOIN moneyon_book_entries e ON e.book=b.id
-        WHERE b.child=? GROUP BY b.id ORDER BY b.rowid''', (child,))]
+        LEFT JOIN moneyon_book_approvals a ON a.book=b.id
+        WHERE b.child=? GROUP BY b.id ORDER BY b.rowid''', (now, child))]
 
 
-def create(db, child, name, target, icon, color, nickname, key):
+def create(db, child, name, target, icon, color, nickname, key, approval=False):
     if not name.strip() or len(name)>30 or len(nickname)>20:
         raise ValueError('통장 이름은 1~30자, 별명은 20자까지 입력해 주세요.')
     if type(target) is not int or target<100 or target>10000000 or target%100:
         raise ValueError('목표는 100원 단위로 정해 주세요. 새 통장은 0원부터 시작해요.')
-    if icon not in ('🐷','🎮','✈️','🎁','⭐') or color not in ('blue','mint','purple','pink'):
+    if icon not in ICONS or color not in ('blue','mint','purple','pink'):
         raise ValueError('통장 꾸미기를 다시 선택해 주세요.')
     old=db.execute('SELECT * FROM moneyon_books WHERE child=? AND request_key=?',(child,key)).fetchone()
     if old:
@@ -53,12 +65,28 @@ def create(db, child, name, target, icon, color, nickname, key):
     if len(balances(db,child))>=20: raise ValueError('통장은 20개까지 만들 수 있어요.')
     book=str(uuid.uuid4())
     db.execute('INSERT INTO moneyon_books VALUES(?,?,?,?,?,?,?,?)',(book,child,name,target,icon,color,nickname,key))
+    if approval:
+        db.execute("INSERT INTO moneyon_book_approvals VALUES(?,?,'pending',?,NULL)",(book,child,int(time.time())))
     return book
+
+
+def is_pending(db, child, book):
+    return bool(db.execute("SELECT 1 FROM moneyon_book_approvals WHERE child=? AND book=? AND status='pending'",(child,book)).fetchone())
+
+
+def approve(db, child, book):
+    """엄마 승인. 이미 승인됐거나 승인 대상이 아닌 통장은 그대로 두고 성공으로 본다(두 번 눌러도 안전)."""
+    if not db.execute('SELECT 1 FROM moneyon_books WHERE child=? AND id=?',(child,book)).fetchone():
+        raise ValueError('저축통장을 찾을 수 없어요.')
+    db.execute("UPDATE moneyon_book_approvals SET status='approved',approved_at=? WHERE child=? AND book=? AND status='pending'",
+               (int(time.time()),child,book))
 
 
 def assign(db, child, transaction, book):
     if not db.execute('SELECT 1 FROM moneyon_books WHERE child=? AND id=?',(child,book)).fetchone():
         raise ValueError('내 저축통장을 선택해 주세요.')
+    if is_pending(db,child,book):
+        raise ValueError('엄마가 승인하면 이 통장을 쓸 수 있어요.')
     tx=db.execute('SELECT vault FROM transactions WHERE child=? AND id=?',(child,transaction)).fetchone()
     existing=db.execute('SELECT * FROM moneyon_book_entries WHERE transaction_id=?',(transaction,)).fetchall()
     if existing and any(e['book']!=book for e in existing):

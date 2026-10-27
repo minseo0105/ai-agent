@@ -17,6 +17,8 @@ export function nextWeek(day:string){return addDays(day,7);}
 // 서버가 허용하는 체험 날짜의 끝(services/moneyon_trial.py advance).
 const LAST_DAY="2027-10-12";
 const won=(n:number)=>n.toLocaleString("ko-KR")+"원";
+// 시연 모드(MONEYON_DEMO_ENTRY)에서는 청중이 혼자 체험하므로 통장 만들기 요청 5초 뒤 엄마가 자동 승인한다.
+const DEMO_APPROVE_MS=5000;
 const BUSY="서버가 잠시 바빠요. 잠시 후 다시 시도해 주세요.";
 const EXPIRED="체험 시간이 끝났거나 서버가 새로 시작됐어요. 처음부터 다시 체험해 볼까요?";
 // expired: 이 체험 통장을 더 이상 쓸 수 없어 처음부터 시작해야 하는 오류.
@@ -96,6 +98,25 @@ export default function TrialExperience({onExit,startDemo=false}:{onExit:()=>voi
       setMessage(kind==="allowance"?`엄마가 용돈 ${won(Number(amount))}을 보내줬어!`:travel?`${kind==="month"?"한 달":"일주일"}이 지났어! 정산을 보고 이자를 받아 봐.`:kind==="claim"?(wallet+vault?`이자 ${won(wallet+vault)}이 들어왔어! 남은 용돈이 늘었지?`:"정산을 마쳤어!"):"처음 통장으로 돌아왔어!");
     });
   }
+  // 엄마 승인: 아이 화면의 알림 → 엄마 화면의 [승인] 버튼(또는 시연 모드 자동 승인) → 아이 화면 축하.
+  async function approveBook(id:string){await run(async()=>{const state=await api(`/children/${snapshot!.child.id}/books/${id}/approve`,{}) as State;setSnapshot(s=>s?{...s,state}:s);});}
+  const bookStatus=useRef<Record<string,string>>({});
+  const [approvedBook,setApprovedBook]=useState<{icon:string;name:string}|null>(null);
+  useEffect(()=>{
+    const books=snapshot?.state.books;if(!books)return;
+    const newlyApproved=books.find(b=>bookStatus.current[b.id]==="pending"&&b.status!=="pending");
+    bookStatus.current=Object.fromEntries(books.map(b=>[b.id,b.status??"approved"]));
+    if(newlyApproved){setApprovedBook({icon:newlyApproved.icon,name:newlyApproved.name});setPanel("approved");}
+  },[snapshot]);
+  const firstSeen=useRef<Record<string,number>>({});
+  useEffect(()=>{
+    if(!startDemo||!snapshot||busy)return;
+    const book=snapshot.state.books?.find(b=>b.status==="pending");if(!book)return;
+    // 서버가 알려 준 대기 시간(waited)으로 이어 세므로 새로고침해도 5초를 다시 기다리지 않는다.
+    firstSeen.current[book.id]??=Date.now()-(book.waited??0)*1000;
+    const timer=setTimeout(()=>void approveBook(book.id),Math.max(0,DEMO_APPROVE_MS-(Date.now()-firstSeen.current[book.id])));
+    return()=>clearTimeout(timer);
+  },[snapshot,busy,startDemo]);
   // 만료·재시작은 저장된 체험을 지우고, 잠깐 바쁜 오류는 체험을 남겨 두어 다시 들어오면 이어진다.
   if(expired)return <TrialStatus error={EXPIRED} onExit={exit}/>;
   if(!snapshot)return busy?<TrialStatus/>:<TrialStatus error={error} onExit={onExit}/>;
@@ -111,8 +132,10 @@ export default function TrialExperience({onExit,startDemo=false}:{onExit:()=>voi
   // 체험 도구: 시간 이동·초기화는 아이 홈이 아니라 발표자용 작은 메뉴에. 체험마다 날짜가 따로라 다른 사람에게는 영향이 없다.
   const toolsButton=<button className="mk-tools-button" aria-label="체험 도구" onClick={()=>setPanel("tools")}><span aria-hidden="true">🧰</span></button>;
   const sent=state.transactions.filter(t=>t.kind==="payment"||t.kind==="allowance_bonus"||t.kind==="savings_interest").sort((x,y)=>y.created.localeCompare(x.created)).slice(0,3);
+  const pendingBooks=(state.books??[]).filter(b=>b.status==="pending");
   const parentView=<section className="mk-parent-view" aria-label="엄마 화면">
     <p className="mk-caption">엄마가 쓰는 화면이에요(체험). 아이에게 용돈을 보내면 아이 기록에 &lsquo;엄마가 보내줬어요&rsquo;로 남아요.</p>
+    {pendingBooks.length>0&&<section className="mk-approval-card" aria-label="승인 요청"><h3>🔔 승인 요청</h3>{pendingBooks.map(b=><div key={b.id} data-testid="approval-request"><span>{b.icon} {b.name} · 목표 {won(b.target)}</span><button type="button" className="mk-button" disabled={busy} onClick={()=>void approveBook(b.id)}>승인</button></div>)}</section>}
     {aiFeatures.includes("parent")&&<AiCard feature="parent" stream={aiStream} audience="parent" title="이번 주 리포트" button="이번 주 리포트 받기" again="리포트 다시 받기" className="mk-ai-parent"/>}
     <div className="mk-parent-balance"><span>엄마 통장</span><strong data-testid="parent-balance">{won(state.education?.parent_balance??0)}</strong></div>
     <form className="mk-spend-form" onSubmit={e=>{e.preventDefault();void action("allowance");}}>
@@ -132,9 +155,10 @@ export default function TrialExperience({onExit,startDemo=false}:{onExit:()=>voi
     <PracticeNote/>
     <button className="mk-button full" disabled={busy} onClick={()=>void action("claim")}>{pendingTotal?`이자 ${won(pendingTotal)} 받기`:"확인"}</button>
   </div>;
-  const sheet=panel&&<TrialSheet title={panel==="settle"?"이번 주 정산":panel==="reward"?(scene?"이자 받기":"이자 기록"):panel==="tools"?"체험 도구":"처음 상태로 돌아가기"} onClose={()=>setPanel("")}>
+  const sheet=panel&&<TrialSheet title={panel==="settle"?"이번 주 정산":panel==="reward"?(scene?"이자 받기":"이자 기록"):panel==="tools"?"체험 도구":panel==="approved"?"승인 완료":"처음 상태로 돌아가기"} onClose={()=>setPanel("")}>
       {error&&<p className="mk-sheet-error" role="alert">{error}</p>}
       {panel==="settle"&&settle}
+      {panel==="approved"&&approvedBook&&<section className="mk-paid-celebration" role="status"><Izani mood="celebration"/><h3>엄마가 승인했어요! 🎉</h3><p>{approvedBook.icon} {approvedBook.name} 통장을 이제 쓸 수 있어요.</p><button className="mk-button full" onClick={()=>setPanel("")}>좋아요</button></section>}
       {panel==="tools"&&<div className="mk-tools">
         <p className="mk-caption">발표·시연용 도구예요. 체험 속 날짜 {monthDay(snapshot.day)} · 실제 날짜와 달라요. 시간을 옮겨도 다른 사람 체험에는 영향이 없어요.</p>
         <button className="mk-button full" disabled={busy||nextWeek(snapshot.day)>LAST_DAY} onClick={()=>void action("date")}>일주일 뒤 보기</button>
@@ -156,7 +180,7 @@ export default function TrialExperience({onExit,startDemo=false}:{onExit:()=>voi
       </div>}
       {panel==="reset"&&<section aria-describedby="trial-reset-description"><Izani mood="help"/><p id="trial-reset-description">체험한 내용만 처음 상태로 돌아가요.</p><div className="mk-main-actions"><button className="mk-button" disabled={busy} onClick={()=>void action("reset")}>확인하고 초기화</button><button className="mk-button secondary" disabled={busy} onClick={()=>setPanel("")}>계속 체험하기</button></div></section>}
     </TrialSheet>;
-  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={next=>setSnapshot(s=>s?{...s,state:next}:s)} onTransact={transact} trialControls={toolsButton} trialParent={parentView} trialPending={waiting.length?pendingTotal:null} onSettle={openSettle} trialRecords={<button type="button" className="mk-text-button" onClick={openReward}>이자 기록 보기</button>} trialOverlay={sheet} trialCelebrating={celebrating} onHome={onExit} trialMessage={message}
+  return <ChildExperience key={snapshot.child.id} child={snapshot.child} state={state} api={api} run={run} busy={busy} error={error} demo onLock={exit} onDismissError={()=>{setError("");setMessage("");}} onState={next=>setSnapshot(s=>s?{...s,state:next}:s)} onTransact={transact} trialControls={toolsButton} trialParent={parentView} trialPending={waiting.length?pendingTotal:null} onSettle={openSettle} trialRecords={<button type="button" className="mk-text-button" onClick={openReward}>이자 기록 보기</button>} trialOverlay={sheet} trialCelebrating={celebrating} onHome={onExit} trialMessage={message} trialDay={snapshot.day}
     trialLetter={aiFeatures.includes("letter")?<AiCard feature="letter" stream={aiStream} title="꿀벌의 주간 편지" button="꿀벌 편지 받기" again="편지 다시 받기" className="mk-ai-letter"/>:undefined}
     aiStream={aiFeatures.includes("coach")?aiStream:undefined}/>;
 }
