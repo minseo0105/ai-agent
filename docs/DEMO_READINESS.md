@@ -1,5 +1,20 @@
 # 시연 준비: 동시 접속·부하·접속 방법·일정 (2026-11-17 은행 임원 강의)
 
+## 다음 할 일 (2026-10-27 세션 종료 시점)
+
+**완료**: STOCK:ON 1단계·화면 수정·키움 수집기(public) 오라클 반영(main `1beff1f4`, push됨) · 모의 키 IP 등록 불필요 확인 · 머니온 AI 3기능(편지·코치·부모 리포트) 구현·테스트 14개 통과·PC 미리보기·모델 비교(로컬 커밋, **push 안 함**).
+**미완료**: 머니온 AI 모델 확정(기본 Haiku 5.5) · 오라클 머니온 배포 · AI LAB AI 문지기·입력 차단 · 도메인·QR·`/demo` · STOCK:ON 3순위(종목 검색·온도계 권장, 테마·자금흐름은 보류) · 키움 장중 시험(11/4·11/6) · 부하 테스트.
+
+**다음 세션 첫 단계**
+1. `git -C .worktrees/main log --oneline -3` 로 머니온 AI 커밋 확인 → `cd apps/moneyon && ..\..\..\..\.venv\Scripts\python.exe -B -m unittest tests.test_moneyon_ai` (14개 통과).
+2. 모델 결정 후 main push(`apps/`는 HF 자동 배포 대상 아님) → 서버 `git pull --ff-only`.
+3. 서버 `~/ailab/.env.moneyon`(600): `ANTHROPIC_API_KEY`, `MONEYON_AI_ENABLED=1`, `MONEYON_DEMO_ENTRY=1`, `MONEYON_AI_DAILY_USD=3` → compose `moneyon.env_file`에 추가(`required: false`).
+4. Caddy `handle_path /moneyon/*`에 `reverse_proxy moneyon:7860 { flush_interval -1 }` → `caddy adapt`로 확인 → stdin reload.
+5. `docker compose build moneyon && docker compose up -d --no-deps moneyon` → `/moneyon/` 시연 데이터로 3기능 확인.
+
+**배포 주의**: 키 값 출력 금지(이름·형식만) · 항상 `--no-deps`, 머니온 작업 때는 moneyon만 재생성(ailab·caddy·stockon-collector 시작 시각 비교) · Caddyfile은 파일 bind mount라 `git pull` 뒤 stdin reload, 관리 API는 127.0.0.1:2019 · HF 머니온 Space는 손대지 않음 · PC `.env.docker`에 `STOCKON_ENABLED=1` 한 줄 추가해 둘 것.
+
+
 작성 2026-10-27. **계획 문서**(코드 수정은 일정에 따라 진행). 대상: AI LAB · STOCK:ON · MONEY:ON(오라클 `140.245.88.198`, A1.Flex 2 OCPU / 12GB).
 시연: 11/17(화) 14:00 이후, 청중 약 30명이 같은 주소를 각자 휴대폰으로 열고 AI 버튼을 누른다. 목적은 "AI가 활용되는 모습" 보여 주기.
 **11/14(금)~11/16(일) 변경 금지**(코드·서버 그대로). 머니온 AI 기능은 `docs/MONEYON_AI_PLAN.md`, 키움 전환은 `docs/STOCKON_PLAN.md`.
