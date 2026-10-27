@@ -150,12 +150,44 @@ curl -s localhost/api/health            # Caddy 경유
 
 주의: 운영 중 컨테이너를 일부러 멈출 때는 `docker kill`/`stop` 후 반드시 `docker start` 또는 `docker compose up -d`로 다시 켜야 함. 재시작 정책 테스트는 `docker kill`이 아니라 프로세스 강제 종료로 해야 함.
 
-### 6-5. 남은 일
+### 6-5. 네이버 지도 설정 (2026-10-27)
 
-- `NAVER_WEB_SERVICE_URL`이 비어 있음 → 네이버 콘솔에 새 주소 등록 후 채워야 새 주소에서 지도가 뜸.
-- 오라클에서 기존 접속 코드로 로그인 확인(위 서명 키 항목).
-- 전환 결정 후: `oracle-migration`을 `main`에 병합(병합 시 HF 자동 배포 1회 실행), HF Space·`HF_TOKEN` 정리, `deploy-space.yml` 비활성화.
-- 서버 갱신 방법: `cd ~/ailab && git pull && docker compose up -d --build`.
+처음 배포 때 지도 설정 응답이 `active: osm`, `sdk.configured: False` — 네이버 지도 대신 기본 지도(OSM)로 떴음.
+원인: `.env.docker`에 `NAVER_MAP_NCP_KEY_ID`/`NAVER_MAP_NCP_KEY`만 있고 `NAVER_MAP_CLIENT_ID`/`NAVER_MAP_CLIENT_SECRET`이 비어 있었음.
+
+| 조치 | 결과 |
+|---|---|
+| 네이버 클라우드 콘솔 Maps Application의 Web 서비스 URL에 `https://140-245-88-198.sslip.io` 추가 | 사용자가 직접 등록 |
+| `.env.docker`에 `NAVER_MAP_CLIENT_ID`, `NAVER_MAP_CLIENT_SECRET`, `NAVER_WEB_SERVICE_URL=https://140-245-88-198.sslip.io` 추가 | 이름·형식만 점검(공백·따옴표 없음, URL 일치·끝 `/` 없음). 새 Client ID/Secret은 기존 NCP_KEY 값과 다른 Application 키 |
+| 업로드 후 `docker compose up -d --force-recreate --no-deps ailab` | 6초 뒤 healthy, `/api/ready` ready |
+| `/api/realestate/map/config` | `active: naver`, `sdk.configured: True`, `web_service_url` 새 주소, Client Secret은 브라우저로 안 내려감 |
+| 헤드리스 Chrome으로 `/realestate` 열기 | `maps.js` 200, `oapi.map.naver.com/v3/auth` 200, 인증 실패 문구·콘솔 오류 없음, 네이버 타일 25개와 개발사업 마커(306/454건) 표시 |
+
+주의사항:
+- **지도 SDK는 `NAVER_MAP_CLIENT_ID`만 읽음**(`services/map_providers.py` `sdk_config`). `NAVER_MAP_NCP_KEY_ID`는 쓰지 않음.
+- **`/api/ready`의 naver 점검은 `NCP_KEY_ID`도 인정**하므로 ready가 ok여도 지도는 OSM일 수 있음 → 지도는 `/api/realestate/map/config`의 `active`/`sdk.configured`로 확인.
+- **`NAVER_WEB_SERVICE_URL`은 안내용**: 지도 설정 응답에 표시만 하고 인증에 쓰이지 않음. 네이버는 브라우저의 실제 페이지 주소를 콘솔 Web 서비스 URL 목록과 비교하므로, **새 주소(도메인)로 옮길 때마다 콘솔 등록이 실제로 필요한 작업**이고 이 값은 맞춰 적어 두는 것.
+- `NAVER_MAP_CLIENT_SECRET`은 ZIP:ON 개발사업 서버 지오코딩(`services/development_geocode.py`)에도 필요.
+- `.env.example`에 위 내용을 주석으로 추가함.
+
+### 6-6. 남은 일
+
+필수(전환 전):
+- 오라클 주소에서 기존 접속 코드로 로그인 확인 — HF가 `ACCESS_SECRET`을 Secrets로 따로 쓰면 서명 키가 달라 실패함(6-3).
+- 병행 기간 동안 관리자 수정(접속 코드·구성원, 부동산 알림 규칙)은 HF 한 곳에서만(6-3).
+- 전환 결정 후: `oracle-migration`을 `main`에 병합(병합 시 HF 자동 배포 1회 실행) → 서버를 `main`으로 전환(`git checkout main && git pull && docker compose up -d --build`) → HF Space·GitHub `HF_TOKEN` 정리, `deploy-space.yml` 비활성화.
+
+선택:
+- 사용량 통계 분리: 오라클에 `ANALYTICS_SUPABASE_*` 별도 프로젝트 지정, 또는 HF 종료 후 자연 해결(6-3).
+- 도메인 연결: 서버 `.env`의 `SITE_ADDRESS`를 도메인으로 바꾸고 `docker compose up -d`(인증서 자동 발급) → 네이버 콘솔 Web 서비스 URL과 `NAVER_WEB_SERVICE_URL`도 함께 변경.
+- 드림카(`/dreamcar`)·MONEY:ON(`/moneyon`) 경로 추가: Caddyfile 경로 라우팅과 compose 서비스 추가.
+- `.env.docker`의 `NAVER_API_KEY` 앞 공백은 업로드 사본에서만 지우고 있음 → 내 PC 원본도 정리하면 이후 업로드가 단순해짐(코드에서 쓰지 않는 키).
+
+운영 메모:
+- 서버 갱신: `cd ~/ailab && git pull && docker compose up -d --build`.
+- 환경변수만 바꿀 때: `.env.docker` 업로드 후 `docker compose up -d --force-recreate --no-deps ailab`(재빌드 없음).
+- 일회성 점검 컨테이너는 `docker compose run` 대신 `docker run --rm --env-file .env.docker ailab:latest ...`(고정 IP 충돌, 6-2).
+- 컨테이너를 `docker kill`/`stop`으로 멈추면 자동 재시작되지 않음 → 반드시 다시 켤 것(6-4).
 
 ### 사용하지 않는 서버 (기록용)
 
