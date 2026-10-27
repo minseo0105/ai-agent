@@ -71,3 +71,6 @@ _bookon_run/
 .env
 *.key
 *.pem
+# .env.stockon(키움 키) 등 .env.* 비밀값 파일 전부. 값 없는 템플릿 .env.example만 예외
+.env.*
+!.env.example

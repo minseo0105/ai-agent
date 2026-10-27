@@ -27,3 +27,6 @@ data/golf/runtime
 data/admin
 data/moneyon
 **/secrets.toml
+# 비밀값 파일(.env, .env.docker, .env.stockon …)은 허용 목록 밖이지만 한 번 더 명시
+.env*
+**/.env*
