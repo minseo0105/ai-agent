@@ -1,0 +1,86 @@
+/* PC(1024px 이상) 전용 배치. 오라클 /moneyon 강의 시연용.
+   휴대폰·태블릿(1023px 이하)은 이 파일의 규칙이 하나도 적용되지 않는다.
+   화면 배치만 바꾼다: 마크업·기능·문구는 그대로이고 클래스 선택자만 쓴다.
+   본문 1120px = 왼쪽 세로 메뉴 200px + 간격 40px + 콘텐츠 880px. */
+@media (min-width:1024px){
+  .mk.mk-trial,.mk-entry{--pc-width:1120px;--pc-nav:200px;--pc-gap:40px}
+
+  /* ---- 첫 화면: 왼쪽 글·버튼, 오른쪽 꿀벌 ---- */
+  .mk-entry{display:flex;align-items:center;padding:56px 48px}
+  .mk-entry-shell{width:100%;max-width:var(--pc-width);display:grid;grid-template-columns:minmax(0,1fr) 440px;column-gap:80px;align-items:center}
+  .mk-entry-shell>*{grid-column:1}
+  .mk-entry-shell>.mk-entry-art{grid-column:2;grid-row:1 / span 10;align-self:center;padding:56px;border-radius:40px;background:var(--mo-white);box-shadow:0 18px 50px rgb(8 74 134 / 9%)}
+  .mk-entry .mk-entry-art .mk-mascot{width:300px;height:300px}
+  .mk-entry .mk-entry-logo{font-size:26px}
+  .mk-entry .mk-demo-label{font-size:13px;margin-top:6px}
+  .mk-entry h1{font-size:54px;line-height:1.3;letter-spacing:-1.8px;margin:44px 0 22px}
+  .mk-entry .mk-entry-copy{font-size:20px}
+  .mk-entry .mk-entry-steps{justify-content:flex-start;gap:20px;font-size:19px;padding:28px 0}
+  .mk-entry .mk-practice-note{font-size:14px}
+  .mk-entry .mk-button{width:380px;min-height:60px;font-size:18px}
+  .mk-entry .mk-entry-note{font-size:15px;max-width:560px}
+
+  /* ---- 체험 화면 틀: 헤더는 전체 폭, 아래는 세로 메뉴 + 콘텐츠 ---- */
+  /* 화면이 1120px보다 좁아도 양쪽 24px는 남긴다(세로 메뉴의 left 계산과 같은 기준) */
+  .mk.mk-trial .mk-container{box-sizing:border-box;width:calc(100% - 48px);max-width:var(--pc-width);margin:0 auto;padding:32px 0 72px calc(var(--pc-nav) + var(--pc-gap))}
+  .mk.mk-trial .mk-header{margin-left:calc(-1 * (var(--pc-nav) + var(--pc-gap)));min-height:52px}
+  .mk.mk-trial .mk-header>a{font-size:22px}
+  .mk.mk-trial .mk-header .mk-demo-badge{font-size:13px;padding:4px 11px}
+  .mk.mk-trial .mk-page-heading{margin:28px 0 20px}
+  .mk.mk-trial .mk-page-heading h1{font-size:30px;letter-spacing:-.8px}
+
+  /* 하단 탭바 → 왼쪽 세로 메뉴 (같은 nav, 같은 버튼) */
+  .mk.mk-trial .mk-bottom-nav{position:fixed;top:124px;bottom:auto;left:max(24px,calc(50% - var(--pc-width) / 2));transform:none;width:var(--pc-nav);max-width:none;display:flex;flex-direction:column;gap:6px;padding:12px;border:1px solid var(--mo-line);border-radius:24px;background:var(--mo-white);box-shadow:0 12px 34px rgb(8 74 134 / 7%)}
+  .mk.mk-trial .mk-bottom-nav button{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px;min-height:56px;margin:0;padding:0 18px;border-radius:16px;font-size:17px;font-weight:700;text-align:left}
+  .mk.mk-trial .mk-bottom-nav button .mk-icon{width:24px;height:24px;flex:none}
+
+  /* ---- 홈: 왼쪽 잔액·카드, 오른쪽 이번 주 기록 ---- */
+  .mk.mk-trial .mk-trial-home{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-areas:"say rec" "week rec" "mini rec" "detail rec" "dep rec" "settle rec";column-gap:32px;row-gap:18px;align-items:start}
+  .mk.mk-trial .mk-trial-home>.mk-say{grid-area:say}
+  .mk.mk-trial .mk-trial-home>.mk-week-card{grid-area:week}
+  .mk.mk-trial .mk-trial-home>.mk-mini-cards{grid-area:mini}
+  .mk.mk-trial .mk-trial-home>.mk-interest-detail{grid-area:detail}
+  .mk.mk-trial .mk-trial-home>.mk-settle-banner{grid-area:settle}
+  .mk.mk-trial .mk-trial-home>.mk-week-records{grid-area:rec;padding:22px 26px 12px;border-radius:var(--mo-radius);background:var(--mo-white);box-shadow:var(--mo-shadow)}
+  .mk.mk-trial .mk-trial-home>.mk-deposit-button{grid-area:dep;justify-self:stretch;min-height:56px;font-size:17px}
+  .mk.mk-trial .mk-say p{font-size:17px;padding:10px 16px}
+  .mk.mk-trial .mk-say .mk-mascot{width:72px;height:72px}
+  .mk.mk-trial .mk-week-card{padding:28px 30px 30px}
+  .mk.mk-trial .mk-week-card-top{font-size:17px}
+  .mk.mk-trial .mk-week-card-top small{font-size:15px}
+  .mk.mk-trial .mk-week-number{font-size:66px}
+  .mk.mk-trial .mk-spend-button{min-height:58px;font-size:18px}
+  .mk.mk-trial .mk-mini-cards>button{min-height:104px;padding:20px}
+  .mk.mk-trial .mk-mini-cards span{font-size:15px}
+  .mk.mk-trial .mk-mini-cards strong{font-size:28px}
+  .mk.mk-trial .mk-week-records .mk-section-title h2{font-size:21px}
+  .mk.mk-trial .mk-week-records li{min-height:60px;font-size:17px}
+
+  /* ---- 기록: 잔액 카드와 받은 돈·사용한 돈을 한 줄에 ---- */
+  .mk.mk-trial .mk-container:has(>.mk-account-balance){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;align-content:start}
+  .mk.mk-trial .mk-container:has(>.mk-account-balance)>*{grid-column:1 / -1}
+  .mk.mk-trial .mk-container:has(>.mk-account-balance)>.mk-account-balance{grid-column:1;margin:0}
+  .mk.mk-trial .mk-container:has(>.mk-account-balance)>.mk-account-totals{grid-column:2;align-self:stretch;align-content:center;margin:0;padding:0 8px;border:0;border-radius:var(--mo-radius);background:var(--mo-white);box-shadow:var(--mo-shadow)}
+  .mk.mk-trial .mk-container:has(>.mk-account-balance)>.mk-account-totals+.mk-caption{margin-top:16px}
+  .mk.mk-trial .mk-account-balance strong{font-size:48px}
+  .mk.mk-trial .mk-account-totals span{font-size:14px}
+  .mk.mk-trial .mk-account-totals strong{font-size:26px}
+  .mk.mk-trial .mk-transactions li{font-size:16px}
+
+  /* ---- 저축: 저축통장 카드를 두 칸으로 ---- */
+  /* 통장이 하나면 원래처럼 전체 폭, 둘 이상이면 두 칸 */
+  .mk.mk-trial .mk-section:has(>.mk-book~.mk-book){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+  .mk.mk-trial .mk-section:has(>.mk-book~.mk-book)>*{grid-column:1 / -1}
+  .mk.mk-trial .mk-section:has(>.mk-book~.mk-book)>.mk-book{grid-column:auto;margin:0}
+
+  /* ---- 엄마: 왼쪽 엄마 통장·보내기, 오른쪽 최근에 보낸 돈 ---- */
+  .mk.mk-trial .mk-parent-view{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"cap cap" "bal rec" "form rec";column-gap:32px;row-gap:18px;align-items:start}
+  .mk.mk-trial .mk-parent-view>.mk-caption{grid-area:cap;font-size:15px}
+  .mk.mk-trial .mk-parent-view>.mk-parent-balance{grid-area:bal;padding:22px 24px}
+  .mk.mk-trial .mk-parent-view>.mk-parent-balance strong{font-size:30px}
+  .mk.mk-trial .mk-parent-view>.mk-spend-form{grid-area:form}
+  .mk.mk-trial .mk-parent-view>.mk-week-records{grid-area:rec;margin:0;padding:22px 26px 12px;border-radius:var(--mo-radius);background:var(--mo-white);box-shadow:var(--mo-shadow)}
+
+  /* ---- 입력 시트: 가운데 모달 폭을 조금 줄인다 ---- */
+  .mk-sheet{width:min(560px,calc(100vw - 48px));max-width:560px}
+}

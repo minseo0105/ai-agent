@@ -4,6 +4,7 @@ import TrialExperience,{TRIAL_STORAGE,TrialStatus} from "@/app/moneyon/TrialExpe
 import "@/app/moneyon/moneyon.css";
 import "@/app/moneyon/child.css";
 import "@/app/moneyon/blue.css";
+import "@/app/moneyon/desktop.css";
 import Izani from "@/app/moneyon/Izani";
 import {PRACTICE} from "@/app/moneyon/WeeklyJourney";
 export default function Page(){

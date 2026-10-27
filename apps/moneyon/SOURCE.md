@@ -11,6 +11,9 @@
 - `web/next.config.ts`: `NEXT_BASE_PATH`가 있을 때만 `basePath` 적용(없으면 원본과 동일).
 - `Dockerfile.oracle` 추가: web 빌드 ENV만 `NEXT_BASE_PATH=/moneyon NEXT_PUBLIC_API_URL=/moneyon NEXT_PUBLIC_MONEYON_EPHEMERAL=0`.
   원본 `Dockerfile`은 그대로 둠.
+- `web/src/app/moneyon/desktop.css` 추가(2026-10-27): PC(1024px 이상) 전용 배치. 본문 1120px, 하단 탭바 → 왼쪽 세로 메뉴,
+  첫 화면·홈·기록·저축(통장 2개 이상)·엄마 화면을 두 칸으로. 모든 규칙이 `@media (min-width:1024px)` 안에 있어
+  1023px 이하(휴대폰·태블릿)는 원본과 픽셀 단위로 같음. `page.tsx`, `moneyon/page.tsx`에 import 한 줄씩 추가.
 - 원본의 `.gitattributes`(HF LFS 규칙)는 넣지 않음. `README.md`(HF 메타데이터)와 `manifest.json`(실제 파일과 일부 다름)은 원본 그대로 보관.
 
 배포·경로 규칙은 `docs/MULTI_APP_PLAN.md` 참고.
