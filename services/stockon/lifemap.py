@@ -499,12 +499,13 @@ def opposite(c: dict) -> bool:
 
 
 def _company_news(name: str, basis: dict, skip: set[str], http=None) -> list[dict]:
-    """그 회사 이름이 제목에 든 기준 창 안 기사(이슈 기사 제외)."""
+    """그 회사 이름이 제목에 든 기준 창 안 기사(이슈 기사 제외). 이슈는 다음 날 만들기도 해서 최신순 앞쪽이 창 밖일 수 있다
+    → 최신순 3쪽 + 날짜 표현 검색(대형주는 하루 기사가 많다)."""
     start, end = basis["window"]
     day = datetime.strptime(basis["as_of"], "%Y%m%d")
     kw = {"http": http} if http else {}
-    found = news.search_window(name, start, end, limit=10, max_pages=1, must_contain=name,
-                               extra_queries=[f"{name} {day.month}월 {day.day}일"], **kw)
+    found = news.search_window(name, start, end, limit=10, max_pages=3, must_contain=name,
+                               extra_queries=[f"{name} {day.month}월 {day.day}일", f"{name} {day.day}일"], **kw)
     return [n for n in found if name in n["title"] and n["url"] not in skip][:8]
 
 
