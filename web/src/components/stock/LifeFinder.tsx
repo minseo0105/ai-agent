@@ -44,7 +44,7 @@ function ArticleMeta({ a, basis }: { a: LifeArticle; basis?: string }) {
       <span className="font-semibold">{a.press.replace(/^www\./, "")}</span>
       {w && <span className="tabular-nums">· {w.label}</span>}
       {other && (
-        <span className="rounded-full bg-amber-300/20 px-2 py-0.5 text-[13px] font-extrabold text-amber-100 ring-1 ring-amber-200/40">
+        <span className="rounded-full bg-amber-300/20 px-2 py-0.5 text-[14px] font-extrabold text-amber-100 ring-1 ring-amber-200/40">
           {w!.ymd < basis! ? "기준일 전" : "기준일 뒤"}
         </span>
       )}
@@ -64,8 +64,11 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
       style={{ border: `2px solid ${active ? accent : `${accent}66`}`, background: `linear-gradient(150deg, ${accent}40 0%, ${accent}12 45%, rgba(5,13,31,.6) 100%)`,
         boxShadow: active ? `0 0 28px ${accent}55` : "none" }}>
       <div className="flex items-center justify-between gap-2 text-[14px] font-extrabold">
-        <span style={{ color: accent }} className="brightness-150">{index != null ? `ISSUE ${index + 1}` : "ISSUE"}{item.sector ? ` · ${item.sector}` : ""}</span>
-        <span className="text-slate-300">{total ? `${(index ?? 0) + 1} / ${total}` : ""}</span>
+        <span className="flex items-center gap-1.5 text-white">
+          <span className="size-2.5 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
+          {index != null ? `ISSUE ${index + 1}` : "ISSUE"}{item.sector ? ` · ${item.sector}` : ""}
+        </span>
+        <span className="text-slate-200">{total ? `${(index ?? 0) + 1} / ${total}` : ""}</span>
       </div>
       {rep ? (
         <a href={rep.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
@@ -130,12 +133,12 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
             <tr key={c.code} onClick={() => onPick(c, s, color)} className="cursor-pointer border-t border-white/10 hover:bg-white/5">
               <td className="px-3 py-2.5">
                 <div className="font-extrabold text-white">{c.name}</div>
-                <div className="text-[13px] font-semibold" style={{ color }}>{s.label}</div>
+                <div className="text-[14px] font-semibold" style={{ color }}>{s.label}</div>
               </td>
               <td className="px-2 py-2.5"><Dir d={c.direction} /></td>
               <td className="px-3 py-2.5 text-right">
                 <div className="text-[17px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
-                {c.moved && <div className="text-[13px] font-extrabold text-amber-100">실제 반응 큼</div>}
+                {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 반응 큼</div>}
               </td>
             </tr>
           ))}
@@ -375,12 +378,24 @@ export default function LifeFinder() {
         <div className="relative mt-4">
           {drawing && <DrawingOverlay d={drawing} />}
           {view.kind === "topics" ? (
-            <div ref={rail} onScroll={onRailScroll} className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0" aria-label="오늘의 이슈">
+            <>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <span className="text-[15px] font-extrabold text-white">오늘의 이슈 {active + 1} / {data.topics.length}</span>
+              <div className="flex gap-1.5">
+                {[["‹", -1, "이전 이슈"], ["›", 1, "다음 이슈"]].map(([t, d, name]) => (
+                  <button key={name as string} type="button" aria-label={name as string} disabled={active + (d as number) < 0 || active + (d as number) >= data.topics.length}
+                    onClick={() => goTopic(active + (d as number))}
+                    className="size-10 rounded-full border border-white/25 bg-white/10 text-xl font-bold text-white hover:bg-white/20 disabled:opacity-30">{t as string}</button>
+                ))}
+              </div>
+            </div>
+            <div ref={rail} onScroll={onRailScroll} className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0" aria-label="오늘의 이슈">
               {data.topics.map((t, i) => (
                 <NewsCard key={t.name} item={t} accent={accentFor(t, i)} basis={basisYmd} index={i} total={data.topics.length}
                   active={i === active} onSelect={() => i !== active && goTopic(i)} />
               ))}
             </div>
+            </>
           ) : item ? (
             <div className="space-y-2">
               <button type="button" onClick={() => goTopic(active)} className="text-[15px] font-extrabold text-sky-200 hover:underline">← 오늘의 이슈로</button>

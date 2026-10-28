@@ -202,7 +202,7 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
               const at = shown ? pos : p.pos;
               const nameTop = lines.length === 2 ? -15 : -8;
               const neg = c.direction === "neg";
-              const badge = polar(-45, r);
+              const badge = { x: r + 3, y: 0 }; // 오른쪽 가장자리(이름·등락률 글자와 겹치지 않게)
               return (
                 <g key={c.code} className="lm-node" role="button" tabIndex={0}
                   aria-label={`${c.name}, ${p.stage.label}, ${neg ? "부정" : "긍정"} 영향 가능, 연관도 ${c.relevance}, ${c.moved ? "실제 반응 큼, " : ""}실제 등락률 ${rateText(c.rate)}`}
