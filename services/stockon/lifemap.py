@@ -195,6 +195,7 @@ TOPIC_SYSTEM = """너는 오늘 뉴스 헤드라인에서 '생활 속 화제'를
 규칙:
 - 사람들이 일상에서 겪는 것(먹거리·날씨·건강·교통·가전·서비스·물가 등)으로, 만들고 나르고 파는 산업과 이어지는 화제를 고른다.
 - 정치·범죄·사건사고·특정 회사 주가·증시 시황은 고르지 않는다.
+- 후보는 서로 다른 기사·되도록 다른 분야(사회·생활·IT·경제)에서 고른다. 같은 기사에서 나온 화제를 여러 개 고르지 않는다.
 - name은 누구나 아는 일반 생활 단어(명사) 2~8자, 서로 겹치지 않게. 회사·브랜드·제품 이름은 name에 쓰지 않는다(예: '갤럭시' 대신 '폴더블폰'). summary는 자료에 있는 사실만 한 줄(40자 이내).
 - articles에는 그 화제의 근거가 되는 기사 번호를 정확히 2개 넣는다(주어진 번호만).
 - 권유·전망·평가 표현, '추천', '수혜', '주목' 같은 말을 쓰지 않는다. 한국어."""
@@ -291,14 +292,17 @@ def pick_topics(headlines: list[dict]) -> list[dict]:
     payload = [{"번호": i + 1, "분야": h.get("category", ""), "제목": h["title"], "요약문": (h.get("snippet") or "")[:80]}
                for i, h in enumerate(headlines)]
     raw = _ask(TOPIC_MODEL, TOPIC_SYSTEM, "오늘의 생활 속 화제 후보 5개를 고를 만한 순서로 골라라.", payload, TOPIC_SCHEMA, 2000)
-    topics, names = [], set()
+    topics, names, used_articles = [], set(), set()
     for t in (raw or {}).get("topics") or []:
         name = normalize_word(str(t.get("name") or ""))[:12]
         summary = str(t.get("summary") or "").strip()[:80]
         nums = [n for n in dict.fromkeys(t.get("articles") or []) if isinstance(n, int) and 1 <= n <= len(headlines)]
         if not name or name in names or check_word(name) or not summary or _unsafe(summary) or _unsafe(name) or len(nums) < 2:
             continue
+        if used_articles & set(nums[:2]):
+            continue  # 앞 토픽과 근거 기사가 겹치면 같은 뉴스에서 나온 화제(오늘의 토픽 3개가 한 기사로 쏠리지 않게)
         names.add(name)
+        used_articles.update(nums[:2])
         topics.append({"name": name, "summary": summary,
                        "articles": [{k: headlines[n - 1].get(k) for k in ("title", "url", "press", "pub")} for n in nums[:2]]})
         if len(topics) == 5:

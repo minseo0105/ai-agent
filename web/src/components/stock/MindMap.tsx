@@ -181,8 +181,8 @@ export default function MindMap({ map, onPick, picked }: { map: LifeMap; onPick:
                   style={{ transform: `translate(${at.x}px, ${at.y}px) scale(${on ? 1 : 0.2})`, opacity: on ? 1 : 0, pointerEvents: on ? "auto" : "none", transitionDelay: on ? `${120 + j * 80}ms` : "0ms", cursor: "pointer" }}>
                   <circle r={r + 7} fill={p.color} opacity={picked === c.code ? 0.35 : 0.12} />
                   <circle r={r} fill="#0b1a36" stroke={p.color} strokeWidth={picked === c.code ? 3 : 1.8} />
-                  <text textAnchor="middle" dy="0.35em" fontSize={r >= 24 ? 11.5 : 10} fontWeight={800} fill={rateColor}>
-                    {c.rate == null ? "—" : `${c.rate > 0 ? "▲" : c.rate < 0 ? "▼" : ""}${Math.abs(c.rate).toFixed(1)}%`}
+                  <text textAnchor="middle" dy="0.35em" fontSize={r >= 24 ? 11.5 : 9} fontWeight={800} fill={rateColor}>
+                    {c.rate == null ? "—" : `${c.rate > 0 ? "▲" : c.rate < 0 ? "▼" : ""}${Math.abs(c.rate).toFixed(Math.abs(c.rate) >= 10 ? 0 : 1)}%`}
                   </text>
                   <text y={r + 15} textAnchor="middle" fontSize={12.5} fontWeight={800} fill="#f8fafc" className="lm-label">{short(c.name, 8)}</text>
                 </g>

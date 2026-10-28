@@ -123,6 +123,7 @@ class TopicsTest(LifemapBase):
             {"name": "독감", "summary": "중복", "articles": [4, 5]},
             {"name": "커피", "summary": "커피 수혜 기대", "articles": [6, 7]},  # 금지 표현
             {"name": "버스", "summary": "버스 요금이 바뀐다", "articles": [8, 8, 7]},
+            {"name": "달걀", "summary": "달걀값이 올랐다", "articles": [1, 6]},  # 독감과 근거 기사(1)가 겹침 → 같은 뉴스라 제외
         ]}
         with mock.patch.object(lifemap, "_ask", return_value=raw) as ask:
             topics = lifemap.pick_topics(HEADLINES)
