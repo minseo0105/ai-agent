@@ -36,7 +36,7 @@ CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # 헷갈리는 0/O, 1/I 제�
 
 # 서비스 id → 화면 경로 · API 경로 (접근 제어 기준)
 SERVICE_CATALOG = [
-    {"id": "moneyon", "icon": "🐷", "title": "MONEY:ON · 머니온", "page": "/moneyon", "api": ["/api/moneyon"]},
+    {"id": "moneyon", "icon": "🐝", "title": "MONEY:ON · 머니온", "page": "/moneyon", "api": ["/api/moneyon"]},
     {"id": "agent", "icon": "🤖", "title": "AI 에이전트", "page": "/#agent", "api": ["/api/chat", "/api/agent"]},
     {"id": "golf", "icon": "⛳", "title": "골프장 찾기", "page": "/golf", "api": ["/api/golf"]},
     {"id": "dreamcar", "icon": "🚙", "title": "내차에서 드림카까지", "page": "/dreamcar", "api": ["/api/dreamcar"]},

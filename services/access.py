@@ -48,7 +48,7 @@ SERVICE_CATALOG = [
     {"id": "stockon", "icon": "📈", "title": "STOCK:ON", "page": "/stock", "api": ["/api/stock"]},
     # 별도 앱(오라클 /moneyon 컨테이너): AI LAB에 화면·API가 없어 공개 설정(홈 노출)만 연결한다.
     # 홈 카드가 여는 실제 주소는 web/src/lib/services.ts의 MONEYON_URL 한 곳에서만 관리한다.
-    {"id": "moneyon", "icon": "🐷", "title": "MONEY:ON", "page": "/moneyon", "api": []},
+    {"id": "moneyon", "icon": "🐝", "title": "MONEY:ON", "page": "/moneyon", "api": []},
 ]
 SERVICE_IDS = [s["id"] for s in SERVICE_CATALOG]
 

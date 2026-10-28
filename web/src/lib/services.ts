@@ -114,7 +114,7 @@ export const SERVICES: Service[] = [
     category: "Prototype",
     image: "/ailab/money.webp", // 머니온 꿀벌 캐릭터 '이자니'(얼굴·동전)
     imageFallback: "/ailab/money.png",
-    icon: "🐷",
+    icon: "🐝",
     title: "MONEY:ON",
     desc: "용돈을 관리하고, 남은 돈에 이자까지!",
     href: MONEYON_URL,
