@@ -9,7 +9,7 @@
 - 실패(키움 오류·예상 밖 응답)는 상태 파일 fails에 연속 횟수로 남긴다(관리자 화면 3회부터 경고). 성공하면 0.
 - 뉴스 속 숨은 종목(lifemap.py): 새 기준(공공 새 기준일·키움 장중·마감)이 생기면 토픽·섹터를 만든다
   (키는 .env.lifemap의 ANTHROPIC·NAVER 검색 키. 키움 설정과 무관하게 돈다). 키움 장중에는 30분마다
-  화면에 나온 회사들의 등락률만 ka10095로 갱신한다(AI 재호출 없음).
+  화면에 나온 회사들의 등락률(ka10095)과 코스피·코스닥 등락률(ka20001)을 같은 때 갱신한다(시장 대비 계산, AI 재호출 없음).
 
 첫 시험:
   python -m services.stockon.kiwoom_collector --check   # 토큰 발급 1회 + 즉시 폐기(시세 조회 없음, IP 등록 필요 여부 판별)
@@ -189,11 +189,26 @@ def fetch_rates(client: KiwoomClient, codes: list[str]) -> dict[str, float]:
     return rates
 
 
+def fetch_index_rates(client: KiwoomClient) -> dict[str, float]:
+    """코스피·코스닥 등락률(ka20001) → {"KOSPI": rate, "KOSDAQ": rate}. 회사 등락률을 읽은 바로 뒤에 불러 같은 때 값으로 쓴다."""
+    out = {}
+    for name, body in INDEX_BODIES.items():
+        rate = num(client.query("ka20001", body).get("flu_rt"))
+        if rate is not None:
+            out[lifemap.INDEX_MARKET[name]] = rate
+    return out
+
+
+def fetch_live(client: KiwoomClient, codes: list[str]) -> tuple[dict[str, float], dict[str, float]]:
+    """회사 등락률과 지수 등락률을 같은 때(연달아) 읽는다."""
+    return fetch_rates(client, codes), fetch_index_rates(client)
+
+
 def refresh_lifemap_rates(client: KiwoomClient, now: datetime, closed: bool = False) -> int:
-    """뉴스 속 숨은 종목의 '실제 등락': 화면에 나온 회사 등락률만 지정종목 정보(ka10095)로 다시 읽는다."""
+    """뉴스 속 숨은 종목의 '실제 등락': 화면에 나온 회사 등락률(ka10095)과 지수 등락률(ka20001)을 같은 때 다시 읽는다."""
     codes = lifemap.reaction_codes()
-    rates = fetch_rates(client, codes)
-    lifemap.save_live_rates(rates, now, closed=closed, codes=codes)
+    rates, indices = fetch_live(client, codes)
+    lifemap.save_live_rates(rates, now, closed=closed, codes=codes, indices=indices)
     return len(rates)
 
 
@@ -236,7 +251,7 @@ def tick(client_box: dict, cfg: dict, now: datetime, state: dict, sleep=time.sle
     try:
         client = client_box.get("client") or KiwoomClient(cfg["mode"], cfg["appkey"], cfg["secret"])
         client_box["client"] = client
-        lifemap.rate_source = lambda codes: fetch_rates(client, codes)  # 새 이슈의 회사 등락률(종가·장중 같은 시점)
+        lifemap.rate_source = lambda codes: fetch_live(client, codes)  # 새 이슈의 회사·지수 등락률(같은 때)
         if session == "closed" and final_today(now):
             if lifemap.rates_due(now, closed=True):
                 refresh_lifemap_rates(client, now, closed=True)  # 새 이슈가 생기면 그 회사들 종가 등락률만

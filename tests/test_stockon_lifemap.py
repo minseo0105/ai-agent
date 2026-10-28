@@ -6,7 +6,7 @@
 import json
 import time
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest import mock
 
 from services.stockon import ai, kiwoom_collector, lifemap, news, store
@@ -313,14 +313,20 @@ class ReactionTest(LifemapBase):
 
             def query(self, api_id, body):
                 self.calls.append((api_id, body))
+                if api_id == "ka20001":
+                    return {"flu_rt": "+6.63" if body["inds_cd"] == "001" else "+3.69"}
                 return {"atn_stk_infr": [{"stk_cd": "053800", "flu_rt": "+7.50"}, {"stk_cd": "042510", "flu_rt": "-1.20"}]}
 
         client = FakeClient()
         now = datetime.now(KST)
         self.assertTrue(lifemap.rates_due(now))
         self.assertEqual(kiwoom_collector.refresh_lifemap_rates(client, now), 2)
-        self.assertEqual(client.calls, [("ka10095", {"stk_cd": "053800|042510|000000"})])
-        self.assertEqual(store.read("lifemap_rates")["rates"], {"053800": 7.5, "042510": -1.2})
+        # 회사 등락률(ka10095) 바로 뒤에 지수(ka20001) — 시장 대비는 같은 때 값끼리
+        self.assertEqual([c[0] for c in client.calls], ["ka10095", "ka20001", "ka20001"])
+        self.assertEqual(client.calls[0], ("ka10095", {"stk_cd": "053800|042510|000000"}))
+        saved = store.read("lifemap_rates")
+        self.assertEqual(saved["rates"], {"053800": 7.5, "042510": -1.2})
+        self.assertEqual(saved["indices"], {"KOSPI": 6.63, "KOSDAQ": 3.69})
         self.assertFalse(lifemap.rates_due(now))  # 30분 안에는 다시 하지 않음
 
 
@@ -418,6 +424,163 @@ class LinkAndOppositeTest(LifemapBase):
         self.assertNotIn("other", kt)  # 장중에 반대가 아니게 되면 숨김
         self.assertTrue(skt["opposite"])
         self.assertEqual(skt["other"], {"text": lifemap.OTHER_FALLBACK})  # 새로 반대가 되면 기본 문구(AI 재호출 없음)
+
+
+class VersusMarketTest(LifemapBase):
+    """시장 대비 = 회사 등락률 − 그 회사 시장 지수 등락률(같은 시각). 10/28처럼 지수가 크게 오른 날 해석이 틀린 것처럼 보이지 않게."""
+
+    IDX = {"KOSPI": 6.63, "KOSDAQ": 3.69}
+
+    def _market(self, kospi=6.63, kosdaq=3.69, as_of="20261027"):
+        return {**MARKET, "as_of": as_of, "breadth": {"up": 1729, "down": 818, "flat": 112, "total": 2659},
+                "indices": [{"name": "코스피", "as_of": as_of, "same_day": True, "rate": kospi},
+                            {"name": "코스닥", "as_of": as_of, "same_day": True, "rate": kosdaq}]}
+
+    def test_basis_carries_same_snapshot_indices_and_breadth(self):
+        store.write("market", self._market())
+        b = self.basis()
+        self.assertEqual(b["indices"], self.IDX)
+        self.assertEqual(lifemap.basis_info(b)["indices"], self.IDX)
+        self.assertEqual(lifemap.basis_info(b)["breadth"]["up"], 1729)
+        # 지수 자료가 종목 시세보다 늦으면(전날 값) 쓰지 않는다
+        late = self._market()
+        late["indices"][0].update(as_of="20261024", same_day=False)
+        self.assertEqual(lifemap.index_rates(late), {"KOSDAQ": 3.69})
+
+    def test_mark_reaction_uses_each_company_market_index(self):
+        m = {"stages": [{"companies": [{"code": "030200", "direction": "neg"}, {"code": "042510", "direction": "pos"},
+                                        {"code": "053800", "direction": "pos"}]}]}
+        basis = {"source": "public", "label": "10/28 장 기준", "rates": {"030200": 2.9, "042510": 18.1, "053800": 5.0},
+                 "indices": self.IDX}
+        lifemap.mark_reaction(m, basis)
+        kt, raon, ahn = m["stages"][0]["companies"]
+        self.assertEqual((kt["market_rate"], kt["vs_market"], kt["moved"]), (6.63, -3.73, True))  # KOSPI: 2.9 − 6.63
+        self.assertEqual((raon["market_rate"], raon["vs_market"], raon["moved"]), (3.69, 14.41, True))  # KOSDAQ
+        self.assertEqual((ahn["vs_market"], ahn["moved"]), (1.31, False))  # 단순 +5%여도 시장 대비 3%p 미만이면 강조 없음
+        self.assertEqual(m["indices"], self.IDX)
+
+    def test_opposite_and_other_reason_use_versus_market(self):
+        o = lifemap.opposite
+        self.assertFalse(o({"direction": "neg", "rate": 2.9, "vs_market": -3.73}))  # 다 오른 날 덜 움직인 '부정 가능'은 반대 아님
+        self.assertTrue(o({"direction": "neg", "rate": 10.0, "vs_market": 3.37}))
+        self.assertTrue(o({"direction": "pos", "rate": 3.5, "vs_market": -3.13}))   # 올랐어도 시장보다 3%p 넘게 약하면 반대
+        self.assertFalse(o({"direction": "pos", "rate": -2.0, "vs_market": -2.9}))  # 3%p 미만
+        self.assertTrue(o({"direction": "neg", "rate": 7.1}))  # 지수를 모르면 단순 등락률
+
+        # 이슈를 만들 때: KT(부정, +7.1%)는 단순으론 반대지만 KOSPI +6.63% 대비 +0.47%p → 다른 이유를 찾지 않는다
+        interp = {"interpretation": ["유출 기업은 보상 비용이 생길 수 있다."], "paths": [{"label": "보상 비용", "detail": "", "companies": [
+            {"name": "KT", "direction": "부정", "link": "직접 당사자", "relevance": "강", "reason": "유출이 알려진 통신사다"},
+            {"name": "이마트", "direction": "긍정", "link": "사업 연결", "relevance": "약", "reason": "통신 결합 할인 고객이 많다"}]}]}
+        issue = {"topics": [{"title": "통신사 정보 유출", "summary": "고객 정보가 유출됐다", "keyword": "개인정보 유출",
+                             "sector": "통신", "articles": [1, 2], "representative": 1}]}
+        fake = lambda model, system, task, payload, schema, *a, **kw: (  # noqa: E731
+            {"article": 0, "reason": ""} if schema is lifemap.OTHER_SCHEMA else issue if model == lifemap.TOPIC_MODEL else interp)
+        basis = {**self.basis(), "rates": {"030200": 7.1, "139480": 2.0}, "indices": self.IDX}
+        with mock.patch.object(lifemap, "collect_issue_news", return_value=ARTICLES), \
+                mock.patch.object(lifemap, "_ask", side_effect=fake), \
+                mock.patch.object(news, "search_window", return_value=[]) as sw:
+            data = lifemap.run_topics(basis)
+        companies = {c["name"]: c for s in data["topics"][0]["map"]["stages"] for c in s["companies"]}
+        self.assertNotIn("other", companies["KT"])
+        self.assertEqual(companies["이마트"]["vs_market"], -4.63)  # 긍정 해석, 시장보다 4.63%p 약함 → 반대
+        self.assertEqual(companies["이마트"]["other"], {"text": lifemap.OTHER_FALLBACK})
+        self.assertEqual([c.args[0] for c in sw.call_args_list], ["이마트"])
+
+    def test_with_reaction_pairs_rates_with_same_time_indices(self):
+        item = {"name": "x", "title": "t", "articles": [], "map": {"word": "x", "basis_label": "10/28 종가 기준", "indices": self.IDX,
+                "stages": [{"key": "p0", "label": "수요", "detail": "", "companies": [
+                    {"code": "030200", "name": "KT", "relevance": "강", "reason": "r", "direction": "neg", "rate": 2.9,
+                     "market_rate": 6.63, "vs_market": -3.73},
+                    {"code": "053800", "name": "안랩", "relevance": "강", "reason": "r", "direction": "pos"}]}]}}
+        out = lifemap.with_reaction(item, None, {"KOSDAQ": 1.0})
+        kt, ahn = out["map"]["stages"][0]["companies"]
+        self.assertEqual((kt["vs_market"], kt["moved"], kt["opposite"]), (-3.73, True, False))  # 생성 때 값 + 생성 때 지수
+        self.assertEqual((ahn["rate"], ahn["market_rate"], ahn["vs_market"]), (9.4, 1.0, 8.4))  # 최신 종가 + 그날 공공 지수
+        # 키움 장중: 같이 읽은 지수로
+        lifemap.save_live_rates({"030200": 1.0}, datetime.now(KST), indices={"KOSPI": -2.0})
+        kt = lifemap.with_reaction(item, lifemap._live_rates())["map"]["stages"][0]["companies"][0]
+        self.assertEqual((kt["rate"], kt["vs_market"], kt["opposite"]), (1.0, 3.0, True))
+        self.assertEqual(kt["other"], {"text": lifemap.OTHER_FALLBACK})
+        # 지수 없이 저장된 장중 값은 시장 대비를 비우고(단순 기준), 수집기가 한 번 다시 읽는다
+        store.write("lifemap", {"topics": [item]})
+        lifemap.save_live_rates({"030200": 1.0, "053800": 1.0}, datetime.now(KST))
+        saved = store.read("lifemap_rates")
+        saved.pop("indices")
+        store.write("lifemap_rates", saved)
+        self.assertIsNone(lifemap.with_reaction(item, lifemap._live_rates())["map"]["stages"][0]["companies"][0]["vs_market"])
+        self.assertTrue(lifemap.rates_due(datetime.now(KST)))
+
+    def test_index_news_goes_to_mood_band_not_issue_cards(self):
+        self.assertTrue(lifemap.index_news({"name": "코스피 6000 탈환", "title": "코스피 6000 탈환, 반도체 급등"}))
+        self.assertTrue(lifemap.index_news({"name": "증시 급락", "title": "증시 급락 마감"}))
+        self.assertFalse(lifemap.index_news({"name": "유가 급등", "title": "국제유가 급등"}))
+        issue = {"topics": [{"title": "코스피 6000 탈환, 반도체 급등", "summary": "코스피 6.63% 급등", "keyword": "코스피 6000 탈환",
+                             "sector": "반도체", "articles": [1, 2], "representative": 1},
+                            {"title": "국제유가 급등", "summary": "중동 정세로 유가가 올랐다", "keyword": "유가 급등",
+                             "sector": "정유", "articles": [3, 4], "representative": 3}]}
+        with mock.patch.object(lifemap, "_ask", return_value=issue):
+            picked = lifemap.pick_issues(self.basis(), ARTICLES)
+        self.assertEqual([t["name"] for t in picked], ["유가 급등"])
+        self.assertEqual(lifemap._last_rejects, {"market": 1})
+        self.assertIn("지수 등락 자체", lifemap.TOPIC_SYSTEM)
+        # 예전에 저장된 지수 시황 이슈도 화면 후보에서 뺀다
+        idx = _topic("코스피 6000 탈환", "코스피 6000 탈환", "반도체", "u:kospi")
+        store.write("lifemap", {"basis": {"key": "public:20261027"}, "topics": [
+            idx, _topic("유가 급등", "국제유가 급등", "정유", "u:oil"), _topic("관세 협상", "관세 협상", "자동차", "u:car"),
+            _topic("LNG 수주", "LNG선 수주", "조선", "u:ship")]})
+        self.assertEqual(lifemap.overview()["hot"], ["유가 급등", "관세 협상", "LNG 수주"])
+
+    def test_market_mood_band(self):
+        store.write("market", self._market())
+        store.write("lifemap", {"basis": lifemap.basis_info(self.basis()), "topics": []})
+        mood = lifemap.overview()["market"]
+        self.assertEqual(mood["text"], "코스피 +6.63% · 코스닥 +3.69% · 대부분 종목이 올랐어요")
+        self.assertEqual([i["name"] for i in mood["indices"]], ["코스피", "코스닥"])
+        down = lifemap.market_mood({"indices": {"KOSPI": -2.1}, "breadth": {"up": 100, "down": 900, "total": 1000}, "label": "x"}, None)
+        self.assertEqual(down["text"], "코스피 -2.10% · 대부분 종목이 내렸어요")
+        mixed = lifemap.market_mood({"indices": {"KOSPI": 0.3, "KOSDAQ": -0.2}, "breadth": {"up": 500, "down": 450, "total": 1000}}, None)
+        self.assertEqual(mixed["crowd"], "오른 종목과 내린 종목이 섞여 있어요")
+        self.assertIsNone(lifemap.market_mood({"label": "x"}, None))  # 지수가 없으면 띠를 숨긴다
+        live = {"indices": {"KOSPI": 1.2, "KOSDAQ": 0.4}, "label": "10/29 11:00 장중", "as_of": "20261029"}
+        self.assertEqual(lifemap.market_mood({"indices": self.IDX}, live)["label"], "10/29 11:00 장중")  # 장중 갱신값 우선
+
+
+class SectorScheduleTest(LifemapBase):
+    """섹터 이슈 10개는 하루 한 번(장 마감 뒤 기준)만. 키움 장중 재생성은 오늘의 이슈만."""
+
+    def _run(self, basis):
+        ran = []
+
+        class SyncThread:
+            def __init__(self, target, **kw):
+                self.target = target
+
+            def start(self):
+                self.target()
+
+        with mock.patch.object(lifemap, "topic_basis", return_value=basis), \
+                mock.patch.object(lifemap, "run_topics", side_effect=lambda b, **k: ran.append("topics")), \
+                mock.patch.object(lifemap, "run_sectors", side_effect=lambda b, **k: (ran.append("sectors"), store.write(
+                    "lifemap_sectors", {"basis": lifemap.basis_info(b), "items": {}}))), \
+                mock.patch.object(lifemap.budget, "allowed", return_value=True), \
+                mock.patch.object(lifemap.threading, "Thread", SyncThread):
+            started = lifemap.maybe_run_daily()
+        return started, ran
+
+    def test_open_makes_topics_only_close_makes_sectors_once(self):
+        def kb(kind):
+            return {"key": f"kiwoom:20261029:{kind}", "source": "kiwoom", "as_of": "20261029", "label": "x", "window": None, "rates": {}}
+
+        store.write("lifemap_sectors", {"basis": {"key": "kiwoom:20261028:close", "as_of": "20261028"}, "items": {}})
+        self.assertEqual(self._run(kb("open")), (True, ["topics"]))       # 장중: 오늘의 이슈만
+        self.assertFalse(lifemap.sectors_due(kb("open")))
+        store.write("lifemap_status", {})  # 실제로는 장중(10시)과 마감(15:35) 사이가 30분보다 길다
+        self.assertEqual(self._run(kb("close")), (True, ["topics", "sectors"]))  # 마감 뒤: 이슈 + 섹터
+        store.write("lifemap", {"basis": {"key": "kiwoom:20261029:close"}, "fresh": 5})
+        self.assertEqual(self._run(kb("close")), (False, []))             # 같은 날 다시 만들지 않음
+        public_same_day = {"key": "public:20261029", "source": "public", "as_of": "20261029", "label": "x", "window": None, "rates": {}}
+        self.assertFalse(lifemap.sectors_due(public_same_day))  # 다음 날 공공 기준(같은 날 시세)으로도 다시 만들지 않음
+        self.assertTrue(lifemap.sectors_due({**public_same_day, "key": "public:20261030", "as_of": "20261030"}))
 
 
 class LiveQueueTest(LifemapBase):
@@ -582,7 +745,8 @@ class CurationTest(LifemapBase):
         self.assertEqual(self.names(), ["관세 협상", "은행 정보 유출", "HBM 수출"])
         lifemap.set_order(["u:ship"])  # 다음 후보도 첫 화면으로 끌어올 수 있다
         self.assertEqual(self.names(), ["LNG 수주", "은행 정보 유출", "HBM 수출"])  # 지정하지 않은 것은 원래 순서
-        with mock.patch.object(lifemap, "_today", return_value="2026-10-29"):
+        tomorrow = (datetime.now(KST) + timedelta(days=1)).strftime("%Y-%m-%d")  # 실제 오늘과 겹치지 않게
+        with mock.patch.object(lifemap, "_today", return_value=tomorrow):
             self.assertEqual(self.names(), ["HBM 수출", "은행 정보 유출", "관세 협상"])  # 날짜가 바뀌면 순서만 초기화
 
     def test_hide_fills_from_reserve_then_sectors_and_survives_regeneration(self):

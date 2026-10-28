@@ -185,14 +185,27 @@ class LifemapKiwoomBasisTest(TempStore):
         store.write("lifemap_status", {})
         self.assertTrue(lifemap.topics_due(newer))  # 더 새 기준이면 만든다
 
-    def test_missing_company_rates_come_from_kiwoom_at_creation(self):
+    def test_company_and_index_rates_come_from_kiwoom_together_at_creation(self):
+        """키움 기준이면 지도 회사 전부와 지수를 같은 때 다시 읽어 시장 대비를 같은 시각 값끼리 계산한다."""
         asked = []
         m = {"stages": [{"companies": [{"code": "005930"}, {"code": "000660"}]}]}
-        basis = {"source": "kiwoom", "label": "11/17 종가 기준", "rates": {"005930": 1.5}}
-        with mock.patch.object(lifemap, "rate_source", lambda codes: (asked.append(codes), {"000660": -6.2})[1]):
+        basis = {"source": "kiwoom", "label": "11/17 종가 기준", "rates": {"005930": 1.5}, "indices": {"KOSPI": 0.5}}
+        live = lambda codes: (asked.append(codes), ({"005930": 1.8, "000660": -6.2}, {"KOSPI": 1.0, "KOSDAQ": 2.0}))[1]  # noqa: E731
+        with mock.patch.object(lifemap, "rate_source", live):
             lifemap.mark_reaction(m, basis)
-        self.assertEqual(asked, [["000660"]])
-        self.assertEqual([c["rate"] for c in m["stages"][0]["companies"]], [1.5, -6.2])
+        self.assertEqual(asked, [["005930", "000660"]])
+        a, b = m["stages"][0]["companies"]
+        self.assertEqual((a["rate"], a["market_rate"], a["vs_market"]), (1.8, 1.0, 0.8))  # 스냅샷(1.5, 0.5)이 아니라 같은 때 값
+        self.assertEqual((b["rate"], b["vs_market"], b["moved"]), (-6.2, -7.2, True))
+        self.assertEqual(m["indices"], {"KOSPI": 1.0, "KOSDAQ": 2.0})
+
+        # 지수를 못 읽으면 스냅샷 값끼리(같은 스냅샷의 회사 등락률·지수)
+        m = {"stages": [{"companies": [{"code": "005930"}, {"code": "000660"}]}]}
+        with mock.patch.object(lifemap, "rate_source", lambda codes: ({"000660": -6.2}, {})):
+            lifemap.mark_reaction(m, basis)
+        a, b = m["stages"][0]["companies"]
+        self.assertEqual((a["rate"], a["vs_market"]), (1.5, 1.0))
+        self.assertNotIn("rate", b)
 
     def test_closed_rates_last_all_day_and_refresh_when_companies_change(self):
         now = datetime.now(KST)

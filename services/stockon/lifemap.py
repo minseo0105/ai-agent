@@ -5,16 +5,22 @@
   대표 기사 1개 + 관련 기사(토픽당 최대 6개)를 고르고 → 토픽마다 Sonnet 5.5가 'AI 해석' 2~3줄과
   영향 경로(수요 증가·원가 상승·규제·경쟁 변화 등) × 경로당 회사 2곳(긍정 가능/부정 가능·연관도·왜 관련 있나)을 만든다.
   등락 순위는 토픽 선정에 쓰지 않는다. 회사마다 '실제 등락'(등락률)을 붙이는 데에만 쓴다.
+  코스피·코스닥 지수 등락 자체(지수 급등·급락 시황)는 이슈로 고르지 않고, 화면 맨 위 '오늘 시장 분위기' 띠로 보여 준다.
+- 시장 대비 = 회사 등락률 − 그 회사 시장 지수(코스피/코스닥) 등락률(같은 기준 시각 값). 지수가 크게 움직인 날 모든 회사가
+  함께 오르내려 해석이 틀린 것처럼 보이지 않게, '실제 등락 큼'(±3%p)·해석과 반대(±3%p)는 시장 대비로 본다.
+  지수 값이 없으면(예전에 만든 이슈·예시) 단순 등락률로 본다(실제 등락 큼 ±5%, 반대 ±3%).
 - 회사는 뉴스의 직접 당사자이거나 구체적인 사업 연결(제품·고객·공급·규제)이 있을 때만. 같은 업종일 뿐이면 연관도 '약'.
-- 해석 방향과 반대로 ±3% 이상 움직인 회사는 이슈를 만들 때 한 번만, 그 회사의 같은 날 뉴스(NAVER)로 Haiku가
+- 해석 방향과 반대로 시장 대비 ±3%p 이상 움직인 회사는 이슈를 만들 때 한 번만, 그 회사의 같은 날 뉴스(NAVER)로 Haiku가
   '다른 이유로 움직였을 수 있어요: …' 한 줄 + 기사 링크를 붙여 저장한다. 못 찾으면 '이 뉴스 외 다른 요인일 수 있어요'.
 - 하루 AI 비용 상한(budget.py, STOCKON_AI_DAILY_USD)을 넘으면 새로 만들지 않고 저장된 이슈·섹터를 그대로 둔다.
 - 기준은 뒤로 가지 않는다: 키움 종가 기준(예: 금요일)으로 만든 이슈가 있으면, 주말·공휴일에 공공데이터 기준일(목요일)로
   다시 만들지 않는다.
 - 기준(basis): 공공데이터는 D일 시세가 D+1 13시 이후 올라오므로 새 기준일 시세가 들어왔을 때 만들고, 뉴스도 그 기준일 창
   [직전 거래일 15:30, D+1 08:00)만 쓴다(화면 'n/n 장 기준'). 키움 모드로 오늘 시세가 들어오는 날은 10시 이후·마감 뒤
-  한 번씩 오늘 뉴스로 다시 만든다('n/n 장중 HH:MM 기준'). 키움 장중에는 수집기가 30분마다 회사 등락률만 갱신한다(AI 재호출 없음).
-- 섹터(금융·반도체·AI·…): 같은 기준 창의 섹터 뉴스로 같은 구조를 미리 만든다. 직접 입력한 단어는 그 단어의 최근 뉴스로 만든다.
+  한 번씩 오늘 뉴스로 다시 만든다('n/n 장중 HH:MM 기준'). 키움 장중에는 수집기가 30분마다 회사 등락률과 지수 등락률을
+  같은 때 갱신한다(AI 재호출 없음).
+- 섹터(금융·반도체·AI·…): 같은 기준 창의 섹터 뉴스로 같은 구조를 하루 한 번(장 마감 뒤 기준: 키움 종가·공공 기준일) 만든다.
+  키움 장중 재생성은 오늘의 이슈만(비용). 직접 입력한 단어는 그 단어의 최근 뉴스로 만든다.
 - AI가 낸 회사는 공공데이터 전 종목 목록(stocks.json)의 종목명과 맞춰 보고, 없는 회사는 지운다(종목코드는 목록에서 붙인다).
 - 새 단어: AI LAB 앱(ailab)에서 같은 엔진으로 만든다. 동시 호출 상한·대기열·1인 횟수·하루 상한을 둔다. 같은 단어는 재사용.
 - AI가 실패하면 저장된 예시(data/stockon/lifemap_examples.json)로 대체한다. 화면이 비지 않게.
@@ -53,8 +59,13 @@ MIN_COMPANIES = 3          # 검증 뒤 회사가 이보다 적거나 경로가 
 TOPICS_MIN, TOPICS_MAX = 3, 5
 RESERVE_MAX = 2           # 관리자가 숨기면 채울 다음 후보(이슈 + AI 해석까지 미리 만든다)
 ARTICLES_MAX = 6           # 토픽당 기사 수(대표 기사 포함)
-MOVED_PCT = 5.0            # 실제 등락률이 이 이상(절댓값)이면 '실제 등락 큼' 강조
-OPPOSITE_PCT = 3.0         # AI 해석 방향과 반대로 이 이상(절댓값) 움직인 회사는 그 회사의 같은 날 뉴스로 다른 이유를 한 줄 붙인다
+MOVED_PP = 3.0             # 시장 대비(%p)가 이 이상(절댓값)이면 '실제 등락 큼' 강조
+MOVED_PCT = 5.0            # 지수 값이 없을 때(예전 이슈·예시)만: 단순 등락률 기준
+OPPOSITE_PCT = 3.0         # AI 해석 방향과 반대로 시장 대비 이 이상(%p, 지수 없으면 단순 %) 움직인 회사는 같은 날 뉴스로 다른 이유 한 줄
+INDEX_MARKET = {"코스피": "KOSPI", "코스닥": "KOSDAQ"}  # 지수 이름 → 종목 목록의 시장
+MOOD_SHARE = 0.6           # 오른(내린) 종목이 이 비율 이상이면 '대부분 종목이 올랐어요(내렸어요)'
+# 지수 시황 기사(코스피 급등·코스닥 마감 등)는 이슈 카드가 아니라 '오늘 시장 분위기' 띠로
+INDEX_NEWS = re.compile(r"코스피|코스닥|주가\s*지수|증시\s*(급|폭|마감|상승|하락|반등|랠리)")
 OPPOSITE_MAX = 6           # 이슈 하나에서 다른 이유를 찾는 회사 수 상한(비용)
 OTHER_MODEL = TOPIC_MODEL  # 다른 이유 한 줄(Haiku)
 OTHER_FALLBACK = "이 뉴스 외 다른 요인일 수 있어요"
@@ -241,6 +252,7 @@ INTERP_SCHEMA = {
 TOPIC_SYSTEM = """너는 증시 뉴스 편집자다. 주어진 기사 중에서 한국 증시(산업·기업)에 영향을 줄 만한 이슈를 고른다.
 규칙:
 - 대상: 정책·금리·환율·유가·국제 정세·산업 동향·기업 사건사고(보안 사고·화재·리콜 등). 주가 시황·특징주·종목 추천 기사는 이슈로 고르지 않는다.
+- 코스피·코스닥 지수 등락 자체(지수 급등·급락·마감 시황)는 이슈로 고르지 않는다.
 - 여러 언론이 다룬 이슈(같은 내용을 다룬 기사가 많은 것)와 산업·기업에 미치는 영향이 큰 것을 먼저 고른다.
 - 이슈는 서로 다른 섹터(업종)에서 고른다. 같은 기사를 두 이슈에 쓰지 않는다.
 - articles: 그 이슈를 다룬 기사 번호(최대 6개, 같은 내용을 다룬 다른 언론 기사 우선). representative: 영향이 가장 직접 드러나는 기사 번호 1개(articles 안에서).
@@ -338,9 +350,20 @@ def _md(ymd: str) -> str:
     return f"{int(ymd[4:6])}/{int(ymd[6:8])}"
 
 
+def index_rates(market: dict) -> dict[str, float]:
+    """시세 스냅샷의 지수 등락률 → {"KOSPI": 6.63, "KOSDAQ": 3.69}. 종목 시세와 같은 날 값만(지수 자료가 늦으면 비운다)."""
+    out = {}
+    for i in market.get("indices") or []:
+        code = INDEX_MARKET.get(i.get("name"))
+        if code and i.get("rate") is not None and i.get("same_day", True) and i.get("as_of", market.get("as_of")) == market.get("as_of"):
+            out[code] = i["rate"]
+    return out
+
+
 def topic_basis(now: datetime | None = None) -> dict | None:
     """기준. 키움 오늘 시세(키움 모드·10시 이후·15분 안 갱신 또는 마감)가 있으면 오늘 뉴스, 아니면 공공데이터 최신 기준일.
-    {key, source, as_of, label, window, rates}. rates = 그 시점 등락률(실제 등락 표시용). 시세가 없으면 None."""
+    {key, source, as_of, label, window, rates, indices, breadth}. rates = 그 시점 등락률(실제 등락 표시용),
+    indices = 같은 스냅샷의 지수 등락률(시장 대비 계산용), breadth = 오른·내린 종목 수. 시세가 없으면 None."""
     now = now or datetime.now(KST)
     public = _read("market", {})
     status = _read("kiwoom_status", {})
@@ -358,41 +381,67 @@ def topic_basis(now: datetime | None = None) -> dict | None:
             rates.update({s["code"]: s.get("rate") for s in (kw.get("movers") or {}).get(kind) or [] if s.get("code")})
         label = f"{_md(today)} 종가 기준" if closed else f"{_md(today)} 장중 {stamp} 기준"
         return {"key": f"kiwoom:{today}:{'close' if closed else 'open'}", "source": "kiwoom", "as_of": today,
-                "label": label, "window": (start, now), "rates": rates}
+                "label": label, "window": (start, now), "rates": rates, "indices": index_rates(kw), "breadth": kw.get("breadth")}
     if not public.get("as_of"):
         return None
     stocks, _, dir_as_of = directory()
-    rates = {c: s.get("rate") for c, s in stocks.items()} if dir_as_of == public["as_of"] else {}
+    same = dir_as_of == public["as_of"]
+    rates = {c: s.get("rate") for c, s in stocks.items()} if same else {}
     return {"key": f"public:{public['as_of']}", "source": "public", "as_of": public["as_of"],
-            "label": f"{_md(public['as_of'])} 장 기준", "window": news_window(public), "rates": rates}
+            "label": f"{_md(public['as_of'])} 장 기준", "window": news_window(public), "rates": rates,
+            "indices": index_rates(public) if same else {}, "breadth": public.get("breadth")}
 
 
 def basis_info(basis: dict) -> dict:
-    """화면·저장용(등락률 표·뉴스 창 제외)."""
-    return {k: basis[k] for k in ("key", "source", "as_of", "label")}
+    """화면·저장용(등락률 표·뉴스 창 제외). 지수 등락률·오른/내린 종목 수는 '오늘 시장 분위기' 띠에 쓴다."""
+    return {**{k: basis[k] for k in ("key", "source", "as_of", "label")},
+            **{k: basis[k] for k in ("indices", "breadth") if basis.get(k)}}
 
 
-# 키움 기준일 때 히트맵·등락 상위에 없는 회사 등락률을 같은 시점으로 묻는 함수(수집기가 넣는다: codes → {code: rate})
+def versus(rate, market: str | None, indices: dict | None) -> tuple[float | None, float | None]:
+    """(그 회사 시장 지수 등락률, 시장 대비 %p). 지수나 등락률이 없으면 (None, None)."""
+    idx = (indices or {}).get(market or "")
+    if rate is None or idx is None:
+        return None, None
+    return idx, round(rate - idx, 2)
+
+
+def big_move(rate, vs) -> bool:
+    """실제 등락 큼: 시장 대비 ±3%p 이상. 시장 대비를 모르면 단순 등락률 ±5% 이상."""
+    if vs is not None:
+        return abs(vs) >= MOVED_PP
+    return rate is not None and abs(rate) >= MOVED_PCT
+
+
+# 키움 기준일 때 회사 등락률과 지수 등락률을 같은 때 묻는 함수(수집기가 넣는다: codes → ({code: rate}, {"KOSPI": rate, …}))
 rate_source = None
 
 
 def mark_reaction(m: dict, basis: dict) -> dict:
-    """기준 시점 등락률을 회사에 저장하고 ±MOVED_PCT 이상이면 moved(실제 등락 큼 강조).
-    키움 기준인데 등락률 표에 없는 회사는 rate_source로 같은 시점 값을 묻는다(실패하면 비워 둔다 → 화면은 최신 값)."""
-    rates = basis["rates"]
-    missing = [c["code"] for st in m.get("stages") or [] for c in st.get("companies") or [] if rates.get(c["code"]) is None]
-    if missing and basis.get("source") == "kiwoom" and rate_source:
+    """기준 시점 등락률·시장 대비를 회사에 저장하고 실제 등락 큼(moved)을 표시한다.
+    키움 기준이면 rate_source로 지도 회사 전부와 지수를 같은 때 다시 묻는다(시장 대비 = 같은 시각 값끼리).
+    실패하면 기준 스냅샷의 등락률·지수(같은 스냅샷)를 쓰고, 거기 없는 회사는 비워 둔다(화면은 최신 값)."""
+    rates, indices = basis["rates"], basis.get("indices") or {}
+    codes = [c["code"] for st in m.get("stages") or [] for c in st.get("companies") or []]
+    if codes and basis.get("source") == "kiwoom" and rate_source:
         try:
-            rates.update({k: v for k, v in (rate_source(missing) or {}).items() if v is not None})
+            got, idx = rate_source(codes)
+            if idx:
+                rates, indices = {**rates, **{k: v for k, v in (got or {}).items() if v is not None}}, idx
         except Exception as e:
             log.warning("lifemap rate_source failed: %s", type(e).__name__)
+    stocks, _, _ = directory()
     for st in m.get("stages") or []:
         for c in st.get("companies") or []:
             r = rates.get(c["code"])
             if r is not None:
-                c["rate"] = r
-                c["moved"] = abs(r) >= MOVED_PCT
+                idx, vs = versus(r, (stocks.get(c["code"]) or {}).get("market"), indices)
+                c.update(rate=r, moved=big_move(r, vs))
+                if vs is not None:
+                    c.update(market_rate=idx, vs_market=vs)
     m["basis_label"] = basis["label"]
+    if indices:
+        m["indices"] = dict(indices)
     return m
 
 
@@ -433,6 +482,11 @@ def _issue_tokens(keyword: str) -> set[str]:
     return {t for t in re.split(r"[\s·,/]+", keyword) if len(t) >= 2 and t not in GENERIC_TOKENS}
 
 
+def index_news(t: dict) -> bool:
+    """코스피·코스닥 지수 등락 자체를 다룬 시황 이슈(이름·제목). 이슈 카드에서 빼고 '오늘 시장 분위기' 띠로 보여 준다."""
+    return bool(INDEX_NEWS.search(f"{t.get('name', '')} {t.get('title', '')}"))
+
+
 def pick_issues(basis: dict, articles: list[dict], task: str = "", max_topics: int = TOPICS_MAX,
                 min_articles: int = 2, min_press: int = 2) -> list[dict]:
     """Haiku가 묶은 이슈. 대표 기사·기사 번호·언론사 수·섹터 중복·표현을 검사해 통과한 것만(최대 max_topics)."""
@@ -459,7 +513,8 @@ def pick_issues(basis: dict, articles: list[dict], task: str = "", max_topics: i
         tokens = _issue_tokens(keyword)
         # 다른 이슈('AI 해킹 유출'과 '개인정보 유출'은 같은 이슈)·다른 섹터('반도체'와 '반도체장비'는 같은 섹터)·
         # 다른 기사·여러 언론·대표 기사가 있어야 이슈
-        why = ("word" if not keyword or check_word(keyword) or keyword in keywords or not sec or tokens & seen_tokens else
+        why = ("market" if index_news({"name": keyword, "title": title}) else
+               "word" if not keyword or check_word(keyword) or keyword in keywords or not sec or tokens & seen_tokens else
                "sector" if any(sec in x or x in sec for x in sectors) else
                "text" if not title or not summary or any(_unsafe(x) for x in (title, summary, keyword, sector)) else
                "articles" if len(nums) < min_articles or rep not in nums or used & set(nums) else
@@ -507,8 +562,8 @@ OTHER_SCHEMA = {
 
 
 def opposite(c: dict) -> bool:
-    """AI 해석 방향(긍정/부정)과 실제 등락이 반대이면서 ±OPPOSITE_PCT 이상."""
-    r = c.get("rate")
+    """AI 해석 방향(긍정/부정)과 반대로 시장 대비 ±OPPOSITE_PCT(%p) 이상 움직임. 시장 대비를 모르면 단순 등락률로."""
+    r = c["vs_market"] if c.get("vs_market") is not None else c.get("rate")
     if r is None:
         return False
     return (c.get("direction") == "pos" and r <= -OPPOSITE_PCT) or (c.get("direction") == "neg" and r >= OPPOSITE_PCT)
@@ -552,7 +607,7 @@ def other_reason(issue: str, issue_titles: list[str], c: dict, basis: dict, skip
 
 
 def explain_opposites(t: dict, m: dict, basis: dict, http=None) -> int:
-    """해석 방향과 반대로 ±3% 이상 움직인 회사마다 c['other']를 붙인다(최대 OPPOSITE_MAX곳). 붙인 수."""
+    """해석 방향과 반대로 시장 대비 ±3%p 이상 움직인 회사마다 c['other']를 붙인다(최대 OPPOSITE_MAX곳). 붙인 수."""
     if not basis.get("window") or not basis.get("as_of"):
         return 0
     skip = {a.get("url") for a in t.get("articles") or []}
@@ -705,20 +760,33 @@ def topics_due(basis: dict | None) -> bool:
     return tries < TOPIC_TRIES and time.time() - s.get("try_ts", 0) > 1800
 
 
+def sectors_due(basis: dict | None) -> bool:
+    """섹터 이슈는 하루 한 번: 장 마감 뒤 기준(키움 종가·공공 기준일)이고 저장된 섹터가 그보다 이전 날일 때만.
+    키움 장중 기준으로는 만들지 않는다(장중 재생성은 오늘의 이슈만)."""
+    if not basis or basis["key"].endswith(":open"):
+        return False
+    have = (_read("lifemap_sectors", {}).get("basis") or {}).get("as_of") or ""
+    return have < basis["as_of"]
+
+
 def maybe_run_daily(now: datetime | None = None) -> bool:
     """수집기 루프에서 매번 부른다. 할 때가 됐으면 스레드 하나로 돌린다(키움 수집을 막지 않게)."""
     if not ai.available() or not news.configured() or not budget.allowed():
         return False  # 비용 상한을 넘은 날은 저장된 이슈·섹터를 그대로 둔다
     basis = topic_basis(now)
-    if not topics_due(basis) or not _daily_lock.acquire(blocking=False):
+    do_topics, do_sectors = topics_due(basis), sectors_due(basis)
+    if not (do_topics or do_sectors) or not _daily_lock.acquire(blocking=False):
         return False
-    s = _read("lifemap_status", {})
-    _status(try_key=basis["key"], tries=(s.get("tries", 0) if s.get("try_key") == basis["key"] else 0) + 1, try_ts=time.time())
+    if do_topics:
+        s = _read("lifemap_status", {})
+        _status(try_key=basis["key"], tries=(s.get("tries", 0) if s.get("try_key") == basis["key"] else 0) + 1, try_ts=time.time())
 
     def work():
         try:
-            run_topics(basis)
-            run_sectors(basis)
+            if do_topics:
+                run_topics(basis)
+            if do_sectors:
+                run_sectors(basis)
         except Exception as e:
             log.warning("lifemap daily failed: %s", type(e).__name__)
         finally:
@@ -746,14 +814,19 @@ def rates_due(now: datetime, closed: bool = False) -> bool:
         return True
     if set(reaction_codes()) - set(saved.get("codes") or saved.get("rates") or {}):
         return True  # 물어본 코드 기준(상장 폐지 등으로 값이 안 오는 코드 때문에 매번 다시 묻지 않게)
+    if "indices" not in saved:
+        return True  # 지수 없이 저장된 예전 값이면 한 번 다시(시장 대비 계산용)
     if closed:
         return not saved.get("closed")
     return time.time() - saved.get("ts", 0) >= LIVE_RATES_SEC
 
 
-def save_live_rates(rates: dict[str, float], now: datetime, closed: bool = False, codes: list[str] | None = None) -> None:
+def save_live_rates(rates: dict[str, float], now: datetime, closed: bool = False, codes: list[str] | None = None,
+                    indices: dict[str, float] | None = None) -> None:
+    """회사 등락률과 같은 때 읽은 지수 등락률(indices)을 함께 남긴다 → 시장 대비는 같은 시각 값끼리."""
     md = _md(now.strftime("%Y%m%d"))
     store.write("lifemap_rates", {"as_of": now.strftime("%Y%m%d"), "ts": time.time(), "rates": rates, "closed": closed,
+                                  "indices": indices or {},
                                   "codes": codes if codes is not None else list(rates),
                                   "label": f"{md} 종가" if closed else f"{md} {now.strftime('%H:%M')} 장중"})
 
@@ -771,25 +844,30 @@ def _live_rates() -> dict | None:
 # 화면 데이터(읽기 전용)
 # ---------------------------------------------------------
 
-def with_reaction(item: dict, live: dict | None = None) -> dict:
-    """회사마다 실제 등락률(키움 장중 갱신값 → 생성 때 기준 값 → 최신 종가 순)과 시장·종가·시총, 해석과 반대면 다른 이유를 붙인다."""
+def with_reaction(item: dict, live: dict | None = None, fallback_indices: dict | None = None) -> dict:
+    """회사마다 실제 등락률(키움 장중 갱신값 → 생성 때 기준 값 → 최신 종가 순)과 시장 대비·시장·종가·시총,
+    해석과 반대면 다른 이유를 붙인다. 시장 대비는 등락률과 같은 때의 지수로만 계산한다(장중 값은 같이 읽은 지수,
+    생성 때 값은 생성 때 지수, 최신 종가는 그 기준일 지수 = fallback_indices)."""
     stocks, _, as_of = directory()
     m = item.get("map") or {}
     stages = []
     label = m.get("basis_label") or (f"{_md(as_of)} 장 기준" if as_of else "")
     used_live = False
+    live_idx = (live or {}).get("indices") or {}
     for st in m.get("stages") or []:
         companies = []
         for c in st.get("companies") or []:
             s = stocks.get(c.get("code"))
             if not s:  # 상장 폐지 등으로 목록에서 빠진 회사는 보이지 않는다
                 continue
-            rate = c["rate"] if "rate" in c else s.get("rate")
+            rate, indices = (c["rate"], m.get("indices")) if "rate" in c else (s.get("rate"), fallback_indices)
             if live and live["rates"].get(c["code"]) is not None:
-                rate, used_live = live["rates"][c["code"]], True
-            row = {**c, "name": s["name"], **{k: s.get(k) for k in ("market", "close", "cap", "value")},
-                   "rate": rate, "moved": rate is not None and abs(rate) >= MOVED_PCT}
-            # 다른 이유는 지금 보여 주는 등락률도 해석과 반대(±3% 이상)일 때만. 장중에 새로 반대가 됐으면 기본 문구.
+                rate, indices, used_live = live["rates"][c["code"]], live_idx, True
+            idx, vs = versus(rate, s.get("market"), indices)
+            row = {**{k: v for k, v in c.items() if k not in ("market_rate", "vs_market")}, "name": s["name"],
+                   **{k: s.get(k) for k in ("market", "close", "cap", "value")},
+                   "rate": rate, "market_rate": idx, "vs_market": vs, "moved": big_move(rate, vs)}
+            # 다른 이유는 지금 보여 주는 값도 해석과 반대(시장 대비 ±3%p 이상)일 때만. 장중에 새로 반대가 됐으면 기본 문구.
             row.pop("other", None)
             row["opposite"] = opposite(row)
             if row["opposite"]:
@@ -799,15 +877,49 @@ def with_reaction(item: dict, live: dict | None = None) -> dict:
             stages.append({**st, "companies": companies})
     reaction = f"{live['label']} 등락률" if used_live else f"{label.replace(' 기준', '')} 등락률" if label else "등락률"
     out_map = {k: v for k, v in m.items() if k != "removed"}
-    return {**item, "map": {**out_map, "stages": stages, "basis_label": label, "reaction_label": reaction}}
+    shown_idx = live_idx if used_live else m.get("indices") or {}
+    return {**item, "map": {**out_map, "stages": stages, "basis_label": label, "reaction_label": reaction,
+                            **({"indices": shown_idx} if shown_idx else {})}}
+
+
+def _signed(v: float) -> str:
+    return f"{'+' if v > 0 else ''}{v:.2f}%"
+
+
+def market_mood(basis: dict, live: dict | None) -> dict | None:
+    """'오늘 시장 분위기' 띠: 지수 등락률(장중 갱신값이 있으면 그것, 아니면 이슈 기준 시점)과 오른·내린 종목 비율 한 줄.
+    지수 값이 없으면 None(띠를 숨긴다)."""
+    indices, breadth, label = basis.get("indices") or {}, basis.get("breadth") or {}, basis.get("label", "")
+    if live and live.get("indices"):
+        indices, label = live["indices"], live.get("label", label)
+        kw = _read("market_kiwoom", {})
+        breadth = kw.get("breadth") if kw.get("as_of") == live.get("as_of") else {}
+    if not indices:
+        return None
+    names = {v: k for k, v in INDEX_MARKET.items()}
+    total = (breadth or {}).get("total") or 0
+    up, down = ((breadth or {}).get("up") or 0) / total if total else 0, ((breadth or {}).get("down") or 0) / total if total else 0
+    crowd = ("대부분 종목이 올랐어요" if up >= MOOD_SHARE else "대부분 종목이 내렸어요" if down >= MOOD_SHARE else
+             "오른 종목과 내린 종목이 섞여 있어요" if total else "")
+    return {"label": label, "indices": [{"name": names[k], "market": k, "rate": indices[k]} for k in ("KOSPI", "KOSDAQ") if k in indices],
+            "crowd": crowd, "text": " · ".join([*(f"{names[k]} {_signed(indices[k])}" for k in ("KOSPI", "KOSDAQ") if k in indices),
+                                                *([crowd] if crowd else [])])}
+
+
+def _public_indices() -> dict:
+    """최신 공공 기준일 지수(종목 목록과 같은 날일 때만). 등락률을 저장하지 않은 회사가 최신 종가를 쓸 때의 시장 대비용."""
+    stocks_as_of = directory()[2]
+    market = _read("market", {})
+    return index_rates(market) if market.get("as_of") and market.get("as_of") == stocks_as_of else {}
 
 
 def overview() -> dict:
     cur = _read("lifemap", {})
     ex = examples()
     live = _live_rates()
+    pub_idx = _public_indices()
     cfg = curation()
-    topics = curate(cfg)["shown"]  # 관리자 숨김·순서·제외 키워드 적용
+    topics = curate(cfg)["shown"]  # 관리자 숨김·순서·제외 키워드·지수 시황 이슈 제외 적용
     saved = _read("lifemap_sectors", {}).get("items") or {}
     ex_sectors = ex.get("sectors") or {}
     sector_items = {}
@@ -815,13 +927,14 @@ def overview() -> dict:
         # 숨김·제외 키워드에 걸린 섹터 이슈는 예시로, 예시도 걸리면 뺀다(화면은 있는 섹터만 보여 준다)
         for it in (saved.get(sector), {**ex_sectors[sector], "example": True} if sector in ex_sectors else None):
             if it and not _blocked(it, cfg):
-                sector_items[sector] = with_reaction(it, live)
+                sector_items[sector] = with_reaction(it, live, pub_idx)
                 break
     basis = cur.get("basis") or ex.get("basis") or {}
     return {
         "day": cur.get("day"),
         "basis": basis,
-        "topics": [with_reaction(t, live) for t in topics],
+        "market": market_mood(basis, live),
+        "topics": [with_reaction(t, live, pub_idx) for t in topics],
         "hot": [t["name"] for t in topics],
         "sectors": SECTORS,
         "sector_items": sector_items,
@@ -909,7 +1022,7 @@ def candidates() -> list[dict]:
     keys, names, uniq = set(), set(), []
     for t in out:
         k = item_key(t)
-        if t.get("map") and k not in keys and t.get("name") not in names:
+        if t.get("map") and k not in keys and t.get("name") not in names and not index_news(t):
             keys.add(k)
             names.add(t.get("name"))
             uniq.append(t)
@@ -1121,7 +1234,7 @@ def _cleanup() -> None:
 
 
 def _ready(word: str, item: dict) -> dict:
-    return {"status": "ready", "word": word, "item": with_reaction(item, _live_rates())}
+    return {"status": "ready", "word": word, "item": with_reaction(item, _live_rates(), _public_indices())}
 
 
 def _fallback(word: str, status: str, message: str) -> dict:
