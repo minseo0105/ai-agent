@@ -5,8 +5,9 @@
 - kiwoom이면 평일 장중 1분마다 지수·히트맵 종목·등락 상위·거래대금·외국인/기관을 모아
   data/admin/stockon/market_kiwoom.json에 쓴다. AI LAB 앱은 이 파일이 새것일 때만 화면에 쓴다(아니면 공공데이터).
 - 장 마감(15:30) 뒤 한 번 더 모아 '마감 기준' 스냅샷을 남기고 그날은 멈춘다.
-- 생활 속 종목 찾기(lifemap.py): 매일 아침 7시 이후 한 번 오늘의 토픽 3개와 추천 칩 마인드맵을 만든다
-  (키는 .env.lifemap의 ANTHROPIC·NAVER 검색 키. 키움 설정과 무관하게 돈다).
+- 뉴스 속 숨은 종목(lifemap.py): 새 기준(공공 새 기준일·키움 장중·마감)이 생기면 토픽·섹터를 만든다
+  (키는 .env.lifemap의 ANTHROPIC·NAVER 검색 키. 키움 설정과 무관하게 돈다). 키움 장중에는 30분마다
+  화면에 나온 회사들의 등락률만 ka10095로 갱신한다(AI 재호출 없음).
 
 첫 시험:
   python -m services.stockon.kiwoom_collector --check   # 토큰 발급 1회 + 즉시 폐기(시세 조회 없음, IP 등록 필요 여부 판별)
@@ -162,6 +163,18 @@ def build_snapshot(client: KiwoomClient, public_market: dict, directory: dict, n
 # 실행
 # ---------------------------------------------------------
 
+def refresh_lifemap_rates(client: KiwoomClient, now: datetime) -> int:
+    """뉴스 속 숨은 종목의 '실제 반응': 화면에 나온 회사 등락률만 지정종목 정보(ka10095)로 다시 읽는다."""
+    codes = lifemap.reaction_codes()
+    rates: dict[str, float] = {}
+    for i in range(0, len(codes), CHUNK):
+        for q in _rows(client.query("ka10095", {"stk_cd": "|".join(codes[i:i + CHUNK])}), "atn_stk_infr"):
+            if q.get("stk_cd") and num(q.get("flu_rt")) is not None:
+                rates[str(q["stk_cd"])] = num(q.get("flu_rt"))
+    lifemap.save_live_rates(rates, now)
+    return len(rates)
+
+
 def collect_once(client: KiwoomClient, cfg: dict, now: datetime) -> dict:
     public_market = store.read("market") or {}
     directory = (store.read("stocks", {}) or {}).get("stocks", {})
@@ -214,6 +227,11 @@ def main(argv: list[str]) -> int:
             try:
                 client = client or KiwoomClient(cfg["mode"], cfg["appkey"], cfg["secret"])
                 snap = collect_once(client, cfg, now)
+                if snap["as_of"] == now.strftime("%Y%m%d") and lifemap.rates_due(now):
+                    try:
+                        refresh_lifemap_rates(client, now)  # 30분마다(장중), AI 호출 없음
+                    except KiwoomError as e:
+                        log.warning("lifemap rates failed: %s", e.code)
                 if session == "closed" and (now.hour, now.minute) >= (15, 35):
                     closed_done = now.date()  # 마감 5분 뒤 값을 '마감 기준'으로 확정하고 그날은 멈춤
                 if snap["as_of"] != now.strftime("%Y%m%d"):

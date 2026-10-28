@@ -1,19 +1,18 @@
-"""생활 속 종목 찾기: 증시를 움직인 뉴스 → 밸류체인(원료·제조·물류·유통) → 관련 상장사 마인드맵.
+"""뉴스 속 숨은 종목: 오늘의 뉴스 → AI 해석(영향 경로) → 영향을 받을 수 있는 회사 → 실제 반응(사후 확인).
 
-- 토픽 = 기준 시점에 증시를 실제로 움직인 뉴스(3~5개, 서로 다른 섹터). 수집기(stockon-collector)가
-  ① 기준일 급등락·거래대금 상위 종목을 먼저 보고 ② 그 기준일 뉴스 창 안의 '특징주·관련주·시황'과 해외 이슈
-  (미국 증시·엔비디아·금리·환율·유가·관세) 기사, 많이 움직인 종목 이름 기사를 모아 ③ Haiku 5.5가 '움직임 ↔ 원인 기사'를
-  짝지어 토픽을 만들고 ④ 토픽마다 Sonnet 5.5가 밸류체인을 그린다. 결과는 저장해서 모두가 같이 본다.
-- 기준(basis): 공공데이터는 D일 시세가 D+1 13시 이후에 올라오므로 새 기준일 시세가 들어왔을 때 만들고, 뉴스도 그 기준일 창
+- 토픽 = 기준 뉴스 창에서 증시에 영향을 줄 만한 국내외 뉴스(정책·금리·환율·유가·국제 정세·산업 동향·기업 사건사고).
+  수집기(stockon-collector)가 기사를 모으고 → Haiku 5.5가 여러 언론이 다룬 이슈를 3~5개(서로 다른 섹터) 묶어
+  대표 기사 1개 + 관련 기사(토픽당 최대 6개)를 고르고 → 토픽마다 Sonnet 5.5가 'AI 해석' 2~3줄과
+  영향 경로(수요 증가·원가 상승·규제·경쟁 변화 등) × 경로당 회사 2곳(긍정 가능/부정 가능·연관도·왜 관련 있나)을 만든다.
+  등락 순위는 토픽 선정에 쓰지 않는다. 회사마다 '실제 반응'(등락률)을 붙이는 데에만 쓴다.
+- 기준(basis): 공공데이터는 D일 시세가 D+1 13시 이후 올라오므로 새 기준일 시세가 들어왔을 때 만들고, 뉴스도 그 기준일 창
   [직전 거래일 15:30, D+1 08:00)만 쓴다(화면 'n/n 장 기준'). 키움 모드로 오늘 시세가 들어오는 날은 10시 이후·마감 뒤
-  한 번씩 오늘 등락률 상위(ka10027)·거래대금 상위(ka10032) 스냅샷으로 다시 만든다('n/n 장중 HH:MM 기준').
-- 섹터 칩(금융·반도체·AI·…): 같은 기준으로 섹터별 이슈 기사를 찾아 미리 그려 둔다.
-- 새 단어: AI LAB 앱(ailab)에서 같은 엔진으로 그린다. 동시 호출 상한·대기열·1인 횟수·하루 상한을 둔다.
-  같은 단어는 한 번 그린 것을 모두가 재사용한다.
+  한 번씩 오늘 뉴스로 다시 만든다('n/n 장중 HH:MM 기준'). 키움 장중에는 수집기가 30분마다 회사 등락률만 갱신한다(AI 재호출 없음).
+- 섹터(금융·반도체·AI·…): 같은 기준 창의 섹터 뉴스로 같은 구조를 미리 만든다. 직접 입력한 단어는 그 단어의 최근 뉴스로 만든다.
 - AI가 낸 회사는 공공데이터 전 종목 목록(stocks.json)의 종목명과 맞춰 보고, 없는 회사는 지운다(종목코드는 목록에서 붙인다).
-- 실제로 크게 움직인 회사(토픽 종목이거나 기준 등락률 ±5% 이상)는 moved로 표시한다. 등락률은 기준 시점 값을 저장한다.
+- 새 단어: AI LAB 앱(ailab)에서 같은 엔진으로 만든다. 동시 호출 상한·대기열·1인 횟수·하루 상한을 둔다. 같은 단어는 재사용.
 - AI가 실패하면 저장된 예시(data/stockon/lifemap_examples.json)로 대체한다. 화면이 비지 않게.
-- 문장에는 권유·평가·전망과 '추천·수혜' 같은 표현을 쓰지 않는다(safety.banned_hits + 이 파일의 EXTRA_BANNED).
+- 문장에는 예측·권유('오를 것'·'매수'·'추천'·'수혜'·'기회'·'덜 올랐다')를 쓰지 않는다. '숨은'은 탭 이름에만 쓴다.
 """
 
 import json
@@ -39,22 +38,29 @@ CHAIN_MODEL = "claude-sonnet-5-5"
 SECTORS = ["금융", "반도체", "AI", "자동차", "보험", "보안", "2차전지", "바이오", "방산", "조선"]
 EXAMPLES_PATH = Path(__file__).resolve().parents[2] / "data" / "stockon" / "lifemap_examples.json"
 
-# 단계 순서 = 화면 가지 순서. 색은 화면에서 정한다(원료 청록·제조 보라·물류 노랑·유통 연두).
-STAGES = {"material": "원료", "making": "제조", "logistics": "물류", "retail": "유통"}
-PER_STAGE = 2
+MAX_PATHS = 4              # 영향 경로(마인드맵 1단계) 최대 수
+PER_PATH = 2               # 경로당 회사 수
 RELEVANCE = ("강", "중", "약")
-MIN_COMPANIES = 3          # 검증 뒤 회사가 이보다 적으면 한 번 다시 그린다
+DIRECTIONS = {"긍정": "pos", "부정": "neg"}
+MIN_COMPANIES = 3          # 검증 뒤 회사가 이보다 적거나 경로가 하나뿐이면 한 번 다시 그린다
 TOPICS_MIN, TOPICS_MAX = 3, 5
-MOVED_PCT = 5.0            # 기준 등락률이 이 이상(절댓값)이면 '실제로 크게 움직인 회사'
+ARTICLES_MAX = 6           # 토픽당 기사 수(대표 기사 포함)
+MOVED_PCT = 5.0            # 실제 등락률이 이 이상(절댓값)이면 '실제 반응' 강조
 TOPIC_TRIES = 3            # 같은 기준으로 최대 시도(실패 시 30분 간격)
-KIWOOM_TOPIC_FROM = (10, 0)  # 키움 오늘 시세로 토픽을 만드는 가장 이른 시각(장 시작 1시간 뒤)
+KIWOOM_TOPIC_FROM = (10, 0)  # 키움 오늘 뉴스로 토픽을 만드는 가장 이른 시각
 KIWOOM_FRESH_SEC = 15 * 60
-MOVERS_FOR_AI = 10         # 상승·하락·거래대금 상위 각각 몇 개를 AI에 보여 줄지
-MOVER_NEWS_N = 8           # 등락률 절댓값 상위 몇 종목의 이름으로 기사를 더 찾을지
-# 증시를 움직인 뉴스 검색어(기준 뉴스 창 안 기사만 쓴다). 날짜 표현 검색어를 더해 하루 지난 기준일도 찾게 한다.
-MARKET_QUERIES = ["특징주", "관련주 급등", "관련주 급락", "증시 마감 시황", "뉴욕증시", "엔비디아 주가",
-                  "금리 환율 증시", "국제유가 증시", "관세 증시"]
-DATED_QUERIES = {"특징주", "증시 마감 시황", "뉴욕증시"}
+LIVE_RATES_SEC = 30 * 60   # 키움 장중 실제 등락률 갱신 간격(수집기)
+LIVE_RATES_STALE = 45 * 60  # 이보다 오래된 장중 등락률은 쓰지 않는다
+WORD_NEWS_DAYS = 3         # 직접 입력 단어는 최근 3일 뉴스로 해석
+
+# 증시에 영향을 줄 만한 뉴스 검색어(분야, 검색어). 기준 뉴스 창 안 기사만 쓴다. 등락 순위·특징주 검색은 하지 않는다.
+ISSUE_QUERIES = [
+    ("정책", "정부 정책 발표"), ("정책", "금융당국 발표"), ("금리", "기준금리"), ("금리", "미국 국채 금리"),
+    ("환율", "원달러 환율"), ("유가", "국제유가"), ("국제", "관세 무역"), ("국제", "미중 갈등"), ("국제", "중동 정세"),
+    ("산업", "수출 실적 업계"), ("산업", "업황 산업 동향"), ("사고", "해킹 개인정보 유출"), ("사고", "공장 화재 사고"),
+    ("사고", "리콜 결함"),
+]
+SECTOR_QUERIES = ["{s} 업계", "{s} 산업"]
 
 # 새 단어 실시간 생성 안전장치(30명 동시 접속 기준)
 LIVE_CONCURRENCY = 3       # 동시에 AI를 부르는 수
@@ -66,10 +72,11 @@ LIVE_TIMEOUT = 45          # AI 한 번 호출 최대 초
 WORDS_KEEP = 300           # 저장해 두는 새 단어 수(오래된 것부터 지움)
 RESULT_KEEP_SEC = 120      # 실패 결과를 폴링에 알려 주는 시간
 
-# '급등·급락'은 이미 일어난 움직임을 쓰는 말이라 허용한다(방향 예측은 safety.banned_hits가 막는다).
-EXTRA_BANNED = [re.compile(p) for p in (r"수혜", r"추천", r"주목", r"기대", r"유망", r"관심\s*종목", r"테마주")]
+# safety.banned_hits(권유·목표가·방향 예측) 위에 더 막는 말. '급등·급락'은 이미 일어난 움직임이라 허용한다.
+EXTRA_BANNED = [re.compile(p) for p in (r"수혜", r"추천", r"주목", r"기대", r"유망", r"관심\s*종목", r"테마주", r"매수", r"매도",
+                                        r"기회", r"덜\s*(오|올)", r"숨은", r"오를\s*것", r"내릴\s*것")]
 # 이유가 추측·약한 연결이면 그 회사를 넣지 않는다(예: '연계 가능', '직접 관련 낮음')
-WEAK_REASON = re.compile(r"불확실|여부|가능성?|낮[음다은]|없[음다]|추정|예상|것으로\s*보")
+WEAK_REASON = re.compile(r"불확실|여부|가능성|낮[음다은]|없[음다]|추정|예상|것으로\s*보")
 WORD_RE = re.compile(r"^[0-9A-Za-z가-힣][0-9A-Za-z가-힣 ]{0,11}$")
 BLOCKED_WORDS = re.compile(r"(시발|씨발|개새|병신|좆|섹스|자살|살인|마약|도박|급등주|작전주|리딩방|추천주|수혜주)")
 
@@ -142,18 +149,19 @@ def match_company(name: str, index: dict) -> str | None:
     return index.get(_norm_name(name))
 
 
-def validate_chain(raw: dict, index: dict, stocks: dict) -> tuple[list[dict], list[str]]:
-    """AI가 낸 밸류체인 → (화면용 단계 목록, 지운 회사 이름). 단계는 정해진 순서, 단계당 2곳, 회사는 한 번만."""
-    by_key: dict[str, dict] = {}
+def validate_paths(raw: dict, index: dict, stocks: dict) -> tuple[list[dict], list[str]]:
+    """AI가 낸 영향 경로 → (화면용 경로 목록, 지운 회사 이름). 경로 최대 4, 경로당 2곳, 회사는 한 번만, 방향(긍정/부정) 필수."""
+    paths: list[dict] = []
     removed: list[str] = []
     used: set[str] = set()
-    for st in (raw or {}).get("stages") or []:
-        key = st.get("key")
-        if key not in STAGES or key in by_key:
+    labels: set[str] = set()
+    for p in (raw or {}).get("paths") or []:
+        label = normalize_word(str(p.get("label") or ""))[:10]
+        if not label or label in labels or _unsafe(label):
             continue
-        detail = str(st.get("detail") or "").strip()[:14]
+        detail = str(p.get("detail") or "").strip()[:24]
         companies = []
-        for c in st.get("companies") or []:
+        for c in p.get("companies") or []:
             name = str(c.get("name") or "").strip()
             reason = str(c.get("reason") or "").strip()
             code = match_company(name, index)
@@ -161,71 +169,72 @@ def validate_chain(raw: dict, index: dict, stocks: dict) -> tuple[list[dict], li
                 if name:
                     removed.append(name)
                 continue
-            if code in used or not reason or _unsafe(reason) or WEAK_REASON.search(reason):
+            direction = DIRECTIONS.get(c.get("direction"))
+            if code in used or not direction or not reason or _unsafe(reason) or WEAK_REASON.search(reason):
                 continue
             used.add(code)
             rel = c.get("relevance") if c.get("relevance") in RELEVANCE else "약"
-            companies.append({"code": code, "name": stocks[code]["name"], "relevance": rel, "reason": reason[:60]})
-            if len(companies) == PER_STAGE:
+            companies.append({"code": code, "name": stocks[code]["name"], "relevance": rel, "reason": reason[:60],
+                              "direction": direction})
+            if len(companies) == PER_PATH:
                 break
         if companies:
-            by_key[key] = {"key": key, "label": STAGES[key], "detail": "" if _unsafe(detail) else detail, "companies": companies}
-    return [by_key[k] for k in STAGES if k in by_key], removed
+            labels.add(label)
+            paths.append({"key": f"p{len(paths)}", "label": label, "detail": "" if _unsafe(detail) else detail,
+                          "companies": companies})
+            if len(paths) == MAX_PATHS:
+                break
+    return paths, removed
 
 
 # ---------------------------------------------------------
 # AI 호출
 # ---------------------------------------------------------
 
-CHAIN_SYSTEM = """너는 단어(증시 이슈·업종·생활 단어)를 한국 상장사의 밸류체인으로 이어 주는 경제 교육용 편집자다.
+INTERP_SYSTEM = """너는 경제 뉴스를 읽고 한국 상장사에 미칠 수 있는 영향을 설명하는 경제 교육용 해설가다.
 규칙:
-- 한국거래소(코스피·코스닥)에 지금 상장된 회사만, 상장 종목명 그대로 쓴다. 비상장사·해외 회사·상장사의 비상장 자회사는 쓰지 않는다.
-- 단계: 원료(material)=소재·부품·원천 기술, 제조(making)=제품·서비스를 만드는 회사, 물류(logistics)=운송·인프라·망,
-  유통(retail)=판매·플랫폼·고객 접점. 이 단어에 실제로 해당하는 단계만 고른다. 억지로 채우지 않는다.
-- 단계마다 이 단어와 가장 직접 이어지는 회사를 3곳까지, 연관이 큰 순서로 쓴다. 확실하지 않은 회사는 쓰지 않는다.
-- 자료의 '실제로 움직인 종목'은 이 단어와 이어지면 맞는 단계의 앞쪽에 넣는다. '많이 움직인 종목'은 이 단어와 확실히 이어지는 것만 넣는다.
-- 그 단계에서 이 단어와 확실히 이어지는 상장사가 없으면 그 단계를 통째로 뺀다. 연결이 약하거나 추측('~할 수 있다', '관련 낮음')인 회사는 넣지 않는다.
-- relevance: 강 = 이 단어가 그 회사의 핵심 사업, 중 = 주요 사업 중 하나, 약 = 간접적으로 이어짐.
-- reason: 그 회사가 이 단어와 어떻게 이어지는지 사업 사실만 한 줄(30자 이내).
-- detail: 그 단계에서 이 단어와 관련된 것(예: '보안 솔루션·인증'), 12자 이내.
-- 주가·실적·전망, 투자 판단, 좋고 나쁨 평가를 쓰지 않는다. '추천', '수혜', '유망', '기대', '주목' 같은 말을 쓰지 않는다.
-- 한국어."""
+- interpretation: 이 뉴스가 어떤 경로로 회사들에 영향을 줄 수 있는지 2~3문장(문장당 60자 이내). 예: '개인정보 유출이 잇따르면 기업의 보안 투자 수요가 늘 수 있다.'
+  자료에 있는 사실에서 출발하고, '~할 수 있다'처럼 가능성으로 쓴다. 주가가 오르거나 내릴 것이라고 쓰지 않는다.
+- paths: 영향 경로 2~4개. label은 경로 이름 2~8자(예: '수요 증가', '원가 상승', '규제 강화', '경쟁 변화', '수출 영향'), detail은 한 줄(20자 이내).
+- 경로마다 영향을 받을 수 있는 한국거래소(코스피·코스닥) 상장사를 3곳까지, 상장 종목명 그대로. 비상장사·해외 회사·비상장 자회사는 쓰지 않는다.
+- 회사마다 direction: '긍정' 또는 '부정'(그 경로로 사업에 좋은 영향/나쁜 영향을 받을 수 있는 쪽). 긍정과 부정을 모두 살핀다.
+- relevance: 강 = 그 회사 핵심 사업과 직접 이어짐, 중 = 주요 사업 중 하나, 약 = 간접적으로 이어짐.
+- reason: 그 회사가 왜 관련 있는지 사업 사실 한 줄(30자 이내). 확실하지 않은 회사는 쓰지 않는다.
+- 금지: 주가 방향 예측('오를 것' 등), 매수·매도 권유, '추천', '수혜', '유망', '기대', '주목', '기회', '덜 올랐다', '숨은'. 한국어."""
 
-CHAIN_SCHEMA = {
-    "type": "object", "additionalProperties": False, "required": ["stages"],
-    "properties": {"stages": {"type": "array", "items": {
-        "type": "object", "additionalProperties": False, "required": ["key", "detail", "companies"],
-        "properties": {
-            "key": {"type": "string", "enum": list(STAGES)},
-            "detail": {"type": "string"},
-            "companies": {"type": "array", "items": {
-                "type": "object", "additionalProperties": False, "required": ["name", "relevance", "reason"],
-                "properties": {"name": {"type": "string"}, "relevance": {"type": "string", "enum": list(RELEVANCE)},
-                               "reason": {"type": "string"}}}},
-        }}}},
+INTERP_SCHEMA = {
+    "type": "object", "additionalProperties": False, "required": ["interpretation", "paths"],
+    "properties": {
+        "interpretation": {"type": "array", "items": {"type": "string"}},
+        "paths": {"type": "array", "items": {
+            "type": "object", "additionalProperties": False, "required": ["label", "detail", "companies"],
+            "properties": {
+                "label": {"type": "string"}, "detail": {"type": "string"},
+                "companies": {"type": "array", "items": {
+                    "type": "object", "additionalProperties": False, "required": ["name", "direction", "relevance", "reason"],
+                    "properties": {"name": {"type": "string"}, "direction": {"type": "string", "enum": list(DIRECTIONS)},
+                                   "relevance": {"type": "string", "enum": list(RELEVANCE)}, "reason": {"type": "string"}}}},
+            }}},
+    },
 }
 
-TOPIC_SYSTEM = """너는 증시 뉴스 편집자다. 기준 시점에 한국 증시에서 실제로 크게 움직인 종목·업종과 그 원인 기사를 짝지어
-'증시를 움직인 뉴스' 토픽을 만든다.
+TOPIC_SYSTEM = """너는 증시 뉴스 편집자다. 주어진 기사 중에서 한국 증시(산업·기업)에 영향을 줄 만한 이슈를 고른다.
 규칙:
-- 먼저 '많이 움직인 종목'에서 같은 이유로 함께 움직인 종목·업종을 찾고, 기사에서 그 원인을 확인한다. 기사로 원인이 확인되지 않는 움직임은 토픽으로 만들지 않는다.
-- 해외 이슈(미국 증시, 엔비디아, 금리, 환율, 유가, 관세 등)도 국내 종목·업종의 실제 움직임과 기사로 이어지면 토픽이 된다.
-- 토픽은 서로 다른 섹터(업종)에서 고른다. 같은 기사를 두 토픽의 근거로 쓰지 않는다. 영향이 큰 순서로 7개까지.
-- title: 무슨 일이 있었나 한 줄(25자 이내, 예: '보안 사고 터지자 보안주 급등').
-- impact: 증시 영향 한 줄(40자 이내, 예: '라온시큐어 등 보안 관련 종목이 크게 올랐다'). 이미 일어난 일만.
-- keyword: 마인드맵 가운데 둘 핵심 단어 2~8자(예: '보안', '원전', '반도체 장비'). sector: 업종 이름 2~8자.
-- stocks: 이 원인으로 실제로 움직인 종목을 '많이 움직인 종목'의 이름 그대로 1~3개.
-- articles: 원인을 보여 주는 기사 번호 정확히 2개(주어진 번호만).
-- 앞으로의 주가 방향 예측, 매수·매도 권유, '추천', '수혜', '유망', '기대', '주목' 같은 말을 쓰지 않는다. 한국어."""
+- 대상: 정책·금리·환율·유가·국제 정세·산업 동향·기업 사건사고(보안 사고·화재·리콜 등). 주가 시황·특징주·종목 추천 기사는 이슈로 고르지 않는다.
+- 여러 언론이 다룬 이슈(같은 내용을 다룬 기사가 많은 것)와 산업·기업에 미치는 영향이 큰 것을 먼저 고른다.
+- 이슈는 서로 다른 섹터(업종)에서 고른다. 같은 기사를 두 이슈에 쓰지 않는다.
+- articles: 그 이슈를 다룬 기사 번호(최대 6개, 같은 내용을 다룬 다른 언론 기사 우선). representative: 영향이 가장 직접 드러나는 기사 번호 1개(articles 안에서).
+- title: 무슨 일이 있었나 한 줄(25자 이내). summary: 사실만 한 줄(45자 이내). keyword: 마인드맵 가운데 둘 이슈 이름 2~8자(예: '개인정보 유출', '유가 급등'). sector: 영향이 가장 큰 업종 2~8자.
+- 주가 방향 예측, 매수·매도 권유, '추천', '수혜', '유망', '기대', '주목', '기회', '숨은' 같은 말을 쓰지 않는다. 한국어."""
 
 TOPIC_SCHEMA = {
     "type": "object", "additionalProperties": False, "required": ["topics"],
     "properties": {"topics": {"type": "array", "items": {
         "type": "object", "additionalProperties": False,
-        "required": ["title", "impact", "keyword", "sector", "stocks", "articles"],
-        "properties": {"title": {"type": "string"}, "impact": {"type": "string"}, "keyword": {"type": "string"},
-                       "sector": {"type": "string"}, "stocks": {"type": "array", "items": {"type": "string"}},
-                       "articles": {"type": "array", "items": {"type": "integer"}}}}}},
+        "required": ["title", "summary", "keyword", "sector", "articles", "representative"],
+        "properties": {"title": {"type": "string"}, "summary": {"type": "string"}, "keyword": {"type": "string"},
+                       "sector": {"type": "string"}, "articles": {"type": "array", "items": {"type": "integer"}},
+                       "representative": {"type": "integer"}}}}},
 }
 
 
@@ -267,66 +276,49 @@ def _ask(model: str, system: str, task: str, payload, schema: dict, max_tokens: 
     return json.loads(text)
 
 
-def build_chain(word: str, context: str = "", live: bool = False, movers: list[str] | None = None,
-                must: list[str] | None = None) -> dict:
-    """단어 하나의 마인드맵. 실패하면 예외(호출하는 쪽이 예시로 대체).
-    context = 관련 뉴스, movers = 기준 시점에 많이 움직인 종목 이름, must = 이 토픽으로 실제로 움직인 종목 이름."""
+def interpret(word: str, articles: list[dict], live: bool = False) -> dict:
+    """뉴스(기사 제목·요약문) → AI 해석 + 영향 경로 × 회사. 실패하면 예외(호출하는 쪽이 예시로 대체)."""
     stocks, index, as_of = directory()
     if not stocks:
         raise RuntimeError("종목 목록 없음")
-    task = f"'{word}'를 밸류체인 단계와 한국 상장사로 이어라."
-    payload: dict = {"단어": word}
-    if context:
-        payload["관련 뉴스"] = context
-    if must:
-        payload["실제로 움직인 종목"] = must
-    if movers:
-        payload["많이 움직인 종목"] = movers
+    task = f"'{word}' 뉴스가 한국 상장사들에 어떤 경로로 영향을 줄 수 있는지 해석하라."
+    payload: dict = {"이슈": word, "기사": [{"제목": a["title"], "요약문": (a.get("snippet") or "")[:120]} for a in articles[:ARTICLES_MAX]]}
     removed_all: list[str] = []
-    stages: list[dict] = []
-    count = lambda st: sum(len(s["companies"]) for s in st)  # noqa: E731
+    paths: list[dict] = []
+    sentences: list[str] = []
+    count = lambda ps: sum(len(p["companies"]) for p in ps)  # noqa: E731
     for attempt in range(2):
-        raw = _ask(CHAIN_MODEL, CHAIN_SYSTEM, task, payload, CHAIN_SCHEMA, 1500, live)
-        got, removed = validate_chain(raw, index, stocks)
+        raw = _ask(CHAIN_MODEL, INTERP_SYSTEM, task, payload, INTERP_SCHEMA, 2000, live)
+        got, removed = validate_paths(raw, index, stocks)
         removed_all += removed
-        if count(got) >= count(stages):
-            stages = got  # 다시 그린 것이 더 적으면 처음 것을 둔다
-        if (count(stages) >= MIN_COMPANIES and len(stages) >= 2) or attempt == 1:
+        lines = [str(x).strip()[:120] for x in (raw or {}).get("interpretation") or [] if str(x).strip()]
+        lines = [x for x in lines if not _unsafe(x)][:3]
+        if count(got) >= count(paths):
+            paths, sentences = got, lines or sentences  # 다시 그린 것이 더 적으면 처음 것을 둔다
+        if (count(paths) >= MIN_COMPANIES and len(paths) >= 2 and sentences) or attempt == 1:
             break
         if removed:
             task += (f"\n\n주의: 직전 결과의 {', '.join(removed[:6])}은(는) 상장 종목 목록에 없었다. "
                      "상장된 회사만 상장 종목명 그대로 다시 써라.")
-        elif len(stages) == 1:
-            task += ("\n\n주의: 직전 결과는 한 단계뿐이었다. 원료(소재·부품·기술)·물류(망·인프라)·유통(판매·플랫폼) 단계에서도 "
-                     "이 단어와 확실히 이어지는 상장사가 있으면 더해라(없으면 그 단계는 빼라).")
+        elif len(paths) == 1 or not sentences:
+            task += "\n\n주의: 직전 결과는 영향 경로가 하나뿐이거나 해석 문장이 없었다. 다른 경로(수요·원가·규제·경쟁 등)도 살펴 2개 이상 써라."
         else:
             break  # 지운 회사 없이 적게 나왔으면 다시 불러도 비슷하다(빈 결과 = 이어지는 회사 없음)
-    return {"word": word, "stages": stages, "removed": list(dict.fromkeys(removed_all))[:10], "ai": True,
-            "model": CHAIN_MODEL, "directory_as_of": as_of, "created_ts": time.time()}
+    return {"word": word, "interpretation": sentences, "stages": paths, "removed": list(dict.fromkeys(removed_all))[:10],
+            "ai": True, "model": CHAIN_MODEL, "directory_as_of": as_of, "created_ts": time.time()}
 
 
 # ---------------------------------------------------------
-# 기준(basis): 어느 시점의 움직임으로 토픽을 만드나
+# 기준(basis): 어느 시점의 뉴스·등락률로 만드나
 # ---------------------------------------------------------
 
 def _md(ymd: str) -> str:
     return f"{int(ymd[4:6])}/{int(ymd[6:8])}"
 
 
-def _mover_rows(market: dict) -> list[dict]:
-    """상승·하락·거래대금 상위(중복 제외). 각 {code, name, rate, value}."""
-    rows, seen = [], set()
-    for kind in ("up", "down", "value"):
-        for s in ((market.get("movers") or {}).get(kind) or [])[:MOVERS_FOR_AI]:
-            if s.get("code") and s["code"] not in seen and s.get("rate") is not None:
-                seen.add(s["code"])
-                rows.append({k: s.get(k) for k in ("code", "name", "rate", "value")})
-    return rows
-
-
 def topic_basis(now: datetime | None = None) -> dict | None:
-    """토픽을 만들 기준. 키움 오늘 시세(키움 모드·10시 이후·15분 안 갱신 또는 마감)가 있으면 그것, 아니면 공공데이터 최신 기준일.
-    {key, source, as_of, label, window, movers, rates}. 시세가 하나도 없으면 None."""
+    """기준. 키움 오늘 시세(키움 모드·10시 이후·15분 안 갱신 또는 마감)가 있으면 오늘 뉴스, 아니면 공공데이터 최신 기준일.
+    {key, source, as_of, label, window, rates}. rates = 그 시점 등락률(실제 반응 표시용). 시세가 없으면 None."""
     now = now or datetime.now(KST)
     public = _read("market", {})
     status = _read("kiwoom_status", {})
@@ -340,127 +332,126 @@ def topic_basis(now: datetime | None = None) -> dict | None:
         start = datetime.strptime(start_day, "%Y%m%d").replace(tzinfo=KST, hour=15, minute=30)
         stamp = datetime.fromtimestamp(kw.get("fetched_ts") or time.time(), KST).strftime("%H:%M")
         rates = {s["code"]: s.get("rate") for lst in (kw.get("heatmap") or {}).values() for s in lst if s.get("code")}
-        movers = _mover_rows(kw)
-        rates.update({m["code"]: m["rate"] for m in movers})
+        for kind in ("up", "down", "value"):
+            rates.update({s["code"]: s.get("rate") for s in (kw.get("movers") or {}).get(kind) or [] if s.get("code")})
         label = f"{_md(today)} 장 마감 기준" if closed else f"{_md(today)} 장중 {stamp} 기준"
         return {"key": f"kiwoom:{today}:{'close' if closed else 'open'}", "source": "kiwoom", "as_of": today,
-                "label": label, "window": (start, now), "movers": movers, "rates": rates}
+                "label": label, "window": (start, now), "rates": rates}
     if not public.get("as_of"):
         return None
     stocks, _, dir_as_of = directory()
     rates = {c: s.get("rate") for c, s in stocks.items()} if dir_as_of == public["as_of"] else {}
-    movers = _mover_rows(public)
-    rates.update({m["code"]: m["rate"] for m in movers})
     return {"key": f"public:{public['as_of']}", "source": "public", "as_of": public["as_of"],
-            "label": f"{_md(public['as_of'])} 장 기준", "window": news_window(public), "movers": movers, "rates": rates}
+            "label": f"{_md(public['as_of'])} 장 기준", "window": news_window(public), "rates": rates}
 
 
 def basis_info(basis: dict) -> dict:
-    """화면·저장용(종목 표·뉴스 창 제외)."""
+    """화면·저장용(등락률 표·뉴스 창 제외)."""
     return {k: basis[k] for k in ("key", "source", "as_of", "label")}
 
 
-# ---------------------------------------------------------
-# 토픽: 움직인 종목 → 원인 뉴스
-# ---------------------------------------------------------
-
-def collect_market_news(basis: dict, http=None) -> list[dict]:
-    """기준 뉴스 창 안의 증시 기사: 특징주·관련주·시황·해외 이슈 검색어 + 많이 움직인 종목 이름 기사(제목 중복 제거)."""
-    start, end = basis["window"]
-    day = datetime.strptime(basis["as_of"], "%Y%m%d")
-    kw = {"http": http} if http else {}
-    out, seen = [], set()
-
-    def add(items, category):
-        for n in items:
-            if n["title"] not in seen:
-                seen.add(n["title"])
-                out.append({**n, "category": category})
-
-    for q in MARKET_QUERIES:
-        try:
-            extra = [f"{q} {day.month}월 {day.day}일"] if q in DATED_QUERIES else None
-            add(news.search_window(q, start, end, limit=10, max_pages=2, extra_queries=extra, **kw), "시장")
-        except news.NewsError as e:
-            log.warning("lifemap news %s: %s", q, e.code)
-    for m in sorted(basis["movers"], key=lambda r: -abs(r["rate"] or 0))[:MOVER_NEWS_N]:
-        try:
-            add(news.search_window(f'"{m["name"]}"', start, end, limit=3, max_pages=1, must_contain=m["name"], **kw), "종목")
-        except news.NewsError:
-            pass
-    return out
-
-
-def pick_topics(basis: dict, articles: list[dict]) -> list[dict]:
-    """Haiku가 '움직임 ↔ 원인 기사'를 짝지은 토픽(최대 5). 종목·기사 번호·섹터 중복·표현을 검사해 통과한 것만."""
-    stocks, index, _ = directory()
-    payload = {
-        "기준": basis["label"],
-        "많이 움직인 종목": [{"이름": m["name"], "등락률": m["rate"], "거래대금_억": round((m.get("value") or 0) / 1e8)}
-                       for m in basis["movers"]],
-        "기사": [{"번호": i + 1, "제목": a["title"], "요약문": (a.get("snippet") or "")[:80], "발행": a.get("pub")}
-               for i, a in enumerate(articles)],
-    }
-    raw = _ask(TOPIC_MODEL, TOPIC_SYSTEM, f"{basis['label']}으로 증시를 움직인 뉴스 토픽을 영향이 큰 순서로 7개까지 만들어라.",
-               payload, TOPIC_SCHEMA, 3000)
-    rates = basis["rates"]
-    topics, keywords, sectors, used_articles = [], set(), [], set()
-    rejects = _last_rejects
-    rejects.clear()
-
-    def reject(why: str) -> None:
-        rejects[why] = rejects.get(why, 0) + 1
-
-    for t in (raw or {}).get("topics") or []:
-        keyword = normalize_word(str(t.get("keyword") or ""))[:12]
-        sector = normalize_word(str(t.get("sector") or ""))[:12]
-        title = str(t.get("title") or "").strip()[:40]
-        impact = str(t.get("impact") or "").strip()[:80]
-        nums = [n for n in dict.fromkeys(t.get("articles") or []) if isinstance(n, int) and 1 <= n <= len(articles)][:2]
-        moved: list[dict] = []
-        for name in t.get("stocks") or []:
-            code = match_company(str(name), index)
-            if code and rates.get(code) is not None and code not in [m["code"] for m in moved]:
-                moved.append({"code": code, "name": stocks[code]["name"], "rate": rates[code]})
-        moved.sort(key=lambda m: -abs(m["rate"]))
-        sec = _norm_name(sector)
-        # 근거 기사 2개·실제로 움직인 종목 1개 이상·다른 섹터('반도체'와 '반도체장비'는 같은 섹터)·다른 기사여야 토픽
-        why = ("word" if not keyword or check_word(keyword) or keyword in keywords or not sec else
-               "sector" if any(sec in x or x in sec for x in sectors) else
-               "text" if not title or not impact or any(_unsafe(x) for x in (title, impact, keyword, sector)) else
-               "articles" if len(nums) < 2 or used_articles & set(nums) else
-               "stocks" if not moved else "")
-        if why:
-            reject(why)
-            continue
-        keywords.add(keyword)
-        sectors.append(sec)
-        used_articles.update(nums)
-        topics.append({"name": keyword, "title": title, "impact": impact, "sector": sector, "stocks": moved[:3],
-                       "articles": [{k: articles[n - 1].get(k) for k in ("title", "url", "press", "pub")} for n in nums]})
-        if len(topics) == TOPICS_MAX:
-            break
-    return topics
-
-
-_last_rejects: dict[str, int] = {}  # 마지막 토픽 선정에서 버린 이유별 개수(상태 파일에 남겨 원인 확인용)
-
-
-def mark_moved(m: dict, basis: dict, topic_codes=frozenset()) -> dict:
-    """기준 시점 등락률을 회사에 저장하고, 토픽 종목이거나 ±MOVED_PCT 이상이면 moved로 표시한다."""
+def mark_reaction(m: dict, basis: dict) -> dict:
+    """기준 시점 등락률을 회사에 저장하고 ±MOVED_PCT 이상이면 moved(실제 반응 강조)."""
     rates = basis["rates"]
     for st in m.get("stages") or []:
         for c in st.get("companies") or []:
             r = rates.get(c["code"])
             if r is not None:
                 c["rate"] = r
-                c["moved"] = c["code"] in topic_codes or abs(r) >= MOVED_PCT
+                c["moved"] = abs(r) >= MOVED_PCT
     m["basis_label"] = basis["label"]
     return m
 
 
-def _mover_names(basis: dict) -> list[str]:
-    return [f"{m['name']}({m['rate']:+.1f}%)" for m in basis["movers"]]
+# ---------------------------------------------------------
+# 토픽: 오늘의 뉴스 → 이슈 묶기
+# ---------------------------------------------------------
+
+def _article(a: dict, rep: bool = False) -> dict:
+    return {**{k: a.get(k) for k in ("title", "url", "press", "pub")}, "rep": rep}
+
+
+def collect_issue_news(basis: dict, http=None) -> list[dict]:
+    """기준 뉴스 창 안의 정책·금리·환율·유가·국제·산업·사고 기사(제목 중복 제거). 날짜 표현 검색을 더해 지난 기준일도 찾는다."""
+    start, end = basis["window"]
+    day = datetime.strptime(basis["as_of"], "%Y%m%d")
+    kw = {"http": http} if http else {}
+    out, seen = [], set()
+    for category, q in ISSUE_QUERIES:
+        try:
+            found = news.search_window(q, start, end, limit=12, max_pages=2,
+                                       extra_queries=[f"{q} {day.month}월 {day.day}일"], **kw)
+        except news.NewsError as e:
+            log.warning("lifemap news %s: %s", q, e.code)
+            continue
+        for n in found:
+            if n["title"] not in seen:
+                seen.add(n["title"])
+                out.append({**n, "category": category})
+    return out
+
+
+_last_rejects: dict[str, int] = {}  # 마지막 토픽 선정에서 버린 이유별 개수(상태 파일에 남겨 원인 확인용)
+# 이슈 이름에서 같은 이슈인지 볼 때 빼는 흔한 말(이것만 겹치면 다른 이슈)
+GENERIC_TOKENS = {"급등", "급락", "상승", "하락", "인상", "인하", "발표", "확대", "축소", "논란", "우려", "사고", "협상", "결정", "강화"}
+
+
+def _issue_tokens(keyword: str) -> set[str]:
+    return {t for t in re.split(r"[\s·,/]+", keyword) if len(t) >= 2 and t not in GENERIC_TOKENS}
+
+
+def pick_issues(basis: dict, articles: list[dict], task: str = "", max_topics: int = TOPICS_MAX,
+                min_articles: int = 2, min_press: int = 2) -> list[dict]:
+    """Haiku가 묶은 이슈. 대표 기사·기사 번호·언론사 수·섹터 중복·표현을 검사해 통과한 것만(최대 max_topics)."""
+    payload = {"기준": basis["label"],
+               "기사": [{"번호": i + 1, "분야": a.get("category", ""), "언론사": a.get("press", ""), "제목": a["title"],
+                        "요약문": (a.get("snippet") or "")[:70], "발행": a.get("pub")} for i, a in enumerate(articles)]}
+    raw = _ask(TOPIC_MODEL, TOPIC_SYSTEM, task or f"{basis['label']} 뉴스에서 증시에 영향을 줄 만한 이슈를 영향이 큰 순서로 7개까지 골라라.",
+               payload, TOPIC_SCHEMA, 3000)
+    topics, keywords, sectors, used, seen_tokens = [], set(), [], set(), set()
+    rejects = _last_rejects
+    rejects.clear()
+    for t in (raw or {}).get("topics") or []:
+        keyword = normalize_word(str(t.get("keyword") or ""))[:12]
+        sector = normalize_word(str(t.get("sector") or ""))[:12]
+        title = str(t.get("title") or "").strip()[:40]
+        summary = str(t.get("summary") or "").strip()[:80]
+        nums = [n for n in dict.fromkeys(t.get("articles") or []) if isinstance(n, int) and 1 <= n <= len(articles)]
+        rep = t.get("representative")
+        if rep in nums:
+            nums = [rep] + [n for n in nums if n != rep]
+        nums = nums[:ARTICLES_MAX]
+        sec = _norm_name(sector)
+        presses = {articles[n - 1].get("press") for n in nums}
+        tokens = _issue_tokens(keyword)
+        # 다른 이슈('AI 해킹 유출'과 '개인정보 유출'은 같은 이슈)·다른 섹터('반도체'와 '반도체장비'는 같은 섹터)·
+        # 다른 기사·여러 언론·대표 기사가 있어야 이슈
+        why = ("word" if not keyword or check_word(keyword) or keyword in keywords or not sec or tokens & seen_tokens else
+               "sector" if any(sec in x or x in sec for x in sectors) else
+               "text" if not title or not summary or any(_unsafe(x) for x in (title, summary, keyword, sector)) else
+               "articles" if len(nums) < min_articles or rep not in nums or used & set(nums) else
+               "press" if len(presses) < min_press else "")
+        if why:
+            rejects[why] = rejects.get(why, 0) + 1
+            continue
+        keywords.add(keyword)
+        seen_tokens.update(tokens)
+        sectors.append(sec)
+        used.update(nums)
+        topics.append({"name": keyword, "title": title, "summary": summary, "sector": sector,
+                       "articles": [_article(articles[n - 1], n == rep) for n in nums],
+                       "_context": [articles[n - 1] for n in nums]})
+        if len(topics) == max_topics:
+            break
+    return topics
+
+
+def _finish(t: dict, basis: dict, live: bool = False) -> dict | None:
+    """이슈 하나 → AI 해석 + 회사 지도 + 실제 반응. 회사가 없으면 None."""
+    m = interpret(t["name"], t.pop("_context"), live)
+    if not m["stages"]:
+        return None
+    return {**t, "basis_label": basis["label"], "map": mark_reaction(m, basis)}
 
 
 # ---------------------------------------------------------
@@ -479,13 +470,17 @@ def examples() -> dict:
     return _examples_cache["value"]
 
 
-def example_map(word: str = "") -> dict:
-    """같은 단어 예시가 있으면 그것, 없으면 첫 섹터 예시."""
+def example_item(word: str = "") -> dict:
+    """같은 단어 예시가 있으면 그것, 없으면 첫 토픽 예시."""
     ex = examples()
     sectors = ex.get("sectors") or {}
-    topic = next((t["map"] for t in ex.get("topics") or [] if t.get("name") == word and t.get("map")), None)
-    chosen = sectors.get(word) or topic or next(iter(sectors.values()), None)
-    return {**chosen, "example": True} if chosen else {"word": word, "stages": [], "ai": False, "example": True}
+    topics = ex.get("topics") or []
+    chosen = sectors.get(word) or next((t for t in topics if t.get("name") == word), None) or (topics[0] if topics else None) \
+        or next(iter(sectors.values()), None)
+    if not chosen:
+        return {"name": word, "title": word, "summary": "", "articles": [], "example": True,
+                "map": {"word": word, "stages": [], "interpretation": [], "ai": False}}
+    return {**chosen, "example": True, "map": {**chosen["map"], "example": True}}
 
 
 # ---------------------------------------------------------
@@ -502,22 +497,20 @@ def _status(**kw) -> None:
 
 
 def run_topics(basis: dict, http=None) -> dict:
-    """증시를 움직인 뉴스 토픽 3~5개 + 토픽별 마인드맵. 3개가 안 되면 같은 기준의 이전 토픽으로 채운다.
+    """오늘의 뉴스 토픽 3~5개(이슈 + AI 해석 + 회사 지도). 3개가 안 되면 같은 기준의 이전 토픽으로 채운다.
     하나도 못 만들었을 때만 예시(다른 날 기준)로 채운다 — 오늘 이슈 사이에 다른 날 토픽이 섞이지 않게."""
     prev = _read("lifemap", {})
     topics: list[dict] = []
     error = ""
     try:
-        for t in pick_topics(basis, collect_market_news(basis, http)):
+        for t in pick_issues(basis, collect_issue_news(basis, http)):
             try:
-                m = build_chain(t["name"], context=f"{t['title']} — {t['impact']}",
-                                must=[f"{s['name']}({s['rate']:+.1f}%)" for s in t["stocks"]], movers=_mover_names(basis))
+                done = _finish(t, basis)
             except Exception as e:
-                error = f"chain:{type(e).__name__}"
+                error = f"interpret:{type(e).__name__}"
                 continue
-            if m["stages"]:
-                topics.append({**t, "basis_label": basis["label"],
-                               "map": mark_moved(m, basis, {s["code"] for s in t["stocks"]})})
+            if done:
+                topics.append(done)
     except Exception as e:
         error = f"topics:{type(e).__name__}"
         log.warning("lifemap topics failed: %s", error)
@@ -541,30 +534,39 @@ def run_topics(basis: dict, http=None) -> dict:
 
 
 def run_sectors(basis: dict, http=None) -> int:
-    """섹터 칩 마인드맵: 같은 기준 뉴스 창의 '{섹터} 관련주' 기사와 많이 움직인 종목으로 그린다. 실패한 섹터는 이전 것을 둔다."""
+    """섹터마다: 같은 기준 창의 섹터 뉴스 → Haiku가 가장 큰 이슈 1개 → 같은 구조. 실패한 섹터는 이전 것을 둔다."""
     saved = _read("lifemap_sectors", {})
-    maps = dict(saved.get("maps") or {})
+    items = dict(saved.get("items") or {})
     start, end = basis["window"]
     day = datetime.strptime(basis["as_of"], "%Y%m%d")
     kw = {"http": http} if http else {}
     made = 0
     for sector in SECTORS:
+        found: list[dict] = []
+        seen: set[str] = set()
+        for q in SECTOR_QUERIES:
+            q = q.format(s=sector)
+            try:
+                for n in news.search_window(q, start, end, limit=8, max_pages=1,
+                                            extra_queries=[f"{q} {day.month}월 {day.day}일"], **kw):
+                    if n["title"] not in seen:
+                        seen.add(n["title"])
+                        found.append({**n, "category": sector})
+            except news.NewsError:
+                pass
+        if not found:
+            continue
         try:
-            found = news.search_window(f"{sector} 관련주", start, end, limit=5, max_pages=1,
-                                       extra_queries=[f"{sector} 관련주 {day.month}월 {day.day}일", f"{sector}주 {day.day}일 특징주"],
-                                       **kw) if news.configured() else []
-        except news.NewsError:
-            found = []
-        try:
-            m = build_chain(sector, context=" / ".join(a["title"] for a in found[:5]), movers=_mover_names(basis))
+            picked = pick_issues(basis, found, task=f"{basis['label']} '{sector}' 업종 뉴스에서 이 업종에 영향을 줄 만한 가장 큰 이슈 1개를 골라라.",
+                                 max_topics=1, min_articles=1, min_press=1)
+            done = _finish({**picked[0], "sector": sector}, basis) if picked else None
         except Exception as e:
             log.warning("lifemap sector %s failed: %s", sector, type(e).__name__)
             continue
-        if m["stages"]:
-            m["articles"] = [{k: a.get(k) for k in ("title", "url", "press", "pub")} for a in found[:3]]
-            maps[sector] = mark_moved(m, basis)
+        if done:
+            items[sector] = done
             made += 1
-    store.write("lifemap_sectors", {"basis": basis_info(basis), "maps": maps, "created_ts": time.time()})
+    store.write("lifemap_sectors", {"basis": basis_info(basis), "items": items, "created_ts": time.time()})
     return made
 
 
@@ -610,13 +612,43 @@ def maybe_run_daily(now: datetime | None = None) -> bool:
 
 
 # ---------------------------------------------------------
+# 실제 반응: 키움 장중 30분마다 등락률만 갱신(수집기, AI 재호출 없음)
+# ---------------------------------------------------------
+
+def reaction_codes() -> list[str]:
+    """지금 화면에 나오는 토픽·섹터 회사 코드."""
+    items = (_read("lifemap", {}).get("topics") or []) + list((_read("lifemap_sectors", {}).get("items") or {}).values())
+    return list(dict.fromkeys(c["code"] for t in items for st in (t.get("map") or {}).get("stages") or [] for c in st["companies"]))
+
+
+def rates_due(now: datetime) -> bool:
+    saved = _read("lifemap_rates", {})
+    return saved.get("as_of") != now.strftime("%Y%m%d") or time.time() - saved.get("ts", 0) >= LIVE_RATES_SEC
+
+
+def save_live_rates(rates: dict[str, float], now: datetime) -> None:
+    store.write("lifemap_rates", {"as_of": now.strftime("%Y%m%d"), "ts": time.time(), "rates": rates,
+                                  "label": f"{_md(now.strftime('%Y%m%d'))} {now.strftime('%H:%M')} 장중"})
+
+
+def _live_rates() -> dict | None:
+    saved = _read("lifemap_rates", {})
+    if saved.get("as_of") == datetime.now(KST).strftime("%Y%m%d") and time.time() - saved.get("ts", 0) <= LIVE_RATES_STALE:
+        return saved
+    return None
+
+
+# ---------------------------------------------------------
 # 화면 데이터(읽기 전용)
 # ---------------------------------------------------------
 
-def with_prices(m: dict) -> dict:
-    """종목 목록에서 시장·종가·시총을 붙인다. 등락률은 저장된 기준 시점 값(토픽·섹터)을 쓰고, 없으면(새 단어) 최신 종가 기준."""
+def with_reaction(item: dict, live: dict | None = None) -> dict:
+    """회사마다 실제 등락률(키움 장중 갱신값 → 생성 때 기준 값 → 최신 종가 순)과 시장·종가·시총을 붙인다."""
     stocks, _, as_of = directory()
+    m = item.get("map") or {}
     stages = []
+    label = m.get("basis_label") or (f"{_md(as_of)} 장 기준" if as_of else "")
+    used_live = False
     for st in m.get("stages") or []:
         companies = []
         for c in st.get("companies") or []:
@@ -624,35 +656,37 @@ def with_prices(m: dict) -> dict:
             if not s:  # 상장 폐지 등으로 목록에서 빠진 회사는 보이지 않는다
                 continue
             rate = c["rate"] if "rate" in c else s.get("rate")
-            moved = c["moved"] if "moved" in c else (rate is not None and abs(rate) >= MOVED_PCT)
+            if live and live["rates"].get(c["code"]) is not None:
+                rate, used_live = live["rates"][c["code"]], True
             companies.append({**c, "name": s["name"], **{k: s.get(k) for k in ("market", "close", "cap", "value")},
-                              "rate": rate, "moved": moved})
+                              "rate": rate, "moved": rate is not None and abs(rate) >= MOVED_PCT})
         if companies:
             stages.append({**st, "companies": companies})
-    out = {k: v for k, v in m.items() if k != "removed"}
-    label = m.get("basis_label") or (f"{_md(as_of)} 장 기준" if as_of else "")
-    return {**out, "stages": stages, "basis_label": label}
+    reaction = f"{live['label']} 등락률" if used_live else f"{label.replace(' 기준', '')} 등락률" if label else "등락률"
+    out_map = {k: v for k, v in m.items() if k != "removed"}
+    return {**item, "map": {**out_map, "stages": stages, "basis_label": label, "reaction_label": reaction}}
 
 
 def overview() -> dict:
     cur = _read("lifemap", {})
     ex = examples()
+    live = _live_rates()
     topics = cur.get("topics") or [{**t, "carried": True, "example": True} for t in ex.get("topics") or []]
-    saved = _read("lifemap_sectors", {}).get("maps") or {}
+    saved = _read("lifemap_sectors", {}).get("items") or {}
     ex_sectors = ex.get("sectors") or {}
-    sector_maps = {}
+    sector_items = {}
     for sector in SECTORS:
-        m = saved.get(sector) or ({**ex_sectors[sector], "example": True} if sector in ex_sectors else None)
-        if m:
-            sector_maps[sector] = with_prices(m)
+        it = saved.get(sector) or ({**ex_sectors[sector], "example": True} if sector in ex_sectors else None)
+        if it:
+            sector_items[sector] = with_reaction(it, live)
     basis = cur.get("basis") or ex.get("basis") or {}
     return {
         "day": cur.get("day"),
         "basis": basis,
-        "topics": [{**t, "map": with_prices(t["map"])} for t in topics if t.get("map")],
+        "topics": [with_reaction(t, live) for t in topics if t.get("map")],
         "hot": [t["name"] for t in topics if t.get("map")],
         "sectors": SECTORS,
-        "sector_maps": sector_maps,
+        "sector_items": sector_items,
         "live": live_config(),
     }
 
@@ -695,38 +729,55 @@ def _bump_live_today() -> None:
         log.warning("lifemap live count write failed: %s", type(e).__name__)
 
 
-def stored_map(word: str) -> dict | None:
+def stored_item(word: str) -> dict | None:
     """섹터·토픽 키워드·전에 그린 새 단어·저장소 예시 중 같은 단어(AI를 다시 부르지 않음)."""
-    sectors = _read("lifemap_sectors", {}).get("maps") or {}
+    sectors = _read("lifemap_sectors", {}).get("items") or {}
     if word in sectors:
         return sectors[word]
     for t in _read("lifemap", {}).get("topics") or []:
         if t.get("name") == word and t.get("map"):
-            return t["map"]
-    m = _read("lifemap_words", {}).get(word)
-    if m:
-        return m
+            return t
+    it = _read("lifemap_words", {}).get(word)
+    if it:
+        return it
     ex = examples()
-    found = (ex.get("sectors") or {}).get(word) or next((t["map"] for t in ex.get("topics") or [] if t.get("name") == word), None)
+    found = (ex.get("sectors") or {}).get(word) or next((t for t in ex.get("topics") or [] if t.get("name") == word), None)
     return {**found, "example": True} if found else None
 
 
-def _save_word(word: str, m: dict) -> None:
+def _save_word(word: str, item: dict) -> None:
     with _words_lock:
         words = _read("lifemap_words", {})
-        words[word] = m
+        words[word] = item
         if len(words) > WORDS_KEEP:
             for old in sorted(words, key=lambda w: words[w].get("created_ts", 0))[: len(words) - WORDS_KEEP]:
                 words.pop(old, None)
         store.write("lifemap_words", words)
 
 
+def word_item(word: str) -> dict:
+    """직접 입력한 단어: 최근 뉴스(있으면)로 해석. 뉴스 검색 실패는 뉴스 없이 해석한다."""
+    cutoff = datetime.now(KST) - timedelta(days=WORD_NEWS_DAYS)
+    found: list[dict] = []
+    if news.configured():
+        try:
+            found = [n for n in news.search(word, display=30, sort="sim")
+                     if n.get("pub") and datetime.fromisoformat(n["pub"]) >= cutoff][:ARTICLES_MAX]
+        except news.NewsError:
+            found = []
+    m = interpret(word, found, live=True)
+    stocks, _, as_of = directory()
+    m["basis_label"] = f"{_md(as_of)} 장 기준" if as_of else ""
+    rep = found[0] if found else None
+    return {"name": word, "title": rep["title"] if rep else f"‘{word}’", "summary": (rep.get("snippet") or "")[:80] if rep else "",
+            "sector": "", "articles": [_article(a, i == 0) for i, a in enumerate(found)], "created_ts": time.time(), "map": m}
+
+
 def _run_job(word: str) -> None:
     with _jobs_lock:
         _jobs[word]["state"] = "running"
     try:
-        m = build_chain(word, live=True)
-        _save_word(word, m)  # 빈 결과(이어지는 회사 없음)도 저장해서 같은 단어로 다시 부르지 않는다
+        _save_word(word, word_item(word))  # 빈 결과(이어지는 회사 없음)도 저장해서 같은 단어로 다시 부르지 않는다
         with _jobs_lock:
             _jobs.pop(word, None)
     except Exception as e:
@@ -747,27 +798,27 @@ def _cleanup() -> None:
         _jobs.pop(w, None)
 
 
-def _ready(word: str, m: dict) -> dict:
-    return {"status": "ready", "word": word, "map": with_prices(m)}
+def _ready(word: str, item: dict) -> dict:
+    return {"status": "ready", "word": word, "item": with_reaction(item, _live_rates())}
 
 
 def _fallback(word: str, status: str, message: str) -> dict:
-    return {"status": status, "word": word, "message": message, "map": with_prices(example_map(word))}
+    return {"status": status, "word": word, "message": message, "item": with_reaction(example_item(word))}
 
 
 def word_status(word: str) -> dict:
     """폴링용. 저장된 결과 → 진행 중 → 실패(예시로 대체) → 없음 순."""
     word = normalize_word(word)
-    m = stored_map(word)
-    if m:
-        return _ready(word, m)
+    it = stored_item(word)
+    if it:
+        return _ready(word, it)
     with _jobs_lock:
         _cleanup()
         job = _jobs.get(word)
         if job and job["state"] in ("queued", "running"):
             return {"status": job["state"], "word": word, "position": _position(word)}
         if job and job["state"] == "failed":
-            return _fallback(word, "failed", "AI가 지금 그리지 못해서 준비된 예시를 보여 드려요.")
+            return _fallback(word, "failed", "AI가 지금 해석하지 못해서 준비된 예시를 보여 드려요.")
     return {"status": "none", "word": word}
 
 
@@ -777,27 +828,27 @@ def request_word(word: str, session: str) -> dict:
     problem = check_word(word)
     if problem:
         return {"status": "invalid", "word": word, "message": problem}
-    m = stored_map(word)
-    if m:
-        return _ready(word, m)
+    it = stored_item(word)
+    if it:
+        return _ready(word, it)
     with _jobs_lock:
         _cleanup()
         job = _jobs.get(word)
         if job and job["state"] in ("queued", "running"):
             return {"status": job["state"], "word": word, "position": _position(word)}  # 다른 사람이 이미 요청함
         if not ai.available():
-            return _fallback(word, "unavailable", "지금은 새 단어를 그릴 수 없어서 준비된 예시를 보여 드려요.")
+            return _fallback(word, "unavailable", "지금은 새 단어를 해석할 수 없어서 준비된 예시를 보여 드려요.")
         if _live_today() >= LIVE_DAILY_MAX:
-            return _fallback(word, "daily_limit", "오늘 새 단어 그리기를 다 써서 준비된 예시를 보여 드려요. 이슈·섹터는 계속 볼 수 있어요.")
+            return _fallback(word, "daily_limit", "오늘 직접 입력을 다 써서 준비된 예시를 보여 드려요. 이슈·섹터는 계속 볼 수 있어요.")
         hits = _sessions.setdefault(session or "anon", deque())
         while hits and time.time() - hits[0] > LIVE_SESSION_WINDOW:
             hits.popleft()
         if len(hits) >= LIVE_PER_SESSION:
             return {"status": "limited", "word": word,
-                    "message": f"새 단어는 {LIVE_SESSION_WINDOW // 60}분에 {LIVE_PER_SESSION}개까지 그릴 수 있어요. 조금 뒤에 다시 해 주세요."}
+                    "message": f"직접 입력은 {LIVE_SESSION_WINDOW // 60}분에 {LIVE_PER_SESSION}개까지 할 수 있어요. 조금 뒤에 다시 해 주세요."}
         active = sum(1 for j in _jobs.values() if j["state"] in ("queued", "running"))
         if active >= LIVE_QUEUE_MAX:
-            return _fallback(word, "busy", "지금 그리는 단어가 많아요. 잠시 뒤에 다시 해 주세요.")
+            return _fallback(word, "busy", "지금 해석하는 단어가 많아요. 잠시 뒤에 다시 해 주세요.")
         hits.append(time.time())
         if len(_sessions) > 2000:  # 오래된 세션 정리
             for k in [k for k, v in _sessions.items() if not v or time.time() - v[-1] > LIVE_SESSION_WINDOW]:
@@ -818,8 +869,8 @@ def request_word(word: str, session: str) -> dict:
 #   python -m services.stockon.lifemap --examples   저장소 예시 파일(data/stockon/lifemap_examples.json) 다시 만들기
 # ---------------------------------------------------------
 
-def _strip(m: dict) -> dict:
-    return {k: v for k, v in m.items() if k != "removed"}
+def _strip(item: dict) -> dict:
+    return {**item, "map": {k: v for k, v in item["map"].items() if k != "removed"}}
 
 
 def build_examples() -> dict:
@@ -828,10 +879,10 @@ def build_examples() -> dict:
         raise RuntimeError("시세 스냅샷 없음")
     topics = [t for t in run_topics(basis)["topics"] if not t.get("carried")]
     run_sectors(basis)
-    sectors = {k: _strip(m) for k, m in (_read("lifemap_sectors", {}).get("maps") or {}).items()}
-    data = {"note": "AI가 실패할 때 쓰는 예시. 같은 엔진(Haiku 5.5 토픽·Sonnet 5.5 밸류체인)으로 그리고 종목 목록과 대조함.",
+    sectors = {k: _strip(it) for k, it in (_read("lifemap_sectors", {}).get("items") or {}).items()}
+    data = {"note": "AI가 실패할 때 쓰는 예시. 같은 엔진(Haiku 5.5 이슈 선정·Sonnet 5.5 해석)으로 만들고 종목 목록과 대조함.",
             "built": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis),
-            "topics": [{**t, "map": _strip(t["map"])} for t in topics], "sectors": sectors}
+            "topics": [_strip(t) for t in topics], "sectors": sectors}
     EXAMPLES_PATH.parent.mkdir(parents=True, exist_ok=True)
     EXAMPLES_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     return data
