@@ -14,6 +14,50 @@
 
 **배포 주의**: 키 값 출력 금지(이름·형식만) · 항상 `--no-deps`. 머니온 작업 → moneyon만, STOCK:ON 작업 → `docker compose build ailab && up -d --no-deps ailab stockon-collector`(같은 이미지), 그 밖의 컨테이너 시작 시각 비교 · Caddyfile은 파일 bind mount라 `git pull` 뒤 `caddy reload --config /dev/stdin --adapter caddyfile < Caddyfile`(관리 API 127.0.0.1:2019) · HF 머니온 Space는 손대지 않음 · 서버 키 파일: `.env.docker`(ailab), `.env.stockon`(키움), `.env.lifemap`(수집기의 토픽 생성용 세 줄), `.env.moneyon` — 모두 600.
 
+### STOCK:ON 키움 모드 무인 운영 (12/31까지)
+
+**상태(10-28 저녁)**: 코드 커밋·푸시 완료(`a814986`, 테스트 STOCK:ON 81개 통과). **오라클 배포·`.env.stockon` 전환은 아직 안 함**(자동 승인 차단 — 아래 '전환 순서'를 그대로 실행하면 됨). 지금 서버는 공공데이터 모드.
+
+**키움 모드로 바뀌는 것 / 공공데이터가 계속 쓰이는 곳**
+| 화면 | 키움 모드 | 공공데이터 |
+|---|---|---|
+| 오늘 시장 지수·히트맵·등락 상위·수급 | 평일 09:00~15:35 1분마다 키움(장중 HH:MM 반영), 15:35 뒤 'n/n 종가 기준 · 키움' | 키움 실패·10분 넘게 갱신 없음·주말·공휴일·09시 전 → 자동 대체('n/n 종가 기준 · 공공데이터') |
+| 오늘 시장 팀 관심 종목 가격 | 키움 스냅샷 같은 시점 | 위와 같을 때 |
+| 히트맵 칸 크기(시총)·지수 30일 선·종목 목록(회사 이름 검증) | — | 항상 공공데이터 |
+| AI 브리핑·왜 움직였나 | — | 항상 공공데이터 기준일(전 거래일) |
+| 뉴스 속 숨은 종목 기준일 | 10시 이후 'n/n 장중 HH:MM 기준', 마감 뒤 'n/n 종가 기준'(하루 2번 생성) | 10시 전·키움이 안 될 때 공공 기준일. 단 키움 종가 기준 이슈가 더 새것이면 그대로 둔다(뒤로 가지 않음) |
+| 뉴스 속 숨은 종목 실제 등락 | 장중 30분마다 ka10095, 마감 뒤 종가 1번(그날 유지), 새 이슈 회사는 바로 | 생성 때 값 |
+| 화면 하단 | "시세: 키움증권 모의투자 API · 지연될 수 있으며 참고용입니다" | 대체 중이면 "시세: 금융위원회 공공데이터(…) · 참고용입니다" |
+
+**하루 일정(거래일)**: 키움 수집 09:00~15:35 1분마다(한 번에 조회 TR 약 10개, 전체 1.1초 간격 → 약 12초, 하루 약 4,000회) → 15:35 이후 종가 스냅샷 1번 → 멈춤. 휴장일은 09:10 첫 수집에서 일자가 어제면 그날 멈춤. 이슈 생성: 10:00 무렵(장중 기준) + 15:35 무렵(종가 기준) = 하루 2번(토픽 5+예비 2 + 섹터 10). 공공데이터 갱신(ailab 스케줄러)은 그대로 13~19시 30분마다 확인.
+
+**하루 AI 예상(거래일, 어림)** — Sonnet 5.5 $2/$10, Haiku 5.5 $0.10/$0.50(1M 토큰). 10/28 실제 사용량(Sonnet 1회 평균 입력 약 1.8K·출력 0.5K, Haiku 입력 약 8K·출력 0.5K)으로 계산.
+| 작업 | 모델 | 호출/일 | 비용/일 |
+|---|---|---|---|
+| 이슈·섹터 생성 2회(이슈 고르기·섹터 고르기·반대 회사 이유) | Haiku | 약 25 | 약 $0.03 |
+| 이슈·섹터 해석 2회(재시도 포함) | Sonnet | 약 50 | 약 $0.45 |
+| 왜 움직였나(최대 40)·브리핑 | Sonnet | 약 40 | 약 $0.3 |
+| 뉴스 한 줄 요약 | Haiku | 약 30 | 약 $0.01 |
+| 직접 입력(방문자, 하루 최대 150) | Sonnet | 0~300 | 보통 $0.1 미만, 최대 약 $2.7 |
+| **합계** | | | **보통 약 $0.8~1, 최악 약 $3.5** |
+상한 `STOCKON_AI_DAILY_USD`(기본 5달러, 앱·수집기 합산, KST 0시 초기화). 넘으면 새 AI 호출 없이 저장된 이슈·설명·예시를 보여 주고 관리자 화면에 경고. 바꾸려면 `.env.docker`와 `.env.lifemap`에 같은 값을 넣고 두 컨테이너를 다시 만든다.
+
+**전환 순서(서버, 키 값 출력 금지)**
+1. `cd ~/ailab && git pull --ff-only && docker compose build ailab && docker compose up -d --no-deps ailab stockon-collector`
+2. `sed -i 's/^STOCKON_PRICE_SOURCE=.*/STOCKON_PRICE_SOURCE=kiwoom/' .env.stockon && grep -c '^STOCKON_PRICE_SOURCE=kiwoom$' .env.stockon` (1이면 됨, 권한 600 유지)
+3. `docker compose up -d --no-deps --force-recreate stockon-collector`
+4. 확인: `docker exec stockon-collector cat data/admin/stockon/kiwoom_status.json`(price_source=kiwoom, fails=0, last_ok) · 마감 뒤면 `market_kiwoom.json`의 as_of=오늘·final=true · `lifemap_status.json` basis_key=`kiwoom:YYYYMMDD:close`(몇 분 걸림) · 공개 주소 `/stock` '오늘 시장' 배지 'n/n 종가 기준 · 키움', 하단 키움 문구.
+5. moneyon·ailab-caddy 시작 시각이 그대로인지 `docker inspect -f '{{.State.StartedAt}}' moneyon ailab-caddy`.
+
+**공공데이터로 되돌리기(한 줄 + 수집기 재생성)**: `sed -i 's/^STOCKON_PRICE_SOURCE=.*/STOCKON_PRICE_SOURCE=public/' .env.stockon && docker compose up -d --no-deps --force-recreate stockon-collector`. 수집기가 바로 상태 파일을 public으로 쓰고, 앱은 다음 요청부터 공공데이터를 보여 준다(앱 재시작 불필요). 키움을 한 번도 부르지 않는다. 뉴스 속 숨은 종목은 지금 이슈를 두고, 다음 공공 기준일이 더 새것일 때 새로 만든다. (테스트 `test_watchlist_prices_follow_kiwoom_and_footer_note`·`test_snapshot_shape_and_auto_fallback`에서 설정 한 줄로 복귀 확인.)
+
+**12월까지 손볼 일정**
+- **모의 키 만료 2026-11-27** → 12/31 전에 끝나므로 **11/20(D-7, 관리자 화면 경고 시작)~11/26 사이 키움 포털에서 모의투자 App Key 재발급** → 서버 `.env.stockon`의 `KIWOOM_MOCK_APP_KEY`·`KIWOOM_MOCK_APP_SECRET`·`KIWOOM_MOCK_KEY_EXPIRES`(새 만료일) 고치기(값 출력 금지, 편집기로) → `docker compose up -d --no-deps --force-recreate stockon-collector` → 관리자 화면 '모의 키 만료까지 n일'·연속 실패 0 확인. 새 만료일이 12/31 전이면 그 7일 전에 한 번 더.
+- 접근 토큰(24시간)은 수집기가 만료 10분 전(KST)에 자동으로 다시 받고, 키움이 토큰 무효(8005)를 알리면 버리고 한 번 다시 받는다. 관리자 화면 '토큰 발급 n회'가 하루 1~2회씩 늘면 정상.
+- 매주 월요일 아침 관리자 화면(`/admin/stockon`): 연속 실패(3회 이상이면 빨간 경고), 모의 키 D-day, 오늘 AI 비용, 뉴스 속 숨은 종목 기준일.
+- 장기 휴장(성탄절 12/25, 12/31 연말 휴장): 수집기가 09:10에 휴장으로 보고 쉰다. 화면은 공공데이터, 이슈는 직전 종가 기준 그대로.
+- 12/31 이후 키움을 끝낼 때: 위 '되돌리기' 한 줄.
+
 ### 배포 기록 (최근 순)
 
 **10-28 오후 STOCK:ON 남색 테마 통일 · 관련 회사 정확도** (커밋 `c6010f4`, `bae9da2`, `19a3e62`)
