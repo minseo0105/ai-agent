@@ -126,7 +126,19 @@ export type AdminStatus = {
     days_left?: number | null; last_ok?: string | null; fails?: number; last_error?: string | null; session?: string | null; updated?: string | null;
   };
 };
+// 뉴스 속 숨은 종목 시연 안전장치(관리자)
+export type CurationItem = {
+  key: string; name: string; title: string; sector: string; rep_title: string; rep_press: string; rep_url: string;
+  source: "topic" | "reserve" | "sector" | "example"; position: number | null; hidden: boolean; excluded_by: string; fin_incident: boolean;
+};
+export type Curation = {
+  day: string; basis: LifeBasis; items: CurationItem[]; hidden_other: { key: string; name: string; title: string }[];
+  words: string[]; fin_first: boolean; order: string[]; min: number; max: number;
+};
+type CurationAction = { action: "hide" | "show"; key: string } | { action: "order"; keys: string[] } | { action: "words"; words: string[] } | { action: "fin_first"; on: boolean };
 export const stockAdminApi = {
+  curation: () => get<Curation>("/api/stock/admin/lifemap"),
+  setCuration: (body: CurationAction) => get<Curation>("/api/stock/admin/lifemap", { method: "POST", body: JSON.stringify(body) }),
   status: () => get<AdminStatus>("/api/stock/admin/status"),
   search: (q: string) => get<{ items: { code: string; name: string; market: string; cap: number | null }[] }>(`/api/stock/admin/search?q=${encodeURIComponent(q)}`),
   saveWatchlist: (codes: string[]) => get<{ watchlist: { code: string; name: string }[] }>("/api/stock/admin/watchlist", { method: "PUT", body: JSON.stringify({ codes }) }),

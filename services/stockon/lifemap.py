@@ -44,6 +44,7 @@ RELEVANCE = ("강", "중", "약")
 DIRECTIONS = {"긍정": "pos", "부정": "neg"}
 MIN_COMPANIES = 3          # 검증 뒤 회사가 이보다 적거나 경로가 하나뿐이면 한 번 다시 그린다
 TOPICS_MIN, TOPICS_MAX = 3, 5
+RESERVE_MAX = 2           # 관리자가 숨기면 채울 다음 후보(이슈 + AI 해석까지 미리 만든다)
 ARTICLES_MAX = 6           # 토픽당 기사 수(대표 기사 포함)
 MOVED_PCT = 5.0            # 실제 등락률이 이 이상(절댓값)이면 '실제 반응' 강조
 TOPIC_TRIES = 3            # 같은 기준으로 최대 시도(실패 시 30분 간격)
@@ -503,7 +504,7 @@ def run_topics(basis: dict, http=None) -> dict:
     topics: list[dict] = []
     error = ""
     try:
-        for t in pick_issues(basis, collect_issue_news(basis, http)):
+        for t in pick_issues(basis, collect_issue_news(basis, http), max_topics=TOPICS_MAX + RESERVE_MAX):
             try:
                 done = _finish(t, basis)
             except Exception as e:
@@ -525,8 +526,9 @@ def run_topics(basis: dict, http=None) -> dict:
         if t["name"] not in names and not t.get("carried"):
             names.add(t["name"])
             topics.append({**t, "carried": True})
+    topics, reserve = topics[:TOPICS_MAX], [t for t in topics[TOPICS_MAX:] if not t.get("carried")]
     fresh = sum(1 for t in topics if not t.get("carried"))
-    data = {"day": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis), "topics": topics[:TOPICS_MAX],
+    data = {"day": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis), "topics": topics, "reserve": reserve,
             "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "created_ts": time.time()}
     store.write("lifemap", data)
     _status(basis_key=basis["key"], ok=fresh >= TOPICS_MIN, fresh=fresh, error=error, rejects=dict(_last_rejects), ts=time.time())
@@ -617,7 +619,8 @@ def maybe_run_daily(now: datetime | None = None) -> bool:
 
 def reaction_codes() -> list[str]:
     """지금 화면에 나오는 토픽·섹터 회사 코드."""
-    items = (_read("lifemap", {}).get("topics") or []) + list((_read("lifemap_sectors", {}).get("items") or {}).values())
+    cur = _read("lifemap", {})
+    items = (cur.get("topics") or []) + (cur.get("reserve") or []) + list((_read("lifemap_sectors", {}).get("items") or {}).values())
     return list(dict.fromkeys(c["code"] for t in items for st in (t.get("map") or {}).get("stages") or [] for c in st["companies"]))
 
 
@@ -671,24 +674,210 @@ def overview() -> dict:
     cur = _read("lifemap", {})
     ex = examples()
     live = _live_rates()
-    topics = cur.get("topics") or [{**t, "carried": True, "example": True} for t in ex.get("topics") or []]
+    cfg = curation()
+    topics = curate(cfg)["shown"]  # 관리자 숨김·순서·제외 키워드 적용
     saved = _read("lifemap_sectors", {}).get("items") or {}
     ex_sectors = ex.get("sectors") or {}
     sector_items = {}
     for sector in SECTORS:
-        it = saved.get(sector) or ({**ex_sectors[sector], "example": True} if sector in ex_sectors else None)
-        if it:
-            sector_items[sector] = with_reaction(it, live)
+        # 숨김·제외 키워드에 걸린 섹터 이슈는 예시로, 예시도 걸리면 뺀다(화면은 있는 섹터만 보여 준다)
+        for it in (saved.get(sector), {**ex_sectors[sector], "example": True} if sector in ex_sectors else None):
+            if it and not _blocked(it, cfg):
+                sector_items[sector] = with_reaction(it, live)
+                break
     basis = cur.get("basis") or ex.get("basis") or {}
     return {
         "day": cur.get("day"),
         "basis": basis,
-        "topics": [with_reaction(t, live) for t in topics if t.get("map")],
-        "hot": [t["name"] for t in topics if t.get("map")],
+        "topics": [with_reaction(t, live) for t in topics],
+        "hot": [t["name"] for t in topics],
         "sectors": SECTORS,
         "sector_items": sector_items,
         "live": live_config(),
     }
+
+
+# ---------------------------------------------------------
+# 시연 안전장치(관리자): 이슈 숨기기·순서·제외 키워드·금융회사 사고 이슈는 첫 카드 아님
+# ---------------------------------------------------------
+# 설정은 lifemap_curation.json(수집기가 lifemap.json을 다시 만들어도 그대로). 화면을 읽을 때만 적용한다.
+# - 숨김: 이슈 키(대표 기사 주소) 또는 이슈 이름이 같으면 숨긴다. 날짜가 바뀌어도 남는다.
+# - 순서: 그날만. 날짜가 바뀌면 처음 순서로 돌아간다.
+# - 제외 키워드: 이슈 이름·제목·대표 기사 제목에 들어 있으면 숨긴다.
+# 숨긴 만큼 다음 후보(reserve) → 같은 기준의 섹터 이슈 → 예시 순으로 채워 TOPICS_MIN개 이상을 유지한다.
+
+CURATION = "lifemap_curation"
+HIDDEN_KEEP = 200
+EXCLUDE_MAX = 50
+FIN_COMPANY = re.compile(r"은행|카드사|(신한|삼성|현대|국민|롯데|우리|하나|비씨|BC|농협)카드|신용카드|보험|손보|생보|증권|금융지주|"
+                         r"캐피탈|금융사|금융회사|금융권|생명(?!과학|공학|연구)|(삼성|현대|DB|KB|메리츠|한화|흥국|롯데|농협)화재")
+FIN_INCIDENT = re.compile(r"사고|제재|징계|과징금|과태료|유출|해킹|횡령|배임|부당|불완전\s*판매|영업\s*정지|전산\s*장애|먹통|"
+                          r"검사\s*결과|압수\s*수색|기소|소송|피해")
+FIN_SECTORS = {"금융", "은행", "보험", "증권", "카드"}
+_curation_lock = threading.Lock()
+
+
+def _today() -> str:
+    return datetime.now(KST).strftime("%Y-%m-%d")
+
+
+def _rep(t: dict) -> dict:
+    arts = t.get("articles") or []
+    return next((a for a in arts if a.get("rep")), arts[0] if arts else None) or {}
+
+
+def item_key(t: dict) -> str:
+    """수집기가 다시 만들어도 같은 이슈면 같은 키: 대표 기사 주소(없으면 이름)."""
+    return _rep(t).get("url") or f"name:{t.get('name', '')}"
+
+
+def curation() -> dict:
+    raw = _read(CURATION, {}) or {}
+    order = raw.get("order") if isinstance(raw.get("order"), dict) else {}
+    return {"hidden": [h for h in raw.get("hidden") or [] if isinstance(h, dict) and h.get("key")],
+            "words": [str(w) for w in raw.get("words") or [] if str(w).strip()],
+            "fin_first": raw.get("fin_first", True) is not False,
+            "order": order if order.get("day") == _today() else {"day": _today(), "keys": []}}
+
+
+def excluded_by(t: dict, words: list[str]) -> str:
+    """제외 키워드 중 이슈 이름·제목·대표 기사 제목에 들어 있는 첫 단어(띄어쓰기·대소문자 무시)."""
+    text = re.sub(r"\s+", "", f"{t.get('name', '')} {t.get('title', '')} {_rep(t).get('title', '')}").lower()
+    return next((w for w in words if re.sub(r"\s+", "", w).lower() in text), "")
+
+
+def fin_incident(t: dict) -> bool:
+    """국내 금융회사(은행·카드·보험·증권)의 사고·제재·유출 이슈로 보이면 True(이름·제목·요약·대표 기사·섹터)."""
+    text = f"{t.get('name', '')} {t.get('title', '')} {t.get('summary', '')} {_rep(t).get('title', '')}"
+    fin = FIN_COMPANY.search(text) or normalize_word(str(t.get("sector") or "")) in FIN_SECTORS
+    return bool(fin and FIN_INCIDENT.search(text))
+
+
+def _hidden(t: dict, cfg: dict) -> bool:
+    key, name = item_key(t), t.get("name")
+    return any(h["key"] == key or (name and h.get("name") == name) for h in cfg["hidden"])
+
+
+def _blocked(t: dict, cfg: dict) -> bool:
+    return _hidden(t, cfg) or bool(excluded_by(t, cfg["words"]))
+
+
+def candidates() -> list[dict]:
+    """첫 화면 카드가 될 수 있는 이슈 순서대로: 오늘 이슈 → 다음 후보 → 같은 기준의 섹터 이슈 → 예시. 키·이름마다 하나."""
+    cur = _read("lifemap", {})
+    out: list[dict] = []
+    if cur.get("topics"):
+        out += [{**t, "_src": "topic"} for t in cur["topics"]]
+        out += [{**t, "_src": "reserve"} for t in cur.get("reserve") or []]
+        sec = _read("lifemap_sectors", {})
+        if (sec.get("basis") or {}).get("key") == (cur.get("basis") or {}).get("key"):
+            out += [{**t, "_src": "sector"} for t in (sec.get("items") or {}).values()]
+    out += [{**t, "carried": True, "example": True, "_src": "example"} for t in examples().get("topics") or []]
+    keys, names, uniq = set(), set(), []
+    for t in out:
+        k = item_key(t)
+        if t.get("map") and k not in keys and t.get("name") not in names:
+            keys.add(k)
+            names.add(t.get("name"))
+            uniq.append(t)
+    return uniq
+
+
+def curate(cfg: dict | None = None) -> dict:
+    """화면에 보일 이슈(shown)와 관리자용 전체 후보(pool). 원래 보이던 수(최소 TOPICS_MIN)만큼 숨기지 않은 후보로 채운다.
+    예시(다른 날 기준)는 오늘 후보로 TOPICS_MIN개를 못 채울 때만 쓴다."""
+    cfg = cfg or curation()
+    pool = candidates()
+    base = sum(1 for t in pool if t["_src"] == "topic")
+    want = min(TOPICS_MAX, max(TOPICS_MIN, base))
+    open_ = [t for t in pool if not _blocked(t, cfg)]
+    today = [t for t in open_ if t["_src"] != "example"]
+    shown = today[:want] if len(today) >= TOPICS_MIN else today + [t for t in open_ if t["_src"] == "example"][:TOPICS_MIN - len(today)]
+    # 관리자 순서(그날만): 지정한 이슈를 그 순서로 맨 앞에. 숨긴 것은 건너뛰고, 아래 후보도 지정하면 끌어온다.
+    keys = [k for k in cfg["order"]["keys"] if k in {item_key(t) for t in open_}]
+    if keys:
+        by_key = {item_key(t): t for t in open_}
+        rest = [t for t in shown if item_key(t) not in keys]
+        shown = ([by_key[k] for k in keys] + rest)[:max(len(shown), len(keys))]
+    # 금융회사 사고·제재·유출 이슈는 첫 카드에 두지 않는다(관리자가 직접 맨 앞에 지정했으면 그대로)
+    if cfg["fin_first"] and shown and not keys and fin_incident(shown[0]):
+        i = next((i for i, t in enumerate(shown) if not fin_incident(t)), None)
+        if i is None:  # 보이는 것이 모두 금융 사고면 다음 후보에서 하나 끌어온다
+            extra = next((t for t in open_ if t not in shown and not fin_incident(t) and t["_src"] != "example"), None)
+            if extra:
+                shown = [extra] + shown[:-1] if len(shown) >= want else [extra] + shown
+        else:
+            shown.insert(0, shown.pop(i))
+    return {"shown": [{k: v for k, v in t.items() if k != "_src"} for t in shown], "pool": pool, "cfg": cfg}
+
+
+def admin_curation() -> dict:
+    """관리자 화면: 후보마다 키·이름·제목·대표 기사·출처(오늘 이슈/다음 후보/섹터/예시)·보임 순서·숨김·제외 키워드·금융 사고 여부."""
+    c = curate()
+    cfg = c["cfg"]
+    pos = {item_key(t): i + 1 for i, t in enumerate(c["shown"])}
+    items = []
+    for t in c["pool"]:
+        k, rep = item_key(t), _rep(t)
+        items.append({"key": k, "name": t.get("name", ""), "title": t.get("title", ""), "sector": t.get("sector", ""),
+                      "rep_title": rep.get("title", ""), "rep_press": rep.get("press", ""), "rep_url": rep.get("url", ""),
+                      "source": t["_src"], "position": pos.get(k), "hidden": _hidden(t, cfg),
+                      "excluded_by": excluded_by(t, cfg["words"]), "fin_incident": fin_incident(t)})
+    keys_now = {i["key"] for i in items}
+    return {"day": _today(), "basis": _read("lifemap", {}).get("basis") or {}, "items": items,
+            "hidden_other": [h for h in cfg["hidden"] if h["key"] not in keys_now],
+            "words": cfg["words"], "fin_first": cfg["fin_first"], "order": cfg["order"]["keys"],
+            "min": TOPICS_MIN, "max": TOPICS_MAX}
+
+
+def _save_curation(change) -> dict:
+    with _curation_lock:
+        cfg = curation()
+        change(cfg)
+        cfg["hidden"] = cfg["hidden"][-HIDDEN_KEEP:]
+        cfg["updated_ts"] = time.time()
+        store.write(CURATION, cfg)
+    return admin_curation()
+
+
+def set_hidden(key: str, hidden: bool) -> dict:
+    """이슈 하나 숨기기/다시 보이기. 숨길 때 이름·제목도 저장한다(수집기가 대표 기사를 바꿔도 같은 이름이면 숨김)."""
+    found = next((t for t in candidates() if item_key(t) == key), None)
+    if hidden and not found:
+        raise KeyError(key)
+
+    def change(cfg):
+        old = next((h for h in cfg["hidden"] if h["key"] == key), None)
+        name = (found or old or {}).get("name", "")
+        cfg["hidden"] = [h for h in cfg["hidden"] if h["key"] != key and not (name and h.get("name") == name)]
+        if hidden:
+            cfg["hidden"].append({"key": key, "name": name, "title": found.get("title", ""), "ts": time.time()})
+            cfg["order"]["keys"] = [k for k in cfg["order"]["keys"] if k != key]
+    return _save_curation(change)
+
+
+def set_order(keys: list[str]) -> dict:
+    """오늘 첫 화면 순서(앞에 둘 이슈 키 순서). 날짜가 바뀌면 처음 순서로. 빈 목록이면 처음 순서로."""
+    valid = {item_key(t) for t in candidates()}
+    keys = [k for k in dict.fromkeys(keys) if k in valid][:TOPICS_MAX]
+
+    def change(cfg):
+        cfg["order"] = {"day": _today(), "keys": keys}
+    return _save_curation(change)
+
+
+def set_words(words: list[str]) -> dict:
+    clean = list(dict.fromkeys(w.strip()[:20] for w in words if w and w.strip()))[:EXCLUDE_MAX]
+
+    def change(cfg):
+        cfg["words"] = clean
+    return _save_curation(change)
+
+
+def set_fin_first(on: bool) -> dict:
+    def change(cfg):
+        cfg["fin_first"] = bool(on)
+    return _save_curation(change)
 
 
 # ---------------------------------------------------------

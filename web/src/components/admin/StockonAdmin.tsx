@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useAccess } from "@/components/access/AccessProvider";
 import { AdminLogin } from "@/components/admin/AdminConsole";
+import LifeCuration from "@/components/admin/LifeCuration";
 import { Spinner, inputClass } from "@/components/golf/ui";
 import { setToken } from "@/lib/access";
 import { dateLabel, eok, stockAdminApi, timeLabel, type AdminStatus } from "@/lib/stock";
@@ -125,6 +126,10 @@ export default function StockonAdmin() {
       {notice && notice.level !== "ok" && (
         <p role="alert" className={`rounded-2xl px-4 py-3 text-sm font-bold ${notice.level === "expired" ? "bg-red-500/15 text-red-700 dark:text-red-300" : "bg-amber-500/15 text-amber-800 dark:text-amber-300"}`}>⚠ {notice.text}</p>
       )}
+
+      <Card title="뉴스 속 숨은 종목 · 시연 안전장치" desc="첫 화면 이슈 카드를 숨기거나 순서를 정해요. 저장한 설정은 수집기가 이슈를 다시 만들어도 남아요.">
+        <LifeCuration />
+      </Card>
 
       <Card title="수집 상태" desc="사용자 요청은 저장된 자료만 읽어요. 외부 호출은 아래 작업이 주기적으로만 해요." right={<button type="button" onClick={load} className="rounded-xl border border-border px-3 py-1.5 text-xs font-bold">상태 새로고침</button>}>
         <ul className="divide-y divide-border text-sm">

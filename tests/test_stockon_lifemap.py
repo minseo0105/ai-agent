@@ -447,6 +447,109 @@ class ApiTest(LifemapBase):
             self.assertEqual(client.post("/api/stock/lifemap/word", json={"word": "보안"}).status_code, 404)
 
 
+def _topic(name, title, sector, url, summary="요약"):
+    return {**EXAMPLE_ITEM, "name": name, "title": title, "summary": summary, "sector": sector,
+            "articles": [{"title": f"{title} 기사", "url": url, "press": "a.kr", "pub": None, "rep": True}],
+            "map": {**EXAMPLE_ITEM["map"], "word": name}}
+
+
+class CurationTest(LifemapBase):
+    """시연 안전장치: 숨기기·순서·제외 키워드·금융회사 사고 이슈는 첫 카드 아님. 설정은 수집기가 다시 만들어도 남는다."""
+
+    def setUp(self):
+        super().setUp()
+        self.bank = _topic("은행 정보 유출", "A은행 고객정보 유출 제재", "금융", "u:bank")
+        self.chip = _topic("HBM 수출", "반도체 수출 증가", "반도체", "u:chip")
+        self.car = _topic("관세 협상", "자동차 관세 협상 타결", "자동차", "u:car")
+        self.oil = _topic("유가 급등", "국제유가 급등", "정유", "u:oil")
+        self.ship = _topic("LNG 수주", "조선 LNG선 수주", "조선", "u:ship")
+        self.write([self.bank, self.chip, self.car], [self.oil, self.ship])
+
+    def write(self, topics, reserve=()):
+        store.write("lifemap", {"day": "2026-10-28", "basis": {"key": "public:20261027"}, "topics": topics, "reserve": list(reserve)})
+
+    def names(self):
+        return lifemap.overview()["hot"]
+
+    def test_fin_incident_not_first_by_default_and_toggle(self):
+        self.assertTrue(lifemap.fin_incident(self.bank))
+        self.assertFalse(lifemap.fin_incident(self.chip))
+        self.assertTrue(lifemap.fin_incident(_topic("카드 과징금", "신한카드 과징금", "기타", "u:x")))
+        self.assertFalse(lifemap.fin_incident(_topic("공장 화재", "배터리 공장 화재 사고", "2차전지", "u:y")))
+        self.assertFalse(lifemap.fin_incident(_topic("금리 인하", "은행 대출 금리 인하", "금융", "u:z")))
+        self.assertEqual(self.names(), ["HBM 수출", "은행 정보 유출", "관세 협상"])
+        lifemap.set_fin_first(False)
+        self.assertEqual(self.names(), ["은행 정보 유출", "HBM 수출", "관세 협상"])
+
+    def test_admin_order_wins_and_resets_next_day(self):
+        lifemap.set_order(["u:car", "u:bank"])
+        self.assertEqual(self.names(), ["관세 협상", "은행 정보 유출", "HBM 수출"])
+        lifemap.set_order(["u:ship"])  # 다음 후보도 첫 화면으로 끌어올 수 있다
+        self.assertEqual(self.names(), ["LNG 수주", "은행 정보 유출", "HBM 수출"])  # 지정하지 않은 것은 원래 순서
+        with mock.patch.object(lifemap, "_today", return_value="2026-10-29"):
+            self.assertEqual(self.names(), ["HBM 수출", "은행 정보 유출", "관세 협상"])  # 날짜가 바뀌면 순서만 초기화
+
+    def test_hide_fills_from_reserve_then_sectors_and_survives_regeneration(self):
+        lifemap.set_hidden("u:chip", True)
+        self.assertEqual(self.names(), ["관세 협상", "은행 정보 유출", "유가 급등"])
+        # 수집기가 다시 만들어 대표 기사가 바뀌어도 같은 이름이면 숨김 유지
+        self.write([{**self.chip, "articles": [{**self.chip["articles"][0], "url": "u:chip2"}]}, self.bank, self.car], [self.oil])
+        self.assertNotIn("HBM 수출", self.names())
+        lifemap.set_hidden("u:oil", True)
+        lifemap.set_hidden("u:car", True)
+        store.write("lifemap_sectors", {"basis": {"key": "public:20261027"}, "items": {"조선": self.ship}})
+        self.assertEqual(self.names(), ["LNG 수주", "은행 정보 유출", "예시이슈"])  # 오늘 후보로 모자라면 예시까지, 3개 유지
+        with mock.patch.object(lifemap, "_today", return_value="2026-11-02"):
+            self.assertNotIn("관세 협상", self.names())  # 숨김은 날짜가 바뀌어도 남는다
+        lifemap.set_hidden("u:chip2", False)
+        self.assertIn("HBM 수출", self.names())
+        with self.assertRaises(KeyError):
+            lifemap.set_hidden("u:none", True)
+
+    def test_exclude_words_hide_by_title_or_rep_article(self):
+        lifemap.set_words(["a은행", " 반도체 수출 "])
+        self.assertEqual(self.names(), ["관세 협상", "유가 급등", "LNG 수주"])
+        lifemap.set_words(["관세 협상 타결 기사"])  # 대표 기사 제목도 본다(띄어쓰기 무시)
+        self.assertNotIn("관세 협상", self.names())
+        store.write("lifemap_sectors", {"basis": {"key": "public:20261027"}, "items": {"보안": {**self.car, "name": "보안"}}})
+        self.assertEqual(lifemap.overview()["sector_items"]["보안"]["name"], "보안")
+        self.assertTrue(lifemap.overview()["sector_items"]["보안"].get("example"))  # 걸린 섹터 이슈는 예시로
+        admin = lifemap.admin_curation()
+        by = {i["key"]: i for i in admin["items"]}
+        self.assertEqual(by["u:car"]["excluded_by"], "관세 협상 타결 기사")
+        self.assertTrue(by["u:bank"]["fin_incident"])
+        self.assertEqual([by[k]["source"] for k in ("u:chip", "u:oil")], ["topic", "reserve"])
+
+    def test_run_topics_keeps_reserve(self):
+        issues = {"topics": [{"title": f"이슈 {i}", "summary": "요약", "keyword": f"이슈{i}", "sector": f"섹터{i}",
+                              "articles": [2 * i + 1, 2 * i + 2], "representative": 2 * i + 1} for i in range(6)]}
+        arts = [{**a, "press": f"p{i}.kr"} for i, a in enumerate(ARTICLES)]
+        with mock.patch.object(lifemap, "collect_issue_news", return_value=arts), \
+                mock.patch.object(lifemap, "_ask", side_effect=lambda m, *a, **k: issues if m == lifemap.TOPIC_MODEL else INTERP):
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual(len(data["topics"]), lifemap.TOPICS_MAX)
+        self.assertEqual([t["name"] for t in data["reserve"]], ["이슈5"])
+        self.assertEqual(len(lifemap.overview()["topics"]), lifemap.TOPICS_MAX)
+
+    def test_admin_api_requires_admin(self):
+        from fastapi.testclient import TestClient
+        from api.main import app
+        from services import access as ac
+
+        with mock.patch.dict("os.environ", {"ADMIN_PASSWORD": "pw-test", "ACCESS_SECRET": "test-secret"}):
+            client = TestClient(app)
+            self.assertEqual(client.get("/api/stock/admin/lifemap").status_code, 401)
+            self.assertEqual(client.post("/api/stock/admin/lifemap", json={"action": "hide", "key": "u:chip"}).status_code, 401)
+            h = {"Authorization": f"Bearer {ac._sign({'r': 'admin', 'exp': 9999999999})}"}
+            r = client.post("/api/stock/admin/lifemap", json={"action": "hide", "key": "u:chip"}, headers=h)
+            self.assertEqual(r.status_code, 200)
+            self.assertTrue(next(i for i in r.json()["items"] if i["key"] == "u:chip")["hidden"])
+            self.assertEqual(client.post("/api/stock/admin/lifemap", json={"action": "hide", "key": "u:no"}, headers=h).status_code, 404)
+            r = client.post("/api/stock/admin/lifemap", json={"action": "words", "words": ["관세"]}, headers=h)
+            self.assertEqual(r.json()["words"], ["관세"])
+            self.assertEqual(client.get("/api/stock/admin/lifemap", headers=h).json()["fin_first"], True)
+
+
 class ScreenWordsTest(unittest.TestCase):
     """화면 문구(따옴표 안 한글)에 추천·수혜·기회·매수 표현이 없고, '숨은'은 탭 이름에만 쓴다. 주석·AI 지시문은 제외."""
 

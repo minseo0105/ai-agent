@@ -105,3 +105,31 @@ def admin_watchlist(req: Watchlist):
 def admin_refresh(req: Refresh):
     started = service.refresh_in_background(list(req.tasks))
     return {"started": started, "refreshing": service.refreshing()}
+
+
+# 뉴스 속 숨은 종목 시연 안전장치: 이슈 숨기기·순서·제외 키워드·금융 사고 이슈 첫 카드 제외
+class LifeCuration(BaseModel):
+    action: Literal["hide", "show", "order", "words", "fin_first"]
+    key: str = Field("", max_length=600)
+    keys: list[str] = Field(default_factory=list, max_length=10)
+    words: list[str] = Field(default_factory=list, max_length=50)
+    on: bool = True
+
+
+@router.get("/api/stock/admin/lifemap", dependencies=[Depends(require_admin)])
+def admin_lifemap():
+    return lifemap.admin_curation()
+
+
+@router.post("/api/stock/admin/lifemap", dependencies=[Depends(require_admin)])
+def admin_lifemap_set(req: LifeCuration):
+    try:
+        if req.action in ("hide", "show"):
+            return lifemap.set_hidden(req.key, req.action == "hide")
+        if req.action == "order":
+            return lifemap.set_order(req.keys)
+        if req.action == "words":
+            return lifemap.set_words([w[:20] for w in req.words])
+        return lifemap.set_fin_first(req.on)
+    except KeyError:
+        raise HTTPException(404, "지금 후보에 없는 이슈예요. 새로고침해 주세요.")
