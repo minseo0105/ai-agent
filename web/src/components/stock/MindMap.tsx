@@ -213,11 +213,11 @@ export default function MindMap({ map, onPick, picked }: { map: LifeMap; onPick:
           </g>
         </svg>
       </div>
-      <div className="absolute bottom-2 right-2 flex flex-col gap-1">
+      <div className="mt-1 flex justify-end gap-1.5">
         {[["+", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k * 1.4, v)), "확대"], ["−", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k / 1.4, v)), "축소"],
           ["⟲", () => setView({ k: 1, x: 0, y: 0 }), "원래 크기"]].map(([label, fn, name]) => (
           <button key={name as string} type="button" aria-label={name as string} onClick={fn as () => void}
-            className="size-8 rounded-full border border-white/15 bg-white/10 text-sm font-bold text-white backdrop-blur hover:bg-white/20">{label as string}</button>
+            className="size-7 rounded-full border border-white/15 bg-white/10 text-sm font-bold text-white backdrop-blur hover:bg-white/20">{label as string}</button>
         ))}
       </div>
     </div>

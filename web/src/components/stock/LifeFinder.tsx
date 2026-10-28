@@ -2,16 +2,19 @@
 
 // 생활 속 종목 찾기 탭. 오늘의 토픽 3개 · 예시 단어 · 마인드맵 · 회사 상세(왜 관련 있나 → 왜 움직였나).
 // 서버가 미리 그려 둔 마인드맵을 읽기만 한다(새 단어만 대기열로 AI를 부른다 — WordInput).
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MindMap, { STAGE_COLOR } from "@/components/stock/MindMap";
 import { WhyBody } from "@/components/stock/StockOn";
-import { dateLabel, lifeApi, pct, stockApi, type LifeCompany, type LifeMap, type LifeOverview, type LifeStage, type Stock, type Why } from "@/lib/stock";
+import { dateLabel, lifeApi, pct, stockApi, type LifeCompany, type LifeMap, type LifeOverview, type LifeStage, type LifeWordResult, type Stock, type Why } from "@/lib/stock";
 
 const UP = "text-[#ff8a9c]", DOWN = "text-[#7cbcff]";
 const rateTone = (v?: number | null) => (!v ? "text-slate-300" : v > 0 ? UP : DOWN);
 const REL_LABEL = { 강: "연관도 강", 중: "연관도 중", 약: "연관도 약" } as const;
 
 type Pick = { c: LifeCompany; s: LifeStage };
+type Drawing = { word: string; position: number; running: boolean };
+const POLL_MS = 1500;
+const POLL_MAX_MS = 100_000; // AI 한 번 45초 × 최대 2회 + 대기 여유
 type Source = { kind: "topic"; i: number } | { kind: "chip"; word: string } | { kind: "word"; word: string };
 
 function Badges({ map }: { map: LifeMap }) {
@@ -77,7 +80,7 @@ function Detail({ pick, onClose }: { pick: Pick; onClose?: () => void }) {
           <h3 className="mt-1.5 text-lg font-extrabold text-white">{c.name}</h3>
           <p className="text-[11px] text-slate-400">{c.code}{c.market ? ` · ${c.market}` : ""}</p>
         </div>
-        <div className="text-right">
+        <div className="shrink-0 whitespace-nowrap text-right">
           <div className="text-sm font-bold tabular-nums text-white">{c.close != null ? c.close.toLocaleString("ko-KR") : "—"}</div>
           <div className={`text-xs font-extrabold tabular-nums ${rateTone(c.rate)}`}>{c.rate ? (c.rate > 0 ? "▲ " : "▼ ") : ""}{pct(c.rate)}</div>
           <div className="text-[10px] text-slate-500">전일 종가 기준</div>
@@ -103,12 +106,92 @@ function Detail({ pick, onClose }: { pick: Pick; onClose?: () => void }) {
   );
 }
 
+function DrawingOverlay({ d }: { d: Drawing }) {
+  return (
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-3xl bg-[#050d1f]/80 text-center backdrop-blur-sm" role="status" aria-live="polite">
+      <div className="relative flex size-24 items-center justify-center">
+        <span className="lm-glow absolute inset-0 rounded-full bg-sky-400/30 blur-xl" />
+        <span className="relative text-4xl">🎨</span>
+      </div>
+      <p className="mt-3 text-base font-extrabold text-white">
+        AI가 &lsquo;{d.word}&rsquo; 마인드맵을 그리는 중<span className="lm-dots ml-0.5"><span>.</span><span>.</span><span>.</span></span>
+      </p>
+      <p className="mt-1 text-xs text-slate-300">
+        {d.running || d.position === 0 ? "원료부터 유통까지 이어지는 회사를 찾고 있어요 · 보통 10~30초" : `앞에 ${d.position}개 단어가 먼저 그려지고 있어요 · 순서대로 그려요`}
+      </p>
+    </div>
+  );
+}
+
+function WordInput({ disabled, onSubmit }: { disabled: boolean; onSubmit: (w: string) => void }) {
+  const [text, setText] = useState("");
+  return (
+    <form className="mt-2 flex gap-2" onSubmit={(e) => { e.preventDefault(); const w = text.trim(); if (w) onSubmit(w); }}>
+      <label className="sr-only" htmlFor="lifemap-word">생활 단어</label>
+      <input id="lifemap-word" value={text} onChange={(e) => setText(e.target.value)} maxLength={12} enterKeyHint="go" autoComplete="off"
+        placeholder="다른 생활 단어 (예: 붕어빵, 전기차, 캠핑)"
+        className="min-w-0 flex-1 rounded-2xl bg-white/[0.08] px-3.5 py-2.5 text-sm font-bold text-white placeholder:text-slate-500 ring-1 ring-white/15 focus:outline-none focus:ring-2 focus:ring-sky-300" />
+      <button type="submit" disabled={disabled || !text.trim()}
+        className="shrink-0 rounded-2xl bg-sky-400 px-4 py-2.5 text-sm font-extrabold text-[#071226] transition hover:bg-sky-300 disabled:opacity-40">✨ 그리기</button>
+    </form>
+  );
+}
+
 export default function LifeFinder() {
   const [data, setData] = useState<LifeOverview | null>(null);
   const [error, setError] = useState("");
   const [src, setSrc] = useState<Source>({ kind: "topic", i: 0 });
   const [pick, setPick] = useState<Pick | null>(null);
   const [isPc, setIsPc] = useState(false);
+  const [words, setWords] = useState<Record<string, LifeMap>>({});
+  const [drawing, setDrawing] = useState<Drawing | null>(null);
+  const [notice, setNotice] = useState("");
+  const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (pollRef.current) clearTimeout(pollRef.current); }, []);
+
+  /** 서버 응답 하나를 화면에 반영한다. 끝났으면 true. */
+  function apply(r: LifeWordResult): boolean {
+    if (r.status === "queued" || r.status === "running") {
+      setDrawing({ word: r.word, position: r.position ?? 0, running: r.status === "running" });
+      return false;
+    }
+    setDrawing(null);
+    if (r.map) {
+      setWords((w) => ({ ...w, [r.word]: r.map! }));
+      setSrc({ kind: "word", word: r.word });
+      setPick(null);
+    }
+    setNotice(r.status === "ready" ? "" : r.message || (r.status === "none" ? "그리던 내용을 찾지 못했어요. 한 번 더 눌러 주세요." : ""));
+    return true;
+  }
+
+  async function draw(word: string) {
+    if (drawing) return;
+    const chip = data?.chips.includes(word) && data.chip_maps[word];
+    if (chip) { setNotice(""); return choose({ kind: "chip", word }); } // 예시 단어는 이미 그려 둔 것
+    setNotice("");
+    try {
+      const first = await lifeApi.request(word);
+      if (apply(first)) return;
+      const started = Date.now();
+      const poll = async () => {
+        try {
+          const r = await lifeApi.status(first.word);
+          if (apply(r)) return;
+        } catch { /* 일시 오류는 다음 확인에서 다시 */ }
+        if (Date.now() - started > POLL_MAX_MS) {
+          setDrawing(null);
+          setNotice("그리는 데 시간이 오래 걸려요. 잠시 뒤 같은 단어를 다시 눌러 주세요(다 그려지면 바로 보여요).");
+          return;
+        }
+        pollRef.current = setTimeout(poll, POLL_MS);
+      };
+      pollRef.current = setTimeout(poll, POLL_MS);
+    } catch (e) {
+      setDrawing(null);
+      setNotice((e as Error).message);
+    }
+  }
 
   useEffect(() => {
     let alive = true;
@@ -124,8 +207,8 @@ export default function LifeFinder() {
   if (!data) return <div className="lifemap-shell rounded-3xl bg-[#071226] py-24 text-center text-sm text-slate-300">마인드맵을 불러오는 중…</div>;
 
   const topic = src.kind === "topic" ? data.topics[src.i] : undefined;
-  const map: LifeMap | undefined = src.kind === "topic" ? topic?.map : src.kind === "chip" ? data.chip_maps[src.word] : undefined;
-  const choose = (s: Source) => { setSrc(s); setPick(null); };
+  const map: LifeMap | undefined = src.kind === "topic" ? topic?.map : src.kind === "chip" ? data.chip_maps[src.word] : words[src.word];
+  function choose(s: Source) { setSrc(s); setPick(null); }
 
   return (
     <div className="lifemap-shell relative overflow-hidden rounded-3xl bg-[radial-gradient(120%_80%_at_50%_0%,#13305e_0%,#0a1a38_45%,#050d1f_100%)] p-4 text-slate-100 shadow-xl sm:p-6">
@@ -165,11 +248,25 @@ export default function LifeFinder() {
                   className={`rounded-full px-3 py-1.5 text-xs font-extrabold ring-1 transition ${on ? "bg-white text-[#071226] ring-white" : "bg-white/[0.06] text-slate-100 ring-white/15 hover:bg-white/15"}`}>{w}</button>
               );
             })}
+            {Object.keys(words).map((w) => {
+              const on = src.kind === "word" && src.word === w;
+              return (
+                <button key={`w-${w}`} type="button" onClick={() => choose({ kind: "word", word: w })} aria-pressed={on}
+                  className={`rounded-full px-3 py-1.5 text-xs font-extrabold ring-1 transition ${on ? "bg-sky-300 text-[#071226] ring-sky-200" : "bg-sky-400/10 text-sky-100 ring-sky-300/30 hover:bg-sky-400/20"}`}>{w}</button>
+              );
+            })}
           </div>
+          {data.live.enabled ? (
+            <WordInput disabled={!!drawing} onSubmit={draw} />
+          ) : (
+            <p className="mt-2 text-[11px] text-slate-400">지금은 새 단어 그리기를 쉬고 있어요. 위 단어들은 볼 수 있어요.</p>
+          )}
+          {notice && <p className="mt-2 rounded-xl bg-amber-400/10 px-3 py-2 text-xs font-bold text-amber-200 ring-1 ring-amber-300/20" role="status">{notice}</p>}
         </section>
 
         <div className="mt-4 lg:grid lg:grid-cols-[1.25fr_1fr] lg:gap-5">
-          <div>
+          <div className="relative">
+            {drawing && <DrawingOverlay d={drawing} />}
             {map && (
               <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
                 <Badges map={map} />
@@ -203,7 +300,7 @@ export default function LifeFinder() {
             <div className="sticky top-4 rounded-3xl bg-white/[0.05] p-5 ring-1 ring-white/10">
               {pick ? <Detail pick={pick} /> : (
                 <div className="py-12 text-center text-sm text-slate-300">
-                  <div className="text-3xl">🫧</div>
+                  <div className="text-3xl">🔍</div>
                   <p className="mt-2 font-bold text-white">단계를 누르면 회사가 펼쳐져요</p>
                   <p className="mt-1 text-xs">회사 버블을 누르면 &lsquo;왜 관련 있나&rsquo;와 &lsquo;왜 움직였나&rsquo;를 볼 수 있어요.</p>
                 </div>

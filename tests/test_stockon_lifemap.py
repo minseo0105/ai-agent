@@ -252,6 +252,42 @@ class LiveQueueTest(LifemapBase):
         self.assertTrue(r["map"]["example"])
 
 
+class ThirtyPeopleTest(LifemapBase):
+    """시연 기준: 30명이 동시에 서로 다른 새 단어를 누르고, 동시에 화면을 읽는다."""
+
+    def test_concurrency_cap_queue_and_fast_reads(self):
+        import threading
+        from concurrent.futures import ThreadPoolExecutor
+
+        real_pool = ThreadPoolExecutor(max_workers=lifemap.LIVE_CONCURRENCY)
+        lock, state = threading.Lock(), {"now": 0, "max": 0}
+
+        def slow_ask(*args, **kw):
+            with lock:
+                state["now"] += 1
+                state["max"] = max(state["max"], state["now"])
+            time.sleep(0.15)
+            with lock:
+                state["now"] -= 1
+            return CHAIN
+
+        with mock.patch.object(lifemap, "_pool", real_pool), mock.patch.object(lifemap, "_ask", side_effect=slow_ask):
+            with ThreadPoolExecutor(max_workers=30) as people:
+                results = list(people.map(lambda i: lifemap.request_word(f"단어{i:02d}", f"person{i}"), range(30)))
+                t0 = time.time()
+                list(people.map(lambda i: lifemap.overview(), range(30)))
+                read_sec = time.time() - t0
+            real_pool.shutdown(wait=True)
+        statuses = [r["status"] for r in results]
+        self.assertEqual(statuses.count("queued"), lifemap.LIVE_QUEUE_MAX)
+        self.assertEqual(statuses.count("busy"), 30 - lifemap.LIVE_QUEUE_MAX)
+        self.assertTrue(all(r["map"]["stages"] for r in results if r["status"] == "busy"))  # 넘친 사람도 예시를 본다
+        self.assertLessEqual(state["max"], lifemap.LIVE_CONCURRENCY)
+        self.assertLess(read_sec, 2.0)
+        done = [lifemap.word_status(r["word"])["status"] for r in results if r["status"] == "queued"]
+        self.assertEqual(done, ["ready"] * lifemap.LIVE_QUEUE_MAX)
+
+
 class ApiTest(LifemapBase):
     def _client(self):
         from fastapi.testclient import TestClient
