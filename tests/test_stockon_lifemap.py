@@ -130,6 +130,19 @@ class ValidateTest(LifemapBase):
         self.assertEqual(ask.call_args_list[0].args[3]["실제로 움직인 종목"], ["농심(+1.0%)"])
         self.assertEqual(m["model"], "claude-sonnet-5-5")
 
+    def test_single_stage_retries_once_for_more_stages(self):
+        one = {"stages": [SECURITY_CHAIN["stages"][0]]}
+        with mock.patch.object(lifemap, "_ask", side_effect=[one, SECURITY_CHAIN]) as ask:
+            m = lifemap.build_chain("보안")
+        self.assertEqual(ask.call_count, 2)
+        self.assertIn("한 단계뿐", ask.call_args_list[1].args[2])
+        self.assertEqual([s["key"] for s in m["stages"]], ["making", "retail"])
+        with mock.patch.object(lifemap, "_ask", side_effect=[SECURITY_CHAIN, one]) as ask:
+            self.assertEqual(len(lifemap.build_chain("보안")["stages"]), 2)
+        self.assertEqual(ask.call_count, 1)  # 한 번에 두 단계·3곳이면 다시 부르지 않음
+        with mock.patch.object(lifemap, "_ask", side_effect=[one, {"stages": []}]):
+            self.assertEqual(len(lifemap.build_chain("보안")["stages"]), 1)  # 다시 그린 것이 더 적으면 처음 것
+
     def test_banned_words(self):
         for text in ("라면 수혜주", "매수 추천", "주가 상승이 기대된다", "유망한 회사", "보안 테마주", "앞으로 급등할 것"):
             self.assertTrue(lifemap._unsafe(text), text)

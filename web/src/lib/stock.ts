@@ -63,11 +63,24 @@ export const stockApi = {
 
 // 생활 속 종목 찾기 — 마인드맵은 서버가 미리 그려 둔 것(또는 대기열로 그린 것)만 받는다.
 export type StageKey = "material" | "making" | "logistics" | "retail";
-export type LifeCompany = { code: string; name: string; relevance: "강" | "중" | "약"; reason: string; market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null };
+export type LifeCompany = {
+  code: string; name: string; relevance: "강" | "중" | "약"; reason: string;
+  market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null;
+  moved?: boolean; // 실제로 크게 움직인 회사(토픽 종목 또는 기준 시점 ±5% 이상)
+};
 export type LifeStage = { key: StageKey; label: string; detail: string; companies: LifeCompany[] };
-export type LifeMap = { word: string; stages: LifeStage[]; ai: boolean; example?: boolean; model?: string; created_ts?: number; price_as_of?: string | null };
-export type LifeTopic = { name: string; summary: string; articles: { title: string; url: string; press: string; pub: string | null }[]; map: LifeMap; carried?: boolean };
-export type LifeOverview = { day: string | null; topics: LifeTopic[]; chips: string[]; chip_maps: Record<string, LifeMap>; live: { enabled: boolean; per_session: number; window_min: number } };
+export type LifeArticle = { title: string; url: string; press: string; pub: string | null };
+export type LifeMap = { word: string; stages: LifeStage[]; ai: boolean; example?: boolean; model?: string; created_ts?: number; basis_label?: string; articles?: LifeArticle[] };
+export type LifeMovedStock = { code: string; name: string; rate: number };
+export type LifeTopic = {
+  name: string; title: string; impact: string; sector: string; stocks: LifeMovedStock[]; articles: LifeArticle[];
+  map: LifeMap; basis_label?: string; carried?: boolean; example?: boolean;
+};
+export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: string; label?: string };
+export type LifeOverview = {
+  day: string | null; basis: LifeBasis; topics: LifeTopic[]; hot: string[]; sectors: string[]; sector_maps: Record<string, LifeMap>;
+  live: { enabled: boolean; per_session: number; window_min: number };
+};
 export type LifeWordStatus = "ready" | "queued" | "running" | "failed" | "busy" | "limited" | "daily_limit" | "unavailable" | "invalid" | "none";
 export type LifeWordResult = { status: LifeWordStatus; word: string; position?: number; message?: string; map?: LifeMap };
 

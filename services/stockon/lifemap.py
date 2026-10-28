@@ -284,16 +284,22 @@ def build_chain(word: str, context: str = "", live: bool = False, movers: list[s
         payload["많이 움직인 종목"] = movers
     removed_all: list[str] = []
     stages: list[dict] = []
+    count = lambda st: sum(len(s["companies"]) for s in st)  # noqa: E731
     for attempt in range(2):
         raw = _ask(CHAIN_MODEL, CHAIN_SYSTEM, task, payload, CHAIN_SCHEMA, 1500, live)
-        stages, removed = validate_chain(raw, index, stocks)
+        got, removed = validate_chain(raw, index, stocks)
         removed_all += removed
-        if sum(len(s["companies"]) for s in stages) >= MIN_COMPANIES:
+        if count(got) >= count(stages):
+            stages = got  # 다시 그린 것이 더 적으면 처음 것을 둔다
+        if (count(stages) >= MIN_COMPANIES and len(stages) >= 2) or attempt == 1:
             break
-        if attempt == 0 and removed:
+        if removed:
             task += (f"\n\n주의: 직전 결과의 {', '.join(removed[:6])}은(는) 상장 종목 목록에 없었다. "
                      "상장된 회사만 상장 종목명 그대로 다시 써라.")
-        elif attempt == 0:
+        elif len(stages) == 1:
+            task += ("\n\n주의: 직전 결과는 한 단계뿐이었다. 원료(소재·부품·기술)·물류(망·인프라)·유통(판매·플랫폼) 단계에서도 "
+                     "이 단어와 확실히 이어지는 상장사가 있으면 더해라(없으면 그 단계는 빼라).")
+        else:
             break  # 지운 회사 없이 적게 나왔으면 다시 불러도 비슷하다(빈 결과 = 이어지는 회사 없음)
     return {"word": word, "stages": stages, "removed": list(dict.fromkeys(removed_all))[:10], "ai": True,
             "model": CHAIN_MODEL, "directory_as_of": as_of, "created_ts": time.time()}
