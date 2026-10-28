@@ -138,9 +138,9 @@ export default function MindMap({ map, onPick, picked }: { map: LifeMap; onPick:
   return (
     <div className="relative">
       <div ref={box} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onPointerLeave={onUp}
-        className="lifemap-canvas relative mx-auto aspect-square w-full max-w-[560px] select-none"
+        className="lifemap-canvas relative mx-auto aspect-square w-full max-w-[560px] select-none overflow-hidden rounded-3xl"
         style={{ touchAction: view.k > 1 ? "none" : "pan-y" }}>
-        <svg viewBox={`${-VIEW / 2} ${-VIEW / 2} ${VIEW} ${VIEW}`} className="size-full overflow-visible" role="img"
+        <svg viewBox={`${-VIEW / 2} ${-VIEW / 2} ${VIEW} ${VIEW}`} className="size-full" role="img"
           aria-label={`${map.word} 마인드맵: ${map.stages.map((s) => `${s.label} ${s.companies.map((c) => c.name).join(", ")}`).join(" / ")}`}>
           <defs>
             <radialGradient id="lm-core" cx="50%" cy="45%" r="60%">

@@ -2,7 +2,7 @@
 
 - 오늘의 토픽 3개: 수집기(stockon-collector)가 매일 아침 한 번 네이버 뉴스 헤드라인(사회·생활·IT·경제)을 모아
   Haiku 5.5가 토픽 3개를 고르고(근거 기사 2개), 토픽마다 Sonnet 5.5가 밸류체인을 그린다. 결과는 저장해서 모두가 같이 본다.
-- 추천 칩(라면·독감·김장·버스·커피)도 수집기가 미리 그려 둔다(7일마다 다시).
+- 예시 칩(라면·독감·김장·버스·커피)도 수집기가 미리 그려 둔다(7일마다 다시).
 - 새 단어: AI LAB 앱(ailab)에서 같은 엔진으로 그린다. 동시 호출 상한·대기열·1인 횟수·하루 상한을 둔다.
   같은 단어는 한 번 그린 것을 모두가 재사용한다.
 - AI가 낸 회사는 공공데이터 전 종목 목록(stocks.json)의 종목명과 맞춰 보고, 없는 회사는 지운다(종목코드는 목록에서 붙인다).
@@ -323,7 +323,7 @@ def examples() -> dict:
 
 
 def example_map(word: str = "") -> dict:
-    """같은 단어 예시가 있으면 그것, 없으면 첫 추천 칩 예시."""
+    """같은 단어 예시가 있으면 그것, 없으면 첫 예시 칩 예시."""
     words = examples().get("words") or {}
     chosen = words.get(word) or words.get(CHIPS[0]) or next(iter(words.values()), None)
     return {**chosen, "example": True} if chosen else {"word": word, "stages": [], "ai": False, "example": True}
@@ -343,7 +343,7 @@ def _status(**kw) -> None:
 
 
 def run_chips(force: bool = False) -> int:
-    """추천 칩 마인드맵을 7일마다 다시 그린다. 실패한 칩은 이전 것(없으면 예시)을 쓴다."""
+    """예시 칩 마인드맵을 7일마다 다시 그린다. 실패한 칩은 이전 것(없으면 예시)을 쓴다."""
     chips = _read("lifemap_chips", {})
     made = 0
     for word in CHIPS:
@@ -603,7 +603,7 @@ def request_word(word: str, session: str) -> dict:
         if not ai.available():
             return _fallback(word, "unavailable", "지금은 새 단어를 그릴 수 없어서 준비된 예시를 보여 드려요.")
         if _live_today() >= LIVE_DAILY_MAX:
-            return _fallback(word, "daily_limit", "오늘 새 단어 그리기를 다 써서 준비된 예시를 보여 드려요. 추천 단어는 계속 볼 수 있어요.")
+            return _fallback(word, "daily_limit", "오늘 새 단어 그리기를 다 써서 준비된 예시를 보여 드려요. 예시 단어는 계속 볼 수 있어요.")
         hits = _sessions.setdefault(session or "anon", deque())
         while hits and time.time() - hits[0] > LIVE_SESSION_WINDOW:
             hits.popleft()

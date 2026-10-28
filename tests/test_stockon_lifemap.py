@@ -327,6 +327,25 @@ class ApiTest(LifemapBase):
             self.assertEqual(client.post("/api/stock/lifemap/word", json={"word": "라면"}).status_code, 404)
 
 
+class ScreenWordsTest(unittest.TestCase):
+    """화면에 보이는 문구(따옴표 안 한글)에 '추천·수혜' 표현이 없어야 한다. 주석은 제외."""
+
+    def test_no_recommendation_words_on_screen(self):
+        import re
+        from pathlib import Path
+
+        root = Path(lifemap.__file__).resolve().parents[2]
+        files = [root / "services/stockon/lifemap.py", *(root / "web/src/components/stock").glob("Life*.tsx"),
+                 root / "web/src/components/stock/MindMap.tsx", root / "web/src/components/stock/StockTabs.tsx"]
+        for f in files:
+            for line in f.read_text(encoding="utf-8").splitlines():
+                code = re.sub(r"(^\s*(#|//|\*|/\*).*$)|(\{/\*.*?\*/\})", "", line)
+                for text in re.findall(r"[\"'`>]([^\"'`<>]*[가-힣][^\"'`<>]*)[\"'`<]", code):
+                    if "쓰지 않는다" in line or "금지" in line or "re.compile" in line:
+                        continue  # 금지 규칙을 설명하는 문장(AI 지시·문서)
+                    self.assertNotRegex(text, r"추천|수혜", f"{f.name}: {text}")
+
+
 class ExamplesFileTest(unittest.TestCase):
     def test_repo_examples_are_complete_and_safe(self):
         data = json.loads(lifemap.EXAMPLES_PATH.read_text(encoding="utf-8"))
