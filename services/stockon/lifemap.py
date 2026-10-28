@@ -210,7 +210,7 @@ TOPIC_SYSTEM = """너는 증시 뉴스 편집자다. 기준 시점에 한국 증
 규칙:
 - 먼저 '많이 움직인 종목'에서 같은 이유로 함께 움직인 종목·업종을 찾고, 기사에서 그 원인을 확인한다. 기사로 원인이 확인되지 않는 움직임은 토픽으로 만들지 않는다.
 - 해외 이슈(미국 증시, 엔비디아, 금리, 환율, 유가, 관세 등)도 국내 종목·업종의 실제 움직임과 기사로 이어지면 토픽이 된다.
-- 토픽은 서로 다른 섹터(업종)에서 고른다. 같은 기사를 두 토픽의 근거로 쓰지 않는다. 영향이 큰 순서로 5개까지.
+- 토픽은 서로 다른 섹터(업종)에서 고른다. 같은 기사를 두 토픽의 근거로 쓰지 않는다. 영향이 큰 순서로 7개까지.
 - title: 무슨 일이 있었나 한 줄(25자 이내, 예: '보안 사고 터지자 보안주 급등').
 - impact: 증시 영향 한 줄(40자 이내, 예: '라온시큐어 등 보안 관련 종목이 크게 올랐다'). 이미 일어난 일만.
 - keyword: 마인드맵 가운데 둘 핵심 단어 2~8자(예: '보안', '원전', '반도체 장비'). sector: 업종 이름 2~8자.
@@ -401,10 +401,16 @@ def pick_topics(basis: dict, articles: list[dict]) -> list[dict]:
         "기사": [{"번호": i + 1, "제목": a["title"], "요약문": (a.get("snippet") or "")[:80], "발행": a.get("pub")}
                for i, a in enumerate(articles)],
     }
-    raw = _ask(TOPIC_MODEL, TOPIC_SYSTEM, f"{basis['label']}으로 증시를 움직인 뉴스 토픽을 영향이 큰 순서로 5개까지 만들어라.",
+    raw = _ask(TOPIC_MODEL, TOPIC_SYSTEM, f"{basis['label']}으로 증시를 움직인 뉴스 토픽을 영향이 큰 순서로 7개까지 만들어라.",
                payload, TOPIC_SCHEMA, 3000)
     rates = basis["rates"]
-    topics, keywords, sectors, used_articles = [], set(), set(), set()
+    topics, keywords, sectors, used_articles = [], set(), [], set()
+    rejects = _last_rejects
+    rejects.clear()
+
+    def reject(why: str) -> None:
+        rejects[why] = rejects.get(why, 0) + 1
+
     for t in (raw or {}).get("topics") or []:
         keyword = normalize_word(str(t.get("keyword") or ""))[:12]
         sector = normalize_word(str(t.get("sector") or ""))[:12]
@@ -417,18 +423,27 @@ def pick_topics(basis: dict, articles: list[dict]) -> list[dict]:
             if code and rates.get(code) is not None and code not in [m["code"] for m in moved]:
                 moved.append({"code": code, "name": stocks[code]["name"], "rate": rates[code]})
         moved.sort(key=lambda m: -abs(m["rate"]))
-        if (not keyword or check_word(keyword) or keyword in keywords or not sector or _norm_name(sector) in sectors
-                or not title or not impact or any(_unsafe(x) for x in (title, impact, keyword, sector))
-                or len(nums) < 2 or used_articles & set(nums) or not moved):
-            continue  # 근거 기사 2개·실제로 움직인 종목 1개 이상·다른 섹터·다른 기사여야 토픽
+        sec = _norm_name(sector)
+        # 근거 기사 2개·실제로 움직인 종목 1개 이상·다른 섹터('반도체'와 '반도체장비'는 같은 섹터)·다른 기사여야 토픽
+        why = ("word" if not keyword or check_word(keyword) or keyword in keywords or not sec else
+               "sector" if any(sec in x or x in sec for x in sectors) else
+               "text" if not title or not impact or any(_unsafe(x) for x in (title, impact, keyword, sector)) else
+               "articles" if len(nums) < 2 or used_articles & set(nums) else
+               "stocks" if not moved else "")
+        if why:
+            reject(why)
+            continue
         keywords.add(keyword)
-        sectors.add(_norm_name(sector))
+        sectors.append(sec)
         used_articles.update(nums)
         topics.append({"name": keyword, "title": title, "impact": impact, "sector": sector, "stocks": moved[:3],
                        "articles": [{k: articles[n - 1].get(k) for k in ("title", "url", "press", "pub")} for n in nums]})
         if len(topics) == TOPICS_MAX:
             break
     return topics
+
+
+_last_rejects: dict[str, int] = {}  # 마지막 토픽 선정에서 버린 이유별 개수(상태 파일에 남겨 원인 확인용)
 
 
 def mark_moved(m: dict, basis: dict, topic_codes=frozenset()) -> dict:
@@ -487,7 +502,8 @@ def _status(**kw) -> None:
 
 
 def run_topics(basis: dict, http=None) -> dict:
-    """증시를 움직인 뉴스 토픽 3~5개 + 토픽별 마인드맵. 3개가 안 되면 같은 기준의 이전 토픽, 그다음 예시로 채운다."""
+    """증시를 움직인 뉴스 토픽 3~5개 + 토픽별 마인드맵. 3개가 안 되면 같은 기준의 이전 토픽으로 채운다.
+    하나도 못 만들었을 때만 예시(다른 날 기준)로 채운다 — 오늘 이슈 사이에 다른 날 토픽이 섞이지 않게."""
     prev = _read("lifemap", {})
     topics: list[dict] = []
     error = ""
@@ -507,7 +523,9 @@ def run_topics(basis: dict, http=None) -> dict:
         log.warning("lifemap topics failed: %s", error)
     names = {t["name"] for t in topics}
     same_basis = (prev.get("basis") or {}).get("key") == basis["key"]
-    fillers = ((prev.get("topics") or []) if same_basis else []) + [{**t, "example": True} for t in examples().get("topics") or []]
+    fillers = (prev.get("topics") or []) if same_basis else []
+    if not topics:
+        fillers = fillers + [{**t, "example": True} for t in examples().get("topics") or []]
     for t in fillers:
         if len(topics) >= TOPICS_MIN:
             break
@@ -518,7 +536,7 @@ def run_topics(basis: dict, http=None) -> dict:
     data = {"day": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis), "topics": topics[:TOPICS_MAX],
             "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "created_ts": time.time()}
     store.write("lifemap", data)
-    _status(basis_key=basis["key"], ok=fresh >= TOPICS_MIN, fresh=fresh, error=error, ts=time.time())
+    _status(basis_key=basis["key"], ok=fresh >= TOPICS_MIN, fresh=fresh, error=error, rejects=dict(_last_rejects), ts=time.time())
     return data
 
 
@@ -795,6 +813,7 @@ def request_word(word: str, session: str) -> dict:
 # ---------------------------------------------------------
 # 수동 실행
 #   python -m services.stockon.lifemap --daily      지금 기준으로 토픽 + 섹터 다시 만들기(수집기와 같은 일)
+#   python -m services.stockon.lifemap --topics     토픽만 다시
 #   python -m services.stockon.lifemap --sectors    섹터만 다시
 #   python -m services.stockon.lifemap --examples   저장소 예시 파일(data/stockon/lifemap_examples.json) 다시 만들기
 # ---------------------------------------------------------
@@ -828,7 +847,7 @@ if __name__ == "__main__":
         if not b:
             print("시세 스냅샷이 없어 만들 수 없어요.")
             sys.exit(1)
-        if "--daily" in sys.argv:
+        if "--daily" in sys.argv or "--topics" in sys.argv:
             d = run_topics(b)
             print(f"{b['label']} · 토픽: 새로 {d['fresh']}개 / {len(d['topics'])}개")
         if "--daily" in sys.argv or "--sectors" in sys.argv:

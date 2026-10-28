@@ -210,6 +210,8 @@ class TopicsTest(LifemapBase):
              "stocks": ["모르는회사"], "articles": [8, 9]},  # 실제로 움직인 종목이 목록에 없음 → 제외
             {"title": "방산 수출 계약", "impact": "한화에어로스페이스가 5% 내렸다", "keyword": "방산", "sector": "방산",
              "stocks": ["한화에어로스페이스"], "articles": [3, 10]},
+            {"title": "보안 솔루션 수주", "impact": "안랩이 올랐다", "keyword": "보안솔루션", "sector": "보안솔루션",
+             "stocks": ["안랩"], "articles": [6, 8]},  # '보안'을 포함한 섹터 → 같은 섹터로 제외
         ]}
         with mock.patch.object(lifemap, "_ask", return_value=raw) as ask:
             topics = lifemap.pick_topics(self._basis(), ARTICLES)
@@ -220,6 +222,7 @@ class TopicsTest(LifemapBase):
         self.assertEqual([s["name"] for s in topics[0]["stocks"]], ["라온시큐어", "안랩"])  # 등락률 큰 순, 없는 회사 제외
         self.assertEqual(topics[0]["stocks"][0]["rate"], 18.1)
         self.assertEqual([a["url"] for a in topics[1]["articles"]], ["https://news.example/3", "https://news.example/10"])
+        self.assertEqual(lifemap._last_rejects, {"articles": 1, "sector": 2, "text": 2})  # "기대감"은 금지 표현이 먼저 걸림
 
     def test_run_topics_marks_moved_and_fills_to_three(self):
         topic_raw = {"topics": [{"title": "보안 사고 터지자 보안주 급등", "impact": "보안 종목이 크게 올랐다", "keyword": "보안",
@@ -236,7 +239,8 @@ class TopicsTest(LifemapBase):
         self.assertEqual(chain_payload["실제로 움직인 종목"], ["라온시큐어(+18.1%)"])
         self.assertEqual(data["fresh"], 1)
         self.assertEqual(data["basis"]["label"], "10/27 장 기준")
-        self.assertEqual([t["name"] for t in data["topics"]], ["보안", "예시토픽"])  # 모자라면 예시(같은 기준의 이전 것 다음)
+        self.assertEqual(store.read("lifemap_status")["rejects"], {})
+        self.assertEqual([t["name"] for t in data["topics"]], ["보안"])  # 하나라도 만들었으면 다른 날 예시를 섞지 않는다
         companies = {c["name"]: c for s in data["topics"][0]["map"]["stages"] for c in s["companies"]}
         self.assertTrue(companies["라온시큐어"]["moved"])     # 토픽 종목
         self.assertTrue(companies["안랩"]["moved"])            # +9.4% ≥ 5%
