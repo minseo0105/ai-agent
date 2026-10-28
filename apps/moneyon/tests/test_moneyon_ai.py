@@ -36,8 +36,8 @@ class Base(unittest.TestCase):
         ai._person.clear()
         ai._gate['gate'] = None
         ai._client['c'] = None
-        try:
-            os.remove(f'{TMP}/ai_usage.json')
+        try:  # 앱이 지금 쓰는 사용량 파일을 지운다(discover로 함께 돌리면 이 모듈이 두 번 import되어 TMP가 둘이 된다)
+            ai.usage_path().unlink()
         except FileNotFoundError:
             pass
         self.client = TestClient(space_app.app)
