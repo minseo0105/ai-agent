@@ -1,384 +1,437 @@
 {
- "note": "AI가 실패할 때 쓰는 예시. 같은 엔진(Sonnet 5.5)으로 그리고 종목 목록과 대조함.",
+ "note": "AI가 실패할 때 쓰는 예시. 같은 엔진(Haiku 5.5 토픽·Sonnet 5.5 밸류체인)으로 그리고 종목 목록과 대조함.",
  "built": "2026-10-28",
+ "basis": {
+  "key": "public:20261026",
+  "source": "public",
+  "as_of": "20261026",
+  "label": "10/26 장 기준"
+ },
  "topics": [
   {
-   "name": "생필품 물가",
-   "summary": "생필품 39개 평균 가격은 작년 같은 기간보다 0.2% 올랐다",
-   "articles": [
+   "name": "의료AI",
+   "title": "미국 바이오 협업 소식에 의료AI 급등",
+   "impact": "루닛과 뷰노가 상한가로 마감했다",
+   "sector": "의료AI",
+   "stocks": [
     {
-     "title": "간장·달걀값 10% 넘게 뛰었다…생활필수품 물가는 보합",
-     "url": "https://www.joongangenews.com/news/articleView.html?idxno=559095",
-     "press": "www.joongangenews.com",
-     "pub": "2026-10-28T12:20:00+09:00"
+     "code": "328130",
+     "name": "루닛",
+     "rate": 30.0
     },
     {
-     "title": "생필품 물가 0.2% 올랐다는데…간장 11.1%·달걀 10.6% 급등",
-     "url": "https://www.kado.net/news/articleView.html?idxno=2080997",
-     "press": "www.kado.net",
-     "pub": "2026-10-28T11:30:00+09:00"
+     "code": "338220",
+     "name": "뷰노",
+     "rate": 29.95
     }
    ],
+   "articles": [
+    {
+     "title": "[ET특징주]루닛, '美 바이오기업과 협업'에 상승세",
+     "url": "https://www.etnews.com/20261026000247",
+     "press": "www.etnews.com",
+     "pub": "2026-10-26T13:24:00+09:00"
+    },
+    {
+     "title": "[숏폼] 루닛, 미 항암제 협력에 상한가… 재무 부담 넘을까",
+     "url": "https://www.hitnews.co.kr/news/articleView.html?idxno=80213",
+     "press": "www.hitnews.co.kr",
+     "pub": "2026-10-27T06:12:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준",
    "map": {
-    "word": "생필품 물가",
+    "word": "의료AI",
     "stages": [
-     {
-      "key": "material",
-      "label": "원료",
-      "detail": "밀·옥수수·대두",
-      "companies": [
-       {
-        "code": "001790",
-        "name": "대한제당",
-        "relevance": "강",
-        "reason": "설탕·사료 원료 제조, 곡물 원료 취급"
-       },
-       {
-        "code": "008040",
-        "name": "사조동아원",
-        "relevance": "중",
-        "reason": "제분용 밀 수입, 사료 원료 공급"
-       }
-      ]
-     },
      {
       "key": "making",
       "label": "제조",
-      "detail": "라면·세제·휴지",
+      "detail": "의료영상 AI 솔루션",
       "companies": [
        {
-        "code": "004370",
-        "name": "농심",
+        "code": "328130",
+        "name": "루닛",
         "relevance": "강",
-        "reason": "라면·스낵 등 가공식품 제조"
+        "reason": "AI 기반 암 진단 영상분석 솔루션 개발",
+        "rate": 30.0,
+        "moved": true
        },
        {
-        "code": "097950",
-        "name": "CJ제일제당",
+        "code": "338220",
+        "name": "뷰노",
         "relevance": "강",
-        "reason": "설탕·식용유·가공식품 제조"
-       }
-      ]
-     },
-     {
-      "key": "retail",
-      "label": "유통",
-      "detail": "마트·편의점",
-      "companies": [
-       {
-        "code": "139480",
-        "name": "이마트",
-        "relevance": "강",
-        "reason": "대형마트로 생필품 판매"
-       },
-       {
-        "code": "282330",
-        "name": "BGF리테일",
-        "relevance": "강",
-        "reason": "CU 편의점으로 생필품 판매"
+        "reason": "의료영상·생체신호 AI 진단보조 소프트웨어",
+        "rate": 29.95,
+        "moved": true
        }
       ]
      }
     ],
-    "removed": [],
     "ai": true,
     "model": "claude-sonnet-5-5",
     "directory_as_of": "20261026",
-    "created_ts": 1793159253.727093
+    "created_ts": 1793162524.712049,
+    "basis_label": "10/26 장 기준"
    }
   },
   {
-   "name": "먹거리 할인",
-   "summary": "이마트와 롯데마트가 먹거리를 최대 60% 할인하는 행사를 연다",
-   "articles": [
+   "name": "삼성 벤더",
+   "title": "삼성전자 벤더 코드 취득 소식에 부품주 급등",
+   "impact": "아이씨에이치가 29.98% 올라 상한가로 마감했다",
+   "sector": "반도체 부품",
+   "stocks": [
     {
-     "title": "이마트 '쓱데이'·롯데마트 '메가통큰' 맞불…먹거리 최대 60% 할인",
-     "url": "https://www.youthdaily.co.kr/news/article.html?no=228973",
-     "press": "www.youthdaily.co.kr",
-     "pub": "2026-10-28T11:36:00+09:00"
-    },
-    {
-     "title": "3분기 가격 상승률 최고 생필품 '간장'…전년 동기보다 11.1% 올라",
-     "url": "http://www.foodnews.co.kr/news/articleView.html?idxno=120707",
-     "press": "www.foodnews.co.kr",
-     "pub": "2026-10-28T11:12:00+09:00"
+     "code": "368600",
+     "name": "아이씨에이치",
+     "rate": 29.98
     }
    ],
-   "map": {
-    "word": "먹거리 할인",
-    "stages": [
-     {
-      "key": "making",
-      "label": "제조",
-      "detail": "가공식품·신선식품",
-      "companies": [
-       {
-        "code": "097950",
-        "name": "CJ제일제당",
-        "relevance": "중",
-        "reason": "냉동·가공식품을 만들어 마트에 공급"
-       },
-       {
-        "code": "007310",
-        "name": "오뚜기",
-        "relevance": "중",
-        "reason": "라면·소스류 가공식품 제조·판매"
-       }
-      ]
-     },
-     {
-      "key": "retail",
-      "label": "유통",
-      "detail": "대형마트 할인행사",
-      "companies": [
-       {
-        "code": "139480",
-        "name": "이마트",
-        "relevance": "강",
-        "reason": "대형마트 운영, 먹거리 할인행사 진행"
-       },
-       {
-        "code": "023530",
-        "name": "롯데쇼핑",
-        "relevance": "강",
-        "reason": "롯데마트를 운영하며 먹거리 할인 진행"
-       }
-      ]
-     }
-    ],
-    "removed": [],
-    "ai": true,
-    "model": "claude-sonnet-5-5",
-    "directory_as_of": "20261026",
-    "created_ts": 1793159256.6095319
-   }
-  },
-  {
-   "name": "폴더블폰",
-   "summary": "삼성전자가 중국 전용 폴더블폰 신제품 발표를 앞두고 있다",
    "articles": [
     {
-     "title": "삼성, 中 전용 폴더블폰 'W27' 공개 임박…애플과 경쟁 주목",
-     "url": "https://www.news1.kr/it-science/mobile/6332262",
-     "press": "www.news1.kr",
-     "pub": "2026-10-27T06:20:00+09:00"
+     "title": "[주식마감] 삼성전자 벤더 코드 취득 소식에 아이씨에이치 '上'... 루닛,...",
+     "url": "https://www.ggilbo.com/news/articleView.html?idxno=1189160",
+     "press": "www.ggilbo.com",
+     "pub": "2026-10-26T19:40:00+09:00"
     },
     {
-     "title": "삼성전자, 中 폴더블 ‘4% 벽’ 넘을까…W27에 금빛 승부수",
-     "url": "https://www.mydaily.co.kr/page/view/2026102709312775844",
-     "press": "www.mydaily.co.kr",
-     "pub": "2026-10-27T10:02:00+09:00"
+     "title": "루닛·아이씨에이치·뷰노 상한가…주식 상승률 상위권 휩쓸어",
+     "url": "http://www.kjdaily.com/article.php?aid=1793018466690407276",
+     "press": "www.kjdaily.com",
+     "pub": "2026-10-26T21:42:00+09:00"
     }
    ],
+   "basis_label": "10/26 장 기준",
    "map": {
-    "word": "폴더블폰",
+    "word": "삼성 벤더",
     "stages": [
      {
       "key": "material",
       "label": "원료",
-      "detail": "UTG·폴더블 소재",
+      "detail": "스마트폰 부품·소재",
       "companies": [
        {
-        "code": "484120",
-        "name": "도우인시스",
+        "code": "368600",
+        "name": "아이씨에이치",
         "relevance": "강",
-        "reason": "폴더블 디스플레이용 PI 커버윈도 소재 공급"
-       },
-       {
-        "code": "213420",
-        "name": "덕산네오룩스",
-        "relevance": "중",
-        "reason": "OLED 발광 소재 공급"
+        "reason": "삼성전자 벤더 코드 취득 소식이 나온 부품 업체",
+        "rate": 29.98,
+        "moved": true
        }
       ]
      },
      {
       "key": "making",
       "label": "제조",
-      "detail": "패널·힌지·완제품",
+      "detail": "삼성 전자·전기 제품",
       "companies": [
        {
         "code": "005930",
         "name": "삼성전자",
-        "relevance": "강",
-        "reason": "갤럭시 Z 폴더블폰 제조"
+        "relevance": "중",
+        "reason": "벤더 코드를 부여하는 발주 업체",
+        "rate": -1.16,
+        "moved": false
        },
        {
-        "code": "006400",
-        "name": "삼성SDI",
+        "code": "009150",
+        "name": "삼성전기",
         "relevance": "약",
-        "reason": "스마트폰용 소형 배터리 사업 영위"
+        "reason": "삼성 계열 부품 제조사",
+        "rate": -0.36,
+        "moved": false
        }
       ]
      }
     ],
-    "removed": [],
     "ai": true,
     "model": "claude-sonnet-5-5",
     "directory_as_of": "20261026",
-    "created_ts": 1793159261.727686
+    "created_ts": 1793162526.8562572,
+    "basis_label": "10/26 장 기준"
+   }
+  },
+  {
+   "name": "우주",
+   "title": "대전샛 교신 성공 소식에 우주주 상승",
+   "impact": "컨텍이 상한가로 올라 투자주의종목으로 지정됐다",
+   "sector": "우주항공",
+   "stocks": [
+    {
+     "code": "451760",
+     "name": "컨텍",
+     "rate": 29.89
+    }
+   ],
+   "articles": [
+    {
+     "title": "컨텍, 자체 지상국으로 '대전샛' 교신 성공",
+     "url": "http://www.hellodd.com/news/articleView.html?idxno=113618",
+     "press": "www.hellodd.com",
+     "pub": "2026-10-26T18:10:00+09:00"
+    },
+    {
+     "title": "[사이언스게시판] 컨텍, 자체 지상국으로 '대전샛' 양방향 통신 성공 外",
+     "url": "https://www.dongascience.com/news/view/80547",
+     "press": "www.dongascience.com",
+     "pub": "2026-10-26T18:13:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준",
+   "map": {
+    "word": "우주",
+    "stages": [
+     {
+      "key": "material",
+      "label": "원료",
+      "detail": "위성 부품·특수소재",
+      "companies": [
+       {
+        "code": "099320",
+        "name": "쎄트렉아이",
+        "relevance": "강",
+        "reason": "소형 지구관측 위성 본체와 탑재체 제작",
+        "rate": -3.03,
+        "moved": false
+       },
+       {
+        "code": "012450",
+        "name": "한화에어로스페이스",
+        "relevance": "강",
+        "reason": "누리호 엔진 제작과 발사체 추진 기관 개발",
+        "rate": -4.04,
+        "moved": false
+       }
+      ]
+     },
+     {
+      "key": "making",
+      "label": "제조",
+      "detail": "위성·발사체 제작",
+      "companies": [
+       {
+        "code": "047810",
+        "name": "한국항공우주",
+        "relevance": "강",
+        "reason": "다목적실용위성 총조립과 누리호 체계 종합",
+        "rate": -4.31,
+        "moved": false
+       },
+       {
+        "code": "189300",
+        "name": "인텔리안테크",
+        "relevance": "중",
+        "reason": "위성통신 안테나 제작",
+        "rate": -3.57,
+        "moved": false
+       }
+      ]
+     },
+     {
+      "key": "logistics",
+      "label": "물류",
+      "detail": "지상국·위성 교신망",
+      "companies": [
+       {
+        "code": "451760",
+        "name": "컨텍",
+        "relevance": "강",
+        "reason": "위성 지상국 서비스와 위성 데이터 수신",
+        "rate": 29.89,
+        "moved": true
+       }
+      ]
+     }
+    ],
+    "ai": true,
+    "model": "claude-sonnet-5-5",
+    "directory_as_of": "20261026",
+    "created_ts": 1793162531.1496603,
+    "basis_label": "10/26 장 기준"
+   }
+  },
+  {
+   "name": "방산",
+   "title": "김정은 방중 소식에 방산주 약세",
+   "impact": "스페코와 빅텍이 나란히 크게 하락했다",
+   "sector": "방산",
+   "stocks": [
+    {
+     "code": "013810",
+     "name": "스페코",
+     "rate": -22.0
+    },
+    {
+     "code": "065450",
+     "name": "빅텍",
+     "rate": -19.29
+    }
+   ],
+   "articles": [
+    {
+     "title": "김정은 방중 소식에 방산株 약세…스페코 16%↓",
+     "url": "https://www.newsis.com/view/NISX20261026_0003840740",
+     "press": "www.newsis.com",
+     "pub": "2026-10-26T10:20:00+09:00"
+    },
+    {
+     "title": "코스닥 3.26% 급락 727선… 기관 1279억 순매도",
+     "url": "https://www.seoul.co.kr/news/economy/securities/2026/10/26/20261026500216?wlog_tag3=naver",
+     "press": "www.seoul.co.kr",
+     "pub": "2026-10-26T15:57:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준",
+   "map": {
+    "word": "방산",
+    "stages": [
+     {
+      "key": "material",
+      "label": "원료",
+      "detail": "방산 소재·부품",
+      "companies": [
+       {
+        "code": "065450",
+        "name": "빅텍",
+        "relevance": "강",
+        "reason": "군용 전자전·전원장치 부품 제조",
+        "rate": -19.29,
+        "moved": true
+       },
+       {
+        "code": "103140",
+        "name": "풍산",
+        "relevance": "강",
+        "reason": "탄약용 동 소재와 탄약 생산",
+        "rate": -3.87,
+        "moved": false
+       }
+      ]
+     },
+     {
+      "key": "making",
+      "label": "제조",
+      "detail": "무기체계 제조",
+      "companies": [
+       {
+        "code": "013810",
+        "name": "스페코",
+        "relevance": "강",
+        "reason": "방산 장비와 플랜트 설비 제조",
+        "rate": -22.0,
+        "moved": true
+       },
+       {
+        "code": "012450",
+        "name": "한화에어로스페이스",
+        "relevance": "강",
+        "reason": "자주포·장갑차 등 지상무기 제조",
+        "rate": -4.04,
+        "moved": false
+       }
+      ]
+     }
+    ],
+    "ai": true,
+    "model": "claude-sonnet-5-5",
+    "directory_as_of": "20261026",
+    "created_ts": 1793162534.9669926,
+    "basis_label": "10/26 장 기준"
    }
   }
  ],
- "words": {
-  "라면": {
-   "word": "라면",
+ "sectors": {
+  "금융": {
+   "word": "금융",
    "stages": [
     {
      "key": "material",
      "label": "원료",
-     "detail": "밀가루·팜유",
+     "detail": "금융 IT·보안 솔루션",
      "companies": [
       {
-       "code": "001130",
-       "name": "대한제분",
+       "code": "053300",
+       "name": "한국정보인증",
        "relevance": "중",
-       "reason": "제분 사업으로 밀가루 생산·공급"
+       "reason": "금융권 공동인증·전자서명 서비스 제공",
+       "rate": -1.76,
+       "moved": false
       },
       {
-       "code": "097950",
-       "name": "CJ제일제당",
-       "relevance": "약",
-       "reason": "밀가루·식용유 등 식품 소재 생산"
+       "code": "053580",
+       "name": "웹케시",
+       "relevance": "강",
+       "reason": "금융기관·기업용 금융 IT 솔루션 개발",
+       "rate": -0.15,
+       "moved": false
       }
      ]
     },
     {
      "key": "making",
      "label": "제조",
-     "detail": "면·스프 제조",
+     "detail": "금융 상품·서비스 제공",
      "companies": [
       {
-       "code": "004370",
-       "name": "농심",
+       "code": "105560",
+       "name": "KB금융",
        "relevance": "강",
-       "reason": "신라면 등 라면 제조 핵심 사업"
+       "reason": "은행·증권·보험 계열을 거느린 금융지주",
+       "rate": -3.79,
+       "moved": false
       },
       {
-       "code": "007310",
-       "name": "오뚜기",
+       "code": "055550",
+       "name": "신한지주",
        "relevance": "강",
-       "reason": "진라면 등 라면 제조·판매"
-      }
-     ]
-    },
-    {
-     "key": "retail",
-     "label": "유통",
-     "detail": "마트·편의점 판매",
-     "companies": [
-      {
-       "code": "139480",
-       "name": "이마트",
-       "relevance": "중",
-       "reason": "대형마트에서 라면 판매"
-      },
-      {
-       "code": "282330",
-       "name": "BGF리테일",
-       "relevance": "중",
-       "reason": "CU 편의점에서 라면 판매"
-      }
-     ]
-    }
-   ],
-   "ai": true,
-   "model": "claude-sonnet-5-5",
-   "directory_as_of": "20261026",
-   "created_ts": 1793159230.5979931
-  },
-  "독감": {
-   "word": "독감",
-   "stages": [
-    {
-     "key": "making",
-     "label": "제조",
-     "detail": "독감 백신·치료제",
-     "companies": [
-      {
-       "code": "302440",
-       "name": "SK바이오사이언스",
-       "relevance": "강",
-       "reason": "독감 백신 안동 공장에서 생산"
-      },
-      {
-       "code": "007570",
-       "name": "일양약품",
-       "relevance": "약",
-       "reason": "독감 치료제 등 일반의약품 생산"
+       "reason": "은행·카드·증권 계열을 둔 금융지주",
+       "rate": -2.95,
+       "moved": false
       }
      ]
     },
     {
      "key": "logistics",
      "label": "물류",
-     "detail": "백신 콜드체인 운송",
+     "detail": "결제망·금융 인프라",
      "companies": [
       {
-       "code": "009180",
-       "name": "한솔로지스틱스",
-       "relevance": "약",
-       "reason": "택배 및 물류 서비스 제공"
-      }
-     ]
-    }
-   ],
-   "ai": true,
-   "model": "claude-sonnet-5-5",
-   "directory_as_of": "20261026",
-   "created_ts": 1793159234.2114403
-  },
-  "김장": {
-   "word": "김장",
-   "stages": [
-    {
-     "key": "material",
-     "label": "원료",
-     "detail": "절임배추·고춧가루·젓갈",
-     "companies": [
-      {
-       "code": "001680",
-       "name": "대상",
-       "relevance": "중",
-       "reason": "종가 김치 원료 배추·양념 조달"
+       "code": "060250",
+       "name": "NHN KCP",
+       "relevance": "강",
+       "reason": "전자결제 대행(PG) 서비스 운영",
+       "rate": -3.42,
+       "moved": false
       },
       {
-       "code": "097950",
-       "name": "CJ제일제당",
-       "relevance": "중",
-       "reason": "비비고 김치 원료 농산물 조달"
-      }
-     ]
-    },
-    {
-     "key": "making",
-     "label": "제조",
-     "detail": "포장김치·김장양념",
-     "companies": [
-      {
-       "code": "017810",
-       "name": "풀무원",
-       "relevance": "중",
-       "reason": "풀무원 김치 제조·판매"
+       "code": "025770",
+       "name": "한국정보통신",
+       "relevance": "강",
+       "reason": "카드 단말기 기반 결제 대행 사업",
+       "rate": -1.57,
+       "moved": false
       }
      ]
     },
     {
      "key": "retail",
      "label": "유통",
-     "detail": "김장재료·김치 판매",
+     "detail": "금융 플랫폼·중개",
      "companies": [
       {
-       "code": "139480",
-       "name": "이마트",
-       "relevance": "중",
-       "reason": "김장 재료와 절임배추 판매"
+       "code": "323410",
+       "name": "카카오뱅크",
+       "relevance": "강",
+       "reason": "모바일 기반 인터넷전문은행 운영",
+       "rate": -1.85,
+       "moved": false
       },
       {
-       "code": "282330",
-       "name": "BGF리테일",
-       "relevance": "약",
-       "reason": "CU 편의점에서 포장김치 판매"
+       "code": "039490",
+       "name": "키움증권",
+       "relevance": "강",
+       "reason": "온라인 주식 중개 중심 증권사",
+       "rate": -1.86,
+       "moved": false
       }
      ]
     }
@@ -386,40 +439,185 @@
    "ai": true,
    "model": "claude-sonnet-5-5",
    "directory_as_of": "20261026",
-   "created_ts": 1793159238.3742368
+   "created_ts": 1793162540.8793914,
+   "articles": [],
+   "basis_label": "10/26 장 기준"
   },
-  "버스": {
-   "word": "버스",
+  "반도체": {
+   "word": "반도체",
    "stages": [
     {
      "key": "material",
      "label": "원료",
-     "detail": "차체용 강판·타이어",
+     "detail": "반도체 장비·소재·부품",
+     "companies": [
+      {
+       "code": "036930",
+       "name": "주성엔지니어링",
+       "relevance": "강",
+       "reason": "반도체·디스플레이 증착 장비 제조",
+       "rate": -6.84,
+       "moved": true
+      },
+      {
+       "code": "009150",
+       "name": "삼성전기",
+       "relevance": "중",
+       "reason": "반도체 패키지기판과 MLCC 생산",
+       "rate": -0.36,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "메모리·파운드리 칩 생산",
+     "companies": [
+      {
+       "code": "000660",
+       "name": "SK하이닉스",
+       "relevance": "강",
+       "reason": "D램·낸드 메모리 반도체 제조",
+       "rate": -0.16,
+       "moved": false
+      },
+      {
+       "code": "005930",
+       "name": "삼성전자",
+       "relevance": "강",
+       "reason": "메모리 반도체와 파운드리 사업 운영",
+       "rate": -1.16,
+       "moved": false
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793162544.7319217,
+   "articles": [],
+   "basis_label": "10/26 장 기준"
+  },
+  "AI": {
+   "word": "AI",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "AI 반도체·메모리·부품",
+     "companies": [
+      {
+       "code": "000660",
+       "name": "SK하이닉스",
+       "relevance": "강",
+       "reason": "AI 가속기용 고대역폭메모리(HBM) 공급",
+       "rate": -0.16,
+       "moved": false
+      },
+      {
+       "code": "009150",
+       "name": "삼성전기",
+       "relevance": "중",
+       "reason": "AI 서버용 반도체 기판·MLCC 생산",
+       "rate": -0.36,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "AI 소프트웨어·의료 AI",
+     "companies": [
+      {
+       "code": "328130",
+       "name": "루닛",
+       "relevance": "강",
+       "reason": "AI 기반 암 진단 영상 분석 소프트웨어",
+       "rate": 30.0,
+       "moved": true
+      },
+      {
+       "code": "338220",
+       "name": "뷰노",
+       "relevance": "강",
+       "reason": "의료영상 AI 진단 보조 솔루션 개발",
+       "rate": 29.95,
+       "moved": true
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793162548.8134134,
+   "articles": [],
+   "basis_label": "10/26 장 기준"
+  },
+  "자동차": {
+   "word": "자동차",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "자동차 강판·알루미늄·배터",
      "companies": [
       {
        "code": "005490",
        "name": "POSCO홀딩스",
        "relevance": "중",
-       "reason": "자동차용 강판 생산"
+       "reason": "자동차용 강판 등 철강 소재 공급",
+       "rate": -2.18,
+       "moved": false
       },
       {
-       "code": "161390",
-       "name": "한국타이어앤테크놀로지",
+       "code": "006400",
+       "name": "삼성SDI",
        "relevance": "중",
-       "reason": "버스용 타이어 생산"
+       "reason": "전기차용 배터리 제조",
+       "rate": -1.43,
+       "moved": false
       }
      ]
     },
     {
      "key": "making",
      "label": "제조",
-     "detail": "버스 완성차·부품",
+     "detail": "완성차·핵심 부품",
      "companies": [
+      {
+       "code": "005380",
+       "name": "현대차",
+       "relevance": "강",
+       "reason": "완성차 제조·판매",
+       "rate": -2.54,
+       "moved": false
+      },
       {
        "code": "000270",
        "name": "기아",
-       "relevance": "중",
-       "reason": "중형버스 카운티 등 상용차 생산"
+       "relevance": "강",
+       "reason": "완성차 제조·판매",
+       "rate": -1.68,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "logistics",
+     "label": "물류",
+     "detail": "완성차 해상 운송",
+     "companies": [
+      {
+       "code": "086280",
+       "name": "현대글로비스",
+       "relevance": "강",
+       "reason": "완성차 해상운송·글로벌 물류",
+       "rate": 0.17,
+       "moved": false
       }
      ]
     }
@@ -427,59 +625,75 @@
    "ai": true,
    "model": "claude-sonnet-5-5",
    "directory_as_of": "20261026",
-   "created_ts": 1793159242.1151793
-  },
-  "커피": {
-   "word": "커피",
-   "stages": [
+   "created_ts": 1793162553.240679,
+   "articles": [
     {
-     "key": "material",
-     "label": "원료",
-     "detail": "생두·원두 수입",
-     "companies": [
-      {
-       "code": "001790",
-       "name": "대한제당",
-       "relevance": "약",
-       "reason": "식품 원료 사업을 영위"
-      }
-     ]
+     "title": "[전날 애프터마켓] '중복상장 우려 해소' SK하이닉스 3%대 강세…삼바·...",
+     "url": "https://www.etoday.co.kr/news/view/2640298",
+     "press": "www.etoday.co.kr",
+     "pub": "2026-10-27T07:26:00+09:00"
     },
+    {
+     "title": "[올댓차이나] 홍콩 증시, 中 정책 기대에 이틀째 상승 마감… H주 0.59%↑",
+     "url": "https://www.newsis.com/view/NISX20261026_0003841836",
+     "press": "www.newsis.com",
+     "pub": "2026-10-26T19:00:00+09:00"
+    },
+    {
+     "title": "[올댓차이나] 中 증시, 반락 개장 후 저가 매수 유입에 혼조 마감…창업...",
+     "url": "https://www.newsis.com/view/NISX20261026_0003841780",
+     "press": "www.newsis.com",
+     "pub": "2026-10-26T17:59:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준"
+  },
+  "보험": {
+   "word": "보험",
+   "stages": [
     {
      "key": "making",
      "label": "제조",
-     "detail": "믹스·캔·RTD 커피",
+     "detail": "보험 상품 설계·인수",
      "companies": [
       {
-       "code": "026960",
-       "name": "동서",
+       "code": "032830",
+       "name": "삼성생명",
        "relevance": "강",
-       "reason": "맥심 커피믹스 제조·판매"
+       "reason": "생명보험 상품을 설계하고 판매",
+       "rate": 0.61,
+       "moved": false
       },
       {
-       "code": "003920",
-       "name": "남양유업",
-       "relevance": "중",
-       "reason": "프렌치카페 등 커피음료 제조"
+       "code": "000810",
+       "name": "삼성화재",
+       "relevance": "강",
+       "reason": "손해보험 상품을 설계하고 인수",
+       "rate": -1.16,
+       "moved": false
       }
      ]
     },
     {
      "key": "retail",
      "label": "유통",
-     "detail": "커피전문점·편의점",
+     "detail": "보험 판매·비교 채널",
      "companies": [
       {
-       "code": "282330",
-       "name": "BGF리테일",
-       "relevance": "중",
-       "reason": "CU 편의점서 커피 판매"
+       "code": "211050",
+       "name": "인카금융서비스",
+       "relevance": "강",
+       "reason": "보험 판매를 맡는 독립법인대리점(GA)",
+       "rate": -1.34,
+       "moved": false
       },
       {
-       "code": "007070",
-       "name": "GS리테일",
-       "relevance": "중",
-       "reason": "GS25 편의점서 커피 판매"
+       "code": "244920",
+       "name": "에이플러스에셋",
+       "relevance": "강",
+       "reason": "보험 판매 GA 사업 운영",
+       "rate": -2.04,
+       "moved": false
       }
      ]
     }
@@ -487,7 +701,422 @@
    "ai": true,
    "model": "claude-sonnet-5-5",
    "directory_as_of": "20261026",
-   "created_ts": 1793159245.7319589
+   "created_ts": 1793162556.7798524,
+   "articles": [
+    {
+     "title": "[트럼프 스톡커] “인간 위협”이라며 135조 모으는 종목명 ‘ANT’",
+     "url": "https://www.sedaily.com/article/20106386?ref=naver",
+     "press": "www.sedaily.com",
+     "pub": "2026-10-27T07:31:00+09:00"
+    },
+    {
+     "title": "[핀테크핫이슈] 금융권 3분기 성적표 공개...증시 전망 '시계제로'",
+     "url": "https://www.digitaltoday.co.kr/news/articleView.html?idxno=709983",
+     "press": "www.digitaltoday.co.kr",
+     "pub": "2026-10-27T07:30:00+09:00"
+    },
+    {
+     "title": "앤스로픽, 나스닥 상장 위해 IPO 신청…사상 최대 규모 기록할까",
+     "url": "https://view.asiae.co.kr/article/2026102700584547415",
+     "press": "view.asiae.co.kr",
+     "pub": "2026-10-27T00:58:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준"
+  },
+  "보안": {
+   "word": "보안",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "암호·인증 보안 기술",
+     "companies": [
+      {
+       "code": "042510",
+       "name": "라온시큐어",
+       "relevance": "강",
+       "reason": "모바일 인증·생체인증 보안 솔루션",
+       "rate": 1.83,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "보안 솔루션·장비",
+     "companies": [
+      {
+       "code": "053800",
+       "name": "안랩",
+       "relevance": "강",
+       "reason": "백신·네트워크 보안 제품 개발",
+       "rate": 2.3,
+       "moved": false
+      },
+      {
+       "code": "263860",
+       "name": "지니언스",
+       "relevance": "강",
+       "reason": "네트워크 접근제어(NAC) 솔루션",
+       "rate": 0.26,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "retail",
+     "label": "유통",
+     "detail": "보안 서비스 제공",
+     "companies": [
+      {
+       "code": "012750",
+       "name": "에스원",
+       "relevance": "강",
+       "reason": "기계경비·보안 서비스 제공",
+       "rate": -2.81,
+       "moved": false
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793162561.8809001,
+   "articles": [
+    {
+     "title": "[트럼프 스톡커] “인간 위협”이라며 135조 모으는 종목명 ‘ANT’",
+     "url": "https://www.sedaily.com/article/20106386?ref=naver",
+     "press": "www.sedaily.com",
+     "pub": "2026-10-27T07:31:00+09:00"
+    },
+    {
+     "title": "[핀테크핫이슈] 금융권 3분기 성적표 공개...증시 전망 '시계제로'",
+     "url": "https://www.digitaltoday.co.kr/news/articleView.html?idxno=709983",
+     "press": "www.digitaltoday.co.kr",
+     "pub": "2026-10-27T07:30:00+09:00"
+    },
+    {
+     "title": "얼굴·지문 인증 시장 커지는데…바이오인식 관련주 휘청",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=498608",
+     "press": "www.pinpointnews.co.kr",
+     "pub": "2026-10-26T17:08:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준"
+  },
+  "2차전지": {
+   "word": "2차전지",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "양극재·음극재·전해질",
+     "companies": [
+      {
+       "code": "247540",
+       "name": "에코프로비엠",
+       "relevance": "강",
+       "reason": "2차전지용 양극재 제조",
+       "rate": -3.45,
+       "moved": false
+      },
+      {
+       "code": "003670",
+       "name": "포스코퓨처엠",
+       "relevance": "강",
+       "reason": "양극재·음극재 생산",
+       "rate": -2.67,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "배터리 셀·팩 제조",
+     "companies": [
+      {
+       "code": "006400",
+       "name": "삼성SDI",
+       "relevance": "강",
+       "reason": "각형 2차전지 셀 제조",
+       "rate": -1.43,
+       "moved": false
+      },
+      {
+       "code": "373220",
+       "name": "LG에너지솔루션",
+       "relevance": "강",
+       "reason": "원통형·파우치형 배터리 셀 제조",
+       "rate": -2.09,
+       "moved": false
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793162565.4441938,
+   "articles": [
+    {
+     "title": "[전날 애프터마켓] '중복상장 우려 해소' SK하이닉스 3%대 강세…삼바·...",
+     "url": "https://www.etoday.co.kr/news/view/2640298",
+     "press": "www.etoday.co.kr",
+     "pub": "2026-10-27T07:26:00+09:00"
+    },
+    {
+     "title": "삼성SDI·LG에너지솔루션도 하락…전고체 배터리주 투심 냉각",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=498605",
+     "press": "www.pinpointnews.co.kr",
+     "pub": "2026-10-26T17:04:00+09:00"
+    },
+    {
+     "title": "[마감시황] FOMC·실적 앞두고 얼어붙은 증시…코스피 7개월·코스닥 3개...",
+     "url": "http://www.metroseoul.co.kr/article/20261026500514",
+     "press": "www.metroseoul.co.kr",
+     "pub": "2026-10-26T16:10:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준"
+  },
+  "바이오": {
+   "word": "바이오",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "바이오의약품 원료·배지",
+     "companies": [
+      {
+       "code": "290650",
+       "name": "엘앤씨바이오",
+       "relevance": "강",
+       "reason": "인체 유래 조직 기반 재생의료 소재 생산",
+       "rate": -17.41,
+       "moved": true
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "바이오의약품 위탁생산·개발",
+     "companies": [
+      {
+       "code": "207940",
+       "name": "삼성바이오로직스",
+       "relevance": "강",
+       "reason": "바이오의약품 위탁개발생산(CDMO) 사업",
+       "rate": -0.95,
+       "moved": false
+      },
+      {
+       "code": "068270",
+       "name": "셀트리온",
+       "relevance": "강",
+       "reason": "바이오시밀러 개발·생산",
+       "rate": -2.26,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "retail",
+     "label": "유통",
+     "detail": "바이오 진단·헬스케어 서비",
+     "companies": [
+      {
+       "code": "338220",
+       "name": "뷰노",
+       "relevance": "중",
+       "reason": "AI 의료영상 진단 보조 솔루션 공급",
+       "rate": 29.95,
+       "moved": true
+      },
+      {
+       "code": "458870",
+       "name": "씨어스",
+       "relevance": "중",
+       "reason": "웨어러블 생체신호 모니터링 서비스",
+       "rate": 17.51,
+       "moved": true
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793162569.1924155,
+   "articles": [
+    {
+     "title": "[전날 애프터마켓] '중복상장 우려 해소' SK하이닉스 3%대 강세…삼바·...",
+     "url": "https://www.etoday.co.kr/news/view/2640298",
+     "press": "www.etoday.co.kr",
+     "pub": "2026-10-27T07:26:00+09:00"
+    },
+    {
+     "title": "앤트로픽 '1천억 달러 역대 최대 IPO' 선언…반도체·저장장치주 일제히...",
+     "url": "http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202610270005&t=NN",
+     "press": "www.wowtv.co.kr",
+     "pub": "2026-10-27T07:01:00+09:00"
+    },
+    {
+     "title": "루닛·아이씨에이치·뷰노 상한가…주식 상승률 상위권 휩쓸어",
+     "url": "http://www.kjdaily.com/article.php?aid=1793018466690407276",
+     "press": "www.kjdaily.com",
+     "pub": "2026-10-26T21:42:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준"
+  },
+  "방산": {
+   "word": "방산",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "특수강·소재·부품",
+     "companies": [
+      {
+       "code": "103140",
+       "name": "풍산",
+       "relevance": "강",
+       "reason": "탄약용 신동 소재와 방산 탄약 생산",
+       "rate": -3.87,
+       "moved": false
+      },
+      {
+       "code": "012450",
+       "name": "한화에어로스페이스",
+       "relevance": "중",
+       "reason": "항공기 엔진·부품 제조",
+       "rate": -4.04,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "무기체계·완성장비",
+     "companies": [
+      {
+       "code": "047810",
+       "name": "한국항공우주",
+       "relevance": "강",
+       "reason": "전투기·군용 헬기 제조",
+       "rate": -4.31,
+       "moved": false
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793162573.1225266,
+   "articles": [
+    {
+     "title": "[전날 애프터마켓] '중복상장 우려 해소' SK하이닉스 3%대 강세…삼바·...",
+     "url": "https://www.etoday.co.kr/news/view/2640298",
+     "press": "www.etoday.co.kr",
+     "pub": "2026-10-27T07:26:00+09:00"
+    },
+    {
+     "title": "[올댓차이나] 中 증시, 반락 개장 후 저가 매수 유입에 혼조 마감…창업...",
+     "url": "https://www.newsis.com/view/NISX20261026_0003841780",
+     "press": "www.newsis.com",
+     "pub": "2026-10-26T17:59:00+09:00"
+    },
+    {
+     "title": "코스피 하루 만에 1.46% 하락 5469선",
+     "url": "https://www.thereport.co.kr/news/articleView.html?idxno=92677",
+     "press": "www.thereport.co.kr",
+     "pub": "2026-10-26T16:42:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준"
+  },
+  "조선": {
+   "word": "조선",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "선박용 후판·강재",
+     "companies": [
+      {
+       "code": "005490",
+       "name": "POSCO홀딩스",
+       "relevance": "중",
+       "reason": "계열 철강사가 선박용 후판 공급",
+       "rate": -2.18,
+       "moved": false
+      },
+      {
+       "code": "004020",
+       "name": "현대제철",
+       "relevance": "강",
+       "reason": "조선용 후판을 생산해 조선사에 공급",
+       "rate": -2.05,
+       "moved": false
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "선박 건조·엔진",
+     "companies": [
+      {
+       "code": "329180",
+       "name": "HD현대중공업",
+       "relevance": "강",
+       "reason": "상선·특수선을 건조하는 조선사",
+       "rate": -5.08,
+       "moved": true
+      },
+      {
+       "code": "010140",
+       "name": "삼성중공업",
+       "relevance": "강",
+       "reason": "LNG선·해양플랜트를 건조하는 조선사",
+       "rate": -3.15,
+       "moved": false
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793162576.9214072,
+   "articles": [
+    {
+     "title": "코스피 하루 만에 1.46% 하락 5469선",
+     "url": "https://www.thereport.co.kr/news/articleView.html?idxno=92677",
+     "press": "www.thereport.co.kr",
+     "pub": "2026-10-26T16:42:00+09:00"
+    },
+    {
+     "title": "[거래소 기관] SK하이닉스·삼성전자 사들이고 LIG디펜스·한화에어로는...",
+     "url": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=498540",
+     "press": "www.pinpointnews.co.kr",
+     "pub": "2026-10-26T16:00:00+09:00"
+    },
+    {
+     "title": "[ETF 시황] '파란 증시'에 인버스 강세…방산 레버리지 11%↓",
+     "url": "https://www.newspim.com/news/view/20261026001028",
+     "press": "www.newspim.com",
+     "pub": "2026-10-26T15:58:00+09:00"
+    }
+   ],
+   "basis_label": "10/26 장 기준"
   }
  }
 }
