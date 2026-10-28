@@ -62,6 +62,17 @@ WORD_RE = re.compile(r"^[0-9A-Za-z가-힣][0-9A-Za-z가-힣 ]{0,11}$")
 BLOCKED_WORDS = re.compile(r"(시발|씨발|개새|병신|좆|섹스|자살|살인|마약|도박|급등주|작전주|리딩방|추천주|수혜주)")
 
 
+def _read(name: str, default=None):
+    """store.read + 잠깐의 파일 잠금(Windows에서 교체 중인 파일) 재시도. 서버(Linux)의 교체는 원자적이다."""
+    for attempt in range(3):
+        try:
+            value = store.read(name, default)
+            return value if value is not None else default
+        except OSError:
+            time.sleep(0.02 * (attempt + 1))
+    return default
+
+
 def _unsafe(text: str) -> bool:
     return bool(banned_hits(text)) or any(p.search(text or "") for p in EXTRA_BANNED)
 
@@ -103,7 +114,7 @@ def directory() -> tuple[dict, dict, str | None]:
         return {}, {}, None
     with _dir_lock:
         if _dir_cache["mtime"] != mtime:
-            raw = store.read("stocks", {}) or {}
+            raw = _read("stocks", {})
             stocks = raw.get("stocks") or {}
             index: dict[str, str] = {}
             for code, s in stocks.items():
@@ -206,7 +217,7 @@ def _record_usage(model: str, usage, live: bool) -> None:
         with _usage_lock:
             name = "lifemap_usage_live" if live else "lifemap_usage_daily"
             today = datetime.now(KST).strftime("%Y-%m-%d")
-            data = store.read(name, {}) or {}
+            data = _read(name, {})
             if data.get("day") != today:
                 data = {"day": today, "models": {}}
             m = data["models"].setdefault(model, {"calls": 0, "input_tokens": 0, "output_tokens": 0})
@@ -324,7 +335,7 @@ def example_map(word: str = "") -> dict:
 
 def _status(**kw) -> None:
     try:
-        s = store.read("lifemap_status", {}) or {}
+        s = _read("lifemap_status", {})
         s.update(kw)
         store.write("lifemap_status", s)
     except Exception:
@@ -333,7 +344,7 @@ def _status(**kw) -> None:
 
 def run_chips(force: bool = False) -> int:
     """추천 칩 마인드맵을 7일마다 다시 그린다. 실패한 칩은 이전 것(없으면 예시)을 쓴다."""
-    chips = store.read("lifemap_chips", {}) or {}
+    chips = _read("lifemap_chips", {})
     made = 0
     for word in CHIPS:
         old = chips.get(word)
@@ -353,7 +364,7 @@ def run_chips(force: bool = False) -> int:
 def run_daily(http=None) -> dict:
     """오늘의 토픽 3개 + 토픽별 마인드맵. 모자란 토픽은 어제 것, 그다음 예시로 채운다."""
     today = datetime.now(KST).strftime("%Y-%m-%d")
-    prev = store.read("lifemap", {}) or {}
+    prev = _read("lifemap", {})
     topics: list[dict] = []
     error = ""
     try:
@@ -392,10 +403,10 @@ def daily_due(now: datetime) -> bool:
     if now.hour < DAILY_HOUR:
         return False
     today = now.strftime("%Y-%m-%d")
-    cur = store.read("lifemap", {}) or {}
+    cur = _read("lifemap", {})
     if cur.get("day") == today and cur.get("fresh", 0) >= 3:
         return False
-    s = store.read("lifemap_status", {}) or {}
+    s = _read("lifemap_status", {})
     tries = s.get("tries", 0) if s.get("try_day") == today else 0
     if cur.get("day") == today and tries >= 1 and cur.get("fresh", 0) >= 1:
         return False  # 오늘 것이 일부라도 있으면 다시 부르지 않는다(비용)
@@ -408,7 +419,7 @@ def maybe_run_daily(now: datetime | None = None) -> bool:
     if not ai.available() or not news.configured() or not daily_due(now) or not _daily_lock.acquire(blocking=False):
         return False
     today = now.strftime("%Y-%m-%d")
-    s = store.read("lifemap_status", {}) or {}
+    s = _read("lifemap_status", {})
     _status(try_day=today, tries=(s.get("tries", 0) if s.get("try_day") == today else 0) + 1, try_ts=time.time())
 
     def work():
@@ -444,9 +455,9 @@ def with_prices(m: dict) -> dict:
 
 
 def overview() -> dict:
-    cur = store.read("lifemap", {}) or {}
+    cur = _read("lifemap", {})
     topics = cur.get("topics") or [{**t, "carried": True} for t in examples().get("topics") or []]
-    chips = store.read("lifemap_chips", {}) or {}
+    chips = _read("lifemap_chips", {})
     ex = examples().get("words") or {}
     chip_maps = {}
     for w in CHIPS:
@@ -479,31 +490,36 @@ def live_config() -> dict:
             "per_session": LIVE_PER_SESSION, "window_min": LIVE_SESSION_WINDOW // 60}
 
 
+_live_count: dict = {}  # 오늘 새 단어 생성 수. ailab 프로세스만 쓰므로 메모리가 기준이고 파일은 재시작 대비
+
+
 def _live_today() -> int:
-    data = store.read("lifemap_live_count", {}) or {}
-    return data.get("n", 0) if data.get("day") == datetime.now(KST).strftime("%Y-%m-%d") else 0
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    if _live_count.get("day") != today:
+        saved = _read("lifemap_live_count", {})
+        _live_count.update(day=today, n=saved.get("n", 0) if saved.get("day") == today else 0)
+    return _live_count["n"]
 
 
 def _bump_live_today() -> None:
-    with _usage_lock:
-        _bump_live_today_locked()
-
-
-def _bump_live_today_locked() -> None:
-    today = datetime.now(KST).strftime("%Y-%m-%d")
-    data = store.read("lifemap_live_count", {}) or {}
-    store.write("lifemap_live_count", {"day": today, "n": (data.get("n", 0) if data.get("day") == today else 0) + 1})
+    """_jobs_lock 안에서 부른다(같은 프로세스 안에서 읽기·쓰기가 겹치지 않게)."""
+    _live_today()
+    _live_count["n"] += 1
+    try:
+        store.write("lifemap_live_count", dict(_live_count))
+    except OSError as e:
+        log.warning("lifemap live count write failed: %s", type(e).__name__)
 
 
 def stored_map(word: str) -> dict | None:
     """칩·오늘 토픽·전에 그린 새 단어 중 같은 단어."""
-    chips = store.read("lifemap_chips", {}) or {}
+    chips = _read("lifemap_chips", {})
     if word in chips:
         return chips[word]
-    for t in (store.read("lifemap", {}) or {}).get("topics") or []:
+    for t in _read("lifemap", {}).get("topics") or []:
         if t.get("name") == word and t.get("map"):
             return t["map"]
-    m = (store.read("lifemap_words", {}) or {}).get(word)
+    m = _read("lifemap_words", {}).get(word)
     if m:
         return m
     ex = (examples().get("words") or {}).get(word)  # 칩을 아직 못 그렸으면 저장소 예시(AI를 다시 부르지 않음)
@@ -512,7 +528,7 @@ def stored_map(word: str) -> dict | None:
 
 def _save_word(word: str, m: dict) -> None:
     with _words_lock:
-        words = store.read("lifemap_words", {}) or {}
+        words = _read("lifemap_words", {})
         words[word] = m
         if len(words) > WORDS_KEEP:
             for old in sorted(words, key=lambda w: words[w].get("created_ts", 0))[: len(words) - WORDS_KEEP]:
@@ -604,7 +620,7 @@ def request_word(word: str, session: str) -> dict:
         _seq["n"] += 1
         _jobs[word] = {"state": "queued", "seq": _seq["n"]}
         position = _position(word)
-    _bump_live_today()
+        _bump_live_today()
     _pool.submit(_run_job, word)
     return {"status": "queued", "word": word, "position": position}
 

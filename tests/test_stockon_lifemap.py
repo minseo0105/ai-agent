@@ -64,6 +64,7 @@ class LifemapBase(TempStore):
         lifemap._dir_cache.update(mtime=None)
         lifemap._jobs.clear()
         lifemap._sessions.clear()
+        lifemap._live_count.clear()
         lifemap._examples_cache["value"] = {
             "topics": [{"name": "예시토픽", "summary": "예시", "articles": [], "map": {"word": "예시토픽", "stages": [
                 {"key": "making", "label": "제조", "detail": "", "companies": [
