@@ -544,6 +544,7 @@ export default function LifeFinder() {
             뉴스를 읽고 영향을 받을 수 있는 회사를 AI가 해석한 것이며, 주가 방향을 말하지 않아요. 금융위원회 공공데이터 상장 종목 목록에 있는
             회사만 보여 주고, 실제 등락률은 표시한 시점 값이에요. 뉴스는 NAVER 뉴스 검색으로 찾았어요.
           </p>
+          {data.price_note && <p className="mt-2 font-bold text-slate-100">{data.price_note}</p>}
         </footer>
       </div>
 

@@ -123,6 +123,16 @@ export default function StockonAdmin() {
         </div>
       </div>
 
+      {data.kiwoom.alert && (
+        <p role="alert" className="rounded-2xl bg-red-500/15 px-4 py-3 text-sm font-bold text-red-700 dark:text-red-300">
+          ⚠ 키움 시세 수집이 연속 {data.kiwoom.fails}회 실패했어요(마지막 {data.kiwoom.last_fail ?? "—"} · {data.kiwoom.last_error ?? "원인 미상"}). 화면은 공공데이터로 대체 중이에요.
+        </p>
+      )}
+      {data.budget?.exceeded && (
+        <p role="alert" className="rounded-2xl bg-amber-500/15 px-4 py-3 text-sm font-bold text-amber-800 dark:text-amber-300">
+          ⚠ 오늘 STOCK:ON AI 비용이 상한(${data.budget.limit_usd})에 닿아 새 AI 호출을 멈췄어요. 저장된 이슈·설명을 그대로 보여 줘요(내일 0시에 다시 시작).
+        </p>
+      )}
       {notice && notice.level !== "ok" && (
         <p role="alert" className={`rounded-2xl px-4 py-3 text-sm font-bold ${notice.level === "expired" ? "bg-red-500/15 text-red-700 dark:text-red-300" : "bg-amber-500/15 text-amber-800 dark:text-amber-300"}`}>⚠ {notice.text}</p>
       )}
@@ -235,7 +245,13 @@ export default function StockonAdmin() {
             )}
             {data.kiwoom.last_error && <li className="text-xs font-bold text-red-600 dark:text-red-400">마지막 오류 · {data.kiwoom.last_error}</li>}
             <li>모의 키 만료일 <b>{data.kiwoom.mock_key_expires ?? "미입력"}</b>{notice && <span className={`ml-2 text-xs font-bold ${notice.level === "ok" ? "text-muted" : notice.level === "warn" ? "text-amber-700 dark:text-amber-300" : "text-red-600"}`}>{notice.text}</span>}</li>
-            <li className="text-xs text-muted">마지막 성공 {data.kiwoom.last_ok ?? "—"} · 연속 실패 {data.kiwoom.fails ?? 0}회</li>
+            <li className={`text-xs ${data.kiwoom.alert ? "font-bold text-red-600 dark:text-red-400" : "text-muted"}`}>
+              마지막 성공 {data.kiwoom.last_ok ?? "—"} · 연속 실패 {data.kiwoom.fails ?? 0}회{data.kiwoom.alert ? " (3회 이상 — 확인 필요)" : ""}
+              {data.kiwoom.tokens_issued != null && ` · 토큰 발급 ${data.kiwoom.tokens_issued}회(수집기 시작 후, 만료 전 자동 재발급)`}
+            </li>
+            {data.budget && (
+              <li className="text-xs text-muted">오늘 AI 비용(어림) <b>${data.budget.spent_usd.toFixed(2)}</b> / 상한 ${data.budget.limit_usd}{data.budget.exceeded ? " · 상한 도달" : ""}</li>
+            )}
           </ul>
         ) : (
           <p className="rounded-2xl bg-surface-muted px-4 py-4 text-sm text-muted">아직 연결 전이에요. 2단계에서 수집기를 켜면 모드·모의 키 만료일(D-7부터 경고)이 여기에 보여요.</p>

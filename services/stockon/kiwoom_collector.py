@@ -4,7 +4,9 @@
 - STOCKON_PRICE_SOURCE=public(기본)이면 키움을 한 번도 부르지 않고 상태 파일(만료일 등)만 쓴다.
 - kiwoom이면 평일 장중 1분마다 지수·히트맵 종목·등락 상위·거래대금·외국인/기관을 모아
   data/admin/stockon/market_kiwoom.json에 쓴다. AI LAB 앱은 이 파일이 새것일 때만 화면에 쓴다(아니면 공공데이터).
-- 장 마감(15:30) 뒤 한 번 더 모아 '마감 기준' 스냅샷을 남기고 그날은 멈춘다.
+- 장 마감(15:30) 뒤 15:35 이후 값을 '종가 기준' 스냅샷(final)으로 남기고 그날은 멈춘다. 수집기를 저녁에 다시 켜도
+  그날 종가 스냅샷이 없으면 한 번 만든다. 받은 일자가 오늘이 아니면(공휴일) 파일을 덮지 않고 그날은 쉰다.
+- 실패(키움 오류·예상 밖 응답)는 상태 파일 fails에 연속 횟수로 남긴다(관리자 화면 3회부터 경고). 성공하면 0.
 - 뉴스 속 숨은 종목(lifemap.py): 새 기준(공공 새 기준일·키움 장중·마감)이 생기면 토픽·섹터를 만든다
   (키는 .env.lifemap의 ANTHROPIC·NAVER 검색 키. 키움 설정과 무관하게 돈다). 키움 장중에는 30분마다
   화면에 나온 회사들의 등락률만 ka10095로 갱신한다(AI 재호출 없음).
@@ -21,7 +23,7 @@ import sys
 import time
 from datetime import datetime
 
-from services.stockon import lifemap, store
+from services.stockon import budget, lifemap, store
 from services.stockon.kiwoom_client import KiwoomClient, KiwoomError, num, price
 from services.stockon.public_data import KST, MARKETS, MOVER_MIN_VALUE, MOVERS_N
 
@@ -29,9 +31,10 @@ log = logging.getLogger("stockon.kiwoom")
 
 SOURCE = {"name": "KRX 기준 · 키움증권 API", "url": "https://openapi.kiwoom.com"}
 OPEN, AUCTION, CLOSE = (9, 0), (15, 20), (15, 30)
-CLOSED_SNAPSHOT_UNTIL = (16, 30)  # 마감 기준 스냅샷을 만드는 마지막 시각
+FINAL_FROM = (15, 35)  # 이 시각 이후 마감 값을 그날 '종가 기준'(final)으로 확정
+HOLIDAY_FROM = (9, 10)  # 장 시작 직후에는 일자가 아직 어제일 수 있어 이때부터 휴장으로 본다
 TICK_ACTIVE, TICK_IDLE = 60, 120
-SESSION_LABEL = {"pre": "장 시작 전", "open": "장중", "closing_auction": "마감 동시호가", "closed": "마감 기준", "holiday": "휴장"}
+SESSION_LABEL = {"pre": "장 시작 전", "open": "장중", "closing_auction": "마감 동시호가", "closed": "종가 기준", "holiday": "휴장"}
 INDEX_BODIES = {"코스피": {"mrkt_tp": "0", "inds_cd": "001"}, "코스닥": {"mrkt_tp": "1", "inds_cd": "101"}}
 CHUNK = 20  # ka10095 한 번에 묻는 종목 수
 
@@ -121,6 +124,18 @@ def build_snapshot(client: KiwoomClient, public_market: dict, directory: dict, n
             for s in base if (q := quotes.get(s["code"]))
         ]
 
+    # 팀 관심 종목: 히트맵에 없는 종목만 따로 묻는다(오늘 시장 관심 종목 가격도 같은 시점으로)
+    have = {s["code"] for lst in heatmap.values() for s in lst}
+    # (관심 종목 목록은 앱이 쓰는 watch.json에서 — 수집기는 설정 저장소 키가 없다)
+    watch = [w for w in (store.read("watch") or {}).get("items") or [] if w.get("code") and w["code"] not in have]
+    quotes_extra = {}
+    for i in range(0, len(watch), CHUNK):
+        for q in _rows(client.query("ka10095", {"stk_cd": "|".join(w["code"] for w in watch[i:i + CHUNK])}), "atn_stk_infr"):
+            code = str(q.get("stk_cd"))
+            d = directory.get(code) or {}
+            quotes_extra[code] = _stock(code, d.get("name", code), d.get("market", ""), q.get("cur_prc"), q.get("pred_pre"),
+                                        q.get("flu_rt"), q.get("trde_prica"), d.get("cap"))
+
     def mover_rows(sort_tp: str) -> list[dict]:
         data = client.query("ka10027", {"mrkt_tp": "000", "sort_tp": sort_tp, "trde_qty_cnd": "0000", "stk_cnd": "1",
                                         "crd_cnd": "0", "updown_incls": "1", "pric_cnd": "0", "trde_prica_cnd": "100", "stex_tp": "1"})
@@ -155,7 +170,8 @@ def build_snapshot(client: KiwoomClient, public_market: dict, directory: dict, n
         "kind": "kiwoom", "as_of": as_of, "session": session, "session_label": SESSION_LABEL[session],
         "source": SOURCE, "indices": indices, "heatmap": heatmap,
         "movers": {"up": mover_rows("1"), "down": mover_rows("3"), "value": value_rows},
-        "breadth": breadth, "mover_min_value": MOVER_MIN_VALUE, "flows": flows, "fetched_ts": time.time(),
+        "breadth": breadth, "mover_min_value": MOVER_MIN_VALUE, "flows": flows, "quotes": quotes_extra,
+        "final": session == "closed" and (now.hour, now.minute) >= FINAL_FROM, "fetched_ts": time.time(),
     }
 
 
@@ -163,31 +179,96 @@ def build_snapshot(client: KiwoomClient, public_market: dict, directory: dict, n
 # 실행
 # ---------------------------------------------------------
 
-def refresh_lifemap_rates(client: KiwoomClient, now: datetime) -> int:
-    """뉴스 속 숨은 종목의 '실제 등락': 화면에 나온 회사 등락률만 지정종목 정보(ka10095)로 다시 읽는다."""
-    codes = lifemap.reaction_codes()
+def fetch_rates(client: KiwoomClient, codes: list[str]) -> dict[str, float]:
+    """지정종목 정보(ka10095)로 등락률만."""
     rates: dict[str, float] = {}
     for i in range(0, len(codes), CHUNK):
         for q in _rows(client.query("ka10095", {"stk_cd": "|".join(codes[i:i + CHUNK])}), "atn_stk_infr"):
             if q.get("stk_cd") and num(q.get("flu_rt")) is not None:
                 rates[str(q["stk_cd"])] = num(q.get("flu_rt"))
-    lifemap.save_live_rates(rates, now)
+    return rates
+
+
+def refresh_lifemap_rates(client: KiwoomClient, now: datetime, closed: bool = False) -> int:
+    """뉴스 속 숨은 종목의 '실제 등락': 화면에 나온 회사 등락률만 지정종목 정보(ka10095)로 다시 읽는다."""
+    codes = lifemap.reaction_codes()
+    rates = fetch_rates(client, codes)
+    lifemap.save_live_rates(rates, now, closed=closed, codes=codes)
     return len(rates)
 
 
+def final_today(now: datetime) -> bool:
+    """오늘 종가 기준(final) 스냅샷이 이미 있나(수집기를 다시 켜도 다시 만들지 않게 파일로 본다)."""
+    snap = store.read("market_kiwoom") or {}
+    return snap.get("as_of") == now.strftime("%Y%m%d") and bool(snap.get("final"))
+
+
 def collect_once(client: KiwoomClient, cfg: dict, now: datetime) -> dict:
+    """한 번 수집. 받은 일자가 오늘이면 market_kiwoom.json에 쓰고, 아니면(휴장·장 시작 직후) 덮지 않는다."""
     public_market = store.read("market") or {}
     directory = (store.read("stocks", {}) or {}).get("stocks", {})
     if not public_market:
         raise KiwoomError("no_public_market", "공공데이터 시세(종목 목록·시가총액)가 아직 없음")
     snap = build_snapshot(client, public_market, directory, now)
-    store.write("market_kiwoom", snap)
-    write_status(cfg, last_ok=datetime.now(KST).isoformat(timespec="seconds"), fails=0, last_error=None, session=snap["session"])
+    today = snap["as_of"] == now.strftime("%Y%m%d")
+    if today:
+        store.write("market_kiwoom", snap)
+    write_status(cfg, last_ok=datetime.now(KST).isoformat(timespec="seconds"), fails=0, last_error=None,
+                 session=snap["session"] if today else "holiday", tokens_issued=client.token_issued)
     return snap
+
+
+def _fail(cfg: dict, code: str, message: str, session: str) -> int:
+    prev = store.read("kiwoom_status", {}) or {}
+    fails = prev.get("fails", 0) + 1
+    write_status(cfg, fails=fails, last_error=f"{code} {message}"[:80], session=session,
+                 last_fail=datetime.now(KST).isoformat(timespec="seconds"))
+    return fails
+
+
+def tick(client_box: dict, cfg: dict, now: datetime, state: dict, sleep=time.sleep) -> bool:
+    """수집 루프 한 번. 키움을 불렀으면 True. state = {"holiday": 휴장으로 본 날짜}."""
+    session = session_state(now)
+    today = now.strftime("%Y%m%d")
+    if cfg["price_source"] != "kiwoom" or session in ("pre", "holiday") or state.get("holiday") == today:
+        write_status(cfg, session="holiday" if state.get("holiday") == today else session)  # 키움 호출 없음
+        return False
+    try:
+        client = client_box.get("client") or KiwoomClient(cfg["mode"], cfg["appkey"], cfg["secret"])
+        client_box["client"] = client
+        lifemap.rate_source = lambda codes: fetch_rates(client, codes)  # 새 이슈의 회사 등락률(종가·장중 같은 시점)
+        if session == "closed" and final_today(now):
+            if lifemap.rates_due(now, closed=True):
+                refresh_lifemap_rates(client, now, closed=True)  # 새 이슈가 생기면 그 회사들 종가 등락률만
+                return True
+            write_status(cfg, session="closed")
+            return False
+        snap = collect_once(client, cfg, now)
+        if snap["as_of"] != today:
+            if (now.hour, now.minute) >= HOLIDAY_FROM:
+                state["holiday"] = today  # 공휴일: 그날은 더 부르지 않는다(화면은 공공데이터)
+            return True
+        if lifemap.rates_due(now, closed=bool(snap.get("final"))):
+            try:
+                refresh_lifemap_rates(client, now, closed=bool(snap.get("final")))  # 장중 30분마다, AI 호출 없음
+            except KiwoomError as e:
+                log.warning("lifemap rates failed: %s", e.code)
+        return True
+    except KiwoomError as e:
+        _fail(cfg, e.code, e.message, session)
+        log.warning("kiwoom collect failed: %s", e.code)
+        if e.code in ("8001", "8002", "8010", "8030", "not_configured"):
+            sleep(600)  # 키·IP 문제는 반복 호출해도 해결되지 않는다(토큰 무효 8005는 클라이언트가 다시 받는다)
+        return True
+    except Exception as e:  # 예상 밖 응답 등으로 루프가 멈추지 않게
+        _fail(cfg, "unexpected", type(e).__name__, session)
+        log.warning("kiwoom collect error: %s", type(e).__name__)
+        return True
 
 
 def main(argv: list[str]) -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+    budget.BUCKET = "collector"  # AI 하루 비용은 앱·수집기 파일을 합쳐 본다
     cfg = config()
     write_status(cfg)
     if "--check" in argv or "--once" in argv:
@@ -207,8 +288,8 @@ def main(argv: list[str]) -> int:
             write_status(cfg, last_error=f"{e.code} {e.message}"[:80])
             return 1
 
-    client = None
-    closed_done = None
+    client_box: dict = {}
+    state: dict = {}
     stop = {"flag": False}
     signal.signal(signal.SIGTERM, lambda *_: stop.update(flag=True))
     while not stop["flag"]:
@@ -217,39 +298,13 @@ def main(argv: list[str]) -> int:
             lifemap.maybe_run_daily(now)  # 할 때가 됐을 때만 별도 스레드로(키움 수집을 막지 않음)
         except Exception as e:
             log.warning("lifemap check failed: %s", type(e).__name__)
-        session = session_state(now)
-        active = False
-        if cfg["price_source"] != "kiwoom":
-            write_status(cfg, session=session)  # 키움 호출 없음
-        elif session in ("open", "closing_auction") or (
-                session == "closed" and closed_done != now.date() and (now.hour, now.minute) < CLOSED_SNAPSHOT_UNTIL):
-            active = True
-            try:
-                client = client or KiwoomClient(cfg["mode"], cfg["appkey"], cfg["secret"])
-                snap = collect_once(client, cfg, now)
-                if snap["as_of"] == now.strftime("%Y%m%d") and lifemap.rates_due(now):
-                    try:
-                        refresh_lifemap_rates(client, now)  # 30분마다(장중), AI 호출 없음
-                    except KiwoomError as e:
-                        log.warning("lifemap rates failed: %s", e.code)
-                if session == "closed" and (now.hour, now.minute) >= (15, 35):
-                    closed_done = now.date()  # 마감 5분 뒤 값을 '마감 기준'으로 확정하고 그날은 멈춤
-                if snap["as_of"] != now.strftime("%Y%m%d"):
-                    write_status(cfg, session="holiday")  # 일자가 오늘이 아니면 휴장
-            except KiwoomError as e:
-                prev = store.read("kiwoom_status", {}) or {}
-                write_status(cfg, fails=prev.get("fails", 0) + 1, last_error=f"{e.code} {e.message}"[:80], session=session)
-                log.warning("kiwoom collect failed: %s", e.code)
-                if e.code in ("8001", "8002", "8005", "8010", "8030", "not_configured"):
-                    time.sleep(600)  # 키·IP 문제는 반복 호출해도 해결되지 않는다
-        else:
-            write_status(cfg, session=session)
+        active = tick(client_box, cfg, now, state)
         for _ in range(TICK_ACTIVE if active else TICK_IDLE):
             if stop["flag"]:
                 break
             time.sleep(1)
-    if client:
-        client.revoke()
+    if client_box.get("client"):
+        client_box["client"].revoke()
     return 0
 
 

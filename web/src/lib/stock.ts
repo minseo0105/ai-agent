@@ -42,6 +42,7 @@ export type Overview = {
   watch?: { items: WatchItem[]; fetched_ts: number } | null;
   events?: { from: string; to: string; events: EventItem[] };
   errors?: Record<string, string>;
+  price_note?: string; // 화면 하단 시세 출처 한 줄(지금 쓰는 출처 기준)
 };
 export type Why = {
   ready: boolean;
@@ -86,6 +87,7 @@ export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: st
 export type LifeOverview = {
   day: string | null; basis: LifeBasis; topics: LifeItem[]; hot: string[]; sectors: string[]; sector_items: Record<string, LifeItem>;
   live: { enabled: boolean; per_session: number; window_min: number };
+  price_note?: string;
 };
 export type LifeWordStatus = "ready" | "queued" | "running" | "failed" | "busy" | "limited" | "daily_limit" | "unavailable" | "invalid" | "none";
 export type LifeWordResult = { status: LifeWordStatus; word: string; position?: number; message?: string; item?: LifeItem };
@@ -127,7 +129,9 @@ export type AdminStatus = {
   kiwoom: {
     connected: boolean; mode?: string; price_source?: string; showing?: "kiwoom" | "public"; mock_key_expires?: string | null;
     days_left?: number | null; last_ok?: string | null; fails?: number; last_error?: string | null; session?: string | null; updated?: string | null;
+    last_fail?: string | null; tokens_issued?: number | null; alert?: boolean; // alert = 연속 실패 3회 이상
   };
+  budget?: { day: string; spent_usd: number; limit_usd: number; exceeded: boolean };
 };
 // 뉴스 속 숨은 종목 시연 안전장치(관리자)
 export type CurationItem = {
@@ -169,9 +173,9 @@ export function basisLabel(m?: Market | null): { text: string; tone: "live" | "a
   if (m.kind === "kiwoom") {
     if (m.session === "open") return { text: `장중 · ${hhmm(m.fetched_ts)} 반영`, tone: "live" };
     if (m.session === "closing_auction") return { text: `마감 동시호가 · ${hhmm(m.fetched_ts)} (체결 전 가격)`, tone: "auction" };
-    return { text: `마감 기준 · ${dateLabel(m.as_of)} 15:30`, tone: "closed" };
+    return { text: `${dateLabel(m.as_of)} 종가 기준 · 키움`, tone: "closed" };
   }
-  return { text: `전일 기준 · ${dateLabel(m.as_of)} 종가`, tone: "prev" };
+  return { text: `${dateLabel(m.as_of)} 종가 기준 · 공공데이터`, tone: "prev" };
 }
 
 export const timeLabel = (ts?: number | null) =>

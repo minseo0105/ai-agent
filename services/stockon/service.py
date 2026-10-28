@@ -13,7 +13,7 @@ import threading
 import time
 from datetime import datetime, timedelta
 
-from services.stockon import ai, disclosures, events, fx, news, public_data, store
+from services.stockon import ai, budget, disclosures, events, fx, news, public_data, store
 from services.stockon.public_data import KST, PublicDataError
 from services.stockon.safety import DISCLAIMER
 
@@ -82,6 +82,8 @@ def due_tasks(now: datetime | None = None) -> list[str]:
     if market and (why_cache.get("as_of") != market.get("as_of") or set(why_targets(market)) - set(why_cache.get("items", {}))) \
             and _age({"fetched_ts": why_cache.get("tried_ts", 0)}) > 3600:
         tasks.append("why")
+    if not budget.allowed():  # 하루 AI 비용 상한: AI 작업은 저장된 결과를 그대로 두고 다음 날 다시
+        tasks = [t for t in tasks if t not in ("briefing", "why")]
     # 직전 실패 후 10분 안에는 같은 작업을 다시 부르지 않는다(키 미설정·한도 초과 때 반복 호출 방지).
     recent_fail = {t for t, s in status.items() if s.get("error") and time.time() - s.get("error_ts", 0) < 600}
     return [t for t in tasks if t not in recent_fail]
@@ -340,6 +342,7 @@ def _public(snapshot: dict | None) -> dict | None:
 
 
 KIWOOM_STALE_SEC = 10 * 60  # 장중 키움 스냅샷이 이보다 오래되면 공공데이터로 자동 복귀
+KIWOOM_ALERT_FAILS = 3  # 연속 실패가 이만큼이면 관리자 화면 상태 카드에 경고
 
 
 def active_market() -> tuple[dict | None, str]:
@@ -354,6 +357,28 @@ def active_market() -> tuple[dict | None, str]:
         if kiwoom.get("session") == "closed" or _age(kiwoom) <= KIWOOM_STALE_SEC:
             return kiwoom, "kiwoom"
     return public, "public"
+
+
+def price_note(source: str) -> str:
+    """화면 하단 시세 출처 한 줄. 지금 화면에 쓰는 출처 기준(키움이 실패해 공공데이터로 대체되면 공공데이터 문구)."""
+    if source == "kiwoom":
+        real = (store.read("kiwoom_status", {}) or {}).get("mode") == "real"
+        return f"시세: 키움증권 {'' if real else '모의투자 '}API · 지연될 수 있으며 참고용입니다"
+    return "시세: 금융위원회 공공데이터(거래일 종가, 다음 날 13시 이후 반영) · 참고용입니다"
+
+
+def _with_quotes(watch: dict | None, market: dict | None, price_source: str) -> dict | None:
+    """키움 시세를 쓰는 동안 팀 관심 종목 가격도 같은 시점(키움 스냅샷의 히트맵·관심 종목 시세)으로."""
+    if not watch or price_source != "kiwoom" or not market:
+        return watch
+    quotes = {s["code"]: s for lst in (market.get("heatmap") or {}).values() for s in lst}
+    quotes.update(market.get("quotes") or {})
+    items = []
+    for it in watch.get("items") or []:
+        q = quotes.get(it.get("code"))
+        items.append({**it, "price": {**(it.get("price") or {}), **{k: q[k] for k in ("close", "change", "rate", "value") if k in q}}}
+                     if q else it)
+    return {**watch, "items": items}
 
 
 def overview() -> dict:
@@ -373,7 +398,8 @@ def overview() -> dict:
         "fx": store.read("fx"),
         "briefing": store.read("briefing"),
         "news": _public(store.read("news")),
-        "watch": store.read("watch"),
+        "watch": _with_quotes(store.read("watch"), market, price_source),
+        "price_note": price_note(price_source),
         "events": events.week_events(_now().date()),
         "errors": {t: s.get("error") for t, s in status.items() if s.get("error")},
     }
@@ -440,7 +466,9 @@ def kiwoom_status() -> dict:
     _, showing = active_market()
     return {"connected": True, "mode": data.get("mode"), "price_source": data.get("price_source"), "showing": showing,
             "mock_key_expires": expires, "days_left": days_left, "last_ok": data.get("last_ok"), "fails": data.get("fails", 0),
-            "last_error": data.get("last_error"), "session": data.get("session"), "updated": data.get("updated")}
+            "last_error": data.get("last_error"), "session": data.get("session"), "updated": data.get("updated"),
+            "last_fail": data.get("last_fail"), "tokens_issued": data.get("tokens_issued"),
+            "alert": (data.get("fails") or 0) >= KIWOOM_ALERT_FAILS}
 
 
 def _ai_status() -> dict:
@@ -484,6 +512,7 @@ def admin_status() -> dict:
         "watchlist": store.load_settings(fresh=True)["watchlist"],
         "kiwoom": kiwoom_status(),
         "lifemap": _lifemap_status(),
+        "budget": budget.status(),
     }
 
 

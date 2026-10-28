@@ -556,12 +556,14 @@ export default function StockOn() {
 
       <footer className="rounded-3xl bg-surface-muted p-4 text-[11px] leading-relaxed text-muted">
         <p className="font-extrabold text-fg">ⓘ {data.disclaimer}</p>
-        <p className="mt-1">STOCK:ON은 공개된 시세·공시·뉴스를 모아 보여 주는 화면이며, 특정 종목의 매수·매도를 권하지 않습니다. 시세는 전일 종가 기준이라 현재 가격과 다를 수 있습니다. AI 문장은 뉴스 제목·요약문과 공시 제목만으로 만들며 틀릴 수 있으니 출처 원문을 확인해 주세요.</p>
+        <p className="mt-1">STOCK:ON은 공개된 시세·공시·뉴스를 모아 보여 주는 화면이며, 특정 종목의 매수·매도를 권하지 않습니다. 시세는 위에 적힌 기준 시각 값이라 현재 가격과 다를 수 있습니다. AI 문장은 뉴스 제목·요약문과 공시 제목만으로 만들며 틀릴 수 있으니 출처 원문을 확인해 주세요.</p>
         <p className="mt-2">
           출처: <SourceLink s={{ name: "금융위원회 공공데이터(주식·지수 시세, 공공누리 제4유형)", url: "https://www.data.go.kr/data/15094808/openapi.do" }} /> ·{" "}
           <SourceLink s={{ name: "한국수출입은행 환율", url: "https://www.koreaexim.go.kr" }} /> · <SourceLink s={{ name: "DART 전자공시", url: "https://dart.fss.or.kr" }} /> ·{" "}
           <SourceLink s={{ name: "NAVER 뉴스 검색", url: "https://news.naver.com" }} />
+          {live && <> · <SourceLink s={{ name: "키움증권 REST API", url: "https://openapi.kiwoom.com" }} /></>}
         </p>
+        {data.price_note && <p className="mt-2 font-bold text-fg">{data.price_note}</p>}
       </footer>
 
       {picked && (

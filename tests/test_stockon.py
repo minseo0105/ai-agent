@@ -415,11 +415,11 @@ class KiwoomClientTest(unittest.TestCase):
         http = FakeKiwoomHttp()
         c = self._client(http)
         c.query("ka20001", {"mrkt_tp": "0", "inds_cd": "001"})
-        c.query("ka20001", {"mrkt_tp": "1", "inds_cd": "101"})  # 같은 TR → 1.1초 기다림(모의)
+        c.query("ka20001", {"mrkt_tp": "1", "inds_cd": "101"})  # 모의: TR 종류와 관계없이 호출마다 1.1초 간격(토큰 포함)
         self.assertEqual([a for _, a, _ in http.calls], ["au10001", "ka20001", "ka20001"])  # 토큰은 한 번만
         self.assertTrue(all(u.startswith("https://mockapi.kiwoom.com/") for u, _, _ in http.calls))
         self.assertEqual(http.calls[1][2]["authorization"], "Bearer TOKEN-SENTINEL")
-        self.assertAlmostEqual(sum(self.slept), 1.1, places=3)
+        self.assertAlmostEqual(sum(self.slept), 2.2, places=3)
         real = FakeKiwoomHttp()
         self._client(real, "real").query("ka10032", {})
         self.assertTrue(real.calls[-1][0].startswith("https://api.kiwoom.com/api/dostk/rkinfo"))

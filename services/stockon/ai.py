@@ -12,7 +12,7 @@ import time
 from datetime import datetime
 
 from services.agent import _claude_client
-from services.stockon import store
+from services.stockon import budget, store
 from services.stockon.public_data import KST
 from services.stockon.safety import banned_hits, keep_valid_sources
 
@@ -100,8 +100,12 @@ def _call(task: str, payload: dict, schema: dict, max_tokens: int = 2000, model:
     if client is None:
         _last["error"] = "AI 키 없음(ANTHROPIC_API_KEY)"
         return None
+    if not budget.allowed():  # 하루 비용 상한: 새로 부르지 않는다(브리핑은 숫자 문장, 뉴스는 요약 없이)
+        _last["error"] = "하루 AI 비용 상한 도달"
+        return None
     try:
         resp = client.messages.create(**request_args(task, payload, schema, model, max_tokens))
+        budget.record(model, getattr(resp, "usage", None))
     except Exception as e:  # 키·네트워크·한도 오류: 화면은 고정 문장으로 계속 동작
         _last["error"] = _error_label(e)
         log.warning("stockon ai call failed: %s", _last["error"])

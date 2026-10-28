@@ -8,6 +8,9 @@
 - 회사는 뉴스의 직접 당사자이거나 구체적인 사업 연결(제품·고객·공급·규제)이 있을 때만. 같은 업종일 뿐이면 연관도 '약'.
 - 해석 방향과 반대로 ±3% 이상 움직인 회사는 이슈를 만들 때 한 번만, 그 회사의 같은 날 뉴스(NAVER)로 Haiku가
   '다른 이유로 움직였을 수 있어요: …' 한 줄 + 기사 링크를 붙여 저장한다. 못 찾으면 '이 뉴스 외 다른 요인일 수 있어요'.
+- 하루 AI 비용 상한(budget.py, STOCKON_AI_DAILY_USD)을 넘으면 새로 만들지 않고 저장된 이슈·섹터를 그대로 둔다.
+- 기준은 뒤로 가지 않는다: 키움 종가 기준(예: 금요일)으로 만든 이슈가 있으면, 주말·공휴일에 공공데이터 기준일(목요일)로
+  다시 만들지 않는다.
 - 기준(basis): 공공데이터는 D일 시세가 D+1 13시 이후 올라오므로 새 기준일 시세가 들어왔을 때 만들고, 뉴스도 그 기준일 창
   [직전 거래일 15:30, D+1 08:00)만 쓴다(화면 'n/n 장 기준'). 키움 모드로 오늘 시세가 들어오는 날은 10시 이후·마감 뒤
   한 번씩 오늘 뉴스로 다시 만든다('n/n 장중 HH:MM 기준'). 키움 장중에는 수집기가 30분마다 회사 등락률만 갱신한다(AI 재호출 없음).
@@ -29,10 +32,10 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from services.stockon import ai, news, store
+from services.stockon import ai, budget, news, store
 from services.stockon.public_data import KST
 from services.stockon.safety import banned_hits
-from services.stockon.service import news_window
+from services.stockon.service import news_window, price_note
 
 log = logging.getLogger("stockon.lifemap")
 
@@ -280,6 +283,7 @@ def _ask(model: str, system: str, task: str, payload, schema: dict, max_tokens: 
     client = ai._claude_client()
     if client is None:
         raise RuntimeError("AI 키 없음")
+    budget.check()  # 하루 비용 상한을 넘었으면 BudgetExceeded → 부르는 쪽이 저장된 것·예시로 대신한다
     args = dict(model=model, max_tokens=max_tokens, system=system, timeout=LIVE_TIMEOUT,
                 messages=[{"role": "user", "content": f"{task}\n\n자료(JSON):\n{json.dumps(payload, ensure_ascii=False)}"}],
                 output_config={"effort": ai.EFFORT, "format": {"type": "json_schema", "schema": schema}})
@@ -287,6 +291,7 @@ def _ask(model: str, system: str, task: str, payload, schema: dict, max_tokens: 
         args.update(extra_headers={"anthropic-beta": ai.FALLBACK_BETA}, extra_body={"fallbacks": "default"})
     resp = client.messages.create(**args)
     _record_usage(model, getattr(resp, "usage", None), live)
+    budget.record(model, getattr(resp, "usage", None))
     if resp.stop_reason in ("refusal", "max_tokens"):
         raise RuntimeError(f"stop_reason={resp.stop_reason}")
     text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text")
@@ -351,7 +356,7 @@ def topic_basis(now: datetime | None = None) -> dict | None:
         rates = {s["code"]: s.get("rate") for lst in (kw.get("heatmap") or {}).values() for s in lst if s.get("code")}
         for kind in ("up", "down", "value"):
             rates.update({s["code"]: s.get("rate") for s in (kw.get("movers") or {}).get(kind) or [] if s.get("code")})
-        label = f"{_md(today)} 장 마감 기준" if closed else f"{_md(today)} 장중 {stamp} 기준"
+        label = f"{_md(today)} 종가 기준" if closed else f"{_md(today)} 장중 {stamp} 기준"
         return {"key": f"kiwoom:{today}:{'close' if closed else 'open'}", "source": "kiwoom", "as_of": today,
                 "label": label, "window": (start, now), "rates": rates}
     if not public.get("as_of"):
@@ -367,9 +372,20 @@ def basis_info(basis: dict) -> dict:
     return {k: basis[k] for k in ("key", "source", "as_of", "label")}
 
 
+# 키움 기준일 때 히트맵·등락 상위에 없는 회사 등락률을 같은 시점으로 묻는 함수(수집기가 넣는다: codes → {code: rate})
+rate_source = None
+
+
 def mark_reaction(m: dict, basis: dict) -> dict:
-    """기준 시점 등락률을 회사에 저장하고 ±MOVED_PCT 이상이면 moved(실제 등락 큼 강조)."""
+    """기준 시점 등락률을 회사에 저장하고 ±MOVED_PCT 이상이면 moved(실제 등락 큼 강조).
+    키움 기준인데 등락률 표에 없는 회사는 rate_source로 같은 시점 값을 묻는다(실패하면 비워 둔다 → 화면은 최신 값)."""
     rates = basis["rates"]
+    missing = [c["code"] for st in m.get("stages") or [] for c in st.get("companies") or [] if rates.get(c["code"]) is None]
+    if missing and basis.get("source") == "kiwoom" and rate_source:
+        try:
+            rates.update({k: v for k, v in (rate_source(missing) or {}).items() if v is not None})
+        except Exception as e:
+            log.warning("lifemap rate_source failed: %s", type(e).__name__)
     for st in m.get("stages") or []:
         for c in st.get("companies") or []:
             r = rates.get(c["code"])
@@ -678,6 +694,10 @@ def topics_due(basis: dict | None) -> bool:
     done = (cur.get("basis") or {}).get("key") == basis["key"]
     if done and cur.get("fresh", 0) >= TOPICS_MIN:
         return False
+    have = cur.get("basis") or {}
+    if have.get("source") == "kiwoom" and basis["source"] == "public" and (have.get("as_of") or "") >= basis["as_of"] \
+            and cur.get("fresh", 0) >= 1:
+        return False  # 기준은 뒤로 가지 않는다(키움 종가 기준 이슈를 더 오래된 공공 기준일로 바꾸지 않음)
     s = _read("lifemap_status", {})
     tries = s.get("tries", 0) if s.get("try_key") == basis["key"] else 0
     if done and tries >= 1 and cur.get("fresh", 0) >= 1:
@@ -687,8 +707,8 @@ def topics_due(basis: dict | None) -> bool:
 
 def maybe_run_daily(now: datetime | None = None) -> bool:
     """수집기 루프에서 매번 부른다. 할 때가 됐으면 스레드 하나로 돌린다(키움 수집을 막지 않게)."""
-    if not ai.available() or not news.configured():
-        return False
+    if not ai.available() or not news.configured() or not budget.allowed():
+        return False  # 비용 상한을 넘은 날은 저장된 이슈·섹터를 그대로 둔다
     basis = topic_basis(now)
     if not topics_due(basis) or not _daily_lock.acquire(blocking=False):
         return False
@@ -719,19 +739,30 @@ def reaction_codes() -> list[str]:
     return list(dict.fromkeys(c["code"] for t in items for st in (t.get("map") or {}).get("stages") or [] for c in st["companies"]))
 
 
-def rates_due(now: datetime) -> bool:
+def rates_due(now: datetime, closed: bool = False) -> bool:
+    """장중: 30분마다. 종가(closed): 그날 종가 값이 아직 없을 때 한 번. 둘 다 화면 회사가 바뀌었으면(새 이슈) 바로."""
     saved = _read("lifemap_rates", {})
-    return saved.get("as_of") != now.strftime("%Y%m%d") or time.time() - saved.get("ts", 0) >= LIVE_RATES_SEC
+    if saved.get("as_of") != now.strftime("%Y%m%d"):
+        return True
+    if set(reaction_codes()) - set(saved.get("codes") or saved.get("rates") or {}):
+        return True  # 물어본 코드 기준(상장 폐지 등으로 값이 안 오는 코드 때문에 매번 다시 묻지 않게)
+    if closed:
+        return not saved.get("closed")
+    return time.time() - saved.get("ts", 0) >= LIVE_RATES_SEC
 
 
-def save_live_rates(rates: dict[str, float], now: datetime) -> None:
-    store.write("lifemap_rates", {"as_of": now.strftime("%Y%m%d"), "ts": time.time(), "rates": rates,
-                                  "label": f"{_md(now.strftime('%Y%m%d'))} {now.strftime('%H:%M')} 장중"})
+def save_live_rates(rates: dict[str, float], now: datetime, closed: bool = False, codes: list[str] | None = None) -> None:
+    md = _md(now.strftime("%Y%m%d"))
+    store.write("lifemap_rates", {"as_of": now.strftime("%Y%m%d"), "ts": time.time(), "rates": rates, "closed": closed,
+                                  "codes": codes if codes is not None else list(rates),
+                                  "label": f"{md} 종가" if closed else f"{md} {now.strftime('%H:%M')} 장중"})
 
 
 def _live_rates() -> dict | None:
+    """오늘 키움 등락률. 장중 값은 45분 안에 갱신된 것만, 종가 값은 그날 하루."""
     saved = _read("lifemap_rates", {})
-    if saved.get("as_of") == datetime.now(KST).strftime("%Y%m%d") and time.time() - saved.get("ts", 0) <= LIVE_RATES_STALE:
+    if saved.get("as_of") == datetime.now(KST).strftime("%Y%m%d") and (
+            saved.get("closed") or time.time() - saved.get("ts", 0) <= LIVE_RATES_STALE):
         return saved
     return None
 
@@ -795,6 +826,7 @@ def overview() -> dict:
         "sectors": SECTORS,
         "sector_items": sector_items,
         "live": live_config(),
+        "price_note": price_note("kiwoom" if basis.get("source") == "kiwoom" or live else "public"),
     }
 
 

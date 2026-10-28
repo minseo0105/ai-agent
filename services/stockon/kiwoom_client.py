@@ -3,13 +3,15 @@
 - 이 파일에는 허용 목록(ALLOWED)에 있는 조회 TR만 있다. 주문·계좌·실시간 연결 API는 코드에 없다.
 - 공개 함수는 query(api_id, body) 하나. 허용 목록 밖이면 네트워크 호출 전에 예외.
 - 키·토큰은 이 객체(수집기 프로세스 메모리)에만 있다. 로그·예외·파일에 남기지 않는다.
-- 도메인은 KIWOOM_MODE(mock/real)로만 고른다. 모의 서버는 KRX만, TR 1개당 1초 1회.
+- 도메인은 KIWOOM_MODE(mock/real)로만 고른다. 모의 서버는 KRX만. 호출 간격은 TR 종류와 관계없이 전체 1.1초(모의, 초당 1회 이하).
+- 토큰은 만료 10분 전(KST 기준 — 컨테이너 시계가 UTC여도)에 다시 받고, 키움이 토큰 무효를 알리면 버리고 한 번 다시 받는다.
 """
 
 import threading
 import time
 from datetime import datetime, timedelta
 from types import MappingProxyType
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -34,8 +36,10 @@ ALLOWED = MappingProxyType({
     "ka10131": "/api/dostk/frgnistt",    # 기관외국인연속매매현황
 })
 
-# 같은 TR 최소 간격(초). 모의: TR 1개당 1초 1회, 실전: 조회 1초 5회.
+# 호출 최소 간격(초, 모든 TR 합쳐서). 모의: 초당 1회 이하, 실전: 조회 1초 5회.
 MIN_INTERVAL = MappingProxyType({"mock": 1.1, "real": 0.3})
+SEOUL = ZoneInfo("Asia/Seoul")
+TOKEN_INVALID = {"8005", "http_401"}  # 토큰이 유효하지 않음 → 버리고 다시 발급
 
 
 class KiwoomError(Exception):
@@ -47,16 +51,20 @@ class KiwoomError(Exception):
 
 
 class KiwoomClient:
-    def __init__(self, mode: str, appkey: str, secretkey: str, http=requests.post, clock=time.monotonic, sleep=time.sleep):
+    def __init__(self, mode: str, appkey: str, secretkey: str, http=requests.post, clock=time.monotonic, sleep=time.sleep,
+                 now=None):
         if mode not in HOSTS:
             raise KiwoomError("bad_mode", "KIWOOM_MODE는 mock 또는 real")
         if not appkey or not secretkey:
             raise KiwoomError("not_configured", "키움 App Key/Secret 없음")
         self.mode, self._appkey, self._secret = mode, appkey, secretkey
         self._http, self._clock, self._sleep = http, clock, sleep
+        self._now = now or (lambda: datetime.now(SEOUL).replace(tzinfo=None))  # expires_dt가 KST라 KST로 비교
         self._token, self._token_exp = None, None
-        self._last: dict[str, float] = {}
-        self._lock = threading.Lock()
+        self._last = -1e9
+        self._lock = threading.Lock()       # 토큰 발급
+        self._call_lock = threading.Lock()  # 호출 하나씩(수집 루프·뉴스 속 숨은 종목 스레드가 같이 써도 간격 유지)
+        self.token_issued = 0               # 토큰 발급 횟수(상태 확인용)
 
     def __repr__(self):  # 실수로 로그에 찍혀도 키가 나가지 않게
         return f"KiwoomClient(mode={self.mode})"
@@ -66,15 +74,16 @@ class KiwoomClient:
         path = ALLOWED.get(api_id)
         if path is None:
             raise KiwoomError("not_allowed", f"허용 목록 밖 TR: {api_id[:12]}")
-        wait = MIN_INTERVAL[self.mode] - (self._clock() - self._last.get(api_id, -1e9))
-        if wait > 0:
-            self._sleep(wait)
-        self._last[api_id] = self._clock()
-        try:
-            r = self._http(HOSTS[self.mode] + path, json=body, timeout=15,
-                           headers={"Content-Type": "application/json;charset=UTF-8", "api-id": api_id, **headers})
-        except requests.RequestException as e:
-            raise KiwoomError("network", type(e).__name__)
+        with self._call_lock:
+            wait = MIN_INTERVAL[self.mode] - (self._clock() - self._last)
+            if wait > 0:
+                self._sleep(wait)
+            self._last = self._clock()
+            try:
+                r = self._http(HOSTS[self.mode] + path, json=body, timeout=15,
+                               headers={"Content-Type": "application/json;charset=UTF-8", "api-id": api_id, **headers})
+            except requests.RequestException as e:
+                raise KiwoomError("network", type(e).__name__)
         try:
             data = r.json()
         except ValueError:
@@ -88,7 +97,7 @@ class KiwoomClient:
 
     def _ensure_token(self):
         with self._lock:
-            if self._token and self._token_exp and datetime.now() < self._token_exp - timedelta(minutes=10):
+            if self._token and self._token_exp and self._now() < self._token_exp - timedelta(minutes=10):
                 return self._token
             data, _ = self._post("au10001", {"grant_type": "client_credentials", "appkey": self._appkey,
                                              "secretkey": self._secret}, {})
@@ -98,8 +107,9 @@ class KiwoomClient:
             try:
                 exp = datetime.strptime(str(data.get("expires_dt")), "%Y%m%d%H%M%S")
             except ValueError:
-                exp = datetime.now() + timedelta(hours=23)
+                exp = self._now() + timedelta(hours=23)
             self._token, self._token_exp = token, exp
+            self.token_issued += 1
             return token
 
     # ---- 공개 ----
@@ -107,9 +117,16 @@ class KiwoomClient:
         """허용 목록의 조회 TR 하나를 부른다. 토큰은 필요할 때 발급(24시간)."""
         if api_id not in ALLOWED or api_id.startswith("au"):
             raise KiwoomError("not_allowed", f"허용 목록 밖 TR: {api_id[:12]}")
-        token = self._ensure_token()
-        data, _ = self._post(api_id, body, {"authorization": f"Bearer {token}"})
-        return data
+        for attempt in range(2):
+            token = self._ensure_token()
+            try:
+                data, _ = self._post(api_id, body, {"authorization": f"Bearer {token}"})
+                return data
+            except KiwoomError as e:
+                if e.code not in TOKEN_INVALID or attempt:
+                    raise
+                with self._lock:
+                    self._token = self._token_exp = None  # 무효 토큰은 버리고 한 번만 다시 받는다
 
     def check_token(self) -> str:
         """토큰 발급만 해 본다(시세 조회 없음). 성공하면 'ok', 실패하면 KiwoomError(code)."""
