@@ -132,8 +132,15 @@ body {
 .lm-dots span { display: inline-block; animation: lm-dot 1.2s ease-in-out infinite; }
 .lm-dots span:nth-child(2) { animation-delay: .15s; }
 .lm-dots span:nth-child(3) { animation-delay: .3s; }
+/* 이슈가 바뀌면 아래 내용(AI 해석·지도·표)이 0.3초 옆으로 밀리며 바뀐다(다음 = 오른쪽에서, 이전 = 왼쪽에서).
+   밀리는 동안 휴대폰에 가로 스크롤이 생기지 않게 STOCK:ON main 바깥으로 넘친 부분은 자른다(clip은 sticky를 깨지 않는다). */
+main.stockon-theme { overflow-x: clip; }
+.lm-slide-next { animation: lm-slide-next 300ms cubic-bezier(.2,.8,.3,1); }
+.lm-slide-prev { animation: lm-slide-prev 300ms cubic-bezier(.2,.8,.3,1); }
+@keyframes lm-slide-next { from { transform: translateX(28px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes lm-slide-prev { from { transform: translateX(-28px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes lm-dot { 0%, 80%, 100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-4px); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .lm-branch, .lm-node { transition-duration: 1ms; transition-delay: 0ms !important; }
-  .lm-glow, .lm-pulse, .lm-dots span { animation: none; }
+  .lm-glow, .lm-pulse, .lm-dots span, .lm-slide-next, .lm-slide-prev { animation: none; }
 }

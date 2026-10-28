@@ -68,9 +68,11 @@ export type LifeCompany = {
   code: string; name: string; relevance: "강" | "중" | "약"; reason: string;
   direction?: "pos" | "neg"; // AI 해석: 긍정 영향 가능 / 부정 영향 가능
   market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null;
-  moved?: boolean; // 실제 등락이 큼(±5% 이상)
+  market_rate?: number | null; // 그 회사 시장 지수(코스피/코스닥) 등락률(같은 기준 시각)
+  vs_market?: number | null; // 시장 대비(%p) = rate − market_rate. 지수를 모르면 null(단순 등락률만)
+  moved?: boolean; // 실제 등락이 큼(시장 대비 ±3%p 이상, 시장 대비를 모르면 단순 ±5% 이상)
   link?: "직접 당사자" | "사업 연결" | "같은 업종"; // 뉴스와 이어지는 방식(같은 업종만이면 연관도 '약')
-  opposite?: boolean; // AI 해석 방향과 반대로 ±3% 이상 움직임
+  opposite?: boolean; // AI 해석 방향과 반대로 시장 대비 ±3%p 이상 움직임
   other?: { text: string; title?: string; url?: string }; // 그때 붙이는 다른 이유 한 줄(이슈를 만들 때 한 번 저장)
 };
 export type LifeStage = { key: string; label: string; detail: string; companies: LifeCompany[] }; // 영향 경로
@@ -78,14 +80,17 @@ export type LifeArticle = { title: string; url: string; press: string; pub: stri
 export type LifeMap = {
   word: string; stages: LifeStage[]; interpretation?: string[]; ai: boolean; example?: boolean; model?: string; created_ts?: number;
   basis_label?: string; reaction_label?: string;
+  indices?: Partial<Record<"KOSPI" | "KOSDAQ", number>>; // 시장 대비 계산에 쓴 지수 등락률
 };
 export type LifeItem = {
   name: string; title: string; summary: string; sector: string; articles: LifeArticle[]; map: LifeMap;
   basis_label?: string; carried?: boolean; example?: boolean;
 };
 export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: string; label?: string };
+/** '오늘 시장 분위기' 띠: 지수 등락률과 오른·내린 종목 비율 한 줄(지수 시황 기사는 이슈 카드 대신 여기에). */
+export type LifeMarket = { label: string; indices: { name: string; market: string; rate: number }[]; crowd: string; text: string };
 export type LifeOverview = {
-  day: string | null; basis: LifeBasis; topics: LifeItem[]; hot: string[]; sectors: string[]; sector_items: Record<string, LifeItem>;
+  day: string | null; basis: LifeBasis; market?: LifeMarket | null; topics: LifeItem[]; hot: string[]; sectors: string[]; sector_items: Record<string, LifeItem>;
   live: { enabled: boolean; per_session: number; window_min: number };
   price_note?: string;
 };

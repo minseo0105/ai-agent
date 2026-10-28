@@ -1,15 +1,21 @@
 "use client";
 
 // 뉴스 속 숨은 종목 탭: 오늘의 뉴스 → AI 해석 → 관련 회사 지도 → AI 해석 vs 실제 등락.
-// 순서: 헤더(기준 시각) → 뉴스 카드(이슈별로 옆으로 넘기기) → AI 해석 → 관련 회사 지도 → 해석 vs 실제 등락 → 다른 이슈·섹터 → 고지.
+// 순서: 헤더(기준 시각) → 오늘 시장 분위기 띠 → 뉴스 카드(이슈별로 옆으로 넘기기) → AI 해석 → 관련 회사 지도 → 해석 vs 실제 등락
+//   → 이전/다음 이슈 → 다른 이슈·섹터 → 고지.
+// 이슈 넘김은 위 ‹ ›·카드 밀기·고정 이슈 바(뉴스 카드를 지나 스크롤하면 화면 맨 위, PC 제외)·아래 버튼 모두 같은 동작이다:
+//   이슈가 바뀌고 뉴스 카드도 함께 넘어가며, 아래 내용(AI 해석·지도·표)은 0.3초 옆으로 밀리며 바뀐다.
+//   아래쪽을 보던 중이면 AI 해석 시작으로 올려 준다(고정 바에 가리지 않게 scroll-margin).
+// 실제 등락은 시장 대비(회사 등락률 − 그 회사 시장 지수 등락률, %p)를 크게, 단순 등락률을 작게 보여 준다.
 // 배경은 STOCK:ON 페이지 남색 하나(globals.css .stockon-theme). 이슈 색은 카드 테두리·작은 점·은은한 빛에만 쓴다.
 // 서버가 미리 만든 것을 읽기만 한다(직접 입력한 단어만 대기열로 AI를 부른다 — WordInput).
 // 휴대폰(640px 미만)에서는 바깥 상자 테두리·모서리·양옆 여백 없이 화면 끝까지. 글씨: 본문 15px+, 섹션 제목 18px+, 지도 회사 이름 13px+.
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import MindMap, { NEG, POS, pathColor, rateColor, rateText } from "@/components/stock/MindMap";
+import MindMap, { NEG, POS, pathColor, ppText, rateColor, rateText } from "@/components/stock/MindMap";
 import { WhyBody } from "@/components/stock/StockOn";
 import {
-  lifeApi, stockApi, type LifeArticle, type LifeCompany, type LifeItem, type LifeOverview, type LifeStage, type LifeWordResult, type Stock, type Why,
+  lifeApi, stockApi, type LifeArticle, type LifeCompany, type LifeItem, type LifeMarket, type LifeOverview, type LifeStage, type LifeWordResult, type Stock,
+  type Why,
 } from "@/lib/stock";
 
 // 이슈(섹터)별 강조색. 상승 빨강과 겹치지 않게 빨강 계열은 쓰지 않는다.
@@ -35,6 +41,7 @@ type Pick = { c: LifeCompany; s?: LifeStage; color?: string };
 type View = { kind: "topics" } | { kind: "sector"; name: string } | { kind: "word"; word: string };
 type Drawing = { word: string; position: number; running: boolean };
 const POLL_MS = 1500;
+const BAR_ROOM = 72; // 고정 이슈 바(48px) + 여유. AI 해석 묶음의 scroll-mt-16(64px)과 함께 바가 제목을 가리지 않게
 const POLL_MAX_MS = 100_000; // AI 한 번 45초 × 최대 2회 + 대기 여유
 
 function ArticleMeta({ a, basis }: { a: LifeArticle; basis?: string }) {
@@ -61,7 +68,7 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
   const rest = item.articles.filter((a) => a !== rep);
   return (
     <article onClick={onSelect} aria-current={active}
-      className="flex w-[86vw] max-w-[560px] shrink-0 snap-center flex-col rounded-3xl p-4 sm:w-[520px]"
+      className="flex w-[86vw] max-w-[560px] shrink-0 snap-center flex-col rounded-3xl px-3.5 py-3 sm:w-[520px] sm:p-4"
       style={{ border: `1.5px solid ${active ? `${accent}b3` : "rgba(255,255,255,.1)"}`, background: "rgba(255,255,255,.04)",
         boxShadow: active ? `0 0 24px ${accent}29` : "none" }}>
       <div className="flex items-center justify-between gap-2 text-[14px] font-extrabold">
@@ -78,11 +85,11 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
         <h3 className="mt-2 text-[19px] font-black leading-snug text-white sm:text-[20px]">{item.title}</h3>
       )}
       {rep && <div className="mt-1.5"><ArticleMeta a={rep} basis={basis} /></div>}
-      <p className="mt-2.5 text-[15px] leading-relaxed text-slate-50"><b className="mr-1 text-white">{item.title}</b>{item.summary && ` — ${item.summary}`}</p>
+      <p className="mt-2 text-[15px] leading-relaxed text-slate-50"><b className="mr-1 text-white">{item.title}</b>{item.summary && ` — ${item.summary}`}</p>
       {rest.length > 0 && (
-        <div className="mt-auto pt-3">
+        <div className="mt-auto pt-2">
           <button type="button" onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }} aria-expanded={open}
-            className="rounded-full bg-white/10 px-3 py-1.5 text-[14px] font-extrabold text-white ring-1 ring-white/20 hover:bg-white/15">
+            className="rounded-full bg-white/10 px-2.5 py-1 text-[14px] font-extrabold text-white ring-1 ring-white/20 hover:bg-white/15">
             관련 기사 {rest.length}건 {open ? "▴" : "▾"}
           </button>
           {open && (
@@ -102,11 +109,50 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
   );
 }
 
-function SectionTitle({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
+type IssueMark = { n: number; color: string };
+
+function IssueDot({ issue }: { issue: IssueMark }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-[14px] font-extrabold text-slate-100" aria-label={`이슈 ${issue.n}`}>
+      <span className="size-2.5 rounded-full" style={{ background: issue.color, boxShadow: `0 0 8px ${issue.color}` }} />{issue.n}
+    </span>
+  );
+}
+
+function SectionTitle({ children, badge, issue }: { children: React.ReactNode; badge?: React.ReactNode; issue?: IssueMark }) {
   return (
     <div className="mb-3 flex flex-wrap items-center gap-2">
       <h3 className="text-[19px] font-black text-white">{children}</h3>
+      {issue && <IssueDot issue={issue} />}
       {badge}
+    </div>
+  );
+}
+
+// 시장보다 더 오름 / 덜 오름 / 비슷(차이 1%p 미만)
+const SIMILAR_PP = 1;
+const compare = (vs?: number | null) => (vs == null ? "" : vs >= SIMILAR_PP ? "시장보다 더 오름" : vs <= -SIMILAR_PP ? "시장보다 덜 오름" : "비슷");
+const signed = (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(2)}%`;
+const MARKET_NAME: Record<string, string> = { KOSPI: "코스피", KOSDAQ: "코스닥" };
+const VS_NOTE = "시장 대비 = 그 회사 등락률 − 시장 지수 등락률. 시장 전체 움직임을 뺀 뉴스의 영향을 보기 위한 값이에요.";
+
+/** 오늘 시장 분위기 띠(지수 시황 기사 대신). 예: 코스피 +6.63% · 코스닥 +3.69% · 대부분 종목이 올랐어요 → … */
+function MoodBand({ m }: { m: LifeMarket }) {
+  return (
+    <div className="mb-2.5 rounded-2xl bg-white/[0.06] px-3.5 py-2.5 ring-1 ring-white/15" role="note" aria-label="오늘 시장 분위기">
+      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+        <span className="text-[14px] font-extrabold text-amber-100">오늘 시장 분위기</span>
+        {m.label && <span className="text-[14px] text-slate-300">{m.label}</span>}
+      </div>
+      <p className="mt-0.5 text-[15px] font-bold leading-snug text-white">
+        {m.indices.map((i, n) => (
+          <Fragment key={i.market}>
+            {n > 0 && " · "}{i.name} <span className="tabular-nums" style={{ color: rateColor(i.rate) }}>{signed(i.rate)}</span>
+          </Fragment>
+        ))}
+        {m.crowd && <> · {m.crowd}</>}
+        <span className="text-sky-200"> → 시장보다 더/덜 움직인 회사를 보세요</span>
+      </p>
     </div>
   );
 }
@@ -132,33 +178,40 @@ function OtherNote({ c }: { c: LifeCompany }) {
 
 function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: string; onPick: (c: LifeCompany, s: LifeStage, color: string) => void }) {
   const rows = item.map.stages.flatMap((s, i) => s.companies.map((c) => ({ c, s, color: pathColor(i) })));
+  const idx = Object.entries(item.map.indices ?? {}).map(([k, v]) => `${MARKET_NAME[k] ?? k} ${signed(v as number)}`).join(" · ");
   return (
     <div className="overflow-hidden rounded-2xl bg-white/[0.03]" style={{ border: `1px solid ${accent}55` }}>
+      {/* 휴대폰 폭에 네 열: AI 해석(긍정/부정)은 회사 이름 아래에 둔다 */}
       <table className="w-full text-left text-[15px]">
         <thead>
           <tr className="text-[14px] text-slate-200">
-            <th className="px-3 py-2.5 font-extrabold">회사</th>
-            <th className="px-2 py-2.5 font-extrabold">AI 해석</th>
-            <th className="px-3 py-2.5 text-right font-extrabold">실제 등락률</th>
+            <th className="py-2.5 pl-3 pr-1 font-extrabold">회사 · AI 해석</th>
+            <th className="px-1.5 py-2.5 text-right font-extrabold">단순<br className="sm:hidden" /> 등락률</th>
+            <th className="px-1.5 py-2.5 text-right font-extrabold">시장 대비</th>
+            <th className="py-2.5 pl-1.5 pr-3 text-right font-extrabold">시장과<br className="sm:hidden" /> 비교</th>
           </tr>
         </thead>
         <tbody>
           {rows.map(({ c, s, color }) => (
             <Fragment key={c.code}>
-              <tr onClick={() => onPick(c, s, color)} className="cursor-pointer border-t border-white/10 hover:bg-white/5">
-                <td className="px-3 py-2.5">
-                  <div className="font-extrabold text-white">{c.name}</div>
+              <tr onClick={() => onPick(c, s, color)} className="cursor-pointer border-t border-white/10 align-top hover:bg-white/5">
+                <td className="py-2.5 pl-3 pr-1">
+                  <div className="font-extrabold leading-snug text-white">{c.name}</div>
                   <div className="text-[14px] font-semibold" style={{ color }}>{s.label}</div>
+                  <div className="mt-1"><Dir d={c.direction} /></div>
                 </td>
-                <td className="px-2 py-2.5"><Dir d={c.direction} /></td>
-                <td className="px-3 py-2.5 text-right">
-                  <div className="text-[17px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
+                <td className="whitespace-nowrap px-1.5 py-2.5 text-right">
+                  <div className="text-[16px] font-extrabold tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
+                </td>
+                <td className="whitespace-nowrap px-1.5 py-2.5 text-right">
+                  <div className="text-[17px] font-black tabular-nums" style={{ color: rateColor(c.vs_market) }}>{ppText(c.vs_market)}</div>
                   {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 등락 큼</div>}
                 </td>
+                <td className="py-2.5 pl-1.5 pr-3 text-right text-[14px] font-extrabold leading-snug text-slate-100">{compare(c.vs_market) || "—"}</td>
               </tr>
               {c.opposite && c.other && (
                 <tr onClick={() => onPick(c, s, color)} className="cursor-pointer hover:bg-white/5">
-                  <td colSpan={3} className="px-3 pb-2.5 pt-0"><OtherNote c={c} /></td>
+                  <td colSpan={4} className="px-3 pb-2.5 pt-0"><OtherNote c={c} /></td>
                 </tr>
               )}
             </Fragment>
@@ -166,7 +219,8 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
         </tbody>
       </table>
       <p className="border-t border-white/10 px-3 py-2 text-[14px] text-slate-200">
-        실제 등락률: {item.map.reaction_label || "기준 시점"} · AI 해석과 실제 등락을 나란히 보여 줄 뿐, 이 뉴스 때문에 움직였다는 뜻은 아니에요.
+        {item.map.reaction_label || "기준 시점"}{idx ? ` · 같은 시각 지수 ${idx}` : " · 지수 값이 없어 시장 대비는 비워 뒀어요"} · 비슷 = 차이 1%p 미만 ·
+        AI 해석과 실제 등락을 나란히 보여 줄 뿐, 이 뉴스 때문에 움직였다는 뜻은 아니에요.
       </p>
     </div>
   );
@@ -207,7 +261,14 @@ function Detail({ pick, label, onClose }: { pick: Pick; label?: string; onClose?
         </div>
         <div className="shrink-0 whitespace-nowrap text-right">
           {c.moved && <div className="mb-0.5 text-[14px] font-extrabold text-amber-200">실제 등락 큼</div>}
-          <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
+          {c.vs_market != null ? (
+            <>
+              <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.vs_market) }}>시장 대비 {ppText(c.vs_market)}</div>
+              <div className="text-[14px] font-bold tabular-nums text-slate-200">단순 {rateText(c.rate)}</div>
+            </>
+          ) : (
+            <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
+          )}
           <div className="text-[14px] text-slate-300">{label || "실제 등락률"}</div>
         </div>
         {onClose && <button type="button" onClick={onClose} aria-label="닫기" className="-mr-1 -mt-1 rounded-full px-2 text-2xl text-slate-200">✕</button>}
@@ -303,10 +364,30 @@ export default function LifeFinder() {
   const [words, setWords] = useState<Record<string, LifeItem>>({});
   const [drawing, setDrawing] = useState<Drawing | null>(null);
   const [notice, setNotice] = useState("");
+  const [pastCards, setPastCards] = useState(false);
   const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rail = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
+  const cards = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  // 버튼으로 카드를 옮기는 동안(부드러운 스크롤)은 지나가는 카드로 이슈를 바꾸지 않는다
+  const railTarget = useRef<{ i: number; t: ReturnType<typeof setTimeout> } | null>(null);
+  // 이슈가 바뀐 방향(다음/이전) → 아래 내용이 밀리는 방향
+  const slide = useRef({ active: 0, dir: "next" as "next" | "prev" });
+  if (slide.current.active !== active) slide.current = { active, dir: active > slide.current.active ? "next" : "prev" };
   useEffect(() => () => { if (pollRef.current) clearTimeout(pollRef.current); }, []);
+
+  // 뉴스 카드 영역을 지나 아래로 스크롤했으면 고정 이슈 바를 보인다. 바 높이(48px)+여유만큼은 지난 것으로 본다
+  // (바에서 넘기면 AI 해석 시작으로 올라가 카드 아래 끝이 바 밑에 조금 남는데, 그때 바가 사라지지 않게).
+  const hasData = !!data;
+  useEffect(() => {
+    const el = cards.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setPastCards(!e.isIntersecting && e.boundingClientRect.top < 0),
+      { rootMargin: `-${BAR_ROOM}px 0px 0px 0px` });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasData]);
 
   useEffect(() => {
     let alive = true;
@@ -329,18 +410,46 @@ export default function LifeFinder() {
       const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
       if (d < dist) { dist = d; best = i; }
     });
+    // 끝까지 밀었으면 끝 카드(PC처럼 카드가 좁아 마지막 카드가 가운데까지 못 올 때)
+    if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 2) best = el.children.length - 1;
+    else if (el.scrollLeft <= 2) best = 0;
+    if (railTarget.current) {
+      if (best !== railTarget.current.i) return;
+      clearTimeout(railTarget.current.t);
+      railTarget.current = null;
+    }
     if (best !== active) { setActive(best); setPick(null); }
+  }
+  /** 뉴스 카드 줄을 i번째 카드로(가운데) 옮긴다. */
+  function moveRail(i: number) {
+    if (railTarget.current) clearTimeout(railTarget.current.t);
+    railTarget.current = { i, t: setTimeout(() => { railTarget.current = null; }, 900) };
+    requestAnimationFrame(() => {
+      const el = rail.current, card = el?.children[i] as HTMLElement | undefined;
+      if (!el) return;
+      // 화면 위치로 계산한다(카드 줄의 -mx-4 때문에 offsetLeft는 기준이 어긋난다)
+      const left = card ? el.scrollLeft + card.getBoundingClientRect().left - el.getBoundingClientRect().left - (el.clientWidth - card.offsetWidth) / 2 : 0;
+      el.scrollTo({ left, behavior: "smooth" });
+    });
   }
   function goTopic(i: number) {
     setView({ kind: "topics" });
     setActive(i);
     setPick(null);
     setNotice("");
-    requestAnimationFrame(() => {
-      const card = rail.current?.children[i] as HTMLElement | undefined;
-      rail.current?.scrollTo({ left: card ? card.offsetLeft - (rail.current.clientWidth - card.offsetWidth) / 2 : 0, behavior: "smooth" });
-      top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+    moveRail(i);
+    requestAnimationFrame(() => top.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+  /** 이전/다음 이슈: 위 ‹ ›·고정 바·아래 버튼이 모두 이것. 카드도 함께 넘어가고, 아래를 보던 중이면 AI 해석 시작으로. */
+  function step(d: number) {
+    if (!data) return;
+    const i = active + d;
+    if (i < 0 || i >= data.topics.length) return;
+    setActive(i);
+    setPick(null);
+    moveRail(i);
+    const el = body.current;
+    if (el && el.getBoundingClientRect().top < 0) requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
   function goOther(v: View) {
     setView(v);
@@ -400,6 +509,18 @@ export default function LifeFinder() {
   const accent = accentFor(item, view.kind === "topics" ? active : 0);
   const basisYmd = data.basis.as_of;
   const label = item?.map.reaction_label;
+  const total = data.topics.length;
+  const topics = view.kind === "topics";
+  const issue = topics ? { n: active + 1, color: accent } : undefined;
+  const hasVs = !!item?.map.stages.some((s) => s.companies.some((c) => c.vs_market != null));
+  const arrows = (size: string) => (
+    <div className="flex shrink-0 gap-1.5">
+      {([["‹", -1, "이전 이슈"], ["›", 1, "다음 이슈"]] as const).map(([t, d, name]) => (
+        <button key={name} type="button" aria-label={name} disabled={active + d < 0 || active + d >= total} onClick={() => step(d)}
+          className={`${size} rounded-full border border-white/25 bg-white/10 text-xl font-bold text-white hover:bg-white/20 disabled:opacity-30`}>{t}</button>
+      ))}
+    </div>
+  );
 
   return (
     <div ref={top} className="lifemap-shell relative scroll-mt-2 pb-8 pt-3 text-slate-100">
@@ -415,19 +536,14 @@ export default function LifeFinder() {
         </div>
 
         {/* 뉴스 카드 */}
-        <div className="relative mt-4">
+        <div ref={cards} className="relative mt-4">
           {drawing && <DrawingOverlay d={drawing} />}
           {view.kind === "topics" ? (
             <>
+            {data.market && <MoodBand m={data.market} />}
             <div className="mb-2 flex items-center justify-between gap-2">
-              <span className="text-[15px] font-extrabold text-white">오늘의 이슈 {active + 1} / {data.topics.length}</span>
-              <div className="flex gap-1.5">
-                {[["‹", -1, "이전 이슈"], ["›", 1, "다음 이슈"]].map(([t, d, name]) => (
-                  <button key={name as string} type="button" aria-label={name as string} disabled={active + (d as number) < 0 || active + (d as number) >= data.topics.length}
-                    onClick={() => goTopic(active + (d as number))}
-                    className="size-10 rounded-full border border-white/25 bg-white/10 text-xl font-bold text-white hover:bg-white/20 disabled:opacity-30">{t as string}</button>
-                ))}
-              </div>
+              <span className="text-[15px] font-extrabold text-white">오늘의 이슈 {active + 1} / {total}</span>
+              {arrows("size-10")}
             </div>
             <div ref={rail} onScroll={onRailScroll} className="so-row -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0" aria-label="오늘의 이슈">
               {data.topics.map((t, i) => (
@@ -445,11 +561,12 @@ export default function LifeFinder() {
         </div>
 
         {item && (
-          <div className="mt-8 lg:grid lg:grid-cols-[1.25fr_1fr] lg:gap-8">
-            <div className="space-y-9">
+          <div ref={body} className="mt-5 scroll-mt-16 lg:grid lg:grid-cols-[1.25fr_1fr] lg:gap-8">
+            {/* 이슈가 바뀌면 다시 그려지며 0.3초 옆으로 밀려 들어온다(globals.css .lm-slide-*) */}
+            <div key={topics ? `t${active}` : `${view.kind}:${item.name}`} className={`space-y-9 ${topics ? `lm-slide-${slide.current.dir}` : ""}`}>
               {/* AI 해석 */}
               <section aria-label="AI 해석">
-                <SectionTitle badge={<span className="rounded-full bg-white/10 px-2.5 py-1 text-[14px] font-extrabold text-sky-50 ring-1 ring-sky-300/30">🤖 AI가 해석했어요</span>}>
+                <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/10 px-2.5 py-1 text-[14px] font-extrabold text-sky-50 ring-1 ring-sky-300/30">🤖 AI가 해석했어요</span>}>
                   AI 해석
                 </SectionTitle>
                 {item.map.interpretation?.length ? (
@@ -466,7 +583,7 @@ export default function LifeFinder() {
 
               {/* 관련 회사 지도 */}
               <section aria-label="관련 회사 지도">
-                <SectionTitle badge={<span className="rounded-full bg-white/15 px-2.5 py-1 text-[14px] font-extrabold text-white">관련 종목 · 참고용</span>}>
+                <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/15 px-2.5 py-1 text-[14px] font-extrabold text-white">관련 종목 · 참고용</span>}>
                   영향을 받을 수 있는 회사
                 </SectionTitle>
                 {item.map.stages.length ? (
@@ -483,8 +600,13 @@ export default function LifeFinder() {
                       </ul>
                       <p>
                         <span className="font-extrabold" style={{ color: POS }}>＋ 긍정 영향 가능</span> · <span className="font-extrabold" style={{ color: NEG }}>－ 부정 영향 가능</span>(AI 해석) ·
-                        버블이 클수록 연관이 커요 · <b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(±5% 이상) · 숫자는 {label || "실제 등락률"}
+                        버블이 클수록 연관이 커요 · {hasVs ? (
+                          <><b className="text-white">큰 숫자 = 시장 대비(%p)</b>, 작은 숫자 = 단순 등락률 · <b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(시장 대비 ±3%p 이상)</>
+                        ) : (
+                          <><b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(±5% 이상)</>
+                        )} · {label || "실제 등락률"}
                       </p>
+                      {hasVs && <p className="text-[14px] text-slate-300">{VS_NOTE}</p>}
                     </div>
                   </>
                 ) : (
@@ -495,9 +617,31 @@ export default function LifeFinder() {
               {/* AI 해석 vs 실제 등락 */}
               {item.map.stages.length > 0 && (
                 <section aria-label="AI 해석 vs 실제 등락">
-                  <SectionTitle>AI 해석 vs 실제 등락</SectionTitle>
+                  <SectionTitle issue={issue}>AI 해석 vs 실제 등락</SectionTitle>
                   <ReactionTable item={item} accent={accent} onPick={(c, s, color) => setPick({ c, s, color })} />
                 </section>
+              )}
+
+              {/* 아래에서도 이슈 넘기기(위·고정 바와 같은 동작) */}
+              {topics && total > 1 && (
+                <nav aria-label="이슈 넘기기" className="grid grid-cols-2 gap-2">
+                  {([[-1, "← 이전 이슈"], [1, "다음 이슈 →"]] as const).map(([d, t]) => {
+                    const j = active + d;
+                    const off = j < 0 || j >= total;
+                    return (
+                      <button key={d} type="button" disabled={off} onClick={() => step(d)}
+                        className={`flex min-h-12 flex-col justify-center rounded-2xl bg-white/[0.06] px-3 py-2 ring-1 ring-white/15 hover:bg-white/10 disabled:opacity-30 ${d > 0 ? "items-end text-right" : "items-start"}`}>
+                        <span className="text-[15px] font-extrabold text-white">{t}</span>
+                        {!off && (
+                          <span className="flex max-w-full items-center gap-1 text-[14px] font-semibold text-slate-300">
+                            <span className="size-2 shrink-0 rounded-full" style={{ background: accentFor(data.topics[j], j) }} />
+                            <span className="truncate">{j + 1}. {data.topics[j].name}</span>
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </nav>
               )}
             </div>
             <aside className="hidden lg:block">
@@ -547,6 +691,18 @@ export default function LifeFinder() {
           {data.price_note && <p className="mt-2 font-bold text-slate-100">{data.price_note}</p>}
         </footer>
       </div>
+
+      {/* 고정 이슈 바: 뉴스 카드를 지나 스크롤하면 화면 맨 위(휴대폰·태블릿). 여기서 넘겨도 같은 동작 */}
+      {topics && pastCards && !isPc && item && (
+        <div className="fixed inset-x-0 top-0 z-40 border-b border-white/15 bg-[#071226]/95 backdrop-blur" role="region" aria-label="지금 보는 이슈">
+          <div className="mx-auto flex h-12 max-w-6xl items-center gap-2 px-4">
+            <span className="size-2.5 shrink-0 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
+            <span className="shrink-0 text-[14px] font-extrabold tabular-nums text-slate-200">{active + 1}/{total}</span>
+            <span className="min-w-0 flex-1 truncate text-[15px] font-black text-white">{item.name}</span>
+            {arrows("size-9")}
+          </div>
+        </div>
+      )}
 
       {pick && !isPc && (
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={`${pick.c.name} 상세`}>
