@@ -504,7 +504,10 @@ def stored_map(word: str) -> dict | None:
         if t.get("name") == word and t.get("map"):
             return t["map"]
     m = (store.read("lifemap_words", {}) or {}).get(word)
-    return m
+    if m:
+        return m
+    ex = (examples().get("words") or {}).get(word)  # 칩을 아직 못 그렸으면 저장소 예시(AI를 다시 부르지 않음)
+    return {**ex, "example": True} if ex else None
 
 
 def _save_word(word: str, m: dict) -> None:

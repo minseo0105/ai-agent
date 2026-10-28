@@ -252,6 +252,44 @@ class LiveQueueTest(LifemapBase):
         self.assertTrue(r["map"]["example"])
 
 
+class ApiTest(LifemapBase):
+    def _client(self):
+        from fastapi.testclient import TestClient
+        from api.main import app
+        from services import access as ac
+
+        env = mock.patch.dict("os.environ", {"STOCKON_ENABLED": "1", "ADMIN_PASSWORD": "pw-test", "ACCESS_SECRET": "test-secret"})
+        site = mock.patch.object(ac, "_read_raw", lambda fresh=False: {"site_mode": "public"})
+        for p in (env, site):
+            p.start()
+            self.patches.append(p)
+        return TestClient(app)
+
+    def test_visitor_reads_without_ai_and_word_queues(self):
+        client = self._client()
+        blocked = AssertionError("outbound call during visitor read")
+        with mock.patch.object(lifemap, "_ask", side_effect=blocked), mock.patch("requests.get", side_effect=blocked):
+            r = client.get("/api/stock/lifemap")
+            self.assertEqual(r.status_code, 200)
+            body = r.json()
+            self.assertEqual(body["chips"], lifemap.CHIPS)
+            self.assertTrue(body["topics"])  # 저장된 것이 없어도 예시로 채움
+            self.assertEqual(client.get("/api/stock/lifemap/word", params={"w": "라면"}).json()["status"], "ready")
+        sid = {"X-Stockon-Session": "abcdef12-3456"}
+        r = client.post("/api/stock/lifemap/word", json={"word": "붕어빵"}, headers=sid)
+        self.assertEqual(r.json()["status"], "queued")
+        self.assertIn("s:abcdef12-3456", lifemap._sessions)
+        self.assertEqual(client.get("/api/stock/lifemap/word", params={"w": "붕어빵"}).json()["status"], "queued")
+        self.assertEqual(client.post("/api/stock/lifemap/word", json={"word": "x" * 21}).status_code, 422)
+        self.assertEqual(client.post("/api/stock/lifemap/word", json={"word": "<b>"}).json()["status"], "invalid")
+
+    def test_disabled_server(self):
+        client = self._client()
+        with mock.patch.dict("os.environ", {"STOCKON_ENABLED": ""}):
+            self.assertEqual(client.get("/api/stock/lifemap").status_code, 404)
+            self.assertEqual(client.post("/api/stock/lifemap/word", json={"word": "라면"}).status_code, 404)
+
+
 class ExamplesFileTest(unittest.TestCase):
     def test_repo_examples_are_complete_and_safe(self):
         data = json.loads(lifemap.EXAMPLES_PATH.read_text(encoding="utf-8"))

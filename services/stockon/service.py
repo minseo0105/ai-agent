@@ -483,4 +483,17 @@ def admin_status() -> dict:
         "why_today": {"as_of": why_cache.get("as_of"), "count": len(why_cache.get("items", {})), "limit": WHY_MAX_PER_DAY},
         "watchlist": store.load_settings(fresh=True)["watchlist"],
         "kiwoom": kiwoom_status(),
+        "lifemap": _lifemap_status(),
     }
+
+
+def _lifemap_status() -> dict:
+    """생활 속 종목 찾기: 오늘 토픽 생성 결과와 하루 AI 사용량(호출 수·토큰)."""
+    from services.stockon import lifemap
+
+    cur = store.read("lifemap", {}) or {}
+    return {"status": store.read("lifemap_status", {}) or {}, "day": cur.get("day"), "fresh": cur.get("fresh"),
+            "topics": [t.get("name") for t in cur.get("topics") or []],
+            "usage_daily": store.read("lifemap_usage_daily"), "usage_live": store.read("lifemap_usage_live"),
+            "live_today": lifemap._live_today(), "live_daily_max": lifemap.LIVE_DAILY_MAX,
+            "models": {"topics": lifemap.TOPIC_MODEL, "chain": lifemap.CHAIN_MODEL}}
