@@ -4,7 +4,7 @@ import StockTabs from "@/components/stock/StockTabs";
 
 export const metadata: Metadata = {
   title: "STOCK:ON · 디지털전략부 AI LAB",
-  description: "오늘 시장을 3줄로. 지수 · 히트맵 · 등락 상위 · 팀 관심 종목 · 뉴스 · 일정. 정보 제공용이며 투자 권유가 아닙니다.",
+  description: "뉴스 한 줄, 연결된 회사까지. AI 해석과 실제 반응 · 지수 · 히트맵 · 등락 상위. 정보 제공용이며 투자 권유가 아닙니다.",
   robots: { index: false, follow: false },
 };
 
@@ -23,8 +23,8 @@ export default function StockPage() {
       <section className="relative mb-3 overflow-hidden rounded-2xl bg-gradient-to-br from-[#0B1B33] via-[#13315C] to-[#1E4E8C] px-4 py-4 text-white shadow-md sm:px-6 sm:py-5">
         <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-sky-300/20 blur-3xl" />
         <h1 className="text-xl font-extrabold leading-none tracking-tight sm:text-2xl">STOCK:ON</h1>
-        <p className="mt-1.5 text-sm font-bold leading-snug sm:text-base">오늘 시장을 3줄로</p>
-        <p className="mt-1 text-[11px] font-semibold text-sky-100/80 sm:text-xs">지수 · 히트맵 · 등락 상위 · 팀 관심 종목 · 뉴스 · 일정</p>
+        <p className="mt-1.5 text-[15px] font-bold leading-snug sm:text-base">뉴스 한 줄, 연결된 회사까지</p>
+        <p className="mt-1 text-[13px] font-semibold text-sky-100/90 sm:text-sm">AI 해석과 실제 반응 · 지수 · 히트맵 · 등락 상위</p>
       </section>
 
       <StockTabs />

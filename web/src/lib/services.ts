@@ -66,9 +66,9 @@ export const SERVICES: Service[] = [
     category: "API·Search",
     image: "/ailab/stock.svg",
     icon: "📈",
-    title: "STOCK:ON · 오늘 시장을 3줄로",
-    desc: "지수 · 시가총액 히트맵 · 등락 상위 · 팀 관심 종목 뉴스와 공시를 한 화면에서 봅니다.",
-    tags: ["전일 기준", "히트맵", "AI 브리핑", "로그인 전용"],
+    title: "STOCK:ON · 뉴스 한 줄, 연결된 회사까지",
+    desc: "오늘의 뉴스가 어떤 회사들에 영향을 줄 수 있는지 AI가 해석하고, 실제 반응(등락률)과 나란히 보여 줍니다. 지수·히트맵·등락 상위도 함께.",
+    tags: ["뉴스 속 숨은 종목", "AI 해석", "실제 반응", "히트맵"],
     href: "/stock",
   },
   {
