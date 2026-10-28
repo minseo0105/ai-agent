@@ -211,7 +211,7 @@ function SplitNews({ items, basis }: { items: NewsItem[]; basis?: string }) {
   );
 }
 
-function WhyBody({ stock, why, error, loading, live }: { stock: Stock; why: Why | null; error: string; loading: boolean; live?: boolean }) {
+export function WhyBody({ stock, why, error, loading, live }: { stock: Stock; why: Why | null; error: string; loading: boolean; live?: boolean }) {
   return (
     <div>
       <div className="flex items-baseline justify-between gap-2">

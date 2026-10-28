@@ -61,6 +61,35 @@ export const stockApi = {
   why: (code: string) => get<Why>(`/api/stock/why/${encodeURIComponent(code)}`),
 };
 
+// 생활 속 종목 찾기 — 마인드맵은 서버가 미리 그려 둔 것(또는 대기열로 그린 것)만 받는다.
+export type StageKey = "material" | "making" | "logistics" | "retail";
+export type LifeCompany = { code: string; name: string; relevance: "강" | "중" | "약"; reason: string; market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null };
+export type LifeStage = { key: StageKey; label: string; detail: string; companies: LifeCompany[] };
+export type LifeMap = { word: string; stages: LifeStage[]; ai: boolean; example?: boolean; model?: string; created_ts?: number; price_as_of?: string | null };
+export type LifeTopic = { name: string; summary: string; articles: { title: string; url: string; press: string; pub: string | null }[]; map: LifeMap; carried?: boolean };
+export type LifeOverview = { day: string | null; topics: LifeTopic[]; chips: string[]; chip_maps: Record<string, LifeMap>; live: { enabled: boolean; per_session: number; window_min: number } };
+export type LifeWordStatus = "ready" | "queued" | "running" | "failed" | "busy" | "limited" | "daily_limit" | "unavailable" | "invalid" | "none";
+export type LifeWordResult = { status: LifeWordStatus; word: string; position?: number; message?: string; map?: LifeMap };
+
+const SESSION_KEY = "stockon-session";
+/** 새 단어 1인 횟수 제한용 무작위 ID(개인정보 없음). 저장이 막힌 브라우저면 이번 화면에서만 쓴다. */
+function sessionId(): string {
+  const make = () => (globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`);
+  try {
+    const v = localStorage.getItem(SESSION_KEY) || make();
+    localStorage.setItem(SESSION_KEY, v);
+    return v;
+  } catch {
+    return (sessionId as unknown as { v?: string }).v ??= make();
+  }
+}
+
+export const lifeApi = {
+  overview: () => get<LifeOverview>("/api/stock/lifemap"),
+  request: (word: string) => get<LifeWordResult>("/api/stock/lifemap/word", { method: "POST", body: JSON.stringify({ word }), headers: { "X-Stockon-Session": sessionId() } }),
+  status: (word: string) => get<LifeWordResult>(`/api/stock/lifemap/word?w=${encodeURIComponent(word)}`),
+};
+
 // 관리자
 export type AiTaskStatus = {
   ok_ts: number | null; error_ts: number | null; last_error: string | null; consecutive: number;

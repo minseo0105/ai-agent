@@ -436,7 +436,7 @@ def with_prices(m: dict) -> dict:
         for c in st.get("companies") or []:
             s = stocks.get(c.get("code"))
             if s:  # 상장 폐지 등으로 목록에서 빠진 회사는 보이지 않는다
-                companies.append({**c, "name": s["name"], "market": s.get("market"), "close": s.get("close"), "rate": s.get("rate")})
+                companies.append({**c, "name": s["name"], **{k: s.get(k) for k in ("market", "close", "rate", "cap", "value")}})
         if companies:
             stages.append({**st, "companies": companies})
     out = {k: v for k, v in m.items() if k != "removed"}

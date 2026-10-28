@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import StockOn from "@/components/stock/StockOn";
+import StockTabs from "@/components/stock/StockTabs";
 
 export const metadata: Metadata = {
   title: "STOCK:ON · 디지털전략부 AI LAB",
@@ -27,7 +27,7 @@ export default function StockPage() {
         <p className="mt-1 text-[11px] font-semibold text-sky-100/80 sm:text-xs">지수 · 히트맵 · 등락 상위 · 팀 관심 종목 · 뉴스 · 일정</p>
       </section>
 
-      <StockOn />
+      <StockTabs />
     </main>
   );
 }
