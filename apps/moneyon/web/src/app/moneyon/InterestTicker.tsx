@@ -1,10 +1,11 @@
 "use client";
 // 이번 주 쌓이는 이자 카운터 + 기록 직후 이자 변화량.
 //
-// ※ 연출용 표시다. 숫자는 서버가 정한 "다음 주 예상 이자"를 주간 진행률에 맞춰 보여 주고(lib/interestTicker.ts),
-//   몇 초마다 0.01원씩 올려 쌓이는 느낌을 낸다. 실제로 들어오는 이자는 월요일 정산 금액(100원 미만 버림)뿐이다.
+// ※ 연출용 표시다. 숫자는 서버가 정한 "다음 주 예상 이자"를 이번 주 지난 날 수만큼 나눠 원 단위로 보여 준다
+//   (lib/interestTicker.ts). 가만히 있을 때는 오르지 않고, 화면을 열 때 0에서 올라가는 시작 연출만 있다.
+//   실제로 들어오는 이자는 월요일 정산 금액(100원 미만 버림)뿐이다.
 import { useEffect, useRef, useState } from "react";
-import { TICK_MS, accrued, daysLeft, deltaWon, estimatedRaw, formatWon2, weekProgress } from "@/lib/interestTicker";
+import { accrued, daysLeft, deltaWon, estimatedRaw, weekDay } from "@/lib/interestTicker";
 import type { State } from "./types";
 import "./interest.css";
 
@@ -62,23 +63,24 @@ function InterestDelta({ state }: { state: State }) {
 export default function InterestTicker({ state, day }: { state: State; day?: string }) {
   const week = state.education;
   const target = estimatedRaw(state.rewards?.items);
-  const [ticks, setTicks] = useState(0);
-  const [clock, setClock] = useState(() => new Date());
-  useEffect(() => {
-    const timer = setInterval(() => { setTicks(n => Math.min(99, n + 1)); setClock(new Date()); }, TICK_MS);
-    return () => clearInterval(timer);
-  }, []);
   const intro = useRoll(INTRO_MS, null);
   if (!week || !day) return null;
-  const live = accrued(target, weekProgress(day, week.start, week.end, clock), ticks);
+  const { n, total } = weekDay(day, week.start, week.end);
+  const shown = Math.floor(accrued(target, n, total) * intro);
   const left = daysLeft(day, week.end);
   return <section className="mk-interest-ticker" aria-label="이번 주 쌓이는 이자">
     <div className="mk-interest-ticker-top">
       <span>✨ 이번 주 쌓이는 이자</span>
       <small className="mk-payday-chip" data-testid="payday-countdown">{left > 0 ? `이자 받는 날까지 D-${left}` : "오늘 정산해요!"}</small>
     </div>
-    <strong className="mk-interest-ticker-number" data-testid="interest-ticker" aria-hidden="true">+{formatWon2(live * intro)}</strong>
+    <strong className="mk-interest-ticker-number" data-testid="interest-ticker" aria-hidden="true">+{shown.toLocaleString("ko-KR")}원</strong>
     <span className="sr-only">{`이번 주 예상 이자는 약 ${Math.floor(target).toLocaleString("ko-KR")}원이에요`}</span>
+    <div className="mk-week-progress" data-testid="week-progress">
+      <span>이번 주 {total}일 중 <b>{n}일째</b></span>
+      <div className="mk-week-progress-bar" role="progressbar" aria-label="이번 주 진행" aria-valuemin={1} aria-valuemax={total} aria-valuenow={n}>
+        <i style={{ width: `${(n / total) * 100}%` }} />
+      </div>
+    </div>
     <InterestDelta state={state} />
     <small className="mk-interest-ticker-note">쌓이는 모습을 보여 주는 화면이에요. 진짜 이자는 월요일에 정산하고, 100원 미만은 버려요.</small>
   </section>;

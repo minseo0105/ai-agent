@@ -6,10 +6,6 @@
 // 상한(cap)이 있으면 그 이하. 다만 서버는 unit(100원)으로 버리고 여기서는 버리지 않은 값을 쓴다.
 import type { RewardItem } from "../app/moneyon/types";
 
-// 몇 초마다 소수점 둘째 자리(0.01원)가 오르는지. 연출용.
-export const TICK_MS = 1400;
-export const TICK_WON = 0.01;
-
 // 정산 전 예상 이자 한 건의 "버리기 전" 금액.
 export function rawInterest(item: Pick<RewardItem, "base" | "rate_bps" | "cap">): number {
   const raw = (Math.max(0, item.base) * item.rate_bps) / 10000;
@@ -24,17 +20,18 @@ export function estimatedRaw(items: RewardItem[] | undefined): number {
 const MS_DAY = 86400000;
 const dayNumber = (day: string) => Date.parse(day + "T00:00:00Z") / MS_DAY;
 
-// 체험 날짜(day) 기준 주간 진행률 0~1. 하루 안에서는 실제 시계가 지나는 만큼만 조금씩 오른다(연출).
-export function weekProgress(day: string, start: string, end: string, clock: Date): number {
-  const span = dayNumber(end) - dayNumber(start);
-  if (!(span > 0)) return 0;
-  const intraday = (clock.getHours() * 3600 + clock.getMinutes() * 60 + clock.getSeconds()) / 86400;
-  return Math.min(1, Math.max(0, (dayNumber(day) - dayNumber(start) + intraday) / span));
+// 체험 날짜(day)가 이번 주(start~end, end는 정산하는 다음 월요일) 며칠째인지. 1~total로 제한한다.
+export function weekDay(day: string, start: string, end: string): { n: number; total: number } {
+  const total = Math.max(1, Math.round(dayNumber(end) - dayNumber(start)));
+  const n = Math.round(dayNumber(day) - dayNumber(start)) + 1;
+  return { n: Math.min(total, Math.max(1, n)), total };
 }
 
-// 화면에 보이는 값: 진행률만큼 쌓인 금액 + 틱마다 0.01원. 예상 이자(target)를 넘지 않는다.
-export function accrued(target: number, progress: number, ticks: number): number {
-  return Math.min(target, Math.max(0, target) * progress + Math.max(0, ticks) * TICK_WON);
+// 화면에 보이는 값(원 단위 정수): 예상 이자를 이번 주 지난 날 수만큼 나눠 쌓은 금액. 예상 이자를 넘지 않는다.
+// 가만히 있을 때는 바뀌지 않고, 체험 날짜가 바뀌거나 기록으로 예상 이자가 바뀔 때만 달라진다.
+export function accrued(target: number, n: number, total: number): number {
+  if (!(total > 0)) return 0;
+  return Math.floor(Math.max(0, target) * Math.min(1, Math.max(0, n / total)));
 }
 
 // 정산일(end, 다음 월요일)까지 남은 날 수. 오늘이 정산일이거나 지났으면 0.
@@ -46,5 +43,3 @@ export function daysLeft(day: string, end: string): number {
 export function deltaWon(before: number, after: number): number {
   return Math.round(after - before);
 }
-
-export const formatWon2 = (value: number) => value.toLocaleString("ko-KR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "원";

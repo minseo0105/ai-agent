@@ -55,6 +55,9 @@
   .mk.mk-trial .mk-interest-ticker-top{font-size:17px}
   .mk.mk-trial .mk-interest-ticker-number{font-size:48px}
   .mk.mk-trial .mk-interest-ticker-note,.mk.mk-trial .mk-payday-chip{font-size:14px}
+  .mk-entry .mk-entry-start-note{font-size:15px}
+  .mk.mk-trial .mk-week-progress{font-size:15px}
+  .mk.mk-trial .mk-week-progress-bar{height:12px}
   .mk.mk-trial .mk-interest-delta{font-size:17px}
   .mk.mk-trial .mk-approval-card{padding:18px 22px}
   .mk.mk-trial .mk-approval-card>div{font-size:16px}

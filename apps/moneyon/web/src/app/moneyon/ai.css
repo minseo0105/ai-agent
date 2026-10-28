@@ -29,7 +29,8 @@
 .mk-ai-coach{display:grid;gap:14px}
 .mk-ai-goal{margin:0;font-weight:700;color:var(--mo-deep)}
 .mk-ai-coach input[type=range]{width:100%;min-height:36px}
-.mk-demo-start{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+.mk-entry .mk-entry-start{min-height:58px;font-size:18px;font-weight:800}.mk-entry .mk-entry-start:disabled{opacity:.6;cursor:default}
+.mk-entry-start-note{margin:10px 0 0;text-align:center;font-size:14px;line-height:1.5;color:var(--mo-deep);font-weight:600}
 @media (prefers-reduced-motion:reduce){.mk-ai-dots b,.mk-ai-thinking .mk-ai-bee,.mk-ai-caret{animation:none}}
 
 /* PC(1024px 이상): 두 칸 배치에 자리 잡기(desktop.css의 grid-template-areas와 함께) */

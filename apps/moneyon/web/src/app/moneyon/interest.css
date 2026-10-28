@@ -5,6 +5,10 @@
 .mk-interest-ticker-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;font-weight:700}
 .mk-payday-chip{padding:4px 10px;border-radius:999px;background:var(--mo-white);color:var(--mo-deep);font-size:12px;font-weight:700;white-space:nowrap}
 .mk-interest-ticker-number{font-size:clamp(30px,9vw,40px);line-height:1.2;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:#a86400}
+.mk-week-progress{display:grid;gap:6px;font-size:13px;color:var(--mo-deep)}
+.mk-week-progress b{font-variant-numeric:tabular-nums}
+.mk-week-progress-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.75);overflow:hidden}
+.mk-week-progress-bar>i{display:block;height:100%;border-radius:inherit;background:#f0a500;transition:width .6s ease-out}
 .mk-interest-ticker-note{font-size:12px;color:var(--mo-muted)}
 .mk-interest-delta{margin:0;font-size:14px;font-weight:700;animation:mk-delta-pop .35s ease-out}
 .mk-interest-delta.up{color:#0a7d4a}.mk-interest-delta.down{color:#c0392b}
@@ -27,4 +31,4 @@
 .mk-goal-choices{display:flex;flex-wrap:wrap;gap:8px}
 .mk-goal-choices button{min-height:44px;padding:0 14px;border:0;border-radius:12px;background:var(--mo-surface);color:var(--mo-primary);font-size:14px}
 .mk-goal-choices button[aria-pressed=true]{background:var(--mo-primary);color:var(--mo-white)}
-@media (prefers-reduced-motion:reduce){.mk-interest-delta{animation:none}}
+@media (prefers-reduced-motion:reduce){.mk-interest-delta{animation:none}.mk-week-progress-bar>i{transition:none}}
