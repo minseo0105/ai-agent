@@ -61,28 +61,31 @@ export const stockApi = {
   why: (code: string) => get<Why>(`/api/stock/why/${encodeURIComponent(code)}`),
 };
 
-// 생활 속 종목 찾기 — 마인드맵은 서버가 미리 그려 둔 것(또는 대기열로 그린 것)만 받는다.
-export type StageKey = "material" | "making" | "logistics" | "retail";
+// 뉴스 속 숨은 종목 — 서버가 미리 만든 것(또는 직접 입력을 대기열로 만든 것)만 받는다.
+// item = 뉴스(대표 기사 + 관련 기사) · AI 해석 · 관련 회사 지도(영향 경로 × 회사) · 실제 반응(등락률).
 export type LifeCompany = {
   code: string; name: string; relevance: "강" | "중" | "약"; reason: string;
+  direction?: "pos" | "neg"; // AI 해석: 긍정 영향 가능 / 부정 영향 가능
   market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null;
-  moved?: boolean; // 실제로 크게 움직인 회사(토픽 종목 또는 기준 시점 ±5% 이상)
+  moved?: boolean; // 실제 반응이 큼(±5% 이상)
 };
-export type LifeStage = { key: StageKey; label: string; detail: string; companies: LifeCompany[] };
-export type LifeArticle = { title: string; url: string; press: string; pub: string | null };
-export type LifeMap = { word: string; stages: LifeStage[]; ai: boolean; example?: boolean; model?: string; created_ts?: number; basis_label?: string; articles?: LifeArticle[] };
-export type LifeMovedStock = { code: string; name: string; rate: number };
-export type LifeTopic = {
-  name: string; title: string; impact: string; sector: string; stocks: LifeMovedStock[]; articles: LifeArticle[];
-  map: LifeMap; basis_label?: string; carried?: boolean; example?: boolean;
+export type LifeStage = { key: string; label: string; detail: string; companies: LifeCompany[] }; // 영향 경로
+export type LifeArticle = { title: string; url: string; press: string; pub: string | null; rep?: boolean };
+export type LifeMap = {
+  word: string; stages: LifeStage[]; interpretation?: string[]; ai: boolean; example?: boolean; model?: string; created_ts?: number;
+  basis_label?: string; reaction_label?: string;
+};
+export type LifeItem = {
+  name: string; title: string; summary: string; sector: string; articles: LifeArticle[]; map: LifeMap;
+  basis_label?: string; carried?: boolean; example?: boolean;
 };
 export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: string; label?: string };
 export type LifeOverview = {
-  day: string | null; basis: LifeBasis; topics: LifeTopic[]; hot: string[]; sectors: string[]; sector_maps: Record<string, LifeMap>;
+  day: string | null; basis: LifeBasis; topics: LifeItem[]; hot: string[]; sectors: string[]; sector_items: Record<string, LifeItem>;
   live: { enabled: boolean; per_session: number; window_min: number };
 };
 export type LifeWordStatus = "ready" | "queued" | "running" | "failed" | "busy" | "limited" | "daily_limit" | "unavailable" | "invalid" | "none";
-export type LifeWordResult = { status: LifeWordStatus; word: string; position?: number; message?: string; map?: LifeMap };
+export type LifeWordResult = { status: LifeWordStatus; word: string; position?: number; message?: string; item?: LifeItem };
 
 const SESSION_KEY = "stockon-session";
 /** 새 단어 1인 횟수 제한용 무작위 ID(개인정보 없음). 저장이 막힌 브라우저면 이번 화면에서만 쓴다. */
