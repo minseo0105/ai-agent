@@ -1,19 +1,27 @@
 # 시연 준비: 동시 접속·부하·접속 방법·일정 (2026-11-17 은행 임원 강의)
 
-## 다음 할 일 (2026-10-28 STOCK:ON 생활 속 종목 찾기 배포 후)
+## 다음 할 일 (2026-10-28 생활 속 종목 찾기 '증시를 움직인 뉴스' 개편 배포 후)
 
-**완료**: STOCK:ON 1단계·화면 수정·키움 수집기(public) 오라클 반영 · 모의 키 IP 등록 불필요 확인 · 머니온 AI 3기능(Haiku 5.5 `claude-haiku-5-5`)·아이 화면 개선·휴대폰 확인 반영 오라클 배포 · **STOCK:ON 생활 속 종목 찾기 오라클 배포(커밋 `711d633`, 시연 대표 기능)**.
+**완료**: STOCK:ON 1단계·화면 수정·키움 수집기(public) 오라클 반영 · 모의 키 IP 등록 불필요 확인 · 머니온 AI 3기능(Haiku 5.5 `claude-haiku-5-5`)·아이 화면 개선·휴대폰 확인 반영 오라클 배포 · **STOCK:ON 생활 속 종목 찾기 오라클 배포 → 같은 날 '증시를 움직인 뉴스'로 개편 배포(커밋 `614c071`, 시연 대표 기능)**.
 **미완료**: AI LAB AI 문지기·입력 차단 · 도메인·QR·`/demo` · STOCK:ON 3순위(종목 검색·온도계 권장, 테마·자금흐름은 보류) · 키움 장중 시험(11/4·11/6) · 부하 테스트(머니온은 `MONEYON_AI_FAKE=1`로, 생활 속 종목 찾기 새 단어 포함).
 
 **다음 세션 첫 단계**
-1. 휴대폰(카카오톡 인앱 포함)에서 `/stock?tab=life` 확인: 토픽 카드 넘기기, 단계 탭 → 회사 펼침, 핀치 줌, 회사 탭 → 아래 시트 → '왜 움직였나', 새 단어 대기 표시. 같은 날 `/moneyon/`도("체험 시작하기" 하나, 이자 카운터 정수·진행 막대, 기록 직후 ±n원, 승인 흐름).
-2. 10/29 아침 7시 이후 수집기가 토픽을 저절로 만들었는지: `docker exec stockon-collector cat data/admin/stockon/lifemap_status.json`(day=오늘, fresh=3).
-3. AI LAB 쪽 AI 문지기·입력 차단(1·3절) → 도메인·QR·`/demo`(5절).
-4. 부하 테스트 전에 머니온 `MONEYON_AI_FAKE=1`을 `.env.moneyon`에 임시로 넣는 방법 정리(끝나면 제거). 생활 속 종목 찾기는 대기열 상한(동시 3·대기 12·하루 150)으로 실제 호출이 묶이므로 가짜 모드 없이 새 단어 몇 개만 섞는다.
+1. 휴대폰(카카오톡 인앱 포함)에서 `/stock?tab=life` 확인: 이슈·섹터 칩, 큰 토픽 카드(무슨 일·증시 영향·움직인 종목), 처음부터 펼쳐진 지도·단계 탭 강조·핀치 줌, '실제' 표시, 회사 탭 → 아래 시트 → '왜 움직였나', 글씨 크기, 직접 입력 대기 표시. 같은 날 `/moneyon/`도("체험 시작하기" 하나, 이자 카운터 정수·진행 막대, 기록 직후 ±n원, 승인 흐름).
+2. 10/29 13시 이후(10/28 공공 시세가 들어온 뒤) 수집기가 '10/28 장 기준' 토픽을 저절로 만들었는지: `docker exec stockon-collector cat data/admin/stockon/lifemap_status.json`(basis_key=public:20261028, fresh≥3, rejects 확인). 모자라면 `docker compose exec -T stockon-collector python -m services.stockon.lifemap --topics`.
+3. 11/4·11/6 키움 장중 시험 때 키움 기준 토픽('n/n 장중 HH:MM 기준', 10시 이후)이 만들어지는지 함께 확인.
+4. AI LAB 쪽 AI 문지기·입력 차단(1·3절) → 도메인·QR·`/demo`(5절).
+5. 부하 테스트 전에 머니온 `MONEYON_AI_FAKE=1`을 `.env.moneyon`에 임시로 넣는 방법 정리(끝나면 제거). 생활 속 종목 찾기는 대기열 상한(동시 3·대기 12·하루 150)으로 실제 호출이 묶이므로 가짜 모드 없이 새 단어 몇 개만 섞는다.
 
 **배포 주의**: 키 값 출력 금지(이름·형식만) · 항상 `--no-deps`. 머니온 작업 → moneyon만, STOCK:ON 작업 → `docker compose build ailab && up -d --no-deps ailab stockon-collector`(같은 이미지), 그 밖의 컨테이너 시작 시각 비교 · Caddyfile은 파일 bind mount라 `git pull` 뒤 `caddy reload --config /dev/stdin --adapter caddyfile < Caddyfile`(관리 API 127.0.0.1:2019) · HF 머니온 Space는 손대지 않음 · 서버 키 파일: `.env.docker`(ailab), `.env.stockon`(키움), `.env.lifemap`(수집기의 토픽 생성용 세 줄), `.env.moneyon` — 모두 600.
 
 ### 배포 기록 (최근 순)
+
+**10-28 생활 속 종목 찾기 개편: 증시를 움직인 뉴스** (커밋 `47845cc`~`614c071`, 구조는 STOCKON_PLAN.md '생활 속 종목 찾기')
+- 사용자 휴대폰 확인 결과 '와닿지 않음' → 토픽을 생활 뉴스에서 **실제로 크게 움직인 종목 → 원인 뉴스**(특징주·관련주·시황·해외 이슈)로 바꿈. 공공 기준일과 뉴스 창을 맞춰 'n/n 장 기준' 표시(키움 모드면 장중 기준). 새 키움 TR 없음.
+- 화면: 이슈·섹터 칩 2줄 + 직접 입력, 큰 카드(무슨 일·증시 영향·움직인 종목), 처음부터 펼친 지도·단계 탭 강조, '실제' 표시, 근거 기사 맨 아래. 휴대폰 본문 15~16px·제목 24px·지도 회사 이름 13.6px(헤드리스 390 측정).
+- 테스트 58개 통과(`test_stockon` 31 + `test_stockon_lifemap` 27), `tsc`·`next build --webpack` 통과, 로컬·공개 주소 헤드리스 390·1440(가로 넘침 0, 단계 강조·회사 상세·섹터 전환, JS 오류 0).
+- 오라클: `ailab`·`stockon-collector`만 `--no-deps` 재생성 3회(`36fb181`, `614c071` 등), 마지막 10-28 05:00:58(UTC), ailab healthy·재시작 0. **`moneyon` 10-28 01:51:13 · `ailab-caddy` 10-27 00:05:56 그대로**.
+- 오늘 토픽 다시 생성: 첫 자동 생성은 '반도체'·'반도체장비'가 다른 섹터로 통과하고 2개만 남아 다른 날 예시가 섞임 → 같은 섹터 판정·예시 섞지 않기 수정 후 `--topics` 실행 → **10/27 장 기준 4개**: 앤트로픽 훈풍에 대형 반도체주 급등(SK하이닉스 +5.2%) · AI 보안 수요 부각에 보안주 급등(샌즈랩 +23.9%) · 현대차그룹 로봇 부품 공급 소식에 로봇주 상한가(나무가 +30.0%) · 전장 카메라 성장 소식에 전장부품주 급등(엠씨넥스 +22.2%). 섹터 10개 모두 생성. 10/28 서버 사용량 합계(첫 배포 포함): Haiku 4회(입력 약 5.7만·출력 약 0.4만 토큰)·Sonnet 28회(입력 약 4.6만·출력 약 1.0만), 로컬 예시 생성 별도.
 
 **10-28 STOCK:ON 생활 속 종목 찾기** (커밋 `c612757`~`711d633`, 자세한 구조는 STOCKON_PLAN.md '생활 속 종목 찾기')
 - `/stock` 두 번째 탭(`?tab=life`). 오늘의 토픽 3개(Haiku 5.5 선정·근거 기사 2개) · 예시 칩 5개 · 새 단어(Sonnet 5.5, 대기열) · SVG 마인드맵(탭 코드 gzip 8KB) · 회사 → '왜 관련 있나' → 기존 '왜 움직였나'.
@@ -186,7 +194,7 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 - [ ] 관리자 `/admin`: 사이트 '모두 공개', 시연 서비스 공개, 미사용 서비스 숨김, 공지 배너 꺼짐
 - [ ] 관리자 `/admin/stockon`: 수집 상태 모두 성공, AI 상태 '정상', 기준일 = 11/16, 팀 관심 종목 확인, 모의 키 만료일 11/27
 - [ ] 머니온: 체험 통장 대기 수 ≥ 60, `MONEYON_AI_ENABLED=1`, 하루 비용 상한 값 확인
-- [ ] 생활 속 종목 찾기: `docker exec stockon-collector cat data/admin/stockon/lifemap_status.json`이 day=11-17·fresh=3(아니면 `docker compose exec -T stockon-collector python -m services.stockon.lifemap --daily`), `/stock?tab=life`에서 토픽 3개·예시 칩 5개가 '준비된 예시'가 아닌지
+- [ ] 생활 속 종목 찾기: 09시에는 11/13(금) 장 기준 토픽이 정상. **13:00 키움 전환 뒤 10~15분 안에** `docker exec stockon-collector cat data/admin/stockon/lifemap_status.json`이 basis_key=kiwoom:20261117:open·fresh≥3인지(화면 '11/17 장중 HH:MM 기준'). 키움을 못 쓰면 13시 이후 11/16 공공 시세가 들어와 '11/16 장 기준'으로 바뀜. 모자라면 `docker compose exec -T stockon-collector python -m services.stockon.lifemap --topics`. 이슈·섹터에 '준비된 예시'가 없는지
 
 **키움 시세 전환 (13:00~13:30)**
 - [ ] 서버 `.env.stockon`에서 `STOCKON_PRICE_SOURCE=kiwoom` → `docker compose up -d --no-deps --force-recreate stockon-collector`
