@@ -324,6 +324,102 @@ class ReactionTest(LifemapBase):
         self.assertFalse(lifemap.rates_due(now))  # 30분 안에는 다시 하지 않음
 
 
+class LinkAndOppositeTest(LifemapBase):
+    """같은 업종만으로 넣은 회사는 연관도 '약', 해석과 반대로 ±3% 이상 움직인 회사는 같은 날 뉴스로 다른 이유 한 줄."""
+
+    def test_same_industry_forced_weak_and_prompt_rules(self):
+        stocks, index, _ = lifemap.directory()
+        raw = {"paths": [{"label": "신뢰 하락", "detail": "", "companies": [
+            {"name": "KT", "direction": "부정", "link": "같은 업종", "relevance": "강", "reason": "같은 통신 업종이다"},
+            {"name": "SK텔레콤", "direction": "부정", "link": "직접 당사자", "relevance": "강", "reason": "유출이 알려진 통신사다"}]}]}
+        paths, _ = lifemap.validate_paths(raw, index, stocks)
+        got = {c["name"]: (c["relevance"], c.get("link")) for c in paths[0]["companies"]}
+        self.assertEqual(got, {"KT": ("약", "같은 업종"), "SK텔레콤": ("강", "직접 당사자")})
+        self.assertIn("'같은 업종'이라는 이유만으로는 넣지 않는다", lifemap.INTERP_SYSTEM)
+        self.assertIn("link", lifemap.INTERP_SCHEMA["properties"]["paths"]["items"]["properties"]["companies"]["items"]["required"])
+
+    def test_opposite_rule(self):
+        o = lifemap.opposite
+        self.assertTrue(o({"direction": "neg", "rate": 7.1}))
+        self.assertTrue(o({"direction": "pos", "rate": -3.0}))
+        self.assertFalse(o({"direction": "neg", "rate": 2.9}))   # 3% 미만
+        self.assertFalse(o({"direction": "neg", "rate": -6.0}))  # 같은 방향
+        self.assertFalse(o({"direction": "pos", "rate": None}))
+
+    def _topic_with_opposites(self, answers):
+        # KT(부정 해석, +7.1%)·이마트(긍정 해석, -4%)는 반대, SK텔레콤(부정, -6%)은 같은 방향
+        rates = {"030200": 7.1, "139480": -4.0, "017670": -6.0}
+        interp = {"interpretation": ["유출 기업은 보상 비용이 생길 수 있다."], "paths": [
+            {"label": "보상 비용", "detail": "", "companies": [
+                {"name": "SK텔레콤", "direction": "부정", "link": "직접 당사자", "relevance": "강", "reason": "유출이 알려진 통신사다"},
+                {"name": "KT", "direction": "부정", "link": "같은 업종", "relevance": "중", "reason": "같은 통신 업종이다"}]},
+            {"label": "소비 위축", "detail": "", "companies": [
+                {"name": "이마트", "direction": "긍정", "link": "사업 연결", "relevance": "약", "reason": "통신 결합 할인 고객이 많다"}]}]}
+        issue = {"topics": [{"title": "통신사 개인정보 유출", "summary": "고객 정보가 유출됐다", "keyword": "개인정보 유출",
+                             "sector": "통신", "articles": [1, 2], "representative": 1}]}
+        company_news = {
+            "KT": [{"title": "KT 3분기 실적 발표, 영업이익 증가", "url": "https://news.example/kt", "press": "a.kr",
+                    "pub": "2026-10-27T11:00:00+09:00", "snippet": ""},
+                   {"title": "기사 1 KT", "url": ARTICLES[0]["url"], "press": "b.kr", "pub": None, "snippet": ""}],
+            "이마트": [],
+        }
+        calls = []
+
+        def fake_ask(model, system, task, payload, schema, *a, **kw):
+            if schema is lifemap.OTHER_SCHEMA:
+                calls.append(payload)
+                return answers[payload["회사"]]
+            return issue if model == lifemap.TOPIC_MODEL else interp
+
+        def fake_window(q, start, end, **kw):
+            return company_news.get(q, [])
+
+        basis = {**self.basis(), "rates": rates}
+        with mock.patch.object(lifemap, "collect_issue_news", return_value=ARTICLES),                 mock.patch.object(lifemap, "_ask", side_effect=fake_ask),                 mock.patch.object(news, "search_window", side_effect=fake_window) as sw:
+            data = lifemap.run_topics(basis)
+        return data, calls, sw
+
+    def test_opposite_companies_get_other_reason_once_at_creation(self):
+        data, calls, sw = self._topic_with_opposites({"KT": {"article": 1, "reason": "3분기 실적 발표"}})
+        companies = {c["name"]: c for s in data["topics"][0]["map"]["stages"] for c in s["companies"]}
+        self.assertEqual(companies["KT"]["other"], {"text": "다른 이유로 움직였을 수 있어요: 3분기 실적 발표",
+                                                    "title": "KT 3분기 실적 발표, 영업이익 증가", "url": "https://news.example/kt"})
+        self.assertEqual(companies["이마트"]["other"], {"text": lifemap.OTHER_FALLBACK})  # 같은 날 기사가 없으면 기본 문구
+        self.assertNotIn("other", companies["SK텔레콤"])  # 해석과 같은 방향
+        self.assertEqual(len(calls), 1)  # 기사가 있는 회사만 Haiku
+        self.assertEqual([x["제목"] for x in calls[0]["기사"]], ["KT 3분기 실적 발표, 영업이익 증가"])  # 이슈 기사는 빼고
+        self.assertEqual(sorted(c.args[0] for c in sw.call_args_list), ["KT", "이마트"])
+
+        # 화면을 읽을 때는 AI·검색을 다시 부르지 않고 저장된 것을 쓴다
+        with mock.patch.object(lifemap, "_ask", side_effect=AssertionError),                 mock.patch.object(news, "search_window", side_effect=AssertionError):
+            view = lifemap.overview()
+        shown = {c["name"]: c for s in view["topics"][0]["map"]["stages"] for c in s["companies"]}
+        self.assertTrue(shown["KT"]["opposite"])
+        self.assertEqual(shown["KT"]["other"]["url"], "https://news.example/kt")
+        self.assertFalse(shown["SK텔레콤"]["opposite"])
+        self.assertNotIn("other", shown["SK텔레콤"])
+
+    def test_bad_or_unsafe_answer_falls_back(self):
+        for answer in ({"article": 0, "reason": "없음"}, {"article": 9, "reason": "실적"}, {"article": 1, "reason": "매수 기회"}):
+            data, _, _ = self._topic_with_opposites({"KT": answer})
+            kt = next(c for s in data["topics"][0]["map"]["stages"] for c in s["companies"] if c["name"] == "KT")
+            self.assertEqual(kt["other"], {"text": lifemap.OTHER_FALLBACK}, answer)
+
+    def test_live_rate_decides_whether_note_shows(self):
+        item = {"name": "x", "title": "t", "articles": [], "map": {"word": "x", "basis_label": "10/27 장 기준", "stages": [
+            {"key": "p0", "label": "비용", "detail": "", "companies": [
+                {"code": "030200", "name": "KT", "relevance": "약", "reason": "r", "direction": "neg", "rate": 7.1,
+                 "other": {"text": "다른 이유로 움직였을 수 있어요: 3분기 실적 발표", "url": "https://news.example/kt", "title": "t"}},
+                {"code": "017670", "name": "SK텔레콤", "relevance": "강", "reason": "r", "direction": "pos", "rate": 1.0}]}]}}
+        lifemap.save_live_rates({"030200": 1.2, "017670": -3.5}, datetime.now(KST))
+        out = lifemap.with_reaction(item, lifemap._live_rates())
+        kt, skt = out["map"]["stages"][0]["companies"]
+        self.assertFalse(kt["opposite"])
+        self.assertNotIn("other", kt)  # 장중에 반대가 아니게 되면 숨김
+        self.assertTrue(skt["opposite"])
+        self.assertEqual(skt["other"], {"text": lifemap.OTHER_FALLBACK})  # 새로 반대가 되면 기본 문구(AI 재호출 없음)
+
+
 class LiveQueueTest(LifemapBase):
     def test_cached_word_returns_immediately(self):
         store.write("lifemap_words", {"붕어빵": {**EXAMPLE_ITEM, "name": "붕어빵"}})

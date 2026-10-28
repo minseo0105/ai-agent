@@ -37,6 +37,30 @@
   }
 }
 
+/* STOCK:ON(/stock) 전용 어두운 남색 테마. 페이지·헤더·탭·본문·사이트 푸터까지 한 배경으로.
+   .stockon-theme이 화면에 있을 때만 :root 변수를 바꾼다(다른 앱은 그대로). 브라우저가 라이트 모드여도 dark: 색을 쓴다. */
+:root:has(.stockon-theme) {
+  color-scheme: dark;
+  --bg: #071226;
+  --surface: #0d1c38;
+  --surface-muted: #13264a;
+  --border: #1f3561;
+  --text: #e8eef8;
+  --text-muted: #a3b3cf;
+  --text-subtle: #7486a8;
+  --accent: #60a5fa;
+  --accent-strong: #3b82f6;
+  --accent-soft: #12264d;
+}
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+  &:where(.stockon-theme, .stockon-theme *) {
+    @slot;
+  }
+}
+
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -88,6 +112,13 @@ body {
 .prose-answer table { width: 100%; border-collapse: collapse; font-size: 0.88rem; display: block; overflow-x: auto; }
 .prose-answer th, .prose-answer td { border: 1px solid var(--border); padding: 0.4em 0.6em; text-align: left; }
 .prose-answer th { background: var(--surface-muted); font-weight: 700; }
+
+/* STOCK:ON 가로 스크롤 줄: 스크롤바는 숨기고 끝이 흐려져서 더 있다는 것을 보여 준다(LifeFinder.tsx FadeRow). */
+.so-row { scrollbar-width: none; }
+.so-row::-webkit-scrollbar { display: none; }
+.so-row[data-fade="end"] { mask-image: linear-gradient(to right, #000 calc(100% - 44px), transparent); }
+.so-row[data-fade="start"] { mask-image: linear-gradient(to right, transparent, #000 44px); }
+.so-row[data-fade="both"] { mask-image: linear-gradient(to right, transparent, #000 44px, #000 calc(100% - 44px), transparent); }
 
 /* STOCK:ON 생활 속 종목 찾기 마인드맵(MindMap.tsx). transform·opacity·stroke-dashoffset만 움직인다(휴대폰 GPU). */
 .lm-branch { transition: stroke-dashoffset 650ms cubic-bezier(.22,.8,.3,1); }

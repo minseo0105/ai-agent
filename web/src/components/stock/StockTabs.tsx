@@ -32,17 +32,18 @@ export default function StockTabs() {
 
   return (
     <>
-      <div role="tablist" aria-label="STOCK:ON 화면" className="grid grid-cols-2 gap-1 rounded-2xl bg-surface-muted p-1">
+      {/* 어두운 배경 위 세그먼트 버튼 */}
+      <div role="tablist" aria-label="STOCK:ON 화면" className="grid grid-cols-2 gap-1 rounded-2xl bg-white/[0.05] p-1 ring-1 ring-white/10">
         {TABS.map(([t, label]) => (
           <button key={t} role="tab" type="button" aria-selected={tab === t} onClick={() => choose(t)}
             className={`rounded-xl px-3 py-2.5 text-[15px] font-extrabold transition ${tab === t
-              ? t === "news" ? "bg-[#0a1a38] text-white shadow-[0_0_18px_rgba(56,189,248,.35)]" : "bg-surface text-fg shadow-sm"
-              : "text-muted hover:text-fg"}`}>
+              ? "bg-white/[0.12] text-white shadow-[inset_0_0_0_1px_rgba(125,211,252,.35),0_0_16px_rgba(56,189,248,.18)]"
+              : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-100"}`}>
             {label}
           </button>
         ))}
       </div>
-      <p className="mb-3 mt-2 text-center text-[14px] font-semibold text-muted">
+      <p className="mb-3 mt-2 text-center text-[14px] font-semibold text-slate-400">
         {tab === "news" ? "뉴스 한 줄에 연결된 회사들, AI가 찾아드려요" : "지수 · 히트맵 · 등락 상위 · 팀 관심 종목 · 뉴스 · 일정"}
       </p>
       <div role="tabpanel" hidden={tab !== "news"}><LifeFinder /></div>

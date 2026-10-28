@@ -62,12 +62,15 @@ export const stockApi = {
 };
 
 // 뉴스 속 숨은 종목 — 서버가 미리 만든 것(또는 직접 입력을 대기열로 만든 것)만 받는다.
-// item = 뉴스(대표 기사 + 관련 기사) · AI 해석 · 관련 회사 지도(영향 경로 × 회사) · 실제 반응(등락률).
+// item = 뉴스(대표 기사 + 관련 기사) · AI 해석 · 관련 회사 지도(영향 경로 × 회사) · 실제 등락(등락률, 인과를 단정하지 않는다).
 export type LifeCompany = {
   code: string; name: string; relevance: "강" | "중" | "약"; reason: string;
   direction?: "pos" | "neg"; // AI 해석: 긍정 영향 가능 / 부정 영향 가능
   market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null;
-  moved?: boolean; // 실제 반응이 큼(±5% 이상)
+  moved?: boolean; // 실제 등락이 큼(±5% 이상)
+  link?: "직접 당사자" | "사업 연결" | "같은 업종"; // 뉴스와 이어지는 방식(같은 업종만이면 연관도 '약')
+  opposite?: boolean; // AI 해석 방향과 반대로 ±3% 이상 움직임
+  other?: { text: string; title?: string; url?: string }; // 그때 붙이는 다른 이유 한 줄(이슈를 만들 때 한 번 저장)
 };
 export type LifeStage = { key: string; label: string; detail: string; companies: LifeCompany[] }; // 영향 경로
 export type LifeArticle = { title: string; url: string; press: string; pub: string | null; rep?: boolean };

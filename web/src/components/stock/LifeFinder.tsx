@@ -1,10 +1,11 @@
 "use client";
 
-// 뉴스 속 숨은 종목 탭: 오늘의 뉴스 → AI 해석 → 관련 회사 지도 → AI 해석 vs 실제 반응.
-// 순서: 헤더(기준 시각) → 뉴스 카드(이슈별로 옆으로 넘기기) → AI 해석 → 관련 회사 지도 → 해석 vs 실제 반응 → 다른 이슈·섹터 → 고지.
+// 뉴스 속 숨은 종목 탭: 오늘의 뉴스 → AI 해석 → 관련 회사 지도 → AI 해석 vs 실제 등락.
+// 순서: 헤더(기준 시각) → 뉴스 카드(이슈별로 옆으로 넘기기) → AI 해석 → 관련 회사 지도 → 해석 vs 실제 등락 → 다른 이슈·섹터 → 고지.
+// 배경은 STOCK:ON 페이지 남색 하나(globals.css .stockon-theme). 이슈 색은 카드 테두리·작은 점·은은한 빛에만 쓴다.
 // 서버가 미리 만든 것을 읽기만 한다(직접 입력한 단어만 대기열로 AI를 부른다 — WordInput).
 // 휴대폰(640px 미만)에서는 바깥 상자 테두리·모서리·양옆 여백 없이 화면 끝까지. 글씨: 본문 15px+, 섹션 제목 18px+, 지도 회사 이름 13px+.
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import MindMap, { NEG, POS, pathColor, rateColor, rateText } from "@/components/stock/MindMap";
 import { WhyBody } from "@/components/stock/StockOn";
 import {
@@ -61,8 +62,8 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
   return (
     <article onClick={onSelect} aria-current={active}
       className="flex w-[86vw] max-w-[560px] shrink-0 snap-center flex-col rounded-3xl p-4 sm:w-[520px]"
-      style={{ border: `2px solid ${active ? accent : `${accent}66`}`, background: `linear-gradient(150deg, ${accent}40 0%, ${accent}12 45%, rgba(5,13,31,.6) 100%)`,
-        boxShadow: active ? `0 0 28px ${accent}55` : "none" }}>
+      style={{ border: `1.5px solid ${active ? `${accent}b3` : "rgba(255,255,255,.1)"}`, background: "rgba(255,255,255,.04)",
+        boxShadow: active ? `0 0 24px ${accent}29` : "none" }}>
       <div className="flex items-center justify-between gap-2 text-[14px] font-extrabold">
         <span className="flex items-center gap-1.5 text-white">
           <span className="size-2.5 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
@@ -116,10 +117,23 @@ const Dir = ({ d }: { d?: "pos" | "neg" }) => (
   </span>
 );
 
+function OtherNote({ c }: { c: LifeCompany }) {
+  if (!c.opposite || !c.other) return null;
+  return (
+    <p className="text-[14px] leading-snug text-slate-300">
+      <span className="font-extrabold text-amber-100">해석과 반대로 움직였어요</span> · {c.other.text}
+      {c.other.url && (
+        <> · <a href={c.other.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
+          title={c.other.title} className="font-bold text-sky-200 underline underline-offset-2">기사 ↗</a></>
+      )}
+    </p>
+  );
+}
+
 function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: string; onPick: (c: LifeCompany, s: LifeStage, color: string) => void }) {
   const rows = item.map.stages.flatMap((s, i) => s.companies.map((c) => ({ c, s, color: pathColor(i) })));
   return (
-    <div className="overflow-hidden rounded-2xl" style={{ border: `1.5px solid ${accent}88`, background: `linear-gradient(180deg, ${accent}22, rgba(255,255,255,.03))` }}>
+    <div className="overflow-hidden rounded-2xl bg-white/[0.03]" style={{ border: `1px solid ${accent}55` }}>
       <table className="w-full text-left text-[15px]">
         <thead>
           <tr className="text-[14px] text-slate-200">
@@ -130,22 +144,29 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
         </thead>
         <tbody>
           {rows.map(({ c, s, color }) => (
-            <tr key={c.code} onClick={() => onPick(c, s, color)} className="cursor-pointer border-t border-white/10 hover:bg-white/5">
-              <td className="px-3 py-2.5">
-                <div className="font-extrabold text-white">{c.name}</div>
-                <div className="text-[14px] font-semibold" style={{ color }}>{s.label}</div>
-              </td>
-              <td className="px-2 py-2.5"><Dir d={c.direction} /></td>
-              <td className="px-3 py-2.5 text-right">
-                <div className="text-[17px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
-                {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 반응 큼</div>}
-              </td>
-            </tr>
+            <Fragment key={c.code}>
+              <tr onClick={() => onPick(c, s, color)} className="cursor-pointer border-t border-white/10 hover:bg-white/5">
+                <td className="px-3 py-2.5">
+                  <div className="font-extrabold text-white">{c.name}</div>
+                  <div className="text-[14px] font-semibold" style={{ color }}>{s.label}</div>
+                </td>
+                <td className="px-2 py-2.5"><Dir d={c.direction} /></td>
+                <td className="px-3 py-2.5 text-right">
+                  <div className="text-[17px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
+                  {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 등락 큼</div>}
+                </td>
+              </tr>
+              {c.opposite && c.other && (
+                <tr onClick={() => onPick(c, s, color)} className="cursor-pointer hover:bg-white/5">
+                  <td colSpan={3} className="px-3 pb-2.5 pt-0"><OtherNote c={c} /></td>
+                </tr>
+              )}
+            </Fragment>
           ))}
         </tbody>
       </table>
       <p className="border-t border-white/10 px-3 py-2 text-[14px] text-slate-200">
-        실제 등락률: {item.map.reaction_label || "기준 시점"} · AI 해석과 실제 반응을 나란히 보여 줄 뿐, 맞고 틀림을 매기지 않아요.
+        실제 등락률: {item.map.reaction_label || "기준 시점"} · AI 해석과 실제 등락을 나란히 보여 줄 뿐, 이 뉴스 때문에 움직였다는 뜻은 아니에요.
       </p>
     </div>
   );
@@ -185,7 +206,7 @@ function Detail({ pick, label, onClose }: { pick: Pick; label?: string; onClose?
           <p className="text-[14px] text-slate-300">{c.code}{c.market ? ` · ${c.market}` : ""} · 연관도 {c.relevance}</p>
         </div>
         <div className="shrink-0 whitespace-nowrap text-right">
-          {c.moved && <div className="mb-0.5 text-[14px] font-extrabold text-amber-200">실제 반응 큼</div>}
+          {c.moved && <div className="mb-0.5 text-[14px] font-extrabold text-amber-200">실제 등락 큼</div>}
           <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
           <div className="text-[14px] text-slate-300">{label || "실제 등락률"}</div>
         </div>
@@ -195,6 +216,7 @@ function Detail({ pick, label, onClose }: { pick: Pick; label?: string; onClose?
         <div className="text-[15px] font-extrabold text-sky-200">왜 관련 있나</div>
         <p className="mt-1 text-[16px] font-bold leading-relaxed text-white">{c.reason}</p>
         <p className="mt-1.5 text-[14px] text-slate-300">🤖 AI가 해석했어요 · 영향을 받을 수 있다는 해석이며 틀릴 수 있어요</p>
+        {c.opposite && c.other && <div className="mt-2.5 border-t border-white/10 pt-2.5"><OtherNote c={c} /></div>}
       </div>
       {!why && !loading && (
         <button type="button" onClick={loadWhy} className="mt-3 w-full rounded-2xl bg-sky-400 py-3 text-[16px] font-extrabold text-[#071226] hover:bg-sky-300">
@@ -244,11 +266,31 @@ function WordInput({ disabled, onSubmit }: { disabled: boolean; onSubmit: (w: st
 function Chip({ on, onClick, children, color }: { on: boolean; onClick: () => void; children: React.ReactNode; color: string }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={on}
-      className="shrink-0 rounded-full px-3.5 py-2 text-[15px] font-extrabold ring-1 transition"
-      style={on ? { background: "#fff", color: "#071226" } : { background: `${color}26`, color: "#fff", boxShadow: `inset 0 0 0 1px ${color}88` }}>
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-[15px] font-extrabold ring-1 transition ${on
+        ? "bg-white text-[#071226] ring-white" : "bg-white/[0.06] text-white ring-white/15 hover:bg-white/10"}`}>
+      <span className="size-2 rounded-full" style={{ background: color, boxShadow: on ? "none" : `0 0 6px ${color}` }} />
       {children}
     </button>
   );
+}
+
+// 가로 스크롤 줄: 스크롤바 없이, 더 있는 쪽 끝을 흐리게(globals.css .so-row)
+function FadeRow({ className, children, label }: { className: string; children: React.ReactNode; label: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [fade, setFade] = useState("none");
+  const update = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const start = el.scrollLeft > 4, end = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+    setFade(start && end ? "both" : start ? "start" : end ? "end" : "none");
+  }, []);
+  useEffect(() => {
+    update();
+    const ro = new ResizeObserver(update);
+    if (ref.current) ro.observe(ref.current);
+    return () => ro.disconnect();
+  }, [update, children]);
+  return <div ref={ref} onScroll={update} data-fade={fade} aria-label={label} className={`so-row ${className}`}>{children}</div>;
 }
 
 export default function LifeFinder() {
@@ -352,7 +394,7 @@ export default function LifeFinder() {
   }
 
   if (error && !data) return <p className="rounded-xl bg-red-500/10 px-3 py-2.5 text-[15px] text-red-600 dark:text-red-400">{error}</p>;
-  if (!data) return <div className="-mx-4 bg-[#071226] py-24 text-center text-[15px] text-slate-200 sm:mx-0 sm:rounded-3xl">뉴스를 불러오는 중…</div>;
+  if (!data) return <div className="rounded-3xl bg-white/[0.03] py-24 text-center text-[15px] text-slate-200 ring-1 ring-white/10">뉴스를 불러오는 중…</div>;
 
   const item: LifeItem | undefined = view.kind === "topics" ? data.topics[active] : view.kind === "sector" ? data.sector_items[view.name] : words[view.word];
   const accent = accentFor(item, view.kind === "topics" ? active : 0);
@@ -360,9 +402,7 @@ export default function LifeFinder() {
   const label = item?.map.reaction_label;
 
   return (
-    <div ref={top} className="lifemap-shell relative -mx-4 scroll-mt-2 overflow-hidden px-4 pb-8 pt-5 text-slate-100 sm:mx-0 sm:rounded-3xl sm:p-6 sm:shadow-xl"
-      style={{ background: `linear-gradient(180deg, ${accent}55 0%, #0b1d40 22%, #071430 55%, #050d1f 100%)`, transition: "background 400ms" }}>
-      <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(1px_1px_at_20%_30%,#fff_50%,transparent_51%),radial-gradient(1px_1px_at_70%_20%,#fff_50%,transparent_51%),radial-gradient(1px_1px_at_40%_80%,#fff_50%,transparent_51%),radial-gradient(1px_1px_at_85%_65%,#fff_50%,transparent_51%),radial-gradient(1px_1px_at_10%_75%,#fff_50%,transparent_51%)]" />
+    <div ref={top} className="lifemap-shell relative scroll-mt-2 pb-8 pt-3 text-slate-100">
       <div className="relative">
         {/* 헤더 */}
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -389,7 +429,7 @@ export default function LifeFinder() {
                 ))}
               </div>
             </div>
-            <div ref={rail} onScroll={onRailScroll} className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0" aria-label="오늘의 이슈">
+            <div ref={rail} onScroll={onRailScroll} className="so-row -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0" aria-label="오늘의 이슈">
               {data.topics.map((t, i) => (
                 <NewsCard key={t.name} item={t} accent={accentFor(t, i)} basis={basisYmd} index={i} total={data.topics.length}
                   active={i === active} onSelect={() => i !== active && goTopic(i)} />
@@ -409,7 +449,7 @@ export default function LifeFinder() {
             <div className="space-y-9">
               {/* AI 해석 */}
               <section aria-label="AI 해석">
-                <SectionTitle badge={<span className="rounded-full bg-gradient-to-r from-sky-400/30 to-violet-400/30 px-2.5 py-1 text-[14px] font-extrabold text-sky-50 ring-1 ring-sky-300/40">🤖 AI가 해석했어요</span>}>
+                <SectionTitle badge={<span className="rounded-full bg-white/10 px-2.5 py-1 text-[14px] font-extrabold text-sky-50 ring-1 ring-sky-300/30">🤖 AI가 해석했어요</span>}>
                   AI 해석
                 </SectionTitle>
                 {item.map.interpretation?.length ? (
@@ -443,7 +483,7 @@ export default function LifeFinder() {
                       </ul>
                       <p>
                         <span className="font-extrabold" style={{ color: POS }}>＋ 긍정 영향 가능</span> · <span className="font-extrabold" style={{ color: NEG }}>－ 부정 영향 가능</span>(AI 해석) ·
-                        버블이 클수록 연관이 커요 · <b className="text-white">빛나는 테두리 = 실제 반응</b>(±5% 이상) · 숫자는 {label || "실제 등락률"}
+                        버블이 클수록 연관이 커요 · <b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(±5% 이상) · 숫자는 {label || "실제 등락률"}
                       </p>
                     </div>
                   </>
@@ -452,16 +492,16 @@ export default function LifeFinder() {
                 )}
               </section>
 
-              {/* AI 해석 vs 실제 반응 */}
+              {/* AI 해석 vs 실제 등락 */}
               {item.map.stages.length > 0 && (
-                <section aria-label="AI 해석 vs 실제 반응">
-                  <SectionTitle>AI 해석 vs 실제 반응</SectionTitle>
+                <section aria-label="AI 해석 vs 실제 등락">
+                  <SectionTitle>AI 해석 vs 실제 등락</SectionTitle>
                   <ReactionTable item={item} accent={accent} onPick={(c, s, color) => setPick({ c, s, color })} />
                 </section>
               )}
             </div>
             <aside className="hidden lg:block">
-              <div className="sticky top-4 rounded-3xl bg-white/[0.06] p-5 ring-1 ring-white/15">
+              <div className="sticky top-4 rounded-3xl bg-white/[0.04] p-5 ring-1 ring-white/10">
                 {pick ? <Detail pick={pick} label={label} /> : (
                   <div className="py-12 text-center text-slate-200">
                     <div className="text-3xl">🔍</div>
@@ -477,7 +517,7 @@ export default function LifeFinder() {
         {/* 다른 이슈·섹터 보기 */}
         <section aria-label="다른 이슈·섹터 보기" className="mt-10">
           <SectionTitle>다른 이슈·섹터 보기</SectionTitle>
-          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+          <FadeRow label="이슈·섹터 고르기" className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
             <span className="shrink-0 text-[15px] font-extrabold text-rose-100">🔥 지금 뜨는 이슈</span>
             {data.topics.map((t, i) => (
               <Chip key={t.name} color={accentFor(t, i)} on={view.kind === "topics" && active === i} onClick={() => goTopic(i)}>{t.name}</Chip>
@@ -489,7 +529,7 @@ export default function LifeFinder() {
             {Object.keys(words).map((w) => (
               <Chip key={`w-${w}`} color="#94a3b8" on={view.kind === "word" && view.word === w} onClick={() => goOther({ kind: "word", word: w })}>{w}</Chip>
             ))}
-          </div>
+          </FadeRow>
           {data.live.enabled ? (
             <WordInput disabled={!!drawing} onSubmit={draw} />
           ) : (
@@ -498,7 +538,7 @@ export default function LifeFinder() {
           {notice && <p className="mt-2 rounded-xl bg-amber-400/15 px-3 py-2.5 text-[15px] font-bold text-amber-100 ring-1 ring-amber-300/30" role="status">{notice}</p>}
         </section>
 
-        <footer className="mt-10 rounded-2xl bg-black/30 p-4 text-[15px] leading-relaxed text-slate-200 ring-1 ring-white/15">
+        <footer className="mt-10 rounded-2xl bg-white/[0.03] p-4 text-[15px] leading-relaxed text-slate-300 ring-1 ring-white/10">
           <p className="font-extrabold text-white">ⓘ 투자 권유가 아닌 참고 정보 · AI 해석은 틀릴 수 있어요</p>
           <p className="mt-1">
             뉴스를 읽고 영향을 받을 수 있는 회사를 AI가 해석한 것이며, 주가 방향을 말하지 않아요. 금융위원회 공공데이터 상장 종목 목록에 있는

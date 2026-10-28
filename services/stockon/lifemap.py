@@ -1,10 +1,13 @@
-"""뉴스 속 숨은 종목: 오늘의 뉴스 → AI 해석(영향 경로) → 영향을 받을 수 있는 회사 → 실제 반응(사후 확인).
+"""뉴스 속 숨은 종목: 오늘의 뉴스 → AI 해석(영향 경로) → 영향을 받을 수 있는 회사 → 실제 등락(사후 확인, 인과를 단정하지 않는다).
 
 - 토픽 = 기준 뉴스 창에서 증시에 영향을 줄 만한 국내외 뉴스(정책·금리·환율·유가·국제 정세·산업 동향·기업 사건사고).
   수집기(stockon-collector)가 기사를 모으고 → Haiku 5.5가 여러 언론이 다룬 이슈를 3~5개(서로 다른 섹터) 묶어
   대표 기사 1개 + 관련 기사(토픽당 최대 6개)를 고르고 → 토픽마다 Sonnet 5.5가 'AI 해석' 2~3줄과
   영향 경로(수요 증가·원가 상승·규제·경쟁 변화 등) × 경로당 회사 2곳(긍정 가능/부정 가능·연관도·왜 관련 있나)을 만든다.
-  등락 순위는 토픽 선정에 쓰지 않는다. 회사마다 '실제 반응'(등락률)을 붙이는 데에만 쓴다.
+  등락 순위는 토픽 선정에 쓰지 않는다. 회사마다 '실제 등락'(등락률)을 붙이는 데에만 쓴다.
+- 회사는 뉴스의 직접 당사자이거나 구체적인 사업 연결(제품·고객·공급·규제)이 있을 때만. 같은 업종일 뿐이면 연관도 '약'.
+- 해석 방향과 반대로 ±3% 이상 움직인 회사는 이슈를 만들 때 한 번만, 그 회사의 같은 날 뉴스(NAVER)로 Haiku가
+  '다른 이유로 움직였을 수 있어요: …' 한 줄 + 기사 링크를 붙여 저장한다. 못 찾으면 '이 뉴스 외 다른 요인일 수 있어요'.
 - 기준(basis): 공공데이터는 D일 시세가 D+1 13시 이후 올라오므로 새 기준일 시세가 들어왔을 때 만들고, 뉴스도 그 기준일 창
   [직전 거래일 15:30, D+1 08:00)만 쓴다(화면 'n/n 장 기준'). 키움 모드로 오늘 시세가 들어오는 날은 10시 이후·마감 뒤
   한 번씩 오늘 뉴스로 다시 만든다('n/n 장중 HH:MM 기준'). 키움 장중에는 수집기가 30분마다 회사 등락률만 갱신한다(AI 재호출 없음).
@@ -42,11 +45,16 @@ MAX_PATHS = 4              # 영향 경로(마인드맵 1단계) 최대 수
 PER_PATH = 2               # 경로당 회사 수
 RELEVANCE = ("강", "중", "약")
 DIRECTIONS = {"긍정": "pos", "부정": "neg"}
+LINKS = ("직접 당사자", "사업 연결", "같은 업종")  # 회사가 뉴스와 이어지는 방식(같은 업종만이면 연관도 '약')
 MIN_COMPANIES = 3          # 검증 뒤 회사가 이보다 적거나 경로가 하나뿐이면 한 번 다시 그린다
 TOPICS_MIN, TOPICS_MAX = 3, 5
 RESERVE_MAX = 2           # 관리자가 숨기면 채울 다음 후보(이슈 + AI 해석까지 미리 만든다)
 ARTICLES_MAX = 6           # 토픽당 기사 수(대표 기사 포함)
-MOVED_PCT = 5.0            # 실제 등락률이 이 이상(절댓값)이면 '실제 반응' 강조
+MOVED_PCT = 5.0            # 실제 등락률이 이 이상(절댓값)이면 '실제 등락 큼' 강조
+OPPOSITE_PCT = 3.0         # AI 해석 방향과 반대로 이 이상(절댓값) 움직인 회사는 그 회사의 같은 날 뉴스로 다른 이유를 한 줄 붙인다
+OPPOSITE_MAX = 6           # 이슈 하나에서 다른 이유를 찾는 회사 수 상한(비용)
+OTHER_MODEL = TOPIC_MODEL  # 다른 이유 한 줄(Haiku)
+OTHER_FALLBACK = "이 뉴스 외 다른 요인일 수 있어요"
 TOPIC_TRIES = 3            # 같은 기준으로 최대 시도(실패 시 30분 간격)
 KIWOOM_TOPIC_FROM = (10, 0)  # 키움 오늘 뉴스로 토픽을 만드는 가장 이른 시각
 KIWOOM_FRESH_SEC = 15 * 60
@@ -175,8 +183,11 @@ def validate_paths(raw: dict, index: dict, stocks: dict) -> tuple[list[dict], li
                 continue
             used.add(code)
             rel = c.get("relevance") if c.get("relevance") in RELEVANCE else "약"
+            link = c.get("link") if c.get("link") in LINKS else ""
+            if link == "같은 업종":
+                rel = "약"  # 같은 업종이라는 것만으로는 연관이 약하다
             companies.append({"code": code, "name": stocks[code]["name"], "relevance": rel, "reason": reason[:60],
-                              "direction": direction})
+                              "direction": direction, **({"link": link} if link else {})})
             if len(companies) == PER_PATH:
                 break
         if companies:
@@ -198,9 +209,13 @@ INTERP_SYSTEM = """너는 경제 뉴스를 읽고 한국 상장사에 미칠 수
   자료에 있는 사실에서 출발하고, '~할 수 있다'처럼 가능성으로 쓴다. 주가가 오르거나 내릴 것이라고 쓰지 않는다.
 - paths: 영향 경로 2~4개. label은 경로 이름 2~8자(예: '수요 증가', '원가 상승', '규제 강화', '경쟁 변화', '수출 영향'), detail은 한 줄(20자 이내).
 - 경로마다 영향을 받을 수 있는 한국거래소(코스피·코스닥) 상장사를 3곳까지, 상장 종목명 그대로. 비상장사·해외 회사·비상장 자회사는 쓰지 않는다.
+- 회사는 ① 뉴스의 직접 당사자(사고·발표의 주체, 그 회사의 상장 모회사) ② 구체적인 사업 연결(그 회사의 제품·고객·공급망·규제 대상)이
+  있을 때만 넣는다. '같은 업종'이라는 이유만으로는 넣지 않는다. 예: 한 은행의 개인정보 유출 뉴스에 다른 금융지주를 '신뢰 하락'으로 넣지 않는다.
+  같은 업종 회사를 꼭 넣어야 하면 link를 '같은 업종', relevance를 '약'으로 쓰고, 그 회사에 생기는 구체적인 변화를 reason에 쓴다.
+- link: '직접 당사자' / '사업 연결' / '같은 업종' 중 하나.
 - 회사마다 direction: '긍정' 또는 '부정'(그 경로로 사업에 좋은 영향/나쁜 영향을 받을 수 있는 쪽). 긍정과 부정을 모두 살핀다.
-- relevance: 강 = 그 회사 핵심 사업과 직접 이어짐, 중 = 주요 사업 중 하나, 약 = 간접적으로 이어짐.
-- reason: 그 회사가 왜 관련 있는지 사업 사실 한 줄(30자 이내). 확실하지 않은 회사는 쓰지 않는다.
+- relevance: 강 = 직접 당사자이거나 그 회사 핵심 사업과 직접 이어짐, 중 = 주요 사업 중 하나, 약 = 간접적으로 이어짐.
+- reason: 그 회사가 왜 관련 있는지 사업 사실 한 줄(30자 이내, 제품·고객·공급·규제 중 무엇으로 이어지는지). 확실하지 않은 회사는 쓰지 않는다.
 - 금지: 주가 방향 예측('오를 것' 등), 매수·매도 권유, '추천', '수혜', '유망', '기대', '주목', '기회', '덜 올랐다', '숨은'. 한국어."""
 
 INTERP_SCHEMA = {
@@ -212,8 +227,9 @@ INTERP_SCHEMA = {
             "properties": {
                 "label": {"type": "string"}, "detail": {"type": "string"},
                 "companies": {"type": "array", "items": {
-                    "type": "object", "additionalProperties": False, "required": ["name", "direction", "relevance", "reason"],
+                    "type": "object", "additionalProperties": False, "required": ["name", "direction", "link", "relevance", "reason"],
                     "properties": {"name": {"type": "string"}, "direction": {"type": "string", "enum": list(DIRECTIONS)},
+                                   "link": {"type": "string", "enum": list(LINKS)},
                                    "relevance": {"type": "string", "enum": list(RELEVANCE)}, "reason": {"type": "string"}}}},
             }}},
     },
@@ -319,7 +335,7 @@ def _md(ymd: str) -> str:
 
 def topic_basis(now: datetime | None = None) -> dict | None:
     """기준. 키움 오늘 시세(키움 모드·10시 이후·15분 안 갱신 또는 마감)가 있으면 오늘 뉴스, 아니면 공공데이터 최신 기준일.
-    {key, source, as_of, label, window, rates}. rates = 그 시점 등락률(실제 반응 표시용). 시세가 없으면 None."""
+    {key, source, as_of, label, window, rates}. rates = 그 시점 등락률(실제 등락 표시용). 시세가 없으면 None."""
     now = now or datetime.now(KST)
     public = _read("market", {})
     status = _read("kiwoom_status", {})
@@ -352,7 +368,7 @@ def basis_info(basis: dict) -> dict:
 
 
 def mark_reaction(m: dict, basis: dict) -> dict:
-    """기준 시점 등락률을 회사에 저장하고 ±MOVED_PCT 이상이면 moved(실제 반응 강조)."""
+    """기준 시점 등락률을 회사에 저장하고 ±MOVED_PCT 이상이면 moved(실제 등락 큼 강조)."""
     rates = basis["rates"]
     for st in m.get("stages") or []:
         for c in st.get("companies") or []:
@@ -447,12 +463,90 @@ def pick_issues(basis: dict, articles: list[dict], task: str = "", max_topics: i
     return topics
 
 
-def _finish(t: dict, basis: dict, live: bool = False) -> dict | None:
-    """이슈 하나 → AI 해석 + 회사 지도 + 실제 반응. 회사가 없으면 None."""
+def _finish(t: dict, basis: dict, live: bool = False, http=None) -> dict | None:
+    """이슈 하나 → AI 해석 + 회사 지도 + 실제 등락 + (해석과 반대로 움직인 회사의) 다른 이유. 회사가 없으면 None."""
     m = interpret(t["name"], t.pop("_context"), live)
     if not m["stages"]:
         return None
-    return {**t, "basis_label": basis["label"], "map": mark_reaction(m, basis)}
+    m = mark_reaction(m, basis)
+    explain_opposites(t, m, basis, http)
+    return {**t, "basis_label": basis["label"], "map": m}
+
+
+# ---------------------------------------------------------
+# 해석과 반대로 움직인 회사: 그 회사의 같은 날 뉴스로 다른 이유 한 줄(이슈를 만들 때 한 번만)
+# ---------------------------------------------------------
+
+OTHER_SYSTEM = """너는 증시 뉴스 편집자다. 어떤 회사의 주가가 주어진 이슈와는 다른 이유로 움직였을 수 있는지, 그 회사의 같은 날 기사 제목에서 찾는다.
+규칙:
+- 주어진 이슈(이슈 이름·이슈 기사)와 다른, 그 회사 자체의 소식(실적 발표·수주·계약·신제품·인수합병·지분 변동·증자·소송 등)을 다룬 기사 하나를 고른다.
+- article: 고른 기사 번호. 그 회사 소식이 없거나 주어진 이슈와 같은 내용이면 0.
+- reason: 그 기사의 사실을 명사구로 짧게(20자 이내). 예: '3분기 실적 발표', '2조 원 규모 수주 공시'. 기사에 없는 내용은 쓰지 않는다.
+- 주가가 그 때문에 움직였다고 단정하지 않는다. 주가 방향 예측, 매수·매도 권유, '추천', '수혜', '기대', '주목', '기회'를 쓰지 않는다. 한국어."""
+
+OTHER_SCHEMA = {
+    "type": "object", "additionalProperties": False, "required": ["article", "reason"],
+    "properties": {"article": {"type": "integer"}, "reason": {"type": "string"}},
+}
+
+
+def opposite(c: dict) -> bool:
+    """AI 해석 방향(긍정/부정)과 실제 등락이 반대이면서 ±OPPOSITE_PCT 이상."""
+    r = c.get("rate")
+    if r is None:
+        return False
+    return (c.get("direction") == "pos" and r <= -OPPOSITE_PCT) or (c.get("direction") == "neg" and r >= OPPOSITE_PCT)
+
+
+def _company_news(name: str, basis: dict, skip: set[str], http=None) -> list[dict]:
+    """그 회사 이름이 제목에 든 기준 창 안 기사(이슈 기사 제외)."""
+    start, end = basis["window"]
+    day = datetime.strptime(basis["as_of"], "%Y%m%d")
+    kw = {"http": http} if http else {}
+    found = news.search_window(name, start, end, limit=10, max_pages=1, must_contain=name,
+                               extra_queries=[f"{name} {day.month}월 {day.day}일"], **kw)
+    return [n for n in found if name in n["title"] and n["url"] not in skip][:8]
+
+
+def other_reason(issue: str, issue_titles: list[str], c: dict, basis: dict, skip: set[str], http=None) -> dict:
+    """{"text", "title"?, "url"?}. 그 회사의 같은 날 다른 소식이 있으면 '다른 이유로 움직였을 수 있어요: …', 없으면 OTHER_FALLBACK."""
+    fallback = {"text": OTHER_FALLBACK}
+    try:
+        found = _company_news(c["name"], basis, skip, http)
+    except news.NewsError as e:
+        log.warning("lifemap other news %s: %s", c["code"], e.code)
+        return fallback
+    if not found:
+        return fallback
+    payload = {"이슈": issue, "이슈 기사": issue_titles[:6], "회사": c["name"],
+               "기사": [{"번호": i + 1, "제목": n["title"], "요약문": (n.get("snippet") or "")[:80]} for i, n in enumerate(found)]}
+    try:
+        raw = _ask(OTHER_MODEL, OTHER_SYSTEM, f"'{c['name']}'의 같은 날 기사 중 '{issue}'와 다른 그 회사 자체 소식을 하나 골라라.",
+                   payload, OTHER_SCHEMA, 300)
+    except Exception as e:
+        log.warning("lifemap other ai %s: %s", c["code"], type(e).__name__)
+        return fallback
+    n = (raw or {}).get("article")
+    reason = normalize_word(str((raw or {}).get("reason") or "")).strip(" .")[:24]
+    if not isinstance(n, int) or not 1 <= n <= len(found) or not reason or _unsafe(reason):
+        return fallback
+    a = found[n - 1]
+    return {"text": f"다른 이유로 움직였을 수 있어요: {reason}", "title": a["title"], "url": a["url"]}
+
+
+def explain_opposites(t: dict, m: dict, basis: dict, http=None) -> int:
+    """해석 방향과 반대로 ±3% 이상 움직인 회사마다 c['other']를 붙인다(최대 OPPOSITE_MAX곳). 붙인 수."""
+    if not basis.get("window") or not basis.get("as_of"):
+        return 0
+    skip = {a.get("url") for a in t.get("articles") or []}
+    titles = [a.get("title") or "" for a in t.get("articles") or []]
+    done = 0
+    for st in m.get("stages") or []:
+        for c in st.get("companies") or []:
+            if done < OPPOSITE_MAX and opposite(c):
+                c["other"] = other_reason(t["name"], titles, c, basis, skip, http)
+                done += 1
+    return done
 
 
 # ---------------------------------------------------------
@@ -506,7 +600,7 @@ def run_topics(basis: dict, http=None) -> dict:
     try:
         for t in pick_issues(basis, collect_issue_news(basis, http), max_topics=TOPICS_MAX + RESERVE_MAX):
             try:
-                done = _finish(t, basis)
+                done = _finish(t, basis, http=http)
             except Exception as e:
                 error = f"interpret:{type(e).__name__}"
                 continue
@@ -561,7 +655,7 @@ def run_sectors(basis: dict, http=None) -> int:
         try:
             picked = pick_issues(basis, found, task=f"{basis['label']} '{sector}' 업종 뉴스에서 이 업종에 영향을 줄 만한 가장 큰 이슈 1개를 골라라.",
                                  max_topics=1, min_articles=1, min_press=1)
-            done = _finish({**picked[0], "sector": sector}, basis) if picked else None
+            done = _finish({**picked[0], "sector": sector}, basis, http=http) if picked else None
         except Exception as e:
             log.warning("lifemap sector %s failed: %s", sector, type(e).__name__)
             continue
@@ -614,7 +708,7 @@ def maybe_run_daily(now: datetime | None = None) -> bool:
 
 
 # ---------------------------------------------------------
-# 실제 반응: 키움 장중 30분마다 등락률만 갱신(수집기, AI 재호출 없음)
+# 실제 등락: 키움 장중 30분마다 등락률만 갱신(수집기, AI 재호출 없음)
 # ---------------------------------------------------------
 
 def reaction_codes() -> list[str]:
@@ -646,7 +740,7 @@ def _live_rates() -> dict | None:
 # ---------------------------------------------------------
 
 def with_reaction(item: dict, live: dict | None = None) -> dict:
-    """회사마다 실제 등락률(키움 장중 갱신값 → 생성 때 기준 값 → 최신 종가 순)과 시장·종가·시총을 붙인다."""
+    """회사마다 실제 등락률(키움 장중 갱신값 → 생성 때 기준 값 → 최신 종가 순)과 시장·종가·시총, 해석과 반대면 다른 이유를 붙인다."""
     stocks, _, as_of = directory()
     m = item.get("map") or {}
     stages = []
@@ -661,8 +755,14 @@ def with_reaction(item: dict, live: dict | None = None) -> dict:
             rate = c["rate"] if "rate" in c else s.get("rate")
             if live and live["rates"].get(c["code"]) is not None:
                 rate, used_live = live["rates"][c["code"]], True
-            companies.append({**c, "name": s["name"], **{k: s.get(k) for k in ("market", "close", "cap", "value")},
-                              "rate": rate, "moved": rate is not None and abs(rate) >= MOVED_PCT})
+            row = {**c, "name": s["name"], **{k: s.get(k) for k in ("market", "close", "cap", "value")},
+                   "rate": rate, "moved": rate is not None and abs(rate) >= MOVED_PCT}
+            # 다른 이유는 지금 보여 주는 등락률도 해석과 반대(±3% 이상)일 때만. 장중에 새로 반대가 됐으면 기본 문구.
+            row.pop("other", None)
+            row["opposite"] = opposite(row)
+            if row["opposite"]:
+                row["other"] = c.get("other") or {"text": OTHER_FALLBACK}
+            companies.append(row)
         if companies:
             stages.append({**st, "companies": companies})
     reaction = f"{live['label']} 등락률" if used_live else f"{label.replace(' 기준', '')} 등락률" if label else "등락률"

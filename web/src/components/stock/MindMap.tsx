@@ -5,7 +5,7 @@
 // (react-flow·d3는 수십~백 KB, 휴대폰에서 이 크기에는 과함). 애니메이션은 transform·opacity·stroke-dashoffset만 써서 GPU로.
 // 처음부터 모두 펼친 채로 시작한다(가지가 자라나는 연출만). 경로를 누르면 그 가지를 강조한다.
 // 글자: 휴대폰(지도 폭 약 358px, 배율 약 0.85)에서 회사 이름 13px 이상이 되도록 SVG 단위 16.
-// 버블 안에 이름(1~2줄)과 실제 등락률, 오른쪽 위에 AI 해석 방향(＋ 긍정 가능 / － 부정 가능), 크게 움직였으면 위에 '실제 반응'.
+// 버블 안에 이름(1~2줄)과 실제 등락률, 오른쪽 위에 AI 해석 방향(＋ 긍정 가능 / － 부정 가능), 크게 움직였으면 위에 '실제 등락'.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { type LifeCompany, type LifeMap, type LifeStage } from "@/lib/stock";
 
@@ -205,7 +205,7 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
               const badge = { x: r + 3, y: 0 }; // 오른쪽 가장자리(이름·등락률 글자와 겹치지 않게)
               return (
                 <g key={c.code} className="lm-node" role="button" tabIndex={0}
-                  aria-label={`${c.name}, ${p.stage.label}, ${neg ? "부정" : "긍정"} 영향 가능, 연관도 ${c.relevance}, ${c.moved ? "실제 반응 큼, " : ""}실제 등락률 ${rateText(c.rate)}`}
+                  aria-label={`${c.name}, ${p.stage.label}, ${neg ? "부정" : "긍정"} 영향 가능, 연관도 ${c.relevance}, ${c.moved ? "실제 등락 큼, " : ""}실제 등락률 ${rateText(c.rate)}`}
                   onClick={tap(() => onPick(c, p.stage, p.color))} onKeyDown={press(() => onPick(c, p.stage, p.color))}
                   style={{ transform: `translate(${at.x}px, ${at.y}px) scale(${shown ? 1 : 0.2})`, opacity: shown ? dim(p.stage.key) : 0,
                     transitionDelay: shown ? `${480 + i * 90 + j * 70}ms` : "0ms", cursor: "pointer" }}>
@@ -223,7 +223,7 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
                   {c.moved && (
                     <g transform={`translate(0 ${-r - 4})`}>
                       <rect x={-34} y={-11} width={68} height={22} rx={11} fill={color} />
-                      <text textAnchor="middle" dy="0.36em" fontSize={13.5} fontWeight={900} fill="#071226">실제 반응</text>
+                      <text textAnchor="middle" dy="0.36em" fontSize={13.5} fontWeight={900} fill="#071226">실제 등락</text>
                     </g>
                   )}
                 </g>
@@ -260,7 +260,7 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
           </g>
         </svg>
       </div>
-      <div className="mt-1 flex items-center justify-between gap-2">
+      <div className="mt-1 flex items-center justify-between gap-2 px-4 sm:px-0">
         <p className="text-[14px] font-semibold text-slate-200">{focus ? "같은 경로를 다시 누르면 강조가 풀려요" : "영향 경로를 누르면 그 가지를 강조해요"}</p>
         <div className="flex gap-1.5">
           {[["+", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k * 1.4, v)), "확대"], ["−", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k / 1.4, v)), "축소"],

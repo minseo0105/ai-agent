@@ -164,7 +164,7 @@ def build_snapshot(client: KiwoomClient, public_market: dict, directory: dict, n
 # ---------------------------------------------------------
 
 def refresh_lifemap_rates(client: KiwoomClient, now: datetime) -> int:
-    """뉴스 속 숨은 종목의 '실제 반응': 화면에 나온 회사 등락률만 지정종목 정보(ka10095)로 다시 읽는다."""
+    """뉴스 속 숨은 종목의 '실제 등락': 화면에 나온 회사 등락률만 지정종목 정보(ka10095)로 다시 읽는다."""
     codes = lifemap.reaction_codes()
     rates: dict[str, float] = {}
     for i in range(0, len(codes), CHUNK):

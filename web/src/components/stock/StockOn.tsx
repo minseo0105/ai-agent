@@ -144,7 +144,7 @@ function StockRow({ s, rank, onWhy }: { s: Stock; rank: number; onWhy: (s: Stock
 
 function Tabs<T extends string>({ value, options, onChange, label }: { value: T; options: [T, string][]; onChange: (v: T) => void; label: string }) {
   return (
-    <div role="tablist" aria-label={label} className="mb-3 flex gap-1 overflow-x-auto rounded-xl bg-surface-muted p-1">
+    <div role="tablist" aria-label={label} className="so-row mb-3 flex gap-1 overflow-x-auto rounded-xl bg-surface-muted p-1">
       {options.map(([v, l]) => (
         <button key={v} role="tab" type="button" aria-selected={value === v} onClick={() => onChange(v)}
           className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-bold transition ${value === v ? "bg-surface text-fg shadow-sm" : "text-muted hover:text-fg"}`}>
@@ -393,7 +393,7 @@ export default function StockOn() {
         {error && <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300">· 최신 자료를 잠시 못 불러왔어요(이전 화면 유지)</span>}
       </div>
 
-      <nav aria-label="섹션 바로가기" className="sticky top-0 z-20 -mx-4 flex gap-1.5 overflow-x-auto bg-bg/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
+      <nav aria-label="섹션 바로가기" className="so-row sticky top-0 z-20 -mx-4 flex gap-1.5 overflow-x-auto bg-bg/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
         {SECTIONS.map(([id, label]) => (
           <a key={id} href={`#${id}`} className="shrink-0 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-bold text-muted hover:border-[#1E4E8C]/40 hover:text-fg">{label}</a>
         ))}
