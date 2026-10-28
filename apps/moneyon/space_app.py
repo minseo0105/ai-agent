@@ -155,6 +155,10 @@ def health():
     return {'ok':True,'service':'moneyon-trial','storage':'ephemeral','family_api':False}
 
 
+# 파비콘·앱 아이콘·공유 미리보기(Next 파일 규칙으로 out/ 바로 아래에 생김). 이 셋만 더 연다.
+ICON_FILES = ('icon.png', 'apple-icon.png', 'opengraph-image.png')
+
+
 class ExportedSite(StaticFiles):
     async def get_response(self,path,scope):
         path=path.replace('\\','/')
@@ -163,7 +167,7 @@ class ExportedSite(StaticFiles):
             return await super().get_response('index.html',scope)
         if path.rstrip('/') == 'moneyon':
             return await super().get_response('moneyon.html',scope)
-        if path == 'moneyon/characters/izani-bee.png':
+        if path == 'moneyon/characters/izani-bee.png' or path in ICON_FILES:
             return await super().get_response(path,scope)
         if not path.startswith('_next/'):
             return JSONResponse({'detail':'페이지를 찾을 수 없어요.'},status_code=404)
