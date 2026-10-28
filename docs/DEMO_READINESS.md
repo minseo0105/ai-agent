@@ -1,38 +1,39 @@
 # 시연 준비: 동시 접속·부하·접속 방법·일정 (2026-11-17 은행 임원 강의)
 
-## 다음 할 일 (2026-10-28 세션 종료 시점, 휴대폰 확인 반영)
+## 다음 할 일 (2026-10-28 STOCK:ON 생활 속 종목 찾기 배포 후)
 
-**완료**: STOCK:ON 1단계·화면 수정·키움 수집기(public) 오라클 반영 · 모의 키 IP 등록 불필요 확인 · **머니온 AI 3기능 오라클 배포(모델 Haiku 5.5 `claude-haiku-5-5` 확정)** · **머니온 아이 화면 개선 오라클 배포(커밋 `d3bf3db`)** · **휴대폰 확인 반영 배포(커밋 `37888f1`)**.
-**미완료**: AI LAB AI 문지기·입력 차단 · 도메인·QR·`/demo` · STOCK:ON 3순위(종목 검색·온도계 권장, 테마·자금흐름은 보류) · 키움 장중 시험(11/4·11/6) · 부하 테스트(머니온은 `MONEYON_AI_FAKE=1`로).
-
-**2026-10-28 머니온 휴대폰 확인 반영 기록** (커밋 `37888f1`, `apps/moneyon`만, HF Space 무관)
-- 이자 카운터: 저절로 오르는 0.01원 연출·소수점 제거, **원 단위 정수**(예상 이자 × 이번 주 n일째/7, `weekDay()`·`accrued()`). 가만히 있으면 값이 그대로(헤드리스로 4초 간격 같은 값 확인). 화면 열 때 0→현재값 시작 연출, 기록 직후 ±n원 변화량은 유지. "이번 주 7일 중 n일째" 진행 막대 + D-n.
-- 첫 화면: '바로 체험하기'(빈 연습 통장) + '🎬 시연 데이터로 시작'(쓴 돈 5건·자전거 저축통장 1만 원이 채워진 통장) → **"체험 시작하기" 하나**(시연 데이터), 아래 "쓴 돈 기록과 자전거 저축통장이 미리 채워진 통장으로 시작해요". 시연 모드가 꺼진 서버(`MONEYON_DEMO_ENTRY`≠1)에서는 같은 버튼이 빈 통장으로 시작(문구도 바뀜). '처음부터 시작'은 `page.tsx`의 `SHOW_FRESH_START=false`로 숨김(코드 유지, `web/src/app/page.tsx`와 `app/moneyon/page.tsx` 두 곳이 같은 파일). 꿀벌 편지는 미리 쌓이는 게 아니라 AI가 그때 쓰므로 문구에 넣지 않음.
-- 테스트: 서버 22개 통과, `node --test web/src/lib/interestTicker.test.mjs` 5개 통과, `next build --webpack` 타입 검사 통과. 로컬 미리보기(375·1440) 확인 후 끔.
-- 오라클: `git pull --ff-only` → `docker compose build moneyon && up -d --no-deps moneyon`. `ailab`·`stockon-collector` 10-27 07:15:49, `ailab-caddy` 10-27 00:05:56 그대로(재시작 0), `moneyon`만 10-28 01:51:13(UTC) 재생성(healthy). 공개 주소 화면 JS에 새 문구, 옛 버튼 문구 없음, `/trial/demo` 200, 헤드리스 375·1440에서 버튼 1개·가로 넘침 없음.
-
-**2026-10-28 머니온 아이 화면 개선 기록** (`apps/moneyon`만, HF Space 무관)
-- 이자 카운터 `InterestTicker.tsx`: "이번 주 쌓이는 이자"는 **연출용 표시**(계산은 `web/src/lib/interestTicker.ts`, 서버 `reward()`와 같은 식에 버리기 전 값). 체험 날짜 진행률 + 1.4초마다 0.01원, 화면 열 때 0→현재값 1.5초 시작 연출, "D-n"(정산일 `education.end`까지), 예상 이자 설명 기본 펼침. 기록 직후 "다음 주 이자 ±N원 ⬆️⬇️"(같은 주 안에서 예상 이자가 바뀔 때만, 서버 변경 없음).
-- 금액 버튼 누적(+1,000원 두 번 = 2,000원, 남은 용돈 넘으면 잠김) + "다시 입력", 쓴 돈·저금 화면 모두.
-- 저축 목표: 장난감 / 자전거·킥보드 / 책·학용품 / 엄마·아빠 생일 선물 / 친구 선물 / 직접 입력. 서버 아이콘 허용 목록 확장(`ICONS`, 기존 5개 유지). **AI 목표 코치에는 목표 목록이 없고** 선택한 통장의 이름·금액만 읽어서 코드 변경 없음.
-- 엄마 승인: 새 표 `moneyon_book_approvals`(체험 장부 SQLite 안, 볼륨 `ailab_moneyon-runtime`, `savings.install()`의 `CREATE TABLE IF NOT EXISTS`). **행이 없는 통장 = 승인됨**이라 기존 체험 데이터는 그대로. `POST /children/{child}/books/{book}/approve`(자기 체험 토큰만). 승인 대기 통장은 저금·꺼내기·이자 저축·AI 코치 차단. 아이 화면 알림 → 카드 "엄마 승인 기다리는 중" → 승인 시 축하, 엄마 화면 "승인 요청" 카드. 시연 모드(`startDemo`)는 요청 5초 뒤 자동 승인(새로고침해도 서버 `waited`로 이어 셈). 승인 취소 버튼은 범위 밖.
-- 테스트: 서버 `tests/test_moneyon_books.py` 8개 + 기존 14개 = 22개 통과, 이자 계산 `node --test web/src/lib/interestTicker.test.mjs` 5개. PC 레이아웃 주의: `ai.css`가 홈·엄마 화면 `grid-template-areas`를 다시 정의하므로 영역을 추가하면 `desktop.css`와 `ai.css` 둘 다 고칠 것.
-- 오라클 확인: 공개 주소에서 통장 생성(pending) → 대기 중 저금 409 → 승인 200 → 저금 200. `ailab`·`stockon-collector` 10-27 07:15:49, `ailab-caddy` 10-27 00:05:56 그대로(재시작 0), `moneyon` 10-27 23:54:02(UTC)로 재생성, 기존 통장 행 151개 보존.
-- 로컬 미리보기는 정적 빌드 + FastAPI 한 프로세스로 확인 후 종료. `apps/moneyon/web`에는 `node_modules`가 없어서 루트 `web/node_modules`를 junction으로 연결해 `next build --webpack`(Turbopack은 junction 거부)로 빌드했고, 끝나고 junction·`out`·`.next`를 지움.
-
-**2026-10-28 머니온 AI 배포 기록**
-- main push → 서버 `git pull --ff-only` → compose `moneyon.env_file`에 `.env.moneyon`(`required: false`) 추가, Caddy `/moneyon/*`에 `flush_interval -1` 추가(저장소 커밋으로 반영, 서버 직접 수정 없음) → `caddy adapt` 확인 → stdin reload → `docker compose build moneyon && up -d --no-deps moneyon`.
-- 서버 `~/ailab/.env.moneyon`(600): `ANTHROPIC_API_KEY`(기존 `.env.docker` 값을 파일끼리 복사, 값 출력 안 함), `MONEYON_AI_ENABLED=1`, `MONEYON_DEMO_ENTRY=1`, `MONEYON_AI_DAILY_USD=3`.
-- 공개 주소 확인: `GET /moneyon/api/moneyon/trial/ai/config` → enabled, 3기능. `POST .../trial/demo`로 시연 체험 생성 → `/ai/letter`·`/ai/coach`·`/ai/parent` 모두 `source: ai`, `model: claude-haiku-5-5`(부모 리포트 5회 중 1회는 금지 표현 검사에 걸려 규칙 문장으로 대체됨 = 설계된 대체, 이유 `banned`). 배포된 화면 JS에 "AI가 작성했어요" 배지 문구 포함. 7회 호출 비용 약 $0.0016.
-- 시작 시각: `ailab`·`stockon-collector` 10-27 07:15:49, `ailab-caddy` 10-27 00:05:56 그대로(재시작 0), `moneyon`만 10-27 23:29:43(UTC)로 재생성.
-- 참고: git pull 뒤 Caddy 컨테이너 안 Caddyfile은 옛 내용이라(bind mount inode) `caddy reload --config /dev/stdin --adapter caddyfile < Caddyfile`로 호스트 파일을 넣어야 한다.
+**완료**: STOCK:ON 1단계·화면 수정·키움 수집기(public) 오라클 반영 · 모의 키 IP 등록 불필요 확인 · 머니온 AI 3기능(Haiku 5.5 `claude-haiku-5-5`)·아이 화면 개선·휴대폰 확인 반영 오라클 배포 · **STOCK:ON 생활 속 종목 찾기 오라클 배포(커밋 `711d633`, 시연 대표 기능)**.
+**미완료**: AI LAB AI 문지기·입력 차단 · 도메인·QR·`/demo` · STOCK:ON 3순위(종목 검색·온도계 권장, 테마·자금흐름은 보류) · 키움 장중 시험(11/4·11/6) · 부하 테스트(머니온은 `MONEYON_AI_FAKE=1`로, 생활 속 종목 찾기 새 단어 포함).
 
 **다음 세션 첫 단계**
-1. 휴대폰(카카오톡 인앱 포함)에서 `/moneyon/` 다시 확인: "체험 시작하기" 하나, 이자 카운터 정수·진행 막대, 기록 직후 ±n원, 승인 흐름(PC 헤드리스 Chrome으로는 확인함).
-2. AI LAB 쪽 AI 문지기·입력 차단(1·3절) → 도메인·QR·`/demo`(5절).
-3. 부하 테스트 전에 머니온 `MONEYON_AI_FAKE=1`을 `.env.moneyon`에 임시로 넣는 방법 정리(끝나면 제거).
+1. 휴대폰(카카오톡 인앱 포함)에서 `/stock?tab=life` 확인: 토픽 카드 넘기기, 단계 탭 → 회사 펼침, 핀치 줌, 회사 탭 → 아래 시트 → '왜 움직였나', 새 단어 대기 표시. 같은 날 `/moneyon/`도("체험 시작하기" 하나, 이자 카운터 정수·진행 막대, 기록 직후 ±n원, 승인 흐름).
+2. 10/29 아침 7시 이후 수집기가 토픽을 저절로 만들었는지: `docker exec stockon-collector cat data/admin/stockon/lifemap_status.json`(day=오늘, fresh=3).
+3. AI LAB 쪽 AI 문지기·입력 차단(1·3절) → 도메인·QR·`/demo`(5절).
+4. 부하 테스트 전에 머니온 `MONEYON_AI_FAKE=1`을 `.env.moneyon`에 임시로 넣는 방법 정리(끝나면 제거). 생활 속 종목 찾기는 대기열 상한(동시 3·대기 12·하루 150)으로 실제 호출이 묶이므로 가짜 모드 없이 새 단어 몇 개만 섞는다.
 
-**배포 주의**: 키 값 출력 금지(이름·형식만) · 항상 `--no-deps`, 머니온 작업 때는 moneyon만 재생성(ailab·caddy·stockon-collector 시작 시각 비교) · Caddyfile은 파일 bind mount라 `git pull` 뒤 stdin reload, 관리 API는 127.0.0.1:2019 · HF 머니온 Space는 손대지 않음 · PC `.env.docker`에 `STOCKON_ENABLED=1` 한 줄 추가해 둘 것.
+**배포 주의**: 키 값 출력 금지(이름·형식만) · 항상 `--no-deps`. 머니온 작업 → moneyon만, STOCK:ON 작업 → `docker compose build ailab && up -d --no-deps ailab stockon-collector`(같은 이미지), 그 밖의 컨테이너 시작 시각 비교 · Caddyfile은 파일 bind mount라 `git pull` 뒤 `caddy reload --config /dev/stdin --adapter caddyfile < Caddyfile`(관리 API 127.0.0.1:2019) · HF 머니온 Space는 손대지 않음 · 서버 키 파일: `.env.docker`(ailab), `.env.stockon`(키움), `.env.lifemap`(수집기의 토픽 생성용 세 줄), `.env.moneyon` — 모두 600.
+
+### 배포 기록 (최근 순)
+
+**10-28 STOCK:ON 생활 속 종목 찾기** (커밋 `c612757`~`711d633`, 자세한 구조는 STOCKON_PLAN.md '생활 속 종목 찾기')
+- `/stock` 두 번째 탭(`?tab=life`). 오늘의 토픽 3개(Haiku 5.5 선정·근거 기사 2개) · 예시 칩 5개 · 새 단어(Sonnet 5.5, 대기열) · SVG 마인드맵(탭 코드 gzip 8KB) · 회사 → '왜 관련 있나' → 기존 '왜 움직였나'.
+- AI가 낸 회사는 공공데이터 종목 목록과 대조해 없는 회사 제거. 실패·넘침·상한 → 저장소 예시(`data/stockon/lifemap_examples.json`).
+- 테스트: `tests/test_stockon_lifemap.py` 22개 + 기존 `test_stockon` 31개 = 53개 통과(30명 동시: AI 동시 최대 3, 대기 12·넘침 18은 예시, 동시 읽기 30회 2초 안). `tsc` 통과, `next build --webpack` 통과. 로컬 헤드리스 390·1440 확인 후 서버·빌드 산출물 정리.
+- 오라클: `git pull --ff-only` → `.env.lifemap`(600)을 `.env.docker`에서 세 줄만 파일끼리 복사(값 출력 안 함) → `docker compose build ailab && up -d --no-deps ailab stockon-collector`(2회: `8bf38a0`, `711d633`). `ailab`·`stockon-collector` 10-28 04:11:03(UTC) 재생성(ailab healthy, 재시작 0), **`moneyon` 10-28 01:51:13 · `ailab-caddy` 10-27 00:05:56 그대로**.
+- 공개 주소: `/stock?tab=life` 200, 수집기가 오늘 토픽 3개(fresh 3)·칩 5개 생성, 새 단어 '캠핑' 대기열로 생성(ready), 헤드리스 390에서 가로 넘침 0·핀치 2.75배·JS 오류 0, 1440에서 회사 → '왜 움직였나' 동작. 첫 토픽 3개가 한 기사에서 나와 근거 기사 중복 제외 규칙 추가 후 오늘 토픽 다시 생성. 10/28 서버 사용량: Haiku 2회·Sonnet 12회(입력 약 1.5만·출력 약 0.5만 토큰), 로컬 예시 생성 별도.
+
+**10-28 머니온 휴대폰 확인 반영** (`37888f1`, `apps/moneyon`만)
+- 이자 카운터 원 단위 정수(예상 이자 × 이번 주 n일째/7), 0→현재값 시작 연출, 기록 직후 ±n원, "이번 주 7일 중 n일째" 막대 + D-n. 첫 화면 버튼은 "체험 시작하기" 하나(`MONEYON_DEMO_ENTRY`≠1이면 빈 통장), '처음부터 시작'은 `SHOW_FRESH_START=false`로 숨김(코드 유지, `web/src/app/page.tsx`·`app/moneyon/page.tsx` 같은 파일).
+- 테스트: 서버 22개, `node --test web/src/lib/interestTicker.test.mjs` 5개. `moneyon`만 재생성.
+
+**10-28 머니온 아이 화면 개선** (`d3bf3db`, `apps/moneyon`만)
+- 금액 버튼 누적·"다시 입력", 저축 목표 6종(서버 `ICONS` 확장, AI 코치 변경 없음). 엄마 승인 표 `moneyon_book_approvals`(행 없음 = 승인됨, 기존 데이터 그대로), `POST /children/{child}/books/{book}/approve`, 승인 대기 통장은 저금·꺼내기·이자·AI 코치 차단, 시연 모드는 5초 뒤 자동 승인.
+- PC 레이아웃: `ai.css`가 홈·엄마 화면 `grid-template-areas`를 다시 정의하므로 영역을 추가하면 `desktop.css`와 `ai.css` 둘 다 고칠 것.
+- `apps/moneyon/web`에는 `node_modules`가 없어 루트 `web/node_modules`를 junction으로 연결, `next build --webpack`(Turbopack은 junction 거부) 후 junction·`out`·`.next` 삭제.
+
+**10-28 머니온 AI 배포**
+- compose `moneyon.env_file`에 `.env.moneyon`(`required: false`), Caddy `/moneyon/*`에 `flush_interval -1`. 서버 `.env.moneyon`: `ANTHROPIC_API_KEY`(파일끼리 복사)·`MONEYON_AI_ENABLED=1`·`MONEYON_DEMO_ENTRY=1`·`MONEYON_AI_DAILY_USD=3`.
+- 공개 주소에서 세 기능 `source: ai`, `model: claude-haiku-5-5`(부모 리포트 1/5은 금지 표현 검사로 규칙 문장 대체 = 설계대로). 7회 약 $0.0016.
 
 
 작성 2026-10-27. **계획 문서**(코드 수정은 일정에 따라 진행). 대상: AI LAB · STOCK:ON · MONEY:ON(오라클 `140.245.88.198`, A1.Flex 2 OCPU / 12GB).
@@ -185,6 +186,7 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 - [ ] 관리자 `/admin`: 사이트 '모두 공개', 시연 서비스 공개, 미사용 서비스 숨김, 공지 배너 꺼짐
 - [ ] 관리자 `/admin/stockon`: 수집 상태 모두 성공, AI 상태 '정상', 기준일 = 11/16, 팀 관심 종목 확인, 모의 키 만료일 11/27
 - [ ] 머니온: 체험 통장 대기 수 ≥ 60, `MONEYON_AI_ENABLED=1`, 하루 비용 상한 값 확인
+- [ ] 생활 속 종목 찾기: `docker exec stockon-collector cat data/admin/stockon/lifemap_status.json`이 day=11-17·fresh=3(아니면 `docker compose exec -T stockon-collector python -m services.stockon.lifemap --daily`), `/stock?tab=life`에서 토픽 3개·예시 칩 5개가 '준비된 예시'가 아닌지
 
 **키움 시세 전환 (13:00~13:30)**
 - [ ] 서버 `.env.stockon`에서 `STOCKON_PRICE_SOURCE=kiwoom` → `docker compose up -d --no-deps --force-recreate stockon-collector`
@@ -194,6 +196,7 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 **AI·비용 (13:30)**
 - [ ] 머니온 시연 모드 → 꿀벌 편지·목표 코치·부모 리포트 각 1회 실제 생성(첫 글자 2초 안), 배지 확인
 - [ ] AI LAB 에이전트 시연 질문 1회
+- [ ] 생활 속 종목 찾기 새 단어 1개(시연에 쓸 단어는 미리 한 번 그려 두면 즉시 나온다 — 같은 단어는 저장된 것을 재사용)
 - [ ] 오늘 AI 사용액(관리자) 확인, Anthropic Console 지출 한도 설정 확인
 - [ ] 일부러 대체 확인 1회(관리자 스위치로 AI 끔 → 준비된 결과 → 다시 켬)
 
