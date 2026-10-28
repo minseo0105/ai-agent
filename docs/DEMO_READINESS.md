@@ -244,7 +244,7 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 | 3 | Caddy만 반영: `docker compose up -d --no-deps --force-recreate caddy` (환경변수라 reload로는 안 바뀜, 수 초 끊김) | 서버 | `curl -I https://새도메인` 200, 인증서 발급 로그(Let's Encrypt) |
 | 4 | 네이버 지도 콘솔 → Maps 애플리케이션 → Web 서비스 URL에 `https://새도메인` 추가(기존 sslip.io는 남김) | 네이버 클라우드 콘솔 | ZIP:ON 지도 네이버로 표시 |
 | 5 | `NAVER_WEB_SERVICE_URL=https://새도메인`(안내 문구용) | PC `.env.docker` → 서버 업로드 | — |
-| 6 | 코드 2곳: `web/src/lib/services.ts`의 `MONEYON_URL`, `services/stockon/service.py`의 `ORACLE_URL` → `https://새도메인/…` | 커밋 → main push(HF 자동 배포로 HF 홈 카드도 새 주소) | HF·오라클 홈 카드 링크 |
+| 6 | 코드 2곳: `web/src/lib/services.ts`의 `MONEYON_URL`, `services/stockon/service.py`의 `ORACLE_URL` → `https://새도메인/…` · `apps/moneyon/web/src/app/layout.tsx`의 공유 미리보기 주소(`MONEYON_SITE_URL` 또는 기본값, 머니온 재빌드) | 커밋 → main push(HF 자동 배포로 HF 홈 카드도 새 주소) | HF·오라클 홈 카드 링크 |
 | 7 | AI LAB 앱만 재빌드(6 반영) | 서버 | `/`·`/stock`·`/moneyon` |
 | 8 | QR 코드 새로 생성: `https://새도메인/demo`(오류 정정 H, PNG 1024px) + 짧은 주소 글자 | PC(파이썬 `qrcode` 패키지) | 휴대폰 3대 스캔(카카오톡·기본 카메라) |
 | 9 | 슬라이드·인쇄물 QR 교체, 예비 슬라이드에 sslip.io QR | 발표 자료 | — |
