@@ -1,0 +1,493 @@
+{
+ "note": "AI가 실패할 때 쓰는 예시. 같은 엔진(Sonnet 5.5)으로 그리고 종목 목록과 대조함.",
+ "built": "2026-10-28",
+ "topics": [
+  {
+   "name": "생필품 물가",
+   "summary": "생필품 39개 평균 가격은 작년 같은 기간보다 0.2% 올랐다",
+   "articles": [
+    {
+     "title": "간장·달걀값 10% 넘게 뛰었다…생활필수품 물가는 보합",
+     "url": "https://www.joongangenews.com/news/articleView.html?idxno=559095",
+     "press": "www.joongangenews.com",
+     "pub": "2026-10-28T12:20:00+09:00"
+    },
+    {
+     "title": "생필품 물가 0.2% 올랐다는데…간장 11.1%·달걀 10.6% 급등",
+     "url": "https://www.kado.net/news/articleView.html?idxno=2080997",
+     "press": "www.kado.net",
+     "pub": "2026-10-28T11:30:00+09:00"
+    }
+   ],
+   "map": {
+    "word": "생필품 물가",
+    "stages": [
+     {
+      "key": "material",
+      "label": "원료",
+      "detail": "밀·옥수수·대두",
+      "companies": [
+       {
+        "code": "001790",
+        "name": "대한제당",
+        "relevance": "강",
+        "reason": "설탕·사료 원료 제조, 곡물 원료 취급"
+       },
+       {
+        "code": "008040",
+        "name": "사조동아원",
+        "relevance": "중",
+        "reason": "제분용 밀 수입, 사료 원료 공급"
+       }
+      ]
+     },
+     {
+      "key": "making",
+      "label": "제조",
+      "detail": "라면·세제·휴지",
+      "companies": [
+       {
+        "code": "004370",
+        "name": "농심",
+        "relevance": "강",
+        "reason": "라면·스낵 등 가공식품 제조"
+       },
+       {
+        "code": "097950",
+        "name": "CJ제일제당",
+        "relevance": "강",
+        "reason": "설탕·식용유·가공식품 제조"
+       }
+      ]
+     },
+     {
+      "key": "retail",
+      "label": "유통",
+      "detail": "마트·편의점",
+      "companies": [
+       {
+        "code": "139480",
+        "name": "이마트",
+        "relevance": "강",
+        "reason": "대형마트로 생필품 판매"
+       },
+       {
+        "code": "282330",
+        "name": "BGF리테일",
+        "relevance": "강",
+        "reason": "CU 편의점으로 생필품 판매"
+       }
+      ]
+     }
+    ],
+    "removed": [],
+    "ai": true,
+    "model": "claude-sonnet-5-5",
+    "directory_as_of": "20261026",
+    "created_ts": 1793159253.727093
+   }
+  },
+  {
+   "name": "먹거리 할인",
+   "summary": "이마트와 롯데마트가 먹거리를 최대 60% 할인하는 행사를 연다",
+   "articles": [
+    {
+     "title": "이마트 '쓱데이'·롯데마트 '메가통큰' 맞불…먹거리 최대 60% 할인",
+     "url": "https://www.youthdaily.co.kr/news/article.html?no=228973",
+     "press": "www.youthdaily.co.kr",
+     "pub": "2026-10-28T11:36:00+09:00"
+    },
+    {
+     "title": "3분기 가격 상승률 최고 생필품 '간장'…전년 동기보다 11.1% 올라",
+     "url": "http://www.foodnews.co.kr/news/articleView.html?idxno=120707",
+     "press": "www.foodnews.co.kr",
+     "pub": "2026-10-28T11:12:00+09:00"
+    }
+   ],
+   "map": {
+    "word": "먹거리 할인",
+    "stages": [
+     {
+      "key": "making",
+      "label": "제조",
+      "detail": "가공식품·신선식품",
+      "companies": [
+       {
+        "code": "097950",
+        "name": "CJ제일제당",
+        "relevance": "중",
+        "reason": "냉동·가공식품을 만들어 마트에 공급"
+       },
+       {
+        "code": "007310",
+        "name": "오뚜기",
+        "relevance": "중",
+        "reason": "라면·소스류 가공식품 제조·판매"
+       }
+      ]
+     },
+     {
+      "key": "retail",
+      "label": "유통",
+      "detail": "대형마트 할인행사",
+      "companies": [
+       {
+        "code": "139480",
+        "name": "이마트",
+        "relevance": "강",
+        "reason": "대형마트 운영, 먹거리 할인행사 진행"
+       },
+       {
+        "code": "023530",
+        "name": "롯데쇼핑",
+        "relevance": "강",
+        "reason": "롯데마트를 운영하며 먹거리 할인 진행"
+       }
+      ]
+     }
+    ],
+    "removed": [],
+    "ai": true,
+    "model": "claude-sonnet-5-5",
+    "directory_as_of": "20261026",
+    "created_ts": 1793159256.6095319
+   }
+  },
+  {
+   "name": "폴더블폰",
+   "summary": "삼성전자가 중국 전용 폴더블폰 신제품 발표를 앞두고 있다",
+   "articles": [
+    {
+     "title": "삼성, 中 전용 폴더블폰 'W27' 공개 임박…애플과 경쟁 주목",
+     "url": "https://www.news1.kr/it-science/mobile/6332262",
+     "press": "www.news1.kr",
+     "pub": "2026-10-27T06:20:00+09:00"
+    },
+    {
+     "title": "삼성전자, 中 폴더블 ‘4% 벽’ 넘을까…W27에 금빛 승부수",
+     "url": "https://www.mydaily.co.kr/page/view/2026102709312775844",
+     "press": "www.mydaily.co.kr",
+     "pub": "2026-10-27T10:02:00+09:00"
+    }
+   ],
+   "map": {
+    "word": "폴더블폰",
+    "stages": [
+     {
+      "key": "material",
+      "label": "원료",
+      "detail": "UTG·폴더블 소재",
+      "companies": [
+       {
+        "code": "484120",
+        "name": "도우인시스",
+        "relevance": "강",
+        "reason": "폴더블 디스플레이용 PI 커버윈도 소재 공급"
+       },
+       {
+        "code": "213420",
+        "name": "덕산네오룩스",
+        "relevance": "중",
+        "reason": "OLED 발광 소재 공급"
+       }
+      ]
+     },
+     {
+      "key": "making",
+      "label": "제조",
+      "detail": "패널·힌지·완제품",
+      "companies": [
+       {
+        "code": "005930",
+        "name": "삼성전자",
+        "relevance": "강",
+        "reason": "갤럭시 Z 폴더블폰 제조"
+       },
+       {
+        "code": "006400",
+        "name": "삼성SDI",
+        "relevance": "약",
+        "reason": "스마트폰용 소형 배터리 사업 영위"
+       }
+      ]
+     }
+    ],
+    "removed": [],
+    "ai": true,
+    "model": "claude-sonnet-5-5",
+    "directory_as_of": "20261026",
+    "created_ts": 1793159261.727686
+   }
+  }
+ ],
+ "words": {
+  "라면": {
+   "word": "라면",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "밀가루·팜유",
+     "companies": [
+      {
+       "code": "001130",
+       "name": "대한제분",
+       "relevance": "중",
+       "reason": "제분 사업으로 밀가루 생산·공급"
+      },
+      {
+       "code": "097950",
+       "name": "CJ제일제당",
+       "relevance": "약",
+       "reason": "밀가루·식용유 등 식품 소재 생산"
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "면·스프 제조",
+     "companies": [
+      {
+       "code": "004370",
+       "name": "농심",
+       "relevance": "강",
+       "reason": "신라면 등 라면 제조 핵심 사업"
+      },
+      {
+       "code": "007310",
+       "name": "오뚜기",
+       "relevance": "강",
+       "reason": "진라면 등 라면 제조·판매"
+      }
+     ]
+    },
+    {
+     "key": "retail",
+     "label": "유통",
+     "detail": "마트·편의점 판매",
+     "companies": [
+      {
+       "code": "139480",
+       "name": "이마트",
+       "relevance": "중",
+       "reason": "대형마트에서 라면 판매"
+      },
+      {
+       "code": "282330",
+       "name": "BGF리테일",
+       "relevance": "중",
+       "reason": "CU 편의점에서 라면 판매"
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793159230.5979931
+  },
+  "독감": {
+   "word": "독감",
+   "stages": [
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "독감 백신·치료제",
+     "companies": [
+      {
+       "code": "302440",
+       "name": "SK바이오사이언스",
+       "relevance": "강",
+       "reason": "독감 백신 안동 공장에서 생산"
+      },
+      {
+       "code": "007570",
+       "name": "일양약품",
+       "relevance": "약",
+       "reason": "독감 치료제 등 일반의약품 생산"
+      }
+     ]
+    },
+    {
+     "key": "logistics",
+     "label": "물류",
+     "detail": "백신 콜드체인 운송",
+     "companies": [
+      {
+       "code": "009180",
+       "name": "한솔로지스틱스",
+       "relevance": "약",
+       "reason": "택배 및 물류 서비스 제공"
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793159234.2114403
+  },
+  "김장": {
+   "word": "김장",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "절임배추·고춧가루·젓갈",
+     "companies": [
+      {
+       "code": "001680",
+       "name": "대상",
+       "relevance": "중",
+       "reason": "종가 김치 원료 배추·양념 조달"
+      },
+      {
+       "code": "097950",
+       "name": "CJ제일제당",
+       "relevance": "중",
+       "reason": "비비고 김치 원료 농산물 조달"
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "포장김치·김장양념",
+     "companies": [
+      {
+       "code": "017810",
+       "name": "풀무원",
+       "relevance": "중",
+       "reason": "풀무원 김치 제조·판매"
+      }
+     ]
+    },
+    {
+     "key": "retail",
+     "label": "유통",
+     "detail": "김장재료·김치 판매",
+     "companies": [
+      {
+       "code": "139480",
+       "name": "이마트",
+       "relevance": "중",
+       "reason": "김장 재료와 절임배추 판매"
+      },
+      {
+       "code": "282330",
+       "name": "BGF리테일",
+       "relevance": "약",
+       "reason": "CU 편의점에서 포장김치 판매"
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793159238.3742368
+  },
+  "버스": {
+   "word": "버스",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "차체용 강판·타이어",
+     "companies": [
+      {
+       "code": "005490",
+       "name": "POSCO홀딩스",
+       "relevance": "중",
+       "reason": "자동차용 강판 생산"
+      },
+      {
+       "code": "161390",
+       "name": "한국타이어앤테크놀로지",
+       "relevance": "중",
+       "reason": "버스용 타이어 생산"
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "버스 완성차·부품",
+     "companies": [
+      {
+       "code": "000270",
+       "name": "기아",
+       "relevance": "중",
+       "reason": "중형버스 카운티 등 상용차 생산"
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793159242.1151793
+  },
+  "커피": {
+   "word": "커피",
+   "stages": [
+    {
+     "key": "material",
+     "label": "원료",
+     "detail": "생두·원두 수입",
+     "companies": [
+      {
+       "code": "001790",
+       "name": "대한제당",
+       "relevance": "약",
+       "reason": "식품 원료 사업을 영위"
+      }
+     ]
+    },
+    {
+     "key": "making",
+     "label": "제조",
+     "detail": "믹스·캔·RTD 커피",
+     "companies": [
+      {
+       "code": "026960",
+       "name": "동서",
+       "relevance": "강",
+       "reason": "맥심 커피믹스 제조·판매"
+      },
+      {
+       "code": "003920",
+       "name": "남양유업",
+       "relevance": "중",
+       "reason": "프렌치카페 등 커피음료 제조"
+      }
+     ]
+    },
+    {
+     "key": "retail",
+     "label": "유통",
+     "detail": "커피전문점·편의점",
+     "companies": [
+      {
+       "code": "282330",
+       "name": "BGF리테일",
+       "relevance": "중",
+       "reason": "CU 편의점서 커피 판매"
+      },
+      {
+       "code": "007070",
+       "name": "GS리테일",
+       "relevance": "중",
+       "reason": "GS25 편의점서 커피 판매"
+      }
+     ]
+    }
+   ],
+   "ai": true,
+   "model": "claude-sonnet-5-5",
+   "directory_as_of": "20261026",
+   "created_ts": 1793159245.7319589
+  }
+ }
+}

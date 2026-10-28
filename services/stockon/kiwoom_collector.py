@@ -5,6 +5,8 @@
 - kiwoom이면 평일 장중 1분마다 지수·히트맵 종목·등락 상위·거래대금·외국인/기관을 모아
   data/admin/stockon/market_kiwoom.json에 쓴다. AI LAB 앱은 이 파일이 새것일 때만 화면에 쓴다(아니면 공공데이터).
 - 장 마감(15:30) 뒤 한 번 더 모아 '마감 기준' 스냅샷을 남기고 그날은 멈춘다.
+- 생활 속 종목 찾기(lifemap.py): 매일 아침 7시 이후 한 번 오늘의 토픽 3개와 추천 칩 마인드맵을 만든다
+  (키는 .env.lifemap의 ANTHROPIC·NAVER 검색 키. 키움 설정과 무관하게 돈다).
 
 첫 시험:
   python -m services.stockon.kiwoom_collector --check   # 토큰 발급 1회 + 즉시 폐기(시세 조회 없음, IP 등록 필요 여부 판별)
@@ -18,7 +20,7 @@ import sys
 import time
 from datetime import datetime
 
-from services.stockon import store
+from services.stockon import lifemap, store
 from services.stockon.kiwoom_client import KiwoomClient, KiwoomError, num, price
 from services.stockon.public_data import KST, MARKETS, MOVER_MIN_VALUE, MOVERS_N
 
@@ -198,6 +200,10 @@ def main(argv: list[str]) -> int:
     signal.signal(signal.SIGTERM, lambda *_: stop.update(flag=True))
     while not stop["flag"]:
         now = datetime.now(KST)
+        try:
+            lifemap.maybe_run_daily(now)  # 할 때가 됐을 때만 별도 스레드로(키움 수집을 막지 않음)
+        except Exception as e:
+            log.warning("lifemap check failed: %s", type(e).__name__)
         session = session_state(now)
         active = False
         if cfg["price_source"] != "kiwoom":

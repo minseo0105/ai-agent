@@ -71,6 +71,10 @@ services:
     env_file:
       - path: .env.stockon
         required: false        # 파일이 없으면 public 모드로 상태만 쓴다
+      # 생활 속 종목 찾기(매일 아침 토픽) 전용: ANTHROPIC_API_KEY · NAVER_SEARCH_CLIENT_ID/SECRET 세 줄만.
+      # 없으면 토픽을 만들지 않고 화면은 저장된 예시를 보여 준다
+      - path: .env.lifemap
+        required: false
     networks:
       web:
         ipv4_address: 172.28.0.12
