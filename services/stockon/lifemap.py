@@ -523,7 +523,7 @@ def other_reason(issue: str, issue_titles: list[str], c: dict, basis: dict, skip
                "기사": [{"번호": i + 1, "제목": n["title"], "요약문": (n.get("snippet") or "")[:80]} for i, n in enumerate(found)]}
     try:
         raw = _ask(OTHER_MODEL, OTHER_SYSTEM, f"'{c['name']}'의 같은 날 기사 중 '{issue}'와 다른 그 회사 자체 소식을 하나 골라라.",
-                   payload, OTHER_SCHEMA, 300)
+                   payload, OTHER_SCHEMA, 1000)  # effort 설정상 300이면 max_tokens로 끊겼다
     except Exception as e:
         log.warning("lifemap other ai %s: %s", c["code"], type(e).__name__)
         return fallback
