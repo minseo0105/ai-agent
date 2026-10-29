@@ -2,15 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Heatmap from "@/components/stock/Heatmap";
+import LiveMarket from "@/components/stock/LiveMarket";
 import {
   arrow, basisLabel, dateLabel, eok, pct, stockApi, timeLabel, tone, won,
-  type EventItem, type Fx, type IndexCard, type Market, type NewsItem, type Overview, type Source, type Stock, type Why,
+  type EventItem, type Fx, type IndexCard, type LiveView, type Market, type NewsItem, type Overview, type Source, type Stock, type Why,
 } from "@/lib/stock";
 
 const SECTIONS = [
-  ["brief", "브리핑"], ["indices", "지수"], ["heatmap", "히트맵"], ["movers", "등락 상위"],
+  ["live", "실시간"], ["investors", "투자자"], ["sectors", "업종"], ["heatmap", "히트맵"], ["brief", "브리핑"], ["movers", "등락 상위"],
   ["flows", "수급"], ["watch", "관심 종목"], ["news", "뉴스"], ["week", "일정"],
 ] as const;
+const LIVE_MS = 15_000; // 실시간 장중 동향은 15초마다(서버는 저장된 파일만 읽는다)
 
 function Section({ id, eyebrow, title, meta, children, className = "" }: { id: string; eyebrow: string; title: string; meta?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
@@ -319,8 +321,19 @@ export default function StockOn() {
   const [why, setWhy] = useState<Why | null>(null);
   const [whyError, setWhyError] = useState("");
   const [whyLoading, setWhyLoading] = useState(false);
+  const [live, setLive] = useState<LiveView | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const polls = useRef(0);
+
+  // 실시간: 15초마다 새로고침 없이. 화면을 안 보는 동안(다른 탭·잠금)은 쉬고, 돌아오면 바로 한 번.
+  useEffect(() => {
+    let alive = true;
+    const pull = () => { if (document.visibilityState === "visible") stockApi.live().then((v) => alive && setLive(v)).catch(() => {}); };
+    pull();
+    const timer = setInterval(pull, LIVE_MS);
+    document.addEventListener("visibilitychange", pull);
+    return () => { alive = false; clearInterval(timer); document.removeEventListener("visibilitychange", pull); };
+  }, []);
 
   const load = useCallback(async () => {
     try {
@@ -374,23 +387,27 @@ export default function StockOn() {
   }
 
   const { market, fx, briefing, news, watch, events } = data;
-  const heat = market?.heatmap?.[heatTab] || [];
+  const heat = (live?.heatmap ?? market?.heatmap)?.[heatTab] || []; // 실시간 값으로 색 갱신
   const movers = market?.movers?.[moverTab] || [];
   const cats = news?.categories || [];
   const cat = cats.find((c) => c.id === newsTab) || cats[0];
   const usedSources = briefing ? [...new Set(briefing.sentences.flatMap((s) => s.sources))].sort((a, b) => a - b) : [];
   const basis = basisLabel(market);
   const marketSource = market && basis ? `${market.source.name} · ${basis.text}` : "";
-  const live = data.price_source === "kiwoom";
+  const kiwoom = data.price_source === "kiwoom";
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full border border-[#13315C]/30 bg-[#13315C]/5 px-2.5 py-1 text-[11px] font-extrabold text-[#13315C] dark:border-sky-300/30 dark:text-sky-200">ⓘ {data.disclaimer}</span>
-        <Freshness market={market} />
-        {live && <span className="text-[11px] font-bold text-muted">{market?.source.name}</span>}
-        <span className="text-[11px] text-subtle">갱신 {timeLabel(market?.fetched_ts)}{data.refreshing ? " · 새 자료 확인 중…" : ""}</span>
-        {error && <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300">· 최신 자료를 잠시 못 불러왔어요(이전 화면 유지)</span>}
+        <span className="rounded-full border border-[#13315C]/30 bg-[#13315C]/5 px-2.5 py-1 text-[13px] font-extrabold text-[#13315C] dark:border-sky-300/30 dark:text-sky-200">ⓘ {data.disclaimer}</span>
+        {!live && (
+          <>
+            <Freshness market={market} />
+            {kiwoom && <span className="text-[11px] font-bold text-muted">{market?.source.name}</span>}
+            <span className="text-[11px] text-subtle">갱신 {timeLabel(market?.fetched_ts)}{data.refreshing ? " · 새 자료 확인 중…" : ""}</span>
+          </>
+        )}
+        {error && <span className="text-[13px] font-bold text-amber-700 dark:text-amber-300">· 최신 자료를 잠시 못 불러왔어요(이전 화면 유지)</span>}
       </div>
 
       <nav aria-label="섹션 바로가기" className="so-row sticky top-0 z-20 -mx-4 flex gap-1.5 overflow-x-auto bg-bg/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
@@ -405,7 +422,9 @@ export default function StockOn() {
         </div>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr]">
+      {live && <LiveMarket live={live} onPick={openWhy} />}
+
+      <div className={`grid gap-4 ${live ? "" : "lg:grid-cols-[1.15fr_1fr]"}`}>
         <Section id="brief" eyebrow="MARKET BRIEF" title="AI 브리핑 3줄" meta={briefing ? `${briefing.ai ? "AI 요약" : "자동 문장"} · ${dateLabel(briefing.as_of)} 시장 기준 · ${timeLabel(briefing.fetched_ts)}` : undefined}>
           {briefing ? (
             <>
@@ -417,27 +436,27 @@ export default function StockOn() {
           )}
         </Section>
 
-        <Section id="indices" eyebrow="INDICES" title={fx && fx.status !== "not_configured" ? "지수 · 환율" : "지수"} meta={market ? marketSource : undefined}>
+        {!live && <Section id="indices" eyebrow="INDICES" title={fx && fx.status !== "not_configured" ? "지수 · 환율" : "지수"} meta={market ? marketSource : undefined}>
           {/* 환율 키(KOREAEXIM_API_KEY)가 없으면 원/달러 카드는 숨기고 지수 두 칸만 */}
           <div className={`-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:grid sm:overflow-visible ${fx?.status === "not_configured" || !fx ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
-            <IndexTile card={market?.indices.find((i) => i.name === "코스피")} asOf={market?.as_of} basis={live ? basis?.text : undefined} />
-            <IndexTile card={market?.indices.find((i) => i.name === "코스닥")} asOf={market?.as_of} basis={live ? basis?.text : undefined} />
+            <IndexTile card={market?.indices.find((i) => i.name === "코스피")} asOf={market?.as_of} basis={kiwoom ? basis?.text : undefined} />
+            <IndexTile card={market?.indices.find((i) => i.name === "코스닥")} asOf={market?.as_of} basis={kiwoom ? basis?.text : undefined} />
             {fx && fx.status !== "not_configured" && <IndexTile fx={fx} />}
           </div>
           {market && <p className="mt-2 text-[11px] text-muted">상승 {market.breadth.up.toLocaleString()} · 하락 {market.breadth.down.toLocaleString()} · 보합 {market.breadth.flat.toLocaleString()} (전체 {market.breadth.total.toLocaleString()}종목)</p>}
-        </Section>
+        </Section>}
       </div>
 
       {market && (
         <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-          <Section id="heatmap" eyebrow="HEATMAP" title="시가총액 상위 40" meta={`크기 = 시가총액 · 색 = 등락률 · ${marketSource}`}>
+          <Section id="heatmap" eyebrow="HEATMAP" title="시가총액 상위 40" meta={`크기 = 시가총액 · 색 = 등락률 · ${live ? `${live.label}${live.state === "live" ? " · 15초마다 색 갱신" : ""}` : marketSource}`}>
             <Tabs label="시장" value={heatTab} onChange={setHeatTab} options={[["KOSPI", "코스피"], ["KOSDAQ", "코스닥"]]} />
             <Heatmap items={heat} selected={picked?.code} onSelect={openWhy} />
             <p className="mt-2 text-[11px] text-subtle">칸을 누르면 그 종목이 &lsquo;왜 움직였나&rsquo;를 뉴스·공시로 정리해 보여줘요.</p>
           </Section>
           <div ref={panelRef} className="hidden lg:block">
             <section className="sticky top-14 rounded-3xl border border-border bg-surface p-5 shadow-sm">
-              {picked ? <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} live={live} /> : (
+              {picked ? <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} live={kiwoom} /> : (
                 <div className="py-10 text-center text-sm text-muted">
                   <div className="text-3xl">🔍</div>
                   <p className="mt-2 font-bold">히트맵이나 순위에서 종목을 눌러 보세요</p>
@@ -561,7 +580,7 @@ export default function StockOn() {
           출처: <SourceLink s={{ name: "금융위원회 공공데이터(주식·지수 시세, 공공누리 제4유형)", url: "https://www.data.go.kr/data/15094808/openapi.do" }} /> ·{" "}
           <SourceLink s={{ name: "한국수출입은행 환율", url: "https://www.koreaexim.go.kr" }} /> · <SourceLink s={{ name: "DART 전자공시", url: "https://dart.fss.or.kr" }} /> ·{" "}
           <SourceLink s={{ name: "NAVER 뉴스 검색", url: "https://news.naver.com" }} />
-          {live && <> · <SourceLink s={{ name: "키움증권 REST API", url: "https://openapi.kiwoom.com" }} /></>}
+          {kiwoom && <> · <SourceLink s={{ name: "키움증권 REST API", url: "https://openapi.kiwoom.com" }} /></>}
         </p>
         {data.price_note && <p className="mt-2 font-bold text-fg">{data.price_note}</p>}
       </footer>
@@ -572,7 +591,7 @@ export default function StockOn() {
           <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl bg-surface p-5 pb-8 shadow-2xl">
             <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-border" />
             <button type="button" onClick={() => setPicked(null)} className="absolute right-4 top-4 rounded-full px-2 text-lg text-muted" aria-label="닫기">✕</button>
-            <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} live={live} />
+            <WhyBody stock={picked} why={why} error={whyError} loading={whyLoading} live={kiwoom} />
           </div>
         </div>
       )}

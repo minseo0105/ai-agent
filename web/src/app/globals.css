@@ -139,8 +139,16 @@ main.stockon-theme { overflow-x: clip; }
 .lm-slide-prev { animation: lm-slide-prev 300ms cubic-bezier(.2,.8,.3,1); }
 @keyframes lm-slide-next { from { transform: translateX(28px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes lm-slide-prev { from { transform: translateX(-28px); opacity: 0; } to { transform: none; opacity: 1; } }
+/* 오늘 시장 실시간: 값이 바뀌면 1.2초 반짝임(오름 빨강·내림 파랑), 실시간 점 깜빡임 */
+.so-flash-up { animation: so-flash-up 1.2s ease-out; }
+.so-flash-down { animation: so-flash-down 1.2s ease-out; }
+@keyframes so-flash-up { 0%, 30% { background: rgba(255,107,129,.38); } 100% { background: transparent; } }
+@keyframes so-flash-down { 0%, 30% { background: rgba(90,169,255,.38); } 100% { background: transparent; } }
+.so-blink { animation: so-blink 1.1s ease-in-out infinite; }
+@keyframes so-blink { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
 @keyframes lm-dot { 0%, 80%, 100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-4px); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .lm-branch, .lm-node { transition-duration: 1ms; transition-delay: 0ms !important; }
-  .lm-glow, .lm-pulse, .lm-dots span, .lm-slide-next, .lm-slide-prev { animation: none; }
+  .lm-glow, .lm-pulse, .lm-dots span, .lm-slide-next, .lm-slide-prev, .so-blink { animation: none; }
+  .so-flash-up, .so-flash-down { animation-duration: 1ms; }
 }

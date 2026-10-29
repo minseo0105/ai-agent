@@ -57,8 +57,28 @@ async function get<T>(path: string, init: ApiInit = {}): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+// 오늘 시장 실시간 장중 동향(수집기가 키움 웹소켓·REST로 쓴 파일만 읽는다, 화면은 15초마다)
+export type LiveState = "live" | "delayed" | "closed";
+export type LiveIndex = { name: string; market: "KOSPI" | "KOSDAQ"; close?: number | null; change?: number | null; rate?: number | null; series: { t: string; c: number }[] };
+export type LiveSector = { code: string; name: string; rate: number };
+export type LiveInvestors = { foreign: number; inst: number; indiv: number }; // 억 원 순매수
+export type LiveView = {
+  state: LiveState; label: string; updated_ts: number | null; session?: Session | null; source: "kiwoom" | "public"; as_of?: string; source_name?: string;
+  ws: { connected: boolean; reconnects?: number | null; items?: number | null };
+  indices: LiveIndex[];
+  breadth: { up?: number | null; down?: number | null; flat?: number | null; upper?: number | null; lower?: number | null; total?: number };
+  heatmap: Record<"KOSPI" | "KOSDAQ", Stock[]>;
+  value_top: Stock[];
+  investors: Partial<Record<"KOSPI" | "KOSDAQ", LiveInvestors>> | null;
+  extra_ts: number | null;
+  sectors: Partial<Record<"KOSPI" | "KOSDAQ", { top: LiveSector[]; bottom: LiveSector[] }>> | null;
+  ai: { text: string; ai: boolean; ts: number; kind: "intraday" | "close" } | null;
+  price_note: string; refresh_sec: number;
+};
+
 export const stockApi = {
   overview: () => get<Overview>("/api/stock/overview"),
+  live: () => get<LiveView>("/api/stock/live"),
   why: (code: string) => get<Why>(`/api/stock/why/${encodeURIComponent(code)}`),
 };
 
