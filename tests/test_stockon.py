@@ -461,7 +461,7 @@ class KiwoomCollectorTest(TempStore):
         self.assertEqual((kospi["005930"]["close"], kospi["005930"]["rate"]), (156600.0, 28.68))
         self.assertEqual(kospi["005930"]["cap"], 400_000_000_000_000)  # 칸 크기는 공공데이터 시가총액
         self.assertEqual(snap["movers"]["up"][0]["name"], "에코프로비엠")
-        self.assertEqual(snap["flows"]["foreign_buy"][0], {"code": None, "name": "삼성전자", "amount": 1_308_110_000_000})
+        self.assertEqual(snap["flows"]["foreign_buy"][0], {"code": None, "name": "삼성전자", "amount": 130_811_000_000})  # 백만 원 단위
         self.assertEqual(snap["indices"][0]["close"], 2394.49)
         self.assertEqual(snap["breadth"]["total"], 2 * (17 + 183 + 130 + 3))
 

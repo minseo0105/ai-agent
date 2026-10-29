@@ -167,8 +167,8 @@ def build_snapshot(client: KiwoomClient, public_market: dict, directory: dict, n
         "inst_buy": ("orgn_netprps_stk_cd", "orgn_netprps_stk_nm", "orgn_netprps_amt"),
         "inst_sell": ("orgn_netslmt_stk_cd", "orgn_netslmt_stk_nm", "orgn_netslmt_amt"),
     }.items():
-        # 금액 단위: 천만 원
-        flows[key] = [{"code": r.get(code_f), "name": r.get(name_f), "amount": abs(num(r.get(amt_f)) or 0) * 10_000_000}
+        # 금액 단위: 백만 원(10-29 장중 확인: 천만 원으로 보면 삼성전자 외국인 순매수가 그 종목 거래대금의 56%가 되어 맞지 않음)
+        flows[key] = [{"code": r.get(code_f), "name": r.get(name_f), "amount": abs(num(r.get(amt_f)) or 0) * 1_000_000}
                       for r in rows[:5] if r.get(name_f)]
 
     return {
