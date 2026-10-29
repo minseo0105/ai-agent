@@ -12,6 +12,8 @@ import AiCard, { type AiFeature, type AiStream } from "./AiCard";
 
 export const TRIAL_STORAGE="moneyon-trial-v1";
 type Snapshot={token?:string;child:Child;state:State;day:string;generation:number;expires:number};
+/** 실제 한국시간 오늘(YYYY-MM-DD). 체험일은 서버가 이 날짜로 맞춘다('일주일 뒤 보기'로 옮기기 전까지). */
+export const kstToday=()=>new Date().toLocaleDateString("sv-SE",{timeZone:"Asia/Seoul"});
 export function addDays(day:string,days:number){const value=new Date(day+"T00:00:00Z");value.setUTCDate(value.getUTCDate()+days);return value.toISOString().slice(0,10);}
 export function nextWeek(day:string){return addDays(day,7);}
 // 서버가 허용하는 체험 날짜의 끝(services/moneyon_trial.py advance).
@@ -160,7 +162,7 @@ export default function TrialExperience({onExit,startDemo=false}:{onExit:()=>voi
       {panel==="settle"&&settle}
       {panel==="approved"&&approvedBook&&<section className="mk-paid-celebration" role="status"><Izani mood="celebration"/><h3>엄마가 승인했어요! 🎉</h3><p>{approvedBook.icon} {approvedBook.name} 통장을 이제 쓸 수 있어요.</p><button className="mk-button full" onClick={()=>setPanel("")}>좋아요</button></section>}
       {panel==="tools"&&<div className="mk-tools">
-        <p className="mk-caption">발표·시연용 도구예요. 체험 속 날짜 {monthDay(snapshot.day)} · 실제 날짜와 달라요. 시간을 옮겨도 다른 사람 체험에는 영향이 없어요.</p>
+        <p className="mk-caption">발표·시연용 도구예요. 체험 속 날짜 {monthDay(snapshot.day)}{snapshot.day===kstToday()?" · 오늘":" · 실제 날짜와 달라요"}. 시간을 옮겨도 다른 사람 체험에는 영향이 없어요.</p>
         <button className="mk-button full" disabled={busy||nextWeek(snapshot.day)>LAST_DAY} onClick={()=>void action("date")}>일주일 뒤 보기</button>
         <button className="mk-button secondary full" disabled={busy||addDays(snapshot.day,28)>LAST_DAY} onClick={()=>void action("month")}>한 달 뒤 보기</button>
         <button className="mk-text-button" disabled={busy} onClick={()=>setPanel("reset")}>처음 상태로 돌아가기</button>

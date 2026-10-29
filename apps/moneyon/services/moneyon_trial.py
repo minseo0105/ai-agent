@@ -12,7 +12,7 @@ import time
 import uuid
 from contextlib import contextmanager
 from contextvars import ContextVar
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from services.moneyon import Ledger, reward, period
@@ -22,9 +22,14 @@ from services import moneyon_savings as savings
 
 # Pre-seeded sample workspaces wait under this owner until a visitor claims one.
 # The suffix is the seed rules version: samples made under older rules (owner
-# 'pool') are never handed out and are removed by cleanup.
-POOL = 'pool:v2'
-LEGACY_POOLS = ('pool',)
+# 'pool', 'pool:v2' = fixed 2026-10-12 trial date) are never handed out and are removed by cleanup.
+POOL = 'pool:v3'
+LEGACY_POOLS = ('pool', 'pool:v2')
+
+
+def kst_today():
+    """실제 한국시간 오늘. 서버 시계가 UTC여도(자정~09시는 UTC로 아직 어제) 한국 날짜."""
+    return datetime.now(accounts.KST).date()
 # New trials: interest in whole 100원 (amounts under 100원 are dropped) and the
 # child presses "이자 받기" after the weekly settlement instead of automatic payment.
 UNIT = 100
@@ -94,6 +99,8 @@ class TrialLedger(Ledger):
                 child TEXT NOT NULL, cycle TEXT NOT NULL, reward_type TEXT NOT NULL,
                 base INTEGER NOT NULL, amount INTEGER NOT NULL, transaction_id TEXT NOT NULL,
                 paid_at TEXT NOT NULL, PRIMARY KEY(child,cycle,reward_type))''')
+            # 실제 날짜를 따르는 체험(10-29부터 새로 만든 것). 체험일이 실제 오늘보다 뒤처지면 오늘로 따라간다.
+            db.execute('CREATE TABLE IF NOT EXISTS trial_clock(family TEXT PRIMARY KEY, since TEXT NOT NULL)')
             db.execute('''CREATE TABLE IF NOT EXISTS trial_closings(
                 child TEXT NOT NULL, cycle TEXT NOT NULL, reward_type TEXT NOT NULL,
                 base INTEGER NOT NULL, amount INTEGER NOT NULL,
@@ -278,10 +285,11 @@ class TrialLedger(Ledger):
 
 
 class Trials:
-    def __init__(self, ledger, unit=UNIT, payment='manual'):
+    def __init__(self, ledger, unit=UNIT, payment='manual', today=kst_today):
         # Rules for newly seeded trials. Existing trials keep the rules stored with them;
         # unit=1, payment='automatic' reproduces the earlier trial rules.
-        self.ledger, self.unit, self.payment = ledger, unit, payment
+        # 체험일은 실제 한국시간 오늘(today). 미리 채운 예시 기록은 이번 주 월요일(주간 정산 시작일)에 둔다.
+        self.ledger, self.unit, self.payment, self.today = ledger, unit, payment, today
 
     @staticmethod
     def digest(token):
@@ -298,7 +306,18 @@ class Trials:
                 raise ValueError('초기화된 통장이에요. 새로고침하고 다시 해 주세요.')
             if row['last_seen'] < now - 60:
                 db.execute('UPDATE trial_visitors SET last_seen=? WHERE capability=?', (now, row['capability']))
+            self.catch_up(dict(row))
             return dict(row)
+
+    def catch_up(self, row):
+        """실제 날짜를 따르는 체험이 자정을 넘겨 실제 오늘보다 뒤처졌으면 오늘로 옮긴다(주 경계·이자 마감은 advance가 순서대로).
+        '일주일 뒤 보기'로 앞으로 옮긴 체험(체험일 > 오늘)과 예전 고정 날짜 체험은 그대로 둔다."""
+        with self.ledger.db() as db:
+            if not db.execute('SELECT 1 FROM trial_clock WHERE family=?', (row['family'],)).fetchone():
+                return
+        today = self.today()
+        if self.day(row) < today:
+            self.advance(row, today)
 
     def day(self, row):
         with self.ledger.db() as db:
@@ -308,7 +327,8 @@ class Trials:
         # A completed historical cycle earns 1,500, returns its principal,
         # and leaves only the earned reward as the current opening balance.
         family = 'trial:' + str(uuid.uuid4())
-        day = date(2026, 10, 12)
+        today = self.today()
+        day = today - timedelta(days=today.weekday())  # 이번 주 월요일: 예시 기록(지난주 용돈·이번 주 용돈·쓴 돈·저금)의 날짜
         policy = dict(frequency='weekly', amount=15000, pay_day=0,
                       rate_bps=1000, cap=1500, rollover=False)
         dbledger = self.ledger
@@ -336,20 +356,36 @@ class Trials:
             dbledger.goal(family, child, '나의 첫 자전거', 30000)
             savings.migrate(db,child)
             db.execute('INSERT INTO moneyon_payment_rules VALUES(?,?,?)',(child,day.isoformat(),self.payment))
+            # 체험일 = 실제 오늘(같은 주라 정산 경계를 넘지 않는다). 이제부터 새 기록은 오늘 날짜·지금 시각.
+            db.execute('UPDATE moneyon_demo_workspaces SET business_date=? WHERE family=?', (today.isoformat(), family))
+            db.execute('INSERT INTO trial_clock VALUES(?,?)', (family, today.isoformat()))
         return family, child
 
     def workspace(self, owner):
         """Claim a pre-seeded sample when one is waiting, otherwise seed now. Both are identical seeds."""
         with self.ledger.db() as db:
             # Waiting samples follow the default rules; other rules always seed fresh.
-            row = (self.unit, self.payment) == (UNIT, 'manual') and db.execute('SELECT family FROM moneyon_demo_workspaces WHERE owner=? AND active=1 ORDER BY rowid LIMIT 1', (POOL,)).fetchone()
+            # 미리 만든 예시는 이번 주에 만든 것만(지난주 것은 예시 기록 날짜가 지난주라 쓰지 않는다). 받으면 체험일을 오늘로.
+            today = self.today()
+            monday = today - timedelta(days=today.weekday())
+            row = (self.unit, self.payment) == (UNIT, 'manual') and db.execute(
+                'SELECT family FROM moneyon_demo_workspaces WHERE owner=? AND active=1 AND business_date>=? AND business_date<=? ORDER BY rowid LIMIT 1',
+                (POOL, monday.isoformat(), today.isoformat())).fetchone()
             if not row:
                 return self.seed(owner)
-            db.execute('UPDATE moneyon_demo_workspaces SET owner=? WHERE family=?', (owner, row['family']))
+            db.execute('UPDATE moneyon_demo_workspaces SET owner=?,business_date=? WHERE family=?', (owner, today.isoformat(), row['family']))
             return row['family'], db.execute('SELECT id FROM children WHERE family=?', (row['family'],)).fetchone()[0]
 
     def pooled(self):
+        """이번 주에 만든(받을 수 있는) 예시 수. 지난주 예시는 정리한다(주가 바뀌면 새로 채움)."""
+        today = self.today()
+        monday = (today - timedelta(days=today.weekday())).isoformat()
         with self.ledger.db() as db:
+            stale = [r[0] for r in db.execute('SELECT family FROM moneyon_demo_workspaces WHERE owner=? AND business_date<? LIMIT 20', (POOL, monday))]
+            for family in stale:
+                db.execute('UPDATE moneyon_demo_workspaces SET owner=? WHERE family=?', (POOL + ':stale', family))
+            if stale:
+                self._purge(db, POOL + ':stale')
             return db.execute('SELECT COUNT(*) FROM moneyon_demo_workspaces WHERE owner=? AND active=1', (POOL,)).fetchone()[0]
 
     def refill(self, target):
