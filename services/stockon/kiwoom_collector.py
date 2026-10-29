@@ -7,6 +7,9 @@
 - 장 마감(15:30) 뒤 15:35 이후 값을 '종가 기준' 스냅샷(final)으로 남기고 그날은 멈춘다. 수집기를 저녁에 다시 켜도
   그날 종가 스냅샷이 없으면 한 번 만든다. 받은 일자가 오늘이 아니면(공휴일) 파일을 덮지 않고 그날은 쉰다.
 - 실패(키움 오류·예상 밖 응답)는 상태 파일 fails에 연속 횟수로 남긴다(관리자 화면 3회부터 경고). 성공하면 0.
+- 실시간(웹소켓, kiwoom_realtime.py): 장중에 지수(0J)·업종등락(0U)·주요 종목(0B: 히트맵·팀 관심 종목·뉴스 속 숨은 종목 회사)을
+  받아 5초마다 market_live.json에 쓴다. 끊기면 자동 재연결. 뉴스 속 숨은 종목의 실제 등락률·시장 대비도 1분마다 이 값으로(AI 없음).
+- 업종별 등락(ka20003)·투자자별 순매수(ka10051)·지수 5분봉(ka20005)은 2분마다 REST(live.py), AI 장중 한 줄 요약은 10분마다.
 - 뉴스 속 숨은 종목(lifemap.py): 새 기준(공공 새 기준일·키움 장중·마감)이 생기면 토픽·섹터를 만든다
   (키는 .env.lifemap의 ANTHROPIC·NAVER 검색 키. 키움 설정과 무관하게 돈다). 키움 장중에는 30분마다
   화면에 나온 회사들의 등락률(ka10095)과 코스피·코스닥 등락률(ka20001)을 같은 때 갱신한다(시장 대비 계산, AI 재호출 없음).
@@ -20,11 +23,13 @@ import logging
 import os
 import signal
 import sys
+import threading
 import time
 from datetime import datetime
 
-from services.stockon import budget, lifemap, store
+from services.stockon import budget, lifemap, live, store
 from services.stockon.kiwoom_client import KiwoomClient, KiwoomError, num, price
+from services.stockon.kiwoom_realtime import RealtimeFeed
 from services.stockon.public_data import KST, MARKETS, MOVER_MIN_VALUE, MOVERS_N
 
 log = logging.getLogger("stockon.kiwoom")
@@ -263,6 +268,12 @@ def tick(client_box: dict, cfg: dict, now: datetime, state: dict, sleep=time.sle
             if (now.hour, now.minute) >= HOLIDAY_FROM:
                 state["holiday"] = today  # 공휴일: 그날은 더 부르지 않는다(화면은 공공데이터)
             return True
+        final = bool(snap.get("final"))
+        if live.extra_due(now, final=final):
+            try:
+                live.collect_extra(client, now, final=final)  # 업종·투자자·5분봉(2분마다, 마감 뒤 1번)
+            except Exception as e:
+                log.warning("live extra failed: %s", type(e).__name__)
         if lifemap.rates_due(now, closed=bool(snap.get("final"))):
             try:
                 refresh_lifemap_rates(client, now, closed=bool(snap.get("final")))  # 장중 30분마다, AI 호출 없음
@@ -279,6 +290,70 @@ def tick(client_box: dict, cfg: dict, now: datetime, state: dict, sleep=time.sle
         _fail(cfg, "unexpected", type(e).__name__, session)
         log.warning("kiwoom collect error: %s", type(e).__name__)
         return True
+
+
+# ---------------------------------------------------------
+# 실시간(웹소켓) — 장중에만 연결, 5초마다 저장
+# ---------------------------------------------------------
+
+LIVE_WRITE_SEC = 5
+LIVE_LIFEMAP_SEC = 60
+FEED_FROM = (8, 58)          # 장 시작 직전에 미리 연결
+FEED_STOP_AFTER = (15, 40)  # 마감 뒤 이 시각이 지나면 연결을 닫는다(종가 스냅샷은 REST)
+
+
+def feed_codes(public_market: dict) -> list[str]:
+    """실시간으로 받을 종목: 뉴스 속 숨은 종목 회사 → 팀 관심 종목 → 히트맵 대형주(시가총액 순). 등록 한도 안에서 앞쪽 우선."""
+    heat = [s["code"] for m in MARKETS for s in sorted((public_market.get("heatmap") or {}).get(m) or [], key=lambda s: -(s.get("cap") or 0))]
+    watch = [w["code"] for w in (store.read("watch") or {}).get("items") or [] if w.get("code")]
+    return list(dict.fromkeys([*lifemap.reaction_codes(), *watch, *heat]))
+
+
+def feed_wanted(cfg: dict, now: datetime, state: dict) -> bool:
+    """키움 모드의 평일 08:58(장 시작 직전)~15:40. 공휴일로 본 날은 연결하지 않는다."""
+    if cfg["price_source"] != "kiwoom" or now.weekday() >= 5 or state.get("holiday") == now.strftime("%Y%m%d"):
+        return False
+    return FEED_FROM <= (now.hour, now.minute) < FEED_STOP_AFTER
+
+
+def manage_feed(box: dict, client_box: dict, cfg: dict, now: datetime, state: dict) -> None:
+    """장중이면 연결을 유지하고(종목이 바뀌면 다시 등록), 아니면 닫는다. 저장은 별도 스레드가 5초마다."""
+    feed = box.get("feed")
+    if not feed_wanted(cfg, now, state):
+        if feed and feed.running:
+            feed.stop()
+        return
+    if not client_box.get("client"):
+        client_box["client"] = KiwoomClient(cfg["mode"], cfg["appkey"], cfg["secret"])
+    client = client_box["client"]
+    if feed is None:
+        feed = box["feed"] = RealtimeFeed(cfg["mode"], client.access_token)
+    feed.set_items(feed_codes(store.read("market") or {}))
+    if not feed.running:
+        feed.start()
+    if not (box.get("writer") and box["writer"].is_alive()):
+        box["writer"] = threading.Thread(target=live_writer, args=(box,), name="live-writer", daemon=True)
+        box["writer"].start()
+
+
+def live_writer(box: dict, sleep=time.sleep) -> None:
+    """연결이 살아 있는 동안 5초마다 market_live.json, 1분마다 뉴스 속 숨은 종목 실제 등락(웹소켓 값)."""
+    last_life = 0.0
+    while True:
+        feed = box.get("feed")
+        if not feed or not feed.running:
+            return
+        snap = feed.snapshot()
+        try:
+            live.write_live(snap)
+            now = datetime.now(KST)
+            fresh = snap.get("last_msg_ts") and time.time() - snap["last_msg_ts"] <= live.LIVE_FRESH_SEC
+            if fresh and session_state(now) in ("open", "closing_auction") and time.time() - last_life >= LIVE_LIFEMAP_SEC:
+                live.lifemap_rates_from_live(snap, now)
+                last_life = time.time()
+        except Exception as e:
+            log.warning("live write failed: %s", type(e).__name__)
+        sleep(LIVE_WRITE_SEC)
 
 
 def main(argv: list[str]) -> int:
@@ -304,6 +379,7 @@ def main(argv: list[str]) -> int:
             return 1
 
     client_box: dict = {}
+    feed_box: dict = {}
     state: dict = {}
     stop = {"flag": False}
     signal.signal(signal.SIGTERM, lambda *_: stop.update(flag=True))
@@ -313,11 +389,21 @@ def main(argv: list[str]) -> int:
             lifemap.maybe_run_daily(now)  # 할 때가 됐을 때만 별도 스레드로(키움 수집을 막지 않음)
         except Exception as e:
             log.warning("lifemap check failed: %s", type(e).__name__)
+        try:
+            manage_feed(feed_box, client_box, cfg, now, state)  # 장중 실시간 연결(웹소켓)
+        except Exception as e:
+            log.warning("realtime manage failed: %s", type(e).__name__)
         active = tick(client_box, cfg, now, state)
+        try:
+            live.maybe_summarize(now)  # AI 장중 한 줄(10분마다, 변화가 작으면 유지) · 마감 요약 1번
+        except Exception as e:
+            log.warning("live summary check failed: %s", type(e).__name__)
         for _ in range(TICK_ACTIVE if active else TICK_IDLE):
             if stop["flag"]:
                 break
             time.sleep(1)
+    if feed_box.get("feed"):
+        feed_box["feed"].stop()
     if client_box.get("client"):
         client_box["client"].revoke()
     return 0

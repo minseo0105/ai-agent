@@ -540,7 +540,10 @@ class VisitorRequestsAreReadOnlyTest(TempStore):
 
 
 class NoOrderOrAccountCodeTest(unittest.TestCase):
-    """STOCK:ON 코드에 증권사 주문·계좌·실시간 API 흔적이 없어야 한다(2단계 허용 목록 원칙)."""
+    """STOCK:ON 코드에 증권사 주문·계좌 API 흔적이 없어야 한다(허용 목록 원칙).
+    실시간 시세 웹소켓은 kiwoom_realtime.py 한 곳에서만, 시세 타입(0B 주식체결·0J 업종지수·0U 업종등락)만 받는다."""
+
+    REALTIME = "kiwoom_realtime.py"
 
     FORBIDDEN = [r"/ordr\b", r"/crdordr", r"/acnt\b", r"/dostk/watchlist", r"/websocket", r"/api/us/", r"\bkt1\d{4}\b", r"\bkt5\d{4}\b", r"\bust2\d{4}\b", r"wss://"]
 
@@ -550,7 +553,20 @@ class NoOrderOrAccountCodeTest(unittest.TestCase):
         for f in files:
             text = f.read_text(encoding="utf-8")
             for pat in self.FORBIDDEN:
+                if f.name == self.REALTIME and pat in (r"/websocket", r"wss://"):
+                    continue  # 실시간 시세 웹소켓 주소(아래 테스트에서 따로 확인)
                 self.assertIsNone(re.search(pat, text), f"{f.name}: {pat}")
+
+    def test_realtime_is_quote_types_only(self):
+        from services.stockon import kiwoom_realtime as rt
+        self.assertEqual(set(rt.TYPES), {"0B", "0J", "0U"})  # 주문체결 00·잔고 04·조건검색 등 없음
+        self.assertEqual(set(rt.WS_URLS.values()), {"wss://mockapi.kiwoom.com:10000/api/dostk/websocket",
+                                                    "wss://api.kiwoom.com:10000/api/dostk/websocket"})
+        text = (ROOT / "services" / "stockon" / self.REALTIME).read_text(encoding="utf-8")
+        self.assertEqual(len(re.findall(r"wss://", text)), 2)
+        self.assertNotRegex(text, r'"(00|04|CNSR\w*)"')  # 주문체결·잔고·조건검색 메시지 없음
+        msg = rt.register_message(["005930", "000660"])
+        self.assertEqual({t for d in msg["data"] for t in d["type"]}, {"0J", "0U", "0B"})
 
     def test_no_browser_side_secrets(self):
         for f in [ROOT / "web" / "src" / "lib" / "stock.ts", *(ROOT / "web" / "src" / "components" / "stock").glob("*.tsx")]:

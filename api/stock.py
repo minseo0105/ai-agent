@@ -1,6 +1,7 @@
 """STOCK:ON API. 공개 범위는 AccessMiddleware(서비스 id 'stockon', 관리자 '서비스별 공개')가 적용한다.
 
-- 방문자 API(overview · why)는 저장된 스냅샷만 읽는다. 외부 API·LLM을 부르지 않는다.
+- 방문자 API(overview · why · live)는 저장된 스냅샷만 읽는다. 외부 API·LLM을 부르지 않는다.
+  live = '오늘 시장' 실시간 장중 동향(수집기가 키움 웹소켓·REST로 쓴 파일만, 2초 캐시). 화면이 15초마다 부른다.
 - 뉴스 속 숨은 종목(/api/stock/lifemap*)도 저장된 것만 읽는다(토픽·섹터 = 기사 + AI 해석 + 회사 지도 + 실제 등락).
   단 직접 입력(POST .../word)만은 대기열(동시 3·대기 12·1인 10분 3개·하루 150개)을 거쳐 뉴스 검색 1회와 AI를 부른다.
   같은 단어는 한 번 만든 것을 모두 재사용. 응답의 item = {name, title, summary, sector, articles, map}.
@@ -14,7 +15,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from api.access import require_admin
-from services.stockon import lifemap, service
+from services.stockon import lifemap, live, service
 
 router = APIRouter(tags=["stock"])
 
@@ -27,6 +28,11 @@ def _enabled():
 @router.get("/api/stock/overview")
 def overview():
     return service.overview()
+
+
+@router.get("/api/stock/live", dependencies=[Depends(_enabled)])
+def live_view():
+    return live.view()
 
 
 @router.get("/api/stock/why/{code}", dependencies=[Depends(_enabled)])

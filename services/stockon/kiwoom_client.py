@@ -1,6 +1,7 @@
 """키움 REST API — 조회 전용 클라이언트 (docs/STOCKON_PLAN.md 3-6절).
 
-- 이 파일에는 허용 목록(ALLOWED)에 있는 조회 TR만 있다. 주문·계좌·실시간 연결 API는 코드에 없다.
+- 이 파일에는 허용 목록(ALLOWED)에 있는 조회 TR만 있다. 주문·계좌 API는 코드에 없다.
+  실시간 시세(웹소켓)는 kiwoom_realtime.py가 시세 타입 세 가지(0B·0J·0U)만 받는다(이 클라이언트의 토큰을 메모리로 넘김).
 - 공개 함수는 query(api_id, body) 하나. 허용 목록 밖이면 네트워크 호출 전에 예외.
 - 키·토큰은 이 객체(수집기 프로세스 메모리)에만 있다. 로그·예외·파일에 남기지 않는다.
 - 도메인은 KIWOOM_MODE(mock/real)로만 고른다. 모의 서버는 KRX만. 호출 간격은 TR 종류와 관계없이 전체 1.1초(모의, 초당 1회 이하).
@@ -23,6 +24,8 @@ ALLOWED = MappingProxyType({
     "au10002": "/oauth2/revoke",         # 접근토큰 폐기
     "ka20001": "/api/dostk/sect",        # 업종현재가(지수)
     "ka20009": "/api/dostk/sect",        # 업종현재가일별
+    "ka20003": "/api/dostk/sect",        # 전업종지수(업종별 등락 순위·상한/하한 수)
+    "ka20005": "/api/dostk/chart",       # 업종분봉(지수 장중 5분봉)
     "ka10051": "/api/dostk/sect",        # 업종별투자자순매수
     "ka10027": "/api/dostk/rkinfo",      # 전일대비등락률상위
     "ka10032": "/api/dostk/rkinfo",      # 거래대금상위
@@ -127,6 +130,10 @@ class KiwoomClient:
                     raise
                 with self._lock:
                     self._token = self._token_exp = None  # 무효 토큰은 버리고 한 번만 다시 받는다
+
+    def access_token(self) -> str:
+        """실시간 시세 웹소켓 LOGIN용. 같은 프로세스 메모리 안에서만 넘긴다(로그·파일에 남기지 않음)."""
+        return self._ensure_token()
 
     def check_token(self) -> str:
         """토큰 발급만 해 본다(시세 조회 없음). 성공하면 'ok', 실패하면 KiwoomError(code)."""
