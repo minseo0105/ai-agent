@@ -14,7 +14,7 @@ const server=http.createServer((req,res)=>{
   if(!fs.existsSync(file)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));
 });
-const ORDER=[['/golf','tee.webp'],['/dreamcar','dream.webp'],['/realestate','zip.webp'],['/report','report.svg'],['/saju','saju.svg'],['/car-selector','car-selector.svg'],['/gif','gif.svg'],['https://minseo2-moneyon-demo.hf.space/','money.webp']];
+const ORDER=[['/dreamcar','dream.webp'],['https://140-245-88-198.sslip.io/moneyon','money.webp'],['/stock','stock.svg'],['/realestate','zip.webp'],['/report','report.svg'],['/golf','tee.webp'],['/saju','saju.svg'],['/car-selector','car-selector.svg'],['/gif','gif.svg']];
 (async()=>{
   fs.mkdirSync(output,{recursive:true});await new Promise(r=>server.listen(0,'127.0.0.1',r));
   const base=`http://127.0.0.1:${server.address().port}`;
@@ -33,12 +33,12 @@ const ORDER=[['/golf','tee.webp'],['/dreamcar','dream.webp'],['/realestate','zip
       await page.goto(base);await page.locator('#services a img').first().waitFor();
       for(let y=0;y<4000;y+=400){await page.evaluate(v=>scrollTo(0,v),y);await page.waitForTimeout(40);}
       await page.evaluate(()=>scrollTo(0,0));
-      // 디자인: 히어로·태그 칩·카드 8개(순서·그림·파스텔 배경)
+      // 디자인: 히어로·태그 칩·카드 9개(순서·그림·파스텔 배경). 순서 = 드림카 → 머니온 → 스탁온 → 집온 → 보고서 작성기 → 티픽 → 나머지
       const hero=await page.locator('h1').evaluate(h=>getComputedStyle(h.closest('section')).backgroundImage);
       assert.match(hero,/linear-gradient/,'남색 그라데이션 히어로');
       for(const tag of ['AI Agent','API','Vibe Coding','Prototype'])assert(await page.locator('section').first().getByText(tag,{exact:true}).count(),`태그 칩 ${tag}`);
       const cards=page.locator('#services a').filter({has:page.locator('img')});
-      assert.equal(await cards.count(),8);
+      assert.equal(await cards.count(),9);
       const got=await cards.evaluateAll(ns=>ns.map(n=>[n.getAttribute('href'),n.querySelector('img').getAttribute('src').split('/').pop(),n.querySelector('img').naturalWidth>0,getComputedStyle(n).backgroundColor!=='rgba(0, 0, 0, 0)'||getComputedStyle(n).backgroundImage!=='none']));
       assert.deepEqual(got.map(([h,s])=>[h,s]),ORDER,'카드 순서·그림');
       assert(got.every(([,,loaded,colored])=>loaded&&colored),'그림이 뜨고 카드에 배경색이 있음');
@@ -56,13 +56,13 @@ const ORDER=[['/golf','tee.webp'],['/dreamcar','dream.webp'],['/realestate','zip
       if(width<640)assert(parseFloat(await page.locator('#agent textarea').evaluate(t=>getComputedStyle(t).fontSize))>=16,'입력창 16px 이상(아이폰 확대 방지)');
       await page.screenshot({path:path.join(output,`${width}.png`),fullPage:true});
       // 분류 필터
-      for(const [name,count] of [['AI Agent',2],['Prototype',4],['API·Search',2],['전체',8]]){
+      for(const [name,count] of [['AI Agent',2],['Prototype',5],['API·Search',2],['전체',9]]){
         await chips.filter({hasText:name}).first().click();assert.equal(await cards.count(),count,`${name} 필터`);
       }
       // 권한: 숨김 서비스는 빠지고, 권한 없는 서비스는 자물쇠, 에이전트는 접속 코드 안내
       services={gif:{visible:false,allowed:false},golf:{visible:true,allowed:false},agent:{visible:true,allowed:false}};
-      await page.goto(base);await page.waitForFunction(()=>[...document.querySelectorAll('#services a')].filter(a=>a.querySelector('img')).length===7);
-      assert.match(await cards.first().innerText(),/🔒/);
+      await page.goto(base);await page.waitForFunction(()=>[...document.querySelectorAll('#services a')].filter(a=>a.querySelector('img')).length===8);
+      assert.match(await cards.filter({hasText:'TEE:PICK'}).first().innerText(),/🔒/);
       assert.equal(await page.locator('#agent textarea').count(),0);
       assert.match(await page.locator('#agent').innerText(),/접속 코드/);
       assert.deepEqual(errors,[]);await context.close();console.log(`PASS ${width}px: design, card order, columns, overflow, 44px, 13px, filters, access control`);

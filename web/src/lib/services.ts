@@ -27,19 +27,8 @@ export type Service = {
   streamlitPath?: string;
 };
 
+// 홈 카드 순서 = 이 배열 순서(10-29: 드림카 → 머니온 → 스탁온 → 집온 → 보고서 작성기 → 티픽, 그 밖은 뒤에). 관리자 화면은 보임/숨김만.
 export const SERVICES: Service[] = [
-  {
-    id: "golf",
-    category: "API·Search",
-    image: "/ailab/tee.webp",
-    imageFallback: "/ailab/tee.svg",
-    icon: "⛳",
-    title: "TEE:PICK · 오늘, 어디서 칠까?",
-    desc: "지역 · 시간 · 라운드 조건만 골라주세요. 내 조건에 맞는 골프장을 AI가 찾아드립니다.",
-    tags: ["수도권·충청·강원", "KGA 코스정보", "AI 문장검색", "실제 후기"],
-    featured: true,
-    href: "/golf",
-  },
   {
     id: "dreamcar",
     category: "Prototype",
@@ -49,6 +38,26 @@ export const SERVICES: Service[] = [
     title: "내차에서 드림카까지",
     desc: "내 차 시세를 확인하고 다음 차량을 탐색·추천받습니다.",
     href: "/dreamcar",
+  },
+  {
+    id: "moneyon",
+    category: "Prototype",
+    image: "/ailab/money.webp", // 머니온 꿀벌 캐릭터 '이자니'(얼굴·동전)
+    imageFallback: "/ailab/money.png",
+    icon: "🐝",
+    title: "MONEY:ON",
+    desc: "용돈을 관리하고, 남은 돈에 이자까지!",
+    href: MONEYON_URL,
+  },
+  {
+    id: "stockon",
+    category: "Prototype",
+    image: "/ailab/stock.svg",
+    icon: "📈",
+    title: "STOCK:ON · 뉴스 한 줄, 연결된 회사까지",
+    desc: "오늘의 뉴스가 어떤 회사들에 영향을 줄 수 있는지 AI가 해석하고, 실제 등락(등락률)과 나란히 보여 줍니다. 지수·히트맵·등락 상위도 함께.",
+    tags: ["뉴스 속 숨은 종목", "AI 해석", "실제 등락", "히트맵"],
+    href: "/stock",
   },
   {
     id: "realestate",
@@ -62,16 +71,6 @@ export const SERVICES: Service[] = [
     href: "/realestate",
   },
   {
-    id: "stockon",
-    category: "Prototype",
-    image: "/ailab/stock.svg",
-    icon: "📈",
-    title: "STOCK:ON · 뉴스 한 줄, 연결된 회사까지",
-    desc: "오늘의 뉴스가 어떤 회사들에 영향을 줄 수 있는지 AI가 해석하고, 실제 등락(등락률)과 나란히 보여 줍니다. 지수·히트맵·등락 상위도 함께.",
-    tags: ["뉴스 속 숨은 종목", "AI 해석", "실제 등락", "히트맵"],
-    href: "/stock",
-  },
-  {
     id: "report",
     category: "AI Agent",
     image: "/ailab/report.svg",
@@ -79,6 +78,18 @@ export const SERVICES: Service[] = [
     title: "보고서 작성기",
     desc: "업무 내용을 경영진 보고 구조로 정리합니다.",
     href: "/report",
+  },
+  {
+    id: "golf",
+    category: "API·Search",
+    image: "/ailab/tee.webp",
+    imageFallback: "/ailab/tee.svg",
+    icon: "⛳",
+    title: "TEE:PICK · 오늘, 어디서 칠까?",
+    desc: "지역 · 시간 · 라운드 조건만 골라주세요. 내 조건에 맞는 골프장을 AI가 찾아드립니다.",
+    tags: ["수도권·충청·강원", "KGA 코스정보", "AI 문장검색", "실제 후기"],
+    featured: true,
+    href: "/golf",
   },
   {
     id: "saju",
@@ -108,16 +119,6 @@ export const SERVICES: Service[] = [
     desc: "이미지를 GIF로 변환합니다.",
     secondary: true,
     href: "/gif",
-  },
-  {
-    id: "moneyon",
-    category: "Prototype",
-    image: "/ailab/money.webp", // 머니온 꿀벌 캐릭터 '이자니'(얼굴·동전)
-    imageFallback: "/ailab/money.png",
-    icon: "🐝",
-    title: "MONEY:ON",
-    desc: "용돈을 관리하고, 남은 돈에 이자까지!",
-    href: MONEYON_URL,
   },
 ];
 
