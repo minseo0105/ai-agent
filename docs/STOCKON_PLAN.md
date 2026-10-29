@@ -267,6 +267,7 @@ STOCK:ON **첫 탭·기본 화면**(`/stock`). 오늘 시장은 `/stock?tab=mark
 - 계좌: `/api/dostk/acnt`(33개, 잔고·체결·손익 등), `/api/us/acnt`
 - 개인 관심종목 그룹: `/api/dostk/watchlist`(계좌 사용자의 HTS 관심종목 = 개인 정보)
 - 실시간 WebSocket 전체(`wss://…:10000`, 주문체결 `00`·잔고 `04` 포함), 조건검색
+  - **10-29 사용자 결정으로 변경**: '오늘 시장' 실시간 장중 동향을 위해 시세 타입 `0B`(주식체결)·`0J`(업종지수)·`0U`(업종등락)만 받는 웹소켓을 `services/stockon/kiwoom_realtime.py` 한 곳에 둔다(주문체결·잔고·조건검색은 여전히 없음, `NoOrderOrAccountCodeTest`가 확인). 조회 TR에 `ka20003`(전업종지수)·`ka20005`(업종분봉) 추가.
 - 미국주식 전체
 
 구현 원칙:
