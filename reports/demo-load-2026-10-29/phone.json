@@ -1,0 +1,134 @@
+[
+ {
+  "env": "아이폰 사파리",
+  "path": "/",
+  "status": 200,
+  "ok": true,
+  "ms": 1746,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "아이폰 사파리",
+  "path": "/stock",
+  "status": 200,
+  "ok": true,
+  "ms": 2640,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "아이폰 사파리",
+  "path": "/stock?tab=market",
+  "status": 200,
+  "ok": true,
+  "ms": 1648,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "아이폰 사파리",
+  "path": "/moneyon/",
+  "status": 200,
+  "ok": true,
+  "ms": 3074,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": "통장 화면 열림"
+ },
+ {
+  "env": "카카오톡 인앱(아이폰)",
+  "path": "/",
+  "status": 200,
+  "ok": true,
+  "ms": 1761,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "카카오톡 인앱(아이폰)",
+  "path": "/stock",
+  "status": 200,
+  "ok": true,
+  "ms": 2095,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "카카오톡 인앱(아이폰)",
+  "path": "/stock?tab=market",
+  "status": 200,
+  "ok": true,
+  "ms": 2052,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "카카오톡 인앱(아이폰)",
+  "path": "/moneyon/",
+  "status": 200,
+  "ok": true,
+  "ms": 2966,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": "통장 화면 열림"
+ },
+ {
+  "env": "카카오톡 인앱(안드로이드)",
+  "path": "/",
+  "status": 200,
+  "ok": true,
+  "ms": 1691,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "카카오톡 인앱(안드로이드)",
+  "path": "/stock",
+  "status": 200,
+  "ok": true,
+  "ms": 1815,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "카카오톡 인앱(안드로이드)",
+  "path": "/stock?tab=market",
+  "status": 200,
+  "ok": true,
+  "ms": 1718,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": ""
+ },
+ {
+  "env": "카카오톡 인앱(안드로이드)",
+  "path": "/moneyon/",
+  "status": 200,
+  "ok": true,
+  "ms": 3061,
+  "overflow_px": 0,
+  "js_errors": 0,
+  "first_error": "",
+  "note": "통장 화면 열림"
+ }
+]
