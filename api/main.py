@@ -7,10 +7,12 @@
 import json
 import mimetypes
 import os
+import threading
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
 
+import anyio
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -49,8 +51,11 @@ from services.dreamcar import ASSET_DIR, IMAGE_DIR
 from services.stockon import service as stockon_service
 
 configure_logging()
+THREADS = int(os.environ.get("AILAB_THREADS", "") or 100)
 @asynccontextmanager
 async def lifespan(app):
+    # 동기 라우트·스트리밍은 같은 스레드 묶음(기본 40개)을 쓴다. 100명 시연에서 읽기 API가 줄 서지 않게 넉넉히.
+    anyio.to_thread.current_default_thread_limiter().total_tokens = THREADS
     try:
         await collector.start()
     except Exception:
@@ -147,6 +152,31 @@ def agent_options():
     }
 
 
+# 에이전트 대화 문지기: 동시 CHAT_CONCURRENCY개, 그 뒤로 CHAT_QUEUE명까지 CHAT_WAIT초 기다린다.
+# 넘치면 바로 "지금 질문이 많아요" 답(AI 호출 없음). 기다리는 사람도 스레드를 쓰므로 대기열을 짧게 둔다.
+CHAT_CONCURRENCY = int(os.environ.get("AILAB_CHAT_CONCURRENCY", "") or 8)
+CHAT_QUEUE = int(os.environ.get("AILAB_CHAT_QUEUE", "") or 16)
+CHAT_WAIT = float(os.environ.get("AILAB_CHAT_WAIT", "") or 10)
+CHAT_BUSY = "지금 질문하는 분이 많아요. 잠시 뒤에 다시 눌러 주세요."
+_chat_slots = threading.BoundedSemaphore(CHAT_CONCURRENCY)
+_chat_lock = threading.Lock()
+_chat_waiting = [0]
+
+
+def _chat_enter() -> bool:
+    if _chat_slots.acquire(blocking=False):
+        return True
+    with _chat_lock:
+        if _chat_waiting[0] >= CHAT_QUEUE:
+            return False
+        _chat_waiting[0] += 1
+    try:
+        return _chat_slots.acquire(timeout=CHAT_WAIT)
+    finally:
+        with _chat_lock:
+            _chat_waiting[0] -= 1
+
+
 @app.post("/api/chat")
 def chat(req: ChatRequest):
     """Server-Sent Events로 진행 상황과 최종 답변을 보낸다.
@@ -158,12 +188,20 @@ def chat(req: ChatRequest):
     messages = [m.model_dump() for m in req.messages]
 
     def stream():
-        for event in run_agent(messages, req.provider, req.search_mode):
-            kind = event.pop("type")
-            if kind == "answer":
-                event.update(provider=req.provider, search_mode=req.search_mode)
-            yield f"event: {kind}\ndata: {json.dumps(event, ensure_ascii=False)}\n\n"
-        yield "event: done\ndata: {}\n\n"
+        if not _chat_enter():
+            busy = {"text": CHAT_BUSY, "provider": req.provider, "search_mode": req.search_mode, "busy": True}
+            yield f"event: answer\ndata: {json.dumps(busy, ensure_ascii=False)}\n\n"
+            yield "event: done\ndata: {}\n\n"
+            return
+        try:
+            for event in run_agent(messages, req.provider, req.search_mode):
+                kind = event.pop("type")
+                if kind == "answer":
+                    event.update(provider=req.provider, search_mode=req.search_mode)
+                yield f"event: {kind}\ndata: {json.dumps(event, ensure_ascii=False)}\n\n"
+            yield "event: done\ndata: {}\n\n"
+        finally:
+            _chat_slots.release()
 
     return StreamingResponse(
         stream(),

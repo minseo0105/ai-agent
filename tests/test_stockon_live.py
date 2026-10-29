@@ -229,10 +229,10 @@ class ViewTest(ViewBase):
             store.write("kiwoom_status", {"price_source": "kiwoom", "session": "holiday"})
             self.assertEqual(live.build_view(self.now)["state"], "closed")
 
-    def test_thirty_visitors_read_files_not_kiwoom(self):
+    def test_hundred_visitors_read_files_not_kiwoom(self):
         self.ws()
         with mock.patch.object(live, "build_view", wraps=live.build_view) as bv:
-            for _ in range(30):
+            for _ in range(100):  # 11/17 시연 100명
                 live.view()
         self.assertEqual(bv.call_count, 1)  # 2초 캐시
 

@@ -2,7 +2,7 @@
 
 - 호출마다 응답 usage(입력·출력 토큰)로 비용을 어림해 그날 합계를 남긴다. 프로세스가 둘(ailab 앱·stockon-collector)이라
   파일을 따로 쓰고(ai_cost_app / ai_cost_collector) 확인할 때 더한다(KST 날짜가 바뀌면 0부터).
-- 합계가 STOCKON_AI_DAILY_USD(기본 5달러)를 넘으면 그날은 새 AI 호출을 하지 않는다 → 저장된 결과를 그대로 쓴다
+- 합계가 STOCKON_AI_DAILY_USD(기본 10달러, 11/17 시연 100명 기준으로 5 → 10)를 넘으면 그날은 새 AI 호출을 하지 않는다 → 저장된 결과를 그대로 쓴다
   (뉴스 속 숨은 종목 이슈·섹터는 이전 것, 직접 입력은 저장된 것·예시, 브리핑은 숫자 문장, 뉴스는 요약 없이).
 - 가격은 1M 토큰당 달러(Anthropic API 표준 가격). 모르는 모델은 Sonnet 값으로 어림한다(넉넉하게).
 """
@@ -23,7 +23,7 @@ PRICES = {  # (입력, 출력) 1M 토큰당 USD
     "claude-opus-5-5": (4.00, 20.00),
 }
 DEFAULT_PRICE = PRICES["claude-sonnet-5-5"]
-DEFAULT_LIMIT_USD = 5.0
+DEFAULT_LIMIT_USD = 10.0
 BUCKETS = ("app", "collector")
 BUCKET = "app"  # 수집기는 시작할 때 "collector"로 바꾼다
 

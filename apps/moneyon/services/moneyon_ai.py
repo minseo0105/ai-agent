@@ -35,9 +35,10 @@ def config():
         'features': [f for f in FEATURES if f in features],
         'fake': env('MONEYON_AI_FAKE') == '1',
         'daily_usd': float(env('MONEYON_AI_DAILY_USD', '3') or 3),
-        'concurrency': int(env('MONEYON_AI_CONCURRENCY', '8') or 8),
-        'queue_max': int(env('MONEYON_AI_QUEUE', '30') or 30),
-        'queue_wait': float(env('MONEYON_AI_QUEUE_WAIT', '6') or 6),
+        # 100명 시연 기준(11/17): 1분에 AI 버튼 300번이어도 대체가 거의 없게. Anthropic 한도는 분당 1만 요청.
+        'concurrency': int(env('MONEYON_AI_CONCURRENCY', '24') or 24),
+        'queue_max': int(env('MONEYON_AI_QUEUE', '80') or 80),
+        'queue_wait': float(env('MONEYON_AI_QUEUE_WAIT', '12') or 12),
         'first_token': float(env('MONEYON_AI_FIRST_TOKEN', '4') or 4),
         'total': float(env('MONEYON_AI_TOTAL', '15') or 15),
         'demo_entry': env('MONEYON_DEMO_ENTRY') == '1',

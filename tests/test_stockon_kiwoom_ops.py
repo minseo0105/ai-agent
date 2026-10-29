@@ -233,13 +233,13 @@ class BudgetTest(TempStore):
             self.assertFalse(budget.allowed())
             self.assertTrue(budget.status()["exceeded"])
         with mock.patch.dict(os.environ, {"STOCKON_AI_DAILY_USD": ""}):
-            self.assertEqual(budget.limit_usd(), 5.0)
+            self.assertEqual(budget.limit_usd(), 10.0)
             self.assertTrue(budget.allowed())
         store.write("ai_cost_app", {"day": "2000-01-01", "usd": 99})
         self.assertAlmostEqual(budget.spent_today(), 0.6)
 
     def test_over_limit_reuses_stored_results(self):
-        budget.record("claude-sonnet-5-5", self._usage(3_000_000, 0))  # 6달러 > 기본 5달러
+        budget.record("claude-sonnet-5-5", self._usage(5_500_000, 0))  # 11달러 > 기본 10달러
         client = mock.MagicMock()
         with mock.patch.object(ai, "_claude_client", return_value=client):
             self.assertIsNone(ai._call("t", {}, {}, model=ai.WHY_MODEL))  # 앱: 부르지 않음 → 고정 문장·요약 없이

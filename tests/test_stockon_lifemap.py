@@ -617,7 +617,9 @@ class LiveQueueTest(LifemapBase):
     def test_limits(self):
         for i in range(lifemap.LIVE_PER_SESSION):
             self.assertEqual(lifemap.request_word(f"단어{i}", "same")["status"], "queued")
-        self.assertEqual(lifemap.request_word("단어x", "same")["status"], "limited")
+        limited = lifemap.request_word("단어x", "same")
+        self.assertEqual(limited["status"], "limited")
+        self.assertIn("지금 뜨는 이슈", limited["message"])
         for i in range(lifemap.LIVE_QUEUE_MAX - lifemap.LIVE_PER_SESSION):
             lifemap.request_word(f"다른{i}", f"s{i}")
         busy = lifemap.request_word("넘침", "new")
@@ -627,13 +629,15 @@ class LiveQueueTest(LifemapBase):
         lifemap._jobs.clear()
         store.write("lifemap_live_count", {"day": datetime.now(KST).strftime("%Y-%m-%d"), "n": lifemap.LIVE_DAILY_MAX})
         lifemap._live_count.clear()
-        self.assertEqual(lifemap.request_word("상한", "other")["status"], "daily_limit")
+        over = lifemap.request_word("상한", "other")
+        self.assertEqual(over["status"], "daily_limit")
+        self.assertIn("지금 뜨는 이슈", over["message"])
         with mock.patch.object(ai, "available", return_value=False):
             self.assertEqual(lifemap.request_word("키없음", "other")["status"], "unavailable")
 
 
-class ThirtyPeopleTest(LifemapBase):
-    """시연 기준: 30명이 동시에 서로 다른 새 단어를 누르고, 동시에 화면을 읽는다."""
+class HundredPeopleTest(LifemapBase):
+    """시연 기준(11/17, 100명): 100명이 동시에 서로 다른 새 단어를 누르고, 동시에 화면을 읽는다."""
 
     def test_concurrency_cap_queue_and_fast_reads(self):
         import threading
@@ -653,16 +657,17 @@ class ThirtyPeopleTest(LifemapBase):
 
         with mock.patch.object(lifemap, "_pool", real_pool), mock.patch.object(lifemap, "_ask", side_effect=slow_ask), \
                 mock.patch.object(news, "search", return_value=[]):
-            with ThreadPoolExecutor(max_workers=30) as people:
-                results = list(people.map(lambda i: lifemap.request_word(f"단어{i:02d}", f"person{i}"), range(30)))
+            with ThreadPoolExecutor(max_workers=100) as people:
+                results = list(people.map(lambda i: lifemap.request_word(f"단어{i:02d}", f"person{i}"), range(100)))
                 t0 = time.time()
-                list(people.map(lambda i: lifemap.overview(), range(30)))
+                list(people.map(lambda i: lifemap.overview(), range(100)))
                 read_sec = time.time() - t0
             real_pool.shutdown(wait=True)
         statuses = [r["status"] for r in results]
         self.assertEqual(statuses.count("queued"), lifemap.LIVE_QUEUE_MAX)
-        self.assertEqual(statuses.count("busy"), 30 - lifemap.LIVE_QUEUE_MAX)
+        self.assertEqual(statuses.count("busy"), 100 - lifemap.LIVE_QUEUE_MAX)
         self.assertTrue(all(r["item"]["map"]["stages"] for r in results if r["status"] == "busy"))
+        self.assertTrue(all("지금 뜨는 이슈" in r["message"] for r in results if r["status"] == "busy"))
         self.assertLessEqual(state["max"], lifemap.LIVE_CONCURRENCY)
         self.assertLess(read_sec, 2.0)
         done = [lifemap.word_status(r["word"])["status"] for r in results if r["status"] == "queued"]

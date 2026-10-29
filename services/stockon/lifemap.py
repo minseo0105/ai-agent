@@ -85,12 +85,13 @@ ISSUE_QUERIES = [
 ]
 SECTOR_QUERIES = ["{s} 업계", "{s} 산업"]
 
-# 새 단어 실시간 생성 안전장치(30명 동시 접속 기준)
-LIVE_CONCURRENCY = 3       # 동시에 AI를 부르는 수
-LIVE_QUEUE_MAX = 12        # 대기열(그리는 중 포함). 넘치면 '지금 많이 그리고 있어요' + 예시
+# 새 단어 실시간 생성 안전장치(100명 동시 접속 기준, 11/17 시연). Anthropic 한도는 분당 1만 요청이라 여유가 크다.
+LIVE_CONCURRENCY = 10      # 동시에 AI를 부르는 수
+LIVE_QUEUE_MAX = 30        # 대기열(그리는 중 포함). 넘치면 '지금 많이 그리고 있어요' + 예시
 LIVE_PER_SESSION = 3       # 한 사람(브라우저)당 새 단어 10분에 3개
 LIVE_SESSION_WINDOW = 600
-LIVE_DAILY_MAX = 150       # 하루 새 단어 생성 상한(서버 전체). 넘으면 저장된 것·예시만
+LIVE_DAILY_MAX = 400       # 하루 새 단어 생성 상한(서버 전체, 1개 약 $0.01). 넘으면 저장된 것·예시만
+TRY_ISSUES = "위 '지금 뜨는 이슈'를 눌러 보세요."
 LIVE_TIMEOUT = 45          # AI 한 번 호출 최대 초
 WORDS_KEEP = 300           # 저장해 두는 새 단어 수(오래된 것부터 지움)
 RESULT_KEEP_SEC = 120      # 실패 결과를 폴링에 알려 주는 시간
@@ -1253,7 +1254,7 @@ def word_status(word: str) -> dict:
         if job and job["state"] in ("queued", "running"):
             return {"status": job["state"], "word": word, "position": _position(word)}
         if job and job["state"] == "failed":
-            return _fallback(word, "failed", "AI가 지금 해석하지 못해서 준비된 예시를 보여 드려요.")
+            return _fallback(word, "failed", f"AI가 지금 해석하지 못해서 준비된 예시를 보여 드려요. {TRY_ISSUES}")
     return {"status": "none", "word": word}
 
 
@@ -1272,18 +1273,18 @@ def request_word(word: str, session: str) -> dict:
         if job and job["state"] in ("queued", "running"):
             return {"status": job["state"], "word": word, "position": _position(word)}  # 다른 사람이 이미 요청함
         if not ai.available():
-            return _fallback(word, "unavailable", "지금은 새 단어를 해석할 수 없어서 준비된 예시를 보여 드려요.")
+            return _fallback(word, "unavailable", f"지금은 새 단어를 해석할 수 없어서 준비된 예시를 보여 드려요. {TRY_ISSUES}")
         if _live_today() >= LIVE_DAILY_MAX:
-            return _fallback(word, "daily_limit", "오늘 직접 입력을 다 써서 준비된 예시를 보여 드려요. 이슈·섹터는 계속 볼 수 있어요.")
+            return _fallback(word, "daily_limit", f"오늘 직접 입력을 다 써서 준비된 예시를 보여 드려요. {TRY_ISSUES}")
         hits = _sessions.setdefault(session or "anon", deque())
         while hits and time.time() - hits[0] > LIVE_SESSION_WINDOW:
             hits.popleft()
         if len(hits) >= LIVE_PER_SESSION:
             return {"status": "limited", "word": word,
-                    "message": f"직접 입력은 {LIVE_SESSION_WINDOW // 60}분에 {LIVE_PER_SESSION}개까지 할 수 있어요. 조금 뒤에 다시 해 주세요."}
+                    "message": f"직접 입력은 {LIVE_SESSION_WINDOW // 60}분에 {LIVE_PER_SESSION}개까지 할 수 있어요. {TRY_ISSUES}"}
         active = sum(1 for j in _jobs.values() if j["state"] in ("queued", "running"))
         if active >= LIVE_QUEUE_MAX:
-            return _fallback(word, "busy", "지금 해석하는 단어가 많아요. 잠시 뒤에 다시 해 주세요.")
+            return _fallback(word, "busy", f"지금 해석하는 단어가 많아요. 준비된 예시를 보여 드려요. {TRY_ISSUES}")
         hits.append(time.time())
         if len(_sessions) > 2000:  # 오래된 세션 정리
             for k in [k for k, v in _sessions.items() if not v or time.time() - v[-1] > LIVE_SESSION_WINDOW]:
