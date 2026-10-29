@@ -114,6 +114,7 @@ SECT = {"all_inds_idex": [
     {"stk_cd": "002", "stk_nm": "대형주", "flu_rt": "+0.38", "flo_stk_num": "100"},
     {"stk_cd": "013", "stk_nm": "전기전자", "flu_rt": "+1.90", "flo_stk_num": "60"},
     {"stk_cd": "005", "stk_nm": "음식료품", "flu_rt": "-0.50", "flo_stk_num": "30"},
+    {"stk_cd": "027", "stk_nm": "제조", "flu_rt": "+1.38", "flo_stk_num": "600"},
     {"stk_cd": "605", "stk_nm": "코스피배당성장50", "flu_rt": "-0.79", "flo_stk_num": "0"}]}
 INV = {"inds_netprps": [{"inds_cd": "001", "inds_nm": "종합(KOSPI)", "ind_netprps": "+1577", "frgnr_netprps": "+1884", "orgn_netprps": "-3502"},
                         {"inds_cd": "002", "ind_netprps": "+1"}]}

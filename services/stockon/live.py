@@ -32,8 +32,8 @@ SUMMARY_SAME_PP = 0.2      # 지수 변화가 이보다 작고 업종 1위가 �
 MARKETS = ("KOSPI", "KOSDAQ")
 INDEX_NAME = {"KOSPI": "코스피", "KOSDAQ": "코스닥"}
 COMPOSITE = {"KOSPI": "001", "KOSDAQ": "101"}
-# 업종 순위에서 빼는 것: 시장 전체·규모별·지수 묶음(코스피200 등)
-NOT_SECTOR = re.compile(r"종합|대형주|중형주|소형주|KOSPI|KOSDAQ|KRX|코스피|코스닥|\d|인버스|레버리지|우량|벤처|기술성장|글로벌|F-")
+# 업종 순위에서 빼는 것: 시장 전체·규모별·지수 묶음(코스피200 등)·여러 업종을 묶은 상위 분류(제조 등)
+NOT_SECTOR = re.compile(r"종합|대형주|중형주|소형주|KOSPI|KOSDAQ|KRX|코스피|코스닥|\d|인버스|레버리지|우량|벤처|기술성장|글로벌|F-|^제조$|^일반서비스$")
 
 
 def _today(now: datetime | None = None) -> str:
