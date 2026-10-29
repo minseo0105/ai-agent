@@ -90,7 +90,11 @@ LIVE_CONCURRENCY = 10      # 동시에 AI를 부르는 수
 LIVE_QUEUE_MAX = 30        # 대기열(그리는 중 포함). 넘치면 '지금 많이 그리고 있어요' + 예시
 LIVE_PER_SESSION = 3       # 한 사람(브라우저)당 새 단어 10분에 3개
 LIVE_SESSION_WINDOW = 600
-LIVE_DAILY_MAX = 400       # 하루 새 단어 생성 상한(서버 전체, 1개 약 $0.01). 넘으면 저장된 것·예시만
+# 하루 새 단어 생성 상한(서버 전체, 1개 약 $0.01). 넘으면 저장된 것·예시만. 날짜(KST)로 자동 전환:
+# 평소 50개, 시연 주간(11/14~11/17, 양 끝 포함) 400개. live_daily_limit()으로 읽는다.
+LIVE_DAILY_MAX_NORMAL = 50
+LIVE_DAILY_MAX_DEMO = 400
+DEMO_WEEK = ("2026-11-14", "2026-11-17")
 TRY_ISSUES = "위 '지금 뜨는 이슈'를 눌러 보세요."
 LIVE_TIMEOUT = 45          # AI 한 번 호출 최대 초
 WORDS_KEEP = 300           # 저장해 두는 새 단어 수(오래된 것부터 지움)
@@ -1139,6 +1143,14 @@ _sessions: dict[str, deque] = {}
 _seq = {"n": 0}
 
 
+def live_daily_limit(now: datetime | None = None) -> dict:
+    """지금(KST) 적용 중인 직접 입력 하루 상한. 시연 주간이면 400, 아니면 50."""
+    day = (now or datetime.now(KST)).astimezone(KST).strftime("%Y-%m-%d")
+    demo = DEMO_WEEK[0] <= day <= DEMO_WEEK[1]
+    return {"max": LIVE_DAILY_MAX_DEMO if demo else LIVE_DAILY_MAX_NORMAL, "demo_week": demo, "day": day,
+            "normal": LIVE_DAILY_MAX_NORMAL, "demo": LIVE_DAILY_MAX_DEMO, "demo_from": DEMO_WEEK[0], "demo_to": DEMO_WEEK[1]}
+
+
 def live_config() -> dict:
     return {"enabled": ai.available(), "concurrency": LIVE_CONCURRENCY, "queue_max": LIVE_QUEUE_MAX,
             "per_session": LIVE_PER_SESSION, "window_min": LIVE_SESSION_WINDOW // 60}
@@ -1274,7 +1286,7 @@ def request_word(word: str, session: str) -> dict:
             return {"status": job["state"], "word": word, "position": _position(word)}  # 다른 사람이 이미 요청함
         if not ai.available():
             return _fallback(word, "unavailable", f"지금은 새 단어를 해석할 수 없어서 준비된 예시를 보여 드려요. {TRY_ISSUES}")
-        if _live_today() >= LIVE_DAILY_MAX:
+        if _live_today() >= live_daily_limit()["max"]:
             return _fallback(word, "daily_limit", f"오늘 직접 입력을 다 써서 준비된 예시를 보여 드려요. {TRY_ISSUES}")
         hits = _sessions.setdefault(session or "anon", deque())
         while hits and time.time() - hits[0] > LIVE_SESSION_WINDOW:

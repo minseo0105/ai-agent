@@ -6,7 +6,7 @@
 import json
 import time
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest import mock
 
 from services.stockon import ai, kiwoom_collector, lifemap, news, store
@@ -627,13 +627,44 @@ class LiveQueueTest(LifemapBase):
         self.assertTrue(busy["item"]["map"]["stages"])
         self.assertEqual(lifemap.request_word("<b>", "new")["status"], "invalid")
         lifemap._jobs.clear()
-        store.write("lifemap_live_count", {"day": datetime.now(KST).strftime("%Y-%m-%d"), "n": lifemap.LIVE_DAILY_MAX})
+        store.write("lifemap_live_count", {"day": datetime.now(KST).strftime("%Y-%m-%d"), "n": lifemap.live_daily_limit()["max"]})
         lifemap._live_count.clear()
         over = lifemap.request_word("상한", "other")
         self.assertEqual(over["status"], "daily_limit")
         self.assertIn("지금 뜨는 이슈", over["message"])
         with mock.patch.object(ai, "available", return_value=False):
             self.assertEqual(lifemap.request_word("키없음", "other")["status"], "unavailable")
+
+
+class DailyLimitByDateTest(LifemapBase):
+    """직접 입력 하루 상한: 평소 50개, 시연 주간(11/14~11/17 KST) 400개 — 날짜로 자동 전환."""
+
+    def test_switches_by_kst_date(self):
+        def at(y, m, d, h=12):
+            return datetime(y, m, d, h, tzinfo=KST)
+        self.assertEqual(lifemap.live_daily_limit(at(2026, 11, 13, 23))["max"], 50)
+        self.assertEqual(lifemap.live_daily_limit(at(2026, 11, 14, 0))["max"], 400)
+        self.assertEqual(lifemap.live_daily_limit(at(2026, 11, 17, 23))["max"], 400)
+        self.assertEqual(lifemap.live_daily_limit(at(2026, 11, 18, 0))["max"], 50)
+        # UTC 11/13 15:00 = KST 11/14 00:00 → 시연 주간
+        utc = datetime(2026, 11, 13, 15, tzinfo=timezone.utc)
+        self.assertTrue(lifemap.live_daily_limit(utc)["demo_week"])
+
+    def test_request_uses_todays_limit(self):
+        today = datetime.now(KST).strftime("%Y-%m-%d")
+        for limit, n, expect in ((50, 50, "daily_limit"), (50, 49, "queued"), (400, 50, "queued"), (400, 400, "daily_limit")):
+            lifemap._jobs.clear()
+            lifemap._sessions.clear()
+            lifemap._live_count.clear()
+            store.write("lifemap_live_count", {"day": today, "n": n})
+            with mock.patch.object(lifemap, "live_daily_limit", return_value={"max": limit}):
+                self.assertEqual(lifemap.request_word(f"단어{limit}{n}", f"p{limit}{n}")["status"], expect, (limit, n))
+
+    def test_admin_status_shows_current_limit(self):
+        from services.stockon import service
+        live = service._lifemap_status()["live_limit"]
+        self.assertIn(live["max"], (50, 400))
+        self.assertEqual((live["normal"], live["demo"], live["demo_from"], live["demo_to"]), (50, 400, "2026-11-14", "2026-11-17"))
 
 
 class HundredPeopleTest(LifemapBase):

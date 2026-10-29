@@ -138,6 +138,18 @@ export default function StockonAdmin() {
       )}
 
       <Card title="뉴스 속 숨은 종목 · 시연 안전장치" desc="첫 화면 이슈 카드를 숨기거나 순서를 정해요. 저장한 설정은 수집기가 이슈를 다시 만들어도 남아요.">
+        {data.lifemap?.live_limit && (() => {
+          const l = data.lifemap.live_limit;
+          return (
+            <p className="rounded-xl bg-surface-muted px-3 py-2 text-sm">
+              직접 입력 오늘 <b>{data.lifemap.live_today}</b> / 하루 상한 <b>{l.max}개</b>
+              <span className={`ml-2 rounded-full px-2 py-0.5 text-[11px] font-extrabold ${l.demo_week ? "bg-amber-500/15 text-amber-800 dark:text-amber-300" : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"}`}>
+                {l.demo_week ? "시연 주간" : "평소"}
+              </span>
+              <span className="block text-xs text-muted">날짜로 자동 전환 · 평소 {l.normal}개, 시연 주간 {dateLabel(l.demo_from.replaceAll("-", ""))}~{dateLabel(l.demo_to.replaceAll("-", ""))} {l.demo}개 (KST 0시 기준)</span>
+            </p>
+          );
+        })()}
         <LifeCuration />
       </Card>
 

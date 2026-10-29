@@ -524,5 +524,5 @@ def _lifemap_status() -> dict:
     return {"status": store.read("lifemap_status", {}) or {}, "day": cur.get("day"), "fresh": cur.get("fresh"),
             "topics": [t.get("name") for t in cur.get("topics") or []],
             "usage_daily": store.read("lifemap_usage_daily"), "usage_live": store.read("lifemap_usage_live"),
-            "live_today": lifemap._live_today(), "live_daily_max": lifemap.LIVE_DAILY_MAX,
+            "live_today": lifemap._live_today(), "live_limit": lifemap.live_daily_limit(),
             "models": {"topics": lifemap.TOPIC_MODEL, "chain": lifemap.CHAIN_MODEL}}

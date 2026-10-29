@@ -157,6 +157,11 @@ export type AdminStatus = {
     last_fail?: string | null; tokens_issued?: number | null; alert?: boolean; // alert = 연속 실패 3회 이상
   };
   budget?: { day: string; spent_usd: number; limit_usd: number; exceeded: boolean };
+  lifemap?: {
+    live_today: number;
+    // 직접 입력 하루 상한(날짜로 자동 전환: 평소 normal, 시연 주간 demo_from~demo_to는 demo)
+    live_limit: { max: number; demo_week: boolean; day: string; normal: number; demo: number; demo_from: string; demo_to: string };
+  };
 };
 // 뉴스 속 숨은 종목 시연 안전장치(관리자)
 export type CurationItem = {
