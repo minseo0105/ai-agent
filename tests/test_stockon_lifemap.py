@@ -46,7 +46,9 @@ INTERP = {
     ],
 }
 
-ARTICLES = [{"title": f"기사 {i}", "url": f"https://news.example/{i}", "press": f"press{i % 4}.kr",
+# 제목에 이슈 이름의 말이 있어야 '핵심 사건'으로 통과한다(centered)
+ARTICLE_TOPICS = "개인정보 유출·유가 급등·방산·업계 이슈"
+ARTICLES = [{"title": f"{ARTICLE_TOPICS} 기사 {i}", "url": f"https://news.example/{i}", "press": f"press{i % 4}.kr",
              "pub": "2026-10-27T10:00:00+09:00", "snippet": "요약"} for i in range(1, 13)]
 
 EXAMPLE_ITEM = {"name": "예시이슈", "title": "예시 제목", "summary": "예시 요약", "sector": "보안",
@@ -84,7 +86,8 @@ class LifemapBase(TempStore):
         }
         self.pool = FakePool()
         for p in (mock.patch.object(lifemap, "_pool", self.pool), mock.patch.object(ai, "available", return_value=True),
-                  mock.patch.object(news, "configured", return_value=True)):
+                  mock.patch.object(news, "configured", return_value=True), mock.patch.object(news, "search", return_value=[]),
+                  mock.patch.object(lifemap.public_data, "stock_history", return_value={})):
             p.start()
             self.patches.append(p)
 
@@ -116,7 +119,7 @@ class ValidateTest(LifemapBase):
         self.assertIn("없는보안", ask.call_args_list[1].args[2])  # 지운 회사 이름을 알려 준다
         self.assertEqual(len(m["stages"]), 2)
         self.assertEqual(len(m["interpretation"]), 2)
-        self.assertEqual(ask.call_args_list[0].args[3]["기사"][0]["제목"], "기사 1")
+        self.assertEqual(ask.call_args_list[0].args[3]["기사"][0]["제목"], ARTICLES[0]["title"])
         with mock.patch.object(lifemap, "_ask", side_effect=[INTERP, one]) as ask:
             lifemap.interpret("개인정보 유출", [])
         self.assertEqual(ask.call_count, 1)  # 처음 결과가 충분하면(경로 2·회사 3 이상) 지운 회사가 있어도 다시 부르지 않음
@@ -179,7 +182,11 @@ class IssuesTest(LifemapBase):
         self.assertIn("해킹 개인정보 유출", queries)
         self.assertFalse([q for q in queries if "특징주" in q or "급등" in q])  # 등락·특징주에서 출발하지 않는다
         self.assertEqual(sw.call_args_list[0].args[1:3], self.basis()["window"])
-        self.assertEqual(sw.call_args_list[0].kwargs["extra_queries"], ["정부 정책 발표 10월 27일"])
+        self.assertEqual(sw.call_args_list[0].kwargs["extra_queries"], ["해킹 개인정보 유출 10월 27일"])
+        # 일상 뉴스면(결함·날씨·질병·생활·기술)에서 출발한다. 실적 검색은 하지 않는다
+        for q in ("리콜 결함", "폭염 한파 폭우 피해", "감염병 확산", "소비 트렌드 인기", "신기술 공개 발표"):
+            self.assertIn(q, queries)
+        self.assertFalse([q for q in queries if "실적" in q])
 
     def test_pick_issues_rules(self):
         raw = {"topics": [
@@ -819,7 +826,7 @@ class CurationTest(LifemapBase):
     def test_run_topics_keeps_reserve(self):
         issues = {"topics": [{"title": f"이슈 {i}", "summary": "요약", "keyword": f"이슈{i}", "sector": f"섹터{i}",
                               "articles": [2 * i + 1, 2 * i + 2], "representative": 2 * i + 1} for i in range(6)]}
-        arts = [{**a, "press": f"p{i}.kr"} for i, a in enumerate(ARTICLES)]
+        arts = [{**a, "press": f"p{i}.kr", "title": f"이슈{i // 2} 소식 {i}"} for i, a in enumerate(ARTICLES)]
         with mock.patch.object(lifemap, "collect_issue_news", return_value=arts), \
                 mock.patch.object(lifemap, "_ask", side_effect=lambda m, *a, **k: issues if m == lifemap.TOPIC_MODEL else INTERP):
             data = lifemap.run_topics(self.basis())
@@ -844,6 +851,209 @@ class CurationTest(LifemapBase):
             r = client.post("/api/stock/admin/lifemap", json={"action": "words", "words": ["관세"]}, headers=h)
             self.assertEqual(r.json()["words"], ["관세"])
             self.assertEqual(client.get("/api/stock/admin/lifemap", headers=h).json()["fin_first"], True)
+
+
+def _art(title, press, pub="2026-10-27T10:00:00+09:00", url=None):
+    return {"title": title, "press": press, "pub": pub, "url": url or f"https://news.example/{abs(hash(title))}", "snippet": ""}
+
+
+class PurposeTest(LifemapBase):
+    """핵심 목적: 일상 뉴스 → 연결된 상장사. 증권 기사 제외·핵심 사건 중심·거시 이슈 1개·오늘 실제 방향·시점·누적·잡음 구간."""
+
+    def test_stock_articles_are_excluded_and_kept_as_examples(self):
+        sa = lifemap.stock_article
+        self.assertEqual(sa({"title": "현대차 3분기 영업익 2조6772억, 판매 11% 감소"}), "실적·공시")
+        self.assertEqual(sa({"title": "한화솔루션 3분기 흑자전환"}), "실적·공시")
+        self.assertEqual(sa({"title": "[특징주] 안랩, 해킹 소식에 상한가"}), "특징주·관련주")
+        self.assertEqual(sa({"title": "코스피, 외국인 매도에 2% 하락"}), "시황·지수")
+        for ok in ("금융권 해킹 잇따라, 가상자산 1억 탈취", "아이폰 듀오 화면 결함 논란", "국제유가 3% 하락", "공시가격 현실화 발표"):
+            self.assertEqual(sa({"title": ok}), "", ok)
+        arts = [_art("금융권 해킹 잇따라", "a.kr"), _art("금융권 해킹 피해 확산", "b.kr"),
+                _art("현대차 3분기 영업익 2조6772억", "c.kr"), _art("[특징주] 보안주 급등", "d.kr")]
+        raw = {"topics": [{"title": "금융권 해킹", "summary": "해킹이 잇따랐다", "keyword": "금융권 해킹", "field": "보안 사고",
+                           "macro": False, "sector": "금융", "articles": [1, 2], "representative": 1},
+                          {"title": "현대차 실적", "summary": "영업익이 줄었다", "keyword": "현대차 실적", "field": "산업 동향",
+                           "macro": False, "sector": "자동차", "articles": [1, 2], "representative": 1}]}
+        with mock.patch.object(lifemap, "_ask", return_value=raw) as ask:
+            topics = lifemap.pick_issues(self.basis(), arts)
+        sent = [a["제목"] for a in ask.call_args.args[3]["기사"]]
+        self.assertEqual(sent, ["금융권 해킹 잇따라", "금융권 해킹 피해 확산"])  # 증권 기사는 AI에 주지도 않는다
+        self.assertEqual([t["name"] for t in topics], ["금융권 해킹"])
+        self.assertEqual((topics[0]["field"], topics[0]["macro"]), ("보안 사고", False))
+        self.assertEqual(lifemap._last_rejects, {"stock": 1})  # 이슈 이름이 실적이면 빠진다
+        self.assertEqual([(e["rule"], e["title"]) for e in lifemap._last_excluded],
+                         [("실적·공시", "현대차 3분기 영업익 2조6772억"), ("특징주·관련주", "[특징주] 보안주 급등")])
+        self.assertIn("일상 뉴스", lifemap.TOPIC_SYSTEM)
+        self.assertIn("부수 주제", lifemap.TOPIC_SYSTEM)
+
+    def test_center_must_be_the_core_event_and_one_macro(self):
+        arts = [_art("정유업계 정제마진 개선", "a.kr"), _art("화학 업황 바닥 신호", "b.kr"),
+                _art("한은 기준금리 동결", "c.kr"), _art("기준금리 3연속 동결", "d.kr"),
+                _art("원달러 환율 1400원 돌파", "e.kr"), _art("환율 급등에 수입물가 비상", "f.kr")]
+        raw = {"topics": [
+            {"title": "유가 하락", "summary": "요약문에만 국제유가가 나온다", "keyword": "국제유가 하락", "field": "유가·원자재",
+             "macro": False, "sector": "화학", "articles": [1, 2], "representative": 1},  # 제목에 없는 부수 주제
+            {"title": "기준금리 동결", "summary": "한은이 동결했다", "keyword": "기준금리 동결", "field": "환율·금리",
+             "macro": True, "sector": "은행", "articles": [3, 4], "representative": 3},
+            {"title": "환율 급등", "summary": "환율이 올랐다", "keyword": "환율 급등", "field": "환율·금리",
+             "macro": False, "sector": "항공", "articles": [5, 6], "representative": 5},  # 거시 두 번째(이름으로 판단)
+        ]}
+        with mock.patch.object(lifemap, "_ask", return_value=raw):
+            topics = lifemap.pick_issues(self.basis(), arts)
+        self.assertEqual([(t["name"], t["macro"]) for t in topics], [("기준금리 동결", True)])
+        self.assertEqual(lifemap._last_rejects, {"center": 1, "macro": 1})
+        self.assertTrue(lifemap.centered("아이폰 듀오 결함", ["아이폰 듀오 화면 결함", "듀오 결함 리콜"]))
+        self.assertFalse(lifemap.centered("국제유가", ["한화솔루션 흑자", "국제유가 하락"]))  # 대표 기사 제목에 없음
+
+    def test_macro_expectation_line_and_weak_relevance(self):
+        raw = {"interpretation": ["대출 이자 부담이 이어질 수 있다."], "move": {"subject": "금리", "today": "보합"},
+               "expected": "예상대로", "paths": [{"label": "이자 부담", "detail": "", "companies": [
+                   {"name": "KT", "direction": "부정", "link": "사업 연결", "relevance": "강", "reason": "차입금이 많은 통신사다"},
+                   {"name": "이마트", "direction": "부정", "link": "사업 연결", "relevance": "중", "reason": "소비 위축 영향을 받는다"}]}]}
+        arts = [_art("기준금리 동결, KT 등 차입 많은 기업 이자 부담 지속", "a.kr")]
+        with mock.patch.object(lifemap, "_ask", return_value=raw) as ask:
+            m = lifemap.interpret("기준금리 동결", arts, macro=True)
+        self.assertTrue(ask.call_args.args[3]["거시 이슈"])
+        self.assertEqual(m["interpretation"][0], lifemap.EXPECTED_LINE["예상대로"])  # 첫 줄 = 시장 예상과 같았는지
+        self.assertEqual((m["macro"], m["expected"], m["move"]), (True, "예상대로", {"subject": "금리", "today": "보합"}))
+        rel = {c["name"]: c["relevance"] for c in m["stages"][0]["companies"]}
+        self.assertEqual(rel, {"KT": "강", "이마트": "약"})  # 기사에 직접 나온 회사만 AI 연관도, 나머지는 '약'
+        with mock.patch.object(lifemap, "_ask", return_value={**raw, "expected": "해당 없음"}):
+            m = lifemap.interpret("유가 하락", arts)  # 거시 이슈가 아니면 그대로
+        self.assertNotIn("macro", m)
+        self.assertEqual(m["interpretation"], ["대출 이자 부담이 이어질 수 있다."])
+
+    def test_two_way_issue_direction(self):
+        raw = {**INTERP, "move": {"subject": "유가", "today": "하락"}, "expected": "해당 없음"}
+        with mock.patch.object(lifemap, "_ask", return_value=raw):
+            m = lifemap.interpret("국제유가 하락", [])
+        self.assertEqual(m["move"], {"subject": "유가", "today": "하락"})
+        self.assertIn("실제 방향 기준", lifemap.INTERP_SYSTEM)
+        with mock.patch.object(lifemap, "_ask", return_value={**raw, "move": {"subject": "환율", "today": "불확실"}}):
+            m = lifemap.interpret("환율", [])
+        self.assertEqual({c["direction"] for s in m["stages"] for c in s["companies"]}, {"unk"})  # 방향 불확실 → '영향 가능'만
+        self.assertFalse(lifemap.opposite({"direction": "unk", "rate": 9.0, "vs_market": 9.0}))
+        with mock.patch.object(lifemap, "_ask", return_value={**raw, "move": {"subject": "", "today": "해당 없음"}}):
+            self.assertNotIn("move", lifemap.interpret("해킹", []))
+
+    def test_reaction_day_after_close_weekend_and_holiday(self):
+        rd = lambda s: lifemap.reaction_day(datetime.fromisoformat(s))  # noqa: E731
+        self.assertEqual(rd("2026-10-29T15:19:00+09:00"), ("20261029", False))
+        self.assertEqual(rd("2026-10-29T15:20:00+09:00"), ("20261030", True))
+        self.assertEqual(rd("2026-10-30T18:00:00+09:00"), ("20261102", True))  # 금요일 저녁 → 월요일
+        self.assertEqual(rd("2026-10-31T10:00:00+09:00"), ("20261102", True))  # 토요일
+        self.assertEqual(rd("2026-12-24T16:00:00+09:00"), ("20261228", True))  # 성탄절 휴장·주말
+        self.assertEqual(rd("2026-10-29T06:19:00Z"), ("20261029", False))  # UTC로 저장돼도 KST로 본다(15:19 KST)
+        self.assertEqual(rd("2026-10-29T06:20:00Z"), ("20261030", True))
+
+    def test_first_report_uses_earliest_matching_article(self):
+        context = [_art("금융권 해킹 잇따라", "a.kr", "2026-10-29T15:17:00+09:00")]
+        searched = [_art("금융권 해킹 첫 신고", "b.kr", "2026-10-27T18:05:00+09:00"),
+                    _art("해킹 보험 출시", "c.kr", "2026-10-26T09:00:00+09:00"),  # '금융권'이 없음 → 다른 사건
+                    _art("[특징주] 금융권 해킹에 보안주 상한가", "d.kr", "2026-10-25T09:00:00+09:00"),  # 증권 기사
+                    _art("금융권 해킹 옛 기사", "e.kr", "2026-10-10T09:00:00+09:00")]  # 7일 밖
+        end = datetime(2026, 10, 29, 16, 0, tzinfo=KST)
+        with mock.patch.object(news, "search", return_value=searched) as s:
+            first = lifemap.first_report("금융권 해킹", context, end)
+        self.assertEqual(s.call_args.args[0], "금융권 해킹")
+        self.assertEqual((first["pub"], first["press"]), ("2026-10-27T18:05:00+09:00", "b.kr"))
+        with mock.patch.object(news, "search", side_effect=news.NewsError("network")):
+            self.assertEqual(lifemap.first_report("금융권 해킹", context, end)["press"], "a.kr")  # 검색 실패 → 이슈 기사 중 가장 이른 것
+
+    def _item(self, first_pub, as_of="20261029", rate=-9.74, hist=None):
+        c = {"code": "053800", "name": "안랩", "relevance": "강", "reason": "r", "direction": "pos", "rate": rate}
+        if hist is not None:
+            c["hist"] = hist
+        return {"name": "금융권 해킹", "title": "t", "articles": [], "first": {"pub": first_pub, "title": "첫 기사", "url": "u", "press": "p"},
+                "map": {"word": "x", "basis_label": "10/29 종가 기준", "as_of": as_of, "indices": {"KOSDAQ": -2.41},
+                        "stages": [{"key": "p0", "label": "보안 수요", "detail": "", "companies": [c]}]}}
+
+    def test_after_close_news_waits_for_next_trading_day(self):
+        item = self._item("2026-10-29T15:26:00+09:00")
+        out = lifemap.with_reaction(item)
+        c = out["map"]["stages"][0]["companies"][0]
+        t = out["map"]["timing"]
+        self.assertEqual((t["after_close"], t["reaction_day"], t["waiting"], t["first"]), (True, "20261030", True, "10/29 15:26"))
+        self.assertEqual((c["waiting"], c["moved"], c["opposite"]), (True, False, False))  # 반응 대기 중: 등락으로 판단하지 않음
+        self.assertNotIn("since", c)
+        # 다음 거래일 키움 장중 값이 들어오면 그 값과 비교
+        live = {"as_of": "20261030", "rates": {"053800": 1.5}, "indices": {"KOSDAQ": -0.5}, "label": "10/30 10:00 장중"}
+        out = lifemap.with_reaction(item, live)
+        c = out["map"]["stages"][0]["companies"][0]
+        self.assertEqual((c["waiting"], c["vs_market"], out["map"]["timing"]["waiting"]), (False, 2.0, False))
+        self.assertEqual(c["since"], {"rate": 1.5, "vs": 2.0, "days": 1, "from": "10/30", "to": "10/30"})
+        self.assertFalse(c["reflected"])
+
+    def test_cumulative_since_first_report_and_already_reflected(self):
+        # 10/27 18:05 첫 보도 → 반응 10/28. 10/28 공공데이터(+8%, 코스닥 +2%) + 10/29 기준 값(−9.74%, 코스닥 −2.41%)
+        item = self._item("2026-10-27T18:05:00+09:00", hist=[{"d": "20261028", "r": 8.0, "i": 2.0}])
+        c = lifemap.with_reaction(item)["map"]["stages"][0]["companies"][0]
+        self.assertEqual(c["vs_market"], -7.33)
+        self.assertEqual(c["since"]["days"], 2)
+        self.assertEqual(c["since"]["from"], "10/28")
+        self.assertAlmostEqual(c["since"]["rate"], round((1.08 * (1 - 0.0974) - 1) * 100, 2))
+        self.assertAlmostEqual(c["since"]["vs"], round((1.08 * (1 - 0.0974) - 1.02 * (1 - 0.0241)) * 100, 2))
+        self.assertFalse(c["reflected"])  # 둘 다 시장보다 약함(같은 방향)
+        up = lifemap.with_reaction(self._item("2026-10-27T18:05:00+09:00", rate=-5.0, hist=[{"d": "20261028", "r": 15.0, "i": 0.0}]))
+        c = up["map"]["stages"][0]["companies"][0]
+        self.assertTrue(c["since"]["vs"] > 0 > c["vs_market"])
+        self.assertTrue(c["reflected"])  # 오늘은 시장보다 약하지만 첫 보도 이후로는 강함 → 이미 반영됐을 수 있어요
+        gap = lifemap.with_reaction(self._item("2026-10-26T18:05:00+09:00", hist=[{"d": "20261028", "r": 1.0, "i": 0.0}]))
+        self.assertNotIn("since", gap["map"]["stages"][0]["companies"][0])  # 10/27 값이 빠지면 누적을 비운다
+        self.assertNotIn("hist", gap["map"]["stages"][0]["companies"][0])  # 일별 값은 화면에 보내지 않는다
+        five = lifemap.since_first([{"d": d, "r": 1.0, "i": 0.0} for d in ("20261020", "20261021", "20261022", "20261023", "20261026", "20261027")],
+                                   "20261028", 1.0, 0.0, "20261020")
+        self.assertEqual((five["days"], five["to"]), (5, "10/26"))  # 최대 5거래일
+
+    def test_add_history_uses_public_daily_rates(self):
+        store.write("market", {**MARKET, "as_of": "20261028", "indices": [
+            {"name": "코스닥", "series": [{"d": "20261026", "c": 100.0}, {"d": "20261027", "c": 102.0}, {"d": "20261028", "c": 101.0}]}]})
+        m = {"as_of": "20261029", "stages": [{"companies": [{"code": "053800"}]}]}
+        with mock.patch.object(lifemap.public_data, "stock_history", return_value={"20261027": 3.0, "20261028": -1.0}) as h:
+            self.assertEqual(lifemap.add_history(m, "20261027"), 1)
+        self.assertEqual(h.call_args.args, ("053800", "20261027", "20261028"))
+        self.assertEqual(m["stages"][0]["companies"][0]["hist"], [{"d": "20261027", "r": 3.0, "i": 2.0}, {"d": "20261028", "r": -1.0, "i": -0.98}])
+        with mock.patch.object(lifemap.public_data, "stock_history") as h:
+            self.assertEqual(lifemap.add_history(m, "20261029"), 0)  # 반응 거래일 = 기준일이면 부르지 않음
+        h.assert_not_called()
+
+    def test_run_topics_stores_first_report_and_skips_opposites_while_waiting(self):
+        late = [{**a, "pub": "2026-10-27T16:00:00+09:00"} for a in ARTICLES]  # 10/27 장 마감 뒤 → 반응 10/28, 기준은 10/27
+        issue = {"topics": [{"title": "통신사 개인정보 유출", "summary": "고객 정보가 유출됐다", "keyword": "개인정보 유출",
+                             "field": "보안 사고", "macro": False, "sector": "보안", "articles": [1, 2], "representative": 1}]}
+        with mock.patch.object(lifemap, "collect_issue_news", return_value=late), \
+                mock.patch.object(lifemap, "_ask", side_effect=lambda m, *a, **k: issue if m == lifemap.TOPIC_MODEL else INTERP), \
+                mock.patch.object(lifemap, "explain_opposites") as ex:
+            data = lifemap.run_topics(self.basis())
+        t = data["topics"][0]
+        self.assertEqual(t["first"]["pub"], "2026-10-27T16:00:00+09:00")
+        ex.assert_not_called()
+        view = lifemap.overview()["topics"][0]
+        self.assertEqual(view["map"]["timing"]["reaction_day"], "20261028")
+        self.assertTrue(view["map"]["timing"]["waiting"])
+        self.assertEqual(store.read("lifemap_status")["excluded"], 0)
+
+    def test_noise_band(self):
+        self.assertTrue(lifemap.similar(2.0))
+        self.assertTrue(lifemap.similar(-1.5))
+        self.assertFalse(lifemap.similar(2.1))
+        self.assertFalse(lifemap.similar(None))
+        self.assertFalse(lifemap.opposite({"direction": "pos", "rate": -2.0, "vs_market": -2.0}))  # 잡음 구간은 반대 아님
+        self.assertTrue(lifemap.big_move(1.0, 3.0))  # 빛나는 테두리 기준 ±3%p 유지
+
+    def test_screen_has_no_simple_rate_wording(self):
+        from pathlib import Path
+        root = Path(lifemap.__file__).resolve().parents[2] / "web/src/components/stock"
+        for name in ("LifeFinder.tsx", "MindMap.tsx"):
+            for line in (root / name).read_text(encoding="utf-8").splitlines():
+                if line.strip().startswith("//"):
+                    continue
+                self.assertNotIn("단순", line, f"{name}: {line.strip()}")
+        text = (root / "LifeFinder.tsx").read_text(encoding="utf-8")
+        for phrase in ("시장보다 = 그 회사 주가 등락 − 시장 지수 등락", "시장과 비슷해요", "시장보다 많이 올랐어요", "첫 보도 이후",
+                       "장 마감 후 뉴스 · 다음 거래일 반응을 보여드려요", "반응 대기 중", "시장 전체 영향 이슈", "예상대로",
+                       "첫 보도 때 이미 반영됐을 수 있어요", "주가는 기대·선반영·차익실현 등 여러 이유로 움직여요"):
+            self.assertIn(phrase, text)
 
 
 class ScreenWordsTest(unittest.TestCase):

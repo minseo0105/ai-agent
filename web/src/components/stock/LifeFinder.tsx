@@ -6,12 +6,15 @@
 // 이슈 넘김은 위 ‹ ›·카드 밀기·고정 이슈 바(뉴스 카드를 지나 스크롤하면 화면 맨 위, PC 제외)·아래 버튼 모두 같은 동작이다:
 //   이슈가 바뀌고 뉴스 카드도 함께 넘어가며, 아래 내용(AI 해석·지도·표)은 0.3초 옆으로 밀리며 바뀐다.
 //   아래쪽을 보던 중이면 AI 해석 시작으로 올려 준다(고정 바에 가리지 않게 scroll-margin).
-// 실제 등락은 시장 대비(회사 등락률 − 그 회사 시장 지수 등락률, %p)를 크게, 단순 등락률을 작게 보여 준다.
+// 핵심 목적: 일상 뉴스를 보다가 → 그 뉴스와 연결된 상장사를 AI가 찾아낸다(뉴스 자체는 종목 이야기가 아니어도 된다).
+// 실제 등락은 '시장보다'(회사 주가 등락 − 그 회사 시장 지수 등락, %p)를 크게, 주가 등락률을 작게 보여 준다.
+// ±2%p 이내는 '시장과 비슷해요'(회색). 첫 보도가 15:20 이후면 다음 거래일과 비교하고, 그 값이 없으면 '반응 대기 중'.
+// 첫 보도 이후 누적은 버블에 넣지 않고 회사 상세·표에만.
 // 배경은 STOCK:ON 페이지 남색 하나(globals.css .stockon-theme). 이슈 색은 카드 테두리·작은 점·은은한 빛에만 쓴다.
 // 서버가 미리 만든 것을 읽기만 한다(직접 입력한 단어만 대기열로 AI를 부른다 — WordInput).
 // 휴대폰(640px 미만)에서는 바깥 상자 테두리·모서리·양옆 여백 없이 화면 끝까지. 글씨: 본문 15px+, 섹션 제목 18px+, 지도 회사 이름 13px+.
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import MindMap, { NEG, POS, pathColor, ppText, rateColor, rateText } from "@/components/stock/MindMap";
+import MindMap, { GRAY, NEG, POS, pathColor, ppText, rateColor, rateText, similar, vsColor } from "@/components/stock/MindMap";
 import { WhyBody } from "@/components/stock/StockOn";
 import {
   lifeApi, stockApi, type LifeArticle, type LifeCompany, type LifeItem, type LifeMarket, type LifeOverview, type LifeStage, type LifeWordResult, type Stock,
@@ -85,6 +88,7 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
         <h3 className="mt-2 text-[19px] font-black leading-snug text-white sm:text-[20px]">{item.title}</h3>
       )}
       {rep && <div className="mt-1.5"><ArticleMeta a={rep} basis={basis} /></div>}
+      <IssueBadges item={item} />
       <p className="mt-2 text-[15px] leading-relaxed text-slate-50"><b className="mr-1 text-white">{item.title}</b>{item.summary && ` — ${item.summary}`}</p>
       {rest.length > 0 && (
         <div className="mt-auto pt-2">
@@ -129,12 +133,15 @@ function SectionTitle({ children, badge, issue }: { children: React.ReactNode; b
   );
 }
 
-// 시장보다 더 오름 / 덜 오름 / 비슷(차이 1%p 미만)
-const SIMILAR_PP = 1;
-const compare = (vs?: number | null) => (vs == null ? "" : vs >= SIMILAR_PP ? "시장보다 더 오름" : vs <= -SIMILAR_PP ? "시장보다 덜 오름" : "비슷");
+/** 시장보다를 말로: ±3%p 이상 '많이', ±2%p 이내 '시장과 비슷해요', 그 사이 '조금'. */
+const judge = (vs?: number | null) => (vs == null ? "" : vs >= 3 ? "시장보다 많이 올랐어요" : vs <= -3 ? "시장보다 많이 내렸어요"
+  : similar(vs) ? "시장과 비슷해요" : vs > 0 ? "시장보다 조금 올랐어요" : "시장보다 조금 내렸어요");
 const signed = (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(2)}%`;
 const MARKET_NAME: Record<string, string> = { KOSPI: "코스피", KOSDAQ: "코스닥" };
-const VS_NOTE = "시장 대비 = 그 회사 등락률 − 시장 지수 등락률. 시장 전체 움직임을 뺀 뉴스의 영향을 보기 위한 값이에요.";
+const VS_NOTE = "시장보다 = 그 회사 주가 등락 − 시장 지수 등락. 시장 전체 움직임을 빼고 뉴스의 영향만 보려는 값이에요.";
+const SINCE_NOTE = "주가는 기대·선반영·차익실현 등 여러 이유로 움직여요. 그래서 첫 보도 이후 흐름을 함께 보여드려요.";
+const REFLECTED = "첫 보도 때 이미 반영됐을 수 있어요";
+const WAITING = "반응 대기 중";
 
 /** 오늘 시장 분위기 띠(지수 시황 기사 대신). 예: 코스피 +6.63% · 코스닥 +3.69% · 대부분 종목이 올랐어요 → … */
 function MoodBand({ m }: { m: LifeMarket }) {
@@ -157,11 +164,40 @@ function MoodBand({ m }: { m: LifeMarket }) {
   );
 }
 
-const Dir = ({ d }: { d?: "pos" | "neg" }) => (
-  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[14px] font-extrabold text-[#071226]" style={{ background: d === "neg" ? NEG : POS }}>
-    {d === "neg" ? "− 부정 가능" : "+ 긍정 가능"}
+const Dir = ({ d }: { d?: LifeCompany["direction"] }) => (
+  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[14px] font-extrabold text-[#071226]" style={{ background: d === "neg" ? NEG : d === "unk" ? GRAY : POS }}>
+    {d === "neg" ? "− 부정 가능" : d === "unk" ? "? 영향 가능" : "+ 긍정 가능"}
   </span>
 );
+
+/** 이슈 카드 배지: 시장 전체 영향 이슈·예상대로·오늘 실제 방향, 그리고 첫 보도·장 마감 후 뉴스·반응 대기 중 한 줄 */
+function IssueBadges({ item }: { item: LifeItem }) {
+  const m = item.map, t = m.timing;
+  const pill = "rounded-full px-2.5 py-0.5 text-[14px] font-extrabold ring-1";
+  const badges: React.ReactNode[] = [];
+  if (m.macro || item.macro) badges.push(<span key="macro" className={`${pill} bg-amber-300/15 text-amber-100 ring-amber-200/40`}>시장 전체 영향 이슈</span>);
+  if (m.expected === "예상대로") badges.push(<span key="exp" className={`${pill} bg-white/10 text-white ring-white/25`}>예상대로</span>);
+  if (m.move) badges.push(
+    <span key="move" className={`${pill} bg-white/10 text-white ring-white/25`}>
+      오늘 {m.move.subject}: {m.move.today === "불확실" ? "방향 불확실"
+        : <span style={{ color: m.move.today === "상승" ? rateColor(1) : m.move.today === "하락" ? rateColor(-1) : undefined }}>{m.move.today}</span>}
+    </span>,
+  );
+  return (
+    <>
+      {badges.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{badges}</div>}
+      {t && (
+        <p className="mt-2 text-[14px] leading-snug text-slate-200">
+          <span className="font-bold">첫 보도 {t.first}</span>
+          {t.after_close && (
+            <> · <b className="text-amber-100">장 마감 후 뉴스 · 다음 거래일 반응을 보여드려요</b>
+              {t.waiting ? <> · <b className="text-white">{WAITING}</b> ({t.reaction_label})</> : ` (${t.reaction_label})`}</>
+          )}
+        </p>
+      )}
+    </>
+  );
+}
 
 function OtherNote({ c }: { c: LifeCompany }) {
   if (!c.opposite || !c.other) return null;
@@ -181,14 +217,16 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
   const idx = Object.entries(item.map.indices ?? {}).map(([k, v]) => `${MARKET_NAME[k] ?? k} ${signed(v as number)}`).join(" · ");
   return (
     <div className="overflow-hidden rounded-2xl bg-white/[0.03]" style={{ border: `1px solid ${accent}55` }}>
-      {/* 휴대폰 폭에 네 열: AI 해석(긍정/부정)은 회사 이름 아래에 둔다 */}
-      <table className="w-full text-left text-[15px]">
+      {/* 휴대폰 폭에 네 열: AI 해석(긍정/부정)은 회사 이름 아래, 판단(말)은 '시장보다' 숫자 아래 */}
+      {/* 열 너비 고정: 긴 회사 이름은 줄바꿈하고 숫자 열이 390px 카드 밖으로 밀리지 않게 */}
+      <table className="w-full table-fixed text-left text-[15px]">
+        <colgroup><col className="w-[34%]" /><col className="w-[18%]" /><col className="w-[26%]" /><col className="w-[22%]" /></colgroup>
         <thead>
           <tr className="text-[14px] text-slate-200">
             <th className="py-2.5 pl-3 pr-1 font-extrabold">회사 · AI 해석</th>
-            <th className="px-1.5 py-2.5 text-right font-extrabold">단순<br className="sm:hidden" /> 등락률</th>
-            <th className="px-1.5 py-2.5 text-right font-extrabold">시장 대비</th>
-            <th className="py-2.5 pl-1.5 pr-3 text-right font-extrabold">시장과<br className="sm:hidden" /> 비교</th>
+            <th className="px-1.5 py-2.5 text-right font-extrabold">주가</th>
+            <th className="px-1.5 py-2.5 text-right font-extrabold">시장보다</th>
+            <th className="py-2.5 pl-1.5 pr-3 text-right font-extrabold">첫 보도<br className="sm:hidden" /> 이후</th>
           </tr>
         </thead>
         <tbody>
@@ -200,28 +238,51 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
                   <div className="text-[14px] font-semibold" style={{ color }}>{s.label}</div>
                   <div className="mt-1"><Dir d={c.direction} /></div>
                 </td>
-                <td className="whitespace-nowrap px-1.5 py-2.5 text-right">
-                  <div className="text-[16px] font-extrabold tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
-                </td>
-                <td className="whitespace-nowrap px-1.5 py-2.5 text-right">
-                  <div className="text-[17px] font-black tabular-nums" style={{ color: rateColor(c.vs_market) }}>{ppText(c.vs_market)}</div>
-                  {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 등락 큼</div>}
-                </td>
-                <td className="py-2.5 pl-1.5 pr-3 text-right text-[14px] font-extrabold leading-snug text-slate-100">{compare(c.vs_market) || "—"}</td>
+                {c.waiting ? (
+                  <td colSpan={3} className="py-2.5 pl-1.5 pr-3 text-right text-[14px] font-extrabold leading-snug text-slate-200">
+                    {WAITING}<div className="font-semibold text-slate-300">다음 거래일 값을 기다려요</div>
+                  </td>
+                ) : (
+                  <>
+                    <td className="whitespace-nowrap px-1.5 py-2.5 text-right">
+                      <div className="text-[15px] font-extrabold tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
+                    </td>
+                    <td className="px-1.5 py-2.5 text-right">
+                      <div className="whitespace-nowrap text-[16px] font-black tabular-nums" style={{ color: vsColor(c.vs_market) }}>{ppText(c.vs_market)}</div>
+                      {c.vs_market != null && (
+                        <div className="text-[14px] font-extrabold leading-snug" style={{ color: similar(c.vs_market) ? GRAY : "#f1f5f9" }}>{judge(c.vs_market)}</div>
+                      )}
+                      {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 등락 큼</div>}
+                    </td>
+                    <td className="py-2.5 pl-1.5 pr-3 text-right">
+                      <div className="whitespace-nowrap text-[15px] font-extrabold tabular-nums" style={{ color: c.since ? vsColor(c.since.vs) : GRAY }}>
+                        {c.since ? ppText(c.since.vs) : "—"}
+                      </div>
+                      {c.since && <div className="text-[14px] text-slate-300">{c.since.days}거래일</div>}
+                    </td>
+                  </>
+                )}
               </tr>
-              {c.opposite && c.other && (
+              {((c.opposite && c.other) || c.reflected) && (
                 <tr onClick={() => onPick(c, s, color)} className="cursor-pointer hover:bg-white/5">
-                  <td colSpan={4} className="px-3 pb-2.5 pt-0"><OtherNote c={c} /></td>
+                  <td colSpan={4} className="space-y-1 px-3 pb-2.5 pt-0">
+                    {c.reflected && <p className="text-[14px] font-bold leading-snug text-amber-100">{REFLECTED}</p>}
+                    <OtherNote c={c} />
+                  </td>
                 </tr>
               )}
             </Fragment>
           ))}
         </tbody>
       </table>
-      <p className="border-t border-white/10 px-3 py-2 text-[14px] text-slate-200">
-        {item.map.reaction_label || "기준 시점"}{idx ? ` · 같은 시각 지수 ${idx}` : " · 지수 값이 없어 시장 대비는 비워 뒀어요"} · 비슷 = 차이 1%p 미만 ·
-        AI 해석과 실제 등락을 나란히 보여 줄 뿐, 이 뉴스 때문에 움직였다는 뜻은 아니에요.
-      </p>
+      <div className="space-y-1 border-t border-white/10 px-3 py-2 text-[14px] text-slate-200">
+        <p className="font-bold text-slate-100">{SINCE_NOTE}</p>
+        <p>
+          {item.map.reaction_label || "기준 시점"}{idx ? ` · 같은 시각 지수 ${idx}` : " · 지수 값이 없어 '시장보다'는 비워 뒀어요"} ·
+          시장과 비슷해요 = ±2%p 이내 · 첫 보도 이후 = 첫 보도 뒤 거래일부터 누적(최대 5거래일) ·
+          AI 해석과 실제 등락을 나란히 보여 줄 뿐, 이 뉴스 때문에 움직였다는 뜻은 아니에요.
+        </p>
+      </div>
     </div>
   );
 }
@@ -261,18 +322,32 @@ function Detail({ pick, label, onClose }: { pick: Pick; label?: string; onClose?
         </div>
         <div className="shrink-0 whitespace-nowrap text-right">
           {c.moved && <div className="mb-0.5 text-[14px] font-extrabold text-amber-200">실제 등락 큼</div>}
-          {c.vs_market != null ? (
+          {c.waiting ? (
+            <div className="text-[18px] font-black text-slate-100">{WAITING}</div>
+          ) : c.vs_market != null ? (
             <>
-              <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.vs_market) }}>시장 대비 {ppText(c.vs_market)}</div>
-              <div className="text-[14px] font-bold tabular-nums text-slate-200">단순 {rateText(c.rate)}</div>
+              <div className="text-[20px] font-black tabular-nums" style={{ color: vsColor(c.vs_market) }}>시장보다 {ppText(c.vs_market)}</div>
+              <div className="text-[14px] font-bold tabular-nums text-slate-200">주가 {rateText(c.rate)}</div>
             </>
           ) : (
-            <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
+            <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>주가 {rateText(c.rate)}</div>
           )}
-          <div className="text-[14px] text-slate-300">{label || "실제 등락률"}</div>
+          <div className="text-[14px] text-slate-300">{c.waiting ? "다음 거래일 값을 기다려요" : label || "실제 등락률"}</div>
         </div>
         {onClose && <button type="button" onClick={onClose} aria-label="닫기" className="-mr-1 -mt-1 rounded-full px-2 text-2xl text-slate-200">✕</button>}
       </div>
+      {!c.waiting && (c.since || c.vs_market != null) && (
+        <div className="mt-3 rounded-2xl bg-white/[0.05] px-3.5 py-2.5 text-[15px] ring-1 ring-white/10">
+          {c.vs_market != null && <p className="font-bold" style={{ color: similar(c.vs_market) ? GRAY : "#f8fafc" }}>오늘 {judge(c.vs_market)}</p>}
+          {c.since && (
+            <p className="mt-0.5 text-slate-100">
+              첫 보도 이후 <b className="tabular-nums" style={{ color: vsColor(c.since.vs) }}>시장보다 {ppText(c.since.vs)}</b>
+              <span className="text-[14px] text-slate-300"> · {c.since.from === c.since.to ? c.since.from : `${c.since.from}~${c.since.to}`} {c.since.days}거래일 · 주가 {rateText(c.since.rate)}</span>
+            </p>
+          )}
+          {c.reflected && <p className="mt-0.5 font-bold text-amber-100">{REFLECTED}</p>}
+        </div>
+      )}
       <div className="mt-3 rounded-2xl bg-white/[0.08] p-3.5 ring-1 ring-white/15">
         <div className="text-[15px] font-extrabold text-sky-200">왜 관련 있나</div>
         <p className="mt-1 text-[16px] font-bold leading-relaxed text-white">{c.reason}</p>
@@ -513,6 +588,7 @@ export default function LifeFinder() {
   const topics = view.kind === "topics";
   const issue = topics ? { n: active + 1, color: accent } : undefined;
   const hasVs = !!item?.map.stages.some((s) => s.companies.some((c) => c.vs_market != null));
+  const hasUnk = !!item?.map.stages.some((s) => s.companies.some((c) => c.direction === "unk"));
   const arrows = (size: string) => (
     <div className="flex shrink-0 gap-1.5">
       {([["‹", -1, "이전 이슈"], ["›", 1, "다음 이슈"]] as const).map(([t, d, name]) => (
@@ -534,6 +610,8 @@ export default function LifeFinder() {
             </span>
           )}
         </div>
+
+        <p className="mt-1.5 text-[14px] leading-snug text-slate-300">{VS_NOTE}</p>
 
         {/* 뉴스 카드 */}
         <div ref={cards} className="relative mt-4">
@@ -599,14 +677,15 @@ export default function LifeFinder() {
                         ))}
                       </ul>
                       <p>
-                        <span className="font-extrabold" style={{ color: POS }}>＋ 긍정 영향 가능</span> · <span className="font-extrabold" style={{ color: NEG }}>－ 부정 영향 가능</span>(AI 해석) ·
+                        <span className="font-extrabold" style={{ color: POS }}>＋ 긍정 영향 가능</span> · <span className="font-extrabold" style={{ color: NEG }}>－ 부정 영향 가능</span>
+                        {hasUnk && <> · <span className="font-extrabold" style={{ color: GRAY }}>? 방향 불확실(영향 가능)</span></>}(AI 해석) ·
                         버블이 클수록 연관이 커요 · {hasVs ? (
-                          <><b className="text-white">큰 숫자 = 시장 대비(%p)</b>, 작은 숫자 = 단순 등락률 · <b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(시장 대비 ±3%p 이상)</>
+                          <><b className="text-white">큰 숫자 = 시장보다(%p)</b>, 작은 글씨 = 주가 등락률 · 회색 = 시장과 비슷해요(±2%p 이내) ·{" "}
+                            <b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(시장보다 ±3%p 이상)</>
                         ) : (
-                          <><b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(±5% 이상)</>
+                          <><b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(주가 ±5% 이상)</>
                         )} · {label || "실제 등락률"}
                       </p>
-                      {hasVs && <p className="text-[14px] text-slate-300">{VS_NOTE}</p>}
                     </div>
                   </>
                 ) : (

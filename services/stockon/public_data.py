@@ -153,6 +153,25 @@ def fetch_market(http=requests.get, now: datetime | None = None) -> tuple[dict, 
     return market, {"as_of": as_of, "stocks": directory}
 
 
+def stock_history(code: str, begin: str, end: str, http=requests.get) -> dict[str, float]:
+    """한 종목의 [begin, end] 일별 등락률 {YYYYMMDD: 등락률}. 뉴스 속 숨은 종목의 '첫 보도 이후' 누적용(종목당 1회)."""
+    end_exclusive = (datetime.strptime(end, "%Y%m%d") + timedelta(days=1)).strftime("%Y%m%d")
+    body = _get(STOCK_URL, {"likeSrtnCd": code, "beginBasDt": begin, "endBasDt": end_exclusive, "numOfRows": 30, "pageNo": 1}, http)
+    return {str(i["basDt"]): _num(i.get("fltRt")) for i in _items(body)
+            if str(i.get("srtnCd") or "").strip() == code and i.get("basDt") and _num(i.get("fltRt")) is not None}
+
+
+def index_daily_rates(market: dict) -> dict[str, dict[str, float]]:
+    """시세 스냅샷의 지수 종가 추이 → {"KOSPI": {YYYYMMDD: 등락률}}(전날 종가 대비)."""
+    out: dict[str, dict[str, float]] = {}
+    names = {"코스피": "KOSPI", "코스닥": "KOSDAQ"}
+    for i in market.get("indices") or []:
+        series = [s for s in i.get("series") or [] if s.get("c")]
+        if names.get(i.get("name")) and len(series) >= 2:
+            out[names[i["name"]]] = {b["d"]: round((b["c"] / a["c"] - 1) * 100, 2) for a, b in zip(series, series[1:])}
+    return out
+
+
 def fetch_indices(as_of: str, http=requests.get) -> list[dict]:
     """코스피·코스닥 최근 약 30거래일 종가(작은 추이선용)와 기준일 등락."""
     end = datetime.strptime(as_of, "%Y%m%d")

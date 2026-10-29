@@ -86,14 +86,22 @@ export const stockApi = {
 // item = 뉴스(대표 기사 + 관련 기사) · AI 해석 · 관련 회사 지도(영향 경로 × 회사) · 실제 등락(등락률, 인과를 단정하지 않는다).
 export type LifeCompany = {
   code: string; name: string; relevance: "강" | "중" | "약"; reason: string;
-  direction?: "pos" | "neg"; // AI 해석: 긍정 영향 가능 / 부정 영향 가능
+  direction?: "pos" | "neg" | "unk"; // AI 해석: 긍정 영향 가능 / 부정 영향 가능 / 방향 불확실('영향 가능'만)
   market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null;
   market_rate?: number | null; // 그 회사 시장 지수(코스피/코스닥) 등락률(같은 기준 시각)
-  vs_market?: number | null; // 시장 대비(%p) = rate − market_rate. 지수를 모르면 null(단순 등락률만)
-  moved?: boolean; // 실제 등락이 큼(시장 대비 ±3%p 이상, 시장 대비를 모르면 단순 ±5% 이상)
+  vs_market?: number | null; // 시장보다(%p) = rate − market_rate. 지수를 모르면 null(주가 등락률만)
+  moved?: boolean; // 실제 등락이 큼(시장 대비 ±3%p 이상, 시장 대비를 모르면 주가 ±5% 이상)
   link?: "직접 당사자" | "사업 연결" | "같은 업종"; // 뉴스와 이어지는 방식(같은 업종만이면 연관도 '약')
   opposite?: boolean; // AI 해석 방향과 반대로 시장 대비 ±3%p 이상 움직임
   other?: { text: string; title?: string; url?: string }; // 그때 붙이는 다른 이유 한 줄(이슈를 만들 때 한 번 저장)
+  waiting?: boolean; // 장 마감 뒤 뉴스라 비교할 다음 거래일 값이 아직 없음('반응 대기 중')
+  since?: { rate: number; vs: number; days: number; from: string; to: string }; // 첫 보도 이후 누적(최대 5거래일)
+  reflected?: boolean; // 오늘 값과 누적 방향이 다름 → 첫 보도 때 이미 반영됐을 수 있어요
+};
+/** 이슈 시점: 첫 보도, 장 마감 뒤 뉴스면 다음 거래일 반응과 비교 */
+export type LifeTiming = {
+  first: string; first_title: string; first_url: string; first_press: string; after_close: boolean;
+  reaction_day: string; reaction_label: string; waiting: boolean; value_label: string;
 };
 export type LifeStage = { key: string; label: string; detail: string; companies: LifeCompany[] }; // 영향 경로
 export type LifeArticle = { title: string; url: string; press: string; pub: string | null; rep?: boolean };
@@ -101,10 +109,13 @@ export type LifeMap = {
   word: string; stages: LifeStage[]; interpretation?: string[]; ai: boolean; example?: boolean; model?: string; created_ts?: number;
   basis_label?: string; reaction_label?: string;
   indices?: Partial<Record<"KOSPI" | "KOSDAQ", number>>; // 시장 대비 계산에 쓴 지수 등락률
+  move?: { subject: string; today: "상승" | "하락" | "보합" | "불확실" }; // 유가·환율처럼 오르내리는 이슈의 오늘 실제 방향
+  macro?: boolean; expected?: "예상대로" | "예상과 다름" | "판단 어려움" | ""; // 거시 이슈 · 시장 예상과 같았는지
+  timing?: LifeTiming;
 };
 export type LifeItem = {
   name: string; title: string; summary: string; sector: string; articles: LifeArticle[]; map: LifeMap;
-  basis_label?: string; carried?: boolean; example?: boolean;
+  basis_label?: string; carried?: boolean; example?: boolean; field?: string; macro?: boolean;
 };
 export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: string; label?: string };
 /** '오늘 시장 분위기' 띠: 지수 등락률과 오른·내린 종목 비율 한 줄(지수 시황 기사는 이슈 카드 대신 여기에). */
