@@ -2,9 +2,9 @@
 
 // 뉴스 속 숨은 종목의 관련 회사 지도. 색 없이도 읽히게 '자리'와 '글자'로 뜻을 전한다(2026-10-31 개편):
 //   가운데 = 뉴스(이슈), 바로 위 = 뉴스 당사자, 오른쪽 = 도움 받을 수 있는 쪽, 왼쪽 = 부담 받을 수 있는 쪽, 아래 = 방향 불확실.
-//   맨 위에 두 구역 이름을 작게, 회사 동그라미에는 이름 아래 '도움'/'부담'/'불확실' 꼬리표.
-//   실제 등락은 동그라미 바깥 테두리 빛(한국식: 시장보다 올랐으면 빨강, 내렸으면 파랑, ±2%p 안이면 빛 없음) — AI 해석(꼬리표 색)과 섞지 않는다.
-//   검증된 회사가 3곳 미만인 이슈는 업종 참고 회사(최대 3)를 바깥쪽에 점선·작은 회색 동그라미 + '참고'로(누를 수 없음, 목록에서는 접힌 업종 참고).
+//   맨 위에 두 구역 이름을 작게. AI 해석 방향은 동그라미 오른쪽 위 작은 원형 배지 ＋(도움 가능)·－(부담 가능), 방향 불확실은 배지 없음.
+//   회사명 아래에 시장 대비 오늘 등락 숫자(한국식: 올랐으면 빨강 ▲, 내렸으면 파랑 ▼, ±2%p 이내 회색). 크게 움직였으면(±3%p) 바깥 테두리 빛.
+//   검증된 회사가 3곳 미만인 이슈는 업종 참고 회사(최대 3)를 바깥쪽에 점선·작은 회색 동그라미 + '참고'로(숫자만 작게, 배지 없음, 누를 수 없음).
 //   선 색 = 영향 경로(아래 경로 단추를 누르면 그 경로만 강조).
 // 노드가 최대 9개라 라이브러리 없이 SVG로 그리고, 자리는 구역별 목표점에서 겹치지 않게 몇 번 밀어내 정한다(같은 입력이면 같은 자리).
 // 애니메이션은 transform·opacity·stroke-dashoffset만. 글자: 휴대폰 390px(배율 약 0.89)에서 회사 이름 17px, 꼬리표·구역 이름 13px 이상.
@@ -20,6 +20,7 @@ export const POS = "#34d399";  // AI 해석: 긍정 영향 가능
 export const NEG = "#fb923c";  // AI 해석: 부정 영향 가능
 const R = 46;      // 회사 동그라미(두 줄 이름 4자 × 19.5 + 꼬리표)
 const R_REF = 22;  // 업종 참고(작은 회색)
+const REF_BELOW = 38; // 참고 동그라미 아래 이름·숫자 두 줄 자리
 const R_CENTER = 42;
 const W = 440, TOP = -232, H = 470; // viewBox: x −220~220, y −232~238(맨 위 줄은 구역 이름)
 const Y_MIN = -196; // 구역 이름 아래부터 노드
@@ -40,14 +41,23 @@ export const dirName = (d?: LifeCompany["direction"]) => (d === "neg" ? "부담 
 /** AI 해석 방향 색: 도움 가능 초록 · 부담 가능 주황 · 영향 가능(방향 불확실) 회색 */
 export const dirColor = (d?: LifeCompany["direction"]) => (d === "neg" ? NEG : d === "unk" || d === "neu" ? GRAY : POS);
 /** 동그라미 꼬리표(이름 아래 글자) */
+/** 화면 읽기용 방향 말 */
 const dirTag = (d?: LifeCompany["direction"]) => (d === "neg" ? "부담" : d === "unk" || d === "neu" ? "불확실" : "도움");
-/** 실제 등락 테두리 빛: 시장 대비(없으면 주가 등락률)가 ±2%p 밖일 때만. 반응 대기 중이면 없음. */
+/** 실제 등락 테두리 빛: 크게 움직였을 때만(시장 대비 ±3%p, 서버 moved). 오르면 빨강·내리면 파랑. 반응 대기 중이면 없음. */
 function moveGlow(c: LifeCompany): string | null {
-  if (c.waiting) return null;
   const v = c.vs_market ?? c.rate;
-  if (v == null || Math.abs(v) <= SIMILAR_PP) return null;
+  if (c.waiting || !c.moved || v == null) return null;
   return v > 0 ? UP : DOWN;
 }
+/** 회사명 아래 숫자: 시장 대비(%p, 없으면 주가 %). ±2%p 이내 회색. 반응 대기 중이면 '대기 중'. */
+function moveText(c: LifeCompany): { text: string; color: string } | null {
+  if (c.waiting) return { text: "대기 중", color: GRAY };
+  if (c.vs_market != null) return { text: ppText(c.vs_market), color: vsColor(c.vs_market) };
+  if (c.rate != null) return { text: rateText(c.rate), color: similar(c.rate) ? GRAY : rateColor(c.rate) };
+  return null;
+}
+/** 방향 배지(오른쪽 위): 도움 가능 ＋ · 부담 가능 －, 방향 불확실·중립은 없음 */
+const dirBadge = (d?: LifeCompany["direction"]) => (d === "neg" ? "－" : d === "pos" || d == null ? "＋" : null);
 
 /** 원 안 이름: 4자 이하는 한 줄, 그보다 길면 두 줄(최대 4+4자, 넘치면 …). */
 function nameLines(name: string): string[] {
@@ -95,9 +105,9 @@ function layout(stages: LifeStage[], refs: LifeCompany[]): { nodes: Node[]; cy: 
     ...spread(nu - top3, 104).map((x) => ({ x, y: cy + 228 }))]);
   const refXs = [-158, 158, 0];
   add(refs.slice(0, 3).map((c) => ({ c, stage: undefined as unknown as LifeStage, color: GRAY })), "ref",
-    refs.slice(0, 3).map((_, i) => ({ x: refXs[i], y: 196 })), R_REF);
+    refs.slice(0, 3).map((_, i) => ({ x: refXs[i], y: 180 })), R_REF);
 
-  const pad = (n: Node) => (n.region === "ref" ? 14 : 6); // 참고 동그라미는 아래 이름 자리까지
+  const pad = (n: Node) => (n.region === "ref" ? 24 : 6); // 참고 동그라미는 아래 이름·숫자 자리까지
   for (let it = 0; it < 180; it++) {
     for (let i = 0; i < nodes.length; i++) {
       const a = nodes[i];
@@ -123,7 +133,7 @@ function layout(stages: LifeStage[], refs: LifeCompany[]): { nodes: Node[]; cy: 
         n.pos.x += (n.t.x - n.pos.x) * 0.06;
         n.pos.y += (n.t.y - n.pos.y) * 0.06;
       }
-      const below = n.region === "ref" ? 20 : 0; // 참고 이름이 동그라미 아래에 붙는다
+      const below = n.region === "ref" ? REF_BELOW : 0; // 참고 이름·숫자가 동그라미 아래에 붙는다
       n.pos.x = Math.max(-W / 2 + n.r + 3, Math.min(W / 2 - n.r - 3, n.pos.x));
       n.pos.y = Math.max(Y_MIN + n.r, Math.min(TOP + H - n.r - below - 3, n.pos.y));
       if (n.region === "pos") n.pos.x = Math.max(n.r * 0.7, n.pos.x);   // 오른쪽 구역을 벗어나지 않게
@@ -290,34 +300,44 @@ export default function MindMap({ map, refs = [], center, onPick, picked }: {
                 transitionDelay: shown ? `${200 + i * 80}ms` : "0ms" };
               if (n.region === "ref") {
                 const nm = c.name.length > 6 ? `${c.name.slice(0, 5)}…` : c.name;
+                const mv = moveText(c);
                 return (
                   <g key={c.code} className="lm-node" style={style} aria-hidden>
                     <title>{`${c.name} · 업종 참고(근거로 확인된 연결 아님)`}</title>
                     <circle r={n.r} fill="#1e293b" stroke={GRAY} strokeOpacity={0.7} strokeWidth={1.6} strokeDasharray="3 3" />
                     <text textAnchor="middle" dy="0.36em" fontSize={14} fontWeight={800} fill="#cbd5e1">참고</text>
                     <text textAnchor="middle" y={n.r + 16} fontSize={15} fontWeight={700} fill="#94a3b8" className="lm-label">{nm}</text>
+                    {mv && <text textAnchor="middle" y={n.r + 33} fontSize={15} fontWeight={800} fill={mv.color} className="lm-label tabular-nums">{mv.text}</text>}
                   </g>
                 );
               }
               const lines = nameLines(c.name);
               const glow = moveGlow(c);
               const on = picked === c.code;
-              const tag = dirTag(c.direction);
-              const nameY = lines.length === 1 ? [-7] : [-17, 4];
+              const badge = dirBadge(c.direction);
+              const mv = moveText(c);
+              const nameY = lines.length === 1 ? [-8] : [-17, 4];
+              const bx = n.r * 0.87, by = -n.r * 0.87; // 오른쪽 위 배지 자리(테두리에 걸쳐, 두 줄 이름 첫 줄과 닿지 않게)
               return (
                 <g key={c.code} className="lm-node" role="button" tabIndex={0}
-                  aria-label={`${c.name}${c.party ? ", 뉴스 당사자" : ""}, ${n.stage?.label ?? ""}, ${dirName(c.direction)}${glow ? `, 시장보다 ${glow === UP ? "올랐어요" : "내렸어요"}` : ""}. 누르면 아래 목록에서 펼쳐요`}
+                  aria-label={`${c.name}${c.party ? ", 뉴스 당사자" : ""}, ${n.stage?.label ?? ""}, ${dirName(c.direction)}${mv ? `, 시장보다 ${mv.text}` : ""}${glow ? ", 크게 움직였어요" : ""}. 누르면 아래 목록에서 펼쳐요`}
                   onClick={tap(() => n.stage && onPick(c, n.stage, n.color))} onKeyDown={press(() => n.stage && onPick(c, n.stage, n.color))}
                   style={{ ...style, cursor: "pointer" }}>
-                  {/* 실제 등락: 바깥 테두리 빛(빨강 오름·파랑 내림). 크게 움직였으면(±3%p) 숨쉬듯 */}
-                  {glow && <circle r={n.r + 12} fill="none" stroke={glow} strokeWidth={8} strokeOpacity={0.22} className={c.moved ? "lm-pulse" : undefined} />}
+                  {/* 실제로 크게 움직임(±3%p): 바깥 테두리 빛(빨강 오름·파랑 내림), 숨쉬듯 */}
+                  {glow && <circle r={n.r + 12} fill="none" stroke={glow} strokeWidth={8} strokeOpacity={0.22} className="lm-pulse" />}
                   {glow && <circle r={n.r + 8} fill="none" stroke={glow} strokeWidth={3.4} />}
                   {c.party && <circle r={n.r + 3.5} fill="none" stroke="#f8fafc" strokeOpacity={0.85} strokeWidth={1.6} />}
                   <circle r={n.r} fill="#10244a" stroke={on ? "#ffffff" : "#94a3b8"} strokeOpacity={on ? 1 : 0.65} strokeWidth={on ? 3.6 : 2} />
                   {lines.map((t, k) => (
                     <text key={k} textAnchor="middle" y={nameY[k]} dy="0.36em" fontSize={19.5} fontWeight={800} fill="#f8fafc">{t}</text>
                   ))}
-                  <text textAnchor="middle" y={lines.length === 1 ? 20 : 26} dy="0.36em" fontSize={15} fontWeight={900} fill={dirColor(c.direction)}>{tag}</text>
+                  {mv && <text textAnchor="middle" y={lines.length === 1 ? 17 : 26} dy="0.36em" fontSize={16} fontWeight={900} fill={mv.color} className="tabular-nums">{mv.text}</text>}
+                  {badge && (
+                    <g transform={`translate(${bx} ${by})`} aria-hidden>
+                      <circle r={11.5} fill={dirColor(c.direction)} stroke="#0b1a36" strokeWidth={2.5} />
+                      <text textAnchor="middle" dy="0.36em" fontSize={17} fontWeight={900} fill="#0b1a36">{badge}</text>
+                    </g>
+                  )}
                 </g>
               );
             })}
@@ -335,12 +355,12 @@ export default function MindMap({ map, refs = [], center, onPick, picked }: {
         </svg>
       </div>
 
-      {/* 범례 한 줄: 테두리 빛(실제 등락) · 점선(업종 참고) · 두 겹(뉴스 당사자) */}
-      <p className="mt-1.5 flex items-center justify-center gap-x-2.5 whitespace-nowrap px-4 text-[14px] font-bold text-slate-200 sm:px-0" aria-label="범례">
-        <span className="flex items-center gap-1">테두리 빛<span className="size-3 rounded-full" style={{ boxShadow: `0 0 0 2px ${UP}` }} />오름
-          <span className="ml-0.5 size-3 rounded-full" style={{ boxShadow: `0 0 0 2px ${DOWN}` }} />내림</span>
-        <span className="flex items-center gap-1"><span className="size-3 rounded-full border border-dashed border-slate-300" />참고</span>
-        <span className="flex items-center gap-1"><span className="size-3 rounded-full border border-white outline outline-1 outline-offset-1 outline-white/70" />당사자</span>
+      {/* 범례 한 줄(390px에서 넘치지 않게 13px·좁은 자간) */}
+      <p className="mt-1.5 flex items-center justify-center gap-x-1.5 whitespace-nowrap px-2 text-[13px] font-bold tracking-tight text-slate-200 sm:px-0 sm:text-[14px]" aria-label="범례">
+        <span className="flex items-center gap-0.5"><span className="flex size-4 items-center justify-center rounded-full text-[13px] font-black text-[#0b1a36]" style={{ background: POS }}>＋</span>도움 가능</span>·
+        <span className="flex items-center gap-0.5"><span className="flex size-4 items-center justify-center rounded-full text-[13px] font-black text-[#0b1a36]" style={{ background: NEG }}>－</span>부담 가능</span>
+        <span className="text-slate-300">(AI 해석)</span>·
+        <span>숫자 = 시장보다 오늘 등락</span>
       </p>
 
       {/* 영향 경로(선 색): 누르면 그 경로만 강조 */}
