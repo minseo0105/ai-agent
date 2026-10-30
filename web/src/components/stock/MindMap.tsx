@@ -69,24 +69,30 @@ type Node = { c: LifeCompany; stage?: LifeStage; color: string; region: Region; 
 
 const spread = (n: number, gap: number, mid = 0) => Array.from({ length: n }, (_, i) => mid + (i - (n - 1) / 2) * gap);
 
-/** 구역별 목표점 → 서로 겹치지 않게 밀어내기(중앙은 고정). 같은 입력이면 같은 자리. */
-function layout(stages: LifeStage[], refs: LifeCompany[]): Node[] {
+/** 구역별 목표점 → 서로 겹치지 않게 밀어내기(중앙은 고정). 같은 입력이면 같은 자리.
+ *  방향 불확실이 4곳 이상이면 중앙을 위로 올리고 그 아래 두 줄에(옆으로 퍼지면 도움·부담 구역으로 읽힌다). */
+function layout(stages: LifeStage[], refs: LifeCompany[]): { nodes: Node[]; cy: number } {
   const rows = stages.flatMap((s, i) => s.companies.map((c) => ({ c, stage: s, color: pathColor(i) })));
   const region = (c: LifeCompany): Region => (c.party ? "party" : c.direction === "neg" ? "neg" : c.direction === "unk" || c.direction === "neu" ? "unk" : "pos");
   const groups: Record<Region, typeof rows> = { party: [], pos: [], neg: [], unk: [], ref: [] };
   rows.forEach((r) => groups[region(r.c)].push(r));
+  const nu = groups.unk.length;
+  const cy = nu >= 4 ? -78 : 0;
   const nodes: (Node & { t: Pt })[] = [];
   const add = (list: typeof rows, reg: Region, targets: Pt[], r = R) =>
     list.forEach((x, i) => nodes.push({ ...x, region: reg, r, t: targets[i], pos: { ...targets[i] } }));
-  add(groups.party, "party", spread(groups.party.length, 104).map((x) => ({ x, y: -112 })));
+  add(groups.party, "party", spread(groups.party.length, 104).map((x) => ({ x, y: cy - 112 })));
   for (const [reg, sx] of [["pos", 1], ["neg", -1]] as const) {
     const n = groups[reg].length;
     // 3곳까지 한 줄(세로), 더 많으면 그 쪽 반원(호)을 따라
-    const targets = n <= 3 ? spread(n, 104, 12).map((y) => ({ x: sx * 152, y }))
-      : spread(n, 144 / (n - 1), 4).map((deg) => ({ x: sx * 160 * Math.cos((deg * Math.PI) / 180), y: 160 * Math.sin((deg * Math.PI) / 180) }));
+    const targets = n <= 3 ? spread(n, 104, cy + 12).map((y) => ({ x: sx * 152, y }))
+      : spread(n, 144 / (n - 1), 4).map((deg) => ({ x: sx * 160 * Math.cos((deg * Math.PI) / 180), y: cy + 160 * Math.sin((deg * Math.PI) / 180) }));
     add(groups[reg], reg, targets);
   }
-  add(groups.unk, "unk", spread(groups.unk.length, 104).map((x) => ({ x, y: 168 })));
+  // 방향 불확실: 아래 한 줄(3곳까지), 더 많으면 두 줄(윗줄 3곳 + 아랫줄 엇갈려서)
+  const top3 = Math.min(nu, 3);
+  add(groups.unk, "unk", [...spread(top3, 104).map((x) => ({ x, y: cy + (nu >= 4 ? 128 : 168) })),
+    ...spread(nu - top3, 104).map((x) => ({ x, y: cy + 228 }))]);
   const refXs = [-158, 158, 0];
   add(refs.slice(0, 3).map((c) => ({ c, stage: undefined as unknown as LifeStage, color: GRAY })), "ref",
     refs.slice(0, 3).map((_, i) => ({ x: refXs[i], y: 196 })), R_REF);
@@ -96,8 +102,9 @@ function layout(stages: LifeStage[], refs: LifeCompany[]): Node[] {
     for (let i = 0; i < nodes.length; i++) {
       const a = nodes[i];
       // 중앙(고정)과 겹치지 않게
-      const d0 = Math.hypot(a.pos.x, a.pos.y) || 1, m0 = a.r + R_CENTER + 10;
-      if (d0 < m0) { a.pos.x *= m0 / d0; a.pos.y *= m0 / d0; }
+      const ax = a.pos.x, ay = a.pos.y - cy;
+      const d0 = Math.hypot(ax, ay) || 1, m0 = a.r + R_CENTER + 10;
+      if (d0 < m0) { a.pos.x = (ax * m0) / d0; a.pos.y = cy + (ay * m0) / d0; }
       for (let j = i + 1; j < nodes.length; j++) {
         const b = nodes[j];
         let dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y;
@@ -121,9 +128,10 @@ function layout(stages: LifeStage[], refs: LifeCompany[]): Node[] {
       n.pos.y = Math.max(Y_MIN + n.r, Math.min(TOP + H - n.r - below - 3, n.pos.y));
       if (n.region === "pos") n.pos.x = Math.max(n.r * 0.7, n.pos.x);   // 오른쪽 구역을 벗어나지 않게
       if (n.region === "neg") n.pos.x = Math.min(-n.r * 0.7, n.pos.x);  // 왼쪽 구역
+      if (n.region === "unk") n.pos.y = Math.max(cy + R_CENTER, n.pos.y); // 아래 구역(중앙보다 위로 가지 않게)
     }
   }
-  return nodes.map(({ t: _t, ...n }) => n);
+  return { nodes: nodes.map(({ t: _t, ...n }) => n), cy };
 }
 
 export default function MindMap({ map, refs = [], center, onPick, picked }: {
@@ -132,7 +140,7 @@ export default function MindMap({ map, refs = [], center, onPick, picked }: {
   // 자리·애니메이션은 회사 구성(코드·방향·당사자·경로)이 바뀔 때만 다시. 15초 갱신(등락률)이나 다시 그리기로는 다시 자라지 않는다
   const sig = `${center}|${map.stages.map((s) => `${s.key}:${s.companies.map((c) => `${c.code}${c.direction ?? ""}${c.party ? "p" : ""}`).join(",")}`).join("/")}|${refs.map((c) => c.code).join(",")}`;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const placed = useMemo(() => layout(map.stages, refs), [sig]);
+  const { nodes: placed, cy } = useMemo(() => layout(map.stages, refs), [sig]);
   const current = new Map([...map.stages.flatMap((s) => s.companies), ...refs].map((c) => [c.code, c]));
   const nodes = placed.map((n) => ({ ...n, c: current.get(n.c.code) ?? n.c }));
   const [shown, setShown] = useState(false);
@@ -247,7 +255,7 @@ export default function MindMap({ map, refs = [], center, onPick, picked }: {
           </defs>
           <g style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.k})`, transition: pointers.current.size ? "none" : "transform 200ms ease-out" }}>
             {/* 구역: 가운데 세로 점선 + 맨 위 구역 이름(왼쪽 부담 · 가운데 아래 불확실 · 오른쪽 도움) */}
-            <line x1={0} x2={0} y1={-200} y2={150} stroke="#ffffff" strokeOpacity={0.12} strokeDasharray="4 6" />
+            <line x1={0} x2={0} y1={-200} y2={cy ? cy + 40 : 150} stroke="#ffffff" strokeOpacity={0.12} strokeDasharray="4 6" />
             <text x={-205} y={-212} fontSize={15} fontWeight={800} fill="#e2e8f0" className="lm-label">◀ 부담 받을 수 있는 쪽</text>
             <text x={205} y={-212} textAnchor="end" fontSize={15} fontWeight={800} fill="#e2e8f0" className="lm-label">도움 받을 수 있는 쪽 ▶</text>
             {has("unk") && <text x={0} y={-212} textAnchor="middle" fontSize={15} fontWeight={800} fill="#cbd5e1" className="lm-label">▼ 불확실</text>}
@@ -261,13 +269,13 @@ export default function MindMap({ map, refs = [], center, onPick, picked }: {
               const on = !!focus && n.stage?.key === focus;
               return (
                 <g key={`e-${n.c.code}`} style={{ opacity: dim(n), transition: "opacity 250ms" }}>
-                  {!ref && <path d={curve({ x: 0, y: 0 }, n.pos)} pathLength={1} fill="none" stroke={n.color} strokeWidth={on ? 14 : 8} strokeOpacity={0.15}
+                  {!ref && <path d={curve({ x: 0, y: cy }, n.pos)} pathLength={1} fill="none" stroke={n.color} strokeWidth={on ? 14 : 8} strokeOpacity={0.15}
                     strokeLinecap="round" className="lm-branch" style={{ strokeDasharray: 1, strokeDashoffset: shown ? 0 : 1, transitionDelay: `${i * 80}ms` }} />}
                   {ref ? (
-                    <path d={curve({ x: 0, y: 0 }, n.pos)} fill="none" stroke={GRAY} strokeWidth={1.6} strokeOpacity={shown ? 0.45 : 0} strokeDasharray="4 5"
+                    <path d={curve({ x: 0, y: cy }, n.pos)} fill="none" stroke={GRAY} strokeWidth={1.6} strokeOpacity={shown ? 0.45 : 0} strokeDasharray="4 5"
                       style={{ transition: "stroke-opacity 400ms", transitionDelay: `${300 + i * 80}ms` }} />
                   ) : (
-                    <path d={curve({ x: 0, y: 0 }, n.pos)} pathLength={1} fill="none" stroke={n.color} strokeWidth={on ? 3.6 : 2.4} strokeOpacity={0.9}
+                    <path d={curve({ x: 0, y: cy }, n.pos)} pathLength={1} fill="none" stroke={n.color} strokeWidth={on ? 3.6 : 2.4} strokeOpacity={0.9}
                       strokeLinecap="round" className="lm-branch" style={{ strokeDasharray: 1, strokeDashoffset: shown ? 0 : 1, transitionDelay: `${i * 80}ms` }} />
                   )}
                 </g>
@@ -277,7 +285,7 @@ export default function MindMap({ map, refs = [], center, onPick, picked }: {
             {/* 회사 노드 */}
             {nodes.map((n, i) => {
               const { c } = n;
-              const at = shown ? n.pos : { x: 0, y: 0 };
+              const at = shown ? n.pos : { x: 0, y: cy };
               const style = { transform: `translate(${at.x}px, ${at.y}px) scale(${shown ? 1 : 0.2})`, opacity: shown ? dim(n) : 0,
                 transitionDelay: shown ? `${200 + i * 80}ms` : "0ms" };
               if (n.region === "ref") {
@@ -316,7 +324,7 @@ export default function MindMap({ map, refs = [], center, onPick, picked }: {
 
             {/* 빛나는 중앙 = 뉴스. 누르면 강조 해제 */}
             <g className="lm-node" role="button" tabIndex={0} aria-label={`${center}, 강조 해제`} onClick={tap(() => setFocus(null))}
-              onKeyDown={press(() => setFocus(null))} style={{ cursor: "pointer" }}>
+              onKeyDown={press(() => setFocus(null))} style={{ cursor: "pointer", transform: `translate(0px, ${cy}px)` }}>
               <circle r={78} fill="url(#lm-halo)" className="lm-glow" pointerEvents="none" />
               <circle r={R_CENTER} fill="url(#lm-core)" />
               {centerLines.map((t, n) => (
