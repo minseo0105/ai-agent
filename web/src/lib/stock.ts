@@ -104,7 +104,7 @@ export type LifeCompany = {
   industry?: string; // KRX 업종(관련 업종 칩과 맞춤)
   evidence?: LifeArticle; // 근거 기사
   intro?: string; // 한 줄 회사 소개(회사별로 저장해 재사용)
-  // 기업 연관성 검증(verify.py). tier가 없으면 검증 전(예전 결과)
+  // 기업 연관성 검증(verify.py). tier가 없으면 근거 대조 없는 예전 결과
   tier?: "party" | "indirect" | "industry"; // 직접 당사자 · 검증된 간접 영향 · 단순 업종 참고(지도에 올리지 않음)
   grade?: LifeGrade; // 증거 등급(확률이 아님)
   rel_kind?: string; // 연결 이유(관계 종류): 당사자·계약·공급망·지분·경쟁·사업·같은 업종
@@ -112,13 +112,14 @@ export type LifeCompany = {
   sources?: LifeSource[]; // 근거 자료
   found?: boolean; // 근거 자료에서 새로 찾은 회사
   note?: string; // 업종 참고인 이유(업종만 같음·보도상 영향 없음)
+  path_tag?: string; // 예시 파일: 경로 태그(영향 경로 이름)
 };
-export type LifeGrade = "확인됨" | "보도 확인" | "단일 보도" | "근거 부족";
+export type LifeGrade = "확인됨" | "보도 확인" | "사업 근거" | "단일 보도" | "근거 부족"; // 사업 근거 = 영향 경로가 주력 사업과 일치(DART 사업보고서 사업의 내용)
 /** 근거 자료 하나: 출처 종류(공시·뉴스·RSS·공식자료)·제목·링크·언론사·발행 시각·확인 시각·근거 문장 */
-export type LifeSource = { kind: "공시" | "뉴스" | "RSS" | "공식자료"; title: string; url: string; press: string; pub: string; checked: string; quote?: string };
+export type LifeSource = { kind: "공시" | "뉴스" | "RSS" | "공식자료" | "사업보고서"; title: string; url: string; press: string; pub: string; checked: string; quote?: string };
 /** 이슈 당사자(국내 상장이 아니면 kind로 표시) */
 export type LifeParty = { name: string; kind: "국내 상장" | "국내 비상장" | "해외"; note?: string; code?: string; via?: string };
-/** 검증 상태: ok = 검증됨, off·unverified(오류·시간 초과)·없음 = '검증 전' */
+/** 검증 상태: ok = 검증됨, off(LIFEMAP_VERIFY=0)·unverified(오류·시간 초과)·없음 = 근거 대조 없음 */
 export type LifeVerify = { status: "ok" | "off" | "unverified"; listed?: number; checked?: string; ref?: string; error?: string;
   counts?: Record<"party" | "indirect" | "industry" | "insufficient", number> };
 /** 이슈 시점: 첫 보도, 장 마감 뒤 뉴스면 다음 거래일 반응과 비교 */
@@ -155,6 +156,7 @@ export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: st
 export type LifeMarket = { label: string; indices: { name: string; market: string; rate: number }[]; crowd: string; text: string };
 export type LifeOverview = {
   day: string | null; basis: LifeBasis; market?: LifeMarket | null; topics: LifeItem[]; hot: string[]; sectors: string[]; sector_items: Record<string, LifeItem>;
+  sector_empty?: Record<string, string>; // 오늘 검증해서 확인된 연결이 없는 섹터 → 칩에 그 문구
   live: { enabled: boolean; per_session: number; window_min: number };
   price_note?: string;
 };

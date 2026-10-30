@@ -1,15 +1,13 @@
 "use client";
 
-// 뉴스 속 숨은 종목의 관련 회사 지도. 중앙 = 뉴스(이슈), 1단계 = 영향 경로(수요 증가·원가 상승·규제·경쟁 변화 등),
-// 2단계 = 영향을 받을 수 있는 회사(경로당 2곳). 노드가 최대 13개라 라이브러리 없이 SVG로 그린다
-// (react-flow·d3는 수십~백 KB, 휴대폰에서 이 크기에는 과함). 애니메이션은 transform·opacity·stroke-dashoffset만 써서 GPU로.
-// 처음부터 모두 펼친 채로 시작한다(가지가 자라나는 연출만). 경로를 누르면 그 가지를 강조한다.
-// 글자: 휴대폰 390px(지도가 화면 끝까지, 배율 약 0.89)에서 회사 이름 17px 이상이 되도록 SVG 단위 19.5.
-// 회사 원 안에는 회사명만(숫자·+/− 배지·'실제 등락' 라벨 없음 — 숫자는 아래 회사 목록에). 원 색 = AI 해석 방향:
-// 도움 가능(초록)/부담 가능(주황)/영향 가능(회색). 시장 대비 ±3%p 이상 움직인 회사는 빛나는 테두리, 뉴스 당사자는 두 겹 테두리.
-// 회사 원을 누르면 아래 목록의 그 회사로 스크롤하고 펼친다(onPick).
-// 원 반지름 46~47: 회사가 바깥 고리(154)에 있어 가장 큰 원+빛(47+10, 경로에 혼자면 160에)도 화면(220) 안,
-// 같은 경로 두 회사(±23°)·이웃 경로 회사와 겹치지 않는다.
+// 뉴스 속 숨은 종목의 관련 회사 지도. 색 없이도 읽히게 '자리'와 '글자'로 뜻을 전한다(2026-10-31 개편):
+//   가운데 = 뉴스(이슈), 바로 위 = 뉴스 당사자, 오른쪽 = 도움 받을 수 있는 쪽, 왼쪽 = 부담 받을 수 있는 쪽, 아래 = 방향 불확실.
+//   맨 위에 두 구역 이름을 작게, 회사 동그라미에는 이름 아래 '도움'/'부담'/'불확실' 꼬리표.
+//   실제 등락은 동그라미 바깥 테두리 빛(한국식: 시장보다 올랐으면 빨강, 내렸으면 파랑, ±2%p 안이면 빛 없음) — AI 해석(꼬리표 색)과 섞지 않는다.
+//   검증된 회사가 3곳 미만인 이슈는 업종 참고 회사(최대 3)를 바깥쪽에 점선·작은 회색 동그라미 + '참고'로(누를 수 없음, 목록에서는 접힌 업종 참고).
+//   선 색 = 영향 경로(아래 경로 단추를 누르면 그 경로만 강조).
+// 노드가 최대 9개라 라이브러리 없이 SVG로 그리고, 자리는 구역별 목표점에서 겹치지 않게 몇 번 밀어내 정한다(같은 입력이면 같은 자리).
+// 애니메이션은 transform·opacity·stroke-dashoffset만. 글자: 휴대폰 390px(배율 약 0.89)에서 회사 이름 17px, 꼬리표·구역 이름 13px 이상.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { type LifeCompany, type LifeMap, type LifeStage } from "@/lib/stock";
 
@@ -20,18 +18,14 @@ export const UP = "#ff6b81";   // 상승 빨강(어두운 배경용)
 export const DOWN = "#5aa9ff"; // 하락 파랑
 export const POS = "#34d399";  // AI 해석: 긍정 영향 가능
 export const NEG = "#fb923c";  // AI 해석: 부정 영향 가능
-const BUBBLE = { 강: 47, 중: 46, 약: 46 } as const; // 두 줄 이름(4자 × 19.5)이 원 안에 들어가게
-const GLOW = "#fde68a"; // 실제로 크게 움직인 회사의 빛나는 테두리
-const ANGLES: Record<number, number[]> = { 1: [0], 2: [180, 0], 3: [-90, 30, 150], 4: [-135, -45, 45, 135] };
-const R_STAGE = 76;
-const R_COMPANY = 154;
-const R_SOLO = 160; // 경로에 회사가 하나면 경로 노드와 같은 방향이라 조금 더 바깥에(경로 노드와 닿지 않게)
-const SPREAD = 23; // 회사 두 곳이 경로 각도에서 벌어지는 정도(도)
-const VIEW = 440;
+const R = 46;      // 회사 동그라미(두 줄 이름 4자 × 19.5 + 꼬리표)
+const R_REF = 22;  // 업종 참고(작은 회색)
+const R_CENTER = 42;
+const W = 440, TOP = -232, H = 470; // viewBox: x −220~220, y −232~238(맨 위 줄은 구역 이름)
+const Y_MIN = -196; // 구역 이름 아래부터 노드
 const K_MIN = 1, K_MAX = 3;
 
 type Pt = { x: number; y: number };
-const polar = (deg: number, r: number): Pt => ({ x: Math.cos((deg * Math.PI) / 180) * r, y: Math.sin((deg * Math.PI) / 180) * r });
 export const rateText = (v?: number | null) => (v == null ? "—" : `${v > 0 ? "▲" : v < 0 ? "▼" : ""}${Math.abs(v).toFixed(Math.abs(v) >= 10 ? 0 : 1)}%`);
 export const rateColor = (v?: number | null) => (!v ? "#e2e8f0" : v > 0 ? UP : DOWN);
 export const GRAY = "#cbd5e1";
@@ -45,6 +39,15 @@ export const ppText = (v?: number | null) => (v == null ? "—" : `${v > 0 ? "�
 export const dirName = (d?: LifeCompany["direction"]) => (d === "neg" ? "부담 받을 수 있는 회사" : d === "unk" || d === "neu" ? "영향 받을 수 있는 회사" : "도움 받을 수 있는 회사");
 /** AI 해석 방향 색: 도움 가능 초록 · 부담 가능 주황 · 영향 가능(방향 불확실) 회색 */
 export const dirColor = (d?: LifeCompany["direction"]) => (d === "neg" ? NEG : d === "unk" || d === "neu" ? GRAY : POS);
+/** 동그라미 꼬리표(이름 아래 글자) */
+const dirTag = (d?: LifeCompany["direction"]) => (d === "neg" ? "부담" : d === "unk" || d === "neu" ? "불확실" : "도움");
+/** 실제 등락 테두리 빛: 시장 대비(없으면 주가 등락률)가 ±2%p 밖일 때만. 반응 대기 중이면 없음. */
+function moveGlow(c: LifeCompany): string | null {
+  if (c.waiting) return null;
+  const v = c.vs_market ?? c.rate;
+  if (v == null || Math.abs(v) <= SIMILAR_PP) return null;
+  return v > 0 ? UP : DOWN;
+}
 
 /** 원 안 이름: 4자 이하는 한 줄, 그보다 길면 두 줄(최대 4+4자, 넘치면 …). */
 function nameLines(name: string): string[] {
@@ -54,41 +57,84 @@ function nameLines(name: string): string[] {
   return [s.slice(0, half), s.slice(half)];
 }
 
-/** 경로 이름: 5자 이하는 한 줄, 길면 두 줄. */
-function labelLines(label: string): string[] {
-  if (label.length <= 5) return [label];
-  const s = label.length > 10 ? `${label.slice(0, 9)}…` : label;
-  const sp = s.indexOf(" ");
-  if (sp > 0) return [s.slice(0, sp), s.slice(sp + 1)];
-  const half = Math.ceil(s.length / 2);
-  return [s.slice(0, half), s.slice(half)];
-}
-
-/** 부모→자식 곡선(살짝 휜 2차 베지어). pathLength=1로 두고 dashoffset으로 그려지는 효과를 낸다. */
-function curve(a: Pt, b: Pt, bend = 0.18): string {
+/** 중앙→회사 곡선(살짝 휜 2차 베지어). pathLength=1로 두고 dashoffset으로 그려지는 효과를 낸다. */
+function curve(a: Pt, b: Pt, bend = 0.12): string {
   const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
   const dx = b.x - a.x, dy = b.y - a.y;
   return `M${a.x.toFixed(1)},${a.y.toFixed(1)} Q${(mx - dy * bend).toFixed(1)},${(my + dx * bend).toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`;
 }
 
-type Placed = { stage: LifeStage; color: string; pos: Pt; companies: { c: LifeCompany; pos: Pt; r: number }[] };
+type Region = "party" | "pos" | "neg" | "unk" | "ref";
+type Node = { c: LifeCompany; stage?: LifeStage; color: string; region: Region; r: number; pos: Pt };
 
-function layout(stages: LifeStage[]): Placed[] {
-  const angles = ANGLES[Math.min(stages.length, 4)] || [];
-  return stages.slice(0, 4).map((stage, i) => {
-    const a = angles[i];
-    const n = Math.min(stage.companies.length, 2);
-    return {
-      stage, color: pathColor(i), pos: polar(a, R_STAGE),
-      companies: stage.companies.slice(0, 2).map((c, j) => ({
-        c, r: BUBBLE[c.relevance] ?? BUBBLE.약, pos: polar(n === 1 ? a : a + (j === 0 ? -SPREAD : SPREAD), n === 1 ? R_SOLO : R_COMPANY),
-      })),
-    };
-  });
+const spread = (n: number, gap: number, mid = 0) => Array.from({ length: n }, (_, i) => mid + (i - (n - 1) / 2) * gap);
+
+/** 구역별 목표점 → 서로 겹치지 않게 밀어내기(중앙은 고정). 같은 입력이면 같은 자리. */
+function layout(stages: LifeStage[], refs: LifeCompany[]): Node[] {
+  const rows = stages.flatMap((s, i) => s.companies.map((c) => ({ c, stage: s, color: pathColor(i) })));
+  const region = (c: LifeCompany): Region => (c.party ? "party" : c.direction === "neg" ? "neg" : c.direction === "unk" || c.direction === "neu" ? "unk" : "pos");
+  const groups: Record<Region, typeof rows> = { party: [], pos: [], neg: [], unk: [], ref: [] };
+  rows.forEach((r) => groups[region(r.c)].push(r));
+  const nodes: (Node & { t: Pt })[] = [];
+  const add = (list: typeof rows, reg: Region, targets: Pt[], r = R) =>
+    list.forEach((x, i) => nodes.push({ ...x, region: reg, r, t: targets[i], pos: { ...targets[i] } }));
+  add(groups.party, "party", spread(groups.party.length, 104).map((x) => ({ x, y: -112 })));
+  for (const [reg, sx] of [["pos", 1], ["neg", -1]] as const) {
+    const n = groups[reg].length;
+    // 3곳까지 한 줄(세로), 더 많으면 그 쪽 반원(호)을 따라
+    const targets = n <= 3 ? spread(n, 104, 12).map((y) => ({ x: sx * 152, y }))
+      : spread(n, 144 / (n - 1), 4).map((deg) => ({ x: sx * 160 * Math.cos((deg * Math.PI) / 180), y: 160 * Math.sin((deg * Math.PI) / 180) }));
+    add(groups[reg], reg, targets);
+  }
+  add(groups.unk, "unk", spread(groups.unk.length, 104).map((x) => ({ x, y: 168 })));
+  const refXs = [-158, 158, 0];
+  add(refs.slice(0, 3).map((c) => ({ c, stage: undefined as unknown as LifeStage, color: GRAY })), "ref",
+    refs.slice(0, 3).map((_, i) => ({ x: refXs[i], y: 196 })), R_REF);
+
+  const pad = (n: Node) => (n.region === "ref" ? 14 : 6); // 참고 동그라미는 아래 이름 자리까지
+  for (let it = 0; it < 180; it++) {
+    for (let i = 0; i < nodes.length; i++) {
+      const a = nodes[i];
+      // 중앙(고정)과 겹치지 않게
+      const d0 = Math.hypot(a.pos.x, a.pos.y) || 1, m0 = a.r + R_CENTER + 10;
+      if (d0 < m0) { a.pos.x *= m0 / d0; a.pos.y *= m0 / d0; }
+      for (let j = i + 1; j < nodes.length; j++) {
+        const b = nodes[j];
+        let dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y;
+        let d = Math.hypot(dx, dy);
+        if (d < 0.01) { dx = 1; dy = 0; d = 1; }
+        const min = a.r + b.r + pad(a) + pad(b);
+        if (d < min) {
+          const push = (min - d) / 2;
+          a.pos.x -= (dx / d) * push; a.pos.y -= (dy / d) * push;
+          b.pos.x += (dx / d) * push; b.pos.y += (dy / d) * push;
+        }
+      }
+    }
+    for (const n of nodes) {
+      if (it < 140) { // 마지막 몇 번은 밀어내기만(겹침이 남지 않게)
+        n.pos.x += (n.t.x - n.pos.x) * 0.06;
+        n.pos.y += (n.t.y - n.pos.y) * 0.06;
+      }
+      const below = n.region === "ref" ? 20 : 0; // 참고 이름이 동그라미 아래에 붙는다
+      n.pos.x = Math.max(-W / 2 + n.r + 3, Math.min(W / 2 - n.r - 3, n.pos.x));
+      n.pos.y = Math.max(Y_MIN + n.r, Math.min(TOP + H - n.r - below - 3, n.pos.y));
+      if (n.region === "pos") n.pos.x = Math.max(n.r * 0.7, n.pos.x);   // 오른쪽 구역을 벗어나지 않게
+      if (n.region === "neg") n.pos.x = Math.min(-n.r * 0.7, n.pos.x);  // 왼쪽 구역
+    }
+  }
+  return nodes.map(({ t: _t, ...n }) => n);
 }
 
-export default function MindMap({ map, center, onPick, picked }: { map: LifeMap; center: string; onPick: (c: LifeCompany, s: LifeStage, color: string) => void; picked?: string }) {
-  const placed = useMemo(() => layout(map.stages), [map]);
+export default function MindMap({ map, refs = [], center, onPick, picked }: {
+  map: LifeMap; refs?: LifeCompany[]; center: string; onPick: (c: LifeCompany, s: LifeStage, color: string) => void; picked?: string;
+}) {
+  // 자리·애니메이션은 회사 구성(코드·방향·당사자·경로)이 바뀔 때만 다시. 15초 갱신(등락률)이나 다시 그리기로는 다시 자라지 않는다
+  const sig = `${center}|${map.stages.map((s) => `${s.key}:${s.companies.map((c) => `${c.code}${c.direction ?? ""}${c.party ? "p" : ""}`).join(",")}`).join("/")}|${refs.map((c) => c.code).join(",")}`;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const placed = useMemo(() => layout(map.stages, refs), [sig]);
+  const current = new Map([...map.stages.flatMap((s) => s.companies), ...refs].map((c) => [c.code, c]));
+  const nodes = placed.map((n) => ({ ...n, c: current.get(n.c.code) ?? n.c }));
   const [shown, setShown] = useState(false);
   const [focus, setFocus] = useState<string | null>(null);
   const [view, setView] = useState({ k: 1, x: 0, y: 0 });
@@ -97,22 +143,22 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
   const gesture = useRef<{ d: number; k: number; mid: Pt; x: number; y: number } | null>(null);
   const dragged = useRef(false);
 
-  // 이슈가 바뀌면 중앙에서 경로 → 회사 순서로 가지가 자라난다(모두 펼친 채로 끝남).
+  // 이슈가 바뀌면 중앙에서 회사 쪽으로 가지가 자라난다(모두 펼친 채로 끝남).
   useEffect(() => {
     setShown(false);
     setFocus(null);
     setView({ k: 1, x: 0, y: 0 });
     const t = setTimeout(() => setShown(true), 40);
     return () => clearTimeout(t);
-  }, [map]);
+  }, [sig]);
 
   // 화면 px → SVG 좌표(중앙 0,0)
   const toSvg = (p: Pt): Pt => {
     const el = box.current;
     if (!el) return p;
     const r = el.getBoundingClientRect();
-    const s = VIEW / Math.min(r.width, r.height);
-    return { x: (p.x - r.left - r.width / 2) * s, y: (p.y - r.top - r.height / 2) * s };
+    const s = W / r.width;
+    return { x: (p.x - r.left - r.width / 2) * s, y: (p.y - r.top) * s + TOP };
   };
   const zoomAt = (p: Pt, k1: number, base = view) => {
     const k = Math.min(K_MAX, Math.max(K_MIN, k1));
@@ -145,7 +191,7 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
       dragged.current = true;
     } else if (pts.length === 1 && view.k > 1) {
       const a = toSvg(g.mid), b = toSvg(pts[0]);
-      const lim = (VIEW / 2) * (view.k - 1);
+      const lim = (W / 2) * (view.k - 1);
       setView({ k: view.k, x: Math.max(-lim, Math.min(lim, g.x + b.x - a.x)), y: Math.max(-lim, Math.min(lim, g.y + b.y - a.y)) });
       if (Math.hypot(b.x - a.x, b.y - a.y) > 6) dragged.current = true;
     }
@@ -172,18 +218,22 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
   const tap = (fn: () => void) => () => { if (!dragged.current) fn(); };
   const press = (fn: () => void) => (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } };
   const toggleFocus = (k: string) => setFocus((f) => (f === k ? null : k));
-  const dim = (k: string) => (focus && focus !== k ? 0.22 : 1);
+  const dim = (n: Node) => (focus && (n.region === "ref" || n.stage?.key !== focus) ? 0.22 : 1);
   const word = center.length > 8 ? `${center.slice(0, 7)}…` : center;
   const centerLines = word.length > 5 && word.includes(" ") ? [word.slice(0, word.indexOf(" ")), word.slice(word.indexOf(" ") + 1)] : [word];
   const centerSize = word.length > 6 ? 15 : word.length > 4 ? 17 : 21;
+  const has = (reg: Region) => nodes.some((n) => n.region === reg);
+  const parties = nodes.filter((n) => n.region === "party");
+  const partyTop = parties.length ? Math.min(...parties.map((n) => n.pos.y)) - R - 10 : 0;
 
   return (
     <div>
       <div ref={box} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onPointerLeave={onUp}
-        className="lifemap-canvas relative mx-auto aspect-square w-full max-w-[600px] select-none overflow-hidden rounded-3xl"
-        style={{ touchAction: view.k > 1 ? "none" : "pan-y" }}>
-        <svg viewBox={`${-VIEW / 2} ${-VIEW / 2} ${VIEW} ${VIEW}`} className="size-full" role="img"
-          aria-label={`${center} 관련 회사 지도: ${map.stages.map((s) => `${s.label} — ${s.companies.map((c) => `${c.name} ${dirName(c.direction)}`).join(", ")}`).join(" / ")}`}>
+        className="lifemap-canvas relative mx-auto w-full max-w-[600px] select-none overflow-hidden rounded-3xl"
+        style={{ aspectRatio: `${W} / ${H}`, touchAction: view.k > 1 ? "none" : "pan-y" }}>
+        <svg viewBox={`${-W / 2} ${TOP} ${W} ${H}`} className="size-full" role="img"
+          aria-label={`${center} 관련 회사 지도. 오른쪽은 도움 받을 수 있는 쪽, 왼쪽은 부담 받을 수 있는 쪽, 아래는 방향 불확실: ${nodes.map((n) =>
+            `${n.c.name} ${n.region === "ref" ? "업종 참고" : `${n.c.party ? "뉴스 당사자 " : ""}${dirTag(n.c.direction)}`}`).join(", ")}`}>
           <defs>
             <radialGradient id="lm-core" cx="50%" cy="45%" r="60%">
               <stop offset="0%" stopColor="#ffffff" />
@@ -196,60 +246,70 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
             </radialGradient>
           </defs>
           <g style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.k})`, transition: pointers.current.size ? "none" : "transform 200ms ease-out" }}>
-            {/* 가지: 굵고 옅은 선 위에 가는 선을 겹쳐 빛나는 효과(필터 없이). 강조한 경로는 더 굵게 */}
-            {placed.map((p, i) => (
-              <g key={p.stage.key} style={{ opacity: dim(p.stage.key), transition: "opacity 250ms" }}>
-                {[[focus === p.stage.key ? 16 : 10, 0.16], [focus === p.stage.key ? 4 : 2.6, 0.95]].map(([w, o], n) => (
-                  <path key={n} d={curve({ x: 0, y: 0 }, p.pos)} pathLength={1} fill="none" stroke={p.color} strokeWidth={w} strokeOpacity={o} strokeLinecap="round"
-                    className="lm-branch" style={{ strokeDasharray: 1, strokeDashoffset: shown ? 0 : 1, transitionDelay: `${i * 90}ms` }} />
-                ))}
-                {p.companies.map(({ c, pos }, j) => (
-                  [[focus === p.stage.key ? 14 : 8, 0.14], [focus === p.stage.key ? 3.4 : 2, 0.85]].map(([w, o], n) => (
-                    <path key={`${c.code}-${n}`} d={curve(p.pos, pos, j === 0 ? -0.15 : 0.15)} pathLength={1} fill="none" stroke={p.color} strokeWidth={w} strokeOpacity={o} strokeLinecap="round"
-                      className="lm-branch" style={{ strokeDasharray: 1, strokeDashoffset: shown ? 0 : 1, transitionDelay: `${380 + i * 90 + j * 70}ms` }} />
-                  ))
-                ))}
-              </g>
-            ))}
+            {/* 구역: 가운데 세로 점선 + 맨 위 구역 이름(왼쪽 부담 · 가운데 아래 불확실 · 오른쪽 도움) */}
+            <line x1={0} x2={0} y1={-200} y2={150} stroke="#ffffff" strokeOpacity={0.12} strokeDasharray="4 6" />
+            <text x={-205} y={-212} fontSize={15} fontWeight={800} fill="#e2e8f0" className="lm-label">◀ 부담 받을 수 있는 쪽</text>
+            <text x={205} y={-212} textAnchor="end" fontSize={15} fontWeight={800} fill="#e2e8f0" className="lm-label">도움 받을 수 있는 쪽 ▶</text>
+            {has("unk") && <text x={0} y={-212} textAnchor="middle" fontSize={15} fontWeight={800} fill="#cbd5e1" className="lm-label">▼ 불확실</text>}
+            {parties.length > 0 && (
+              <text x={0} y={partyTop} textAnchor="middle" fontSize={15} fontWeight={800} fill="#f8fafc" className="lm-label">뉴스 당사자</text>
+            )}
 
-            {/* 회사 노드: 이름만. 색 = AI 해석 방향, 빛나는 테두리 = 실제로 크게 움직임, 두 겹 테두리 = 뉴스 당사자 */}
-            {placed.map((p, i) => p.companies.map(({ c, pos, r }, j) => {
-              const lines = nameLines(c.name);
-              const color = dirColor(c.direction);
-              const at = shown ? pos : p.pos;
-              const on = picked === c.code;
+            {/* 가지: 중앙 → 회사. 굵고 옅은 선 위에 가는 선(빛나는 효과, 필터 없이). 선 색 = 영향 경로, 참고는 회색 점선 */}
+            {nodes.map((n, i) => {
+              const ref = n.region === "ref";
+              const on = !!focus && n.stage?.key === focus;
               return (
-                <g key={c.code} className="lm-node" role="button" tabIndex={0}
-                  aria-label={`${c.name}${c.party ? ", 뉴스 당사자" : ""}, ${p.stage.label}, ${dirName(c.direction)}${c.moved ? ", 실제로 크게 움직였어요" : ""}. 누르면 아래 목록에서 펼쳐요`}
-                  onClick={tap(() => onPick(c, p.stage, p.color))} onKeyDown={press(() => onPick(c, p.stage, p.color))}
-                  style={{ transform: `translate(${at.x}px, ${at.y}px) scale(${shown ? 1 : 0.2})`, opacity: shown ? dim(p.stage.key) : 0,
-                    transitionDelay: shown ? `${480 + i * 90 + j * 70}ms` : "0ms", cursor: "pointer" }}>
-                  {c.moved && <circle r={r + (c.party ? 10 : 6)} fill="none" stroke={GLOW} strokeWidth={3} className="lm-pulse" />}
-                  {c.party && <circle r={r + 5} fill="none" stroke={color} strokeWidth={2} />}
-                  <circle r={r} fill="#0b1a36" />
-                  <circle r={r} fill={color} fillOpacity={on ? 0.42 : 0.24} stroke={color} strokeWidth={on ? 3.6 : 2.4} />
-                  {lines.map((t, n) => (
-                    <text key={n} className="lm-bubble-text" textAnchor="middle" y={(n - (lines.length - 1) / 2) * 20.5}
-                      dy="0.36em" fontSize={19.5} fontWeight={800} fill="#f8fafc">{t}</text>
-                  ))}
+                <g key={`e-${n.c.code}`} style={{ opacity: dim(n), transition: "opacity 250ms" }}>
+                  {!ref && <path d={curve({ x: 0, y: 0 }, n.pos)} pathLength={1} fill="none" stroke={n.color} strokeWidth={on ? 14 : 8} strokeOpacity={0.15}
+                    strokeLinecap="round" className="lm-branch" style={{ strokeDasharray: 1, strokeDashoffset: shown ? 0 : 1, transitionDelay: `${i * 80}ms` }} />}
+                  {ref ? (
+                    <path d={curve({ x: 0, y: 0 }, n.pos)} fill="none" stroke={GRAY} strokeWidth={1.6} strokeOpacity={shown ? 0.45 : 0} strokeDasharray="4 5"
+                      style={{ transition: "stroke-opacity 400ms", transitionDelay: `${300 + i * 80}ms` }} />
+                  ) : (
+                    <path d={curve({ x: 0, y: 0 }, n.pos)} pathLength={1} fill="none" stroke={n.color} strokeWidth={on ? 3.6 : 2.4} strokeOpacity={0.9}
+                      strokeLinecap="round" className="lm-branch" style={{ strokeDasharray: 1, strokeDashoffset: shown ? 0 : 1, transitionDelay: `${i * 80}ms` }} />
+                  )}
                 </g>
               );
-            }))}
+            })}
 
-            {/* 영향 경로 노드: 누르면 그 가지 강조(다시 누르면 해제) */}
-            {placed.map((p, i) => {
-              const lines = labelLines(p.stage.label);
+            {/* 회사 노드 */}
+            {nodes.map((n, i) => {
+              const { c } = n;
+              const at = shown ? n.pos : { x: 0, y: 0 };
+              const style = { transform: `translate(${at.x}px, ${at.y}px) scale(${shown ? 1 : 0.2})`, opacity: shown ? dim(n) : 0,
+                transitionDelay: shown ? `${200 + i * 80}ms` : "0ms" };
+              if (n.region === "ref") {
+                const nm = c.name.length > 6 ? `${c.name.slice(0, 5)}…` : c.name;
+                return (
+                  <g key={c.code} className="lm-node" style={style} aria-hidden>
+                    <title>{`${c.name} · 업종 참고(근거로 확인된 연결 아님)`}</title>
+                    <circle r={n.r} fill="#1e293b" stroke={GRAY} strokeOpacity={0.7} strokeWidth={1.6} strokeDasharray="3 3" />
+                    <text textAnchor="middle" dy="0.36em" fontSize={14} fontWeight={800} fill="#cbd5e1">참고</text>
+                    <text textAnchor="middle" y={n.r + 16} fontSize={15} fontWeight={700} fill="#94a3b8" className="lm-label">{nm}</text>
+                  </g>
+                );
+              }
+              const lines = nameLines(c.name);
+              const glow = moveGlow(c);
+              const on = picked === c.code;
+              const tag = dirTag(c.direction);
+              const nameY = lines.length === 1 ? [-7] : [-17, 4];
               return (
-                <g key={p.stage.key} className="lm-node" role="button" tabIndex={0} aria-pressed={focus === p.stage.key}
-                  aria-label={`영향 경로 ${p.stage.label} ${focus === p.stage.key ? "강조 해제" : "강조"}`}
-                  onClick={tap(() => toggleFocus(p.stage.key))} onKeyDown={press(() => toggleFocus(p.stage.key))}
-                  style={{ transform: `translate(${shown ? p.pos.x : 0}px, ${shown ? p.pos.y : 0}px) scale(${shown ? (focus === p.stage.key ? 1.12 : 1) : 0.3})`,
-                    opacity: shown ? dim(p.stage.key) : 0, transitionDelay: shown ? `${80 + i * 90}ms` : "0ms", cursor: "pointer" }}>
-                  <circle r={34} fill={p.color} opacity={focus === p.stage.key ? 0.35 : 0.16} />
-                  <circle r={29} fill="#0b1a36" stroke={p.color} strokeWidth={2.6} />
-                  {lines.map((t, n) => (
-                    <text key={n} textAnchor="middle" y={(n - (lines.length - 1) / 2) * 15} dy="0.36em" fontSize={13.5} fontWeight={900} fill={p.color}>{t}</text>
+                <g key={c.code} className="lm-node" role="button" tabIndex={0}
+                  aria-label={`${c.name}${c.party ? ", 뉴스 당사자" : ""}, ${n.stage?.label ?? ""}, ${dirName(c.direction)}${glow ? `, 시장보다 ${glow === UP ? "올랐어요" : "내렸어요"}` : ""}. 누르면 아래 목록에서 펼쳐요`}
+                  onClick={tap(() => n.stage && onPick(c, n.stage, n.color))} onKeyDown={press(() => n.stage && onPick(c, n.stage, n.color))}
+                  style={{ ...style, cursor: "pointer" }}>
+                  {/* 실제 등락: 바깥 테두리 빛(빨강 오름·파랑 내림). 크게 움직였으면(±3%p) 숨쉬듯 */}
+                  {glow && <circle r={n.r + 12} fill="none" stroke={glow} strokeWidth={8} strokeOpacity={0.22} className={c.moved ? "lm-pulse" : undefined} />}
+                  {glow && <circle r={n.r + 8} fill="none" stroke={glow} strokeWidth={3.4} />}
+                  {c.party && <circle r={n.r + 3.5} fill="none" stroke="#f8fafc" strokeOpacity={0.85} strokeWidth={1.6} />}
+                  <circle r={n.r} fill="#10244a" stroke={on ? "#ffffff" : "#94a3b8"} strokeOpacity={on ? 1 : 0.65} strokeWidth={on ? 3.6 : 2} />
+                  {lines.map((t, k) => (
+                    <text key={k} textAnchor="middle" y={nameY[k]} dy="0.36em" fontSize={19.5} fontWeight={800} fill="#f8fafc">{t}</text>
                   ))}
+                  <text textAnchor="middle" y={lines.length === 1 ? 20 : 26} dy="0.36em" fontSize={15} fontWeight={900} fill={dirColor(c.direction)}>{tag}</text>
                 </g>
               );
             })}
@@ -257,8 +317,8 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
             {/* 빛나는 중앙 = 뉴스. 누르면 강조 해제 */}
             <g className="lm-node" role="button" tabIndex={0} aria-label={`${center}, 강조 해제`} onClick={tap(() => setFocus(null))}
               onKeyDown={press(() => setFocus(null))} style={{ cursor: "pointer" }}>
-              <circle r={84} fill="url(#lm-halo)" className="lm-glow" pointerEvents="none" />
-              <circle r={46} fill="url(#lm-core)" />
+              <circle r={78} fill="url(#lm-halo)" className="lm-glow" pointerEvents="none" />
+              <circle r={R_CENTER} fill="url(#lm-core)" />
               {centerLines.map((t, n) => (
                 <text key={n} textAnchor="middle" y={(n - (centerLines.length - 1) / 2) * 19} dy="0.36em" fontSize={centerSize} fontWeight={900} fill="#0b1a36">{t}</text>
               ))}
@@ -266,9 +326,28 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
           </g>
         </svg>
       </div>
-      <div className="mt-1 flex items-center justify-between gap-2 px-4 sm:px-0">
-        <p className="text-[14px] font-semibold text-slate-200">{focus ? "같은 경로를 다시 누르면 강조가 풀려요" : "영향 경로를 누르면 그 가지를 강조해요"}</p>
-        <div className="flex gap-1.5">
+
+      {/* 범례 한 줄: 테두리 빛(실제 등락) · 점선(업종 참고) · 두 겹(뉴스 당사자) */}
+      <p className="mt-1.5 flex items-center justify-center gap-x-2.5 whitespace-nowrap px-4 text-[14px] font-bold text-slate-200 sm:px-0" aria-label="범례">
+        <span className="flex items-center gap-1">테두리 빛<span className="size-3 rounded-full" style={{ boxShadow: `0 0 0 2px ${UP}` }} />오름
+          <span className="ml-0.5 size-3 rounded-full" style={{ boxShadow: `0 0 0 2px ${DOWN}` }} />내림</span>
+        <span className="flex items-center gap-1"><span className="size-3 rounded-full border border-dashed border-slate-300" />참고</span>
+        <span className="flex items-center gap-1"><span className="size-3 rounded-full border border-white outline outline-1 outline-offset-1 outline-white/70" />당사자</span>
+      </p>
+
+      {/* 영향 경로(선 색): 누르면 그 경로만 강조 */}
+      <div className="mt-2 flex flex-wrap gap-1.5 px-4 sm:px-0" aria-label="영향 경로">
+        {map.stages.map((s, i) => (
+          <button key={s.key} type="button" aria-pressed={focus === s.key} onClick={() => toggleFocus(s.key)}
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[14px] font-extrabold ring-1 transition ${focus === s.key ? "bg-white/15 ring-white/60" : "bg-white/[0.05] ring-white/15"}`}
+            style={{ color: pathColor(i) }}>
+            <span className="h-[3px] w-4 rounded-full" style={{ background: pathColor(i) }} />{s.label}
+          </button>
+        ))}
+      </div>
+      <div className="mt-1.5 flex items-center justify-between gap-2 px-4 sm:px-0">
+        <p className="text-[14px] font-semibold text-slate-300">{focus ? "같은 경로를 다시 누르면 강조가 풀려요" : "선 색 = 영향 경로 · 누르면 그 경로만 강조"}</p>
+        <div className="flex shrink-0 gap-1.5">
           {[["+", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k * 1.4, v)), "확대"], ["−", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k / 1.4, v)), "축소"],
             ["⟲", () => setView({ k: 1, x: 0, y: 0 }), "원래 크기"]].map(([label, fn, name]) => (
             <button key={name as string} type="button" aria-label={name as string} onClick={fn as () => void}
