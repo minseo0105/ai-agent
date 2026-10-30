@@ -669,8 +669,7 @@ export default function LifeFinder() {
   const total = data.topics.length;
   const topics = view.kind === "topics";
   const issue = topics ? { n: active + 1, color: accent } : undefined;
-  const hasVs = !!item?.map.stages.some((s) => s.companies.some((c) => c.vs_market != null));
-  const hasUnk = !!item?.map.stages.some((s) => s.companies.some((c) => c.direction === "unk"));
+  const hasParty = !!item?.map.stages.some((s) => s.companies.some((c) => c.party));
   const arrows = (size: string) => (
     <div className="flex shrink-0 gap-1.5">
       {([["‹", -1, "이전 이슈"], ["›", 1, "다음 이슈"]] as const).map(([t, d, name]) => (
@@ -760,14 +759,8 @@ export default function LifeFinder() {
                         ))}
                       </ul>
                       <p>
-                        <span className="font-extrabold" style={{ color: POS }}>＋ 긍정 영향 가능</span> · <span className="font-extrabold" style={{ color: NEG }}>－ 부정 영향 가능</span>
-                        {hasUnk && <> · <span className="font-extrabold" style={{ color: GRAY }}>? 방향 불확실(영향 가능)</span></>}(AI 해석) ·
-                        버블이 클수록 연관이 커요 · {hasVs ? (
-                          <><b className="text-white">큰 숫자 = 시장보다(%p)</b>, 작은 글씨 = 주가 등락률 · 회색 = 시장과 비슷해요(±2%p 이내) ·{" "}
-                            <b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(시장보다 ±3%p 이상)</>
-                        ) : (
-                          <><b className="text-white">빛나는 테두리 = 실제 등락 큼</b>(주가 ±5% 이상)</>
-                        )} · {label || "실제 등락률"}
+                        <b style={{ color: POS }}>초록</b> = 도움 받을 수 있는 회사 · <b style={{ color: NEG }}>주황</b> = 부담 받을 수 있는 회사 ·{" "}
+                        <b className="text-amber-100">빛나는 테두리</b> = 실제로 크게 움직였어요{hasParty && <> · <b className="text-white">두 겹 테두리</b> = 뉴스 당사자</>}
                       </p>
                     </div>
                   </>

@@ -4,12 +4,12 @@
 // 2단계 = 영향을 받을 수 있는 회사(경로당 2곳). 노드가 최대 13개라 라이브러리 없이 SVG로 그린다
 // (react-flow·d3는 수십~백 KB, 휴대폰에서 이 크기에는 과함). 애니메이션은 transform·opacity·stroke-dashoffset만 써서 GPU로.
 // 처음부터 모두 펼친 채로 시작한다(가지가 자라나는 연출만). 경로를 누르면 그 가지를 강조한다.
-// 글자: 휴대폰(지도 폭 약 358px, 배율 약 0.85)에서 회사 이름 13px 이상이 되도록 SVG 단위 16.
-// 버블 안에 이름(1~2줄) → 작은 '시장보다' → 큰 글씨 ▲2.1%p → 작은 '주가 ▲1.0%'(지수를 모르면 '주가'와 등락률만,
-// 장 마감 뒤 뉴스라 다음 거래일 값이 없으면 '반응 대기 중'). 시장보다 ±2%p 이내는 회색(시장과 비슷해요).
-// 오른쪽에 AI 해석 방향(＋ 긍정 가능 / － 부정 가능 / ? 방향 불확실), 시장 대비 ±3%p 이상이면 빛나는 테두리와 위에 '실제 등락'.
-// 버블 반지름 47~51(글씨 4단이 휴대폰 390px에서 넘치지 않게): 회사가 바깥 고리(154)에 있어 가장 큰 버블+빛(51+5, 경로에 혼자면 160에)도
-// 화면(220) 안, 같은 경로 두 회사(±23°)·이웃 경로 회사와 겹치지 않는다.
+// 글자: 휴대폰(지도 폭 약 358px, 배율 약 0.81)에서 회사 이름 14px 이상이 되도록 SVG 단위 18.
+// 회사 원 안에는 회사명만(숫자·+/− 배지·'실제 등락' 라벨 없음 — 숫자는 아래 회사 목록에). 원 색 = AI 해석 방향:
+// 도움 가능(초록)/부담 가능(주황)/영향 가능(회색). 시장 대비 ±3%p 이상 움직인 회사는 빛나는 테두리, 뉴스 당사자는 두 겹 테두리.
+// 회사 원을 누르면 아래 목록의 그 회사로 스크롤하고 펼친다(onPick).
+// 원 반지름 43~45: 회사가 바깥 고리(154)에 있어 가장 큰 원+빛(45+10, 경로에 혼자면 160에)도 화면(220) 안,
+// 같은 경로 두 회사(±23°)·이웃 경로 회사와 겹치지 않는다.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { type LifeCompany, type LifeMap, type LifeStage } from "@/lib/stock";
 
@@ -20,7 +20,8 @@ export const UP = "#ff6b81";   // 상승 빨강(어두운 배경용)
 export const DOWN = "#5aa9ff"; // 하락 파랑
 export const POS = "#34d399";  // AI 해석: 긍정 영향 가능
 export const NEG = "#fb923c";  // AI 해석: 부정 영향 가능
-const BUBBLE = { 강: 51, 중: 49, 약: 47 } as const;
+const BUBBLE = { 강: 45, 중: 44, 약: 43 } as const; // 두 줄 이름(4자 × 18)이 원 안에 들어가게
+const GLOW = "#fde68a"; // 실제로 크게 움직인 회사의 빛나는 테두리
 const ANGLES: Record<number, number[]> = { 1: [0], 2: [180, 0], 3: [-90, 30, 150], 4: [-135, -45, 45, 135] };
 const R_STAGE = 76;
 const R_COMPANY = 154;
@@ -41,22 +42,11 @@ export const similar = (vs?: number | null) => vs != null && Math.abs(vs) <= SIM
 export const vsColor = (vs?: number | null) => (similar(vs) ? GRAY : rateColor(vs));
 /** 시장보다(%p): ▲/▼와 %p. 10 이상은 정수. */
 export const ppText = (v?: number | null) => (v == null ? "—" : `${v > 0 ? "▲" : v < 0 ? "▼" : ""}${Math.abs(v).toFixed(Math.abs(v) >= 9.95 ? 0 : 1)}%p`);
-/** 시장보다가 있으면 그것, 없으면 주가 등락률로 색을 정한다(빛나는 테두리·큰 숫자). */
-export const moveOf = (c: LifeCompany) => (c.vs_market != null ? c.vs_market : c.rate);
-export const dirName = (d?: LifeCompany["direction"]) => (d === "neg" ? "부정 영향 가능" : d === "unk" ? "방향 불확실 · 영향 가능" : "긍정 영향 가능");
+export const dirName = (d?: LifeCompany["direction"]) => (d === "neg" ? "부담 받을 수 있는 회사" : d === "unk" ? "영향 받을 수 있는 회사" : "도움 받을 수 있는 회사");
+/** AI 해석 방향 색: 도움 가능 초록 · 부담 가능 주황 · 영향 가능(방향 불확실) 회색 */
+export const dirColor = (d?: LifeCompany["direction"]) => (d === "neg" ? NEG : d === "unk" ? GRAY : POS);
 
-type Row = { t: string; size: number; weight: number; fill: string; h: number };
-/** 버블 안 글씨 줄(위에서 아래로). 줄 높이를 더해 가운데 맞춘다. */
-function bubbleRows(c: LifeCompany): Row[] {
-  const name = nameLines(c.name).map((t) => ({ t, size: 16, weight: 800, fill: "#f8fafc", h: 16 }));
-  const small = (t: string, fill = GRAY) => ({ t, size: 11, weight: 700, fill, h: 12 });
-  if (c.waiting) return [...name, { ...small("반응"), size: 12.5, h: 14 }, { ...small("대기 중"), size: 12.5, h: 14 }];
-  if (c.vs_market == null) return [...name, small("주가"), { t: rateText(c.rate), size: 16, weight: 900, fill: rateColor(c.rate), h: 16 }];
-  return [...name, small("시장보다", "#e2e8f0"), { t: ppText(c.vs_market), size: 16, weight: 900, fill: vsColor(c.vs_market), h: 16 },
-    small(`주가 ${rateText(c.rate)}`)];
-}
-
-/** 버블 안 이름: 4자 이하는 한 줄, 그보다 길면 두 줄(최대 4+4자, 넘치면 …). */
+/** 원 안 이름: 4자 이하는 한 줄, 그보다 길면 두 줄(최대 4+4자, 넘치면 …). */
 function nameLines(name: string): string[] {
   if (name.length <= 4) return [name];
   const s = name.length > 8 ? `${name.slice(0, 7)}…` : name;
@@ -193,7 +183,7 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
         className="lifemap-canvas relative mx-auto aspect-square w-full max-w-[600px] select-none overflow-hidden rounded-3xl"
         style={{ touchAction: view.k > 1 ? "none" : "pan-y" }}>
         <svg viewBox={`${-VIEW / 2} ${-VIEW / 2} ${VIEW} ${VIEW}`} className="size-full" role="img"
-          aria-label={`${center} 관련 회사 지도: ${map.stages.map((s) => `${s.label} — ${s.companies.map((c) => `${c.name} ${dirName(c.direction)}, ${c.waiting ? "반응 대기 중" : `${c.vs_market != null ? `시장보다 ${ppText(c.vs_market)}, ` : ""}주가 ${rateText(c.rate)}`}`).join(", ")}`).join(" / ")}`}>
+          aria-label={`${center} 관련 회사 지도: ${map.stages.map((s) => `${s.label} — ${s.companies.map((c) => `${c.name} ${dirName(c.direction)}`).join(", ")}`).join(" / ")}`}>
           <defs>
             <radialGradient id="lm-core" cx="50%" cy="45%" r="60%">
               <stop offset="0%" stopColor="#ffffff" />
@@ -222,37 +212,26 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
               </g>
             ))}
 
-            {/* 회사 노드 */}
+            {/* 회사 노드: 이름만. 색 = AI 해석 방향, 빛나는 테두리 = 실제로 크게 움직임, 두 겹 테두리 = 뉴스 당사자 */}
             {placed.map((p, i) => p.companies.map(({ c, pos, r }, j) => {
-              const rows = bubbleRows(c);
-              const total = rows.reduce((n, x) => n + x.h, 0);
-              const color = rateColor(moveOf(c));
+              const lines = nameLines(c.name);
+              const color = dirColor(c.direction);
               const at = shown ? pos : p.pos;
-              const neg = c.direction === "neg", unk = c.direction === "unk";
-              const badge = { x: r + 3, y: 0 }; // 오른쪽 가장자리(이름·등락률 글자와 겹치지 않게)
+              const on = picked === c.code;
               return (
                 <g key={c.code} className="lm-node" role="button" tabIndex={0}
-                  aria-label={`${c.name}, ${p.stage.label}, ${dirName(c.direction)}, 연관도 ${c.relevance}, ${c.moved ? "실제 등락 큼, " : ""}${c.waiting ? "반응 대기 중" : `${c.vs_market != null ? `시장보다 ${ppText(c.vs_market)}, ` : ""}주가 ${rateText(c.rate)}`}`}
+                  aria-label={`${c.name}${c.party ? ", 뉴스 당사자" : ""}, ${p.stage.label}, ${dirName(c.direction)}${c.moved ? ", 실제로 크게 움직였어요" : ""}. 누르면 아래 목록에서 펼쳐요`}
                   onClick={tap(() => onPick(c, p.stage, p.color))} onKeyDown={press(() => onPick(c, p.stage, p.color))}
                   style={{ transform: `translate(${at.x}px, ${at.y}px) scale(${shown ? 1 : 0.2})`, opacity: shown ? dim(p.stage.key) : 0,
                     transitionDelay: shown ? `${480 + i * 90 + j * 70}ms` : "0ms", cursor: "pointer" }}>
-                  {c.moved && <circle r={r + 5} fill="none" stroke={color} strokeWidth={2.5} className="lm-pulse" />}
-                  <circle r={r + 6} fill={p.color} opacity={picked === c.code ? 0.4 : 0.14} />
-                  <circle r={r} fill="#0b1a36" stroke={c.moved ? color : p.color} strokeWidth={c.moved || picked === c.code ? 3.2 : 2} />
-                  {rows.map((x, n) => (
-                    <text key={n} className="lm-bubble-text" textAnchor="middle" y={-total / 2 + rows.slice(0, n).reduce((a, b) => a + b.h, 0) + x.h / 2}
-                      dy="0.36em" fontSize={x.size} fontWeight={x.weight} fill={x.fill}>{x.t}</text>
+                  {c.moved && <circle r={r + (c.party ? 10 : 6)} fill="none" stroke={GLOW} strokeWidth={3} className="lm-pulse" />}
+                  {c.party && <circle r={r + 5} fill="none" stroke={color} strokeWidth={2} />}
+                  <circle r={r} fill="#0b1a36" />
+                  <circle r={r} fill={color} fillOpacity={on ? 0.42 : 0.24} stroke={color} strokeWidth={on ? 3.6 : 2.4} />
+                  {lines.map((t, n) => (
+                    <text key={n} className="lm-bubble-text" textAnchor="middle" y={(n - (lines.length - 1) / 2) * 19}
+                      dy="0.36em" fontSize={18} fontWeight={800} fill="#f8fafc">{t}</text>
                   ))}
-                  <g transform={`translate(${badge.x} ${badge.y})`}>
-                    <circle r={11} fill={neg ? NEG : unk ? GRAY : POS} stroke="#071226" strokeWidth={2} />
-                    <text textAnchor="middle" dy="0.36em" fontSize={16} fontWeight={900} fill="#071226">{neg ? "−" : unk ? "?" : "+"}</text>
-                  </g>
-                  {c.moved && (
-                    <g transform={`translate(0 ${Math.max(-r - 4, 12 - VIEW / 2 - pos.y)})`}>
-                      <rect x={-34} y={-11} width={68} height={22} rx={11} fill={color} />
-                      <text textAnchor="middle" dy="0.36em" fontSize={13.5} fontWeight={900} fill="#071226">실제 등락</text>
-                    </g>
-                  )}
                 </g>
               );
             }))}
