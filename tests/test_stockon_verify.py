@@ -344,7 +344,16 @@ class EvidenceBoostTest(VerifyBase):
         ex = verify.biz_excerpt(sec, {"발권"})
         self.assertIn("공항 발권 시스템", ex)
         self.assertTrue(ex.startswith("1. 사업의 개요"))
-        self.assertEqual(verify.stems("해킹으로 개인정보가 유출 서비스 전기/전자"), {"해킹", "개인정보", "유출"})
+        self.assertEqual(verify.stems("해킹으로 개인정보가 유출 서비스 전기/전자 AI"), {"해킹", "개인정보", "유출"})  # 두 글자 영문 제외
+        # 10-31 실제 사례(HD현대일렉트릭): 'II. 사업의 내용 중 5. 위험관리 ~ 참고' 안내 문장이 본문보다 길게 잡히던 것
+        doc2 = ("II. 사업의 내용 1. 사업의 개요 당사는 변압기·차단기를 만든다. 전력기기 수요 증가 III. 재무에 관한 사항 "
+                "자세한 내용은 II. 사업의 내용 중 5. 위험관리 및 파생거래를 참고 " + "표 " * 400)
+        self.assertTrue(verify.business_section(doc2).strip().startswith("1. 사업의 개요"))
+        terms = {"전력난", "데이터센터"}
+        self.assertTrue(verify.term_hit("전력변환 및 에너지저장 시장 성장", terms))  # '전력난'·'전력변환' 같은 복합어 앞말
+        self.assertTrue(verify.term_hit("데이터센터 건설 확대", terms))
+        self.assertFalse(verify.term_hit("AI 시장 성장 전망", terms))  # 두 글자 영문·흔한 말만으로는 안 된다
+        self.assertFalse(verify.term_hit("전기차 부품", {"전력난"}))  # 앞 한 글자만 같음
 
     def test_second_company_search_uses_core_words_and_ref(self):
         t = {"name": "인천공항 발권 장애", "query": "인천공항 체크인 발권 장애"}

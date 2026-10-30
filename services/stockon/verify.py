@@ -323,18 +323,42 @@ def stems(text: str) -> set[str]:
     """두 글자 이상 말의 줄기(조사를 뗀 것). 흔한 말·업종 분류 말은 뺀다."""
     out = {_stem(w) for w in WORD.findall(text or "")}
     industry = {_stem(w) for x in lifemap.KRX_INDUSTRIES for w in WORD.findall(x)}
-    return {w for w in out if len(w) >= 2 and w not in BIZ_STOP and w not in industry and w not in lifemap.GENERIC_TOKENS}
+    # 'AI'·'IT'처럼 두 글자 영문은 거의 모든 사업보고서에 나와서 사건 말로 치지 않는다
+    return {w for w in out if len(w) >= 2 and not re.fullmatch(r"[0-9A-Za-z]{1,2}", w) and w not in BIZ_STOP and w not in industry
+            and w not in lifemap.GENERIC_TOKENS}
+
+
+def _hangul_prefix(a: str, b: str) -> int:
+    n = 0
+    for x, y in zip(a, b):
+        if x != y or not "가" <= x <= "힣":
+            break
+        n += 1
+    return n
+
+
+def term_hit(quote: str, terms: set[str]) -> bool:
+    """근거 문장에 사건 말이 있나: 같은 말, 사건 말을 품은 말('전력' ⊂ '전력수요'), 앞 두 글자 이상이 같은 한글 복합어
+    ('전력난'·'전력변환')."""
+    for w in stems(quote):
+        for t in terms:
+            if t in w or (min(len(w), len(t)) >= 3 and _hangul_prefix(w, t) >= 2):
+                return True
+    return False
 
 
 def business_section(text: str) -> str:
-    """사업보고서 원문에서 'II. 사업의 내용' ~ 'III. 재무에 관한 사항'(목차가 아닌 본문 = 가장 긴 구간)."""
-    best = ""
+    """사업보고서 원문에서 'II. 사업의 내용' ~ 'III. 재무에 관한 사항'. 본문은 '1. 사업의 개요'로 시작하는 구간
+    (목차·'II. 사업의 내용 중 ~ 참고' 같은 안내 문장은 건너뛴다). 그런 구간이 없으면 가장 긴 구간."""
+    best, body = "", ""
     for m in re.finditer(r"I{2}\.\s*사업의\s*내용", text):
         end = re.search(r"I{3}\.\s*재무에\s*관한\s*사항", text[m.end():])
         seg = text[m.end(): m.end() + end.start()] if end else text[m.end(): m.end() + BIZ_SECTION_MAX]
+        if re.match(r"\s*1\.\s*사업의\s*개요", seg) and len(seg) > len(body):
+            body = seg
         if len(seg) > len(best):
             best = seg
-    return best[:BIZ_SECTION_MAX]
+    return (body or best)[:BIZ_SECTION_MAX]
 
 
 def biz_excerpt(section: str, terms: set[str], width: int = 110, limit: int = 3) -> str:
@@ -369,7 +393,7 @@ def biz_evidence(corpus: Corpus, company: dict, terms: set[str], http=requests.g
 
 
 def issue_stems(t: dict, article_text: str, context_titles: list[str]) -> set[str]:
-    """사건 말: 이슈 이름·검색어·분야 이름의 말 + 이슈 기사 제목 두 건 이상에 나온 말(줄기). 사업 근거 문장에 이 중 하나가 있어야 한다."""
+    """사건 말: 이슈 이름·검색어·분야 이름의 말 + 이 사건 기사(제목·요약) 두 건 이상에 나온 말(줄기). 사업 근거 문장에 이 중 하나가 있어야 한다."""
     words = stems(" ".join(lifemap._event_words(t)))
     counts: dict[str, int] = {}
     for title in context_titles:
@@ -510,7 +534,7 @@ def check_claims(claim: dict, names: list[str], party_names: list[str], event_wo
         item = corpus.items[n - 1]
         text = f"{item['title']} {item['text']}"
         if biz:
-            if item["kind"] == "biz" and item.get("filer") == code and quote_found(quote, item["text"]) and stems(quote) & (terms or set()):
+            if item["kind"] == "biz" and item.get("filer") == code and quote_found(quote, item["text"]) and term_hit(quote, terms or set()):
                 ok.append((item, quote))
             continue
         if item["kind"] == "biz":
@@ -569,7 +593,7 @@ def collect(t: dict, m: dict, context: list[dict], ref: datetime, http=None) -> 
             dart_evidence(corpus, c, [n for n, _ in pre_parties if n not in own], c.get("relation") in ("공급사", "고객사"),
                           docs_left, http or requests.get)
     # 사업 근거: 당사자가 아닌 후보의 사업보고서 '사업의 내용'에서 사건 말·영향 경로 말 근처
-    terms = issue_stems(t, article_text, [a.get("title", "") for a in context])
+    terms = issue_stems(t, article_text, [f"{a.get('title', '')} {a.get('snippet') or ''}" for a in context])
     for c in [c for c in rows if not c.get("party") and c["code"] not in named_in_article][:BIZ_COMPANIES]:
         try:
             biz_evidence(corpus, c, terms | stems(f"{c.get('reason', '')} {c.get('path', '')}"), http or requests.get)
@@ -601,7 +625,8 @@ def classify(t: dict, m: dict, corpus: Corpus, raw: dict, pre_parties: list[tupl
     party_codes = {p["code"]: p for p in listed}
     party_names = [n for n, _ in pre_parties] + [o["name"] for o in others] + [p["name"] for p in listed]
     event_words = sorted(lifemap._event_words(t), key=len, reverse=True)
-    terms = issue_stems(t, article_text, [i["title"] for i in corpus.items if i["kind"] in ("rss", "news")][:12])
+    terms = issue_stems(t, article_text, [f"{i['title']} {i['text']}" for i in corpus.items if i["kind"] in ("rss", "news")
+                                          and tied(f"{i['title']} {i['text']}", party_names, event_words)])
     claims = {}
     for cl in raw.get("companies") or []:
         code = lifemap.match_company(str(cl.get("name") or ""), index)
