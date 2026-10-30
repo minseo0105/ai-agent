@@ -1,5 +1,23 @@
 # 시연 준비: 동시 접속·부하·접속 방법·일정 (2026-11-17 은행 임원 강의)
 
+## 시연 당일 접속 주소 (도메인 `wai-labs.com`, 2026-10-30 연결)
+
+| 용도 | 주소 |
+|---|---|
+| **AI LAB 메인 (청중 QR)** | **https://wai-labs.com** |
+| MONEY:ON | https://wai-labs.com/moneyon/ |
+| STOCK:ON | https://wai-labs.com/stock |
+| ZIP:ON | https://wai-labs.com/realestate |
+| 예비 주소 (도메인이 막히거나 DNS 문제일 때) | https://140-245-88-198.sslip.io — 같은 서버·같은 데이터. `/moneyon/`, `/stock`, `/realestate` 그대로 |
+
+- `www.wai-labs.com`은 `wai-labs.com`으로 308(경로·쿼리 유지). `http://`는 `https://`로 308.
+- DNS: Cloudflare, A `@`·`www` → `140.245.88.198`, DNS only(프록시 끔). 인증서 Let's Encrypt, 만료 2027-01-28(Caddy 자동 갱신).
+- QR(오류 정정 H, 1024px + 아래 짧은 주소 글자, 디코딩 확인): 바탕화면 `QR_AI_LAB_wai-labs.png`(https://wai-labs.com/), `QR_MONEYON_wai-labs.png`(…/moneyon/), `QR_STOCKON_wai-labs.png`(…/stock). 예비 슬라이드용 sslip.io QR은 아직 없음.
+- 예비 주소로 들어오면 홈의 MONEY:ON 카드는 `MONEYON_URL`(wai-labs.com) 한 곳을 따르므로 **도메인이 막힌 상황에서는 `https://140-245-88-198.sslip.io/moneyon/`을 직접 연다.**
+- 네이버 지도(ZIP:ON): 네이버 클라우드 콘솔 → Maps Application → Web 서비스 URL에 `https://wai-labs.com` 추가(사용자 직접, sslip.io는 남김). 등록 전에는 새 도메인에서 ZIP:ON 지도 인증이 실패할 수 있다.
+- 적용(10-30 16:31~16:47 KST): 서버 `.env`·`.env.docker`의 `SITE_ADDRESS=wai-labs.com, www.wai-labs.com, 140-245-88-198.sslip.io`, `NAVER_WEB_SERVICE_URL=https://wai-labs.com`(PC `.env.docker`도 같게). `caddy adapt` 검증 → caddy만 재생성(컨테이너 안 옛 Caddyfile 문제도 해소). 커밋 `f28f72b` → `ailab`·`moneyon`만 `--no-deps` 재생성. `stockon-collector` 시작 시각 그대로(10-30 11:19). ailab 이미지는 main에서 `services/stockon/lifemap.py`만 배포돼 있던 `3cd08c9` 판으로 둔 것(**`06572ca` 토큰 상한 수정은 아직 미배포**).
+- 공개 주소 점검(10-30 16:50, 두 주소 모두): `/`·`/moneyon/`·`/stock`·`/realestate` 200, `/api/ready` ready, 머니온 공유 미리보기 `og:url`·`og:image` = `https://wai-labs.com/moneyon/…`(이미지 200), 홈 카드 머니온 링크 `https://wai-labs.com/moneyon`, 머니온 AI 꿀벌 편지 SSE 첫 글자 1.0~1.5초·조각 43~48개(`source: ai`, Haiku), STOCK:ON `/api/stock/live` 200(장 마감 뒤라 `closed` — 장중 갱신은 다음 장중에 확인), `/api/stock/lifemap/pulse` 200. 점검용 체험 2개는 지움(체험 통장 200 유지).
+
 ## 뉴스 속 숨은 종목 — 핵심 목적 (모든 판단의 기준, 2026-10-30)
 
 STOCK:ON의 핵심은 **'일상 뉴스를 보다가 → 그 뉴스와 연결된 상장사를 AI가 찾아내는 것'** 이다.
@@ -350,7 +368,7 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 
 | 항목 | 권장 |
 |---|---|
-| 주소 | **짧은 도메인 연결 권장**(예: `ailab-demo.kr` 같은 것, 연 2만 원 안팎). 지금 `140-245-88-198.sslip.io`는 길고, 일부 회사 Wi-Fi·보안 필터가 동적 DNS 주소를 막을 수 있다. 도메인 A레코드 → `140.245.88.198`, 서버 `.env`의 `SITE_ADDRESS` 변경 → Caddy가 인증서 자동 발급. sslip.io 주소는 예비로 그대로 동작 |
+| 주소 | **https://wai-labs.com** (10-30 연결, 맨 위 '시연 당일 접속 주소'). `140-245-88-198.sslip.io`는 예비로 그대로 동작 |
 | 도메인 바꿀 때 같이 할 것 | 네이버 지도 콘솔 Web 서비스 URL에 새 도메인 추가(ZIP:ON 지도), `NAVER_WEB_SERVICE_URL`, `web/src/lib/services.ts`의 `MONEYON_URL`, STOCK:ON `ORACLE_URL` 한 줄씩 |
 | QR 코드 | 시연 첫 화면 주소 1개(예: `https://도메인/demo` — AI LAB·STOCK:ON·MONEY:ON 큰 버튼 3개짜리 안내 페이지)를 QR로. 오류 정정 H, 슬라이드에 크게 + 인쇄물. QR 아래 짧은 주소도 글자로 |
 | 접속 코드 | **필요 없음.** 지금 사이트 공개 범위 '모두 공개', STOCK:ON·MONEY:ON 공개. 관리자 화면은 계속 관리자만 |
@@ -360,7 +378,8 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 
 ### 5-1. 도메인을 받으면 바꿀 것 (체크리스트)
 
-도메인 예: `새도메인` (사용자가 구매 후 알려 줌). sslip.io 주소는 **예비로 계속 동작**하게 둔다(Caddy에 두 주소 모두).
+도메인: **`wai-labs.com`** (10-30 연결). sslip.io 주소는 **예비로 계속 동작**(Caddy에 두 주소 모두).
+10-30 완료: 1·2·3·5·6·7·8(QR은 `/demo` 대신 메인·머니온·스탁온 3장)·10. **남은 것: 4 네이버 콘솔 등록(사용자), 9 슬라이드·인쇄물 QR 교체.** `/demo` 안내 페이지는 만들지 않음.
 
 | 순서 | 할 일 | 어디서 | 확인 |
 |---|---|---|---|
@@ -397,7 +416,7 @@ AI LAB(`ailab` 컨테이너)과 머니온(`moneyon` 컨테이너)은 프로세�
 **서버·서비스 (09:00)**
 - [ ] `ssh ailab` → `docker compose ps`: ailab · moneyon · ailab-caddy · stockon-collector 모두 `running (healthy)`, 재시작 횟수 0
 - [ ] 디스크·메모리 여유(`df -h`, `free -h`), `docker stats` CPU 평상시
-- [ ] `https://도메인/api/ready` = ready, 인증서 만료일 여유
+- [ ] `https://wai-labs.com/api/ready` = ready, 인증서 만료일 여유(2027-01-28), 예비 `https://140-245-88-198.sslip.io/api/ready`도 ready
 - [ ] 관리자 `/admin`: 사이트 '모두 공개', 시연 서비스 공개, 미사용 서비스 숨김, 공지 배너 꺼짐
 - [ ] 관리자 `/admin/stockon`: 수집 상태 모두 성공, AI 상태 '정상', 기준일 = 11/16, 팀 관심 종목 확인, 모의 키 만료일 11/27
 - [ ] 머니온 체험 통장(100명 기준): `docker exec moneyon python -c "from api.moneyon_trial import trials; print(trials().pooled())"` = **200**(최소 150). 모자라면 1~2분 기다렸다 다시(요청이 없을 때 채움, 월요일이 지나면 지난주 것은 지우고 새로 채움). 0이어도 체험은 되지만(그 자리 생성) 첫 화면이 느려진다
