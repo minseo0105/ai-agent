@@ -19,8 +19,8 @@ import MindMap, { GRAY, NEG, POS, dirColor, pathColor, ppText, rateColor, rateTe
 import { Flash } from "@/components/stock/LiveMarket";
 import { WhyBody } from "@/components/stock/StockOn";
 import {
-  lifeApi, stockApi, type LifeArticle, type LifeCompany, type LifeItem, type LifeMap, type LifeMarket, type LifeOverview, type LifePulse, type LifeStage,
-  type LifeWordResult, type Stock, type Why,
+  lifeApi, stockApi, type LifeArticle, type LifeCompany, type LifeGrade, type LifeItem, type LifeMap, type LifeMarket, type LifeOverview, type LifePulse,
+  type LifeSource, type LifeStage, type LifeWordResult, type Stock, type Why,
 } from "@/lib/stock";
 
 // 이슈(섹터)별 강조색. 상승 빨강과 겹치지 않게 빨강 계열은 쓰지 않는다.
@@ -218,13 +218,35 @@ function MoodBand({ m }: { m: LifeMarket }) {
   );
 }
 
-/** 회사 목록 묶음(뉴스 당사자 → 도움 → 부담 → 방향 불확실). 묶음 안에서는 1차 연결 → 2차 연결, 연관도 순. 이슈당 최대 6곳. */
+/** 회사 목록 묶음(검증 전: 뉴스 당사자 → 도움 → 부담 → 방향 불확실). 묶음 안에서는 1차 연결 → 2차 연결, 연관도 순. 이슈당 최대 6곳. */
 const GROUPS: { key: string; title: string; test: (c: LifeCompany) => boolean }[] = [
   { key: "party", title: "뉴스 당사자", test: (c) => !!c.party },
   { key: "pos", title: "도움 받을 수 있는 회사", test: (c) => !c.party && (c.direction ?? "pos") === "pos" },
   { key: "neg", title: "부담 받을 수 있는 회사", test: (c) => !c.party && c.direction === "neg" },
-  { key: "unk", title: "영향 받을 수 있는 회사", test: (c) => !c.party && c.direction === "unk" },
+  { key: "unk", title: "영향 받을 수 있는 회사", test: (c) => !c.party && (c.direction === "unk" || c.direction === "neu") },
 ];
+/** 검증된 지도(verify): 뉴스 당사자 → 검증된 간접 영향. 업종 참고는 따로 접어 둔다(IndustryRefs). */
+const VERIFIED_GROUPS: typeof GROUPS = [
+  { key: "party", title: "뉴스 당사자", test: (c) => c.tier === "party" },
+  { key: "indirect", title: "검증된 간접 영향", test: (c) => c.tier === "indirect" },
+];
+/** 지도(동그라미)에 올리는 회사: 직접 당사자·검증된 간접 영향. tier가 없으면(검증 전) 예전처럼 모두. */
+const onMap = (c: LifeCompany) => !c.tier || c.tier === "party" || c.tier === "indirect";
+const verified = (m: LifeMap) => m.verify?.status === "ok";
+/** 지도용: 업종 참고 회사를 뺀 경로(회사가 없는 경로도 뺀다) */
+function mapOnly(m: LifeMap): LifeMap {
+  return { ...m, stages: m.stages.map((s) => ({ ...s, companies: s.companies.filter(onMap) })).filter((s) => s.companies.length) };
+}
+const GRADE_STYLE: Record<LifeGrade, string> = {
+  확인됨: "bg-emerald-300/20 text-emerald-100 ring-emerald-200/50",
+  "보도 확인": "bg-sky-300/20 text-sky-100 ring-sky-200/50",
+  "단일 보도": "bg-amber-300/15 text-amber-100 ring-amber-200/40",
+  "근거 부족": "bg-white/10 text-slate-300 ring-white/20",
+};
+function GradeBadge({ g }: { g?: LifeGrade }) {
+  if (!g) return null;
+  return <span className={`rounded-full px-2 py-0.5 text-[14px] font-extrabold ring-1 ${GRADE_STYLE[g]}`} title="증거 등급(확률이 아니에요)">{g}</span>;
+}
 const LIST_MAX = 6;
 const REL_ORDER = { 강: 0, 중: 1, 약: 2 } as const;
 type Row = { c: LifeCompany; s: LifeStage; color: string };
@@ -238,7 +260,7 @@ function outcome(c: LifeCompany): { icon: string; text: string } | null {
   const same = (c.direction === "neg") === (vs < 0);
   return same ? { icon: "✅", text: "해석과 같은 방향" } : { icon: "⚠", text: "해석과 반대로 움직임" };
 }
-const DIR_TEXT = { pos: "도움 가능", neg: "부담 가능", unk: "영향 가능" } as const;
+const DIR_TEXT = { pos: "도움 가능", neg: "부담 가능", neu: "영향 중립", unk: "영향 방향 불확실" } as const;
 const HOP_TEXT = ["뉴스 당사자", "1차 연결", "2차 연결"];
 
 /** 첫 보도 이후 거래일마다 누적 시장 대비(%p) 작은 추이선. 점이 둘 이상일 때만. */
@@ -256,6 +278,82 @@ function Trail({ pts }: { pts: { d: string; vs: number }[] }) {
       <polyline points={pts.map((p, i) => `${x(i)},${y(p.vs)}`).join(" ")} fill="none" stroke={vsColor(last)} strokeWidth={2.2} strokeLinejoin="round" />
       {pts.map((p, i) => <circle key={p.d} cx={x(i)} cy={y(p.vs)} r={2.4} fill={vsColor(p.vs)} />)}
     </svg>
+  );
+}
+
+const KIND_ICON: Record<LifeSource["kind"], string> = { 공시: "📑", 뉴스: "📰", RSS: "📰", 공식자료: "📑" };
+
+/** 검증된 회사 펼침: 연결 이유(관계 종류) · 증거 등급 · 영향 방향 · 근거 자료(출처·발행 시각·링크·근거 문장) */
+function VerifiedWhy({ c }: { c: LifeCompany }) {
+  const srcs = c.sources ?? [];
+  const checked = srcs.length ? when(srcs[0].checked) : null;
+  return (
+    <div className="space-y-2">
+      <div className="rounded-xl bg-white/[0.06] px-3 py-2.5">
+        <div className="flex flex-wrap items-center gap-1.5 text-[14px] font-extrabold">
+          <GradeBadge g={c.grade} />
+          <span className="rounded-full px-2 py-0.5 text-[#071226]" style={{ background: dirColor(c.direction) }}>{DIR_TEXT[c.direction ?? "unk"]}</span>
+          <span className="text-slate-100">연결 이유: {c.rel_kind || c.relation}{c.tier === "party" ? " · 뉴스 당사자" : " · 근거로 확인됨"}</span>
+        </div>
+        <p className="mt-1 font-bold text-white">{c.path || c.reason}</p>
+        {c.path && <p className="mt-0.5 text-[14px] text-slate-300">근거 자료로 설명된 영향 경로예요. 주가가 이 뉴스 때문에 움직인다는 뜻은 아니에요.</p>}
+      </div>
+      {srcs.length > 0 && (
+        <div>
+          <p className="text-[14px] font-extrabold text-slate-100">근거 자료</p>
+          <ul className="mt-1 space-y-1.5">
+            {srcs.map((x, i) => {
+              const at = when(x.pub);
+              return (
+                <li key={`${x.url}${i}`} className="rounded-lg bg-white/[0.04] px-2.5 py-2 text-[14px] leading-snug text-slate-200">
+                  <span className="font-bold text-slate-100">{KIND_ICON[x.kind]} {x.kind}</span>
+                  {x.press && <> · {x.press}</>}{at && <> · {at.label} 발행</>}
+                  {x.url ? (
+                    <a href={x.url} target="_blank" rel="noopener noreferrer" className="mt-0.5 block font-bold text-white underline-offset-2 hover:underline">{x.title}</a>
+                  ) : <span className="mt-0.5 block font-bold text-white">{x.title}</span>}
+                  {x.quote && <q className="mt-0.5 block text-slate-200">{x.quote}</q>}
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-1 text-[14px] text-slate-400">{checked ? `${checked.label} 확인 · ` : ""}분석 시점 이전 자료만 썼어요</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** 업종 참고: 근거가 확인되지 않은 같은 업종 회사. 지도에 올리지 않고, 접어 둔 회색 줄에 등락만. */
+function IndustryRefs({ rows }: { rows: Row[] }) {
+  return (
+    <details className="rounded-2xl bg-white/[0.03] ring-1 ring-white/10">
+      <summary className="cursor-pointer list-none px-3.5 py-2.5 text-[15px] font-extrabold text-slate-300">
+        ▸ 업종 참고 {rows.length}곳 <span className="font-semibold text-slate-400">· 근거가 확인되지 않은 같은 업종, 등락만</span>
+      </summary>
+      <ul className="space-y-1 px-3.5 pb-3">
+        {rows.map(({ c }) => (
+          <li key={c.code} className="flex items-baseline justify-between gap-2 text-[15px] text-slate-400">
+            <span className="min-w-0 truncate font-bold">{c.name}</span>
+            <span className="shrink-0 tabular-nums">
+              {c.waiting ? WAITING : c.vs_market != null ? <>시장보다 {ppText(c.vs_market)}</> : <>주가 {rateText(c.rate)}</>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
+/** 뉴스 당사자 중 국내 상장이 아닌 곳(비상장·해외) 한 줄 */
+function Parties({ map }: { map: LifeMap }) {
+  const ps = (map.parties ?? []).filter((p) => p.kind !== "국내 상장");
+  if (!ps.length) return null;
+  return (
+    <p className="mb-2 text-[15px] leading-snug text-slate-200">
+      <b className="text-white">뉴스 당사자</b>{" "}
+      {ps.map((p, i) => <Fragment key={p.name}>{i > 0 && " · "}{p.name}<span className="text-slate-400">({p.kind})</span></Fragment>)}
+      <span className="text-slate-400"> — 국내 상장사와의 연결은 근거로 확인될 때만 보여드려요</span>
+    </p>
   );
 }
 
@@ -316,14 +414,16 @@ function CompanyRow({ row, center, open, hi, onToggle }: { row: Row; center: str
           <p className="font-bold text-slate-100">
             {center} <span className="text-slate-400">→</span> <span style={{ color }}>{s.label}</span> <span className="text-slate-400">→</span> {c.name}
           </p>
-          <div className="rounded-xl bg-white/[0.06] px-3 py-2.5">
-            <div className="flex flex-wrap items-center gap-1.5 text-[14px] font-extrabold">
-              <span className="rounded-full px-2 py-0.5 text-[#071226]" style={{ background: dirColor(c.direction) }}>{DIR_TEXT[c.direction ?? "pos"]}</span>
-              <span className="text-slate-200">{c.relation && c.relation !== "당사자" ? `${c.relation} · ` : ""}{HOP_TEXT[c.hop ?? 1]}</span>
-              <span className="text-sky-100">🤖 AI가 해석했어요</span>
+          {c.tier ? <VerifiedWhy c={c} /> : (
+            <div className="rounded-xl bg-white/[0.06] px-3 py-2.5">
+              <div className="flex flex-wrap items-center gap-1.5 text-[14px] font-extrabold">
+                <span className="rounded-full px-2 py-0.5 text-[#071226]" style={{ background: dirColor(c.direction) }}>{DIR_TEXT[c.direction ?? "pos"]}</span>
+                <span className="text-slate-200">{c.relation && c.relation !== "당사자" ? `${c.relation} · ` : ""}{HOP_TEXT[c.hop ?? 1]}</span>
+                <span className="text-sky-100">🤖 AI가 해석했어요 · 검증 전</span>
+              </div>
+              <p className="mt-1 font-bold text-white">{c.reason}</p>
             </div>
-            <p className="mt-1 font-bold text-white">{c.reason}</p>
-          </div>
+          )}
           {c.waiting ? (
             <p className="font-bold text-slate-100">{WAITING} · 다음 거래일 값을 기다려요</p>
           ) : (
@@ -342,7 +442,7 @@ function CompanyRow({ row, center, open, hi, onToggle }: { row: Row; center: str
             </div>
           )}
           {c.reflected && <p className="font-bold text-amber-100">{REFLECTED}</p>}
-          {ev && (
+          {ev && !c.tier && (
             <p className="text-[15px] text-slate-200">
               <span className="font-extrabold text-slate-100">근거 기사</span>{" "}
               <a href={ev.url} target="_blank" rel="noopener noreferrer" className="font-bold text-white underline-offset-2 hover:underline">{ev.title}</a>
@@ -361,18 +461,23 @@ function CompanyRow({ row, center, open, hi, onToggle }: { row: Row; center: str
 /** 지도 아래 회사 목록: 뉴스 당사자 → 도움 → 부담(→ 영향). 예전 'AI 해석 vs 실제 등락' 표를 대신한다. */
 function CompanyList({ item, open, hi, onToggle }: { item: LifeItem; open: string | null; hi: string[]; onToggle: (code: string) => void }) {
   const rows: Row[] = item.map.stages.flatMap((s, i) => s.companies.map((c) => ({ c, s, color: pathColor(i) })));
-  const sorted = GROUPS.flatMap((g) => rows.filter((r) => g.test(r.c))
+  const groups = verified(item.map) ? VERIFIED_GROUPS : GROUPS;
+  const sorted = groups.flatMap((g) => rows.filter((r) => g.test(r.c))
     .sort((a, b) => (a.c.hop ?? 1) - (b.c.hop ?? 1) || REL_ORDER[a.c.relevance] - REL_ORDER[b.c.relevance])).slice(0, LIST_MAX);
+  const refs = rows.filter((r) => r.c.tier === "industry");
   const idx = Object.entries(item.map.indices ?? {}).map(([k, v]) => `${MARKET_NAME[k] ?? k} ${signed(v as number)}`).join(" · ");
   return (
     <div className="space-y-4">
-      {GROUPS.map((g) => {
+      {verified(item.map) && !sorted.length && (
+        <p className="rounded-2xl bg-white/[0.06] px-3.5 py-3 text-[15px] font-bold text-slate-100">검증된 국내 상장기업 없음 — 근거 자료로 이 뉴스와 이어진다고 확인된 상장사가 없어요.</p>
+      )}
+      {groups.map((g) => {
         const list = sorted.filter((r) => g.test(r.c));
         if (!list.length) return null;
         return (
           <div key={g.key}>
             <h4 className="mb-1.5 flex items-center gap-1.5 text-[16px] font-black text-white">
-              {g.key !== "party" && <span className="size-2.5 rounded-full" style={{ background: dirColor(g.key as LifeCompany["direction"]) }} />}
+              {g.key !== "party" && g.key !== "indirect" && <span className="size-2.5 rounded-full" style={{ background: dirColor(g.key as LifeCompany["direction"]) }} />}
               {g.title}
             </h4>
             <ul className="space-y-1.5">
@@ -383,6 +488,7 @@ function CompanyList({ item, open, hi, onToggle }: { item: LifeItem; open: strin
           </div>
         );
       })}
+      {refs.length > 0 && <IndustryRefs rows={refs} />}
       <p className="text-[14px] leading-relaxed text-slate-300">
         ✅ 해석과 같은 방향 · ⚠ 반대로 움직임 · ➖ 시장과 비슷(±2%p 이내) · {item.map.reaction_label || "기준 시점"}
         {idx ? ` · 같은 시각 지수 ${idx}` : " · 지수 값이 없어 주가 등락률로 보여드려요"} · AI 해석과 실제 등락을 나란히 보여 줄 뿐,
@@ -398,6 +504,8 @@ function IssueBadges({ item }: { item: LifeItem }) {
   const pill = "rounded-full px-2.5 py-0.5 text-[14px] font-extrabold ring-1";
   const badges: React.ReactNode[] = [];
   if (item.ongoing) badges.push(<span key="ongoing" className={`${pill} bg-sky-300/15 text-sky-100 ring-sky-200/40`}>계속되는 이슈</span>);
+  if (!verified(m)) badges.push(<span key="unverified" className={`${pill} bg-white/10 text-slate-200 ring-white/25`} title="근거 자료와 대조하기 전 AI 해석이에요">검증 전</span>);
+  else if (!m.verify?.listed) badges.push(<span key="none" className={`${pill} bg-white/10 text-slate-100 ring-white/30`}>검증된 국내 상장기업 없음</span>);
   if (m.macro || item.macro) badges.push(<span key="macro" className={`${pill} bg-amber-300/15 text-amber-100 ring-amber-200/40`}>시장 전체 영향 이슈</span>);
   if (m.expected === "예상대로") badges.push(<span key="exp" className={`${pill} bg-white/10 text-white ring-white/25`}>예상대로</span>);
   if (m.move) badges.push(
@@ -697,7 +805,8 @@ export default function LifeFinder() {
   const total = data.topics.length;
   const topics = view.kind === "topics";
   const issue = topics ? { n: active + 1, color: accent } : undefined;
-  const hasParty = !!item?.map.stages.some((s) => s.companies.some((c) => c.party));
+  const shownMap = item ? mapOnly(item.map) : undefined;
+  const hasParty = !!shownMap?.stages.some((s) => s.companies.some((c) => c.party));
   const hiCodes = item?.map.industries?.find((x) => x.name === industry)?.codes ?? [];
   const arrows = (size: string) => (
     <div className="flex shrink-0 gap-1.5">
@@ -777,12 +886,13 @@ export default function LifeFinder() {
                 <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/15 px-2.5 py-1 text-[14px] font-extrabold text-white">관련 종목 · 참고용</span>}>
                   영향을 받을 수 있는 회사
                 </SectionTitle>
-                {item.map.stages.length ? (
+                <Parties map={item.map} />
+                {shownMap?.stages.length ? (
                   <>
-                    <div className="-mx-4 sm:mx-0"><MindMap map={item.map} center={item.name} picked={open ?? undefined} onPick={(c) => openCompany(c.code)} /></div>
+                    <div className="-mx-4 sm:mx-0"><MindMap map={shownMap} center={item.name} picked={open ?? undefined} onPick={(c) => openCompany(c.code)} /></div>
                     <div className="mt-3 space-y-2 text-[15px] leading-relaxed text-slate-100">
                       <ul className="flex flex-wrap gap-x-4 gap-y-1.5">
-                        {item.map.stages.map((s, i) => (
+                        {shownMap.stages.map((s, i) => (
                           <li key={s.key} className="flex items-center gap-1.5">
                             <span className="size-3 rounded-full" style={{ background: pathColor(i), boxShadow: `0 0 8px ${pathColor(i)}` }} />
                             <b style={{ color: pathColor(i) }}>{s.label}</b>{s.detail && <span className="text-slate-100">{s.detail}</span>}
@@ -796,7 +906,9 @@ export default function LifeFinder() {
                     </div>
                   </>
                 ) : (
-                  <p className="rounded-2xl bg-white/[0.06] px-4 py-12 text-center text-[15px] text-slate-200">이 뉴스와 확실히 이어지는 상장사를 찾지 못했어요.</p>
+                  <p className="rounded-2xl bg-white/[0.06] px-4 py-12 text-center text-[15px] text-slate-200">
+                    {verified(item.map) ? "검증된 국내 상장기업 없음 · 근거 자료로 확인된 연결이 없어 지도에 올리지 않았어요." : "이 뉴스와 확실히 이어지는 상장사를 찾지 못했어요."}
+                  </p>
                 )}
               </section>
 

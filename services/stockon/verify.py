@@ -59,9 +59,14 @@ DART_DAYS = 365
 DART_DOCS = 3                # 이슈 하나에서 여는 공시 원문 수
 DART_DOC_MAX = 8_000_000     # 공시 원문(zip) 최대 바이트
 LOG_KEEP = 200
+NO_LISTED_LINE = "이 뉴스와 이어진다고 근거 자료로 확인된 국내 상장사는 아직 없어요."
+CHECKED_LINE = "근거 자료로 확인된 회사만 아래에 보여드려요."
 IMPACT_BANNED = re.compile(r"수혜|피해|오를|내릴|추천|매수|매도|급등|급락")
 WORD = re.compile(r"[0-9A-Za-z가-힣]{2,}")
 PARTICLE_NOT = r"(?![은는이가을를의에와과도로만께])[가-힣]"  # 조사가 아닌 한글
+# 비상장·해외 당사자로 받지 않는 이름(사람·언론·정부·단체). 사람 이름은 프롬프트로 막는다
+NOT_COMPANY = re.compile(r"정부|당국|부처|부$|청$|위원회|협회|연합회|경찰|검찰|법원|국회|대통령|장관|타임스|일보|신문|방송|뉴스|통신|NYT|CNN|BBC")
+PARTIES_MAX = 3              # 화면에 보일 비상장·해외 당사자 수
 
 _pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="stockon-verify")
 _alias_cache: dict = {"mtime": None, "value": None}
@@ -286,7 +291,8 @@ def dart_evidence(corpus: Corpus, company: dict, counterparties: list[str], supp
 
 VERIFY_SYSTEM = """너는 뉴스와 상장사의 연결을 검증하는 사실 확인 담당자다. 주어진 '근거 자료' 안에 실제로 적힌 내용만으로 판단한다.
 규칙:
-- parties: 기사에 이름이 나온 사건의 주체(회사·기관) 이름을 기사에 적힌 그대로. kind는 '국내 상장'/'국내 비상장'/'해외'/'모름'.
+- parties: 기사에 이름이 나온 사건의 주체인 회사·공기업 이름을 기사에 적힌 그대로(사람·언론사·정부·부처·단체는 넣지 않는다).
+  kind는 '국내 상장'/'국내 비상장'/'해외'/'모름'.
 - companies: '후보 회사' 각각과, 근거 자료에서 이 사건과 직접 이어진다고 적혀 있는 다른 한국 상장사(예: 사고가 난 시스템의 공급사)를 판단한다.
   · relation: 근거 자료에 적힌 관계 — '계약'(사건 당사자와 계약), '공급망'(당사자·제품의 공급사·고객사), '지분'(당사자 지분 보유),
     '경쟁'(같은 제품·서비스로 당사자와 경쟁한다고 자료에 적힘), '사업'(사건이 그 회사의 같은 제품·서비스에 직접 닿는다고 자료에 적힘).
@@ -350,13 +356,13 @@ def find_parties(names: list[tuple[str, str]], text: str, stocks: dict, index: d
             others.setdefault(name, {"name": name, "kind": "국내 비상장", "note": al["unlisted"].get(name) or alias.get("source", "")})
         elif name in al["foreign"]:
             others.setdefault(name, {"name": name, "kind": "해외", "note": al["foreign"][name]})
-        elif ai_kind in ("국내 비상장", "해외"):
+        elif ai_kind in ("국내 비상장", "해외") and not NOT_COMPANY.search(name) and name not in rss.sources()["general_press"].values():
             others.setdefault(name, {"name": name, "kind": ai_kind, "note": "종목 목록에 없음"})
     # 같은 기관의 짧은 이름과 긴 이름이 둘 다 있으면 긴 것만('인천공항' 설명에 '인천국제공항공사'가 있다)
     rest = list(others.values())
     rest = [o for o in rest if not any(o is not p and o["kind"] == p["kind"] and (o["name"] in p["name"] or p["name"] in o.get("note", ""))
                                        for p in rest)]
-    return list(listed.values()), rest
+    return list(listed.values()), rest[:PARTIES_MAX]
 
 
 def known_parties(text: str) -> list[tuple[str, str]]:
@@ -558,9 +564,14 @@ def classify(t: dict, m: dict, corpus: Corpus, raw: dict, pre_parties: list[tupl
     for i, st in enumerate(stages):
         st["key"] = f"p{i}"
     listed_n = counts["party"] + counts["indirect"]
+    # AI 해석 문장이 근거 없는 회사(업종 참고·근거 부족)를 이름으로 말하면 지도와 어긋나므로 그 문장은 뺀다
+    weak = [d["name"] for d in dropped] + [c["name"] for st in stages for c in st["companies"] if c["tier"] == "industry"]
+    lines = [x for x in m.get("interpretation") or [] if not any(n in x for n in weak)]
+    if not lines and m.get("interpretation"):
+        lines = [NO_LISTED_LINE if not listed_n else CHECKED_LINE]
     verify = {"status": "ok", "checked": checked, "ref": corpus.ref.isoformat(), "model": VERIFY_MODEL, "listed": listed_n,
               "counts": counts, "evidence": len(corpus.items), "after_ref": corpus.after_ref, "dropped": dropped}
-    return {**m, "stages": stages, "parties": others + [{"name": p["name"], "kind": "국내 상장", "code": p["code"],
+    return {**m, "stages": stages, "interpretation": lines, "parties": others + [{"name": p["name"], "kind": "국내 상장", "code": p["code"],
                                                          **({"via": p["via"]} if p.get("via") else {})} for p in listed],
             "verify": verify}
 

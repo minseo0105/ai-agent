@@ -86,7 +86,7 @@ export const stockApi = {
 // item = 뉴스(대표 기사 + 관련 기사) · AI 해석 · 관련 회사 지도(영향 경로 × 회사) · 실제 등락(등락률, 인과를 단정하지 않는다).
 export type LifeCompany = {
   code: string; name: string; relevance: "강" | "중" | "약"; reason: string;
-  direction?: "pos" | "neg" | "unk"; // AI 해석: 긍정 영향 가능 / 부정 영향 가능 / 방향 불확실('영향 가능'만)
+  direction?: "pos" | "neg" | "neu" | "unk"; // 긍정 영향 가능 / 부정 영향 가능 / 중립 / 방향 불확실('영향 방향 불확실'). 검증 뒤에는 근거 있는 경로가 있을 때만 방향
   market?: string; close?: number | null; rate?: number | null; cap?: number | null; value?: number | null;
   market_rate?: number | null; // 그 회사 시장 지수(코스피/코스닥) 등락률(같은 기준 시각)
   vs_market?: number | null; // 시장보다(%p) = rate − market_rate. 지수를 모르면 null(주가 등락률만)
@@ -104,7 +104,23 @@ export type LifeCompany = {
   industry?: string; // KRX 업종(관련 업종 칩과 맞춤)
   evidence?: LifeArticle; // 근거 기사
   intro?: string; // 한 줄 회사 소개(회사별로 저장해 재사용)
+  // 기업 연관성 검증(verify.py). tier가 없으면 검증 전(예전 결과)
+  tier?: "party" | "indirect" | "industry"; // 직접 당사자 · 검증된 간접 영향 · 단순 업종 참고(지도에 올리지 않음)
+  grade?: LifeGrade; // 증거 등급(확률이 아님)
+  rel_kind?: string; // 연결 이유(관계 종류): 당사자·계약·공급망·지분·경쟁·사업·같은 업종
+  path?: string; // 근거로 설명되는 사업 영향 경로
+  sources?: LifeSource[]; // 근거 자료
+  found?: boolean; // 근거 자료에서 새로 찾은 회사
+  note?: string; // 업종 참고인 이유(업종만 같음·보도상 영향 없음)
 };
+export type LifeGrade = "확인됨" | "보도 확인" | "단일 보도" | "근거 부족";
+/** 근거 자료 하나: 출처 종류(공시·뉴스·RSS·공식자료)·제목·링크·언론사·발행 시각·확인 시각·근거 문장 */
+export type LifeSource = { kind: "공시" | "뉴스" | "RSS" | "공식자료"; title: string; url: string; press: string; pub: string; checked: string; quote?: string };
+/** 이슈 당사자(국내 상장이 아니면 kind로 표시) */
+export type LifeParty = { name: string; kind: "국내 상장" | "국내 비상장" | "해외"; note?: string; code?: string; via?: string };
+/** 검증 상태: ok = 검증됨, off·unverified(오류·시간 초과)·없음 = '검증 전' */
+export type LifeVerify = { status: "ok" | "off" | "unverified"; listed?: number; checked?: string; ref?: string; error?: string;
+  counts?: Record<"party" | "indirect" | "industry" | "insufficient", number> };
 /** 이슈 시점: 첫 보도, 장 마감 뒤 뉴스면 다음 거래일 반응과 비교 */
 export type LifeTiming = {
   first: string; first_title: string; first_url: string; first_press: string; after_close: boolean;
@@ -123,6 +139,7 @@ export type LifeMap = {
   macro?: boolean; expected?: "예상대로" | "예상과 다름" | "판단 어려움" | ""; // 거시 이슈 · 시장 예상과 같았는지
   timing?: LifeTiming;
   industries?: LifeIndustry[]; industries_label?: string; // 관련 업종 오늘(시장 대비) · 기준 시각
+  parties?: LifeParty[]; verify?: LifeVerify;
 };
 export type LifeItem = {
   name: string; title: string; summary: string; sector: string; articles: LifeArticle[]; map: LifeMap;
@@ -130,6 +147,7 @@ export type LifeItem = {
   label?: string; kind?: string; // 일상 말 분야 이름('개인정보 유출') · 사건 종류
   coverage?: { articles: number; presses: number; hours: number }; // 최근 24시간 기사 수·언론사 수
   ongoing?: boolean; // 첫 보도가 24시간보다 오래됨 → '계속되는 이슈'
+  no_verified?: boolean; // 검증된 국내 상장기업(당사자·검증된 간접 영향) 없음
 };
 export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: string; label?: string };
 /** '오늘 시장 분위기' 띠: 지수 등락률과 오른·내린 종목 비율 한 줄(지수 시황 기사는 이슈 카드 대신 여기에). */

@@ -42,9 +42,9 @@ export const similar = (vs?: number | null) => vs != null && Math.abs(vs) <= SIM
 export const vsColor = (vs?: number | null) => (similar(vs) ? GRAY : rateColor(vs));
 /** 시장보다(%p): ▲/▼와 %p. 10 이상은 정수. */
 export const ppText = (v?: number | null) => (v == null ? "—" : `${v > 0 ? "▲" : v < 0 ? "▼" : ""}${Math.abs(v).toFixed(Math.abs(v) >= 9.95 ? 0 : 1)}%p`);
-export const dirName = (d?: LifeCompany["direction"]) => (d === "neg" ? "부담 받을 수 있는 회사" : d === "unk" ? "영향 받을 수 있는 회사" : "도움 받을 수 있는 회사");
+export const dirName = (d?: LifeCompany["direction"]) => (d === "neg" ? "부담 받을 수 있는 회사" : d === "unk" || d === "neu" ? "영향 받을 수 있는 회사" : "도움 받을 수 있는 회사");
 /** AI 해석 방향 색: 도움 가능 초록 · 부담 가능 주황 · 영향 가능(방향 불확실) 회색 */
-export const dirColor = (d?: LifeCompany["direction"]) => (d === "neg" ? NEG : d === "unk" ? GRAY : POS);
+export const dirColor = (d?: LifeCompany["direction"]) => (d === "neg" ? NEG : d === "unk" || d === "neu" ? GRAY : POS);
 
 /** 원 안 이름: 4자 이하는 한 줄, 그보다 길면 두 줄(최대 4+4자, 넘치면 …). */
 function nameLines(name: string): string[] {

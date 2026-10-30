@@ -78,6 +78,9 @@ class FixtureCasesTest(VerifyBase):
         self.assertEqual(ref_only["대한항공"]["note"], "보도상 영향 없음")  # '국적기는 정상 수속' 기사는 연결 근거가 아니다
         self.assertTrue(all(c["direction"] == "unk" for c in ref_only.values()))
         self.assertEqual([(d["name"], d["why"]) for d in m["verify"]["dropped"]], [("한진칼", "기사에 이름 없음")])
+        self.assertTrue(m["interpretation"])  # 근거 없는 회사를 말하는 해석 문장은 빠지고, 다 빠지면 안내 한 줄
+        for line in m["interpretation"]:
+            self.assertFalse(any(n in line for n in ("한국항공우주", "대한항공", "아시아나항공", "한진칼")), line)
 
     def test_call_of_duty_video_controversy(self):
         case, m = self.run_case("cod")
@@ -192,6 +195,11 @@ class RulesTest(VerifyBase):
         # 기사에 나오지 않은 이름은 AI가 당사자라 해도 넣지 않는다
         out = verify.classify(TOPIC, {"stages": []}, _corpus([]), {"parties": [{"name": "마이크로소프트", "kind": "해외"}], "companies": []}, [], ART)
         self.assertEqual(out["parties"], [])
+        # 정부·언론은 당사자 회사가 아니고, 같은 기관의 줄임말은 하나로
+        text = "인천국제공항공사(인천공항공사)는 국토교통부와 함께 에어링크 장애를 조사했다고 뉴욕타임스가 전했다"
+        _, others = verify.find_parties([("인천공항공사", ""), ("인천국제공항공사", ""), ("국토교통부", "국내 비상장"),
+                                         ("뉴욕타임스", "해외"), ("에어링크", "해외")], text, {}, {})
+        self.assertEqual([o["name"] for o in others], ["인천국제공항공사", "에어링크"])
 
     def test_ai_found_supplier_is_added_only_when_verified(self):
         items = [_item(1, "news", "인천공항 발권 시스템, 삼성SDS가 운영", "인천공항 발권 시스템은 삼성SDS가 운영한다")]
