@@ -15,10 +15,11 @@
 // 휴대폰(640px 미만)에서는 바깥 상자 테두리·모서리·양옆 여백 없이 화면 끝까지. 글씨: 본문 15px+, 섹션 제목 18px+, 지도 회사 이름 13px+.
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import MindMap, { GRAY, NEG, POS, pathColor, ppText, rateColor, rateText, similar, vsColor } from "@/components/stock/MindMap";
+import { Flash } from "@/components/stock/LiveMarket";
 import { WhyBody } from "@/components/stock/StockOn";
 import {
-  lifeApi, stockApi, type LifeArticle, type LifeCompany, type LifeItem, type LifeMarket, type LifeOverview, type LifeStage, type LifeWordResult, type Stock,
-  type Why,
+  lifeApi, stockApi, type LifeArticle, type LifeCompany, type LifeItem, type LifeMap, type LifeMarket, type LifeOverview, type LifePulse, type LifeStage,
+  type LifeWordResult, type Stock, type Why,
 } from "@/lib/stock";
 
 // 이슈(섹터)별 강조색. 상승 빨강과 겹치지 않게 빨강 계열은 쓰지 않는다.
@@ -46,6 +47,59 @@ type Drawing = { word: string; position: number; running: boolean };
 const POLL_MS = 1500;
 const BAR_ROOM = 72; // 고정 이슈 바(48px) + 여유. AI 해석 묶음의 scroll-mt-16(64px)과 함께 바가 제목을 가리지 않게
 const POLL_MAX_MS = 100_000; // AI 한 번 45초 × 최대 2회 + 대기 여유
+const PULSE_IDLE_MS = 60_000; // 장 마감 뒤·주말에는 1분에 한 번만 확인(장중은 서버가 준 refresh_sec, 15초)
+const PULSE_KEYS = ["rate", "market_rate", "vs_market", "moved", "waiting", "opposite", "other", "since", "reflected"] as const;
+
+/** 15초 갱신 값(회사 실제 등락·관련 업종 칩)을 이슈에 덮는다. AI 해석·회사 목록은 그대로. */
+function withPulse(it: LifeItem, p: LifePulse): LifeItem {
+  const t = p.topics[it.name];
+  if (!t) return it;
+  const stages = it.map.stages.map((s) => ({
+    ...s, companies: s.companies.map((c) => {
+      const q = t.companies[c.code];
+      if (!q) return c;
+      const next = { ...c } as Record<string, unknown>;
+      for (const k of PULSE_KEYS) next[k] = q[k]; // 빠진 값(예: 다시 시장과 비슷해져 사라진 '다른 이유')도 지운다
+      return next as LifeCompany;
+    }),
+  }));
+  return { ...it, map: { ...it.map, stages, reaction_label: t.reaction_label || it.map.reaction_label,
+    industries: t.industries, industries_label: t.industries_label } };
+}
+function mergePulse(d: LifeOverview, p: LifePulse): LifeOverview {
+  return { ...d, topics: d.topics.map((t) => withPulse(t, p)),
+    sector_items: Object.fromEntries(Object.entries(d.sector_items).map(([k, v]) => [k, withPulse(v, p)])) };
+}
+
+/** 관련 업종 오늘: 뉴스 카드 바로 아래 한 줄 칩. 시장 대비 ±2%p 이내는 '➖ 시장과 비슷'(회색). 누르면 그 업종의 연결 회사를 강조. */
+function IndustryRow({ map, on, onPick }: { map: LifeMap; on: string | null; onPick: (name: string | null) => void }) {
+  const list = map.industries ?? [];
+  if (!list.length) return null;
+  return (
+    <section aria-label="관련 업종 오늘" className="mt-3">
+      <div className="flex flex-wrap items-baseline gap-x-2">
+        <h3 className="text-[18px] font-black text-white">관련 업종 오늘</h3>
+        <span className="text-[14px] text-slate-300">{map.industries_label} · 시장 대비</span>
+      </div>
+      <div className="mt-1.5 flex flex-wrap gap-1.5">
+        {list.map((x) => {
+          const sel = on === x.name;
+          return (
+            <button key={`${x.market}:${x.name}`} type="button" aria-pressed={sel} onClick={() => onPick(sel ? null : x.name)}
+              aria-label={`${x.name} 업종 시장 대비 ${similar(x.vs) ? "시장과 비슷" : ppText(x.vs)}, 누르면 이 업종 회사를 강조`}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[15px] font-extrabold ring-1 transition ${sel
+                ? "bg-white text-[#071226] ring-white" : "bg-white/[0.06] text-white ring-white/15 hover:bg-white/10"}`}>
+              {x.name}
+              <Flash v={x.vs} className="px-0.5">
+                <span className="tabular-nums" style={{ color: sel ? undefined : vsColor(x.vs) }}>{similar(x.vs) ? "➖ 시장과 비슷" : ppText(x.vs)}</span>
+              </Flash>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
 
 function ArticleMeta({ a, basis }: { a: LifeArticle; basis?: string }) {
   const w = when(a.pub);
@@ -215,7 +269,9 @@ function OtherNote({ c }: { c: LifeCompany }) {
   );
 }
 
-function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: string; onPick: (c: LifeCompany, s: LifeStage, color: string) => void }) {
+function ReactionTable({ item, accent, hi, onPick }: {
+  item: LifeItem; accent: string; hi: string[]; onPick: (c: LifeCompany, s: LifeStage, color: string) => void;
+}) {
   const rows = item.map.stages.flatMap((s, i) => s.companies.map((c) => ({ c, s, color: pathColor(i) })));
   const idx = Object.entries(item.map.indices ?? {}).map(([k, v]) => `${MARKET_NAME[k] ?? k} ${signed(v as number)}`).join(" · ");
   return (
@@ -235,7 +291,7 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
         <tbody>
           {rows.map(({ c, s, color }) => (
             <Fragment key={c.code}>
-              <tr onClick={() => onPick(c, s, color)} className="cursor-pointer border-t border-white/10 align-top hover:bg-white/5">
+              <tr onClick={() => onPick(c, s, color)} className={`cursor-pointer border-t border-white/10 align-top hover:bg-white/5 ${hi.includes(c.code) ? "bg-white/10" : ""}`}>
                 <td className="py-2.5 pl-3 pr-1">
                   <div className="font-extrabold leading-snug text-white">{c.name}</div>
                   <div className="text-[14px] font-semibold" style={{ color }}>{s.label}</div>
@@ -443,6 +499,7 @@ export default function LifeFinder() {
   const [drawing, setDrawing] = useState<Drawing | null>(null);
   const [notice, setNotice] = useState("");
   const [pastCards, setPastCards] = useState(false);
+  const [industry, setIndustry] = useState<string | null>(null); // 관련 업종 칩으로 강조한 업종
   const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rail = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
@@ -466,6 +523,28 @@ export default function LifeFinder() {
     io.observe(el);
     return () => io.disconnect();
   }, [hasData]);
+
+  // 회사 실제 등락·관련 업종은 15초마다 숫자만 갱신(AI 재호출 없음). 화면을 안 보고 있으면 건너뛴다.
+  useEffect(() => {
+    if (!hasData) return;
+    let alive = true;
+    let timer: ReturnType<typeof setTimeout>;
+    let wait = 15_000;
+    const tick = async () => {
+      if (document.visibilityState === "visible") {
+        try {
+          const p = await lifeApi.pulse();
+          if (!alive) return;
+          setData((d) => (d ? mergePulse(d, p) : d));
+          wait = p.live ? p.refresh_sec * 1000 : PULSE_IDLE_MS;
+        } catch { /* 다음 확인에서 다시 */ }
+      }
+      if (alive) timer = setTimeout(tick, wait);
+    };
+    timer = setTimeout(tick, wait);
+    return () => { alive = false; clearTimeout(timer); };
+  }, [hasData]);
+  useEffect(() => setIndustry(null), [active, view]);
 
   useEffect(() => {
     let alive = true;
@@ -639,6 +718,7 @@ export default function LifeFinder() {
               <div className="flex"><NewsCard item={item} accent={accent} basis={basisYmd} active /></div>
             </div>
           ) : null}
+          {item && <IndustryRow map={item.map} on={industry} onPick={setIndustry} />}
         </div>
 
         {item && (
@@ -700,7 +780,7 @@ export default function LifeFinder() {
               {item.map.stages.length > 0 && (
                 <section aria-label="AI 해석 vs 실제 등락">
                   <SectionTitle issue={issue}>AI 해석 vs 실제 등락</SectionTitle>
-                  <ReactionTable item={item} accent={accent} onPick={(c, s, color) => setPick({ c, s, color })} />
+                  <ReactionTable item={item} accent={accent} hi={item.map.industries?.find((x) => x.name === industry)?.codes ?? []} onPick={(c, s, color) => setPick({ c, s, color })} />
                 </section>
               )}
 

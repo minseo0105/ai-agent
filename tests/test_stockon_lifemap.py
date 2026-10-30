@@ -82,6 +82,8 @@ class LifemapBase(TempStore):
         lifemap._jobs.clear()
         lifemap._sessions.clear()
         lifemap._live_count.clear()
+        lifemap._ind_cache.update(value=None)
+        lifemap._pulse_cache.update(value=None)
         lifemap._examples_cache["value"] = {
             "basis": {"key": "public:20261024", "source": "public", "as_of": "20261024", "label": "10/24 장 기준"},
             "topics": [EXAMPLE_ITEM], "sectors": {"보안": {**EXAMPLE_ITEM, "name": "보안"}},
@@ -736,6 +738,7 @@ class ApiTest(LifemapBase):
                 mock.patch.object(news, "search", side_effect=blocked), mock.patch.object(news, "search_window", side_effect=blocked):
             r = client.get("/api/stock/lifemap")
             self.assertEqual(r.status_code, 200)
+            self.assertEqual(client.get("/api/stock/lifemap/pulse").status_code, 200)
             body = r.json()
             self.assertEqual(body["sectors"], lifemap.SECTORS)
             self.assertEqual(body["topics"][0]["map"]["interpretation"], ["예시 해석이다."])
@@ -1291,6 +1294,61 @@ class PartyAndHiddenTest(LifemapBase):
         self.assertIn("기사에는 이름이 안 나왔지만", lifemap.INTERP_SYSTEM)
         self.assertIn("업종명이 아니라", lifemap.RSS_TOPIC_SYSTEM)
         self.assertIn("'가상자산 거래소'", lifemap.RSS_TOPIC_SYSTEM)
+
+
+EXTRA = {"as_of": "20261030", "fetched_ts": datetime(2026, 10, 30, 10, 42, tzinfo=KST).timestamp(), "final": False,
+         "sectors": {"KOSPI": [{"code": "1", "name": "통신", "rate": -1.0}, {"code": "2", "name": "IT 서비스", "rate": 2.5},
+                               {"code": "3", "name": "음식료/담배", "rate": 0.4}],
+                     "KOSDAQ": [{"code": "4", "name": "IT 서비스", "rate": 4.9}]}}
+LIVE_WS = {"day": "20261030", "indices": {"KOSPI": {"rate": -2.0}, "KOSDAQ": {"rate": 1.0}}}
+
+
+class IndustryChipsTest(LifemapBase):
+    NOW = datetime(2026, 10, 30, 10, 45, tzinfo=KST)
+
+    def _stages(self):
+        c = lambda code, ind=None: {"code": code, "name": STOCKS[code]["name"], "relevance": "중", "reason": "r", "direction": "pos",  # noqa: E731
+                                    **({"industry": ind} if ind else {})}
+        return [{"key": "p0", "label": "보안 수요", "detail": "", "companies": [c("042510", "IT 서비스"), c("053800", "IT 서비스")]},
+                {"key": "p1", "label": "보상 비용", "detail": "", "companies": [c("030200", "통신"), c("004370")]}]
+
+    def test_live_label_vs_market_and_chip_rules(self):
+        store.write("market_extra", EXTRA)
+        store.write("market_live", LIVE_WS)
+        ir = lifemap.industry_rates(self.NOW)
+        self.assertEqual((ir["label"], ir["live"]), ("10:42 기준", True))
+        chips = lifemap.industry_chips(self._stages(), ir)
+        # IT 서비스: 두 회사 모두 코스닥 → 코스닥 업종 4.9 − 코스닥 1.0 = 3.9%p, 통신: 코스피 −1.0 − (−2.0) = 1.0%p, 업종 없는 농심은 칩 없음
+        self.assertEqual([(x["name"], x["market"], x["vs"], x["codes"]) for x in chips],
+                         [("IT 서비스", "KOSDAQ", 3.9, ["042510", "053800"]), ("통신", "KOSPI", 1.0, ["030200"])])
+
+    def test_close_weekend_stale_and_missing_index(self):
+        store.write("market_extra", {**EXTRA, "final": True})
+        store.write("market_live", LIVE_WS)
+        self.assertEqual(lifemap.industry_rates(datetime(2026, 11, 1, 12, 0, tzinfo=KST))["label"], "10/30 종가 기준")  # 주말
+        self.assertIsNone(lifemap.industry_rates(datetime(2026, 11, 6, 12, 0, tzinfo=KST)))  # 5일보다 오래됨
+        store.write("market_live", {"day": "20261029", "indices": LIVE_WS["indices"]})
+        self.assertIsNone(lifemap.industry_rates(self.NOW))  # 같은 날 지수가 없으면 칩을 숨긴다
+        store.write("market_kiwoom", {"as_of": "20261030", "indices": [{"name": "코스피", "rate": -2.0}, {"name": "코스닥", "rate": 1.0}]})
+        self.assertEqual(lifemap.industry_rates(self.NOW)["indices"], {"KOSPI": -2.0, "KOSDAQ": 1.0})
+        self.assertEqual(lifemap.industry_chips(self._stages(), None), [])
+
+    def test_pulse_carries_rates_and_chips_without_ai(self):
+        today = datetime.now(KST).strftime("%Y%m%d")
+        store.write("market_live", {**LIVE_WS, "day": today})
+        store.write("market_extra", {**EXTRA, "as_of": today})
+        item = {**EXAMPLE_ITEM, "name": "보안 사고", "map": {**EXAMPLE_ITEM["map"], "stages": self._stages()}}
+        store.write("lifemap", {"basis": {"key": "public:20261027"}, "topics": [item]})
+        with mock.patch.object(lifemap, "_ask", side_effect=AssertionError), mock.patch.object(news, "search", side_effect=AssertionError):
+            p = lifemap.pulse()
+            self.assertIs(lifemap.pulse(), p)  # 5초 안 같은 결과
+        t = p["topics"]["보안 사고"]
+        self.assertEqual([x["name"] for x in t["industries"]], ["IT 서비스", "통신"])
+        self.assertEqual(t["companies"]["042510"]["rate"], 18.1)
+        self.assertEqual(p["refresh_sec"], 15)
+        view = lifemap.overview()["topics"][0]["map"]
+        self.assertEqual(view["industries"][0]["name"], "IT 서비스")
+        self.assertTrue(view["industries_label"].endswith("기준"))
 
 
 if __name__ == "__main__":

@@ -139,6 +139,12 @@ export type LifeOverview = {
   live: { enabled: boolean; per_session: number; window_min: number };
   price_note?: string;
 };
+/** 화면 15초 갱신(읽기 전용): 이슈 이름마다 회사 실제 등락·관련 업종 칩만 */
+export type LifePulseCompany = Pick<LifeCompany, "rate" | "market_rate" | "vs_market" | "moved" | "waiting" | "opposite" | "other" | "since" | "reflected">;
+export type LifePulse = {
+  ts: number; live: boolean; refresh_sec: number;
+  topics: Record<string, { reaction_label: string; industries: LifeIndustry[]; industries_label: string; companies: Record<string, LifePulseCompany> }>;
+};
 export type LifeWordStatus = "ready" | "queued" | "running" | "failed" | "busy" | "limited" | "daily_limit" | "unavailable" | "invalid" | "none";
 export type LifeWordResult = { status: LifeWordStatus; word: string; position?: number; message?: string; item?: LifeItem };
 
@@ -157,6 +163,7 @@ function sessionId(): string {
 
 export const lifeApi = {
   overview: () => get<LifeOverview>("/api/stock/lifemap"),
+  pulse: () => get<LifePulse>("/api/stock/lifemap/pulse"),
   request: (word: string) => get<LifeWordResult>("/api/stock/lifemap/word", { method: "POST", body: JSON.stringify({ word }), headers: { "X-Stockon-Session": sessionId() } }),
   status: (word: string) => get<LifeWordResult>(`/api/stock/lifemap/word?w=${encodeURIComponent(word)}`),
 };

@@ -1492,8 +1492,74 @@ def with_reaction(item: dict, live: dict | None = None, fallback_indices: dict |
         rows = [c for st in stages for c in st["companies"]]
         when = {**when, "waiting": bool(rows) and all(c["waiting"] for c in rows),
                 "value_label": ", ".join(_md(d) for d in sorted(days))}
+    ir = industry_rates()
+    chips = industry_chips(stages, ir)
     return {**item, "map": {**out_map, "stages": stages, "basis_label": label, "reaction_label": reaction,
-                            **({"indices": shown_idx} if shown_idx else {}), **({"timing": when} if when else {})}}
+                            **({"indices": shown_idx} if shown_idx else {}), **({"timing": when} if when else {}),
+                            **({"industries": chips, "industries_label": ir["label"]} if chips else {})}}
+
+
+# ---------------------------------------------------------
+# 관련 업종 오늘: '오늘 시장' 탭과 같은 키움 업종 등락(market_extra.json, 수집기가 2분마다) − 같은 시장 지수 등락
+# ---------------------------------------------------------
+
+_ind_cache: dict = {"ts": 0.0, "value": None}
+
+
+def industry_rates(now: datetime | None = None) -> dict | None:
+    """{label, as_of, live, rates: {(시장, 업종): 등락률}, indices: {시장: 등락률}}. 업종 자료가 없거나 INDUSTRY_STALE_DAYS일보다
+    오래됐거나 같은 날 지수가 없으면 None(칩을 숨긴다). 지수는 웹소켓(같은 날) → 키움 스냅샷 → 공공데이터 순으로 같은 날 값만.
+    장중이면 'HH:MM 기준', 마감 뒤·주말은 'n/n 종가 기준'. 2초 동안 같은 값을 쓴다(이슈마다 파일을 다시 읽지 않게)."""
+    cached = now is None
+    if cached and _ind_cache["value"] is not None and time.time() - _ind_cache["ts"] < 2:
+        return _ind_cache["value"]
+    now = now or datetime.now(KST)
+    extra = _read("market_extra", {})
+    day = extra.get("as_of") or ""
+    out = None
+    if day and extra.get("sectors") and datetime.strptime(day, "%Y%m%d").date() >= (now - timedelta(days=INDUSTRY_STALE_DAYS)).date():
+        ws, kw, pub = _read("market_live", {}), _read("market_kiwoom", {}), _read("market", {})
+        indices = {}
+        if ws.get("day") == day:
+            indices = {m: (ws.get("indices") or {}).get(m, {}).get("rate") for m in INDEX_MARKET.values()}
+        if not all(v is not None for v in indices.values()) or not indices:
+            indices = index_rates(kw) if kw.get("as_of") == day else index_rates(pub) if pub.get("as_of") == day else {}
+        indices = {k: v for k, v in indices.items() if v is not None}
+        if indices:
+            closed = bool(extra.get("final")) or day < now.strftime("%Y%m%d")
+            stamp = datetime.fromtimestamp(extra.get("fetched_ts") or time.time(), KST)
+            label = f"{_md(day)} 종가 기준" if extra.get("final") else f"{_md(day)} {stamp:%H:%M} 기준" if closed else f"{stamp:%H:%M} 기준"
+            rates = {(m, r["name"]): r["rate"] for m, rows in (extra.get("sectors") or {}).items() for r in rows or []
+                     if r.get("name") and r.get("rate") is not None}
+            out = {"label": label, "as_of": day, "live": not closed, "rates": rates, "indices": indices}
+    if cached:
+        _ind_cache.update(ts=time.time(), value=out)
+    return out
+
+
+def industry_chips(stages: list[dict], ir: dict | None) -> list[dict]:
+    """이슈 회사들의 KRX 업종 → 칩 [{name, market, rate, vs, codes}] 최대 INDUSTRIES_MAX개(회사 많은 업종 → 시장 대비 큰 업종 순).
+    업종이 없거나(AI가 '모름') 그 업종 등락이 없으면 칩을 만들지 않는다. 시장은 그 업종 회사가 많은 쪽(코스피/코스닥)."""
+    if not ir:
+        return []
+    stocks, _, _ = directory()
+    groups: dict[str, list[dict]] = {}
+    for st in stages:
+        for c in st.get("companies") or []:
+            if c.get("industry") in KRX_INDUSTRIES:
+                groups.setdefault(c["industry"], []).append(c)
+    chips = []
+    for name, cs in groups.items():
+        markets = [(stocks.get(c["code"]) or {}).get("market") or c.get("market") for c in cs]
+        order = sorted(set(m for m in markets if m), key=lambda m: -markets.count(m)) + [m for m in INDEX_MARKET.values() if m not in markets]
+        market = next((m for m in order if (m, name) in ir["rates"] and m in ir["indices"]), None)
+        if not market:
+            continue
+        rate = ir["rates"][(market, name)]
+        chips.append({"name": name, "market": market, "rate": rate, "vs": round(rate - ir["indices"][market], 2),
+                      "codes": [c["code"] for c in cs]})
+    chips.sort(key=lambda x: (-len(x["codes"]), -abs(x["vs"])))
+    return chips[:INDUSTRIES_MAX]
 
 
 def _signed(v: float) -> str:
@@ -1555,6 +1621,34 @@ def overview() -> dict:
         "live": live_config(),
         "price_note": price_note("kiwoom" if basis.get("source") == "kiwoom" or live else "public"),
     }
+
+
+PULSE_FIELDS = ("rate", "market_rate", "vs_market", "moved", "waiting", "opposite", "other", "since", "reflected")
+_pulse_cache: dict = {"ts": 0.0, "value": None}
+_pulse_lock = threading.Lock()
+
+
+def pulse() -> dict:
+    """화면 15초 갱신용(읽기 전용, AI 호출 없음): 보이는 이슈·섹터마다 회사 실제 등락·시장 대비와 관련 업종 칩만.
+    {topics: {이슈 이름: {reaction_label, industries, industries_label, companies: {코드: {...}}}}, live, refresh_sec}.
+    5초 동안 같은 결과(여러 명이 15초마다 불러도 파일 읽기 몇 번)."""
+    with _pulse_lock:
+        if _pulse_cache["value"] is not None and time.time() - _pulse_cache["ts"] < PULSE_CACHE_SEC:
+            return _pulse_cache["value"]
+        live, pub_idx, cfg = _live_rates(), _public_indices(), curation()
+        items = list((_read("lifemap_sectors", {}).get("items") or {}).values()) + curate(cfg)["shown"]
+        out = {}
+        for t in items:
+            m = with_reaction(t, live, pub_idx)["map"]
+            out[t["name"]] = {"reaction_label": m.get("reaction_label", ""), "industries": m.get("industries") or [],
+                              "industries_label": m.get("industries_label", ""),
+                              "companies": {c["code"]: {k: c.get(k) for k in PULSE_FIELDS if k in c}
+                                            for st in m["stages"] for c in st["companies"]}}
+        ir = industry_rates()
+        value = {"ts": time.time(), "topics": out, "live": bool((ir or {}).get("live") or (live and not live.get("closed"))),
+                 "refresh_sec": 15}
+        _pulse_cache.update(ts=time.time(), value=value)
+        return value
 
 
 # ---------------------------------------------------------

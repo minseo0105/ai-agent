@@ -67,6 +67,12 @@ def life_overview():
     return lifemap.overview()
 
 
+@router.get("/api/stock/lifemap/pulse", dependencies=[Depends(_enabled)])
+def life_pulse():
+    """회사 실제 등락·관련 업종 칩만(화면 15초 갱신, 읽기 전용)."""
+    return lifemap.pulse()
+
+
 @router.post("/api/stock/lifemap/word", dependencies=[Depends(_enabled)])
 def life_word(req: LifeWord, request: Request):
     return lifemap.request_word(req.word, _session(request))
