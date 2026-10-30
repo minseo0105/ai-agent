@@ -34,6 +34,12 @@ STOCK:ON의 핵심은 **'일상 뉴스를 보다가 → 그 뉴스와 연결된 
 - 시점: 첫 보도가 15:20 이후(또는 휴장일)면 다음 거래일 등락과 비교하고 '장 마감 후 뉴스 · 다음 거래일 반응을 보여드려요', 그 거래일 값이 아직 없으면 '반응 대기 중'. 첫 보도 이후 누적 시장 대비(최대 5거래일)는 회사 상세·표에만.
 - 숫자: '시장보다 = 그 회사 주가 등락 − 시장 지수 등락'. ±2%p 이내는 '시장과 비슷해요'(회색, 반대 움직임 아님), '실제 등락 큼'은 ±3%p 이상. 화면에 '단순'이라는 말을 쓰지 않는다.
 
+**10-30 밤 검증된 이슈 5개·하루 2회차(08:30·13:00) — 배포됨 10-30 19:49 KST** (커밋 `fca2042` + CLI 회차 기록 `d27ada2`, 규칙은 STOCKON_PLAN.md). 서버 `~/ailab` = `d27ada2`(로컬 변경 없음) → `docker compose build ailab` → `up -d --no-deps ailab stockon-collector`(10:49:15Z 재생성, 같은 이미지 `ailab:latest`, ailab healthy·재시작 0). 두 컨테이너 `lifemap.py`·`verify.py`·`kiwoom_collector.py`·`api/stock.py` md5 = 저장소(`d27ada2`). **`moneyon` 07:46:47Z · `ailab-caddy` 07:32:02Z 그대로**.
+- 배포 뒤 수동 생성(섹터 파일 10:53Z, 상태 10:56Z): `basis_key=slot:20261030:1300`(d27ada2 덕분에 수집기가 곧바로 다시 돌려 덮지 않음), 헤더 '10/30 19:49 기준', 이슈 **5개 모두 검증된 기업 있음**(`no_verified` 0), 완화 없음(`relax` 빈 값), 제외 후보 unlinked 1·press 1·ongoing 2·no_verified 1·same_event 2·no_company 1. 이슈: 엔비디아 스파이 의혹 · GS건설 개인정보 유출 · EU 하이브리드차 세이프가드(계속되는 이슈) · 국산 바이오 신약 허가 · 베이징현대 수장 퇴임. 앞서 지적된 인천공항 발권 장애 중복은 이번 결과에 없음.
+- 10-30 서버 AI 합계 $1.37 / 상한 $10 (19:11 재생성 뒤 $0.82였음).
+- 공개 주소 점검(20:1x, wai-labs.com·sslip.io 모두): `/`·`/stock`·`?tab=market`·`/api/ready`·`/api/stock/lifemap`·`/pulse` 200. 헤드리스 Chrome 390·1440: 가로 넘침 0, 페이지 JS 오류 0, '검증 전'·'검증된 국내 상장기업 없음'·'준비된 예시'·'단순' 0건. 콘솔의 `HEAD /`·`HEAD /admin` 405는 이번 변경과 무관(서버가 HEAD를 받지 않음).
+- 확인할 것: 내일이 토요일이라 첫 실제 08:30 회차는 **11-02(월) 08:30**, 13:00 회차의 '새 이슈 13:00' 배지는 같은 날 13:05 무렵(오늘은 수동 생성이라 배지 0개가 정상).
+
 **10-30 저녁 이슈 생성 보완 + 기업 연관성 검증(LIFEMAP_VERIFY)** — 규칙은 STOCKON_PLAN.md '2026-10-30 저녁'. 커밋 `9fe17bd`(0단계 같은 사건 합치기·완화) · `1830e7e`(검증 엔진) · `ae77e1c`(관계도 화면). 테스트 STOCK:ON 153개 통과, `tsc` 통과, 로컬(서버 복사본 데이터) 390·1440: 가로 넘침 0, JS 오류 0, '단순'·수혜·피해·추천 없음.
 
 - **검증 끄는 법(문제 생기면)**: 서버 `~/ailab/.env.lifemap`에 `LIFEMAP_VERIFY=0` 한 줄(없으면 추가) → `docker compose up -d --no-deps --force-recreate stockon-collector` → 다음 생성부터 지금 방식(화면에 '검증 전' 배지). 이미 만든 이슈를 바로 바꾸려면 `docker compose exec -T stockon-collector python -m services.stockon.lifemap --topics`(약 $0.1). 다시 켜기: 그 줄을 지우거나 `=1` → 같은 명령. ailab·caddy·moneyon은 건드리지 않는다.
