@@ -2447,6 +2447,10 @@ if __name__ == "__main__":
             sys.exit(1)
         now = datetime.now(KST)
         sb = slot_basis(now, "0830" if "--merge" not in sys.argv else "manual")
+        passed = [s for s, hm in SLOTS.items() if (now.hour, now.minute) >= hm]
+        if passed and trading_day(now.strftime("%Y%m%d")):
+            # 손으로 만든 결과를 그날 지난 회차로 친다(수집기가 곧바로 그 회차를 다시 돌려 덮지 않게)
+            sb["key"] = f"slot:{now.strftime('%Y%m%d')}:{passed[-1]}"
         if "--daily" in sys.argv or "--sectors" in sys.argv:
             print(f"섹터: {run_sectors(sb)}개")
         if "--daily" in sys.argv or "--topics" in sys.argv or "--merge" in sys.argv:
