@@ -95,8 +95,15 @@ export type LifeCompany = {
   opposite?: boolean; // AI 해석 방향과 반대로 시장 대비 ±3%p 이상 움직임
   other?: { text: string; title?: string; url?: string }; // 그때 붙이는 다른 이유 한 줄(이슈를 만들 때 한 번 저장)
   waiting?: boolean; // 장 마감 뒤 뉴스라 비교할 다음 거래일 값이 아직 없음('반응 대기 중')
-  since?: { rate: number; vs: number; days: number; from: string; to: string }; // 첫 보도 이후 누적(최대 5거래일)
+  // 첫 보도 이후 누적(최대 5거래일). trail = 거래일마다 누적 시장 대비(%p) — 작은 추이선
+  since?: { rate: number; vs: number; days: number; from: string; to: string; trail?: { d: string; vs: number }[] };
   reflected?: boolean; // 오늘 값과 누적 방향이 다름 → 첫 보도 때 이미 반영됐을 수 있어요
+  party?: boolean; // 뉴스 당사자(기사에 이름이 나온 상장사·상장 모회사)
+  hop?: 0 | 1 | 2; // 0 당사자 · 1 1차 연결(공급·고객·사고 대응·규제 대상) · 2 2차 연결(경쟁·대체재·같은 업종)
+  relation?: string; // 당사자·모회사·지분·공급사·고객사·사고 대응·규제 대상·경쟁사·대체재·같은 업종
+  industry?: string; // KRX 업종(관련 업종 칩과 맞춤)
+  evidence?: LifeArticle; // 근거 기사
+  intro?: string; // 한 줄 회사 소개(회사별로 저장해 재사용)
 };
 /** 이슈 시점: 첫 보도, 장 마감 뒤 뉴스면 다음 거래일 반응과 비교 */
 export type LifeTiming = {
@@ -104,7 +111,10 @@ export type LifeTiming = {
   reaction_day: string; reaction_label: string; waiting: boolean; value_label: string;
 };
 export type LifeStage = { key: string; label: string; detail: string; companies: LifeCompany[] }; // 영향 경로
-export type LifeArticle = { title: string; url: string; press: string; pub: string | null; rep?: boolean };
+// press_name = 종합지·방송사 이름(경제지·전문지는 없음 → 도메인), section = RSS 섹션(사회·국제 등)
+export type LifeArticle = { title: string; url: string; press: string; pub: string | null; rep?: boolean; press_name?: string; section?: string };
+/** 관련 업종 칩: KRX 업종(키움) 등락과 시장 대비. codes = 그 업종의 연결 회사 */
+export type LifeIndustry = { name: string; market: string; rate: number; vs: number; codes: string[] };
 export type LifeMap = {
   word: string; stages: LifeStage[]; interpretation?: string[]; ai: boolean; example?: boolean; model?: string; created_ts?: number;
   basis_label?: string; reaction_label?: string;
@@ -112,10 +122,14 @@ export type LifeMap = {
   move?: { subject: string; today: "상승" | "하락" | "보합" | "불확실" }; // 유가·환율처럼 오르내리는 이슈의 오늘 실제 방향
   macro?: boolean; expected?: "예상대로" | "예상과 다름" | "판단 어려움" | ""; // 거시 이슈 · 시장 예상과 같았는지
   timing?: LifeTiming;
+  industries?: LifeIndustry[]; industries_label?: string; // 관련 업종 오늘(시장 대비) · 기준 시각
 };
 export type LifeItem = {
   name: string; title: string; summary: string; sector: string; articles: LifeArticle[]; map: LifeMap;
   basis_label?: string; carried?: boolean; example?: boolean; field?: string; macro?: boolean;
+  label?: string; kind?: string; // 일상 말 분야 이름('개인정보 유출') · 사건 종류
+  coverage?: { articles: number; presses: number; hours: number }; // 최근 24시간 기사 수·언론사 수
+  ongoing?: boolean; // 첫 보도가 24시간보다 오래됨 → '계속되는 이슈'
 };
 export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: string; label?: string };
 /** '오늘 시장 분위기' 띠: 지수 등락률과 오른·내린 종목 비율 한 줄(지수 시황 기사는 이슈 카드 대신 여기에). */

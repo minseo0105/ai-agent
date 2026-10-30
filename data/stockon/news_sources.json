@@ -1,0 +1,34 @@
+{
+ "note": "뉴스 속 숨은 종목 뉴스 출처. rss = '오늘 무슨 일이 있었나'(이슈 발견) — 종합 언론사·방송사 일상 뉴스면(사회·생활/문화·IT/과학·국제), 경제·증권 섹션은 넣지 않는다. general_press = 대표 기사가 될 수 있는 종합지·방송사 도메인(그 밖의 경제지·전문지는 관련 기사에만). 2026-10-30 서버(오라클)에서 확인: MBC·KBS는 오류 페이지로 넘어가고, 한겨레는 발행 시각이 없어 뺐다.",
+ "checked": "2026-10-30",
+ "rss": [
+  {"press": "연합뉴스", "section": "사회", "url": "https://www.yna.co.kr/rss/society.xml"},
+  {"press": "연합뉴스", "section": "국제", "url": "https://www.yna.co.kr/rss/international.xml"},
+  {"press": "연합뉴스", "section": "문화", "url": "https://www.yna.co.kr/rss/culture.xml"},
+  {"press": "연합뉴스", "section": "건강", "url": "https://www.yna.co.kr/rss/health.xml"},
+  {"press": "SBS", "section": "사회", "url": "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=03&plink=RSSREADER"},
+  {"press": "SBS", "section": "국제", "url": "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=07&plink=RSSREADER"},
+  {"press": "SBS", "section": "생활·문화", "url": "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=08&plink=RSSREADER"},
+  {"press": "SBS", "section": "IT·과학", "url": "https://news.sbs.co.kr/news/SectionRssFeed.do?sectionId=14&plink=RSSREADER"},
+  {"press": "JTBC", "section": "사회", "url": "https://news-ex.jtbc.co.kr/v1/get/rss/section/society"},
+  {"press": "JTBC", "section": "국제", "url": "https://news-ex.jtbc.co.kr/v1/get/rss/section/international"},
+  {"press": "JTBC", "section": "문화", "url": "https://news-ex.jtbc.co.kr/v1/get/rss/section/culture"},
+  {"press": "경향신문", "section": "사회", "url": "https://www.khan.co.kr/rss/rssdata/society_news.xml"},
+  {"press": "경향신문", "section": "문화", "url": "https://www.khan.co.kr/rss/rssdata/culture_news.xml"},
+  {"press": "경향신문", "section": "과학", "url": "https://www.khan.co.kr/rss/rssdata/science_news.xml"},
+  {"press": "동아일보", "section": "사회", "url": "https://rss.donga.com/national.xml"},
+  {"press": "동아일보", "section": "국제", "url": "https://rss.donga.com/international.xml"},
+  {"press": "동아일보", "section": "문화", "url": "https://rss.donga.com/culture.xml"},
+  {"press": "동아일보", "section": "과학", "url": "https://rss.donga.com/science.xml"},
+  {"press": "조선일보", "section": "사회", "url": "https://www.chosun.com/arc/outboundfeeds/rss/category/national/?outputType=xml"},
+  {"press": "조선일보", "section": "국제", "url": "https://www.chosun.com/arc/outboundfeeds/rss/category/international/?outputType=xml"},
+  {"press": "조선일보", "section": "문화", "url": "https://www.chosun.com/arc/outboundfeeds/rss/category/culture-life/?outputType=xml"}
+ ],
+ "general_press": {
+  "yna.co.kr": "연합뉴스", "yonhapnewstv.co.kr": "연합뉴스TV", "news.kbs.co.kr": "KBS", "news.sbs.co.kr": "SBS", "imnews.imbc.com": "MBC",
+  "news.jtbc.co.kr": "JTBC", "ytn.co.kr": "YTN", "ichannela.com": "채널A", "tvchosun.com": "TV조선",
+  "chosun.com": "조선일보", "joongang.co.kr": "중앙일보", "donga.com": "동아일보", "hani.co.kr": "한겨레", "khan.co.kr": "경향신문",
+  "hankookilbo.com": "한국일보", "kmib.co.kr": "국민일보", "seoul.co.kr": "서울신문", "segye.com": "세계일보", "munhwa.com": "문화일보",
+  "news1.kr": "뉴스1", "newsis.com": "뉴시스", "nocutnews.co.kr": "노컷뉴스", "ohmynews.com": "오마이뉴스"
+ }
+}

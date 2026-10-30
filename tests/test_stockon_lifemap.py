@@ -9,9 +9,11 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from unittest import mock
 
-from services.stockon import ai, kiwoom_collector, lifemap, news, store
+from services.stockon import ai, kiwoom_collector, lifemap, news, rss, store
 from services.stockon.public_data import KST
 from tests.test_stockon import TempStore
+
+REAL_RSS_COLLECT = rss.collect  # LifemapBase가 rss.collect를 막아 두므로 RSS 수집 자체 테스트는 원래 함수로
 
 STOCKS = {
     "004370": {"name": "농심", "market": "KOSPI", "close": 400000, "change": 4000, "rate": 1.01, "cap": 2e12, "value": 1e10},
@@ -87,7 +89,9 @@ class LifemapBase(TempStore):
         self.pool = FakePool()
         for p in (mock.patch.object(lifemap, "_pool", self.pool), mock.patch.object(ai, "available", return_value=True),
                   mock.patch.object(news, "configured", return_value=True), mock.patch.object(news, "search", return_value=[]),
-                  mock.patch.object(lifemap.public_data, "stock_history", return_value={})):
+                  mock.patch.object(lifemap.public_data, "stock_history", return_value={}),
+                  # RSS를 부르지 않는다(기사가 없으면 예전 방식 = NAVER 검색어로 만든다). RSS 경로는 RssIssuesTest에서
+                  mock.patch.object(rss, "collect", return_value=([], []))):
             p.start()
             self.patches.append(p)
 
@@ -349,7 +353,7 @@ class LinkAndOppositeTest(LifemapBase):
         got = {c["name"]: (c["relevance"], c.get("link")) for c in paths[0]["companies"]}
         self.assertEqual(got, {"KT": ("약", "같은 업종"), "SK텔레콤": ("강", "직접 당사자")})
         self.assertIn("'같은 업종'이라는 이유만으로는 넣지 않는다", lifemap.INTERP_SYSTEM)
-        self.assertIn("link", lifemap.INTERP_SCHEMA["properties"]["paths"]["items"]["properties"]["companies"]["items"]["required"])
+        self.assertIn("relation", lifemap.INTERP_SCHEMA["properties"]["paths"]["items"]["properties"]["companies"]["items"]["required"])
 
     def test_opposite_rule(self):
         o = lifemap.opposite
@@ -981,7 +985,8 @@ class PurposeTest(LifemapBase):
         out = lifemap.with_reaction(item, live)
         c = out["map"]["stages"][0]["companies"][0]
         self.assertEqual((c["waiting"], c["vs_market"], out["map"]["timing"]["waiting"]), (False, 2.0, False))
-        self.assertEqual(c["since"], {"rate": 1.5, "vs": 2.0, "days": 1, "from": "10/30", "to": "10/30"})
+        self.assertEqual(c["since"], {"rate": 1.5, "vs": 2.0, "days": 1, "from": "10/30", "to": "10/30",
+                                      "trail": [{"d": "10/30", "vs": 2.0}]})
         self.assertFalse(c["reflected"])
 
     def test_cumulative_since_first_report_and_already_reflected(self):
@@ -1102,6 +1107,190 @@ class ExamplesFileTest(unittest.TestCase):
                     self.assertFalse(lifemap._unsafe(c["reason"]), c["reason"])
         sectors = [t["sector"] for t in data["topics"]]
         self.assertEqual(len(sectors), len(set(sectors)))
+
+
+# ---------------------------------------------------------
+# 2026-10-30 개편: 종합지·방송사 RSS로 이슈 발견, NAVER로 기사 수·언론사 수, 뉴스 당사자·숨은 연결
+# ---------------------------------------------------------
+
+RSS_XML = """<?xml version="1.0"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel>
+<item><title><![CDATA[빗썸 고객 개인정보 유출…3만 명 피해]]></title><link>https://www.yna.co.kr/view/AKR1</link>
+<pubDate>Fri, 30 Oct 2026 09:10:00 +0900</pubDate><description><![CDATA[<b>빗썸</b>에서 고객 정보가]]></description></item>
+<item><title>발행 시각 없는 기사</title><link>https://www.yna.co.kr/view/AKR2</link></item>
+<item><title>dc 날짜 기사</title><link>https://www.khan.co.kr/article/1</link><dc:date>2026-10-30T08:00:00+09:00</dc:date></item>
+</channel></rss>"""
+
+REF = datetime(2026, 10, 30, 10, 0, tzinfo=KST)
+
+
+def _rss_art(n, title, press_name="연합뉴스", host="www.yna.co.kr", hours=2):
+    return {"title": title, "url": f"https://{host}/view/{n}", "press": host, "press_name": press_name, "section": "사회",
+            "pub": (REF - timedelta(hours=hours)).isoformat(), "snippet": "", "source": "rss"}
+
+
+RSS_ARTS = [_rss_art(1, "빗썸 개인정보 유출 3만 명"), _rss_art(2, "빗썸 개인정보 유출 경찰 수사", "SBS", "news.sbs.co.kr"),
+            _rss_art(3, "은행 해킹 피해 확산"), _rss_art(4, "아이폰 듀오 결함 리콜"), _rss_art(5, "국회 여야 공방 계속"),
+            _rss_art(6, "전기차 배터리 리콜 확대", "JTBC", "news.jtbc.co.kr"), _rss_art(7, "코스피 급락 마감")] + \
+           [_rss_art(10 + i, f"기타 기사 {i}") for i in range(20)]
+
+
+def _rss_topic(keyword, label, kind, nums, rep, title=None, summary="사실 한 줄", linked=True, query=None):
+    return {"title": title or f"{keyword} 소식", "summary": summary, "keyword": keyword, "label": label, "kind": kind,
+            "field": "보안 사고", "macro": False, "linked": linked, "query": query or keyword, "articles": nums, "representative": rep}
+
+
+class RssIssuesTest(LifemapBase):
+    def test_parse_rss_dates_press_and_sources_file(self):
+        items = rss.parse(RSS_XML.encode(), {"press": "연합뉴스", "section": "사회"})
+        self.assertEqual([a["title"] for a in items], ["빗썸 고객 개인정보 유출…3만 명 피해", "dc 날짜 기사"])  # 발행 시각 없으면 뺀다
+        self.assertEqual(items[0]["pub"], "2026-10-30T09:10:00+09:00")
+        self.assertEqual(items[0]["snippet"], "빗썸에서 고객 정보가")
+        self.assertEqual((items[0]["press_name"], items[0]["section"]), ("연합뉴스", "사회"))
+        self.assertTrue(rss.general("https://www.donga.com/news/1"))
+        self.assertTrue(rss.general("https://news.sbs.co.kr/news/endPage.do?news_id=1"))
+        self.assertFalse(rss.general("https://www.sentv.co.kr/news/1"))  # 경제지는 대표 기사가 아니다
+        src = rss.sources()
+        self.assertGreaterEqual(len(src["rss"]), 10)
+        for f in src["rss"]:  # 경제·증권 섹션은 넣지 않는다
+            self.assertNotRegex(f["section"] + f["url"], r"경제|증권|economy|stock|market")
+
+    def test_collect_keeps_window_and_reports_feeds(self):
+        class R:
+            status_code = 200
+            content = RSS_XML.encode()
+        with mock.patch.object(rss, "sources", return_value={"rss": [{"press": "연합뉴스", "section": "사회", "url": "https://x/1"},
+                                                                     {"press": "동아일보", "section": "사회", "url": "https://x/2"}],
+                                                             "general_press": {}}):
+            arts, report = REAL_RSS_COLLECT(REF - timedelta(hours=24), REF, http=lambda *a, **k: R())
+        self.assertEqual(len(arts), 2)  # 두 피드 같은 제목은 한 번만
+        self.assertEqual([r["items"] for r in report], [2, 2])
+
+    def test_pick_rules_linked_kind_and_card_words(self):
+        raw = {"topics": [
+            _rss_topic("빗썸 정보유출", "개인정보 유출", "해킹·정보유출", [1, 2], 1, query="빗썸 개인정보 유출"),
+            _rss_topic("은행 해킹", "은행 해킹", "해킹·정보유출", [3], 3),            # 사건 종류가 같다 → 하나만
+            _rss_topic("아이폰 듀오 결함", "스마트폰 결함", "제품 결함·리콜", [4], 4, title="아이폰 듀오 결함에 부품주 급등"),  # 증권 표현
+            _rss_topic("국회 공방", "정치", "기타", [5], 5, linked=False),             # 기업과 이어지지 않음
+            _rss_topic("전기차 배터리 리콜", "전기차 리콜", "제품 결함·리콜", [6], 6),
+            _rss_topic("코스피 급락", "증시", "기타", [7], 7),                        # 지수 시황
+        ]}
+        with mock.patch.object(lifemap, "_ask", return_value=raw) as ask:
+            topics = lifemap.pick_rss_issues(self.basis(), RSS_ARTS)
+        self.assertIn("1|연합뉴스|사회|", ask.call_args.args[3]["기사"][0])
+        self.assertNotIn("코스피 급락 마감", " ".join(ask.call_args.args[3]["기사"]))  # 증권 기사는 AI에 보내기 전에 뺀다
+        self.assertEqual([(t["name"], t["label"]) for t in topics], [("빗썸 정보유출", "개인정보 유출"), ("전기차 배터리 리콜", "전기차 리콜")])
+        self.assertEqual(topics[0]["query"], "빗썸 개인정보 유출")
+        self.assertEqual(lifemap._last_rejects, {"kind": 1, "text": 1, "unlinked": 1, "market": 1})
+        self.assertTrue(lifemap.card_unsafe("부품주 급등"))
+        self.assertFalse(lifemap.card_unsafe("빗썸 고객 3만 명 정보 유출"))
+
+    def test_cover_counts_presses_first_report_and_related_articles(self):
+        t = {"name": "빗썸 정보유출", "query": "빗썸 개인정보 유출", "_context": RSS_ARTS[:2]}
+        naver = [{"title": "빗썸 개인정보 유출 파장", "url": "https://www.sentv.co.kr/1", "press": "www.sentv.co.kr",
+                  "pub": (REF - timedelta(hours=1)).isoformat(), "snippet": ""},
+                 {"title": "빗썸 개인정보 유출 관련주 급등", "url": "https://stock.example/2", "press": "stock.example",
+                  "pub": (REF - timedelta(hours=1)).isoformat(), "snippet": ""},  # 증권 기사 → 세지 않음
+                 {"title": "빗썸 첫 유출 의심 신고", "url": "https://www.donga.com/3", "press": "www.donga.com",
+                  "pub": (REF - timedelta(hours=40)).isoformat(), "snippet": ""},  # 24시간 밖 → 첫 보도
+                 {"title": "날씨 기사", "url": "https://www.donga.com/4", "press": "www.donga.com",
+                  "pub": (REF - timedelta(hours=1)).isoformat(), "snippet": ""}]  # 같은 사건이 아님
+        with mock.patch.object(news, "search", return_value=naver) as search:
+            lifemap.cover(t, REF)
+        self.assertEqual([c.kwargs["sort"] for c in search.call_args_list], ["date", "sim"])
+        self.assertEqual(search.call_args.args[0], "빗썸 개인정보 유출")
+        self.assertEqual(t["coverage"], {"articles": 3, "presses": 3, "hours": 24})  # 연합·SBS(RSS) + 서울경제TV
+        self.assertTrue(t["ongoing"])
+        self.assertEqual(t["first"]["url"], "https://www.donga.com/3")
+        self.assertEqual([a["rep"] for a in t["articles"]], [True, False, False])
+        self.assertEqual(t["articles"][0]["press_name"], "연합뉴스")  # 대표 기사는 종합지·방송사
+        self.assertEqual(t["articles"][2]["url"], "https://www.sentv.co.kr/1")  # 경제지는 관련 기사에만
+        self.assertNotIn("press_name", t["articles"][2])
+
+    def test_rank_today_first_one_ongoing_and_two_presses(self):
+        def topic(name, presses, ongoing, n=10):
+            return {"name": name, "coverage": {"presses": presses, "articles": n}, "ongoing": ongoing}
+        lifemap._last_rejects.clear()
+        got = lifemap.rank_issues([topic("a", 3, False), topic("old1", 9, True), topic("b", 8, False), topic("one", 1, False),
+                                   topic("old2", 5, True), topic("c", 2, False)], 3)
+        self.assertEqual([t["name"] for t in got], ["b", "a", "old1"])
+        self.assertEqual(lifemap._last_rejects, {"press": 1, "ongoing": 1})
+
+    def test_run_topics_from_rss_end_to_end(self):
+        issues = {"topics": [_rss_topic("빗썸 정보유출", "개인정보 유출", "해킹·정보유출", [1, 2], 1)]}
+        interp = {"interpretation": ["거래소 정보 유출이 알려지면 보안 프로그램 수요가 늘 수 있어요."], "move": {"subject": "", "today": "해당 없음"},
+                  "expected": "해당 없음", "paths": [{"label": "보안 수요", "detail": "", "companies": [
+                      {"name": "라온시큐어", "direction": "긍정", "relation": "사고 대응", "relevance": "강", "reason": "인증 보안 솔루션을 만든다",
+                       "industry": "IT 서비스", "evidence": 1},
+                      {"name": "안랩", "direction": "긍정", "relation": "사고 대응", "relevance": "중", "reason": "백신 보안 솔루션을 만든다",
+                       "industry": "모름", "evidence": 9}]}]}
+
+        def fake_ask(model, system, *a, **k):
+            if system is lifemap.RSS_TOPIC_SYSTEM:
+                return issues
+            if system is lifemap.INTRO_SYSTEM:
+                return {"companies": [{"code": "042510", "intro": "모바일 인증 보안을 만드는 회사"}, {"code": "053800", "intro": "주가가 오를 회사"}]}
+            return interp
+
+        ref = lifemap._ref_time(self.basis())
+        naver = [{"title": "빗썸 정보유출 후폭풍", "url": "https://www.hankookilbo.com/1", "press": "www.hankookilbo.com",
+                  "pub": (ref - timedelta(hours=1)).isoformat(), "snippet": ""}]
+        now_arts = [{**a, "pub": (ref - timedelta(hours=2)).isoformat()} for a in RSS_ARTS]
+        with mock.patch.object(rss, "collect", return_value=(now_arts, [{"press": "연합뉴스", "ok": True, "items": 27}])), \
+                mock.patch.object(news, "search", return_value=naver), \
+                mock.patch.object(lifemap, "_ask", side_effect=fake_ask) as ask:
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual(data["news_source"], "rss")
+        t = data["topics"][0]
+        self.assertEqual((t["label"], t["kind"], t["ongoing"]), ("개인정보 유출", "해킹·정보유출", False))
+        self.assertEqual(t["coverage"]["presses"], 3)
+        self.assertNotIn("query", t)
+        cs = {c["name"]: c for s in t["map"]["stages"] for c in s["companies"]}
+        self.assertEqual((cs["라온시큐어"]["hop"], cs["라온시큐어"]["industry"]), (1, "IT 서비스"))
+        self.assertEqual(cs["라온시큐어"]["evidence"]["press_name"], "연합뉴스")
+        self.assertNotIn("industry", cs["안랩"])  # '모름'은 비운다
+        self.assertNotIn("evidence", cs["안랩"])  # 없는 기사 번호
+        self.assertEqual(lifemap.intros(), {"042510": "모바일 인증 보안을 만드는 회사"})  # 권유·주가 표현 소개는 버린다
+        self.assertEqual(store.read("lifemap_status")["news_source"], "rss")
+        view = lifemap.overview()["topics"][0]
+        vc = {c["code"]: c for s in view["map"]["stages"] for c in s["companies"]}
+        self.assertEqual(vc["042510"]["intro"], "모바일 인증 보안을 만드는 회사")
+        # 같은 회사 소개는 다시 만들지 않는다(안랩만 다시 묻는다)
+        calls = [c for c in ask.call_args_list if c.args[1] is lifemap.INTRO_SYSTEM]
+        self.assertEqual(len(calls), 1)
+        with mock.patch.object(lifemap, "_ask", return_value={"companies": []}) as again:
+            lifemap.ensure_intros([{"code": "042510", "name": "라온시큐어"}, {"code": "053800", "name": "안랩"}])
+        self.assertEqual([c["code"] for c in again.call_args.args[3]["회사"]], ["053800"])
+
+
+class PartyAndHiddenTest(LifemapBase):
+    def test_named_company_becomes_party_caps_and_order(self):
+        stocks, index, _ = lifemap.directory()
+        context = [{"title": "SK텔레콤·KT 고객 정보 유출", "snippet": "이마트 앱도", "url": "https://www.yna.co.kr/1", "press": "www.yna.co.kr"}]
+        comp = lambda n, rel, r="강", ind="통신": {"name": n, "direction": "부정", "relation": rel, "relevance": r,  # noqa: E731
+                                                "reason": f"{n} 사업 연결", "industry": ind, "evidence": 1}
+        raw = {"paths": [
+            {"label": "보상 비용", "detail": "", "companies": [comp("SK텔레콤", "당사자"), comp("KT", "경쟁사")]},
+            {"label": "보안 수요", "detail": "", "companies": [comp("라온시큐어", "사고 대응", "중", "IT 서비스"), comp("안랩", "사고 대응", "약", "IT 서비스")]},
+            {"label": "소비 위축", "detail": "", "companies": [comp("이마트", "고객사"), comp("농심", "같은 업종", "약", "음식료/담배")]},
+            {"label": "원가 부담", "detail": "", "companies": [comp("오뚜기", "대체재", "약", "음식료/담배"), comp("한화에어로스페이스", "공급사", "약", "운송장비/부품")]},
+        ]}
+        paths, _ = lifemap.validate_paths(raw, index, stocks, context=context)
+        cs = {c["name"]: c for p in paths for c in p["companies"]}
+        # 기사에 이름이 나온 KT·이마트도 당사자 → 당사자 3곳 중 2곳만(SK텔레콤·KT), 이마트는 빠진다
+        self.assertEqual(sorted(n for n, c in cs.items() if c["party"]), ["KT", "SK텔레콤"])
+        self.assertNotIn("이마트", cs)
+        self.assertEqual(len(cs), lifemap.COMPANIES_MAX)
+        self.assertNotIn("오뚜기", cs)  # 넘치면 2차·연관도 약한 것부터(같으면 뒤에 나온 것)
+        self.assertEqual((cs["KT"]["relation"], cs["KT"]["link"], cs["KT"]["hop"]), ("당사자", "직접 당사자", 0))
+        self.assertEqual((cs["라온시큐어"]["hop"], cs["농심"]["hop"]), (1, 2))
+        self.assertEqual(cs["SK텔레콤"]["evidence"]["press_name"], "연합뉴스")
+        self.assertEqual([p["key"] for p in paths], [f"p{i}" for i in range(len(paths))])
+
+    def test_prompts_plain_words_and_hidden_links(self):
+        self.assertIn("일반인", lifemap.INTERP_SYSTEM)
+        self.assertIn("기사에는 이름이 안 나왔지만", lifemap.INTERP_SYSTEM)
+        self.assertIn("업종명이 아니라", lifemap.RSS_TOPIC_SYSTEM)
+        self.assertIn("'가상자산 거래소'", lifemap.RSS_TOPIC_SYSTEM)
 
 
 if __name__ == "__main__":

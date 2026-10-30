@@ -33,6 +33,18 @@
 - 새 단어: AI LAB 앱(ailab)에서 같은 엔진으로 만든다. 동시 호출 상한·대기열·1인 횟수·하루 상한을 둔다. 같은 단어는 재사용.
 - AI가 실패하면 저장된 예시(data/stockon/lifemap_examples.json)로 대체한다. 화면이 비지 않게.
 - 문장에는 예측·권유('오를 것'·'매수'·'추천'·'수혜'·'기회'·'덜 올랐다')를 쓰지 않는다. '숨은'은 탭 이름에만 쓴다.
+
+출처와 이슈 고르기(2026-10-30 개편):
+- '오늘 무슨 일이 있었나'는 종합 언론사·방송사 일상 뉴스면 RSS(rss.py, data/stockon/news_sources.json)에서 찾는다.
+  Haiku가 같은 사건 기사를 묶고 '산업·기업과 이어지는 이슈'만 고른다(사건 종류 kind가 같으면 하나만).
+  '얼마나 많이 다뤘나'(최근 24시간 기사 수·언론사 수)·관련 기사·첫 보도는 NAVER 뉴스 검색으로 센다.
+  대표 기사는 종합지·방송사(RSS) 기사, 경제지·전문지 기사는 관련 기사에만. 첫 보도가 24시간 안인 이슈를 먼저,
+  더 오래된 이슈는 최대 1개('계속되는 이슈'). RSS가 너무 적으면(예전 기준일) 예전 방식(NAVER 검색어)으로 만든다.
+- 이름: 분야 이름(label)은 업종명이 아니라 일상 말('개인정보 유출'·'전기차 리콜'). 카드 제목·요약에 증권 표현을 쓰지 않는다.
+- 회사: 기사에 이름이 나온 상장사(또는 상장 모회사)는 '뉴스 당사자'(최대 2), 나머지는 기사에 없는 근거 있는 연결
+  (공급사·고객사·경쟁사·대체재·사고 대응 업체 등, 1차/2차). 이슈당 최대 6곳. 회사마다 KRX 업종(관련 업종 칩용, 모르면 비움),
+  근거 기사, 한 줄 회사 소개(회사별로 lifemap_intros.json에 저장해 재사용).
+- 관련 업종 칩: 회사 업종을 '오늘 시장' 탭과 같은 키움 업종 등락(market_extra.json)으로 시장 대비 %p. 화면은 pulse()로 15초마다 숫자만 갱신.
 """
 
 import json
@@ -46,7 +58,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from services.stockon import ai, budget, news, public_data, store
+from services.stockon import ai, budget, news, public_data, rss, store
 from services.stockon.public_data import KST
 from services.stockon.safety import banned_hits
 from services.stockon.service import news_window, price_note
@@ -96,6 +108,32 @@ CUM_DAYS = 5               # 첫 보도 이후 누적은 최대 5거래일
 FIRST_LOOKBACK_DAYS = 7    # 첫 보도를 찾는 범위(기준 뉴스 창 끝에서 거슬러)
 # 한국거래소 휴장일(주말 제외). 지난 날은 지수 추이의 실제 거래일로도 맞춘다. 매년 연말에 다음 해를 더한다.
 KRX_HOLIDAYS = {"20261225", "20261231", "20270101", "20270208", "20270209", "20270301"}
+
+# RSS 이슈 발견(오늘 무슨 일이 있었나) → NAVER로 기사 수·언론사 수(얼마나 많이 다뤘나)
+FRESH_HOURS = 24           # 첫 보도가 이 안이면 오늘 이슈, 더 오래되면 '계속되는 이슈'(최대 ONGOING_MAX개)
+ONGOING_MAX = 1
+RSS_MIN = 20               # 기준 창 안 RSS 기사가 이보다 적으면(예전 기준일 등) 예전 방식(NAVER 검색어)으로
+RSS_PER_FEED = 30          # 피드마다 최신 기사 수(Haiku 입력 토큰)
+CANDIDATES_MAX = 9         # Haiku가 고르는 이슈 후보 수
+COVER_MIN_PRESS = 2        # 최근 24시간 이 수 이상의 언론사가 다뤄야 이슈
+COMPANIES_MAX = 6          # 이슈당 회사(뉴스 당사자 포함)
+PARTY_MAX = 2              # 뉴스 당사자
+# 사건 종류: 분야 이름이 달라도 종류가 같으면 같은 이슈로 본다(예: 거래소 유출·은행 해킹 = 해킹·정보유출)
+EVENT_KINDS = ("해킹·정보유출", "제품 결함·리콜", "산업 사고·화재", "재난·날씨", "질병·건강", "정책·규제", "국제 정세·외교",
+               "무역·관세", "유가·원자재", "환율·금리", "물가·소비", "기술·신제품", "노사·파업", "법원·수사", "교통·인프라", "기타")
+# 회사가 뉴스와 이어지는 관계: 당사자·모회사는 '뉴스 당사자', 공급·고객·사고 대응·규제 대상은 1차, 경쟁·대체재·같은 업종은 2차
+RELATIONS = {"당사자": 0, "모회사·지분": 0, "공급사": 1, "고객사": 1, "사고 대응": 1, "규제 대상": 1, "경쟁사": 2, "대체재": 2, "같은 업종": 2}
+# 키움 업종(ka20003, '오늘 시장' 탭과 같은 목록). 관련 업종 칩은 이 이름으로만(모르면 칩을 뺀다)
+KRX_INDUSTRIES = ("음식료/담배", "섬유/의류", "종이/목재", "화학", "제약", "비금속", "금속", "기계/장비", "전기/전자", "의료/정밀기기",
+                  "운송장비/부품", "유통", "전기/가스", "건설", "운송/창고", "통신", "금융", "증권", "보험", "부동산", "IT 서비스",
+                  "오락/문화", "출판/매체복제", "기타제조")
+INDUSTRIES_MAX = 4
+INDUSTRY_STALE_DAYS = 5    # 이보다 오래된 업종 등락은 칩을 숨긴다
+# 카드 제목·요약(일반 뉴스 말투)에 쓰지 않는 증권 표현
+CARD_BANNED = re.compile(r"주가|급등|급락|상한가|하한가|종목|증시|코스피|코스닥|시가총액|투자자|강세|약세|테마|특징주|관련주|수혜|매수|매도")
+INTRO_MODEL = TOPIC_MODEL  # 한 줄 회사 소개(Haiku, 회사별로 한 번)
+INTRO_MAX = 32
+PULSE_CACHE_SEC = 5.0
 
 # 일상 뉴스 검색어(분야, 검색어). 기준 뉴스 창 안 기사만 쓴다. 등락 순위·특징주·실적 검색은 하지 않는다.
 ISSUE_QUERIES = [
@@ -210,13 +248,25 @@ def match_company(name: str, index: dict) -> str | None:
     return index.get(_norm_name(name))
 
 
-def validate_paths(raw: dict, index: dict, stocks: dict, macro_text: str | None = None) -> tuple[list[dict], list[str]]:
+def _evidence(n, context: list[dict]) -> dict | None:
+    """AI가 고른 근거 기사 번호 → 화면용 {title, url, press, press_name, pub}."""
+    if not isinstance(n, int) or not 1 <= n <= len(context):
+        return None
+    a = context[n - 1]
+    return {**{k: a.get(k) for k in ("title", "url", "press", "pub")}, "press_name": a.get("press_name") or rss.press_name(a.get("url", ""))}
+
+
+def validate_paths(raw: dict, index: dict, stocks: dict, macro_text: str | None = None,
+                   context: list[dict] | None = None) -> tuple[list[dict], list[str]]:
     """AI가 낸 영향 경로 → (화면용 경로 목록, 지운 회사 이름). 경로 최대 4, 경로당 2곳, 회사는 한 번만, 방향(긍정/부정/불확실) 필수.
-    macro_text(거시 이슈의 기사 제목·요약문)가 있으면 연관도는 '약'으로 고정하고, 그 회사가 기사에 직접 나올 때만 AI 연관도를 둔다."""
+    macro_text(거시 이슈의 기사 제목·요약문)가 있으면 연관도는 '약'으로 고정하고, 그 회사가 기사에 직접 나올 때만 AI 연관도를 둔다.
+    context(이슈 기사)가 있으면: 기사에 이름이 나온 회사는 '뉴스 당사자'(party, 최대 PARTY_MAX), relation으로 1차/2차(hop),
+    KRX 업종(industry, 목록에 없으면 비움), 근거 기사(evidence). 이슈 전체 회사는 COMPANIES_MAX곳까지(당사자 → 1차 → 2차 순으로 남김)."""
     paths: list[dict] = []
     removed: list[str] = []
     used: set[str] = set()
     labels: set[str] = set()
+    text = " ".join(f"{a.get('title', '')} {a.get('snippet') or ''}" for a in context or [])
     for p in (raw or {}).get("paths") or []:
         label = normalize_word(str(p.get("label") or ""))[:10]
         if not label or label in labels or _unsafe(label):
@@ -237,12 +287,23 @@ def validate_paths(raw: dict, index: dict, stocks: dict, macro_text: str | None 
             used.add(code)
             rel = c.get("relevance") if c.get("relevance") in RELEVANCE else "약"
             link = c.get("link") if c.get("link") in LINKS else ""
+            row: dict = {}
+            if c.get("relation") in RELATIONS:
+                relation = c["relation"]
+                named = bool(text) and (stocks[code]["name"] in text or (name and name in text))
+                party = RELATIONS[relation] == 0 or named  # 기사에 이름이 나오면 숨은 연결이 아니라 뉴스 당사자
+                hop = 0 if party else RELATIONS[relation]
+                link = "직접 당사자" if party else "같은 업종" if relation == "같은 업종" else "사업 연결"
+                ind = c.get("industry") if c.get("industry") in KRX_INDUSTRIES else ""
+                ev = _evidence(c.get("evidence"), context or [])
+                row = {"relation": "당사자" if named and RELATIONS[relation] else relation, "hop": hop, "party": party,
+                       **({"industry": ind} if ind else {}), **({"evidence": ev} if ev else {})}
             if link == "같은 업종":
                 rel = "약"  # 같은 업종이라는 것만으로는 연관이 약하다
             if macro_text is not None and stocks[code]["name"] not in macro_text and name not in macro_text:
                 rel = "약"  # 금리·환율 같은 거시 이슈는 시장 전체에 닿는다. 회사 고유의 연결이 기사로 확인될 때만 '중' 이상
             companies.append({"code": code, "name": stocks[code]["name"], "relevance": rel, "reason": reason[:60],
-                              "direction": direction, **({"link": link} if link else {})})
+                              "direction": direction, **({"link": link} if link else {}), **row})
             if len(companies) == PER_PATH:
                 break
         if companies:
@@ -251,23 +312,53 @@ def validate_paths(raw: dict, index: dict, stocks: dict, macro_text: str | None 
                           "companies": companies})
             if len(paths) == MAX_PATHS:
                 break
-    return paths, removed
+    return cap_companies(paths), removed
+
+
+def cap_companies(paths: list[dict]) -> list[dict]:
+    """뉴스 당사자는 PARTY_MAX곳까지, 이슈 전체는 COMPANIES_MAX곳까지. 넘치면 2차 → 1차, 연관도 약한 것부터 뺀다.
+    회사가 모두 빠진 경로는 지운다. relation이 없는 예전 결과는 그대로 둔다."""
+    rows = [(i, c) for i, p in enumerate(paths) for c in p["companies"]]
+    if not any("hop" in c for _, c in rows):
+        return paths
+    order = sorted(rows, key=lambda r: (r[1].get("hop", 1), RELEVANCE.index(r[1]["relevance"])))
+    keep, parties = set(), 0
+    for _, c in order:
+        if c.get("party"):
+            if parties >= PARTY_MAX:
+                continue
+            parties += 1
+        if len(keep) < COMPANIES_MAX:
+            keep.add(c["code"])
+    out = []
+    for p in paths:
+        companies = [c for c in p["companies"] if c["code"] in keep]
+        if companies:
+            out.append({**p, "key": f"p{len(out)}", "companies": companies})
+    return out
 
 
 # ---------------------------------------------------------
 # AI 호출
 # ---------------------------------------------------------
 
-INTERP_SYSTEM = """너는 경제 뉴스를 읽고 한국 상장사에 미칠 수 있는 영향을 설명하는 경제 교육용 해설가다.
+INTERP_SYSTEM = """너는 일상 뉴스를 읽고, 그 뉴스가 어떤 한국 상장사들과 이어져 있는지 쉬운 말로 알려 주는 해설가다.
+읽는 사람은 주식을 잘 모르는 일반인이다. 애널리스트 말투(수혜·모멘텀·밸류에이션·업황 개선 등) 대신 일상 말로 쓴다.
 규칙:
-- interpretation: 이 뉴스가 어떤 경로로 회사들에 영향을 줄 수 있는지 2~3문장(문장당 60자 이내). 예: '개인정보 유출이 잇따르면 기업의 보안 투자 수요가 늘 수 있다.'
-  자료에 있는 사실에서 출발하고, '~할 수 있다'처럼 가능성으로 쓴다. 주가가 오르거나 내릴 것이라고 쓰지 않는다.
-- paths: 영향 경로 2~4개. label은 경로 이름 2~8자(예: '수요 증가', '원가 상승', '규제 강화', '경쟁 변화', '수출 영향'), detail은 한 줄(20자 이내).
+- interpretation: 이 뉴스가 어떤 회사들과 어떻게 이어지는지 2~3문장(문장당 60자 이내). 예: '해킹 사고가 잇따르면 회사들이 보안 프로그램을 더 사게 될 수 있어요.'
+  자료에 있는 사실에서 출발하고, '~할 수 있어요'처럼 가능성으로 쓴다. 주가가 오르거나 내릴 것이라고 쓰지 않는다.
+- paths: 영향 경로 2~4개. label은 경로 이름 2~8자, 일상 말로(예: '보안 수요', '보상 비용', '부품 교체', '원가 부담', '규제 강화'), detail은 한 줄(20자 이내).
 - 경로마다 영향을 받을 수 있는 한국거래소(코스피·코스닥) 상장사를 3곳까지, 상장 종목명 그대로. 비상장사·해외 회사·비상장 자회사는 쓰지 않는다.
-- 회사는 ① 뉴스의 직접 당사자(사고·발표의 주체, 그 회사의 상장 모회사) ② 구체적인 사업 연결(그 회사의 제품·고객·공급망·규제 대상)이
-  있을 때만 넣는다. '같은 업종'이라는 이유만으로는 넣지 않는다. 예: 한 은행의 개인정보 유출 뉴스에 다른 금융지주를 '신뢰 하락'으로 넣지 않는다.
-  같은 업종 회사를 꼭 넣어야 하면 link를 '같은 업종', relevance를 '약'으로 쓰고, 그 회사에 생기는 구체적인 변화를 reason에 쓴다.
-- link: '직접 당사자' / '사업 연결' / '같은 업종' 중 하나.
+- 이 기능의 목적은 '기사에는 이름이 안 나왔지만 이어져 있는 회사'를 찾는 것이다. 회사는 relation으로 관계를 밝힌다:
+  · '당사자': 기사에 이름이 직접 나온 사건·발표의 주체(상장사). '모회사·지분': 당사자가 비상장이면 지분 관계가 확인되는 상장 모회사·대주주.
+    당사자·모회사는 합쳐 1~2곳만. 당사자가 비상장이고 지분 관계를 확실히 모르면 넣지 않는다.
+  · 나머지는 기사에 이름이 나오지 않은 회사: '공급사'(당사자·제품에 부품·서비스를 대는 회사), '고객사', '사고 대응'(복구·보안·검사·보상을 맡는 업체),
+    '규제 대상', '경쟁사', '대체재'(대신 쓰일 제품·서비스를 만드는 회사), '같은 업종'. 그 회사의 실제 사업 내용으로 연결이 설명될 때만 넣는다.
+  '같은 업종'이라는 이유만으로는 넣지 않는다. 예: 한 은행의 개인정보 유출 뉴스에 다른 금융지주를 '신뢰 하락'으로 넣지 않는다.
+  같은 업종 회사를 꼭 넣어야 하면 relation을 '같은 업종', relevance를 '약'으로 쓰고, 그 회사에 생기는 구체적인 변화를 reason에 쓴다.
+- 이슈 전체 회사는 6곳 이하로(당사자 포함), 근거가 확실한 회사만.
+- industry: 그 회사가 속한 한국거래소 업종(목록 중 하나). 확실하지 않으면 '모름'.
+- evidence: 그 회사와의 연결을 보여 주는 기사 번호(자료의 '번호'). 당사자는 이름이 나온 기사, 나머지는 영향 경로의 출발점이 되는 사실이 담긴 기사.
 - 회사마다 direction: '긍정' 또는 '부정'(그 경로로 사업에 좋은 영향/나쁜 영향을 받을 수 있는 쪽). 긍정과 부정을 모두 살핀다.
 - move: 유가·환율·금리·물가처럼 오르내릴 수 있는 이슈면 subject에 그 이름(2~6자, 예: '유가'), today에 기사로 판단한 오늘 실제 방향
   ('상승'/'하락'/'보합', 기사로 판단하기 어려우면 '불확실'). 오르내리는 값이 아닌 사건이면 subject는 빈 문자열, today는 '해당 없음'.
@@ -276,7 +367,8 @@ INTERP_SYSTEM = """너는 경제 뉴스를 읽고 한국 상장사에 미칠 수
   '판단 어려움'. 거시 이슈면 interpretation 첫 문장에 그 판단을 쓴다(예: '시장 예상대로 동결돼 주가 영향이 작을 수 있다.'). 거시 이슈가 아니면 '해당 없음'.
 - 거시 이슈의 회사는 relevance를 '약'으로 쓰고, 그 회사 고유의 직접 연결(수출 비중·차입 구조 등)이 기사에 나올 때만 '중' 이상.
 - relevance: 강 = 직접 당사자이거나 그 회사 핵심 사업과 직접 이어짐, 중 = 주요 사업 중 하나, 약 = 간접적으로 이어짐.
-- reason: 그 회사가 왜 관련 있는지 사업 사실 한 줄(30자 이내, 제품·고객·공급·규제 중 무엇으로 이어지는지). 확실하지 않은 회사는 쓰지 않는다.
+- reason: 연결 근거 한 줄(30자 이내) — 그 회사의 사업 내용으로 뉴스와 어떻게 이어지는지(예: '은행에 이상 거래 탐지 시스템을 공급한다').
+  확실하지 않은 회사는 쓰지 않는다.
 - 금지: 주가 방향 예측('오를 것' 등), 매수·매도 권유, '추천', '수혜', '유망', '기대', '주목', '기회', '덜 올랐다', '숨은'. 한국어."""
 
 INTERP_SCHEMA = {
@@ -291,10 +383,13 @@ INTERP_SCHEMA = {
             "properties": {
                 "label": {"type": "string"}, "detail": {"type": "string"},
                 "companies": {"type": "array", "items": {
-                    "type": "object", "additionalProperties": False, "required": ["name", "direction", "link", "relevance", "reason"],
+                    "type": "object", "additionalProperties": False,
+                    "required": ["name", "direction", "relation", "relevance", "reason", "industry", "evidence"],
                     "properties": {"name": {"type": "string"}, "direction": {"type": "string", "enum": list(DIRECTIONS)},
-                                   "link": {"type": "string", "enum": list(LINKS)},
-                                   "relevance": {"type": "string", "enum": list(RELEVANCE)}, "reason": {"type": "string"}}}},
+                                   "relation": {"type": "string", "enum": list(RELATIONS)},
+                                   "relevance": {"type": "string", "enum": list(RELEVANCE)}, "reason": {"type": "string"},
+                                   "industry": {"type": "string", "enum": [*KRX_INDUSTRIES, "모름"]},
+                                   "evidence": {"type": "integer"}}}},
             }}},
     },
 }
@@ -321,6 +416,49 @@ TOPIC_SCHEMA = {
                        "field": {"type": "string", "enum": list(NEWS_FIELDS)}, "macro": {"type": "boolean"},
                        "sector": {"type": "string"}, "articles": {"type": "array", "items": {"type": "integer"}},
                        "representative": {"type": "integer"}}}}},
+}
+
+RSS_TOPIC_SYSTEM = """너는 종합 일간지·방송사의 일상 뉴스 편집자다. 주어진 기사는 오늘 종합 언론사·방송사의 사회·생활/문화·IT/과학·국제 뉴스면 기사다.
+사용자가 종목 이야기가 아닌 일상 뉴스를 보다가 '이 회사가 연결돼 있었네' 하고 발견하도록, 같은 사건을 다룬 기사들을 묶어 이슈 후보를 만든다.
+규칙:
+- 같은 사건을 다룬 기사들을 하나로 묶는다(articles: 기사 번호, representative: 그 사건이 제목에 가장 잘 드러난 기사 1개).
+- linked: 이 사건이 한국의 산업·기업(제품·서비스·공급망·규제·소비)과 이어지면 true. 정치 공방·범죄 사건·연예·스포츠·인물 부고처럼
+  기업과 이어지지 않으면 false. 기업과 이어지는 사건을 먼저 고른다.
+- 고르지 않는 기사: 기업 실적 발표·공시, 특징주·관련주·급등 기사, 증시 시황·지수 기사처럼 처음부터 종목·주가가 주인공인 기사.
+- kind: 사건 종류(목록 중 하나). 분야 이름이 달라도 사건 종류가 같으면(예: 거래소 개인정보 유출과 은행 해킹은 둘 다 '해킹·정보유출')
+  하나로 묶거나 기사가 많은 하나만 고른다.
+- macro: 금리·환율·지수 전반처럼 시장 전체에 영향을 주는 거시 이슈면 true(최대 1개).
+- keyword: 이슈 지도 가운데 둘 이름 2~8자. 대표 기사 제목에 나온 핵심 사건 그대로, 제목에 있는 말로(예: '금융권 해킹', '아이폰 듀오 결함').
+- label: 분야 이름 2~8자. 업종명이 아니라 사람들이 일상에서 부르는 말로(예: '개인정보 유출', '전기차 리콜', '스마트폰 결함', '은행 해킹', '폭우 피해').
+  '가상자산 거래소'·'2차전지'·'스마트폰 부품'·'금융' 같은 업종명은 쓰지 않는다.
+- title: 무슨 일이 있었나 한 줄(25자 이내), summary: 사실만 한 줄(45자 이내). 일반 뉴스 말투로 쓰고, 종목명·주가·급등·급락·증시 같은 증권 표현을 쓰지 않는다.
+- query: 이 사건을 다룬 다른 기사를 찾을 네이버 뉴스 검색어 2~4단어(예: '빗썸 개인정보 유출').
+- field: 뉴스 분야(목록 중 하나).
+- 주가 방향 예측, 매수·매도 권유, '추천', '수혜', '유망', '기대', '주목', '기회', '숨은' 같은 말을 쓰지 않는다. 한국어."""
+
+RSS_TOPIC_SCHEMA = {
+    "type": "object", "additionalProperties": False, "required": ["topics"],
+    "properties": {"topics": {"type": "array", "items": {
+        "type": "object", "additionalProperties": False,
+        "required": ["title", "summary", "keyword", "label", "kind", "field", "macro", "linked", "query", "articles", "representative"],
+        "properties": {"title": {"type": "string"}, "summary": {"type": "string"}, "keyword": {"type": "string"},
+                       "label": {"type": "string"}, "kind": {"type": "string", "enum": list(EVENT_KINDS)},
+                       "field": {"type": "string", "enum": list(NEWS_FIELDS)}, "macro": {"type": "boolean"},
+                       "linked": {"type": "boolean"}, "query": {"type": "string"},
+                       "articles": {"type": "array", "items": {"type": "integer"}}, "representative": {"type": "integer"}}}}},
+}
+
+INTRO_SYSTEM = """너는 일반인에게 회사를 소개하는 편집자다. 회사마다 무엇을 하는 회사인지 한 줄로 쓴다.
+규칙:
+- intro: '~하는 회사' 꼴의 한 줄(25자 이내). 예: '폴더블폰 힌지 부품을 만드는 회사', '은행에 보안 프로그램을 파는 회사'.
+- 그 회사의 대표 사업을 쓴다. 확실하지 않으면 빈 문자열.
+- 주가·투자 이야기, '추천', '수혜', '유망', '기대', '주목', '기회'를 쓰지 않는다. 한국어."""
+
+INTRO_SCHEMA = {
+    "type": "object", "additionalProperties": False, "required": ["companies"],
+    "properties": {"companies": {"type": "array", "items": {
+        "type": "object", "additionalProperties": False, "required": ["code", "intro"],
+        "properties": {"code": {"type": "string"}, "intro": {"type": "string"}}}}},
 }
 
 
@@ -380,8 +518,9 @@ def interpret(word: str, articles: list[dict], live: bool = False, macro: bool =
         raise RuntimeError("종목 목록 없음")
     task = f"'{word}' 뉴스가 한국 상장사들에 어떤 경로로 영향을 줄 수 있는지 해석하라."
     used = articles[:ARTICLES_MAX]
-    payload: dict = {"이슈": word, "거시 이슈": macro,
-                     "기사": [{"제목": a["title"], "요약문": (a.get("snippet") or "")[:120]} for a in used]}
+    payload: dict = {"이슈": word, "거시 이슈": macro, "업종 목록": list(KRX_INDUSTRIES),
+                     "기사": [{"번호": i + 1, "언론사": a.get("press_name") or a.get("press") or "", "제목": a["title"],
+                              "요약문": (a.get("snippet") or "")[:120]} for i, a in enumerate(used)]}
     macro_text = " ".join(f"{a['title']} {a.get('snippet') or ''}" for a in used) if macro else None
     removed_all: list[str] = []
     paths: list[dict] = []
@@ -390,7 +529,7 @@ def interpret(word: str, articles: list[dict], live: bool = False, macro: bool =
     count = lambda ps: sum(len(p["companies"]) for p in ps)  # noqa: E731
     for attempt in range(2):
         raw = _ask(CHAIN_MODEL, INTERP_SYSTEM, task, payload, INTERP_SCHEMA, 2000, live)
-        got, removed = validate_paths(raw, index, stocks, macro_text)
+        got, removed = validate_paths(raw, index, stocks, macro_text, used)
         removed_all += removed
         lines = [str(x).strip()[:120] for x in (raw or {}).get("interpretation") or [] if str(x).strip()]
         lines = [x for x in lines if not _unsafe(x)][:3]
@@ -596,10 +735,13 @@ def since_first(hist: list[dict] | None, day: str | None, rate, idx, rday: str |
     if not use or len(use) < min(CUM_DAYS, trading_days_between(rday, day)):
         return None
     cr = ci = 1.0
+    trail = []  # 거래일마다 첫 보도 이후 누적 시장 대비(%p) — 회사 상세의 작은 추이선
     for d in use:
         cr *= 1 + days[d][0] / 100
         ci *= 1 + days[d][1] / 100
-    return {"rate": round((cr - 1) * 100, 2), "vs": round((cr - ci) * 100, 2), "days": len(use), "from": _md(use[0]), "to": _md(use[-1])}
+        trail.append({"d": _md(d), "vs": round((cr - ci) * 100, 2)})
+    return {"rate": round((cr - 1) * 100, 2), "vs": round((cr - ci) * 100, 2), "days": len(use), "from": _md(use[0]), "to": _md(use[-1]),
+            "trail": trail}
 
 
 def timing(item: dict) -> dict | None:
@@ -648,7 +790,10 @@ def mark_reaction(m: dict, basis: dict) -> dict:
 # ---------------------------------------------------------
 
 def _article(a: dict, rep: bool = False) -> dict:
-    return {**{k: a.get(k) for k in ("title", "url", "press", "pub")}, "rep": rep}
+    """화면용 기사. press_name = 종합지·방송사 이름(경제지·전문지는 빈 문자열 → 화면은 도메인), section = RSS 섹션."""
+    name = a.get("press_name") or rss.press_name(a.get("url") or "")
+    return {**{k: a.get(k) for k in ("title", "url", "press", "pub")}, **({"press_name": name} if name else {}),
+            **({"section": a["section"]} if a.get("section") else {}), "rep": rep}
 
 
 def collect_issue_news(basis: dict, http=None) -> list[dict]:
@@ -769,6 +914,166 @@ def pick_issues(basis: dict, articles: list[dict], task: str = "", max_topics: i
     return topics
 
 
+_last_rss: dict = {}  # 마지막 RSS 수집 결과(피드별 기사 수, 상태 파일에 남긴다)
+
+
+def _ref_time(basis: dict) -> datetime:
+    """이슈를 세는 기준 시각: 기준 뉴스 창 끝과 지금 중 이른 쪽."""
+    end = basis["window"][1] if basis.get("window") else datetime.now(KST)
+    return min(end, datetime.now(KST))
+
+
+def card_unsafe(text: str) -> bool:
+    """카드 제목·요약에 증권 표현(주가·급등·종목·증시 등)이나 권유 표현이 있으면 True."""
+    return bool(CARD_BANNED.search(text or "")) or _unsafe(text)
+
+
+def pick_rss_issues(basis: dict, articles: list[dict], max_topics: int = CANDIDATES_MAX) -> list[dict]:
+    """RSS 기사 → Haiku가 같은 사건 기사를 묶은 이슈 후보(기업과 이어지는 것만). 증권 기사는 먼저 빼고,
+    대표 기사·기사 번호·사건 종류 중복·중심 주제·거시 이슈 수·카드 표현을 검사해 통과한 것만. 언론사 수는 cover()에서 센다."""
+    _last_excluded.clear()
+    kept = []
+    for a in articles:
+        rule = stock_article(a)
+        if rule:
+            _last_excluded.append({"rule": rule, **{k: a.get(k) for k in ("title", "press", "pub", "url")}})
+        else:
+            kept.append(a)
+    articles = kept
+    _last_rejects.clear()
+    if not articles:
+        return []
+
+    def stamp(pub):
+        d = datetime.fromisoformat(pub).astimezone(KST)
+        return f"{d.month}/{d.day} {d:%H:%M}"
+
+    payload = {"기준": basis["label"], "사건 종류": list(EVENT_KINDS),
+               "기사": [f"{i + 1}|{a.get('press_name', '')}|{a.get('section', '')}|{stamp(a['pub'])}|{a['title']}" for i, a in enumerate(articles)]}
+    raw = _ask(TOPIC_MODEL, RSS_TOPIC_SYSTEM,
+               f"기사는 '번호|언론사|섹션|발행|제목'이다. 같은 사건 기사를 묶어 한국 산업·기업과 이어지는 이슈를 기사가 많은 순서로 {max_topics}개까지 골라라.",
+               payload, RSS_TOPIC_SCHEMA, 4000)
+    topics, keywords, kinds, used, seen_tokens = [], set(), set(), set(), set()
+    macros = 0
+    rejects = _last_rejects
+    for t in (raw or {}).get("topics") or []:
+        keyword = normalize_word(str(t.get("keyword") or ""))[:12]
+        label = normalize_word(str(t.get("label") or ""))[:12]
+        kind = t.get("kind") if t.get("kind") in EVENT_KINDS else "기타"
+        title = str(t.get("title") or "").strip()[:40]
+        summary = str(t.get("summary") or "").strip()[:80]
+        query = normalize_word(str(t.get("query") or ""))[:30] or keyword
+        nums = [n for n in dict.fromkeys(t.get("articles") or []) if isinstance(n, int) and 1 <= n <= len(articles)]
+        rep = t.get("representative")
+        if rep in nums:
+            nums = [rep] + [n for n in nums if n != rep]
+        nums = nums[:ARTICLES_MAX]
+        tokens = _issue_tokens(keyword)
+        macro = bool(t.get("macro")) or bool(MACRO.search(keyword))
+        # '기타'는 종류로 묶지 않는다(서로 다른 사건일 수 있다)
+        why = ("unlinked" if not t.get("linked") else
+               "market" if index_news({"name": keyword, "title": title}) else
+               "stock" if STOCK_TOPIC.search(keyword) or stock_article({"title": title}) else
+               "word" if not keyword or check_word(keyword) or keyword in keywords or tokens & seen_tokens else
+               "kind" if kind != "기타" and kind in kinds else
+               "text" if not title or not summary or not label or any(card_unsafe(x) for x in (title, summary, keyword, label)) else
+               "articles" if not nums or rep not in nums or used & set(nums) else
+               "center" if not centered(keyword, [articles[n - 1]["title"] for n in nums]) else
+               "macro" if macro and macros else "")
+        if why:
+            rejects[why] = rejects.get(why, 0) + 1
+            continue
+        keywords.add(keyword)
+        seen_tokens.update(tokens)
+        kinds.add(kind)
+        used.update(nums)
+        macros += macro
+        field = t.get("field") if t.get("field") in NEWS_FIELDS else ""
+        topics.append({"name": keyword, "title": title, "summary": summary, "label": label, "kind": kind, "sector": label,
+                       "field": field, "macro": macro, "query": query,
+                       "_context": [articles[n - 1] for n in nums]})
+        if len(topics) == max_topics:
+            break
+    return topics
+
+
+def _matches(title: str, tokens: set[str]) -> bool:
+    """검색으로 찾은 기사가 같은 사건인지: 이슈 이름·검색어의 말이 제목에 둘 이상(말이 하나뿐이면 그 하나) 있다."""
+    return bool(tokens) and sum(t in title for t in tokens) >= min(2, len(tokens))
+
+
+def cover(t: dict, ref: datetime, http=None) -> dict:
+    """이슈 하나의 '얼마나 많이 다뤘나'(최근 24시간 기사 수·언론사 수), 관련 기사, 첫 보도(최근 7일 안 가장 이른 기사)를 NAVER로.
+    t에 articles(대표 = RSS 종합지·방송사 기사 → 다른 RSS 기사 → NAVER 기사, 최대 ARTICLES_MAX), coverage, first, ongoing을 채운다."""
+    context = t["_context"]
+    tokens = _issue_tokens(t["name"]) | _issue_tokens(t.get("query") or "")
+    kw = {"http": http} if http else {}
+    found: list[dict] = []
+    for sort in ("date", "sim"):
+        try:
+            found += news.search(t.get("query") or t["name"], display=100, sort=sort, **kw)
+        except news.NewsError as e:
+            log.warning("lifemap cover %s: %s", t["name"], e.code)
+    fresh_from, old_from = ref - timedelta(hours=FRESH_HOURS), ref - timedelta(days=FIRST_LOOKBACK_DAYS)
+    seen, matched = set(), []
+    for a in found:
+        try:
+            pub = datetime.fromisoformat(a["pub"]) if a.get("pub") else None
+        except ValueError:
+            pub = None
+        if not pub or not old_from <= pub <= ref or a["url"] in seen or stock_article(a) or not _matches(a["title"], tokens):
+            continue
+        seen.add(a["url"])
+        matched.append({**a, "press_name": rss.press_name(a["url"]), "_pub": pub})
+    rss_pubs = [(datetime.fromisoformat(a["pub"]), a) for a in context]
+    recent = [a for a in matched if a["_pub"] >= fresh_from]
+    presses = {a.get("press_name") or a["press"] for a in recent} | {a.get("press_name") or a["press"] for a in context}
+    urls = {a["url"] for a in recent} | {a["url"] for a in context}
+    first_pub, first = min([(a["_pub"], a) for a in matched] + rss_pubs, key=lambda x: x[0])
+    rep = context[0]
+    arts = [_article(rep, True)] + [_article(a) for a in context[1:]]
+    titles = {a["title"] for a in arts}
+    for a in sorted(recent, key=lambda a: a["_pub"], reverse=True):
+        if len(arts) >= ARTICLES_MAX:
+            break
+        if a["title"] not in titles:
+            titles.add(a["title"])
+            arts.append(_article(a))
+    t.update(articles=arts, coverage={"articles": len(urls), "presses": len(presses), "hours": FRESH_HOURS},
+             first={"pub": first_pub.isoformat(), **{k: first.get(k) for k in ("title", "url", "press")}},
+             ongoing=first_pub < fresh_from)
+    return t
+
+
+def rank_issues(topics: list[dict], limit: int) -> list[dict]:
+    """언론사 COVER_MIN_PRESS곳 이상이 다룬 이슈만. 첫 보도가 24시간 안인 이슈를 언론사·기사 수 순으로 먼저, 계속되는 이슈는 최대 ONGOING_MAX개 뒤에."""
+    ok = []
+    for t in topics:
+        if t["coverage"]["presses"] < COVER_MIN_PRESS:
+            _last_rejects["press"] = _last_rejects.get("press", 0) + 1
+        else:
+            ok.append(t)
+    key = lambda t: (-t["coverage"]["presses"], -t["coverage"]["articles"])  # noqa: E731
+    fresh = sorted((t for t in ok if not t["ongoing"]), key=key)
+    ongoing = sorted((t for t in ok if t["ongoing"]), key=key)
+    if len(ongoing) > ONGOING_MAX:
+        _last_rejects["ongoing"] = _last_rejects.get("ongoing", 0) + len(ongoing) - ONGOING_MAX
+    return (fresh[:limit - min(len(ongoing), ONGOING_MAX)] + ongoing[:ONGOING_MAX])[:limit]
+
+
+def rss_issues(basis: dict, limit: int, http=None) -> list[dict] | None:
+    """RSS로 오늘 이슈 후보 → 기사 수·언론사 수 → 순서. 기준 창 안 RSS 기사가 RSS_MIN개 미만이면 None(예전 방식으로)."""
+    ref = _ref_time(basis)
+    arts, report = rss.collect(ref - timedelta(hours=FRESH_HOURS), ref + timedelta(minutes=1), per_feed=RSS_PER_FEED,
+                               **({"http": http} if http else {}))
+    _last_rss.clear()
+    _last_rss.update(articles=len(arts), feeds=report)
+    if len(arts) < RSS_MIN:
+        return None
+    picked = pick_rss_issues(basis, arts)
+    return rank_issues([cover(t, ref, http) for t in picked], limit)
+
+
 def _finish(t: dict, basis: dict, live: bool = False, http=None) -> dict | None:
     """이슈 하나 → AI 해석 + 회사 지도 + 실제 등락 + 첫 보도(비교할 거래일·누적용 일별 시세)
     + (해석과 반대로 움직인 회사의) 다른 이유. 회사가 없으면 None."""
@@ -777,15 +1082,54 @@ def _finish(t: dict, basis: dict, live: bool = False, http=None) -> dict | None:
     if not m["stages"]:
         return None
     m = mark_reaction(m, basis)
-    end = basis["window"][1] if basis.get("window") else datetime.now(KST)
-    first = first_report(t["name"], context, min(end, datetime.now(KST)), http)
+    # RSS 이슈는 cover()가 첫 보도를 이미 찾았다(NAVER 최신순·관련도순 + RSS 기사 중 가장 이른 것)
+    first = t.get("first") or first_report(t["name"], context, _ref_time(basis), http)
     rday = reaction_day(datetime.fromisoformat(first["pub"]))[0] if first else None
     if first:
         t["first"] = first
         add_history(m, rday)
     if not rday or rday <= (basis.get("as_of") or ""):
         explain_opposites(t, m, basis, http)  # 반응 거래일 값이 아직 없으면(장 마감 뒤 뉴스) 반대 움직임도 따지지 않는다
+    ensure_intros([c for st in m["stages"] for c in st["companies"]], live)
+    t.pop("query", None)
     return {**t, "basis_label": basis["label"], "map": m}
+
+
+# ---------------------------------------------------------
+# 한 줄 회사 소개: 회사별로 한 번 만들어 lifemap_intros.json에 저장해 재사용
+# ---------------------------------------------------------
+
+INTROS = "lifemap_intros"
+_intro_lock = threading.Lock()
+
+
+def intros() -> dict[str, str]:
+    """{종목코드: 한 줄 소개}."""
+    return {k: v.get("text", "") for k, v in (_read(INTROS, {}) or {}).items() if isinstance(v, dict) and v.get("text")}
+
+
+def ensure_intros(companies: list[dict], live: bool = False) -> int:
+    """소개가 없는 회사만 Haiku 한 번으로 만든다(같은 회사는 다시 만들지 않는다). 실패해도 이슈는 그대로. 새로 만든 수."""
+    have = intros()
+    need = list({c["code"]: c for c in companies if c["code"] not in have}.values())
+    if not need:
+        return 0
+    payload = {"회사": [{"code": c["code"], "이름": c["name"], "참고(뉴스와의 연결)": c.get("reason", "")} for c in need]}
+    try:
+        raw = _ask(INTRO_MODEL, INTRO_SYSTEM, "회사마다 무엇을 하는 회사인지 한 줄로 소개하라.", payload, INTRO_SCHEMA, 1500, live)
+    except Exception as e:
+        log.warning("lifemap intros failed: %s", type(e).__name__)
+        return 0
+    codes = {c["code"] for c in need}
+    made = {}
+    for r in (raw or {}).get("companies") or []:
+        text = normalize_word(str(r.get("intro") or "")).strip(" .")[:INTRO_MAX]
+        if r.get("code") in codes and text and not card_unsafe(text):
+            made[r["code"]] = {"text": text, "ts": time.time(), "model": INTRO_MODEL}
+    if made:
+        with _intro_lock:
+            store.write(INTROS, {**(_read(INTROS, {}) or {}), **made})
+    return len(made)
 
 
 # ---------------------------------------------------------
@@ -913,8 +1257,13 @@ def run_topics(basis: dict, http=None) -> dict:
     prev = _read("lifemap", {})
     topics: list[dict] = []
     error = ""
+    source = "rss"
     try:
-        for t in pick_issues(basis, collect_issue_news(basis, http), max_topics=TOPICS_MAX + RESERVE_MAX):
+        picked = rss_issues(basis, TOPICS_MAX + RESERVE_MAX, http)
+        if picked is None:  # RSS가 너무 적다(예전 기준일) → 예전 방식(NAVER 검색어)
+            source = "naver"
+            picked = pick_issues(basis, collect_issue_news(basis, http), max_topics=TOPICS_MAX + RESERVE_MAX)
+        for t in picked:
             try:
                 done = _finish(t, basis, http=http)
             except Exception as e:
@@ -939,10 +1288,11 @@ def run_topics(basis: dict, http=None) -> dict:
     topics, reserve = topics[:TOPICS_MAX], [t for t in topics[TOPICS_MAX:] if not t.get("carried")]
     fresh = sum(1 for t in topics if not t.get("carried"))
     data = {"day": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis), "topics": topics, "reserve": reserve,
-            "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "created_ts": time.time()}
+            "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "news_source": source, "created_ts": time.time()}
     store.write("lifemap", data)
     _status(basis_key=basis["key"], ok=fresh >= TOPICS_MIN, fresh=fresh, error=error, rejects=dict(_last_rejects),
-            excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], ts=time.time())
+            excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], ts=time.time(), news_source=source,
+            rss=dict(_last_rss))
     return data
 
 
@@ -1104,6 +1454,7 @@ def with_reaction(item: dict, live: dict | None = None, fallback_indices: dict |
     when = timing(item)
     rday = (when or {}).get("reaction_day")
     days: set[str] = set()
+    intro = intros()
     for st in m.get("stages") or []:
         companies = []
         for c in st.get("companies") or []:
@@ -1117,7 +1468,8 @@ def with_reaction(item: dict, live: dict | None = None, fallback_indices: dict |
             waiting = bool(rday and day and day < rday)
             row = {**{k: v for k, v in c.items() if k not in ("market_rate", "vs_market", "hist")}, "name": s["name"],
                    **{k: s.get(k) for k in ("market", "close", "cap", "value")},
-                   "rate": rate, "market_rate": idx, "vs_market": vs, "moved": big_move(rate, vs) and not waiting, "waiting": waiting}
+                   "rate": rate, "market_rate": idx, "vs_market": vs, "moved": big_move(rate, vs) and not waiting, "waiting": waiting,
+                   **({"intro": intro[c["code"]]} if c.get("code") in intro else {})}
             since = None if waiting else since_first(c.get("hist"), day, rate, idx, rday)
             if since:
                 row["since"] = since

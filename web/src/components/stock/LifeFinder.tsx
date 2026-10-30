@@ -52,7 +52,7 @@ function ArticleMeta({ a, basis }: { a: LifeArticle; basis?: string }) {
   const other = w && basis && w.ymd !== basis;
   return (
     <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[14px] text-slate-200">
-      <span className="font-semibold">{a.press.replace(/^www\./, "")}</span>
+      <span className="font-semibold">{a.press_name || a.press.replace(/^www\./, "")}{a.section ? ` ${a.section}` : ""}</span>
       {w && <span className="tabular-nums">· {w.label}</span>}
       {other && (
         <span className="rounded-full bg-amber-300/20 px-2 py-0.5 text-[14px] font-extrabold text-amber-100 ring-1 ring-amber-200/40">
@@ -77,7 +77,7 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
       <div className="flex items-center justify-between gap-2 text-[14px] font-extrabold">
         <span className="flex items-center gap-1.5 text-white">
           <span className="size-2.5 rounded-full" style={{ background: accent, boxShadow: `0 0 8px ${accent}` }} />
-          {index != null ? `ISSUE ${index + 1}` : "ISSUE"}{item.sector ? ` · ${item.sector}` : ""}
+          {index != null ? `ISSUE ${index + 1}` : "ISSUE"}{item.label || item.sector ? ` · ${item.label || item.sector}` : ""}
         </span>
         <span className="text-slate-200">{total ? `${(index ?? 0) + 1} / ${total}` : ""}</span>
       </div>
@@ -175,6 +175,7 @@ function IssueBadges({ item }: { item: LifeItem }) {
   const m = item.map, t = m.timing;
   const pill = "rounded-full px-2.5 py-0.5 text-[14px] font-extrabold ring-1";
   const badges: React.ReactNode[] = [];
+  if (item.ongoing) badges.push(<span key="ongoing" className={`${pill} bg-sky-300/15 text-sky-100 ring-sky-200/40`}>계속되는 이슈</span>);
   if (m.macro || item.macro) badges.push(<span key="macro" className={`${pill} bg-amber-300/15 text-amber-100 ring-amber-200/40`}>시장 전체 영향 이슈</span>);
   if (m.expected === "예상대로") badges.push(<span key="exp" className={`${pill} bg-white/10 text-white ring-white/25`}>예상대로</span>);
   if (m.move) badges.push(
@@ -186,10 +187,12 @@ function IssueBadges({ item }: { item: LifeItem }) {
   return (
     <>
       {badges.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{badges}</div>}
-      {t && (
+      {(t || item.coverage) && (
         <p className="mt-2 text-[14px] leading-snug text-slate-200">
-          <span className="font-bold">첫 보도 {t.first}</span>
-          {t.after_close && (
+          {item.coverage && <span className="font-bold">최근 {item.coverage.hours}시간 기사 {item.coverage.articles}건 · 언론사 {item.coverage.presses}곳</span>}
+          {item.coverage && t && " · "}
+          {t && <span className="font-bold">첫 보도 {t.first}</span>}
+          {t?.after_close && (
             <> · <b className="text-amber-100">장 마감 후 뉴스 · 다음 거래일 반응을 보여드려요</b>
               {t.waiting ? <> · <b className="text-white">{WAITING}</b> ({t.reaction_label})</> : ` (${t.reaction_label})`}</>
           )}
