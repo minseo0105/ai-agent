@@ -14,7 +14,7 @@ const server=http.createServer((req,res)=>{
   if(!fs.existsSync(file)){res.writeHead(404);return res.end();}
   res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));
 });
-const ORDER=[['/dreamcar','dream.webp'],['https://wai-labs.com/moneyon','money.webp'],['/stock','stock.svg'],['/realestate','zip.webp'],['/report','report.svg'],['/golf','tee.webp'],['/saju','saju.svg'],['/car-selector','car-selector.svg'],['/gif','gif.svg']];
+const ORDER=[['/dreamcar','dream.webp'],['/moneyon/','money.webp'],['/stock','stock.svg'],['/realestate','zip.webp'],['/report','report.svg'],['/golf','tee.webp'],['/saju','saju.svg'],['/car-selector','car-selector.svg'],['/gif','gif.svg']];
 (async()=>{
   fs.mkdirSync(output,{recursive:true});await new Promise(r=>server.listen(0,'127.0.0.1',r));
   const base=`http://127.0.0.1:${server.address().port}`;

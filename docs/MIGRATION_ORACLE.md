@@ -249,5 +249,5 @@ curl -s localhost/api/health            # Caddy 경유
 - `Caddyfile`: `www.` 접속은 www 없는 주소로 308(경로·쿼리 유지). sslip.io는 예비 주소로 그대로 동작.
 - Caddyfile bind mount 문제 재확인: 컨테이너 안 `/etc/caddy/Caddyfile`은 링크 수 0(호스트 파일이 `git pull`로 교체돼 옛 inode)의 옛 내용이었고, 실제 동작은 `/config/caddy/autosave.json`(이전 reload 결과)이었다. 환경변수도 바뀌므로 `caddy adapt`로 새 파일 검증 → `docker compose up -d --no-deps --force-recreate caddy`(caddy만). 재생성 뒤 컨테이너 안 파일이 새 내용인지 확인.
 - 인증서: Let's Encrypt `wai-labs.com`·`www.wai-labs.com`, 재생성 5초 안에 발급(만료 2027-01-28, 자동 갱신).
-- 코드: `web/src/lib/services.ts` `MONEYON_URL`, `services/stockon/service.py` `ORACLE_URL`(HF 예비 서버의 'STOCK:ON 열기'), `apps/moneyon/web/src/app/layout.tsx` 공유 미리보기 기본 주소 + `og:url`, 점검 스크립트 기본 주소(`scripts/demo_load_test.py`, `scripts/demo_phone_check.cjs`), `tests/test_home_showcase_browser.cjs`.
+- 코드: `web/src/lib/services.ts` `MONEYON_URL`(같은 날 저녁 상대 경로 `/moneyon/`로 다시 변경 — 접속한 주소 안에서 이동, HF 예비 서버에서만 `ORACLE_ORIGIN` 붙임), `services/stockon/service.py` `ORACLE_URL`(HF 예비 서버의 'STOCK:ON 열기'), `apps/moneyon/web/src/app/layout.tsx` 공유 미리보기 기본 주소 + `og:url`, 점검 스크립트 기본 주소(`scripts/demo_load_test.py`, `scripts/demo_phone_check.cjs`), `tests/test_home_showcase_browser.cjs`.
 - 네이버 지도 콘솔 Web 서비스 URL에 `https://wai-labs.com` 추가는 사용자가 직접(기존 sslip.io는 남김). `www`는 apex로 리다이렉트되므로 등록하지 않아도 된다.

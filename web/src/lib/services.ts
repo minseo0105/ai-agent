@@ -2,9 +2,11 @@
 // streamlitPath: 아직 Next.js로 옮기지 않은 서비스는 기존 Streamlit 페이지로 연결한다.
 // href: Next.js로 옮긴 서비스는 streamlitPath 대신 href를 채우면 된다.
 
-// MONEY:ON(별도 앱) 주소는 여기 한 곳에서만 관리한다. 도메인을 바꾸면 이 줄만 고친다.
-// HF AI LAB에서도 같은 주소(오라클)로 연결된다. HF 체험 Space(minseo2-moneyon-demo)는 예비로 남겨 둔다.
-export const MONEYON_URL = "https://wai-labs.com/moneyon";
+// MONEY:ON(별도 앱)은 같은 서버의 /moneyon/ 경로. 상대 경로라 접속한 주소(wai-labs.com·sslip.io) 안에서 이동한다.
+export const MONEYON_URL = "/moneyon/";
+// HF 예비 AI LAB(*.hf.space)에는 머니온이 없어 그곳에서만 이 주소를 앞에 붙인다(oracleOnly).
+// HF 체험 Space(minseo2-moneyon-demo)는 예비로 남겨 둔다.
+export const ORACLE_ORIGIN = "https://wai-labs.com";
 
 export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search";
 export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search"];
@@ -24,6 +26,10 @@ export type Service = {
   featured?: boolean;
   secondary?: boolean;
   href?: string;
+  /** 같은 주소 안이어도 새 탭으로 연다(별도 앱). */
+  newTab?: boolean;
+  /** 오라클 서버에만 있는 경로. HF 예비 서버에서는 ORACLE_ORIGIN을 붙인다. */
+  oracleOnly?: boolean;
   streamlitPath?: string;
 };
 
@@ -48,6 +54,8 @@ export const SERVICES: Service[] = [
     title: "MONEY:ON",
     desc: "용돈을 관리하고, 남은 돈에 이자까지!",
     href: MONEYON_URL,
+    newTab: true,
+    oracleOnly: true,
   },
   {
     id: "stockon",
@@ -124,7 +132,11 @@ export const SERVICES: Service[] = [
 
 const STREAMLIT_URL = (process.env.NEXT_PUBLIC_STREAMLIT_URL || "http://localhost:8501").replace(/\/$/, "");
 
-export function serviceLink(s: Service): { href: string; external: boolean } {
-  if (s.href) return { href: s.href, external: /^https?:\/\//.test(s.href) };
+/** origin: HF 예비 서버일 때만 ORACLE_ORIGIN, 그 밖에는 "" (접속한 주소 그대로). */
+export function serviceLink(s: Service, origin = ""): { href: string; external: boolean } {
+  if (s.href) {
+    const href = s.oracleOnly && origin ? origin + s.href : s.href;
+    return { href, external: !!s.newTab || /^https?:\/\//.test(href) };
+  }
   return { href: `${STREAMLIT_URL}/${encodeURI(s.streamlitPath ?? "")}`, external: true };
 }

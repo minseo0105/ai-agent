@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccess } from "@/components/access/AccessProvider";
-import { CATEGORIES, SERVICES, serviceLink, type Service, type ServiceCategory } from "@/lib/services";
+import { CATEGORIES, ORACLE_ORIGIN, SERVICES, serviceLink, type Service, type ServiceCategory } from "@/lib/services";
 
 type Filter = "전체" | ServiceCategory;
 const FILTERS: Filter[] = ["전체", ...CATEGORIES];
@@ -53,8 +53,8 @@ function ArrowIcon() {
   );
 }
 
-function ServiceLink({ service, className, children }: { service: Service; className: string; children: React.ReactNode }) {
-  const { href, external } = serviceLink(service);
+function ServiceLink({ service, origin, className, children }: { service: Service; origin: string; className: string; children: React.ReactNode }) {
+  const { href, external } = serviceLink(service, origin);
   return (
     <a href={href} className={className} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
       {children}
@@ -65,6 +65,9 @@ function ServiceLink({ service, className, children }: { service: Service; class
 export default function ServiceGrid() {
   const { status } = useAccess();
   const [filter, setFilter] = useState<Filter>("전체");
+  // HF 예비 서버에는 머니온이 없어 오라클 주소로 보낸다. 정적 빌드라 화면이 뜬 뒤 접속 주소로 판단한다.
+  const [origin, setOrigin] = useState("");
+  useEffect(() => setOrigin(window.location.hostname.endsWith(".hf.space") ? ORACLE_ORIGIN : ""), []);
   // 관리자 설정에서 숨긴 서비스는 빼고, 권한이 없는 서비스는 자물쇠 표시 (들어가면 접속 코드 입력 화면)
   const visible = SERVICES.filter((s) => status?.services[s.id]?.visible ?? true);
   const locked = (s: Service) => status?.services[s.id]?.allowed === false;
@@ -103,6 +106,7 @@ export default function ServiceGrid() {
             <ServiceLink
               key={s.id}
               service={s}
+              origin={origin}
               className={`group flex min-h-[176px] min-w-0 flex-col rounded-3xl border ${tone.card} p-3.5 transition duration-200 motion-safe:hover:-translate-y-0.5 hover:shadow-[0_10px_26px_-14px_rgba(15,23,42,.35)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-woori active:brightness-95 sm:p-4`}
             >
               <div className="flex items-start justify-between">

@@ -13,7 +13,7 @@
 - `www.wai-labs.com`은 `wai-labs.com`으로 308(경로·쿼리 유지). `http://`는 `https://`로 308.
 - DNS: Cloudflare, A `@`·`www` → `140.245.88.198`, DNS only(프록시 끔). 인증서 Let's Encrypt, 만료 2027-01-28(Caddy 자동 갱신).
 - QR(오류 정정 H, 1024px + 아래 짧은 주소 글자, 디코딩 확인): 바탕화면 `QR_AI_LAB_wai-labs.png`(https://wai-labs.com/), `QR_MONEYON_wai-labs.png`(…/moneyon/), `QR_STOCKON_wai-labs.png`(…/stock). 예비 슬라이드용 sslip.io QR은 아직 없음.
-- 예비 주소로 들어오면 홈의 MONEY:ON 카드는 `MONEYON_URL`(wai-labs.com) 한 곳을 따르므로 **도메인이 막힌 상황에서는 `https://140-245-88-198.sslip.io/moneyon/`을 직접 연다.**
+- 홈의 MONEY:ON 카드는 상대 경로 `/moneyon/`(새 탭)이라 sslip.io로 들어오면 sslip.io 안에서, wai-labs.com이면 wai-labs.com 안에서 이동한다(10-30 저녁 변경). HF 예비 AI LAB에서만 `https://wai-labs.com/moneyon/`. 공유 미리보기 `og:url`은 wai-labs.com 그대로.
 - 네이버 지도(ZIP:ON): 네이버 클라우드 콘솔 → Maps Application → Web 서비스 URL에 `https://wai-labs.com` 추가(사용자 직접, sslip.io는 남김). 등록 전에는 새 도메인에서 ZIP:ON 지도 인증이 실패할 수 있다.
 - 적용(10-30 16:31~16:47 KST): 서버 `.env`·`.env.docker`의 `SITE_ADDRESS=wai-labs.com, www.wai-labs.com, 140-245-88-198.sslip.io`, `NAVER_WEB_SERVICE_URL=https://wai-labs.com`(PC `.env.docker`도 같게). `caddy adapt` 검증 → caddy만 재생성(컨테이너 안 옛 Caddyfile 문제도 해소). 커밋 `f28f72b` → `ailab`·`moneyon`만 `--no-deps` 재생성. `stockon-collector` 시작 시각 그대로(10-30 11:19). ailab 이미지는 main에서 `services/stockon/lifemap.py`만 배포돼 있던 `3cd08c9` 판으로 둔 것(**`06572ca` 토큰 상한 수정은 아직 미배포**).
 - 공개 주소 점검(10-30 16:50, 두 주소 모두): `/`·`/moneyon/`·`/stock`·`/realestate` 200, `/api/ready` ready, 머니온 공유 미리보기 `og:url`·`og:image` = `https://wai-labs.com/moneyon/…`(이미지 200), 홈 카드 머니온 링크 `https://wai-labs.com/moneyon`, 머니온 AI 꿀벌 편지 SSE 첫 글자 1.0~1.5초·조각 43~48개(`source: ai`, Haiku), STOCK:ON `/api/stock/live` 200(장 마감 뒤라 `closed` — 장중 갱신은 다음 장중에 확인), `/api/stock/lifemap/pulse` 200. 점검용 체험 2개는 지움(체험 통장 200 유지).
@@ -34,11 +34,11 @@ STOCK:ON의 핵심은 **'일상 뉴스를 보다가 → 그 뉴스와 연결된 
 - 시점: 첫 보도가 15:20 이후(또는 휴장일)면 다음 거래일 등락과 비교하고 '장 마감 후 뉴스 · 다음 거래일 반응을 보여드려요', 그 거래일 값이 아직 없으면 '반응 대기 중'. 첫 보도 이후 누적 시장 대비(최대 5거래일)는 회사 상세·표에만.
 - 숫자: '시장보다 = 그 회사 주가 등락 − 시장 지수 등락'. ±2%p 이내는 '시장과 비슷해요'(회색, 반대 움직임 아님), '실제 등락 큼'은 ±3%p 이상. 화면에 '단순'이라는 말을 쓰지 않는다.
 
-**10-30 낮 뉴스 속 숨은 종목 개편 — 코드 완료·푸시, 오라클 미배포(사용자 요청으로 배포 직전 멈춤)**
+**10-30 낮 뉴스 속 숨은 종목 개편 — 코드 완료·푸시, 오라클 배포됨(1~5단계 `1918e5b`)** — 10-30 16:5x 서버 확인: `ailab`·`stockon-collector` 컨테이너 생성 10-30 11:19 KST, 두 컨테이너의 `services/stockon/lifemap.py`가 `1918e5b`판과 같음, 공개 주소 `/api/stock/lifemap/pulse` 200. 이후 `06572ca`(이슈 묶기 토큰 상한 4000→16000)는 **미배포 — 사용자 결정(10-30)으로 보류**. 10-30 도메인 재배포 때도 ailab 이미지의 `lifemap.py`는 `1918e5b`판으로 유지.
 
 - 끝난 단계(커밋·푸시, `origin/main` = `1918e5b` + 이 문서 커밋): 1단계 `1959941` 종합지·방송사 RSS 이슈 발견·일상 말 분야 이름·뉴스 당사자/기사 밖 연결·회사 소개 저장 / 2단계 `db0c4c9` '관련 업종 오늘' 칩·`/api/stock/lifemap/pulse` 15초 갱신 / 3단계 `104da39` 지도 단순화 / 4단계 `ecf12f5` 회사 목록(표·상세 대체) / 5단계 `1918e5b` 카드 높이·간격, 기사 밖 연결 2곳 미만 재시도, 이슈 후보가 적으면 한 번 더. 규칙은 STOCKON_PLAN.md '2026-10-30 개편'.
 - 테스트: `test_stockon_lifemap`·`test_stockon`·`test_stockon_live`·`test_stockon_kiwoom_ops` 135개 통과, `tsc`·`next build --webpack` 통과. 로컬(서버 데이터 복사본) 390·1440 헤드리스: 가로 넘침 0, 회사명 17px·섹션 제목 18px, 14px 미만 0, '단순'·옛 표 없음, 지도 회사 누르면 목록 펼침, 업종 칩 누르면 2곳 강조. 캡처 `바탕화면/stockon-news.png`.
-- **남은 일**: ① 오라클 배포 — `cd ~/ailab && git pull --ff-only && docker compose build ailab && docker compose up -d --no-deps ailab stockon-collector`(10:00 전후·15:20~15:50 피함, 수집기 생성 중이면 `lifemap_status.json` ts가 try_ts 뒤일 때) → `moneyon`·`ailab-caddy` 시작 시각 그대로인지. ② 배포 뒤 `docker compose exec -T stockon-collector python -m services.stockon.lifemap --topics`로 오늘 이슈를 새 방식으로(약 $0.07) — 안 하면 15:35 종가 기준부터 새 방식. ③ 공개 주소 390·1440 확인, `/api/stock/lifemap/pulse` 200. ④ 섹터 이슈는 예전 방식(NAVER 섹터 검색) 그대로 — 필요하면 다음에. ⑤ 예시 파일(`lifemap_examples.json`)은 예전 형식(당사자·소개 없음, 화면은 연결 근거로 대신 보임).
+- **남은 일**: ① ~~오라클 배포~~ 완료(위 굵은 글씨 참고. 아래 명령은 기록용) — `cd ~/ailab && git pull --ff-only && docker compose build ailab && docker compose up -d --no-deps ailab stockon-collector`(10:00 전후·15:20~15:50 피함, 수집기 생성 중이면 `lifemap_status.json` ts가 try_ts 뒤일 때) → `moneyon`·`ailab-caddy` 시작 시각 그대로인지. ② 배포 뒤 `docker compose exec -T stockon-collector python -m services.stockon.lifemap --topics`로 오늘 이슈를 새 방식으로(약 $0.07) — 안 하면 15:35 종가 기준부터 새 방식. ③ 공개 주소 390·1440 확인, `/api/stock/lifemap/pulse` 200. ④ 섹터 이슈는 예전 방식(NAVER 섹터 검색) 그대로 — 필요하면 다음에. ⑤ 예시 파일(`lifemap_examples.json`)은 예전 형식(당사자·소개 없음, 화면은 연결 근거로 대신 보임).
 - **시험 결과(서버 복사본 `~/stockon-regen1030`, 실제 볼륨 미사용, 10/30 장중 11:06 기준)**: RSS 21개 피드 모두 접근(기준 창 488건, 증권 기사 5건 제외), 이슈 3개(제외: 기업 무관 1·같은 사건 종류 2·언론사 1곳 1·계속되는 이슈 초과 3).
 
   | 이슈 | 일상 말 분야 | 대표 기사 | 첫 보도 | 24시간 기사·언론사 | 관련 업종(시장 대비) | 뉴스 당사자 | 기사 밖 연결 |
