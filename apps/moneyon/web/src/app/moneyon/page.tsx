@@ -7,6 +7,7 @@ import "@/app/moneyon/blue.css";
 import "@/app/moneyon/desktop.css";
 import "@/app/moneyon/ai.css";
 import { API_URL, apiFetch } from "@/lib/access";
+import WaiLabsLink from "@/app/moneyon/WaiLabsLink";
 import Izani from "@/app/moneyon/Izani";
 import {PRACTICE} from "@/app/moneyon/WeeklyJourney";
 // 빈 통장으로 시작하는 "처음부터 시작" 버튼. 첫 화면은 시연 데이터 버튼 하나로 통일해서 지금은 숨겨 둔다(코드는 그대로).
@@ -21,5 +22,5 @@ export default function Page(){
   useEffect(()=>{void apiFetch(`${API_URL}/api/moneyon/trial/ai/config`).then(r=>r.ok?r.json():null).then(c=>setDemoEntry(!!c?.demo_entry)).catch(()=>setDemoEntry(false));},[]);
   if(open===null)return <TrialStatus quiet/>;
   if(open)return <TrialExperience startDemo={demo} onExit={()=>{setOpen(false);setDemo(false);}}/>;
-  return <main className="mk-entry"><div className="mk-entry-shell"><span className="mk-entry-logo">MONEY:ON</span><span className="mk-demo-label">체험 모드 · 가상 돈이에요</span><div className="mk-entry-art"><Izani mood="greeting"/></div><h1>내가 남긴 용돈에<br/>이자가 자라요.</h1><p className="mk-entry-copy">안녕! 나는 이자니야.<br/>남은 용돈에 이자가 붙는 비밀을 알려줄게!</p><div className="mk-entry-steps"><span>엄마 통장</span><span aria-hidden="true">→</span><span>내 용돈통장</span><span aria-hidden="true">→</span><span>10% 이자</span></div><p className="mk-practice-note">{PRACTICE}</p><button className="mk-button mk-entry-start" disabled={demoEntry===null} onClick={()=>{setDemo(!!demoEntry);setOpen(true);}}>체험 시작하기</button><p className="mk-entry-start-note">{demoEntry===false?"연습용 통장을 새로 만들어 시작해요":"쓴 돈 기록과 자전거 저축통장이 미리 채워진 통장으로 시작해요"}</p>{SHOW_FRESH_START&&demoEntry&&<button className="mk-button secondary" onClick={()=>setOpen(true)}>처음부터 시작</button>}<p className="mk-entry-note">PIN이나 부모 등록 없이 바로 시작해요. 남긴 용돈의 10%를 다음 주 월요일에 이자로 받아요.</p><p className="mk-entry-note">실제 돈은 오가지 않는 금융교육 체험이에요.</p></div></main>;
+  return <main className="mk-entry"><div className="mk-entry-shell"><WaiLabsLink/><span className="mk-entry-logo">MONEY:ON</span><span className="mk-demo-label">체험 모드 · 가상 돈이에요</span><div className="mk-entry-art"><Izani mood="greeting"/></div><h1>내가 남긴 용돈에<br/>이자가 자라요.</h1><p className="mk-entry-copy">안녕! 나는 이자니야.<br/>남은 용돈에 이자가 붙는 비밀을 알려줄게!</p><div className="mk-entry-steps"><span>엄마 통장</span><span aria-hidden="true">→</span><span>내 용돈통장</span><span aria-hidden="true">→</span><span>10% 이자</span></div><p className="mk-practice-note">{PRACTICE}</p><button className="mk-button mk-entry-start" disabled={demoEntry===null} onClick={()=>{setDemo(!!demoEntry);setOpen(true);}}>체험 시작하기</button><p className="mk-entry-start-note">{demoEntry===false?"연습용 통장을 새로 만들어 시작해요":"쓴 돈 기록과 자전거 저축통장이 미리 채워진 통장으로 시작해요"}</p>{SHOW_FRESH_START&&demoEntry&&<button className="mk-button secondary" onClick={()=>setOpen(true)}>처음부터 시작</button>}<p className="mk-entry-note">PIN이나 부모 등록 없이 바로 시작해요. 남긴 용돈의 10%를 다음 주 월요일에 이자로 받아요.</p><p className="mk-entry-note">실제 돈은 오가지 않는 금융교육 체험이에요.</p></div></main>;
 }

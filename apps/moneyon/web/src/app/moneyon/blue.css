@@ -161,3 +161,8 @@
 .mk-tools{display:grid;gap:10px}.mk-tools .mk-text-button{justify-self:start}
 .mk-trial .mk-bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr));padding-left:12px;padding-right:12px}.mk-trial .mk-bottom-nav button{margin:0 3px}
 .mk-parent-view .mk-amount-presets button[aria-pressed=true]{background:var(--mo-primary);color:var(--mo-white)}
+/* 메인으로 가는 버튼: 헤더와 겹치지 않도록 헤더 위에 따로 한 줄 */
+.mk-wai-row{display:flex;justify-content:flex-start;margin:0 0 6px}
+.mk-wai-link{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 12px 0 8px;border-radius:999px;background:var(--mo-white);color:var(--mo-deep);font-size:13px;font-weight:800;letter-spacing:.3px;text-decoration:none;box-shadow:0 1px 4px rgb(8 74 134 / 14%)}
+.mk-wai-link:focus-visible{outline:3px solid var(--mo-deep);outline-offset:2px}
+.mk-remaining{margin:0 0 8px!important;padding:10px 12px;border-radius:12px;background:var(--mo-light);color:var(--mo-deep);font-size:14px;font-weight:700}.mk-remaining strong{font-size:18px;margin-left:4px}

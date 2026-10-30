@@ -116,7 +116,7 @@ def transaction(child: str, req: Transaction, auth=Depends(Auth), service=Depend
                 own=next((b for b in savings.balances(db,child) if b['id']==book),None)
                 if not own: raise ValueError('내 저축통장을 선택해 주세요.')
                 if own['status']=='pending': raise ValueError('엄마가 승인하면 이 통장을 쓸 수 있어요.')
-                if not previous and req.kind=='withdraw' and req.amount>own['balance']: raise ValueError('이 저축통장의 잔액이 부족해요.')
+                if not previous and req.kind=='withdraw' and req.amount>own['balance']: raise ValueError(f"이 저축통장에는 {own['balance']:,}원이 있어요. 그보다 많이는 꺼낼 수 없어요.")
             # Do not call core.transaction here: its state refresh would migrate the new entry before assignment.
             from services.moneyon_banking import MERCHANTS
             service.ledger.transact(row['family'],child,req.kind,req.key,req.amount,

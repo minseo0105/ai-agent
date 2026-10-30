@@ -11,6 +11,7 @@ import SavingsBooks from "./SavingsBooks";
 import { PRACTICE, PracticeNote, WeekDetails } from "./WeeklyJourney";
 import TrialHome, { FROM } from "./TrialHome";
 import { DepositSheet, SpendSheet } from "./TrialActions";
+import WaiLabsLink from "./WaiLabsLink";
 import "./child.css";
 import "./blue.css";
 import type { AiStream } from "./AiCard";
@@ -115,6 +116,7 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
 
   return <main className={`mk ${child.profile.theme}${trial?" mk-trial":""}`} data-testid="child-experience" data-theme={child.profile.theme} aria-busy={busy}>
     <div className="mk-container">
+      <WaiLabsLink/>
       <header className="mk-header"><a href="/" aria-label="AI LAB으로 가기"><span className="mk-brand-dot"/>MONEY:ON</a>{trial&&<span className="mk-demo-label mk-demo-badge">체험 · 가상 돈</span>}{trial&&trialControls}<button className="mk-parent-button" aria-label={trialControls?"체험 나가기":"잠그기 🔒"} onClick={onLock}><KidIcon name="lock"/>{trialControls?"나가기":"부모님"}</button></header>
       {demo&&!trial&&<span className="mk-demo-label">DEMO · 연습용 통장이에요</span>}
       <div className="mk-page-heading">{!["home","account","savings","parent"].includes(view)&&<button className="mk-back" onClick={()=>navigate(view==="interest"?"savings":"home")} aria-label={view==="interest"?"저축으로 돌아가기":"홈으로 돌아가기"}><KidIcon name="back"/></button>}<div><h1 ref={heading} tabIndex={-1}>{title}</h1>{view==="home"&&!trial&&<p>이자니와 함께, 용돈이 자라는 일주일</p>}</div>{view==="home"&&trial?null:view==="home"&&<span className="mk-profile" aria-label={`${child.profile.name}의 캐릭터`}>{child.profile.avatar==="🪙"?<span className="mk-profile-coin">₩</span>:child.profile.avatar==="🧑‍🚀"?<svg viewBox="0 0 44 44" width="37" height="37" role="img" aria-label="우주인 캐릭터"><path d="M13 35v5h18v-5" fill="#b5cbe7" stroke="#6483af" strokeWidth="1.5"/><circle cx="22" cy="21" r="17" fill="#dceaf6" stroke="#6483af" strokeWidth="1.5"/><rect x="9" y="12" width="26" height="21" rx="10" fill="#7898be"/><ellipse cx="22" cy="24" rx="9" ry="8" fill="#fff0d5"/><circle cx="18" cy="23" r="1.2" fill="#294953"/><circle cx="26" cy="23" r="1.2" fill="#294953"/><path d="M19 27q3 3 6 0" fill="none" stroke="#294953" strokeWidth="1.3" strokeLinecap="round"/><path d="M13 12q8-5 17-1" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>:child.profile.avatar}</span>}</div>
@@ -188,7 +190,7 @@ export default function ChildExperience({child,state,api,run,busy,error,demo,onL
       {busy&&<p className="mk-caption" role="status">안전하게 기록하고 있어요…</p>}
       {!trial&&<footer className="mk-footer"><p>가상 계좌 · 실제 금융 거래 아님</p><details><summary>{COACH_BRAND.displayName} 소개</summary><p>{COACH_BRAND.tagline}</p><p>{COACH_BRAND.notice}</p></details></footer>}
     </div>
-    {sheet==="spend"&&<SpendSheet wallet={state.wallet} busy={busy} onClose={()=>setSheet("")} onSave={onTransact}/>}
+    {sheet==="spend"&&<SpendSheet wallet={state.wallet} books={state.books} busy={busy} onClose={()=>setSheet("")} onSave={onTransact}/>}
     {sheet==="deposit"&&<DepositSheet state={state} busy={busy} onClose={()=>setSheet("")} onSave={onTransact}/>}
     {trialOverlay}
     <nav className="mk-bottom-nav" aria-label="어린이 주요 메뉴">{tabs.map(t=><button key={t.key} aria-current={primary===t.key?"page":undefined} onClick={()=>navigate(t.key)}><KidIcon name={t.icon}/><span>{t.name}</span></button>)}</nav>

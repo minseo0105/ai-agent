@@ -241,8 +241,10 @@ class Ledger:
                 raise ValueError('금액은 1원 이상의 정수로 입력해 주세요.')
             if kind not in ('expense', 'deposit', 'withdraw'):
                 raise ValueError('지원하지 않는 거래예요.')
-            if amount > bal['vault' if kind == 'withdraw' else 'wallet']:
-                raise ValueError('사용할 수 있는 잔액이 부족해요.')
+            if kind == 'withdraw' and amount > bal['vault']:
+                raise ValueError(f"저축통장에는 {bal['vault']:,}원이 있어요. 그보다 많이는 꺼낼 수 없어요.")
+            if kind != 'withdraw' and amount > bal['wallet']:
+                raise ValueError(f"남은 용돈은 {bal['wallet']:,}원이에요. 그보다 많이는 {'쓸' if kind == 'expense' else '저금할'} 수 없어요.")
             # Consume the new allowance first; vault withdrawals never restore eligibility.
             # Closed periods retain their eligibility; only the open period can change.
             remaining = amount if kind != 'withdraw' else 0
@@ -252,6 +254,10 @@ class Ledger:
                     self._entry(db, child, cyc['id'], 'eligibility', 0, 0, -delta, key + ':' + cyc['id'], business_date=today)
                     remaining -= delta
             self._entry(db, child, current['id'] if current else None, kind, amount if kind == 'withdraw' else -amount, amount if kind == 'deposit' else -amount if kind == 'withdraw' else 0, 0, key, category, note, metadata, business_date=today)
+            # 마지막 안전장치: 어떤 경로로든 통장이 음수가 되면 이 거래 전체를 되돌린다.
+            after = self._balance(db, child)
+            if after['wallet'] < 0 or after['vault'] < 0:
+                raise ValueError('잔액보다 많은 금액은 기록할 수 없어요.')
 
     def goal(self, family, child, name, amount):
         with self.db() as db:
