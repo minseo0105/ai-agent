@@ -8,7 +8,7 @@
 결과: 이름별 횟수·중앙값·p95·최대·5xx/연결 실패·4xx, 머니온 AI 결과 출처(ai/prepared/rule)와 이유, 섞임 수.
 만든 체험 토큰은 --tokens 파일에 남긴다(테스트 뒤 서버에서 지우는 데 쓴다).
 
-  python scripts/demo_load_test.py --base https://140-245-88-198.sslip.io --users 100 --ramp 60 --hold 300 --out reports/load.json
+  python scripts/demo_load_test.py --base https://wai-labs.com --users 100 --ramp 60 --hold 300 --out reports/load.json
 """
 import argparse
 import asyncio

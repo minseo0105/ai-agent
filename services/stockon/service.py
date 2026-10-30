@@ -19,7 +19,7 @@ from services.stockon.safety import DISCLAIMER
 
 log = logging.getLogger("stockon")
 
-ORACLE_URL = "https://140-245-88-198.sslip.io/stock"
+ORACLE_URL = "https://wai-labs.com/stock"
 # '왜 움직였나'를 미리 만드는 대상: 팀 관심 종목(최대 30) + 상승률 상위 5 + 하락률 상위 5 (중복 제외)
 WHY_MOVERS_TOP = 5
 WHY_MAX_PER_DAY = 40

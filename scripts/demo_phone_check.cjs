@@ -5,7 +5,7 @@
 const fs = require("fs");
 const { webkit, chromium, devices } = require(process.env.PLAYWRIGHT || "playwright");
 
-const BASE = process.env.BASE || "https://140-245-88-198.sslip.io";
+const BASE = process.env.BASE || "https://wai-labs.com";
 const KAKAO_IOS = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 KAKAOTALK 10.8.0";
 const KAKAO_AND = "Mozilla/5.0 (Linux; Android 14; SM-S921N Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.0.0 Mobile Safari/537.36 KAKAOTALK 10.8.0";
 const ENVS = [

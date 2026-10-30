@@ -4,7 +4,7 @@
 
 // MONEY:ON(별도 앱) 주소는 여기 한 곳에서만 관리한다. 도메인을 바꾸면 이 줄만 고친다.
 // HF AI LAB에서도 같은 주소(오라클)로 연결된다. HF 체험 Space(minseo2-moneyon-demo)는 예비로 남겨 둔다.
-export const MONEYON_URL = "https://140-245-88-198.sslip.io/moneyon";
+export const MONEYON_URL = "https://wai-labs.com/moneyon";
 
 export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search";
 export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search"];

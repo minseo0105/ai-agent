@@ -1,6 +1,11 @@
 # SITE_ADDRESS가 비어 있으면 :80 (HTTP, 도메인 없이 IP 접속). 도메인을 넣으면 HTTPS 자동.
+# 주소 여러 개는 쉼표+공백으로: SITE_ADDRESS=wai-labs.com, www.wai-labs.com, 140-245-88-198.sslip.io
 {$SITE_ADDRESS::80} {
 	encode zstd gzip
+
+	# www.도메인 → www 없는 주소로 (경로·쿼리 유지)
+	@www header_regexp www Host ^www\.(.+)$
+	redir @www https://{re.www.1}{uri} 308
 
 	# MONEY:ON 체험 (별도 컨테이너, docs/MULTI_APP_PLAN.md)
 	redir /moneyon /moneyon/ 308

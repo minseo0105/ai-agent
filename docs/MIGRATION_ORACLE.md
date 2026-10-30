@@ -209,7 +209,7 @@ curl -s localhost/api/health            # Caddy 경유
 
 | 단계 | 결과 |
 |---|---|
-| 머니온 링크 | `web/src/lib/services.ts`의 `MONEYON_URL = "https://140-245-88-198.sslip.io/moneyon"` **한 곳**에서 관리(도메인 변경 시 이 줄만). `services/access.py` 관리자 목록의 moneyon `page`는 HF 전체 주소 대신 사이트 경로 `/moneyon`(화면 표시·접근 제어에 안 쓰이는 값). 커밋 `bbd9ce8a` |
+| 머니온 링크 | `web/src/lib/services.ts`의 `MONEYON_URL = "https://140-245-88-198.sslip.io/moneyon"` **한 곳**에서 관리(도메인 변경 시 이 줄만, 10-30 `wai-labs.com`으로 변경 — 6-11). `services/access.py` 관리자 목록의 moneyon `page`는 HF 전체 주소 대신 사이트 경로 `/moneyon`(화면 표시·접근 제어에 안 쓰이는 값). 커밋 `bbd9ce8a` |
 | 오라클 반영 | `docker compose up -d --build --no-deps ailab` — AI LAB만 재빌드·재생성, caddy·moneyon 시작 시각 그대로. 홈 카드 클릭 → 새 탭 `/moneyon/` 체험 화면 |
 | 검사 | `tsc --noEmit` 통과. `tests.test_frontend_ux` 83개 중 홈 그리드 반응형 2개 실패 — **`origin/main`에서도 같은 2개 실패하는 기존 문제**(이번 변경과 무관, 미수정). HF 배포 워크플로는 테스트를 돌리지 않음 |
 | main 병합 | `git push origin oracle-migration:main` — fast-forward `2618149f → bbd9ce8a`(9커밋). 직전 HF 배포가 `2618149f`였으므로 HF로 나간 변경은 이번 것뿐 |
@@ -241,3 +241,13 @@ curl -s localhost/api/health            # Caddy 경유
 - 첫 수집 약 2분: 시세 기준일 10/26, 브리핑(Sonnet 5.5)·왜 움직였나 10건·뉴스 요약(Haiku 5.5), 작업 6개 오류 0. 팀 관심 종목은 관리자 화면에서 지정 필요(운영 Supabase, 현재 0개).
 - 키움 `--check`(토큰 발급 1회 + 즉시 폐기, 시세 조회 없음): 서버(등록 IP) 성공, **PC(미등록 IP)에서도 성공 → 모의 키는 IP 등록 없이 인증된다.**
 - 키움 시세 전환·복귀는 `docs/STOCKON_PLAN.md` '시연 당일 키움 전환'.
+
+### 6-11. 도메인 `wai-labs.com` 연결 (2026-10-30)
+
+- DNS(Cloudflare, DNS only): `wai-labs.com`, `www.wai-labs.com` A → `140.245.88.198`. 1.1.1.1·8.8.8.8 모두 확인.
+- 서버 `~/ailab/.env`·`.env.docker`: `SITE_ADDRESS=wai-labs.com, www.wai-labs.com, 140-245-88-198.sslip.io`(**쉼표 뒤 공백 필수** — 공백이 없으면 caddy adapt가 "Site addresses cannot contain a comma"로 거부), `.env.docker`의 `NAVER_WEB_SERVICE_URL=https://wai-labs.com`. 바꾸기 전 사본 `*.bak-20261030-073148`. PC `.env.docker`도 같은 두 줄로 맞춤(다음 업로드 때 되돌아가지 않게).
+- `Caddyfile`: `www.` 접속은 www 없는 주소로 308(경로·쿼리 유지). sslip.io는 예비 주소로 그대로 동작.
+- Caddyfile bind mount 문제 재확인: 컨테이너 안 `/etc/caddy/Caddyfile`은 링크 수 0(호스트 파일이 `git pull`로 교체돼 옛 inode)의 옛 내용이었고, 실제 동작은 `/config/caddy/autosave.json`(이전 reload 결과)이었다. 환경변수도 바뀌므로 `caddy adapt`로 새 파일 검증 → `docker compose up -d --no-deps --force-recreate caddy`(caddy만). 재생성 뒤 컨테이너 안 파일이 새 내용인지 확인.
+- 인증서: Let's Encrypt `wai-labs.com`·`www.wai-labs.com`, 재생성 5초 안에 발급(만료 2027-01-28, 자동 갱신).
+- 코드: `web/src/lib/services.ts` `MONEYON_URL`, `services/stockon/service.py` `ORACLE_URL`(HF 예비 서버의 'STOCK:ON 열기'), `apps/moneyon/web/src/app/layout.tsx` 공유 미리보기 기본 주소 + `og:url`, 점검 스크립트 기본 주소(`scripts/demo_load_test.py`, `scripts/demo_phone_check.cjs`), `tests/test_home_showcase_browser.cjs`.
+- 네이버 지도 콘솔 Web 서비스 URL에 `https://wai-labs.com` 추가는 사용자가 직접(기존 sslip.io는 남김). `www`는 apex로 리다이렉트되므로 등록하지 않아도 된다.
