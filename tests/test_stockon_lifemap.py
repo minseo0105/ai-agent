@@ -92,6 +92,7 @@ class LifemapBase(TempStore):
         for p in (mock.patch.object(lifemap, "_pool", self.pool), mock.patch.object(ai, "available", return_value=True),
                   mock.patch.object(news, "configured", return_value=True), mock.patch.object(news, "search", return_value=[]),
                   mock.patch.object(news, "search_window", return_value=[]),  # 완화 ①(NAVER 검색어)도 실제로 부르지 않는다
+                  mock.patch.dict("os.environ", {"LIFEMAP_VERIFY": "0"}),  # 기업 연관성 검증은 VerifyTest에서
                   mock.patch.object(lifemap.public_data, "stock_history", return_value={}),
                   # RSS를 부르지 않는다(기사가 없으면 예전 방식 = NAVER 검색어로 만든다). RSS 경로는 RssIssuesTest에서
                   mock.patch.object(rss, "collect", return_value=([], []))):

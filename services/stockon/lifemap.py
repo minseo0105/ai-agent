@@ -1205,10 +1205,18 @@ def ongoing_relaxed(ref: datetime, ongoing_now: int) -> list[dict]:
 def _finish(t: dict, basis: dict, live: bool = False, http=None) -> dict | None:
     """이슈 하나 → AI 해석 + 회사 지도 + 실제 등락 + 첫 보도(비교할 거래일·누적용 일별 시세)
     + (해석과 반대로 움직인 회사의) 다른 이유. 회사가 없으면 None."""
+    from services.stockon import verify  # verify가 lifemap을 쓰므로 여기서
+
     context = t.pop("_context")
     m = interpret(t["name"], context, live, macro=bool(t.get("macro")))
     if not m["stages"]:
         return None
+    # 기업 연관성 검증: 근거 없는 연결은 빼고(로그만), 업종만 같은 회사는 '업종 참고'로. 오류·시간 초과·꺼짐이면 지금 결과 + '검증 전'
+    m = verify.verify_map(t, m, context, _ref_time(basis), http)
+    if not m["stages"] and not m.get("parties"):
+        return None
+    v = m.get("verify") or {}
+    t["no_verified"] = v.get("status") == "ok" and not v.get("listed")
     m = mark_reaction(m, basis)
     # RSS 이슈는 cover()가 첫 보도를 이미 찾았다(NAVER 최신순·관련도순 + RSS 기사 중 가장 이른 것)
     first = t.get("first") or first_report(t["name"], context, _ref_time(basis), http)
@@ -1402,7 +1410,10 @@ def run_topics(basis: dict, http=None) -> dict:
             except Exception as e:
                 error = f"interpret:{type(e).__name__}"
                 continue
-            if done:
+            if done and done.get("no_verified") and any(x.get("no_verified") for x in topics):
+                # 검증된 국내 상장기업(당사자·검증된 간접 영향)이 없는 이슈는 최대 1개
+                _last_rejects["no_verified"] = _last_rejects.get("no_verified", 0) + 1
+            elif done:
                 topics.append(done)
             else:
                 no_company += 1
@@ -1424,6 +1435,7 @@ def run_topics(basis: dict, http=None) -> dict:
     except Exception as e:
         error = f"topics:{type(e).__name__}: {str(e)[:120]}"
         log.warning("lifemap topics failed: %s", error)
+    topics.sort(key=lambda t: bool(t.get("no_verified")))  # 검증된 국내 상장기업이 있는 이슈 먼저(안정 정렬)
     names = {t["name"] for t in topics}
     same_basis = (prev.get("basis") or {}).get("key") == basis["key"]
     funnel = {**_last_funnel, "no_company": no_company, "made": len(topics)}
@@ -1651,6 +1663,8 @@ def with_reaction(item: dict, live: dict | None = None, fallback_indices: dict |
             stages.append({**st, "companies": companies})
     reaction = f"{live['label']} 등락률" if used_live else f"{label.replace(' 기준', '')} 등락률" if label else "등락률"
     out_map = {k: v for k, v in m.items() if k != "removed"}
+    if isinstance(m.get("verify"), dict):  # 근거 부족으로 뺀 회사는 화면에 내보내지 않는다(lifemap_verify_log에만)
+        out_map["verify"] = {k: v for k, v in m["verify"].items() if k != "dropped"}
     shown_idx = live_idx if used_live else m.get("indices") or {}
     if when:
         rows = [c for st in stages for c in st["companies"]]
