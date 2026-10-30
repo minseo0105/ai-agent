@@ -40,7 +40,7 @@ export const similar = (vs?: number | null) => vs != null && Math.abs(vs) <= SIM
 /** 시장보다 색: 잡음 구간은 회색, 그 밖은 상승 빨강·하락 파랑. */
 export const vsColor = (vs?: number | null) => (similar(vs) ? GRAY : rateColor(vs));
 /** 시장보다(%p): ▲/▼와 %p. 10 이상은 정수. */
-export const ppText = (v?: number | null) => (v == null ? "—" : `${v > 0 ? "▲" : v < 0 ? "▼" : ""}${Math.abs(v).toFixed(Math.abs(v) >= 10 ? 0 : 1)}%p`);
+export const ppText = (v?: number | null) => (v == null ? "—" : `${v > 0 ? "▲" : v < 0 ? "▼" : ""}${Math.abs(v).toFixed(Math.abs(v) >= 9.95 ? 0 : 1)}%p`);
 /** 시장보다가 있으면 그것, 없으면 주가 등락률로 색을 정한다(빛나는 테두리·큰 숫자). */
 export const moveOf = (c: LifeCompany) => (c.vs_market != null ? c.vs_market : c.rate);
 export const dirName = (d?: LifeCompany["direction"]) => (d === "neg" ? "부정 영향 가능" : d === "unk" ? "방향 불확실 · 영향 가능" : "긍정 영향 가능");

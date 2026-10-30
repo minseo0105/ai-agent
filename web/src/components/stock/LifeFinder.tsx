@@ -220,7 +220,7 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
       {/* 휴대폰 폭에 네 열: AI 해석(긍정/부정)은 회사 이름 아래, 판단(말)은 '시장보다' 숫자 아래 */}
       {/* 열 너비 고정: 긴 회사 이름은 줄바꿈하고 숫자 열이 390px 카드 밖으로 밀리지 않게 */}
       <table className="w-full table-fixed text-left text-[15px]">
-        <colgroup><col className="w-[34%]" /><col className="w-[18%]" /><col className="w-[26%]" /><col className="w-[22%]" /></colgroup>
+        <colgroup><col className="w-[33%]" /><col className="w-[18%]" /><col className="w-[25%]" /><col className="w-[24%]" /></colgroup>
         <thead>
           <tr className="text-[14px] text-slate-200">
             <th className="py-2.5 pl-3 pr-1 font-extrabold">회사 · AI 해석</th>
@@ -255,7 +255,7 @@ function ReactionTable({ item, accent, onPick }: { item: LifeItem; accent: strin
                       {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 등락 큼</div>}
                     </td>
                     <td className="py-2.5 pl-1.5 pr-3 text-right">
-                      <div className="whitespace-nowrap text-[15px] font-extrabold tabular-nums" style={{ color: c.since ? vsColor(c.since.vs) : GRAY }}>
+                      <div className="whitespace-nowrap text-[14px] font-extrabold tabular-nums" style={{ color: c.since ? vsColor(c.since.vs) : GRAY }}>
                         {c.since ? ppText(c.since.vs) : "—"}
                       </div>
                       {c.since && <div className="text-[14px] text-slate-300">{c.since.days}거래일</div>}
