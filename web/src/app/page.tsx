@@ -1,16 +1,14 @@
 import AgentSection from "@/components/AgentSection";
 import ServiceGrid from "@/components/ServiceGrid";
-import { SITE_NAME } from "@/lib/site";
+import SiteBrand from "@/components/SiteBrand";
+import { SITE_NAME, SITE_SLOGAN, SITE_SUB } from "@/lib/site";
 
 export default function Home() {
   return (
     <main className="mx-auto max-w-5xl pb-12 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-4 sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] sm:pt-8">
-      <header className="mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-2.5 text-sm font-extrabold tracking-tight">
-          <span aria-hidden className="flex size-8 items-center justify-center rounded-[10px] bg-navy text-[13px] text-white ring-1 ring-white/10">✦</span>
-          {SITE_NAME}
-        </div>
-        <nav className="flex gap-2 text-sm font-semibold text-muted">
+      <header className="mb-5 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+        <SiteBrand />
+        <nav className="-ml-3 flex gap-2 sm:ml-0 text-sm font-semibold text-muted">
           <a href="#services" className="flex min-h-11 items-center rounded-full px-3 hover:bg-surface-muted hover:text-fg">서비스</a>
           <a href="#agent" className="flex min-h-11 items-center rounded-full px-3 hover:bg-surface-muted hover:text-fg">AI 에이전트</a>
         </nav>
@@ -23,15 +21,18 @@ export default function Home() {
         <div className="relative">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[13px] font-semibold tracking-[0.12em] text-blue-50">
             <span aria-hidden className="size-1.5 rounded-full bg-sky-300" />
-            DIGITAL STRATEGY · AI LAB
+            {SITE_SUB}
           </div>
-          <h1 className="mt-3 break-keep text-[24px] font-extrabold leading-[1.3] tracking-[-0.025em] sm:text-[40px] sm:leading-[1.22]">
-            아이디어를 서비스로 만드는
-            <br />
-            <span className="text-sky-200">{SITE_NAME}</span>
+          <h1 className="mt-3 break-keep font-extrabold tracking-[-0.025em]">
+            <span className="block text-[22px] leading-[1.3] sm:text-[32px]">아이디어를 서비스로 만드는 곳,</span>
+            <span className="mt-0.5 block text-[44px] leading-[1.05] tracking-[0.01em] text-sky-200 sm:text-[72px]">{SITE_NAME}</span>
           </h1>
-          <p className="mt-2.5 max-w-xl break-keep text-[13px] leading-[1.6] text-white/90 sm:mt-4 sm:text-base">
-            AI Agent · API · Vibe Coding으로 만든 서비스들을 자유롭게 둘러보고 직접 체험해보세요.
+          <p className="mt-2.5 text-[20px] font-extrabold tracking-[0.04em] text-white sm:mt-4 sm:text-[26px]">{SITE_SLOGAN}</p>
+          <p className="mt-2 max-w-xl break-keep text-[14px] leading-[1.6] text-white/90 sm:text-base">
+            AI에게 묻고, 직접 실험하고, 서비스로 구현합니다.
+          </p>
+          <p className="mt-2 hidden max-w-xl break-keep text-[15px] leading-[1.7] text-white/75 sm:block">
+            디지털전략부의 아이디어와 AI 기술이 만나 새로운 업무 방식과 서비스의 가능성을 탐색하는 공간입니다.
           </p>
           <div className="mt-4 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
             {["AI Agent", "API", "Vibe Coding", "Prototype"].map((b) => (
@@ -44,7 +45,7 @@ export default function Home() {
       </section>
 
       <section id="services" className="mt-10 scroll-mt-6 sm:mt-12">
-        <h2 className="text-xl font-extrabold tracking-tight">AI LAB 서비스</h2>
+        <h2 className="text-xl font-extrabold tracking-tight">{SITE_NAME} 서비스</h2>
         <p className="mb-5 mt-1 text-sm text-muted">새로운 서비스와 직접 만든 AI Prototype을 둘러보세요.</p>
         <ServiceGrid />
       </section>

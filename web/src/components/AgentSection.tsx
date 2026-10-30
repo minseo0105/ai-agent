@@ -15,7 +15,7 @@ export default function AgentSection() {
           <span aria-hidden className="flex size-7 items-center justify-center rounded-lg bg-accent-soft text-sm text-woori">✦</span>
           AI 에이전트
         </h2>
-        <p className="mt-1.5 text-sm text-slate-600 dark:text-muted">공시·법령·웹 검색을 필요한 순간에 호출하는 도구형 에이전트입니다.</p>
+        <p className="mt-1.5 text-sm text-slate-600 dark:text-muted"><strong className="font-extrabold text-fg">WAI? ASK AI.</strong> 공시·법령·웹 검색을 필요한 순간에 호출하는 도구형 에이전트입니다.</p>
       </div>
       {s && !s.allowed ? (
         <p className="rounded-2xl border border-border bg-surface px-4 py-6 text-center text-sm text-muted">

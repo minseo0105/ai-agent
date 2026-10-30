@@ -65,7 +65,7 @@ function Gate({ status, reason, onDone }: { status: AccessStatus; reason: "login
       <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-900 to-blue-700 text-2xl text-white shadow-lg">✦</div>
       <div className="text-center">
         <div className="text-[11px] font-extrabold tracking-[0.16em] text-accent">DIGITAL STRATEGY · AI LAB</div>
-        <h1 className="mt-1 text-2xl font-extrabold tracking-tight">{SITE_NAME}</h1>
+        <h1 className="mt-1 text-2xl font-extrabold tracking-[0.02em]">{SITE_NAME}</h1>
       </div>
       <div className="mt-6 space-y-4 rounded-3xl border border-border bg-surface p-6 shadow-sm">
         {reason === "closed" && (

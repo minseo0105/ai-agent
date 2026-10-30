@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import SiteBrand from "@/components/SiteBrand";
 import GifMaker from "@/components/gif/GifMaker";
 
 export const metadata: Metadata = {
-  title: "GIF 변환기 · 디지털전략부 AI LAB",
+  title: "GIF 변환기 · WAI LABS",
   description: "배경 제거와 합성부터 달리기 · 줌 · 바운스 · 틸트 · 패닝까지 조합해 차량 이미지를 모션 GIF로 만듭니다.",
 };
 
@@ -13,10 +13,7 @@ export default function GifPage() {
   return (
     <main className="mx-auto max-w-4xl px-4 pb-10 pt-4 sm:px-6 sm:pt-8">
       <header className="mb-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-sm font-extrabold tracking-tight">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-slate-900 to-blue-700 text-xs text-white">✦</span>
-          디지털전략부 AI LAB
-        </Link>
+        <SiteBrand />
         <span className="text-sm font-semibold text-muted">🎞️ GIF 변환기</span>
       </header>
 

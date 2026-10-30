@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import SiteBrand from "@/components/SiteBrand";
 import DreamCarFlow from "@/components/dreamcar/DreamCarFlow";
 
 export const metadata: Metadata = {
-  title: "내 차에서 드림카까지 · 디지털전략부 AI LAB",
+  title: "내 차에서 드림카까지 · WAI LABS",
   description: "내 차의 가치를 확인하고, 라이프스타일로 다음 차를 추천받아 교체 견적까지 한 번에 확인하세요.",
 };
 
@@ -11,10 +11,7 @@ export default function DreamCarPage() {
   return (
     <main className="mx-auto max-w-4xl px-4 pb-10 pt-4 sm:px-6 sm:pt-8">
       <header className="mb-4 flex items-center justify-between">
-        <Link href="/" className="flex min-h-11 items-center gap-2 text-sm font-extrabold tracking-tight">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-slate-900 to-blue-700 text-[13px] text-white">✦</span>
-          디지털전략부 AI LAB
-        </Link>
+        <SiteBrand />
         <span className="text-sm font-semibold text-muted">🚙 드림카</span>
       </header>
 

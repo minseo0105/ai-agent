@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import SiteBrand from "@/components/SiteBrand";
 import StockTabs from "@/components/stock/StockTabs";
 
 export const metadata: Metadata = {
-  title: "STOCK:ON · 디지털전략부 AI LAB",
+  title: "STOCK:ON · WAI LABS",
   description: "뉴스 한 줄, 연결된 회사까지. AI 해석과 실제 등락 · 지수 · 히트맵 · 등락 상위. 정보 제공용이며 투자 권유가 아닙니다.",
   robots: { index: false, follow: false },
 };
@@ -13,10 +13,7 @@ export default function StockPage() {
   return (
     <main className="stockon-theme mx-auto max-w-6xl px-4 pb-10 pt-4 text-fg sm:px-6 sm:pt-6">
       <header className="flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-slate-200 hover:text-white">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-white/10 text-xs text-sky-200 ring-1 ring-white/15">✦</span>
-          디지털전략부 AI LAB
-        </Link>
+        <SiteBrand dark />
         <span className="text-sm font-semibold text-slate-400">📈 STOCK:ON</span>
       </header>
 

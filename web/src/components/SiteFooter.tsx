@@ -10,7 +10,9 @@ export default function SiteFooter() {
   return (
     <footer className="mx-auto max-w-5xl px-4 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-6 text-center sm:px-6">
       <div className="border-t border-border pt-6">
-        <div className="text-[15px] font-extrabold tracking-tight text-muted">{SITE_NAME}</div>
+        <div className="text-[15px] font-extrabold tracking-[0.04em] text-fg">{SITE_NAME}</div>
+        <div className="mt-0.5 text-[13px] font-semibold text-muted">Digital Strategy AI LAB</div>
+        <div className="mt-2 text-[13px] font-bold text-accent">우리를 아니까, 일이 된다.</div>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-2 text-[13px] text-muted">
           {me && (
             <>
