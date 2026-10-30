@@ -966,6 +966,7 @@ def pick_rss_issues(basis: dict, articles: list[dict], max_topics: int = CANDIDA
     for _ in range(2):
         # 기사 수백 건을 9개 이슈로 묶으면 답(기사 번호 목록)이 길다 — 4000이면 max_tokens로 잘렸다(10-30 491건)
         raw = _ask(TOPIC_MODEL, RSS_TOPIC_SYSTEM, task, payload, RSS_TOPIC_SCHEMA, 16000)
+        _last_funnel["candidates"] = _last_funnel.get("candidates", 0) + len((raw or {}).get("topics") or [])
         for t in (raw or {}).get("topics") or []:
             keyword = normalize_word(str(t.get("keyword") or ""))[:12]
             label = normalize_word(str(t.get("label") or ""))[:12]
@@ -1059,6 +1060,9 @@ def cover(t: dict, ref: datetime, http=None) -> dict:
     return t
 
 
+_last_overflow: list[dict] = []  # 마지막 순서 매기기에서 ONGOING_MAX를 넘어 빠진 계속되는 이슈(완화 ②에서 다시 본다)
+
+
 def rank_issues(topics: list[dict], limit: int) -> list[dict]:
     """언론사 COVER_MIN_PRESS곳 이상이 다룬 이슈만. 첫 보도가 24시간 안인 이슈를 언론사·기사 수 순으로 먼저, 계속되는 이슈는 최대 ONGOING_MAX개 뒤에."""
     ok = []
@@ -1072,6 +1076,7 @@ def rank_issues(topics: list[dict], limit: int) -> list[dict]:
     ongoing = sorted((t for t in ok if t["ongoing"]), key=key)
     if len(ongoing) > ONGOING_MAX:
         _last_rejects["ongoing"] = _last_rejects.get("ongoing", 0) + len(ongoing) - ONGOING_MAX
+    _last_overflow[:] = ongoing[ONGOING_MAX:]
     return (fresh[:limit - min(len(ongoing), ONGOING_MAX)] + ongoing[:ONGOING_MAX])[:limit]
 
 
@@ -1082,10 +1087,119 @@ def rss_issues(basis: dict, limit: int, http=None) -> list[dict] | None:
                                **({"http": http} if http else {}))
     _last_rss.clear()
     _last_rss.update(articles=len(arts), feeds=report)
+    _last_funnel.clear()
+    _last_funnel.update(rss_in_window=sum(f.get("items") or 0 for f in report), rss_used=len(arts))
     if len(arts) < RSS_MIN:
         return None
     picked = pick_rss_issues(basis, arts)
+    _last_funnel.update(stock_excluded=len(_last_excluded), passed=len(picked))
     return rank_issues([cover(t, ref, http) for t in picked], limit)
+
+
+# ---------------------------------------------------------
+# 같은 사건 합치기 · 이슈가 모자랄 때 단계적 완화
+# ---------------------------------------------------------
+
+_last_funnel: dict = {}  # 마지막 생성에서 후보가 단계마다 몇 건 남았나(상태 파일 funnel)
+WORD_RE_ALL = re.compile(r"[0-9A-Za-z가-힣]{2,}")
+TITLE_SAME_MIN = 3         # 이슈 이름 말이 하나만 겹치면 제목 말이 이만큼 더 겹쳐야 같은 사건
+ONGOING_RELAXED = 2        # 완화 ②: 계속되는 이슈 최대 수
+ONGOING_RELAX_HOURS = 48   # 완화 ②: 첫 보도가 이 안인 계속되는 이슈만
+RELAX_STEPS = {"naver_general": "네이버 검색으로 찾은 종합지·방송사 기사도 후보로", "ongoing48": "24~48시간 이슈를 계속되는 이슈로(최대 2개)",
+               "short": "그래도 부족해 3개 미만 그대로"}
+
+
+def _event_words(t: dict) -> set[str]:
+    """사건을 가리키는 말: 이슈 이름·검색어·분야 이름의 말(흔한 말 제외)."""
+    return set().union(*(_issue_tokens(normalize_word(str(t.get(k) or ""))) for k in ("name", "query", "label")))
+
+
+def _title_words(t: dict) -> set[str]:
+    """카드 제목·기사 제목(앞 3건)의 두 글자 이상 말."""
+    text = " ".join([str(t.get("title") or "")] + [str(a.get("title") or "") for a in (t.get("articles") or [])[:3]])
+    return {w for w in WORD_RE_ALL.findall(text) if w not in GENERIC_TOKENS}
+
+
+def _urls(t: dict) -> set[str]:
+    return {a["url"] for a in (t.get("articles") or []) + (t.get("_context") or []) if a.get("url")}
+
+
+def _party_names(t: dict) -> set[str]:
+    m = t.get("map") or {}
+    named = {c["name"] for st in m.get("stages") or [] for c in st.get("companies") or [] if c.get("party")}
+    return named | {p["name"] for p in m.get("parties") or [] if p.get("name")}
+
+
+def same_event(a: dict, b: dict) -> bool:
+    """두 이슈가 같은 사건인지: 같은 기사가 겹치거나, 사건 말(이슈 이름·검색어·분야 이름)이 둘 이상 겹치거나,
+    사건 말이 하나 겹치고 당사자가 같거나 제목 말이 TITLE_SAME_MIN개 이상 겹친다."""
+    if _urls(a) & _urls(b):
+        return True
+    words = _event_words(a) & _event_words(b)
+    if len(words) >= 2:
+        return True
+    return bool(words) and (bool(_party_names(a) & _party_names(b)) or len(_title_words(a) & _title_words(b)) >= TITLE_SAME_MIN)
+
+
+def merge_event(keep: dict, other: dict, ref: datetime | None = None) -> dict:
+    """같은 사건 이슈 other를 keep에 합친다: 첫 보도는 더 이른 쪽, 관련 기사는 겹치지 않게 더하고(최대 ARTICLES_MAX),
+    기사·언론사 수는 큰 쪽. ref가 있으면 합친 첫 보도로 '계속되는 이슈'를 다시 정한다."""
+    fa, fb = keep.get("first"), other.get("first")
+    if fb and (not fa or fb["pub"] < fa["pub"]):
+        keep["first"] = fb
+    if keep.get("articles") is not None:
+        urls = {a.get("url") for a in keep["articles"]}
+        keep["articles"] = keep["articles"] + [{**a, "rep": False} for a in other.get("articles") or [] if a.get("url") not in urls]
+        keep["articles"] = keep["articles"][:ARTICLES_MAX]
+    ca, cb = keep.get("coverage"), other.get("coverage")
+    if ca and cb:
+        keep["coverage"] = {**ca, "articles": max(ca["articles"], cb["articles"]), "presses": max(ca["presses"], cb["presses"])}
+    if ref and keep.get("first"):
+        keep["ongoing"] = datetime.fromisoformat(keep["first"]["pub"]) < ref - timedelta(hours=FRESH_HOURS)
+    keep.setdefault("merged", []).append(other.get("name", ""))
+    return keep
+
+
+def dedupe_events(topics: list[dict], ref: datetime | None = None) -> list[dict]:
+    """앞에 있는 이슈를 남기고 뒤의 같은 사건 이슈를 합친다(빠진 수는 _last_rejects['same_event'])."""
+    out: list[dict] = []
+    for t in topics:
+        twin = next((k for k in out if same_event(k, t)), None)
+        if twin is None:
+            out.append(t)
+        else:
+            merge_event(twin, t, ref)
+            _last_rejects["same_event"] = _last_rejects.get("same_event", 0) + 1
+    return out
+
+
+def naver_general_issues(basis: dict, have: list[dict], limit: int, http=None) -> list[dict]:
+    """완화 ①: NAVER 검색(이슈 검색어)으로 찾은 기사 중 종합지·방송사 기사(최근 24시간)를 이슈 후보로. 이미 있는 사건은 뺀다."""
+    ref = _ref_time(basis)
+    since = ref - timedelta(hours=FRESH_HOURS)
+    arts = []
+    for a in collect_issue_news(basis, http):
+        try:
+            pub = datetime.fromisoformat(a["pub"]) if a.get("pub") else None
+        except ValueError:
+            pub = None
+        if pub and since <= pub <= ref and rss.general(a["url"]):
+            arts.append({**a, "press_name": rss.press_name(a["url"]), "section": "검색", "source": "naver"})
+    _last_funnel["naver_general_articles"] = len(arts)
+    if len(arts) < 2:
+        return []
+    saved = dict(_last_rejects)
+    picked = [t for t in pick_rss_issues(basis, arts) if not any(same_event(t, h) for h in have)]
+    for k, v in saved.items():  # 앞 단계에서 버린 이유도 남긴다
+        _last_rejects[k] = _last_rejects.get(k, 0) + v
+    return rank_issues([cover(t, ref, http) for t in picked], limit)
+
+
+def ongoing_relaxed(ref: datetime, ongoing_now: int) -> list[dict]:
+    """완화 ②: 계속되는 이슈 칸을 ONGOING_RELAXED개까지 늘리되, 첫 보도가 ONGOING_RELAX_HOURS시간 안인 것만."""
+    since = ref - timedelta(hours=ONGOING_RELAX_HOURS)
+    ok = [t for t in _last_overflow if t.get("first") and datetime.fromisoformat(t["first"]["pub"]) >= since]
+    return ok[:max(0, ONGOING_RELAXED - ongoing_now)]
 
 
 def _finish(t: dict, basis: dict, live: bool = False, http=None) -> dict | None:
@@ -1272,12 +1386,17 @@ def run_topics(basis: dict, http=None) -> dict:
     topics: list[dict] = []
     error = ""
     source = "rss"
-    try:
-        picked = rss_issues(basis, TOPICS_MAX + RESERVE_MAX, http)
-        if picked is None:  # RSS가 너무 적다(예전 기준일) → 예전 방식(NAVER 검색어)
-            source = "naver"
-            picked = pick_issues(basis, collect_issue_news(basis, http), max_topics=TOPICS_MAX + RESERVE_MAX)
+    relax: list[str] = []
+    ref = _ref_time(basis)
+    no_company = 0
+
+    def finish_all(picked: list[dict]) -> None:
+        nonlocal error, no_company
         for t in picked:
+            if any(same_event(k, t) for k in topics):  # 완화 단계에서 찾은 후보가 이미 있는 사건이면 합친다
+                merge_event(next(k for k in topics if same_event(k, t)), t, ref)
+                _last_rejects["same_event"] = _last_rejects.get("same_event", 0) + 1
+                continue
             try:
                 done = _finish(t, basis, http=http)
             except Exception as e:
@@ -1285,16 +1404,34 @@ def run_topics(basis: dict, http=None) -> dict:
                 continue
             if done:
                 topics.append(done)
+            else:
+                no_company += 1
+
+    try:
+        picked = rss_issues(basis, TOPICS_MAX + RESERVE_MAX, http)
+        if picked is None:  # RSS가 너무 적다(예전 기준일) → 예전 방식(NAVER 검색어)
+            source = "naver"
+            picked = pick_issues(basis, collect_issue_news(basis, http), max_topics=TOPICS_MAX + RESERVE_MAX)
+        finish_all(dedupe_events(picked, ref))
+        if source == "rss" and len(topics) < TOPICS_MIN:
+            relax.append("naver_general")  # 완화 ①
+            finish_all(naver_general_issues(basis, topics + picked, TOPICS_MAX + RESERVE_MAX - len(topics), http))
+        if source == "rss" and len(topics) < TOPICS_MIN:
+            relax.append("ongoing48")  # 완화 ②
+            finish_all(ongoing_relaxed(ref, sum(1 for t in topics if t.get("ongoing"))))
+        if source == "rss" and len(topics) < TOPICS_MIN:
+            relax.append("short")  # 완화 ③: 억지로 채우지 않는다
     except Exception as e:
         error = f"topics:{type(e).__name__}: {str(e)[:120]}"
         log.warning("lifemap topics failed: %s", error)
     names = {t["name"] for t in topics}
     same_basis = (prev.get("basis") or {}).get("key") == basis["key"]
+    funnel = {**_last_funnel, "no_company": no_company, "made": len(topics)}
     if not topics and same_basis and prev.get("topics"):
         # 같은 기준에서 하나도 못 만들었으면 이미 보이는 이슈를 그대로 둔다(5개 → 3개로 줄지 않게)
         _status(basis_key=basis["key"], ok=False, fresh=0, error=error, rejects=dict(_last_rejects),
                 excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], ts=time.time(), news_source=source,
-                rss=dict(_last_rss))
+                rss=dict(_last_rss), relax=relax, funnel=funnel)
         return prev
     fillers = (prev.get("topics") or []) if same_basis else []
     if not topics:
@@ -1302,17 +1439,24 @@ def run_topics(basis: dict, http=None) -> dict:
     for t in fillers:
         if len(topics) >= TOPICS_MIN:
             break
-        if t["name"] not in names and not t.get("carried"):
-            names.add(t["name"])
-            topics.append({**t, "carried": True})
+        if t["name"] in names or t.get("carried"):
+            continue
+        twin = next((k for k in topics if same_event(k, t)), None)
+        if twin is not None:  # 유지하던 이슈가 새 이슈와 같은 사건이면 하나로(첫 보도는 더 이른 쪽)
+            merge_event(twin, t, ref)
+            _last_rejects["same_event"] = _last_rejects.get("same_event", 0) + 1
+            continue
+        names.add(t["name"])
+        topics.append({**t, "carried": True})
     topics, reserve = topics[:TOPICS_MAX], [t for t in topics[TOPICS_MAX:] if not t.get("carried")]
     fresh = sum(1 for t in topics if not t.get("carried"))
     data = {"day": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis), "topics": topics, "reserve": reserve,
-            "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "news_source": source, "created_ts": time.time()}
+            "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "news_source": source, "relax": relax,
+            "created_ts": time.time()}
     store.write("lifemap", data)
     _status(basis_key=basis["key"], ok=fresh >= TOPICS_MIN, fresh=fresh, error=error, rejects=dict(_last_rejects),
             excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], ts=time.time(), news_source=source,
-            rss=dict(_last_rss))
+            rss=dict(_last_rss), relax=relax, funnel=funnel)
     return data
 
 
@@ -1750,6 +1894,8 @@ def candidates() -> list[dict]:
     keys, names, uniq = set(), set(), []
     for t in out:
         k = item_key(t)
+        if t["_src"] != "example" and any(u["_src"] != "example" and same_event(u, t) for u in uniq):
+            continue  # 다음 후보·섹터 이슈가 이미 있는 이슈와 같은 사건이면 두 번 보이지 않게
         if t.get("map") and k not in keys and t.get("name") not in names and not index_news(t):
             keys.add(k)
             names.add(t.get("name"))
@@ -1758,15 +1904,16 @@ def candidates() -> list[dict]:
 
 
 def curate(cfg: dict | None = None) -> dict:
-    """화면에 보일 이슈(shown)와 관리자용 전체 후보(pool). 원래 보이던 수(최소 TOPICS_MIN)만큼 숨기지 않은 후보로 채운다.
-    예시(다른 날 기준)는 오늘 후보로 TOPICS_MIN개를 못 채울 때만 쓴다."""
+    """화면에 보일 이슈(shown)와 관리자용 전체 후보(pool). 원래 보이던 수만큼 숨기지 않은 후보로 채운다
+    (생성 때 3개 미만이었으면 그 수 그대로 — 억지로 채우지 않는다. 오늘 이슈가 없을 때만 TOPICS_MIN개).
+    예시(다른 날 기준)는 오늘 후보로 그 수를 못 채울 때만 쓴다."""
     cfg = cfg or curation()
     pool = candidates()
-    base = sum(1 for t in pool if t["_src"] == "topic")
-    want = min(TOPICS_MAX, max(TOPICS_MIN, base))
+    base = sum(1 for t in pool if t["_src"] == "topic" and not t.get("example"))
+    want = min(TOPICS_MAX, base or TOPICS_MIN)
     open_ = [t for t in pool if not _blocked(t, cfg)]
     today = [t for t in open_ if t["_src"] != "example"]
-    shown = today[:want] if len(today) >= TOPICS_MIN else today + [t for t in open_ if t["_src"] == "example"][:TOPICS_MIN - len(today)]
+    shown = today[:want] if len(today) >= want else today + [t for t in open_ if t["_src"] == "example"][:want - len(today)]
     # 관리자 순서(그날만): 지정한 이슈를 그 순서로 맨 앞에. 숨긴 것은 건너뛰고, 아래 후보도 지정하면 끌어온다.
     keys = [k for k in cfg["order"]["keys"] if k in {item_key(t) for t in open_}]
     if keys:

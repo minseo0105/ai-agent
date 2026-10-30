@@ -91,6 +91,7 @@ class LifemapBase(TempStore):
         self.pool = FakePool()
         for p in (mock.patch.object(lifemap, "_pool", self.pool), mock.patch.object(ai, "available", return_value=True),
                   mock.patch.object(news, "configured", return_value=True), mock.patch.object(news, "search", return_value=[]),
+                  mock.patch.object(news, "search_window", return_value=[]),  # 완화 ①(NAVER 검색어)도 실제로 부르지 않는다
                   mock.patch.object(lifemap.public_data, "stock_history", return_value={}),
                   # RSS를 부르지 않는다(기사가 없으면 예전 방식 = NAVER 검색어로 만든다). RSS 경로는 RssIssuesTest에서
                   mock.patch.object(rss, "collect", return_value=([], []))):
@@ -1386,3 +1387,97 @@ class IndustryChipsTest(LifemapBase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def _made(name, title, urls, first, query=None, label="", parties=(), ongoing=False, presses=5):
+    """생성이 끝난 이슈(화면용)."""
+    return {"name": name, "title": title, "query": query or name, "label": label, "ongoing": ongoing,
+            "articles": [{"title": f"{title} {i}", "url": u, "press": "www.donga.com", "rep": i == 0} for i, u in enumerate(urls)],
+            "first": {"pub": first, "title": title, "url": urls[0], "press": "www.donga.com"},
+            "coverage": {"articles": presses * 2, "presses": presses, "hours": 24},
+            "map": {"stages": [{"label": "x", "companies": [{"code": "1", "name": p, "party": True} for p in parties]}],
+                    "interpretation": []}}
+
+
+class SameEventAndRelaxTest(LifemapBase):
+    """0단계: 같은 사건 합치기(유지하던 이슈 포함), 이슈가 모자랄 때 단계적 완화와 기록, 억지로 채우지 않기."""
+
+    def test_ticketing_outage_twins_merge_with_earlier_first_report(self):
+        a = _made("발권 시스템 장애", "인천공항 항공권 발권 시스템 먹통", ["https://www.chosun.com/1"], "2026-10-30T13:47:00+09:00")
+        b = _made("인천공항 발권 장애", "인천공항 중국 항공사 발권 장애", ["https://www.donga.com/2"], "2026-10-30T12:10:00+09:00")
+        self.assertTrue(lifemap.same_event(a, b))  # 사건 말 '발권'·'장애' 두 개가 겹친다
+        hack = _made("가상자산 해킹", "거래소 해킹 피해", ["https://www.donga.com/3"], "2026-10-30T10:00:00+09:00")
+        bank = _made("은행 해킹", "시중은행 전산 해킹 시도", ["https://www.yna.co.kr/4"], "2026-10-30T10:00:00+09:00")
+        self.assertFalse(lifemap.same_event(hack, bank))  # '해킹' 하나만 겹치고 당사자·제목이 다르면 다른 사건
+        self.assertFalse(lifemap.same_event(a, hack))
+        # 같은 기사가 겹치면 같은 사건
+        self.assertTrue(lifemap.same_event(hack, _made("코인 탈취", "다른 제목", ["https://www.donga.com/3"], "2026-10-30T10:00:00+09:00")))
+        # 말 하나 + 같은 당사자
+        self.assertTrue(lifemap.same_event(_made("빗썸 해킹", "t1", ["u1"], "2026-10-30T10:00:00+09:00", parties=["빗썸"]),
+                                           _made("거래소 해킹", "t2", ["u2"], "2026-10-30T10:00:00+09:00", parties=["빗썸"])))
+        ref = datetime(2026, 10, 30, 17, 0, tzinfo=KST)
+        merged = lifemap.merge_event(a, b, ref)
+        self.assertEqual(merged["first"]["pub"], "2026-10-30T12:10:00+09:00")  # 첫 보도는 더 이른 쪽
+        self.assertEqual([x["url"] for x in merged["articles"]], ["https://www.chosun.com/1", "https://www.donga.com/2"])
+        self.assertFalse(merged["ongoing"])
+        self.assertEqual(merged["merged"], ["인천공항 발권 장애"])
+
+    def test_kept_previous_issue_is_merged_not_shown_twice(self):
+        carried = {**_made("인천공항 발권 장애", "인천공항 중국 항공사 발권 장애", ["https://www.donga.com/2"],
+                           "2026-10-30T12:10:00+09:00"), "basis_label": "x"}
+        store.write("lifemap", {"basis": {"key": self.basis()["key"]}, "topics": [carried]})
+        new = _made("발권 시스템 장애", "인천공항 항공권 발권 시스템 먹통", ["https://www.chosun.com/1"], "2026-10-30T13:47:00+09:00")
+        with mock.patch.object(lifemap, "rss_issues", return_value=[{**new, "_context": []}]), \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: {k2: v for k2, v in t.items() if k2 != "_context"}), \
+                mock.patch.object(lifemap, "naver_general_issues", return_value=[]):
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual([t["name"] for t in data["topics"]], ["발권 시스템 장애"])
+        self.assertEqual(data["topics"][0]["first"]["pub"], "2026-10-30T12:10:00+09:00")
+        status = store.read("lifemap_status")
+        self.assertEqual(status["rejects"].get("same_event"), 1)
+        self.assertEqual(status["relax"], ["naver_general", "ongoing48", "short"])  # 1개뿐 → 완화 단계를 모두 거치고 기록
+
+    def test_relax_steps_naver_general_then_ongoing48_and_no_forced_fill(self):
+        ref = lifemap._ref_time(self.basis())
+        iso = lambda h: (ref - timedelta(hours=h)).isoformat()  # noqa: E731
+        first = _made("울산 붕괴", "울산화력 보일러 타워 붕괴", ["https://www.yna.co.kr/1"], iso(3))
+        naver = _made("전기차 화재", "지하주차장 전기차 화재", ["https://www.donga.com/9"], iso(5))
+        old30 = _made("열차 참사", "스페인 고속열차 참사", ["https://www.donga.com/7"], iso(30), ongoing=True)
+        old60 = _made("태풍 피해", "필리핀 태풍 피해", ["https://www.donga.com/8"], iso(60), ongoing=True)
+        lifemap._last_overflow[:] = [old30, old60]
+        finished = []
+        with mock.patch.object(lifemap, "rss_issues", return_value=[first]), \
+                mock.patch.object(lifemap, "naver_general_issues", return_value=[naver]) as ng, \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: finished.append(t["name"]) or t):
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual(finished, ["울산 붕괴", "전기차 화재", "열차 참사"])  # 48시간 밖 태풍은 넣지 않는다
+        self.assertEqual(ng.call_args.args[1][0]["name"], "울산 붕괴")  # 이미 있는 사건을 넘겨 겹치지 않게
+        self.assertEqual(data["relax"], ["naver_general", "ongoing48"])
+        self.assertEqual(data["fresh"], 3)
+
+        # 그래도 2개뿐이면 2개 그대로(예시·다른 이슈로 채우지 않는다), 화면도 2개
+        lifemap._last_overflow[:] = []
+        with mock.patch.object(lifemap, "rss_issues", return_value=[{**first, "articles": first["articles"]}]), \
+                mock.patch.object(lifemap, "naver_general_issues", return_value=[naver]), \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: t):
+            store.write("lifemap", {})
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual(data["relax"], ["naver_general", "ongoing48", "short"])
+        self.assertEqual(len(data["topics"]), 2)
+        self.assertEqual(len(lifemap.overview()["topics"]), 2)
+
+    def test_naver_general_keeps_only_general_press_in_24h(self):
+        ref = lifemap._ref_time(self.basis())
+        arts = [{"title": "전기차 화재 지하주차장", "url": "https://www.donga.com/a", "press": "www.donga.com", "pub": (ref - timedelta(hours=2)).isoformat()},
+                {"title": "전기차 화재 원인", "url": "https://www.sentv.co.kr/b", "press": "www.sentv.co.kr", "pub": (ref - timedelta(hours=2)).isoformat()},
+                {"title": "전기차 화재 첫날", "url": "https://www.chosun.com/c", "press": "www.chosun.com", "pub": (ref - timedelta(hours=30)).isoformat()},
+                {"title": "전기차 화재 대책", "url": "https://news.sbs.co.kr/d", "press": "news.sbs.co.kr", "pub": (ref - timedelta(hours=1)).isoformat()}]
+        seen = {}
+
+        def fake_pick(basis, articles, *a, **k):
+            seen["arts"] = articles
+            return []
+        with mock.patch.object(lifemap, "collect_issue_news", return_value=arts), mock.patch.object(lifemap, "pick_rss_issues", side_effect=fake_pick):
+            lifemap.naver_general_issues(self.basis(), [], 5)
+        self.assertEqual([a["url"] for a in seen["arts"]], ["https://www.donga.com/a", "https://news.sbs.co.kr/d"])
+        self.assertEqual(seen["arts"][0]["press_name"], "동아일보")
