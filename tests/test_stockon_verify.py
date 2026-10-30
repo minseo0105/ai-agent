@@ -296,5 +296,143 @@ class SelectionTest(VerifyBase):
         self.assertTrue(lifemap.showable({"map": {"stages": [{"companies": [{"code": "1"}]}], "verify": {"status": "unverified"}}}))
 
 
+class EvidenceBoostTest(VerifyBase):
+    """관계도 보강(2026-10-31): 회사별 '회사명 + 사건 핵심어' 검색, 사업 근거 등급, 검증된 회사 3곳 이상 이슈 우선."""
+
+    BIZ = "주요 사업은 항공기 체크인·발권 시스템 구축과 운영이며 공항 운영사 고객에게 공항 발권 솔루션을 제공한다"
+
+    def biz_items(self):
+        return [_item(1, "biz", "삼성에스디에스 사업보고서 (2025.12) · 사업의 내용", self.BIZ, press="DART 전자공시", filer="018260"),
+                _item(2, "biz", "대한항공 사업보고서 (2025.12) · 사업의 내용", "당사는 항공운송사업을 영위한다", press="DART 전자공시",
+                      filer="003490")]
+
+    def tiers(self, claim, m):
+        out = verify.classify(TOPIC, m, _corpus(self.biz_items()), {"parties": [], "companies": [claim]}, [("인천국제공항공사", "")], ART)
+        return [x for st in out["stages"] for x in st["companies"]]
+
+    def test_business_evidence_grade_needs_own_report_issue_word_and_path(self):
+        m = _map(("018260", "경쟁사"))
+        ok_claim = _claim("삼성에스디에스", "주력 사업", [(1, "항공기 체크인·발권 시스템 구축과 운영")],
+                          path="발권 시스템 복구 수요가 생길 수 있다", direction="중립")
+        c = self.tiers(ok_claim, m)[0]
+        self.assertEqual((c["tier"], c["grade"], c["rel_kind"]), ("indirect", "사업 근거", "주력 사업"))
+        self.assertEqual(c["sources"][0]["kind"], "사업보고서")
+        tier = lambda cl, mm=m: [x["tier"] for x in self.tiers(cl, mm)]  # noqa: E731
+        self.assertEqual(tier({**ok_claim, "path": ""}), ["industry"])  # 영향 경로 설명이 없으면 불인정
+        self.assertEqual(tier({**ok_claim, "evidence": [{"n": 2, "quote": "당사는 항공운송사업을 영위한다"}]}), ["industry"])  # 남의 보고서
+        self.assertEqual(tier(_claim("삼성에스디에스", "주력 사업", [(1, "공항 운영사 고객에게")], path="p")), ["industry"])  # 사건 말 없음
+        self.assertEqual(tier(_claim("삼성에스디에스", "사업", [(1, "항공기 체크인·발권 시스템 구축과 운영")], path="p")), ["industry"])  # 다른 관계는 사업보고서 불가
+        # 업종 분류만 같은 회사(항공운송사업)는 사업 근거가 아니다
+        air = _claim("대한항공", "주력 사업", [(2, "당사는 항공운송사업을 영위한다")], path="항공 운송 차질")
+        self.assertEqual(tier(air, _map(("003490", "경쟁사"))), ["industry"])
+
+    def test_grade_order(self):
+        news1 = _item(3, "news", "인천공항 발권 장애 삼성SDS", "인천공항 발권 장애 삼성SDS 시스템")
+        biz = self.biz_items()[0]
+        self.assertEqual(verify._grade([biz]), "사업 근거")
+        self.assertEqual(verify._grade([news1]), "단일 보도")
+        self.assertEqual(verify._grade([news1, biz]), "사업 근거")  # 단일 보도보다 위
+        self.assertEqual(verify._grade([news1, {**news1, "press": "SBS"}, biz]), "보도 확인")
+        self.assertEqual([lifemap.GRADE_RANK[g] for g in verify.GRADES[:4]], [4, 3, 2, 1])
+
+    def test_business_section_and_excerpt(self):
+        doc = ("목차 I. 회사의 개요 II. 사업의 내용 III. 재무에 관한 사항 ... I. 회사의 개요 본문 "
+               "II. 사업의 내용 1. 사업의 개요 당사는 IT 서비스 회사다. " + "가" * 300 + " 공항 발권 시스템을 운영한다. III. 재무에 관한 사항 표")
+        sec = verify.business_section(doc)
+        self.assertTrue(sec.strip().startswith("1. 사업의 개요"))  # 목차가 아니라 본문
+        self.assertNotIn("재무", sec)
+        ex = verify.biz_excerpt(sec, {"발권"})
+        self.assertIn("공항 발권 시스템", ex)
+        self.assertTrue(ex.startswith("1. 사업의 개요"))
+        self.assertEqual(verify.stems("해킹으로 개인정보가 유출 서비스 전기/전자"), {"해킹", "개인정보", "유출"})
+
+    def test_second_company_search_uses_core_words_and_ref(self):
+        t = {"name": "인천공항 발권 장애", "query": "인천공항 체크인 발권 장애"}
+        self.assertEqual(verify.core_words(t), "인천공항 체크인")
+        queries = []
+
+        def search(q, display, http):
+            queries.append(q)
+            return [{"title": f"대한항공 {q}", "snippet": "", "url": f"https://n/{len(queries)}", "press": "yna.co.kr",
+                     "pub": (REF + timedelta(hours=1 if len(queries) == 3 else -1)).isoformat()}]
+        with mock.patch.object(verify, "_search", side_effect=search), mock.patch.object(verify, "dart_evidence", return_value=0), \
+                mock.patch.object(verify, "biz_evidence", return_value=0):
+            corpus, _, _ = verify.collect(t, _map(("003490", "경쟁사")), [], REF)
+        self.assertEqual(queries[1:], ["대한항공 인천공항 체크인 발권 장애", "대한항공 인천공항 체크인"])
+        self.assertEqual(corpus.after_ref, 1)  # 기준 시각 뒤 기사는 근거로 쓰지 않는다
+
+    def test_issues_with_three_verified_companies_first(self):
+        def made(name, n, articles):
+            comps = [{"code": f"00000{i}", "name": f"c{i}", "tier": "indirect", "grade": "단일 보도"} for i in range(n)]
+            return {"name": name, "coverage": {"articles": articles, "presses": 3}, "map": {"stages": [{"companies": comps}]}}
+        pool = [made("큰 이슈 1곳", 1, 90), made("작은 이슈 3곳", 3, 10), made("중간 이슈 4곳", 4, 30)]
+        self.assertEqual([t["name"] for t in lifemap.select(pool, 3)], ["중간 이슈 4곳", "작은 이슈 3곳", "큰 이슈 1곳"])
+
+
+class SectorAndWordTest(VerifyBase):
+    def test_sector_tries_next_issue_then_marks_empty(self):
+        verified = {"stages": [{"key": "p0", "label": "x", "companies": [{"code": "005930", "name": "삼성전자", "tier": "indirect",
+                                                                           "grade": "단일 보도", "relevance": "중"}]}],
+                    "verify": {"status": "ok", "listed": 1}}
+        calls = []
+
+        def finish(t, *a, **k):
+            calls.append(t["name"])
+            return {**t, "map": verified if t["name"] == "둘째" else {"stages": [], "verify": {"status": "ok", "listed": 0}}}
+
+        def pick(*a, **k):
+            return [{"name": "첫째", "title": "a"}, {"name": "둘째", "title": "b"}] if "'금융'" in k["task"] else [{"name": "없음", "title": "c"}]
+        with mock.patch.object(lifemap.news, "search_window", side_effect=lambda q, *a, **k: [{"title": q}]), \
+                mock.patch.object(lifemap, "pick_issues", side_effect=pick), mock.patch.object(lifemap, "_finish", side_effect=finish):
+            lifemap.run_sectors(self.basis())
+        sec = store.read("lifemap_sectors")
+        self.assertEqual(sec["items"]["금융"]["name"], "둘째")  # 첫 이슈에 검증된 회사가 없어 다음 이슈로
+        self.assertEqual(calls[:2], ["첫째", "둘째"])
+        self.assertEqual(sec["empty"]["반도체"]["message"], lifemap.SECTOR_EMPTY)
+        view = lifemap.overview()
+        self.assertEqual(view["sector_empty"]["반도체"], "오늘은 확인된 연결이 없어요")
+        self.assertNotIn("반도체", view["sector_items"])
+        self.assertIn("금융", view["sector_items"])
+
+    def test_unverified_sector_is_not_shown(self):
+        it = {"name": "x", "title": "x", "map": {"stages": [{"key": "p0", "label": "x", "companies": [{"code": "005930", "name": "삼성전자"}]}],
+                                                 "verify": {"status": "unverified"}}}
+        store.write("lifemap_sectors", {"items": {"반도체": it}})
+        self.assertNotIn("반도체", lifemap.overview()["sector_items"])  # 검증 오류 결과는 화면에 올리지 않는다
+
+    def test_word_is_verified_once_a_day(self):
+        today = datetime.now(KST).strftime("%Y-%m-%d")
+        old = {"name": "원전", "title": "원전", "map": {"stages": []}, "day": "2026-10-01"}
+        store.write("lifemap_words", {"원전": old})
+        self.assertIsNone(lifemap.stored_item("원전"))  # 전날 결과는 다시 검증
+        store.write("lifemap_words", {"원전": {**old, "day": today}})
+        self.assertEqual(lifemap.stored_item("원전")["day"], today)  # 같은 날은 재사용(AI·검증을 다시 부르지 않는다)
+        arts = [{"title": "원전 수주", "url": "https://n/1", "press": "yna.co.kr", "pub": datetime.now(KST).isoformat(), "snippet": "s"}]
+        interp = {"word": "원전", "stages": [{"key": "p0", "label": "x", "companies": [{"code": "005930", "name": "삼성전자"}]}], "interpretation": []}
+        with mock.patch.object(lifemap.news, "configured", return_value=True), mock.patch.object(lifemap.news, "search", return_value=arts), \
+                mock.patch.object(lifemap, "interpret", return_value=interp), mock.patch.object(lifemap, "ensure_intros", return_value=0), \
+                mock.patch.object(verify, "verify_map", side_effect=lambda t, m, ctx, ref, http=None: {**m, "verify": {"status": "ok", "listed": 0}}) as vm:
+            item = lifemap.word_item("원전")
+        self.assertEqual(vm.call_args.args[0]["query"], "원전")
+        self.assertEqual(vm.call_args.args[2], arts)  # 단어의 최근 기사가 근거 자료
+        self.assertEqual((item["day"], item["no_verified"]), (today, True))
+
+    def test_examples_are_built_from_verified_items_only(self):
+        good = {"name": "좋은", "title": "t", "map": {"stages": [{"key": "p0", "label": "보안 투자", "companies": [
+            {"code": "005930", "name": "삼성전자", "tier": "party", "grade": "보도 확인"}]}], "verify": {"status": "ok", "listed": 1, "dropped": [1]}}}
+        bad = {"name": "나쁜", "title": "t", "map": {"stages": [{"key": "p0", "label": "x", "companies": [{"code": "005930", "name": "삼성전자"}]}],
+                                                    "verify": {"status": "unverified"}}}
+        store.write("lifemap", {"topics": [good, bad], "basis": {"label": "b"}})
+        store.write("lifemap_sectors", {"items": {"보안": {**good, "name": "보안"}}})
+        store.write("lifemap_intros", {"005930": {"text": "반도체·스마트폰을 만드는 회사"}})
+        with mock.patch.object(lifemap, "EXAMPLES_PATH", self.tmp / "ex.json"):
+            data = lifemap.build_examples()
+        self.assertEqual([t["name"] for t in data["topics"]], ["좋은"])
+        c = data["topics"][0]["map"]["stages"][0]["companies"][0]
+        self.assertEqual((c["tier"], c["grade"], c["intro"], c["path_tag"]), ("party", "보도 확인", "반도체·스마트폰을 만드는 회사", "보안 투자"))
+        self.assertNotIn("dropped", data["topics"][0]["map"]["verify"])
+        self.assertEqual(list(data["sectors"]), ["보안"])
+
+
 if __name__ == "__main__":
     unittest.main()

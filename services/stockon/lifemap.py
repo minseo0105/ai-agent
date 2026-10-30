@@ -49,6 +49,7 @@
 
 import json
 import logging
+import os
 import re
 import sys
 import threading
@@ -865,7 +866,7 @@ _last_excluded: list[dict] = []  # 마지막 토픽 선정에서 증권 기사�
 
 
 def pick_issues(basis: dict, articles: list[dict], task: str = "", max_topics: int = TOPICS_MAX,
-                min_articles: int = 2, min_press: int = 2) -> list[dict]:
+                min_articles: int = 2, min_press: int = 2, one_sector: bool = False) -> list[dict]:
     """Haiku가 묶은 이슈. 증권 기사는 먼저 빼고, 대표 기사·기사 번호·언론사 수·섹터 중복·중심 주제·거시 이슈 수·표현을 검사해
     통과한 것만(최대 max_topics)."""
     _last_excluded.clear()
@@ -908,7 +909,7 @@ def pick_issues(basis: dict, articles: list[dict], task: str = "", max_topics: i
         why = ("market" if index_news({"name": keyword, "title": title}) else
                "stock" if STOCK_TOPIC.search(keyword) or stock_article({"title": title}) else
                "word" if not keyword or check_word(keyword) or keyword in keywords or not sec or tokens & seen_tokens else
-               "sector" if any(sec in x or x in sec for x in sectors) else
+               "sector" if not one_sector and any(sec in x or x in sec for x in sectors) else
                "text" if not title or not summary or any(_unsafe(x) for x in (title, summary, keyword, sector)) else
                "articles" if len(nums) < min_articles or rep not in nums or used & set(nums) else
                "center" if not centered(keyword, [articles[n - 1]["title"] for n in nums]) else
@@ -1395,7 +1396,8 @@ def _status(**kw) -> None:
         pass
 
 
-GRADE_RANK = {"확인됨": 3, "보도 확인": 2, "단일 보도": 1}
+GRADE_RANK = {"확인됨": 4, "보도 확인": 3, "사업 근거": 2, "단일 보도": 1}
+RICH_MIN = 3               # 검증된 회사가 이만큼 있는 이슈를 먼저(관계도가 1~2곳뿐인 이슈는 뒤로)
 FILL_STEPS = ("naver_general", "ongoing48", "sector", "previous")
 RELAX_STEPS.update(sector="같은 날 섹터 이슈 중 검증된 것", previous="직전 회차에서 검증된 이슈 유지")
 
@@ -1414,11 +1416,20 @@ def showable(t: dict) -> bool:
     return bool(m.get("stages")) and not t.get("example")
 
 
+def trusted(t: dict) -> bool:
+    """화면(섹터·직접 입력·예시)에 올릴 수 있는 검증된 결과: 검증을 통과했고 검증된 국내 상장기업이 있다.
+    검증 오류·시간 초과('검증 전') 결과는 쓰지 않는다. LIFEMAP_VERIFY=0으로 검증을 일부러 끈 때만 예전처럼 회사가 있으면 둔다."""
+    if (os.environ.get("LIFEMAP_VERIFY") or "1").strip() == "0":
+        return bool((t.get("map") or {}).get("stages"))
+    return ((t.get("map") or {}).get("verify") or {}).get("status") == "ok" and showable(t)
+
+
 def importance(t: dict) -> tuple:
-    """중요도: 기사 수·언론사 수(얼마나 크게 다뤘나) → 검증된 기업 수 → 증거 등급(확인됨 > 보도 확인 > 단일 보도)."""
+    """중요도: 검증된 기업 RICH_MIN곳 이상인가 → 기사 수·언론사 수(얼마나 크게 다뤘나) → 검증된 기업 수
+    → 증거 등급(확인됨 > 보도 확인 > 사업 근거 > 단일 보도)."""
     cov = t.get("coverage") or {}
     cs = _listed(t)
-    return (cov.get("articles", 0), cov.get("presses", 0), len(cs), sum(GRADE_RANK.get(c.get("grade"), 0) for c in cs))
+    return (len(cs) >= RICH_MIN, cov.get("articles", 0), cov.get("presses", 0), len(cs), sum(GRADE_RANK.get(c.get("grade"), 0) for c in cs))
 
 
 def select(pool: list[dict], n: int, ongoing_max: int = ONGOING_MAX) -> list[dict]:
@@ -1511,7 +1522,7 @@ def run_topics(basis: dict, http=None, merge: bool = False) -> dict:
                 _rej("same_event", t)
                 continue
             top = select(pool, TOPICS_MAX, cap())
-            if gate and len(top) >= TOPICS_MAX and importance(t)[:2] <= importance(top[-1])[:2]:
+            if gate and len(top) >= TOPICS_MAX and importance(t)[1:3] <= importance(top[-1])[1:3]:
                 _rej("below_kept", t)  # 지금 5위보다 작게 다뤄졌으면 AI를 부르지 않는다
                 continue
             if not gate and enough(TOPICS_MAX + RESERVE_MAX):
@@ -1594,10 +1605,17 @@ def run_topics(basis: dict, http=None, merge: bool = False) -> dict:
     return data
 
 
+SECTOR_TRIES = 3            # 섹터마다 검증해 볼 이슈 후보 수(큰 순서, 검증된 국내 상장기업이 나오면 멈춘다)
+SECTOR_EMPTY = "오늘은 확인된 연결이 없어요"
+
+
 def run_sectors(basis: dict, http=None) -> int:
-    """섹터마다: 같은 기준 창의 섹터 뉴스 → Haiku가 가장 큰 이슈 1개 → 같은 구조. 실패한 섹터는 이전 것을 둔다."""
+    """섹터마다: 같은 기준 창의 섹터 뉴스 → Haiku가 큰 이슈 SECTOR_TRIES개 → 큰 순서로 해석·검증해서 검증된 국내 상장기업이
+    있는 첫 이슈. 하나도 없으면 그 섹터는 empty(화면 칩 '오늘은 확인된 연결이 없어요'). 뉴스 검색·AI가 실패한 섹터는
+    이전 것을 두되 검증된 것만(검증 전 결과는 남기지 않는다)."""
     saved = _read("lifemap_sectors", {})
-    items = dict(saved.get("items") or {})
+    items = {k: v for k, v in (saved.get("items") or {}).items() if trusted(v)}
+    empty: dict[str, dict] = {}
     start, end = basis["window"]
     day = datetime.strptime(basis["as_of"], "%Y%m%d")
     kw = {"http": http} if http else {}
@@ -1618,17 +1636,33 @@ def run_sectors(basis: dict, http=None) -> int:
         if not found:
             continue
         try:
-            picked = pick_issues(basis, found, task=f"{basis['label']} '{sector}' 업종 뉴스에서 이 업종에 영향을 줄 만한 가장 큰 이슈 1개를 골라라.",
-                                 max_topics=1, min_articles=1, min_press=1)
-            done = _finish({**picked[0], "sector": sector}, basis, http=http) if picked else None
+            picked = pick_issues(basis, found, task=f"{basis['label']} '{sector}' 업종 뉴스에서 이 업종에 영향을 줄 만한 큰 이슈를 "
+                                                    f"큰 순서로 {SECTOR_TRIES}개까지 골라라.",
+                                 max_topics=SECTOR_TRIES, min_articles=1, min_press=1, one_sector=True)
         except Exception as e:
             log.warning("lifemap sector %s failed: %s", sector, type(e).__name__)
             continue
+        tried = []
+        done = None
+        for cand in picked:
+            try:
+                got = _finish({**cand, "sector": sector}, basis, http=http)
+            except Exception as e:
+                log.warning("lifemap sector %s/%s failed: %s", sector, cand.get("name"), type(e).__name__)
+                tried.append({"name": cand.get("name"), "why": "error"})
+                continue
+            if got and trusted(got):
+                done = got
+                break
+            tried.append({"name": cand.get("name"), "why": "no_company" if not got else "no_verified"})
         if done:
-            items[sector] = done
+            items[sector] = {**done, "sector_tries": len(tried) + 1}
             made += 1
+        else:
+            items.pop(sector, None)
+            empty[sector] = {"message": SECTOR_EMPTY, "tried": tried}
     store.write("lifemap_sectors", {"basis": basis_info(basis), "day": datetime.now(KST).strftime("%Y-%m-%d"), "items": items,
-                                    "created_ts": time.time()})
+                                    "empty": empty, "created_ts": time.time()})
     return made
 
 
@@ -1982,13 +2016,16 @@ def overview() -> dict:
     pub_idx = _public_indices()
     cfg = curation()
     topics = curate(cfg)["shown"]  # 관리자 숨김·순서·제외 키워드·지수 시황 이슈 제외 적용
-    saved = _read("lifemap_sectors", {}).get("items") or {}
+    sec = _read("lifemap_sectors", {})
+    saved = sec.get("items") or {}
+    empty = sec.get("empty") or {}
     ex_sectors = ex.get("sectors") or {}
     sector_items = {}
     for sector in SECTORS:
-        # 숨김·제외 키워드에 걸린 섹터 이슈는 예시로, 예시도 걸리면 뺀다(화면은 있는 섹터만 보여 준다)
-        for it in (saved.get(sector), {**ex_sectors[sector], "example": True} if sector in ex_sectors else None):
-            if it and not _blocked(it, cfg):
+        # 숨김·제외 키워드에 걸린 섹터 이슈는 예시로, 예시도 걸리면 뺀다(화면은 있는 섹터만 보여 준다).
+        # 오늘 검증해서 확인된 연결이 없는 섹터는 예시로 채우지 않고 '오늘은 확인된 연결이 없어요'
+        for it in (saved.get(sector), None if sector in empty else {**ex_sectors[sector], "example": True} if sector in ex_sectors else None):
+            if it and not _blocked(it, cfg) and trusted(it):
                 sector_items[sector] = with_reaction(it, live, pub_idx)
                 break
     basis = cur.get("basis") or ex.get("basis") or {}
@@ -2000,6 +2037,7 @@ def overview() -> dict:
         "hot": [t["name"] for t in topics],
         "sectors": SECTORS,
         "sector_items": sector_items,
+        "sector_empty": {s: SECTOR_EMPTY for s in SECTORS if s not in sector_items and s in empty},
         "live": live_config(),
         "price_note": price_note("kiwoom" if basis.get("source") == "kiwoom" or live else "public"),
     }
@@ -2284,7 +2322,7 @@ def stored_item(word: str) -> dict | None:
         if t.get("name") == word and t.get("map"):
             return t
     it = _read("lifemap_words", {}).get(word)
-    if it:
+    if it and it.get("day") == datetime.now(KST).strftime("%Y-%m-%d"):  # 같은 단어 검증은 하루 한 번(전날 것은 다시)
         return it
     ex = examples()
     found = (ex.get("sectors") or {}).get(word) or next((t for t in ex.get("topics") or [] if t.get("name") == word), None)
@@ -2302,8 +2340,12 @@ def _save_word(word: str, item: dict) -> None:
 
 
 def word_item(word: str) -> dict:
-    """직접 입력한 단어: 최근 뉴스(있으면)로 해석. 뉴스 검색 실패는 뉴스 없이 해석한다."""
-    cutoff = datetime.now(KST) - timedelta(days=WORD_NEWS_DAYS)
+    """직접 입력한 단어: 최근 뉴스(있으면)로 해석 → 기업 연관성 검증(이슈와 같은 엔진, 기준 시각 = 지금).
+    뉴스 검색 실패는 뉴스 없이 해석한다(근거 자료가 없으니 검증된 회사도 거의 없다)."""
+    from services.stockon import verify
+
+    now = datetime.now(KST)
+    cutoff = now - timedelta(days=WORD_NEWS_DAYS)
     found: list[dict] = []
     if news.configured():
         try:
@@ -2312,11 +2354,17 @@ def word_item(word: str) -> dict:
         except news.NewsError:
             found = []
     m = interpret(word, found, live=True)
+    rep = found[0] if found else None
+    t = {"name": word, "query": word, "title": rep["title"] if rep else f"‘{word}’"}
+    if m["stages"]:
+        m = verify.verify_map(t, m, found, now)
     stocks, _, as_of = directory()
     m["basis_label"] = f"{_md(as_of)} 장 기준" if as_of else ""
-    rep = found[0] if found else None
-    return {"name": word, "title": rep["title"] if rep else f"‘{word}’", "summary": (rep.get("snippet") or "")[:80] if rep else "",
-            "sector": "", "articles": [_article(a, i == 0) for i, a in enumerate(found)], "created_ts": time.time(), "map": m}
+    v = m.get("verify") or {}
+    ensure_intros([c for st in m["stages"] for c in st["companies"]], live=True)
+    return {"name": word, "title": t["title"], "summary": (rep.get("snippet") or "")[:80] if rep else "",
+            "sector": "", "articles": [_article(a, i == 0) for i, a in enumerate(found)], "created_ts": time.time(),
+            "day": now.strftime("%Y-%m-%d"), "no_verified": v.get("status") == "ok" and not v.get("listed"), "map": m}
 
 
 def _run_job(word: str) -> None:
@@ -2416,20 +2464,33 @@ def request_word(word: str, session: str) -> dict:
 #   python -m services.stockon.lifemap --examples   저장소 예시 파일(data/stockon/lifemap_examples.json) 다시 만들기
 # ---------------------------------------------------------
 
-def _strip(item: dict) -> dict:
-    return {**item, "map": {k: v for k, v in item["map"].items() if k != "removed"}}
+
+
+def _strip(item: dict, intro: dict | None = None) -> dict:
+    """예시용: 근거 부족 목록(verify.dropped)은 빼고, 회사마다 뉴스 당사자·검증 등급·회사 소개·경로 태그를 함께 담는다."""
+    intro = intro or {}
+    m = {k: v for k, v in item["map"].items() if k != "removed"}
+    if isinstance(m.get("verify"), dict):
+        m["verify"] = {k: v for k, v in m["verify"].items() if k != "dropped"}
+    m["stages"] = [{**st, "companies": [{**c, "path_tag": st.get("label", ""), **({"intro": intro[c["code"]]} if c.get("code") in intro else {})}
+                                        for c in st.get("companies") or []]} for st in m.get("stages") or []]
+    return {**{k: v for k, v in item.items() if not k.startswith("_")}, "map": m}
 
 
 def build_examples() -> dict:
-    basis = topic_basis()
-    if not basis:
-        raise RuntimeError("시세 스냅샷 없음")
-    topics = [t for t in run_topics(basis)["topics"] if not t.get("carried")]
-    run_sectors(basis)
-    sectors = {k: _strip(it) for k, it in (_read("lifemap_sectors", {}).get("items") or {}).items()}
-    data = {"note": "AI가 실패할 때 쓰는 예시. 같은 엔진(Haiku 5.5 이슈 선정·Sonnet 5.5 해석)으로 만들고 종목 목록과 대조함.",
-            "built": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis),
-            "topics": [_strip(t) for t in topics], "sectors": sectors}
+    """저장소 예시 파일을 지금 저장된 이슈·섹터 중 검증된 것만으로 다시 만든다(AI·뉴스를 다시 부르지 않는다).
+    먼저 --topics·--sectors로 오늘 결과를 만든 뒤 실행한다."""
+    cur = _read("lifemap", {})
+    sec = _read("lifemap_sectors", {})
+    intro = intros()
+    topics = [_strip(t, intro) for t in (cur.get("topics") or []) + (cur.get("reserve") or []) if not t.get("example") and trusted(t)]
+    sectors = {k: _strip(it, intro) for k, it in (sec.get("items") or {}).items() if trusted(it)}
+    if not topics and not sectors:
+        raise RuntimeError("검증된 이슈가 없어 예시를 만들 수 없어요")
+    data = {"note": "AI가 실패할 때 쓰는 예시. 같은 엔진(Haiku 5.5 이슈 선정·Sonnet 5.5 해석·검증)으로 만든 검증된 이슈만. "
+                    "회사마다 뉴스 당사자(tier=party)·검증 등급(grade)·회사 소개(intro)·경로 태그(path_tag).",
+            "built": datetime.now(KST).strftime("%Y-%m-%d"), "basis": cur.get("basis") or sec.get("basis") or {},
+            "topics": topics[:TOPICS_MAX], "sectors": sectors}
     EXAMPLES_PATH.parent.mkdir(parents=True, exist_ok=True)
     EXAMPLES_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     return data

@@ -11,7 +11,8 @@
    코드가 그 문장(또는 핵심 말 80% 이상)이 그 자료 안에 있는지, 자료에 회사 이름과 이슈(당사자·사건 말)가 함께 나오는지 대조한다.
 4. 분류: party(직접 당사자) / indirect(검증된 간접 영향) / industry(단순 업종 참고, 지도에 올리지 않고 등락만) /
    insufficient(근거 부족 — 화면에 보이지 않고 lifemap_verify_log.json에만).
-   증거 등급(확률이 아님): 확인됨(공시·공식자료) / 보도 확인(서로 다른 언론사 2곳 이상) / 단일 보도(1곳) / 근거 부족.
+   증거 등급(확률이 아님): 확인됨(공시·공식자료) / 보도 확인(서로 다른 언론사 2곳 이상) / 사업 근거(영향 경로가 그 회사의
+   주력 사업과 직접 일치하고 DART 사업보고서 '사업의 내용'에서 확인됨 — 업종 분류만 같은 것은 불인정) / 단일 보도(1곳) / 근거 부족.
    긍정·부정·중립은 근거와 함께 사업 영향 경로가 설명될 때만, 아니면 불확실(unk).
 
 설정: LIFEMAP_VERIFY=1(기본)/0. 끄거나, 검증 중 오류·시간 초과(VERIFY_TIMEOUT)가 나면 지금 방식 결과를 그대로 두고
@@ -43,17 +44,28 @@ log = logging.getLogger("stockon.verify")
 ALIASES_PATH = Path(__file__).resolve().parents[2] / "data" / "stockon" / "company_aliases.json"
 VERIFY_MODEL = "claude-sonnet-5-5"
 VERIFY_TIMEOUT = 150         # 이슈 하나 검증 최대 초(넘으면 '검증 전')
-REL_KINDS = ("계약", "공급망", "지분", "경쟁", "사업")
+REL_KINDS = ("계약", "공급망", "지분", "경쟁", "사업", "주력 사업")
+BIZ_REL = "주력 사업"         # 사업보고서 '사업의 내용'으로만 확인하는 관계(그 밖의 관계는 사업보고서 발췌를 근거로 쓰지 않는다)
 INDUSTRY_ONLY = ("같은 업종", "근거 없음")
 IMPACTS = ("영향 있음", "영향 없음", "알 수 없음")
 DIRECTION = {"긍정": "pos", "부정": "neg", "중립": "neu", "불확실": "unk"}
-GRADES = ("확인됨", "보도 확인", "단일 보도", "근거 부족")
-KIND_NAME = {"dart": "공시", "news": "뉴스", "rss": "RSS", "official": "공식자료"}
+GRADES = ("확인됨", "보도 확인", "사업 근거", "단일 보도", "근거 부족")
+KIND_NAME = {"dart": "공시", "news": "뉴스", "rss": "RSS", "official": "공식자료", "biz": "사업보고서"}
 # AI 해석의 관계 → 검증이 실패했을 때 업종 참고로 둘지(경쟁·대체·같은 업종) 근거 부족으로 뺄지(구체적 사업 연결을 주장한 것)
 SOFT_CLAIMS = {"경쟁사", "대체재", "같은 업종"}
 QUOTE_WORDS = 0.8            # 근거 문장이 자료와 글자 그대로 같지 않을 때: 문장의 말 중 이 비율 이상이 자료에 있어야
 NEW_MAX = 2                  # 근거 자료에서 AI가 새로 찾은 회사(예: 발권 시스템 공급사) 최대 수
 PER_COMPANY_NEWS = 4
+CORE_WORDS = 2               # 회사별 두 번째 검색 '회사명 + 사건 핵심어'에 쓰는 사건 말 수
+BIZ_COMPANIES = 5            # 사업보고서 '사업의 내용'을 보는 후보 회사 수(이슈 하나)
+BIZ_TEXT = 900               # 사업보고서 발췌 최대 글자
+BIZ_SECTION_MAX = 80_000
+# 사업 근거의 '사건과 같은 말' 판정에서 빼는 흔한 말(업종 분류·회사 일반 말로는 사건과 이어지지 않는다)
+BIZ_STOP = {"사업", "회사", "시장", "서비스", "제품", "산업", "기업", "국내", "해외", "관련", "이번", "지난", "오늘", "대한", "위해", "통해",
+            "정부", "기자", "업계", "분야", "기술", "전망", "예정", "지원", "운영", "확대", "계획", "주요", "생산", "판매", "개발", "글로벌",
+            "부문", "영위", "당사", "현재", "다양한", "제공", "사용", "이용", "고객", "최근", "가능", "경우", "있다", "있는", "등의"}
+PARTICLES = ("에서는", "으로는", "에서", "으로", "에게", "까지", "부터", "보다", "처럼", "은", "는", "이", "가", "을", "를", "의", "에", "와", "과",
+             "도", "로", "만")
 ISSUE_NEWS = 8
 DART_DAYS = 365
 DART_DOCS = 3                # 이슈 하나에서 여는 공시 원문 수
@@ -68,7 +80,7 @@ PARTICLE_NOT = r"(?![은는이가을를의에와과도로만께])[가-힣]"  # �
 NOT_COMPANY = re.compile(r"정부|당국|부처|부$|청$|위원회|협회|연합회|경찰|검찰|법원|국회|대통령|장관|타임스|일보|신문|방송|뉴스|통신|NYT|CNN|BBC")
 PARTIES_MAX = 3              # 화면에 보일 비상장·해외 당사자 수
 
-_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="stockon-verify")
+_pool = ThreadPoolExecutor(max_workers=4, thread_name_prefix="stockon-verify")  # 수집기 이슈 + 앱 직접 입력
 _alias_cache: dict = {"mtime": None, "value": None}
 _db_lock = threading.Lock()
 _log_lock = threading.Lock()
@@ -162,7 +174,7 @@ class Corpus:
             self.after_ref += 1
             return None
         self.urls.add(url)
-        item = {"n": len(self.items) + 1, "kind": kind, "title": (title or "")[:200], "text": (text or "")[:600], "url": url,
+        item = {"n": len(self.items) + 1, "kind": kind, "title": (title or "")[:200], "text": (text or "")[:BIZ_TEXT if kind == "biz" else 600], "url": url,
                 "press": press, "pub": when.isoformat(), "checked": self.checked, **extra}
         self.items.append(item)
         return item
@@ -252,6 +264,19 @@ def dart_filings(name: str, ref: datetime, http=requests.get) -> list[dict]:
     return [i for i in data.get("list") or [] if i.get("rcept_no") and (i.get("rcept_dt") or "99999999") < day]
 
 
+_filings_cache: dict = {}
+
+
+def filings_of(name: str, ref: datetime, http=requests.get) -> list[dict]:
+    """dart_filings를 한 실행 안에서(같은 회사·같은 기준일) 한 번만 부른다."""
+    key = (name, ref.strftime("%Y%m%d"))
+    if key not in _filings_cache:
+        if len(_filings_cache) > 500:
+            _filings_cache.clear()
+        _filings_cache[key] = dart_filings(name, ref, http)
+    return _filings_cache[key]
+
+
 def _excerpts(text: str, names: list[str], width: int = 90, limit: int = 3) -> str:
     out = []
     for n in names:
@@ -266,7 +291,7 @@ def dart_evidence(corpus: Corpus, company: dict, counterparties: list[str], supp
     """회사의 공급계약 공시(단일판매·공급계약)와, 공급망을 주장했으면 최근 사업보고서 원문에서 당사자 이름이 나온 문장을 근거로 넣는다."""
     if not counterparties:
         return 0
-    filings = dart_filings(company["name"], corpus.ref, http)
+    filings = filings_of(company["name"], corpus.ref, http)
     contracts = [f for f in filings if re.search(r"공급계약|판매.?공급", f.get("report_nm", ""))][:2]
     reports = [f for f in filings if (f.get("report_nm") or "").strip().startswith("사업보고서")][:1] if supply_claim else []
     added = 0
@@ -285,6 +310,74 @@ def dart_evidence(corpus: Corpus, company: dict, counterparties: list[str], supp
     return added
 
 
+# --- 사업 근거: 최근 사업보고서 'II. 사업의 내용'에서 사건 말·영향 경로 말이 나온 문장 ---
+
+def _stem(word: str) -> str:
+    for p in PARTICLES:
+        if word.endswith(p) and len(word) - len(p) >= 2:
+            return word[: -len(p)]
+    return word
+
+
+def stems(text: str) -> set[str]:
+    """두 글자 이상 말의 줄기(조사를 뗀 것). 흔한 말·업종 분류 말은 뺀다."""
+    out = {_stem(w) for w in WORD.findall(text or "")}
+    industry = {_stem(w) for x in lifemap.KRX_INDUSTRIES for w in WORD.findall(x)}
+    return {w for w in out if len(w) >= 2 and w not in BIZ_STOP and w not in industry and w not in lifemap.GENERIC_TOKENS}
+
+
+def business_section(text: str) -> str:
+    """사업보고서 원문에서 'II. 사업의 내용' ~ 'III. 재무에 관한 사항'(목차가 아닌 본문 = 가장 긴 구간)."""
+    best = ""
+    for m in re.finditer(r"I{2}\.\s*사업의\s*내용", text):
+        end = re.search(r"I{3}\.\s*재무에\s*관한\s*사항", text[m.end():])
+        seg = text[m.end(): m.end() + end.start()] if end else text[m.end(): m.end() + BIZ_SECTION_MAX]
+        if len(seg) > len(best):
+            best = seg
+    return best[:BIZ_SECTION_MAX]
+
+
+def biz_excerpt(section: str, terms: set[str], width: int = 110, limit: int = 3) -> str:
+    """사업의 개요 첫머리(주력 사업) + 사건·영향 경로 말이 나온 곳 앞뒤(최대 limit곳)."""
+    if not section:
+        return ""
+    head = section[:220]
+    spots: list[int] = []
+    for w in sorted(terms, key=lambda x: (-len(x), x)):
+        i = section.find(w, 220)
+        if i >= 0 and all(abs(i - j) > width for j in spots):
+            spots.append(i)
+        if len(spots) >= limit:
+            break
+    parts = [head] + [section[max(0, i - width): i + width] for i in sorted(spots)]
+    return " … ".join(p.strip() for p in parts)[:BIZ_TEXT]
+
+
+def biz_evidence(corpus: Corpus, company: dict, terms: set[str], http=requests.get) -> int:
+    """회사의 최근 사업보고서(기준일 전날까지 접수)에서 '사업의 내용' 발췌를 근거 자료(사업보고서)로 넣는다."""
+    report = next((f for f in filings_of(company["name"], corpus.ref, http) if (f.get("report_nm") or "").strip().startswith("사업보고서")), None)
+    if not report:
+        return 0
+    found = biz_excerpt(business_section(dart_text(report["rcept_no"], http)), terms)
+    if not found:
+        return 0
+    d = report["rcept_dt"]
+    item = corpus.add("biz", f"{company['name']} {report.get('report_nm', '').strip()} · 사업의 내용", found,
+                      disclosures.view_url(report["rcept_no"]) + "#biz", "DART 전자공시", f"{d[:4]}-{d[4:6]}-{d[6:]}T00:00:00+09:00",
+                      filer=company["code"])
+    return int(bool(item))
+
+
+def issue_stems(t: dict, article_text: str, context_titles: list[str]) -> set[str]:
+    """사건 말: 이슈 이름·검색어·분야 이름의 말 + 이슈 기사 제목 두 건 이상에 나온 말(줄기). 사업 근거 문장에 이 중 하나가 있어야 한다."""
+    words = stems(" ".join(lifemap._event_words(t)))
+    counts: dict[str, int] = {}
+    for title in context_titles:
+        for w in stems(title):
+            counts[w] = counts.get(w, 0) + 1
+    return words | {w for w, n in counts.items() if n >= 2}
+
+
 # ---------------------------------------------------------
 # AI: 회사마다 관계 종류 + 근거 문장
 # ---------------------------------------------------------
@@ -295,10 +388,13 @@ VERIFY_SYSTEM = """너는 뉴스와 상장사의 연결을 검증하는 사실 �
   kind는 '국내 상장'/'국내 비상장'/'해외'/'모름'.
 - companies: '후보 회사' 각각과, 근거 자료에서 이 사건과 직접 이어진다고 적혀 있는 다른 한국 상장사(예: 사고가 난 시스템의 공급사)를 판단한다.
   · relation: 근거 자료에 적힌 관계 — '계약'(사건 당사자와 계약), '공급망'(당사자·제품의 공급사·고객사), '지분'(당사자 지분 보유),
-    '경쟁'(같은 제품·서비스로 당사자와 경쟁한다고 자료에 적힘), '사업'(사건이 그 회사의 같은 제품·서비스에 직접 닿는다고 자료에 적힘).
+    '경쟁'(같은 제품·서비스로 당사자와 경쟁한다고 자료에 적힘), '사업'(사건이 그 회사의 같은 제품·서비스에 직접 닿는다고 뉴스·공시에 적힘),
+    '주력 사업'(종류가 '사업보고서'인 그 회사 자료의 '사업의 내용'에 적힌 주력 제품·서비스가, 이 사건이 직접 닿는 제품·서비스와 같을 때만.
+    예: 대규모 해킹 → 사업의 내용에 '해킹 탐지·대응 솔루션'이 주력으로 적힌 보안 회사. 업종 분류가 같다·비슷한 말이 나온다는 것만으로는 안 된다).
     자료에 그런 내용이 없고 업종만 같으면 '같은 업종', 아무 근거도 없으면 '근거 없음'.
   · evidence: 그 관계를 보여 주는 자료 번호(n)와 quote = 그 자료에 있는 문장을 글자 그대로 옮긴 것(60자 이내). 자료에 없는 문장을 만들지 않는다.
-    회사 이름과 이 사건(당사자나 사건 내용)이 함께 나오는 자료만 쓴다. 근거가 없으면 빈 목록.
+    회사 이름과 이 사건(당사자나 사건 내용)이 함께 나오는 자료만 쓴다('주력 사업'은 그 회사의 사업보고서 자료에서, 사건이 닿는
+    제품·서비스 말이 든 문장만). 근거가 없으면 빈 목록.
   · impact: 자료에 그 회사가 이 사건으로 실제 영향을 받았다(받을 수 있다)고 적혀 있으면 '영향 있음', 영향이 없었거나 미미했다고
     적혀 있으면(예: '정상적으로 운영했다', '큰 문제는 없었다') '영향 없음', 알 수 없으면 '알 수 없음'.
   · path: 근거 자료로 설명되는 사업 영향 경로 한 줄(40자 이내, 예: '발권 시스템을 공급해 복구·보상 책임이 생길 수 있다'). 설명할 수 없으면 빈 문자열.
@@ -376,10 +472,12 @@ def known_parties(text: str) -> list[tuple[str, str]]:
 # ---------------------------------------------------------
 
 def _grade(items: list[dict]) -> str:
+    """확인됨 > 보도 확인 > 사업 근거 > 단일 보도."""
     if any(i["kind"] in ("dart", "official") for i in items):
         return "확인됨"
     presses = {i["press"] for i in items if i["kind"] in ("news", "rss")}
-    return "보도 확인" if len(presses) >= 2 else "단일 보도" if presses else "근거 부족"
+    return ("보도 확인" if len(presses) >= 2 else "사업 근거" if any(i["kind"] == "biz" for i in items) else
+            "단일 보도" if presses else "근거 부족")
 
 
 def _source(i: dict, quote: str = "") -> dict:
@@ -396,16 +494,27 @@ def tied(text: str, party_names: list[str], event_words: list[str]) -> bool:
 
 
 def check_claims(claim: dict, names: list[str], party_names: list[str], event_words: list[str], corpus: Corpus,
-                 code: str) -> list[tuple[dict, str]]:
+                 code: str, terms: set[str] | None = None) -> list[tuple[dict, str]]:
     """AI가 낸 근거(자료 번호 + 문장) 중 코드 대조를 통과한 것 [(자료, 문장)]: 번호가 있고, 문장이 그 자료에 있고,
-    자료에 회사 이름(공시는 그 회사가 낸 것)과 이 사건(tied)이 함께 나온다."""
+    자료에 회사 이름(공시는 그 회사가 낸 것)과 이 사건(tied)이 함께 나온다.
+    '주력 사업'은 그 회사가 낸 사업보고서 발췌만, 근거 문장에 사건 말(terms, 업종 분류·흔한 말 제외)이 있고 영향 경로가 설명될 때만.
+    다른 관계는 사업보고서 발췌를 근거로 쓰지 않는다(사업보고서에 사건 말이 나와도 이 사건 이야기가 아니다)."""
     ok = []
+    biz = claim.get("relation") == BIZ_REL
+    if biz and not str(claim.get("path") or "").strip():
+        return []
     for ev in claim.get("evidence") or []:
         n, quote = ev.get("n"), str(ev.get("quote") or "")
         if not isinstance(n, int) or not 1 <= n <= len(corpus.items):
             continue
         item = corpus.items[n - 1]
         text = f"{item['title']} {item['text']}"
+        if biz:
+            if item["kind"] == "biz" and item.get("filer") == code and quote_found(quote, item["text"]) and stems(quote) & (terms or set()):
+                ok.append((item, quote))
+            continue
+        if item["kind"] == "biz":
+            continue
         named = item.get("filer") == code or any(mentions(text, x) for x in names)
         if named and tied(text, party_names, event_words) and quote_found(quote, text):
             ok.append((item, quote))
@@ -423,9 +532,16 @@ def _rows(m: dict) -> list[dict]:
     return [c for st in m.get("stages") or [] for c in st.get("companies") or []]
 
 
+def core_words(t: dict) -> str:
+    """사건 핵심어: 이슈 이름·검색어의 말 중 긴 것 CORE_WORDS개('회사명 + 사건 핵심어' 검색용)."""
+    words = sorted(lifemap._event_words({k: t.get(k) for k in ("name", "query")}), key=lambda w: (-len(w), w))
+    return " ".join(words[:CORE_WORDS])
+
+
 def collect(t: dict, m: dict, context: list[dict], ref: datetime, http=None) -> tuple[Corpus, list[tuple[str, str]], str]:
     """근거 자료 모으기 → (자료, 먼저 아는 당사자 [(이름, 종류)], 기사 글). 이슈 검색(당사자·사건과 함께 나온 회사 찾기) →
-    회사별 검색(회사 이름이 나온 기사만) → 공시."""
+    회사별 검색 두 번('회사명 + 당사자·검색어', '회사명 + 사건 핵심어', 회사 이름이 나온 기사만) → 공시 → 사업보고서 '사업의 내용'.
+    모든 자료는 분석 기준 시각(ref) 이전 것만(Corpus)."""
     stocks, index, _ = lifemap.directory()
     corpus = Corpus(ref, datetime.now(KST).isoformat(timespec="seconds"))
     for a in context:
@@ -437,19 +553,28 @@ def collect(t: dict, m: dict, context: list[dict], ref: datetime, http=None) -> 
     for a in _search(t.get("query") or t["name"], 30, http)[:ISSUE_NEWS]:
         corpus.add_article(a, "news")
     named_in_article = {c["code"] for c in rows if any(mentions(article_text, n) for n in names_of(c["code"], stocks))}
+    core = core_words(t)
     for c in rows:
         if c["code"] in named_in_article:
             continue
-        found = [a for a in _search(f"{c['name']} {anchor}", 20, http) if any(mentions(f"{a['title']} {a.get('snippet') or ''}", n)
-                                                                             for n in names_of(c["code"], stocks))]
-        for a in found[:PER_COMPANY_NEWS]:
-            corpus.add_article(a, "news")
+        for q in dict.fromkeys(q for q in (f"{c['name']} {anchor}", f"{c['name']} {core}" if core else "") if q):
+            found = [a for a in _search(q, 20, http) if any(mentions(f"{a['title']} {a.get('snippet') or ''}", n)
+                                                            for n in names_of(c["code"], stocks))]
+            for a in found[:PER_COMPANY_NEWS]:
+                corpus.add_article(a, "news")
     docs_left = [DART_DOCS]
     for c in rows:
         if c["code"] not in named_in_article:
             own = set(names_of(c["code"], stocks))
             dart_evidence(corpus, c, [n for n, _ in pre_parties if n not in own], c.get("relation") in ("공급사", "고객사"),
                           docs_left, http or requests.get)
+    # 사업 근거: 당사자가 아닌 후보의 사업보고서 '사업의 내용'에서 사건 말·영향 경로 말 근처
+    terms = issue_stems(t, article_text, [a.get("title", "") for a in context])
+    for c in [c for c in rows if not c.get("party") and c["code"] not in named_in_article][:BIZ_COMPANIES]:
+        try:
+            biz_evidence(corpus, c, terms | stems(f"{c.get('reason', '')} {c.get('path', '')}"), http or requests.get)
+        except Exception as e:  # 사업보고서를 못 읽어도 나머지 검증은 그대로
+            log.warning("biz evidence %s: %s", c.get("name"), type(e).__name__)
     return corpus, pre_parties, article_text
 
 
@@ -476,6 +601,7 @@ def classify(t: dict, m: dict, corpus: Corpus, raw: dict, pre_parties: list[tupl
     party_codes = {p["code"]: p for p in listed}
     party_names = [n for n, _ in pre_parties] + [o["name"] for o in others] + [p["name"] for p in listed]
     event_words = sorted(lifemap._event_words(t), key=len, reverse=True)
+    terms = issue_stems(t, article_text, [i["title"] for i in corpus.items if i["kind"] in ("rss", "news")][:12])
     claims = {}
     for cl in raw.get("companies") or []:
         code = lifemap.match_company(str(cl.get("name") or ""), index)
@@ -502,7 +628,7 @@ def classify(t: dict, m: dict, corpus: Corpus, raw: dict, pre_parties: list[tupl
                     "direction": direction, **({"path": path} if path else {})}
         # AI 해석이 당사자·모회사라 했어도 기사에 이름이 없으면 근거 자료(지분 등)로 검증될 때만 남긴다
         rel = cl.get("relation") or "근거 없음"
-        ok = check_claims(cl, names, party_names, event_words, corpus, code) if rel in REL_KINDS else []
+        ok = check_claims(cl, names, party_names, event_words, corpus, code, terms) if rel in REL_KINDS else []
         if ok and cl.get("impact") == "영향 없음":  # 자료가 '영향 없었다'고 하면 연결이 아니라 같은 업종 참고
             ok, rel = [], "같은 업종"
         if ok:
@@ -550,7 +676,7 @@ def classify(t: dict, m: dict, corpus: Corpus, raw: dict, pre_parties: list[tupl
         if code in seen or len(new) >= NEW_MAX or len(seen) >= lifemap.COMPANIES_MAX or cl.get("relation") not in REL_KINDS \
                 or cl.get("impact") == "영향 없음":
             continue
-        ok = check_claims(cl, names_of(code, stocks), party_names, event_words, corpus, code)
+        ok = check_claims(cl, names_of(code, stocks), party_names, event_words, corpus, code, terms)
         if ok:
             direction, path = _direction(cl, True)
             new.append({"code": code, "name": stocks[code]["name"], "relevance": "중", "reason": path or f"{cl['relation']} 관계로 알려진 회사",

@@ -633,7 +633,7 @@ class SlotScheduleTest(LifemapBase):
 
 class LiveQueueTest(LifemapBase):
     def test_cached_word_returns_immediately(self):
-        store.write("lifemap_words", {"붕어빵": {**EXAMPLE_ITEM, "name": "붕어빵"}})
+        store.write("lifemap_words", {"붕어빵": {**EXAMPLE_ITEM, "name": "붕어빵", "day": datetime.now(KST).strftime("%Y-%m-%d")}})
         r = lifemap.request_word(" 붕어빵 ", "s1")
         self.assertEqual(r["status"], "ready")
         self.assertEqual(r["item"]["name"], "붕어빵")
@@ -647,7 +647,7 @@ class LiveQueueTest(LifemapBase):
         recent = [{**ARTICLES[0], "pub": datetime.now(KST).isoformat()}, {**ARTICLES[1], "pub": "2020-01-01T00:00:00+09:00"}]
         with mock.patch.object(news, "search", return_value=recent), mock.patch.object(lifemap, "_ask", return_value=INTERP) as ask:
             self.pool.run_all()
-        self.assertEqual(len(ask.call_args.args[3]["기사"]), 1)  # 3일 지난 기사는 빼고 해석
+        self.assertEqual(len(ask.call_args_list[0].args[3]["기사"]), 1)  # 3일 지난 기사는 빼고 해석
         done = lifemap.word_status("원전")
         self.assertEqual(done["status"], "ready")
         self.assertTrue(done["item"]["articles"][0]["rep"])
