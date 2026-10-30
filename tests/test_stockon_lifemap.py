@@ -268,6 +268,18 @@ class IssuesTest(LifemapBase):
         self.assertEqual(view["hot"], ["예시이슈"])
         self.assertTrue(view["sector_items"]["보안"]["example"])
 
+    def test_run_topics_keeps_same_basis_topics_when_nothing_new(self):
+        # 10-30 13:26: 이슈 묶기가 max_tokens로 실패 → 같은 기준의 5개가 3개로 줄던 것. 하나도 못 만들면 그대로 둔다
+        prev = [{"name": f"이슈{i}", "title": f"이슈{i}"} for i in range(5)]
+        store.write("lifemap", {"basis": lifemap.basis_info(self.basis()), "topics": prev, "fresh": 5})
+        with mock.patch.object(lifemap, "collect_issue_news", return_value=ARTICLES), \
+                mock.patch.object(lifemap, "_ask", side_effect=RuntimeError("stop_reason=max_tokens")):
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual([t["name"] for t in data["topics"]], [t["name"] for t in prev])
+        self.assertEqual(store.read("lifemap")["topics"], prev)
+        status = store.read("lifemap_status")
+        self.assertEqual((status["ok"], status["error"]), (False, "topics:RuntimeError: stop_reason=max_tokens"))
+
     def test_sectors_use_sector_news_and_keep_old_on_failure(self):
         store.write("lifemap_sectors", {"items": {"조선": {**EXAMPLE_ITEM, "name": "조선"}}})
         issue = {"topics": [{"title": "업계 이슈", "summary": "업계 소식", "keyword": "업계 이슈", "sector": "x",
@@ -1247,6 +1259,8 @@ class RssIssuesTest(LifemapBase):
                 mock.patch.object(lifemap, "_ask", side_effect=fake_ask) as ask:
             data = lifemap.run_topics(self.basis())
         self.assertEqual(data["news_source"], "rss")
+        topic_call = next(c for c in ask.call_args_list if c.args[1] is lifemap.RSS_TOPIC_SYSTEM)
+        self.assertGreaterEqual(topic_call.args[5], 12000)  # 기사 수백 건 묶기는 4000토큰이면 잘린다(10-30 서버 491건)
         t = data["topics"][0]
         self.assertEqual((t["label"], t["kind"], t["ongoing"]), ("개인정보 유출", "해킹·정보유출", False))
         self.assertEqual(t["coverage"]["presses"], 3)

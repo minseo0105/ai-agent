@@ -964,7 +964,8 @@ def pick_rss_issues(basis: dict, articles: list[dict], max_topics: int = CANDIDA
     rejects = _last_rejects
     # 기사가 수백 건이면 Haiku가 가끔 한두 개만 낸다 → 통과한 이슈가 TOPICS_MIN개 미만이면 한 번 더 묻고 두 답을 같은 검사로 합친다
     for _ in range(2):
-        raw = _ask(TOPIC_MODEL, RSS_TOPIC_SYSTEM, task, payload, RSS_TOPIC_SCHEMA, 4000)
+        # 기사 수백 건을 9개 이슈로 묶으면 답(기사 번호 목록)이 길다 — 4000이면 max_tokens로 잘렸다(10-30 491건)
+        raw = _ask(TOPIC_MODEL, RSS_TOPIC_SYSTEM, task, payload, RSS_TOPIC_SCHEMA, 16000)
         for t in (raw or {}).get("topics") or []:
             keyword = normalize_word(str(t.get("keyword") or ""))[:12]
             label = normalize_word(str(t.get("label") or ""))[:12]
@@ -1285,10 +1286,16 @@ def run_topics(basis: dict, http=None) -> dict:
             if done:
                 topics.append(done)
     except Exception as e:
-        error = f"topics:{type(e).__name__}"
+        error = f"topics:{type(e).__name__}: {str(e)[:120]}"
         log.warning("lifemap topics failed: %s", error)
     names = {t["name"] for t in topics}
     same_basis = (prev.get("basis") or {}).get("key") == basis["key"]
+    if not topics and same_basis and prev.get("topics"):
+        # 같은 기준에서 하나도 못 만들었으면 이미 보이는 이슈를 그대로 둔다(5개 → 3개로 줄지 않게)
+        _status(basis_key=basis["key"], ok=False, fresh=0, error=error, rejects=dict(_last_rejects),
+                excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], ts=time.time(), news_source=source,
+                rss=dict(_last_rss))
+        return prev
     fillers = (prev.get("topics") or []) if same_basis else []
     if not topics:
         fillers = fillers + [{**t, "example": True} for t in examples().get("topics") or []]
