@@ -1,8 +1,9 @@
 "use client";
 
-// 뉴스 속 숨은 종목 탭: 오늘의 뉴스 → AI 해석 → 관련 회사 지도 → AI 해석 vs 실제 등락.
-// 순서: 헤더(기준 시각) → 오늘 시장 분위기 띠 → 뉴스 카드(이슈별로 옆으로 넘기기) → AI 해석 → 관련 회사 지도 → 해석 vs 실제 등락
-//   → 이전/다음 이슈 → 다른 이슈·섹터 → 고지.
+// 뉴스 속 숨은 종목 탭: 오늘의 뉴스 → 관련 업종 오늘 → AI 해석 → 관련 회사 지도 → 회사 목록.
+// 순서: 헤더(기준 시각) → 오늘 시장 분위기 띠 → 뉴스 카드(이슈별로 옆으로 넘기기) → 관련 업종 오늘(칩) → AI 해석 → 관련 회사 지도
+//   → 회사 목록(뉴스 당사자 → 도움 → 부담, 누르면 펼침) → 이전/다음 이슈 → 다른 이슈·섹터 → 고지.
+// 회사 목록이 예전 'AI 해석 vs 실제 등락' 표와 회사 상세(옆 칸·아래 시트)를 대신한다. 지도에서 회사를 누르면 목록의 그 회사로 스크롤하고 펼친다.
 // 이슈 넘김은 위 ‹ ›·카드 밀기·고정 이슈 바(뉴스 카드를 지나 스크롤하면 화면 맨 위, PC 제외)·아래 버튼 모두 같은 동작이다:
 //   이슈가 바뀌고 뉴스 카드도 함께 넘어가며, 아래 내용(AI 해석·지도·표)은 0.3초 옆으로 밀리며 바뀐다.
 //   아래쪽을 보던 중이면 AI 해석 시작으로 올려 준다(고정 바에 가리지 않게 scroll-margin).
@@ -14,7 +15,7 @@
 // 서버가 미리 만든 것을 읽기만 한다(직접 입력한 단어만 대기열로 AI를 부른다 — WordInput).
 // 휴대폰(640px 미만)에서는 바깥 상자 테두리·모서리·양옆 여백 없이 화면 끝까지. 글씨: 본문 15px+, 섹션 제목 18px+, 지도 회사 이름 13px+.
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import MindMap, { GRAY, NEG, POS, pathColor, ppText, rateColor, rateText, similar, vsColor } from "@/components/stock/MindMap";
+import MindMap, { GRAY, NEG, POS, dirColor, pathColor, ppText, rateColor, rateText, similar, vsColor } from "@/components/stock/MindMap";
 import { Flash } from "@/components/stock/LiveMarket";
 import { WhyBody } from "@/components/stock/StockOn";
 import {
@@ -41,7 +42,6 @@ function when(pub: string | null): { ymd: string; label: string } | null {
   return { ymd: `${p.year}${p.month}${p.day}`, label: `${Number(p.month)}/${Number(p.day)} ${p.hour}:${p.minute}` };
 }
 
-type Pick = { c: LifeCompany; s?: LifeStage; color?: string };
 type View = { kind: "topics" } | { kind: "sector"; name: string } | { kind: "word"; word: string };
 type Drawing = { word: string; position: number; running: boolean };
 const POLL_MS = 1500;
@@ -218,11 +218,179 @@ function MoodBand({ m }: { m: LifeMarket }) {
   );
 }
 
-const Dir = ({ d }: { d?: LifeCompany["direction"] }) => (
-  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[14px] font-extrabold text-[#071226]" style={{ background: d === "neg" ? NEG : d === "unk" ? GRAY : POS }}>
-    {d === "neg" ? "− 부정 가능" : d === "unk" ? "? 영향 가능" : "+ 긍정 가능"}
-  </span>
-);
+/** 회사 목록 묶음(뉴스 당사자 → 도움 → 부담 → 방향 불확실). 묶음 안에서는 1차 연결 → 2차 연결, 연관도 순. 이슈당 최대 6곳. */
+const GROUPS: { key: string; title: string; test: (c: LifeCompany) => boolean }[] = [
+  { key: "party", title: "뉴스 당사자", test: (c) => !!c.party },
+  { key: "pos", title: "도움 받을 수 있는 회사", test: (c) => !c.party && (c.direction ?? "pos") === "pos" },
+  { key: "neg", title: "부담 받을 수 있는 회사", test: (c) => !c.party && c.direction === "neg" },
+  { key: "unk", title: "영향 받을 수 있는 회사", test: (c) => !c.party && c.direction === "unk" },
+];
+const LIST_MAX = 6;
+const REL_ORDER = { 강: 0, 중: 1, 약: 2 } as const;
+type Row = { c: LifeCompany; s: LifeStage; color: string };
+
+/** 해석 방향과 실제 움직임: ✅ 같은 방향 / ⚠ 반대로 움직임 / ➖ 시장과 비슷(±2%p). 방향 불확실이면 ➖만. */
+function outcome(c: LifeCompany): { icon: string; text: string } | null {
+  const vs = c.vs_market;
+  if (vs == null || c.waiting) return null;
+  if (similar(vs)) return { icon: "➖", text: "시장과 비슷" };
+  if (c.direction === "unk") return null;
+  const same = (c.direction === "neg") === (vs < 0);
+  return same ? { icon: "✅", text: "해석과 같은 방향" } : { icon: "⚠", text: "해석과 반대로 움직임" };
+}
+const DIR_TEXT = { pos: "도움 가능", neg: "부담 가능", unk: "영향 가능" } as const;
+const HOP_TEXT = ["뉴스 당사자", "1차 연결", "2차 연결"];
+
+/** 첫 보도 이후 거래일마다 누적 시장 대비(%p) 작은 추이선. 점이 둘 이상일 때만. */
+function Trail({ pts }: { pts: { d: string; vs: number }[] }) {
+  if (pts.length < 2) return null;
+  const W = 132, H = 36, P = 4;
+  const vals = [0, ...pts.map((p) => p.vs)];
+  const lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo || 1;
+  const x = (i: number) => P + (i * (W - 2 * P)) / (pts.length - 1);
+  const y = (v: number) => P + ((hi - v) * (H - 2 * P)) / span;
+  const last = pts[pts.length - 1].vs;
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`첫 보도 이후 시장 대비 추이 ${pts.map((p) => `${p.d} ${ppText(p.vs)}`).join(", ")}`}>
+      <line x1={P} x2={W - P} y1={y(0)} y2={y(0)} stroke="rgba(255,255,255,.25)" strokeDasharray="3 3" />
+      <polyline points={pts.map((p, i) => `${x(i)},${y(p.vs)}`).join(" ")} fill="none" stroke={vsColor(last)} strokeWidth={2.2} strokeLinejoin="round" />
+      {pts.map((p, i) => <circle key={p.d} cx={x(i)} cy={y(p.vs)} r={2.4} fill={vsColor(p.vs)} />)}
+    </svg>
+  );
+}
+
+function WhyButton({ c }: { c: LifeCompany }) {
+  const [why, setWhy] = useState<Why | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  async function load() {
+    setLoading(true);
+    setError("");
+    try {
+      setWhy(await stockApi.why(c.code));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+  const stock = { code: c.code, name: c.name, market: c.market ?? "", close: c.close ?? 0, change: null, rate: c.rate ?? null,
+    value: c.value ?? null, cap: c.cap ?? null } as Stock;
+  if (!why && !loading && !error) {
+    return (
+      <button type="button" onClick={load} className="mt-3 w-full rounded-2xl bg-sky-400 py-3 text-[16px] font-extrabold text-[#071226] hover:bg-sky-300">
+        📈 이 종목 &lsquo;왜 움직였나&rsquo; 보기
+      </button>
+    );
+  }
+  return <div className="mt-3 rounded-2xl bg-surface p-4 text-fg"><WhyBody stock={stock} why={why} error={error} loading={loading} /></div>;
+}
+
+/** 회사 한 줄(두 줄): 회사명 + 시장보다·결과 아이콘 / 영향 경로 태그 + 한 줄 회사 소개. 누르면 펼침(한 번에 하나만). */
+function CompanyRow({ row, center, open, hi, onToggle }: { row: Row; center: string; open: boolean; hi: boolean; onToggle: () => void }) {
+  const { c, s, color } = row;
+  const out = outcome(c);
+  const ev = c.evidence;
+  const evWhen = ev ? when(ev.pub) : null;
+  return (
+    <li id={`lm-co-${c.code}`} className={`scroll-mt-20 rounded-2xl ring-1 transition ${hi ? "bg-white/[0.09] ring-sky-300/70" : open ? "bg-white/[0.06] ring-white/25" : "bg-white/[0.03] ring-white/10"}`}>
+      <button type="button" onClick={onToggle} aria-expanded={open} className="w-full px-3.5 py-3 text-left">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="min-w-0 truncate text-[17px] font-black leading-snug text-white">{c.name}</span>
+          <span className="shrink-0 whitespace-nowrap text-[15px] font-extrabold tabular-nums">
+            {c.waiting ? <span className="text-slate-200">{WAITING}</span> : c.vs_market != null ? (
+              <Flash v={c.vs_market} className="px-0.5"><span className="text-[14px] font-bold text-slate-300">시장보다 </span>
+                <span style={{ color: vsColor(c.vs_market) }}>{ppText(c.vs_market)}</span></Flash>
+            ) : <Flash v={c.rate} className="px-0.5"><span className="text-[14px] font-bold text-slate-300">주가 </span>
+                <span style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</span></Flash>}
+            {out && <span className="ml-1" role="img" aria-label={out.text} title={out.text}>{out.icon}</span>}
+          </span>
+        </div>
+        <div className="mt-1 flex items-baseline gap-1.5 text-[15px] leading-snug">
+          <span className="shrink-0 rounded-md px-1.5 py-px text-[14px] font-extrabold" style={{ color, background: `${color}22`, boxShadow: `inset 0 0 0 1px ${color}66` }}>{s.label}</span>
+          <span className="min-w-0 text-slate-200">{c.intro || c.reason}</span>
+        </div>
+      </button>
+      {open && (
+        <div className="space-y-2.5 border-t border-white/10 px-3.5 pb-3.5 pt-3 text-[15px] leading-relaxed">
+          <p className="font-bold text-slate-100">
+            {center} <span className="text-slate-400">→</span> <span style={{ color }}>{s.label}</span> <span className="text-slate-400">→</span> {c.name}
+          </p>
+          <div className="rounded-xl bg-white/[0.06] px-3 py-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-[14px] font-extrabold">
+              <span className="rounded-full px-2 py-0.5 text-[#071226]" style={{ background: dirColor(c.direction) }}>{DIR_TEXT[c.direction ?? "pos"]}</span>
+              <span className="text-slate-200">{c.relation && c.relation !== "당사자" ? `${c.relation} · ` : ""}{HOP_TEXT[c.hop ?? 1]}</span>
+              <span className="text-sky-100">🤖 AI가 해석했어요</span>
+            </div>
+            <p className="mt-1 font-bold text-white">{c.reason}</p>
+          </div>
+          {c.waiting ? (
+            <p className="font-bold text-slate-100">{WAITING} · 다음 거래일 값을 기다려요</p>
+          ) : (
+            <p className="text-slate-100">
+              주가 <Flash v={c.rate} className="px-0.5"><b className="tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</b></Flash>
+              {c.vs_market != null && <> · <b style={{ color: similar(c.vs_market) ? GRAY : "#f8fafc" }}>{judge(c.vs_market)}</b></>}
+            </p>
+          )}
+          {c.since && (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <Trail pts={c.since.trail ?? []} />
+              <p className="text-[15px] text-slate-100">
+                첫 보도 이후 시장보다 <b className="tabular-nums" style={{ color: vsColor(c.since.vs) }}>{ppText(c.since.vs)}</b>
+                <span className="text-[14px] text-slate-300"> · {c.since.from === c.since.to ? c.since.from : `${c.since.from}~${c.since.to}`} {c.since.days}거래일</span>
+              </p>
+            </div>
+          )}
+          {c.reflected && <p className="font-bold text-amber-100">{REFLECTED}</p>}
+          {ev && (
+            <p className="text-[15px] text-slate-200">
+              <span className="font-extrabold text-slate-100">근거 기사</span>{" "}
+              <a href={ev.url} target="_blank" rel="noopener noreferrer" className="font-bold text-white underline-offset-2 hover:underline">{ev.title}</a>
+              <span className="text-[14px] text-slate-300"> · {ev.press_name || ev.press.replace(/^www\./, "")}{evWhen ? ` · ${evWhen.label}` : ""}</span>
+            </p>
+          )}
+          <OtherNote c={c} />
+          <p className="text-[14px] text-slate-300">다른 이유로 움직였을 수 있어요. {SINCE_NOTE}</p>
+          <WhyButton key={c.code} c={c} />
+        </div>
+      )}
+    </li>
+  );
+}
+
+/** 지도 아래 회사 목록: 뉴스 당사자 → 도움 → 부담(→ 영향). 예전 'AI 해석 vs 실제 등락' 표를 대신한다. */
+function CompanyList({ item, open, hi, onToggle }: { item: LifeItem; open: string | null; hi: string[]; onToggle: (code: string) => void }) {
+  const rows: Row[] = item.map.stages.flatMap((s, i) => s.companies.map((c) => ({ c, s, color: pathColor(i) })));
+  const sorted = GROUPS.flatMap((g) => rows.filter((r) => g.test(r.c))
+    .sort((a, b) => (a.c.hop ?? 1) - (b.c.hop ?? 1) || REL_ORDER[a.c.relevance] - REL_ORDER[b.c.relevance])).slice(0, LIST_MAX);
+  const idx = Object.entries(item.map.indices ?? {}).map(([k, v]) => `${MARKET_NAME[k] ?? k} ${signed(v as number)}`).join(" · ");
+  return (
+    <div className="space-y-4">
+      {GROUPS.map((g) => {
+        const list = sorted.filter((r) => g.test(r.c));
+        if (!list.length) return null;
+        return (
+          <div key={g.key}>
+            <h4 className="mb-1.5 flex items-center gap-1.5 text-[16px] font-black text-white">
+              {g.key !== "party" && <span className="size-2.5 rounded-full" style={{ background: dirColor(g.key as LifeCompany["direction"]) }} />}
+              {g.title}
+            </h4>
+            <ul className="space-y-1.5">
+              {list.map((r) => (
+                <CompanyRow key={r.c.code} row={r} center={item.name} open={open === r.c.code} hi={hi.includes(r.c.code)} onToggle={() => onToggle(r.c.code)} />
+              ))}
+            </ul>
+          </div>
+        );
+      })}
+      <p className="text-[14px] leading-relaxed text-slate-300">
+        ✅ 해석과 같은 방향 · ⚠ 반대로 움직임 · ➖ 시장과 비슷(±2%p 이내) · {item.map.reaction_label || "기준 시점"}
+        {idx ? ` · 같은 시각 지수 ${idx}` : " · 지수 값이 없어 주가 등락률로 보여드려요"} · AI 해석과 실제 등락을 나란히 보여 줄 뿐,
+        이 뉴스 때문에 움직였다는 뜻은 아니에요.
+      </p>
+    </div>
+  );
+}
 
 /** 이슈 카드 배지: 시장 전체 영향 이슈·예상대로·오늘 실제 방향, 그리고 첫 보도·장 마감 후 뉴스·반응 대기 중 한 줄 */
 function IssueBadges({ item }: { item: LifeItem }) {
@@ -266,164 +434,6 @@ function OtherNote({ c }: { c: LifeCompany }) {
           title={c.other.title} className="font-bold text-sky-200 underline underline-offset-2">기사 ↗</a></>
       )}
     </p>
-  );
-}
-
-function ReactionTable({ item, accent, hi, onPick }: {
-  item: LifeItem; accent: string; hi: string[]; onPick: (c: LifeCompany, s: LifeStage, color: string) => void;
-}) {
-  const rows = item.map.stages.flatMap((s, i) => s.companies.map((c) => ({ c, s, color: pathColor(i) })));
-  const idx = Object.entries(item.map.indices ?? {}).map(([k, v]) => `${MARKET_NAME[k] ?? k} ${signed(v as number)}`).join(" · ");
-  return (
-    <div className="overflow-hidden rounded-2xl bg-white/[0.03]" style={{ border: `1px solid ${accent}55` }}>
-      {/* 휴대폰 폭에 네 열: AI 해석(긍정/부정)은 회사 이름 아래, 판단(말)은 '시장보다' 숫자 아래 */}
-      {/* 열 너비 고정: 긴 회사 이름은 줄바꿈하고 숫자 열이 390px 카드 밖으로 밀리지 않게 */}
-      <table className="w-full table-fixed text-left text-[15px]">
-        <colgroup><col className="w-[33%]" /><col className="w-[18%]" /><col className="w-[25%]" /><col className="w-[24%]" /></colgroup>
-        <thead>
-          <tr className="text-[14px] text-slate-200">
-            <th className="py-2.5 pl-3 pr-1 font-extrabold">회사 · AI 해석</th>
-            <th className="px-1.5 py-2.5 text-right font-extrabold">주가</th>
-            <th className="px-1.5 py-2.5 text-right font-extrabold">시장보다</th>
-            <th className="py-2.5 pl-1.5 pr-3 text-right font-extrabold">첫 보도<br className="sm:hidden" /> 이후</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(({ c, s, color }) => (
-            <Fragment key={c.code}>
-              <tr onClick={() => onPick(c, s, color)} className={`cursor-pointer border-t border-white/10 align-top hover:bg-white/5 ${hi.includes(c.code) ? "bg-white/10" : ""}`}>
-                <td className="py-2.5 pl-3 pr-1">
-                  <div className="font-extrabold leading-snug text-white">{c.name}</div>
-                  <div className="text-[14px] font-semibold" style={{ color }}>{s.label}</div>
-                  <div className="mt-1"><Dir d={c.direction} /></div>
-                </td>
-                {c.waiting ? (
-                  <td colSpan={3} className="py-2.5 pl-1.5 pr-3 text-right text-[14px] font-extrabold leading-snug text-slate-200">
-                    {WAITING}<div className="font-semibold text-slate-300">다음 거래일 값을 기다려요</div>
-                  </td>
-                ) : (
-                  <>
-                    <td className="whitespace-nowrap px-1.5 py-2.5 text-right">
-                      <div className="text-[15px] font-extrabold tabular-nums" style={{ color: rateColor(c.rate) }}>{rateText(c.rate)}</div>
-                    </td>
-                    <td className="px-1.5 py-2.5 text-right">
-                      <div className="whitespace-nowrap text-[16px] font-black tabular-nums" style={{ color: vsColor(c.vs_market) }}>{ppText(c.vs_market)}</div>
-                      {c.vs_market != null && (
-                        <div className="text-[14px] font-extrabold leading-snug" style={{ color: similar(c.vs_market) ? GRAY : "#f1f5f9" }}>{judge(c.vs_market)}</div>
-                      )}
-                      {c.moved && <div className="text-[14px] font-extrabold text-amber-100">실제 등락 큼</div>}
-                    </td>
-                    <td className="py-2.5 pl-1.5 pr-3 text-right">
-                      <div className="whitespace-nowrap text-[14px] font-extrabold tabular-nums" style={{ color: c.since ? vsColor(c.since.vs) : GRAY }}>
-                        {c.since ? ppText(c.since.vs) : "—"}
-                      </div>
-                      {c.since && <div className="text-[14px] text-slate-300">{c.since.days}거래일</div>}
-                    </td>
-                  </>
-                )}
-              </tr>
-              {((c.opposite && c.other) || c.reflected) && (
-                <tr onClick={() => onPick(c, s, color)} className="cursor-pointer hover:bg-white/5">
-                  <td colSpan={4} className="space-y-1 px-3 pb-2.5 pt-0">
-                    {c.reflected && <p className="text-[14px] font-bold leading-snug text-amber-100">{REFLECTED}</p>}
-                    <OtherNote c={c} />
-                  </td>
-                </tr>
-              )}
-            </Fragment>
-          ))}
-        </tbody>
-      </table>
-      <div className="space-y-1 border-t border-white/10 px-3 py-2 text-[14px] text-slate-200">
-        <p className="font-bold text-slate-100">{SINCE_NOTE}</p>
-        <p>
-          {item.map.reaction_label || "기준 시점"}{idx ? ` · 같은 시각 지수 ${idx}` : " · 지수 값이 없어 '시장보다'는 비워 뒀어요"} ·
-          시장과 비슷해요 = ±2%p 이내 · 첫 보도 이후 = 첫 보도 뒤 거래일부터 누적(최대 5거래일) ·
-          AI 해석과 실제 등락을 나란히 보여 줄 뿐, 이 뉴스 때문에 움직였다는 뜻은 아니에요.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function Detail({ pick, label, onClose }: { pick: Pick; label?: string; onClose?: () => void }) {
-  const [why, setWhy] = useState<Why | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const { c, s } = pick;
-  useEffect(() => { setWhy(null); setError(""); setLoading(false); }, [c.code]);
-
-  async function loadWhy() {
-    setLoading(true);
-    setError("");
-    try {
-      setWhy(await stockApi.why(c.code));
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }
-  const stock = { code: c.code, name: c.name, market: c.market ?? "", close: c.close ?? 0, change: null, rate: c.rate ?? null,
-    value: c.value ?? null, cap: c.cap ?? null } as Stock;
-
-  return (
-    <div>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-1.5 text-[14px] font-extrabold">
-            {s && <span className="rounded-full px-2.5 py-0.5 text-[#071226]" style={{ background: pick.color }}>{s.label}</span>}
-            <Dir d={c.direction} />
-            <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-slate-100">관련 종목 · 참고용</span>
-          </div>
-          <h3 className="mt-2 text-[22px] font-extrabold leading-tight text-white">{c.name}</h3>
-          <p className="text-[14px] text-slate-300">{c.code}{c.market ? ` · ${c.market}` : ""} · 연관도 {c.relevance}</p>
-        </div>
-        <div className="shrink-0 whitespace-nowrap text-right">
-          {c.moved && <div className="mb-0.5 text-[14px] font-extrabold text-amber-200">실제 등락 큼</div>}
-          {c.waiting ? (
-            <div className="text-[18px] font-black text-slate-100">{WAITING}</div>
-          ) : c.vs_market != null ? (
-            <>
-              <div className="text-[20px] font-black tabular-nums" style={{ color: vsColor(c.vs_market) }}>시장보다 {ppText(c.vs_market)}</div>
-              <div className="text-[14px] font-bold tabular-nums text-slate-200">주가 {rateText(c.rate)}</div>
-            </>
-          ) : (
-            <div className="text-[20px] font-black tabular-nums" style={{ color: rateColor(c.rate) }}>주가 {rateText(c.rate)}</div>
-          )}
-          <div className="text-[14px] text-slate-300">{c.waiting ? "다음 거래일 값을 기다려요" : label || "실제 등락률"}</div>
-        </div>
-        {onClose && <button type="button" onClick={onClose} aria-label="닫기" className="-mr-1 -mt-1 rounded-full px-2 text-2xl text-slate-200">✕</button>}
-      </div>
-      {!c.waiting && (c.since || c.vs_market != null) && (
-        <div className="mt-3 rounded-2xl bg-white/[0.05] px-3.5 py-2.5 text-[15px] ring-1 ring-white/10">
-          {c.vs_market != null && <p className="font-bold" style={{ color: similar(c.vs_market) ? GRAY : "#f8fafc" }}>오늘 {judge(c.vs_market)}</p>}
-          {c.since && (
-            <p className="mt-0.5 text-slate-100">
-              첫 보도 이후 <b className="tabular-nums" style={{ color: vsColor(c.since.vs) }}>시장보다 {ppText(c.since.vs)}</b>
-              <span className="text-[14px] text-slate-300"> · {c.since.from === c.since.to ? c.since.from : `${c.since.from}~${c.since.to}`} {c.since.days}거래일 · 주가 {rateText(c.since.rate)}</span>
-            </p>
-          )}
-          {c.reflected && <p className="mt-0.5 font-bold text-amber-100">{REFLECTED}</p>}
-        </div>
-      )}
-      <div className="mt-3 rounded-2xl bg-white/[0.08] p-3.5 ring-1 ring-white/15">
-        <div className="text-[15px] font-extrabold text-sky-200">왜 관련 있나</div>
-        <p className="mt-1 text-[16px] font-bold leading-relaxed text-white">{c.reason}</p>
-        <p className="mt-1.5 text-[14px] text-slate-300">🤖 AI가 해석했어요 · 영향을 받을 수 있다는 해석이며 틀릴 수 있어요</p>
-        {c.opposite && c.other && <div className="mt-2.5 border-t border-white/10 pt-2.5"><OtherNote c={c} /></div>}
-      </div>
-      {!why && !loading && (
-        <button type="button" onClick={loadWhy} className="mt-3 w-full rounded-2xl bg-sky-400 py-3 text-[16px] font-extrabold text-[#071226] hover:bg-sky-300">
-          📈 이 종목 &lsquo;왜 움직였나&rsquo; 보기
-        </button>
-      )}
-      {(why || loading || error) && (
-        <div className="mt-3 rounded-2xl bg-surface p-4 text-fg">
-          <WhyBody stock={stock} why={why} error={error} loading={loading} />
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -493,7 +503,7 @@ export default function LifeFinder() {
   const [error, setError] = useState("");
   const [view, setView] = useState<View>({ kind: "topics" });
   const [active, setActive] = useState(0);
-  const [pick, setPick] = useState<Pick | null>(null);
+  const [open, setOpen] = useState<string | null>(null); // 회사 목록에서 펼친 회사(한 번에 하나)
   const [isPc, setIsPc] = useState(false);
   const [words, setWords] = useState<Record<string, LifeItem>>({});
   const [drawing, setDrawing] = useState<Drawing | null>(null);
@@ -545,6 +555,11 @@ export default function LifeFinder() {
     return () => { alive = false; clearTimeout(timer); };
   }, [hasData]);
   useEffect(() => setIndustry(null), [active, view]);
+  /** 지도에서 회사를 누르면 목록의 그 회사로 스크롤하고 펼친다(고정 이슈 바에 가리지 않게 scroll-mt-20). */
+  function openCompany(code: string) {
+    setOpen(code);
+    requestAnimationFrame(() => document.getElementById(`lm-co-${code}`)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
 
   useEffect(() => {
     let alive = true;
@@ -575,7 +590,7 @@ export default function LifeFinder() {
       clearTimeout(railTarget.current.t);
       railTarget.current = null;
     }
-    if (best !== active) { setActive(best); setPick(null); }
+    if (best !== active) { setActive(best); setOpen(null); }
   }
   /** 뉴스 카드 줄을 i번째 카드로(가운데) 옮긴다. */
   function moveRail(i: number) {
@@ -592,7 +607,7 @@ export default function LifeFinder() {
   function goTopic(i: number) {
     setView({ kind: "topics" });
     setActive(i);
-    setPick(null);
+    setOpen(null);
     setNotice("");
     moveRail(i);
     requestAnimationFrame(() => top.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
@@ -603,14 +618,14 @@ export default function LifeFinder() {
     const i = active + d;
     if (i < 0 || i >= data.topics.length) return;
     setActive(i);
-    setPick(null);
+    setOpen(null);
     moveRail(i);
     const el = body.current;
     if (el && el.getBoundingClientRect().top < 0) requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
   function goOther(v: View) {
     setView(v);
-    setPick(null);
+    setOpen(null);
     setNotice("");
     requestAnimationFrame(() => top.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
@@ -665,11 +680,11 @@ export default function LifeFinder() {
   const item: LifeItem | undefined = view.kind === "topics" ? data.topics[active] : view.kind === "sector" ? data.sector_items[view.name] : words[view.word];
   const accent = accentFor(item, view.kind === "topics" ? active : 0);
   const basisYmd = data.basis.as_of;
-  const label = item?.map.reaction_label;
   const total = data.topics.length;
   const topics = view.kind === "topics";
   const issue = topics ? { n: active + 1, color: accent } : undefined;
   const hasParty = !!item?.map.stages.some((s) => s.companies.some((c) => c.party));
+  const hiCodes = item?.map.industries?.find((x) => x.name === industry)?.codes ?? [];
   const arrows = (size: string) => (
     <div className="flex shrink-0 gap-1.5">
       {([["‹", -1, "이전 이슈"], ["›", 1, "다음 이슈"]] as const).map(([t, d, name]) => (
@@ -748,7 +763,7 @@ export default function LifeFinder() {
                 </SectionTitle>
                 {item.map.stages.length ? (
                   <>
-                    <div className="-mx-4 sm:mx-0"><MindMap map={item.map} center={item.name} picked={pick?.c.code} onPick={(c, s, color) => setPick({ c, s, color })} /></div>
+                    <div className="-mx-4 sm:mx-0"><MindMap map={item.map} center={item.name} picked={open ?? undefined} onPick={(c) => openCompany(c.code)} /></div>
                     <div className="mt-3 space-y-2 text-[15px] leading-relaxed text-slate-100">
                       <ul className="flex flex-wrap gap-x-4 gap-y-1.5">
                         {item.map.stages.map((s, i) => (
@@ -769,11 +784,13 @@ export default function LifeFinder() {
                 )}
               </section>
 
-              {/* AI 해석 vs 실제 등락 */}
-              {item.map.stages.length > 0 && (
-                <section aria-label="AI 해석 vs 실제 등락">
-                  <SectionTitle issue={issue}>AI 해석 vs 실제 등락</SectionTitle>
-                  <ReactionTable item={item} accent={accent} hi={item.map.industries?.find((x) => x.name === industry)?.codes ?? []} onPick={(c, s, color) => setPick({ c, s, color })} />
+              {/* 회사 목록(예전 'AI 해석 vs 실제 등락' 표를 합침) */}
+              {item.map.stages.length > 0 && !isPc && (
+                <section aria-label="연결된 회사" className="lg:hidden">
+                  <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/15 px-2.5 py-1 text-[14px] font-extrabold text-white">관련 종목 · 참고용</span>}>
+                    연결된 회사
+                  </SectionTitle>
+                  <CompanyList item={item} open={open} hi={hiCodes} onToggle={(code) => setOpen((o) => (o === code ? null : code))} />
                 </section>
               )}
 
@@ -799,16 +816,16 @@ export default function LifeFinder() {
                 </nav>
               )}
             </div>
-            <aside className="hidden lg:block">
-              <div className="sticky top-4 rounded-3xl bg-white/[0.04] p-5 ring-1 ring-white/10">
-                {pick ? <Detail pick={pick} label={label} /> : (
-                  <div className="py-12 text-center text-slate-200">
-                    <div className="text-3xl">🔍</div>
-                    <p className="mt-2 text-[16px] font-bold text-white">회사 버블이나 표의 회사를 눌러 보세요</p>
-                    <p className="mt-1 text-[15px]">&lsquo;왜 관련 있나&rsquo;와 &lsquo;왜 움직였나&rsquo;를 볼 수 있어요.</p>
-                  </div>
-                )}
-              </div>
+            {/* PC: 회사 목록은 오른쪽 칸(지도를 보면서 펼쳐 본다) */}
+            <aside className="hidden lg:block" aria-label="연결된 회사">
+              {item.map.stages.length > 0 && (
+                <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto rounded-3xl bg-white/[0.04] p-5 ring-1 ring-white/10">
+                  <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/15 px-2.5 py-1 text-[14px] font-extrabold text-white">관련 종목 · 참고용</span>}>
+                    연결된 회사
+                  </SectionTitle>
+                  {isPc && <CompanyList item={item} open={open} hi={hiCodes} onToggle={(code) => setOpen((o) => (o === code ? null : code))} />}
+                </div>
+              )}
             </aside>
           </div>
         )}
@@ -859,15 +876,6 @@ export default function LifeFinder() {
         </div>
       )}
 
-      {pick && !isPc && (
-        <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={`${pick.c.name} 상세`}>
-          <button type="button" aria-label="닫기" onClick={() => setPick(null)} className="absolute inset-0 bg-black/55" />
-          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl bg-[#0b1a36] p-5 pb-8 shadow-2xl ring-1 ring-white/15">
-            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-white/30" />
-            <Detail pick={pick} label={label} onClose={() => setPick(null)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
