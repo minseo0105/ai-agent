@@ -13,7 +13,7 @@
 // 첫 보도 이후 누적은 버블에 넣지 않고 회사 상세·표에만.
 // 배경은 STOCK:ON 페이지 남색 하나(globals.css .stockon-theme). 이슈 색은 카드 테두리·작은 점·은은한 빛에만 쓴다.
 // 서버가 미리 만든 것을 읽기만 한다(직접 입력한 단어만 대기열로 AI를 부른다 — WordInput).
-// 휴대폰(640px 미만)에서는 바깥 상자 테두리·모서리·양옆 여백 없이 화면 끝까지. 글씨: 본문 15px+, 섹션 제목 18px+, 지도 회사 이름 13px+.
+// 휴대폰(640px 미만)에서는 바깥 상자 테두리·모서리·양옆 여백 없이 화면 끝까지. 글씨: 본문 15px+, 섹션 제목 18px+, 회사 이름(목록·지도) 17px+.
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import MindMap, { GRAY, NEG, POS, dirColor, pathColor, ppText, rateColor, rateText, similar, vsColor } from "@/components/stock/MindMap";
 import { Flash } from "@/components/stock/LiveMarket";
@@ -76,7 +76,7 @@ function IndustryRow({ map, on, onPick }: { map: LifeMap; on: string | null; onP
   const list = map.industries ?? [];
   if (!list.length) return null;
   return (
-    <section aria-label="관련 업종 오늘" className="mt-3">
+    <section aria-label="관련 업종 오늘" className="mt-2">
       <div className="flex flex-wrap items-baseline gap-x-2">
         <h3 className="text-[18px] font-black text-white">관련 업종 오늘</h3>
         <span className="text-[14px] text-slate-300">{map.industries_label} · 시장 대비</span>
@@ -145,7 +145,7 @@ function NewsCard({ item, accent, basis, index, total, active, onSelect }: {
       <IssueBadges item={item} />
       <p className="mt-2 text-[15px] leading-relaxed text-slate-50"><b className="mr-1 text-white">{item.title}</b>{item.summary && ` — ${item.summary}`}</p>
       {rest.length > 0 && (
-        <div className="mt-auto pt-2">
+        <div className="pt-2">
           <button type="button" onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }} aria-expanded={open}
             className="rounded-full bg-white/10 px-2.5 py-1 text-[14px] font-extrabold text-white ring-1 ring-white/20 hover:bg-white/15">
             관련 기사 {rest.length}건 {open ? "▴" : "▾"}
@@ -525,6 +525,20 @@ export default function LifeFinder() {
   // 뉴스 카드 영역을 지나 아래로 스크롤했으면 고정 이슈 바를 보인다. 바 높이(48px)+여유만큼은 지난 것으로 본다
   // (바에서 넘기면 AI 해석 시작으로 올라가 카드 아래 끝이 바 밑에 조금 남는데, 그때 바가 사라지지 않게).
   const hasData = !!data;
+  // 휴대폰(카드 한 장씩 보임): 카드 줄 높이를 지금 카드 높이에 맞춘다(더 긴 옆 카드 때문에 아래가 비지 않게).
+  // '관련 기사'를 펼치면 카드가 커지므로 ResizeObserver로 따라간다. PC(640px 이상)는 여러 장이 보여 그대로.
+  const [railH, setRailH] = useState<number | null>(null);
+  useEffect(() => {
+    const card = rail.current?.children[active] as HTMLElement | undefined;
+    if (!card) return;
+    const mq = window.matchMedia("(max-width: 639px)");
+    const fit = () => setRailH(mq.matches ? card.offsetHeight : null);
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(card);
+    mq.addEventListener("change", fit);
+    return () => { ro.disconnect(); mq.removeEventListener("change", fit); };
+  }, [active, hasData, view]);
   useEffect(() => {
     const el = cards.current;
     if (!el) return;
@@ -719,7 +733,9 @@ export default function LifeFinder() {
               <span className="text-[15px] font-extrabold text-white">오늘의 이슈 {active + 1} / {total}</span>
               {arrows("size-10")}
             </div>
-            <div ref={rail} onScroll={onRailScroll} className="so-row -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0" aria-label="오늘의 이슈">
+            <div ref={rail} onScroll={onRailScroll} aria-label="오늘의 이슈"
+              style={railH ? { height: railH + 8, transition: "height 250ms ease-out" } : undefined}
+              className="so-row -mx-4 flex items-start snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden px-4 pb-2 sm:mx-0 sm:px-0">
               {data.topics.map((t, i) => (
                 <NewsCard key={t.name} item={t} accent={accentFor(t, i)} basis={basisYmd} index={i} total={data.topics.length}
                   active={i === active} onSelect={() => i !== active && goTopic(i)} />
@@ -736,9 +752,9 @@ export default function LifeFinder() {
         </div>
 
         {item && (
-          <div ref={body} className="mt-5 scroll-mt-16 lg:grid lg:grid-cols-[1.25fr_1fr] lg:gap-8">
+          <div ref={body} className="mt-4 scroll-mt-16 lg:grid lg:grid-cols-[1.25fr_1fr] lg:gap-8">
             {/* 이슈가 바뀌면 다시 그려지며 0.3초 옆으로 밀려 들어온다(globals.css .lm-slide-*) */}
-            <div key={topics ? `t${active}` : `${view.kind}:${item.name}`} className={`space-y-9 ${topics ? `lm-slide-${slide.current.dir}` : ""}`}>
+            <div key={topics ? `t${active}` : `${view.kind}:${item.name}`} className={`space-y-7 ${topics ? `lm-slide-${slide.current.dir}` : ""}`}>
               {/* AI 해석 */}
               <section aria-label="AI 해석">
                 <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/10 px-2.5 py-1 text-[14px] font-extrabold text-sky-50 ring-1 ring-sky-300/30">🤖 AI가 해석했어요</span>}>
@@ -858,7 +874,7 @@ export default function LifeFinder() {
           <p className="font-extrabold text-white">ⓘ 투자 권유가 아닌 참고 정보 · AI 해석은 틀릴 수 있어요</p>
           <p className="mt-1">
             뉴스를 읽고 영향을 받을 수 있는 회사를 AI가 해석한 것이며, 주가 방향을 말하지 않아요. 금융위원회 공공데이터 상장 종목 목록에 있는
-            회사만 보여 주고, 실제 등락률은 표시한 시점 값이에요. 뉴스는 NAVER 뉴스 검색으로 찾았어요.
+            회사만 보여 주고, 실제 등락률은 표시한 시점 값이에요. 오늘의 이슈는 종합 언론사·방송사 일상 뉴스(RSS)에서 고르고, 기사 수·관련 기사는 NAVER 뉴스 검색으로 찾았어요.
           </p>
           {data.price_note && <p className="mt-2 font-bold text-slate-100">{data.price_note}</p>}
         </footer>

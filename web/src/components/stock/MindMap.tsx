@@ -4,11 +4,11 @@
 // 2단계 = 영향을 받을 수 있는 회사(경로당 2곳). 노드가 최대 13개라 라이브러리 없이 SVG로 그린다
 // (react-flow·d3는 수십~백 KB, 휴대폰에서 이 크기에는 과함). 애니메이션은 transform·opacity·stroke-dashoffset만 써서 GPU로.
 // 처음부터 모두 펼친 채로 시작한다(가지가 자라나는 연출만). 경로를 누르면 그 가지를 강조한다.
-// 글자: 휴대폰(지도 폭 약 358px, 배율 약 0.81)에서 회사 이름 14px 이상이 되도록 SVG 단위 18.
+// 글자: 휴대폰 390px(지도가 화면 끝까지, 배율 약 0.89)에서 회사 이름 17px 이상이 되도록 SVG 단위 19.5.
 // 회사 원 안에는 회사명만(숫자·+/− 배지·'실제 등락' 라벨 없음 — 숫자는 아래 회사 목록에). 원 색 = AI 해석 방향:
 // 도움 가능(초록)/부담 가능(주황)/영향 가능(회색). 시장 대비 ±3%p 이상 움직인 회사는 빛나는 테두리, 뉴스 당사자는 두 겹 테두리.
 // 회사 원을 누르면 아래 목록의 그 회사로 스크롤하고 펼친다(onPick).
-// 원 반지름 43~45: 회사가 바깥 고리(154)에 있어 가장 큰 원+빛(45+10, 경로에 혼자면 160에)도 화면(220) 안,
+// 원 반지름 46~47: 회사가 바깥 고리(154)에 있어 가장 큰 원+빛(47+10, 경로에 혼자면 160에)도 화면(220) 안,
 // 같은 경로 두 회사(±23°)·이웃 경로 회사와 겹치지 않는다.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { type LifeCompany, type LifeMap, type LifeStage } from "@/lib/stock";
@@ -20,7 +20,7 @@ export const UP = "#ff6b81";   // 상승 빨강(어두운 배경용)
 export const DOWN = "#5aa9ff"; // 하락 파랑
 export const POS = "#34d399";  // AI 해석: 긍정 영향 가능
 export const NEG = "#fb923c";  // AI 해석: 부정 영향 가능
-const BUBBLE = { 강: 45, 중: 44, 약: 43 } as const; // 두 줄 이름(4자 × 18)이 원 안에 들어가게
+const BUBBLE = { 강: 47, 중: 46, 약: 46 } as const; // 두 줄 이름(4자 × 19.5)이 원 안에 들어가게
 const GLOW = "#fde68a"; // 실제로 크게 움직인 회사의 빛나는 테두리
 const ANGLES: Record<number, number[]> = { 1: [0], 2: [180, 0], 3: [-90, 30, 150], 4: [-135, -45, 45, 135] };
 const R_STAGE = 76;
@@ -229,8 +229,8 @@ export default function MindMap({ map, center, onPick, picked }: { map: LifeMap;
                   <circle r={r} fill="#0b1a36" />
                   <circle r={r} fill={color} fillOpacity={on ? 0.42 : 0.24} stroke={color} strokeWidth={on ? 3.6 : 2.4} />
                   {lines.map((t, n) => (
-                    <text key={n} className="lm-bubble-text" textAnchor="middle" y={(n - (lines.length - 1) / 2) * 19}
-                      dy="0.36em" fontSize={18} fontWeight={800} fill="#f8fafc">{t}</text>
+                    <text key={n} className="lm-bubble-text" textAnchor="middle" y={(n - (lines.length - 1) / 2) * 20.5}
+                      dy="0.36em" fontSize={19.5} fontWeight={800} fill="#f8fafc">{t}</text>
                   ))}
                 </g>
               );

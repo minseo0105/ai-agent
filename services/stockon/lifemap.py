@@ -347,13 +347,15 @@ INTERP_SYSTEM = """너는 일상 뉴스를 읽고, 그 뉴스가 어떤 한국 �
 규칙:
 - interpretation: 이 뉴스가 어떤 회사들과 어떻게 이어지는지 2~3문장(문장당 60자 이내). 예: '해킹 사고가 잇따르면 회사들이 보안 프로그램을 더 사게 될 수 있어요.'
   자료에 있는 사실에서 출발하고, '~할 수 있어요'처럼 가능성으로 쓴다. 주가가 오르거나 내릴 것이라고 쓰지 않는다.
+  해석 과정이나 자료 상태에 대한 말('기사에 상장사 이름이 나오지 않아', 'AI가 보기에')은 쓰지 않는다.
 - paths: 영향 경로 2~4개. label은 경로 이름 2~8자, 일상 말로(예: '보안 수요', '보상 비용', '부품 교체', '원가 부담', '규제 강화'), detail은 한 줄(20자 이내).
 - 경로마다 영향을 받을 수 있는 한국거래소(코스피·코스닥) 상장사를 3곳까지, 상장 종목명 그대로. 비상장사·해외 회사·비상장 자회사는 쓰지 않는다.
 - 이 기능의 목적은 '기사에는 이름이 안 나왔지만 이어져 있는 회사'를 찾는 것이다. 회사는 relation으로 관계를 밝힌다:
-  · '당사자': 기사에 이름이 직접 나온 사건·발표의 주체(상장사). '모회사·지분': 당사자가 비상장이면 지분 관계가 확인되는 상장 모회사·대주주.
-    당사자·모회사는 합쳐 1~2곳만. 당사자가 비상장이고 지분 관계를 확실히 모르면 넣지 않는다.
-  · 나머지는 기사에 이름이 나오지 않은 회사: '공급사'(당사자·제품에 부품·서비스를 대는 회사), '고객사', '사고 대응'(복구·보안·검사·보상을 맡는 업체),
+  · '당사자': 기사에 이름이 직접 나온 사건·발표의 주체(상장사). '모회사·지분': 당사자가 비상장이면 그 당사자의 지분을 가진 상장 모회사·대주주
+    (자회사·계열사·같은 그룹 회사는 '모회사·지분'이 아니다). 당사자·모회사는 합쳐 1~2곳만. 당사자가 비상장이고 지분 관계를 확실히 모르면 넣지 않는다.
+  · 나머지는 기사에 이름이 나오지 않은 회사(기사 밖 연결): '공급사'(당사자·제품에 부품·서비스를 대는 회사), '고객사', '사고 대응'(복구·보안·검사·보상을 맡는 업체),
     '규제 대상', '경쟁사', '대체재'(대신 쓰일 제품·서비스를 만드는 회사), '같은 업종'. 그 회사의 실제 사업 내용으로 연결이 설명될 때만 넣는다.
+    기사 밖 연결 회사를 2~4곳 찾는 것이 핵심이다. 사건이 어디로 번지는지(누가 부품을 바꾸고, 누가 대신 팔고, 누가 수습하는지) 따라가 찾는다.
   '같은 업종'이라는 이유만으로는 넣지 않는다. 예: 한 은행의 개인정보 유출 뉴스에 다른 금융지주를 '신뢰 하락'으로 넣지 않는다.
   같은 업종 회사를 꼭 넣어야 하면 relation을 '같은 업종', relevance를 '약'으로 쓰고, 그 회사에 생기는 구체적인 변화를 reason에 쓴다.
 - 이슈 전체 회사는 6곳 이하로(당사자 포함), 근거가 확실한 회사만.
@@ -426,7 +428,7 @@ RSS_TOPIC_SYSTEM = """너는 종합 일간지·방송사의 일상 뉴스 편집
   기업과 이어지지 않으면 false. 기업과 이어지는 사건을 먼저 고른다.
 - 고르지 않는 기사: 기업 실적 발표·공시, 특징주·관련주·급등 기사, 증시 시황·지수 기사처럼 처음부터 종목·주가가 주인공인 기사.
 - kind: 사건 종류(목록 중 하나). 분야 이름이 달라도 사건 종류가 같으면(예: 거래소 개인정보 유출과 은행 해킹은 둘 다 '해킹·정보유출')
-  하나로 묶거나 기사가 많은 하나만 고른다.
+  하나로 묶거나 기사가 많은 하나만 고른다. 사건의 성격 그대로 고른다(신제품 출시·공개는 '기술·신제품', 결함이 드러난 것만 '제품 결함·리콜').
 - macro: 금리·환율·지수 전반처럼 시장 전체에 영향을 주는 거시 이슈면 true(최대 1개).
 - keyword: 이슈 지도 가운데 둘 이름 2~8자. 대표 기사 제목에 나온 핵심 사건 그대로, 제목에 있는 말로(예: '금융권 해킹', '아이폰 듀오 결함').
 - label: 분야 이름 2~8자. 업종명이 아니라 사람들이 일상에서 부르는 말로(예: '개인정보 유출', '전기차 리콜', '스마트폰 결함', '은행 해킹', '폭우 피해').
@@ -527,21 +529,27 @@ def interpret(word: str, articles: list[dict], live: bool = False, macro: bool =
     sentences: list[str] = []
     best: dict = {}
     count = lambda ps: sum(len(p["companies"]) for p in ps)  # noqa: E731
+    hidden = lambda ps: sum(1 for p in ps for c in p["companies"] if not c.get("party"))  # noqa: E731
+    score = lambda ps: (min(hidden(ps), 2), count(ps))  # noqa: E731  숨은 연결 2곳까지를 먼저, 그다음 회사 수
     for attempt in range(2):
         raw = _ask(CHAIN_MODEL, INTERP_SYSTEM, task, payload, INTERP_SCHEMA, 2000, live)
         got, removed = validate_paths(raw, index, stocks, macro_text, used)
         removed_all += removed
         lines = [str(x).strip()[:120] for x in (raw or {}).get("interpretation") or [] if str(x).strip()]
         lines = [x for x in lines if not _unsafe(x)][:3]
-        if count(got) >= count(paths):
-            paths, sentences, best = got, lines or sentences, raw or {}  # 다시 그린 것이 더 적으면 처음 것을 둔다
-        if (count(paths) >= MIN_COMPANIES and len(paths) >= 2 and sentences) or attempt == 1:
+        if score(got) >= score(paths):
+            paths, sentences, best = got, lines or sentences, raw or {}  # 다시 그린 것이 더 못하면 처음 것을 둔다
+        few_hidden = hidden(paths) < 2
+        if (count(paths) >= MIN_COMPANIES and len(paths) >= 2 and sentences and not few_hidden) or attempt == 1:
             break
         if removed:
             task += (f"\n\n주의: 직전 결과의 {', '.join(removed[:6])}은(는) 상장 종목 목록에 없었다. "
                      "상장된 회사만 상장 종목명 그대로 다시 써라.")
         elif len(paths) == 1 or not sentences:
             task += "\n\n주의: 직전 결과는 영향 경로가 하나뿐이거나 해석 문장이 없었다. 다른 경로(수요·원가·규제·경쟁 등)도 살펴 2개 이상 써라."
+        elif few_hidden:
+            task += ("\n\n주의: 직전 결과는 기사에 이름이 나온 회사뿐이거나 기사 밖 연결이 한 곳 이하였다. 기사에 이름이 없는 공급사·고객사·경쟁사·"
+                     "대체재·사고 대응 업체를 사업 내용 근거와 함께 2곳 이상 찾아라. 근거가 없는 회사는 넣지 않는다.")
         else:
             break  # 지운 회사 없이 적게 나왔으면 다시 불러도 비슷하다(빈 결과 = 이어지는 회사 없음)
     move = read_move(best)
@@ -950,50 +958,55 @@ def pick_rss_issues(basis: dict, articles: list[dict], max_topics: int = CANDIDA
 
     payload = {"기준": basis["label"], "사건 종류": list(EVENT_KINDS),
                "기사": [f"{i + 1}|{a.get('press_name', '')}|{a.get('section', '')}|{stamp(a['pub'])}|{a['title']}" for i, a in enumerate(articles)]}
-    raw = _ask(TOPIC_MODEL, RSS_TOPIC_SYSTEM,
-               f"기사는 '번호|언론사|섹션|발행|제목'이다. 같은 사건 기사를 묶어 한국 산업·기업과 이어지는 이슈를 기사가 많은 순서로 {max_topics}개까지 골라라.",
-               payload, RSS_TOPIC_SCHEMA, 4000)
+    task = f"기사는 '번호|언론사|섹션|발행|제목'이다. 같은 사건 기사를 묶어 한국 산업·기업과 이어지는 이슈를 기사가 많은 순서로 {max_topics}개까지 골라라."
     topics, keywords, kinds, used, seen_tokens = [], set(), set(), set(), set()
     macros = 0
     rejects = _last_rejects
-    for t in (raw or {}).get("topics") or []:
-        keyword = normalize_word(str(t.get("keyword") or ""))[:12]
-        label = normalize_word(str(t.get("label") or ""))[:12]
-        kind = t.get("kind") if t.get("kind") in EVENT_KINDS else "기타"
-        title = str(t.get("title") or "").strip()[:40]
-        summary = str(t.get("summary") or "").strip()[:80]
-        query = normalize_word(str(t.get("query") or ""))[:30] or keyword
-        nums = [n for n in dict.fromkeys(t.get("articles") or []) if isinstance(n, int) and 1 <= n <= len(articles)]
-        rep = t.get("representative")
-        if rep in nums:
-            nums = [rep] + [n for n in nums if n != rep]
-        nums = nums[:ARTICLES_MAX]
-        tokens = _issue_tokens(keyword)
-        macro = bool(t.get("macro")) or bool(MACRO.search(keyword))
-        # '기타'는 종류로 묶지 않는다(서로 다른 사건일 수 있다)
-        why = ("unlinked" if not t.get("linked") else
-               "market" if index_news({"name": keyword, "title": title}) else
-               "stock" if STOCK_TOPIC.search(keyword) or stock_article({"title": title}) else
-               "word" if not keyword or check_word(keyword) or keyword in keywords or tokens & seen_tokens else
-               "kind" if kind != "기타" and kind in kinds else
-               "text" if not title or not summary or not label or any(card_unsafe(x) for x in (title, summary, keyword, label)) else
-               "articles" if not nums or rep not in nums or used & set(nums) else
-               "center" if not centered(keyword, [articles[n - 1]["title"] for n in nums]) else
-               "macro" if macro and macros else "")
-        if why:
-            rejects[why] = rejects.get(why, 0) + 1
-            continue
-        keywords.add(keyword)
-        seen_tokens.update(tokens)
-        kinds.add(kind)
-        used.update(nums)
-        macros += macro
-        field = t.get("field") if t.get("field") in NEWS_FIELDS else ""
-        topics.append({"name": keyword, "title": title, "summary": summary, "label": label, "kind": kind, "sector": label,
-                       "field": field, "macro": macro, "query": query,
-                       "_context": [articles[n - 1] for n in nums]})
-        if len(topics) == max_topics:
+    # 기사가 수백 건이면 Haiku가 가끔 한두 개만 낸다 → 통과한 이슈가 TOPICS_MIN개 미만이면 한 번 더 묻고 두 답을 같은 검사로 합친다
+    for _ in range(2):
+        raw = _ask(TOPIC_MODEL, RSS_TOPIC_SYSTEM, task, payload, RSS_TOPIC_SCHEMA, 4000)
+        for t in (raw or {}).get("topics") or []:
+            keyword = normalize_word(str(t.get("keyword") or ""))[:12]
+            label = normalize_word(str(t.get("label") or ""))[:12]
+            kind = t.get("kind") if t.get("kind") in EVENT_KINDS else "기타"
+            title = str(t.get("title") or "").strip()[:40]
+            summary = str(t.get("summary") or "").strip()[:80]
+            query = normalize_word(str(t.get("query") or ""))[:30] or keyword
+            nums = [n for n in dict.fromkeys(t.get("articles") or []) if isinstance(n, int) and 1 <= n <= len(articles)]
+            rep = t.get("representative")
+            if rep in nums:
+                nums = [rep] + [n for n in nums if n != rep]
+            nums = nums[:ARTICLES_MAX]
+            tokens = _issue_tokens(keyword)
+            macro = bool(t.get("macro")) or bool(MACRO.search(keyword))
+            # '기타'는 종류로 묶지 않는다(서로 다른 사건일 수 있다)
+            why = ("unlinked" if not t.get("linked") else
+                   "market" if index_news({"name": keyword, "title": title}) else
+                   "stock" if STOCK_TOPIC.search(keyword) or stock_article({"title": title}) else
+                   "word" if not keyword or check_word(keyword) or keyword in keywords or tokens & seen_tokens else
+                   "kind" if kind != "기타" and kind in kinds else
+                   "text" if not title or not summary or not label or any(card_unsafe(x) for x in (title, summary, keyword, label)) else
+                   "articles" if not nums or rep not in nums or used & set(nums) else
+                   "center" if not centered(keyword, [articles[n - 1]["title"] for n in nums]) else
+                   "macro" if macro and macros else "")
+            if why:
+                rejects[why] = rejects.get(why, 0) + 1
+                continue
+            keywords.add(keyword)
+            seen_tokens.update(tokens)
+            kinds.add(kind)
+            used.update(nums)
+            macros += macro
+            field = t.get("field") if t.get("field") in NEWS_FIELDS else ""
+            topics.append({"name": keyword, "title": title, "summary": summary, "label": label, "kind": kind, "sector": label,
+                           "field": field, "macro": macro, "query": query,
+                           "_context": [articles[n - 1] for n in nums]})
+            if len(topics) == max_topics:
+                break
+        if len(topics) >= TOPICS_MIN or len(topics) == max_topics:
             break
+        task += (f"\n\n주의: 직전 답은 쓸 수 있는 이슈가 {len(topics)}개뿐이었다. 기사 전체를 다시 훑어 한국 산업·기업과 이어지는 "
+                 f"서로 다른 사건을 {max_topics}개까지 골라라(이미 고른 사건: {', '.join(keywords) or '없음'}).")
     return topics
 
 

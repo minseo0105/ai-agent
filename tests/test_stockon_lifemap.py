@@ -1177,13 +1177,17 @@ class RssIssuesTest(LifemapBase):
             _rss_topic("전기차 배터리 리콜", "전기차 리콜", "제품 결함·리콜", [6], 6),
             _rss_topic("코스피 급락", "증시", "기타", [7], 7),                        # 지수 시황
         ]}
-        with mock.patch.object(lifemap, "_ask", return_value=raw) as ask:
+        more = {"topics": [_rss_topic("빗썸 정보유출", "개인정보 유출", "해킹·정보유출", [1, 2], 1),  # 이미 고른 사건 → 뺀다
+                           _rss_topic("기타 기사", "생활 소식", "재난·날씨", [8, 9], 8)]}
+        with mock.patch.object(lifemap, "_ask", side_effect=[raw, more]) as ask:
             topics = lifemap.pick_rss_issues(self.basis(), RSS_ARTS)
         self.assertIn("1|연합뉴스|사회|", ask.call_args.args[3]["기사"][0])
+        self.assertIn("2개뿐이었다", ask.call_args.args[2])  # 통과한 이슈가 3개 미만이면 한 번 더 묻는다
         self.assertNotIn("코스피 급락 마감", " ".join(ask.call_args.args[3]["기사"]))  # 증권 기사는 AI에 보내기 전에 뺀다
-        self.assertEqual([(t["name"], t["label"]) for t in topics], [("빗썸 정보유출", "개인정보 유출"), ("전기차 배터리 리콜", "전기차 리콜")])
+        self.assertEqual([(t["name"], t["label"]) for t in topics],
+                         [("빗썸 정보유출", "개인정보 유출"), ("전기차 배터리 리콜", "전기차 리콜"), ("기타 기사", "생활 소식")])
         self.assertEqual(topics[0]["query"], "빗썸 개인정보 유출")
-        self.assertEqual(lifemap._last_rejects, {"kind": 1, "text": 1, "unlinked": 1, "market": 1})
+        self.assertEqual(lifemap._last_rejects, {"kind": 1, "text": 1, "unlinked": 1, "market": 1, "word": 1})
         self.assertTrue(lifemap.card_unsafe("부품주 급등"))
         self.assertFalse(lifemap.card_unsafe("빗썸 고객 3만 명 정보 유출"))
 
@@ -1288,6 +1292,21 @@ class PartyAndHiddenTest(LifemapBase):
         self.assertEqual((cs["라온시큐어"]["hop"], cs["농심"]["hop"]), (1, 2))
         self.assertEqual(cs["SK텔레콤"]["evidence"]["press_name"], "연합뉴스")
         self.assertEqual([p["key"] for p in paths], [f"p{i}" for i in range(len(paths))])
+
+    def test_retry_once_when_fewer_than_two_links_outside_the_article(self):
+        ctx = [{"title": "SK텔레콤 고객 정보 유출", "snippet": "", "url": "https://www.yna.co.kr/1", "press": "www.yna.co.kr"}]
+        co = lambda n, rel: {"name": n, "direction": "부정" if rel == "당사자" else "긍정", "relation": rel, "relevance": "중",  # noqa: E731
+                             "reason": f"{n} 사업 연결", "industry": "통신", "evidence": 1}
+        base = {"interpretation": ["통신사 정보 유출 소식이에요."], "move": {"subject": "", "today": "해당 없음"}, "expected": "해당 없음"}
+        only_party = {**base, "paths": [{"label": "보상 비용", "detail": "", "companies": [co("SK텔레콤", "당사자")]},
+                                        {"label": "보안 수요", "detail": "", "companies": [co("라온시큐어", "사고 대응")]}]}
+        better = {**base, "paths": [{"label": "보상 비용", "detail": "", "companies": [co("SK텔레콤", "당사자")]},
+                                    {"label": "보안 수요", "detail": "", "companies": [co("라온시큐어", "사고 대응"), co("안랩", "사고 대응")]}]}
+        with mock.patch.object(lifemap, "_ask", side_effect=[only_party, better]) as ask:
+            m = lifemap.interpret("통신사 정보유출", ctx)
+        self.assertEqual(ask.call_count, 2)
+        self.assertIn("기사에 이름이 없는", ask.call_args_list[1].args[2])
+        self.assertEqual(sum(1 for p in m["stages"] for c in p["companies"] if not c["party"]), 2)
 
     def test_prompts_plain_words_and_hidden_links(self):
         self.assertIn("일반인", lifemap.INTERP_SYSTEM)
