@@ -148,6 +148,7 @@ export type LifeItem = {
   coverage?: { articles: number; presses: number; hours: number }; // 최근 24시간 기사 수·언론사 수
   ongoing?: boolean; // 첫 보도가 24시간보다 오래됨 → '계속되는 이슈'
   no_verified?: boolean; // 검증된 국내 상장기업(당사자·검증된 간접 영향) 없음
+  new_at?: string; // 13:00 회차(또는 관리자 다시 만들기)에서 새로 들어온 이슈 → '새 이슈 13:00' 배지
 };
 export type LifeBasis = { key?: string; source?: "public" | "kiwoom"; as_of?: string; label?: string };
 /** '오늘 시장 분위기' 띠: 지수 등락률과 오른·내린 종목 비율 한 줄(지수 시황 기사는 이슈 카드 대신 여기에). */
@@ -221,8 +222,10 @@ export type CurationItem = {
 export type Curation = {
   day: string; basis: LifeBasis; items: CurationItem[]; hidden_other: { key: string; name: string; title: string }[];
   words: string[]; fin_first: boolean; order: string[]; min: number; max: number;
+  // 지금 이슈를 만든 회차(0830·1300·manual)와 '지금 이슈 다시 만들기' 요청 상태
+  regen?: { pending: boolean; requested_ts: number; slot?: string | null; label: string; created_ts?: number; relax: string[]; excluded: number };
 };
-type CurationAction = { action: "hide" | "show"; key: string } | { action: "order"; keys: string[] } | { action: "words"; words: string[] } | { action: "fin_first"; on: boolean };
+type CurationAction = { action: "hide" | "show"; key: string } | { action: "order"; keys: string[] } | { action: "words"; words: string[] } | { action: "fin_first"; on: boolean } | { action: "regenerate" };
 export const stockAdminApi = {
   curation: () => get<Curation>("/api/stock/admin/lifemap"),
   setCuration: (body: CurationAction) => get<Curation>("/api/stock/admin/lifemap", { method: "POST", body: JSON.stringify(body) }),

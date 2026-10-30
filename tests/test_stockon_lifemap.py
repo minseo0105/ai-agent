@@ -83,6 +83,7 @@ class LifemapBase(TempStore):
         lifemap._sessions.clear()
         lifemap._live_count.clear()
         lifemap._ind_cache.update(value=None)
+        lifemap._last_overflow.clear()
         lifemap._pulse_cache.update(value=None)
         lifemap._examples_cache["value"] = {
             "basis": {"key": "public:20261024", "source": "public", "as_of": "20261024", "label": "10/24 장 기준"},
@@ -171,14 +172,16 @@ class BasisTest(LifemapBase):
         with mock.patch.object(lifemap.time, "time", return_value=now.timestamp() + 3600):
             self.assertEqual(lifemap.topic_basis(now)["source"], "public")  # 1시간 갱신 안 됨 → 공공데이터
 
-    def test_topics_due_once_per_basis(self):
-        b = self.basis()
-        self.assertTrue(lifemap.topics_due(b))
-        store.write("lifemap", {"basis": {"key": b["key"]}, "fresh": 3})
-        self.assertFalse(lifemap.topics_due(b))
-        store.write("market", {**MARKET, "as_of": "20261028"})
-        self.assertTrue(lifemap.topics_due(lifemap.topic_basis()))
-        self.assertFalse(lifemap.topics_due(None))
+    def test_slot_basis_window_from_previous_close_and_rates_label(self):
+        now = datetime(2026, 10, 30, 8, 31, tzinfo=KST)  # 금요일
+        b = lifemap.slot_basis(now, "0830")
+        self.assertEqual((b["key"], b["slot"], b["label"]), ("slot:20261030:0830", "0830", "10/30 08:30 기준"))
+        self.assertEqual(b["window"][0], datetime(2026, 10, 29, 15, 20, tzinfo=KST))  # 전날 장 마감(동시호가) 뒤부터
+        self.assertEqual(b["rates_label"], "10/27 장 기준")  # 등락률은 볼 수 있는 가장 최근 값
+        mon = lifemap.slot_basis(datetime(2026, 11, 2, 13, 0, tzinfo=KST), "1300")
+        self.assertEqual(mon["window"][0], datetime(2026, 10, 30, 15, 20, tzinfo=KST))  # 월요일은 금요일 마감 뒤부터
+        late = lifemap.slot_basis(datetime(2026, 11, 2, 14, 10, tzinfo=KST), "1300")
+        self.assertEqual(late["label"], "11/2 14:10 기준")  # 재시작 등으로 늦게 돌면 실제 시각
 
 
 class IssuesTest(LifemapBase):
@@ -572,10 +575,10 @@ class VersusMarketTest(LifemapBase):
         self.assertEqual(lifemap.market_mood({"indices": self.IDX}, live)["label"], "10/29 11:00 장중")  # 장중 갱신값 우선
 
 
-class SectorScheduleTest(LifemapBase):
-    """섹터 이슈 10개는 하루 한 번(장 마감 뒤 기준)만. 키움 장중 재생성은 오늘의 이슈만."""
+class SlotScheduleTest(LifemapBase):
+    """하루 2회차(08:30·13:00, 거래일만). 섹터는 08:30에 같이. 10:00·15:35 생성 없음. 장중 30분 기사 갱신, 관리자 다시 만들기."""
 
-    def _run(self, basis):
+    def _run(self, now):
         ran = []
 
         class SyncThread:
@@ -585,29 +588,47 @@ class SectorScheduleTest(LifemapBase):
             def start(self):
                 self.target()
 
-        with mock.patch.object(lifemap, "topic_basis", return_value=basis), \
-                mock.patch.object(lifemap, "run_topics", side_effect=lambda b, **k: ran.append("topics")), \
-                mock.patch.object(lifemap, "run_sectors", side_effect=lambda b, **k: (ran.append("sectors"), store.write(
-                    "lifemap_sectors", {"basis": lifemap.basis_info(b), "items": {}}))), \
-                mock.patch.object(lifemap.budget, "allowed", return_value=True), \
-                mock.patch.object(lifemap.threading, "Thread", SyncThread):
-            started = lifemap.maybe_run_daily()
+        def topics(b, merge=False, **k):
+            ran.append(("topics", b["slot"], merge))
+            store.write("lifemap", {"day": now.strftime("%Y-%m-%d"), "slot_key": b["key"], "topics": [{"name": "x"}],
+                                    "articles_ts": time.time()})
+
+        with mock.patch.object(lifemap, "run_topics", side_effect=topics),                 mock.patch.object(lifemap, "run_sectors", side_effect=lambda b, **k: (ran.append(("sectors", b["slot"])), store.write(
+                    "lifemap_sectors", {"day": now.strftime("%Y-%m-%d"), "items": {}}))),                 mock.patch.object(lifemap, "refresh_articles", side_effect=lambda *a, **k: ran.append(("articles",))),                 mock.patch.object(lifemap.budget, "allowed", return_value=True),                 mock.patch.object(lifemap.threading, "Thread", SyncThread):
+            started = lifemap.maybe_run_daily(now)
         return started, ran
 
-    def test_open_makes_topics_only_close_makes_sectors_once(self):
-        def kb(kind):
-            return {"key": f"kiwoom:20261029:{kind}", "source": "kiwoom", "as_of": "20261029", "label": "x", "window": None, "rates": {}}
+    def test_two_slots_a_day_on_trading_days_only(self):
+        at = lambda d, h, m: datetime(2026, 11, d, h, m, tzinfo=KST)  # noqa: E731  11/2 월요일
+        self.assertEqual(self._run(at(2, 8, 0)), (False, []))  # 08:30 전
+        self.assertEqual(self._run(at(2, 8, 30)), (True, [("sectors", "0830"), ("topics", "0830", False)]))
+        self.assertEqual(self._run(at(2, 10, 0)), (False, []))  # 10:00 회차는 없다(기사 갱신도 30분 안 지남)
+        self.assertEqual(self._run(at(2, 13, 0)), (True, [("topics", "1300", True)]))  # 13:00: 합쳐서 다시 순위
+        self.assertEqual(self._run(at(2, 15, 35)), (False, []))  # 장 마감 뒤 새로 만들지 않음
+        self.assertEqual(self._run(at(7, 9, 0)), (False, []))  # 토요일
+        self.assertEqual(lifemap.slot_due(datetime(2026, 12, 25, 9, 0, tzinfo=KST)), None)  # 성탄절 휴장
 
-        store.write("lifemap_sectors", {"basis": {"key": "kiwoom:20261028:close", "as_of": "20261028"}, "items": {}})
-        self.assertEqual(self._run(kb("open")), (True, ["topics"]))       # 장중: 오늘의 이슈만
-        self.assertFalse(lifemap.sectors_due(kb("open")))
-        store.write("lifemap_status", {})  # 실제로는 장중(10시)과 마감(15:35) 사이가 30분보다 길다
-        self.assertEqual(self._run(kb("close")), (True, ["topics", "sectors"]))  # 마감 뒤: 이슈 + 섹터
-        store.write("lifemap", {"basis": {"key": "kiwoom:20261029:close"}, "fresh": 5})
-        self.assertEqual(self._run(kb("close")), (False, []))             # 같은 날 다시 만들지 않음
-        public_same_day = {"key": "public:20261029", "source": "public", "as_of": "20261029", "label": "x", "window": None, "rates": {}}
-        self.assertFalse(lifemap.sectors_due(public_same_day))  # 다음 날 공공 기준(같은 날 시세)으로도 다시 만들지 않음
-        self.assertTrue(lifemap.sectors_due({**public_same_day, "key": "public:20261030", "as_of": "20261030"}))
+    def test_failed_slot_retries_every_30_minutes_up_to_three(self):
+        now = datetime(2026, 11, 2, 8, 30, tzinfo=KST)
+        store.write("lifemap_status", {"try_key": "slot:20261102:0830", "tries": 1, "try_ts": time.time()})
+        self.assertIsNone(lifemap.slot_due(now))
+        store.write("lifemap_status", {"try_key": "slot:20261102:0830", "tries": 1, "try_ts": time.time() - 1900})
+        self.assertEqual(lifemap.slot_due(now), "0830")
+        store.write("lifemap_status", {"try_key": "slot:20261102:0830", "tries": 3, "try_ts": 0})
+        self.assertIsNone(lifemap.slot_due(now))
+
+    def test_missed_morning_runs_sectors_with_first_slot(self):
+        self.assertEqual(self._run(datetime(2026, 11, 2, 14, 0, tzinfo=KST)),
+                         (True, [("sectors", "1300"), ("topics", "1300", True)]))
+
+    def test_articles_every_30_minutes_in_market_hours_and_admin_request(self):
+        store.write("lifemap", {"day": "2026-11-02", "slot_key": "slot:20261102:0830", "topics": [{"name": "x"}], "articles_ts": time.time() - 1900})
+        self.assertEqual(self._run(datetime(2026, 11, 2, 9, 40, tzinfo=KST)), (True, [("articles",)]))
+        self.assertFalse(lifemap.articles_due(datetime(2026, 11, 2, 16, 0, tzinfo=KST)))  # 장 마감 뒤
+        lifemap.request_regenerate()
+        self.assertTrue(lifemap.regen_state()["pending"])
+        self.assertEqual(self._run(datetime(2026, 11, 2, 11, 5, tzinfo=KST)), (True, [("topics", "manual", True)]))
+        self.assertFalse(lifemap.regen_state()["pending"])  # 한 번만
 
 
 class LiveQueueTest(LifemapBase):
@@ -1266,7 +1287,7 @@ class RssIssuesTest(LifemapBase):
         t = data["topics"][0]
         self.assertEqual((t["label"], t["kind"], t["ongoing"]), ("개인정보 유출", "해킹·정보유출", False))
         self.assertEqual(t["coverage"]["presses"], 3)
-        self.assertNotIn("query", t)
+        self.assertEqual(t["query"], "빗썸 정보유출")  # 13:00·30분 기사 갱신에 다시 쓴다
         cs = {c["name"]: c for s in t["map"]["stages"] for c in s["companies"]}
         self.assertEqual((cs["라온시큐어"]["hop"], cs["라온시큐어"]["industry"]), (1, "IT 서비스"))
         self.assertEqual(cs["라온시큐어"]["evidence"]["press_name"], "연합뉴스")
@@ -1390,6 +1411,15 @@ if __name__ == "__main__":
     unittest.main()
 
 
+def _v(t, listed=1, grade="단일 보도", articles=None):
+    """검증된 지도로: 검증된 상장사 listed곳(0이면 업종 참고만), 기사 수 articles."""
+    comps = [{"code": f"{i:06d}", "name": f"회사{i}", "tier": "indirect", "grade": grade, "relevance": "중", "reason": "r"} for i in range(listed)]
+    comps = comps or [{"code": "999999", "name": "업종회사", "tier": "industry", "relevance": "약", "reason": "r"}]
+    cov = {**t["coverage"], **({"articles": articles} if articles is not None else {})}
+    return {**t, "coverage": cov, "map": {"stages": [{"key": "p0", "label": "x", "detail": "", "companies": comps}], "interpretation": ["x"],
+                                          "verify": {"status": "ok", "listed": listed}}}
+
+
 def _made(name, title, urls, first, query=None, label="", parties=(), ongoing=False, presses=5):
     """생성이 끝난 이슈(화면용)."""
     return {"name": name, "title": title, "query": query or name, "label": label, "ongoing": ongoing,
@@ -1424,48 +1454,95 @@ class SameEventAndRelaxTest(LifemapBase):
         self.assertEqual(merged["merged"], ["인천공항 발권 장애"])
 
     def test_kept_previous_issue_is_merged_not_shown_twice(self):
-        carried = {**_made("인천공항 발권 장애", "인천공항 중국 항공사 발권 장애", ["https://www.donga.com/2"],
-                           "2026-10-30T12:10:00+09:00"), "basis_label": "x"}
-        store.write("lifemap", {"basis": {"key": self.basis()["key"]}, "topics": [carried]})
-        new = _made("발권 시스템 장애", "인천공항 항공권 발권 시스템 먹통", ["https://www.chosun.com/1"], "2026-10-30T13:47:00+09:00")
+        today = datetime.now(KST).strftime("%Y-%m-%d")
+        carried = _v(_made("인천공항 발권 장애", "인천공항 중국 항공사 발권 장애", ["https://www.donga.com/2"], "2026-10-30T12:10:00+09:00"))
+        store.write("lifemap", {"day": today, "basis": {"key": "x"}, "topics": [carried]})
+        new = _v(_made("발권 시스템 장애", "인천공항 항공권 발권 시스템 먹통", ["https://www.chosun.com/1"], "2026-10-30T13:47:00+09:00"))
         with mock.patch.object(lifemap, "rss_issues", return_value=[{**new, "_context": []}]), \
-                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: {k2: v for k2, v in t.items() if k2 != "_context"}), \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: {k2: v for k2, v in t.items() if k2 != "_context"}) as fin, \
+                mock.patch.object(lifemap, "refresh_cover", side_effect=lambda t, *a, **k: t), \
                 mock.patch.object(lifemap, "naver_general_issues", return_value=[]):
-            data = lifemap.run_topics(self.basis())
-        self.assertEqual([t["name"] for t in data["topics"]], ["발권 시스템 장애"])
-        self.assertEqual(data["topics"][0]["first"]["pub"], "2026-10-30T12:10:00+09:00")
+            data = lifemap.run_topics(self.basis(), merge=True)
+        self.assertEqual([t["name"] for t in data["topics"]], ["인천공항 발권 장애"])  # 아침 이슈를 남기고 새 후보를 합친다
+        self.assertEqual(fin.call_count, 0)  # 같은 사건이면 AI를 다시 부르지 않는다
         status = store.read("lifemap_status")
         self.assertEqual(status["rejects"].get("same_event"), 1)
-        self.assertEqual(status["relax"], ["naver_general", "ongoing48", "short"])  # 1개뿐 → 완화 단계를 모두 거치고 기록
+        self.assertIn({"name": "발권 시스템 장애", "title": "인천공항 항공권 발권 시스템 먹통", "why": "same_event"}, status["excluded_issues"])
+        self.assertEqual(status["relax"], ["naver_general", "ongoing48", "sector", "previous", "short"])
 
-    def test_relax_steps_naver_general_then_ongoing48_and_no_forced_fill(self):
+    def test_five_verified_issues_by_importance_and_fill_steps(self):
         ref = lifemap._ref_time(self.basis())
-        iso = lambda h: (ref - timedelta(hours=h)).isoformat()  # noqa: E731
-        first = _made("울산 붕괴", "울산화력 보일러 타워 붕괴", ["https://www.yna.co.kr/1"], iso(3))
-        naver = _made("전기차 화재", "지하주차장 전기차 화재", ["https://www.donga.com/9"], iso(5))
-        old30 = _made("열차 참사", "스페인 고속열차 참사", ["https://www.donga.com/7"], iso(30), ongoing=True)
-        old60 = _made("태풍 피해", "필리핀 태풍 피해", ["https://www.donga.com/8"], iso(60), ongoing=True)
-        lifemap._last_overflow[:] = [old30, old60]
-        finished = []
-        with mock.patch.object(lifemap, "rss_issues", return_value=[first]), \
-                mock.patch.object(lifemap, "naver_general_issues", return_value=[naver]) as ng, \
-                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: finished.append(t["name"]) or t):
-            data = lifemap.run_topics(self.basis())
-        self.assertEqual(finished, ["울산 붕괴", "전기차 화재", "열차 참사"])  # 48시간 밖 태풍은 넣지 않는다
-        self.assertEqual(ng.call_args.args[1][0]["name"], "울산 붕괴")  # 이미 있는 사건을 넘겨 겹치지 않게
-        self.assertEqual(data["relax"], ["naver_general", "ongoing48"])
-        self.assertEqual(data["fresh"], 3)
 
-        # 그래도 2개뿐이면 2개 그대로(예시·다른 이슈로 채우지 않는다), 화면도 2개
-        lifemap._last_overflow[:] = []
-        with mock.patch.object(lifemap, "rss_issues", return_value=[{**first, "articles": first["articles"]}]), \
-                mock.patch.object(lifemap, "naver_general_issues", return_value=[naver]), \
+        def mk(n, art, listed=1, grade="단일 보도", h=3, **k):
+            return _v(_made(n, f"{n} 소식", [f"https://www.yna.co.kr/{n}"], (ref - timedelta(hours=h)).isoformat(), **k), listed, grade, art)
+        cands = [mk("A 사고", 40), mk("B 결함", 30, listed=0), mk("C 화재", 30, listed=2, grade="확인됨"), mk("D 폭우", 30, listed=1),
+                 mk("E 리콜", 20)]
+        naver = [mk("F 정전", 10)]
+        old = mk("G 참사", 50, h=30, ongoing=True)
+        lifemap._last_overflow[:] = [old]
+        store.write("lifemap_sectors", {"day": datetime.now(KST).strftime("%Y-%m-%d"),
+                                        "items": {"보안": mk("H 보안", 5), "금융": mk("I 금융", 90, listed=0)}})
+        store.write("lifemap", {"day": "2026-10-29", "topics": [mk("J 어제", 99)]})
+        with mock.patch.object(lifemap, "rss_issues", return_value=cands), \
+                mock.patch.object(lifemap, "naver_general_issues", return_value=naver), \
                 mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: t):
-            store.write("lifemap", {})
             data = lifemap.run_topics(self.basis())
-        self.assertEqual(data["relax"], ["naver_general", "ongoing48", "short"])
-        self.assertEqual(len(data["topics"]), 2)
-        self.assertEqual(len(lifemap.overview()["topics"]), 2)
+        # 검증된 상장사 없는 B는 빼고, 기사 수 → 검증된 기업 수·등급 순(C·D 같은 기사 수면 C 먼저). 4개뿐이라 ① 네이버 후보로 5개
+        self.assertEqual([t["name"] for t in data["topics"]], ["A 사고", "C 화재", "D 폭우", "E 리콜", "F 정전"])
+        self.assertEqual(data["relax"], ["naver_general"])
+        self.assertIn({"name": "B 결함", "title": "B 결함 소식", "why": "no_verified"}, store.read("lifemap_status")["excluded_issues"])
+        self.assertEqual(len(lifemap.overview()["topics"]), 5)
+
+        # 후보가 둘뿐 → ② 계속되는 이슈(48시간 안) → ③ 같은 날 섹터(검증된 것만) → ④ 직전 회차. 검증 안 된 섹터(I)는 안 쓴다
+        with mock.patch.object(lifemap, "rss_issues", return_value=cands[:2]), \
+                mock.patch.object(lifemap, "naver_general_issues", return_value=[]), \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: t):
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual([t["name"] for t in data["topics"]], ["G 참사", "A 사고", "H 보안", "C 화재", "D 폭우"])
+        self.assertEqual(data["relax"], ["naver_general", "ongoing48", "sector", "previous"])
+        self.assertTrue(all(t.get("carried") for t in data["topics"][3:]))  # ④ 직전 회차(이번 아침에 만든 것)
+        self.assertTrue(data["topics"][2].get("from_sector"))
+
+    def test_never_fills_with_unverified_and_keeps_screen_when_nothing(self):
+        prev = _v(_made("어제 이슈", "어제 소식", ["https://www.yna.co.kr/z"], "2026-10-29T10:00:00+09:00"))
+        store.write("lifemap", {"day": "2026-10-29", "topics": [prev]})
+        bad = _v(_made("업종만", "업종만 소식", ["https://www.yna.co.kr/q"], "2026-10-30T09:00:00+09:00"), listed=0)
+        with mock.patch.object(lifemap, "rss_issues", return_value=[bad]), \
+                mock.patch.object(lifemap, "naver_general_issues", return_value=[]), \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: t):
+            data = lifemap.run_topics(self.basis())
+        self.assertEqual([t["name"] for t in data["topics"]], ["어제 이슈"])  # ④ 직전 회차만, 검증 안 된 이슈는 없음
+        self.assertEqual(data["relax"][-1], "short")
+
+    def test_1300_merge_reuses_morning_and_replaces_only_lower_ones_in_place(self):
+        today = datetime.now(KST).strftime("%Y-%m-%d")
+        ref = lifemap._ref_time(self.basis())
+        iso = (ref - timedelta(hours=2)).isoformat()
+        morning = [_v(_made(n, f"{n} 소식", [f"https://www.yna.co.kr/{n}"], iso), 1, "단일 보도", art)
+                   for n, art in (("아침1", 50), ("아침2", 10), ("아침3", 40), ("아침4", 30), ("아침5", 20))]
+        store.write("lifemap", {"day": today, "topics": morning, "reserve": []})
+        big = _v(_made("새 큰 뉴스", "새 큰 뉴스 소식", ["https://www.yna.co.kr/big"], iso), 1, "단일 보도", 45)
+        small = _v(_made("새 작은 뉴스", "새 작은 뉴스 소식", ["https://www.yna.co.kr/small"], iso), 1, "단일 보도", 5)
+        refreshed = []
+        with mock.patch.object(lifemap, "rss_issues", return_value=[big, small]), \
+                mock.patch.object(lifemap, "refresh_cover", side_effect=lambda t, *a, **k: refreshed.append(t["name"]) or t), \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: t) as fin:
+            data = lifemap.run_topics({**self.basis(), "stamp": "13:00"}, merge=True)
+        self.assertEqual(refreshed, ["아침1", "아침2", "아침3", "아침4", "아침5"])  # 아침 이슈는 기사 수·관련 기사만 갱신
+        self.assertEqual([c.args[0]["name"] for c in fin.call_args_list], ["새 큰 뉴스"])  # 5위보다 작게 다뤄진 후보는 AI를 부르지 않는다
+        # 가장 덜 다뤄진 아침2만 그 자리에서 바뀐다(나머지 순서 유지), 새 이슈에 '새 이슈 13:00'
+        self.assertEqual([t["name"] for t in data["topics"]], ["아침1", "새 큰 뉴스", "아침3", "아침4", "아침5"])
+        self.assertEqual(data["topics"][1]["new_at"], "13:00")
+        self.assertNotIn("new_at", data["topics"][0])
+        why = {d["name"]: d["why"] for d in store.read("lifemap_status")["excluded_issues"]}
+        self.assertEqual(why, {"새 작은 뉴스": "below_kept"})
+        self.assertEqual([t["name"] for t in data["reserve"]], ["아침2"])  # 밀려난 아침 이슈는 다음 후보(숨기면 채운다)
+
+        # 08:30(합치지 않음)은 새로 — 배지는 남기지 않는다
+        with mock.patch.object(lifemap, "rss_issues", return_value=[data["topics"][1]]), \
+                mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: t):
+            data = lifemap.run_topics(self.basis())
+        self.assertNotIn("new_at", data["topics"][0])
 
     def test_naver_general_keeps_only_general_press_in_24h(self):
         ref = lifemap._ref_time(self.basis())

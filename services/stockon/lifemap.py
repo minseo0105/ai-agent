@@ -114,7 +114,7 @@ FRESH_HOURS = 24           # 첫 보도가 이 안이면 오늘 이슈, 더 오�
 ONGOING_MAX = 1
 RSS_MIN = 20               # 기준 창 안 RSS 기사가 이보다 적으면(예전 기준일 등) 예전 방식(NAVER 검색어)으로
 RSS_PER_FEED = 30          # 피드마다 최신 기사 수(Haiku 입력 토큰)
-CANDIDATES_MAX = 9         # Haiku가 고르는 이슈 후보 수
+CANDIDATES_MAX = 10        # 이슈 후보 수(Haiku가 묶고 → 검증해서 상위 TOPICS_MAX개)
 COVER_MIN_PRESS = 2        # 최근 24시간 이 수 이상의 언론사가 다뤄야 이슈
 COMPANIES_MAX = 6          # 이슈당 회사(뉴스 당사자 포함)
 PARTY_MAX = 2              # 뉴스 당사자
@@ -786,7 +786,7 @@ def mark_reaction(m: dict, basis: dict) -> dict:
                 c.update(rate=r, moved=big_move(r, vs))
                 if vs is not None:
                     c.update(market_rate=idx, vs_market=vs)
-    m["basis_label"] = basis["label"]
+    m["basis_label"] = basis.get("rates_label") or basis["label"]
     m["as_of"] = basis.get("as_of")  # 이 등락률의 날(첫 보도 뒤 반응 거래일과 비교)
     if indices:
         m["indices"] = dict(indices)
@@ -825,6 +825,15 @@ def collect_issue_news(basis: dict, http=None) -> list[dict]:
 
 
 _last_rejects: dict[str, int] = {}  # 마지막 토픽 선정에서 버린 이유별 개수(상태 파일에 남겨 원인 확인용)
+_last_dropped: list[dict] = []  # 마지막 생성에서 버린 후보 [{name, title, why}](상태 파일 excluded_issues)
+
+
+def _rej(why: str, t: dict | str = "") -> None:
+    _last_rejects[why] = _last_rejects.get(why, 0) + 1
+    if isinstance(t, dict):
+        _last_dropped.append({"name": t.get("name") or t.get("keyword") or "", "title": t.get("title") or "", "why": why})
+    elif t:
+        _last_dropped.append({"name": t, "title": "", "why": why})
 # 이슈 이름에서 같은 이슈인지 볼 때 빼는 흔한 말(이것만 겹치면 다른 이슈)
 GENERIC_TOKENS = {"급등", "급락", "상승", "하락", "인상", "인하", "발표", "확대", "축소", "논란", "우려", "사고", "협상", "결정", "강화"}
 
@@ -961,7 +970,6 @@ def pick_rss_issues(basis: dict, articles: list[dict], max_topics: int = CANDIDA
     task = f"기사는 '번호|언론사|섹션|발행|제목'이다. 같은 사건 기사를 묶어 한국 산업·기업과 이어지는 이슈를 기사가 많은 순서로 {max_topics}개까지 골라라."
     topics, keywords, kinds, used, seen_tokens = [], set(), set(), set(), set()
     macros = 0
-    rejects = _last_rejects
     # 기사가 수백 건이면 Haiku가 가끔 한두 개만 낸다 → 통과한 이슈가 TOPICS_MIN개 미만이면 한 번 더 묻고 두 답을 같은 검사로 합친다
     for _ in range(2):
         # 기사 수백 건을 9개 이슈로 묶으면 답(기사 번호 목록)이 길다 — 4000이면 max_tokens로 잘렸다(10-30 491건)
@@ -992,7 +1000,7 @@ def pick_rss_issues(basis: dict, articles: list[dict], max_topics: int = CANDIDA
                    "center" if not centered(keyword, [articles[n - 1]["title"] for n in nums]) else
                    "macro" if macro and macros else "")
             if why:
-                rejects[why] = rejects.get(why, 0) + 1
+                _rej(why, {"name": keyword, "title": title})
                 continue
             keywords.add(keyword)
             seen_tokens.update(tokens)
@@ -1068,14 +1076,14 @@ def rank_issues(topics: list[dict], limit: int) -> list[dict]:
     ok = []
     for t in topics:
         if t["coverage"]["presses"] < COVER_MIN_PRESS:
-            _last_rejects["press"] = _last_rejects.get("press", 0) + 1
+            _rej("press", t)
         else:
             ok.append(t)
     key = lambda t: (-t["coverage"]["presses"], -t["coverage"]["articles"])  # noqa: E731
     fresh = sorted((t for t in ok if not t["ongoing"]), key=key)
     ongoing = sorted((t for t in ok if t["ongoing"]), key=key)
-    if len(ongoing) > ONGOING_MAX:
-        _last_rejects["ongoing"] = _last_rejects.get("ongoing", 0) + len(ongoing) - ONGOING_MAX
+    for t in ongoing[ONGOING_MAX:]:
+        _rej("ongoing", t)
     _last_overflow[:] = ongoing[ONGOING_MAX:]
     return (fresh[:limit - min(len(ongoing), ONGOING_MAX)] + ongoing[:ONGOING_MAX])[:limit]
 
@@ -1083,8 +1091,9 @@ def rank_issues(topics: list[dict], limit: int) -> list[dict]:
 def rss_issues(basis: dict, limit: int, http=None) -> list[dict] | None:
     """RSS로 오늘 이슈 후보 → 기사 수·언론사 수 → 순서. 기준 창 안 RSS 기사가 RSS_MIN개 미만이면 None(예전 방식으로)."""
     ref = _ref_time(basis)
-    arts, report = rss.collect(ref - timedelta(hours=FRESH_HOURS), ref + timedelta(minutes=1), per_feed=RSS_PER_FEED,
-                               **({"http": http} if http else {}))
+    # 회차(08:30·13:00)는 전날 장 마감(15:20) 뒤부터 지금까지, 예전 기준은 최근 24시간
+    since = min(basis["window"][0], ref - timedelta(hours=FRESH_HOURS)) if basis.get("slot") else ref - timedelta(hours=FRESH_HOURS)
+    arts, report = rss.collect(since, ref + timedelta(minutes=1), per_feed=RSS_PER_FEED, **({"http": http} if http else {}))
     _last_rss.clear()
     _last_rss.update(articles=len(arts), feeds=report)
     _last_funnel.clear()
@@ -1169,7 +1178,7 @@ def dedupe_events(topics: list[dict], ref: datetime | None = None) -> list[dict]
             out.append(t)
         else:
             merge_event(twin, t, ref)
-            _last_rejects["same_event"] = _last_rejects.get("same_event", 0) + 1
+            _rej("same_event", t)
     return out
 
 
@@ -1227,7 +1236,6 @@ def _finish(t: dict, basis: dict, live: bool = False, http=None) -> dict | None:
     if not rday or rday <= (basis.get("as_of") or ""):
         explain_opposites(t, m, basis, http)  # 반응 거래일 값이 아직 없으면(장 마감 뒤 뉴스) 반대 움직임도 따지지 않는다
     ensure_intros([c for st in m["stages"] for c in st["companies"]], live)
-    t.pop("query", None)
     return {**t, "basis_label": basis["label"], "map": m}
 
 
@@ -1387,88 +1395,202 @@ def _status(**kw) -> None:
         pass
 
 
-def run_topics(basis: dict, http=None) -> dict:
-    """오늘의 뉴스 토픽 3~5개(이슈 + AI 해석 + 회사 지도). 3개가 안 되면 같은 기준의 이전 토픽으로 채운다.
-    하나도 못 만들었을 때만 예시(다른 날 기준)로 채운다 — 오늘 이슈 사이에 다른 날 토픽이 섞이지 않게."""
-    prev = _read("lifemap", {})
-    topics: list[dict] = []
-    error = ""
-    source = "rss"
-    relax: list[str] = []
-    ref = _ref_time(basis)
-    no_company = 0
+GRADE_RANK = {"확인됨": 3, "보도 확인": 2, "단일 보도": 1}
+FILL_STEPS = ("naver_general", "ongoing48", "sector", "previous")
+RELAX_STEPS.update(sector="같은 날 섹터 이슈 중 검증된 것", previous="직전 회차에서 검증된 이슈 유지")
 
-    def finish_all(picked: list[dict]) -> None:
-        nonlocal error, no_company
-        for t in picked:
-            if any(same_event(k, t) for k in topics):  # 완화 단계에서 찾은 후보가 이미 있는 사건이면 합친다
-                merge_event(next(k for k in topics if same_event(k, t)), t, ref)
-                _last_rejects["same_event"] = _last_rejects.get("same_event", 0) + 1
+
+def _listed(t: dict) -> list[dict]:
+    """검증된 국내 상장기업: 직접 당사자·검증된 간접 영향."""
+    return [c for st in (t.get("map") or {}).get("stages") or [] for c in st.get("companies") or [] if c.get("tier") in ("party", "indirect")]
+
+
+def showable(t: dict) -> bool:
+    """화면에 올릴 수 있는 이슈: 검증된 국내 상장기업이 1곳 이상(업종 참고만 있으면 안 된다).
+    검증이 꺼졌거나 오류(검증 전)면 지금 방식대로 회사가 있으면 둔다 — 화면이 비지 않게."""
+    m = t.get("map") or {}
+    if (m.get("verify") or {}).get("status") == "ok":
+        return bool(_listed(t))
+    return bool(m.get("stages")) and not t.get("example")
+
+
+def importance(t: dict) -> tuple:
+    """중요도: 기사 수·언론사 수(얼마나 크게 다뤘나) → 검증된 기업 수 → 증거 등급(확인됨 > 보도 확인 > 단일 보도)."""
+    cov = t.get("coverage") or {}
+    cs = _listed(t)
+    return (cov.get("articles", 0), cov.get("presses", 0), len(cs), sum(GRADE_RANK.get(c.get("grade"), 0) for c in cs))
+
+
+def select(pool: list[dict], n: int, ongoing_max: int = ONGOING_MAX) -> list[dict]:
+    """중요도 순 상위 n개(계속되는 이슈 ongoing_max개·거시 이슈 1개까지, 같은 사건은 하나). 채우기용(fill)은 그 뒤에."""
+    out, macros, ongoing = [], 0, 0
+    for t in sorted(pool, key=lambda t: (-t.get("_fill", 0), importance(t)), reverse=True):
+        if (t.get("ongoing") and ongoing >= ongoing_max) or (t.get("macro") and macros) or any(same_event(o, t) for o in out):
+            continue
+        out.append(t)
+        ongoing += bool(t.get("ongoing"))
+        macros += bool(t.get("macro"))
+        if len(out) == n:
+            break
+    return out
+
+
+def keep_order(before: list[dict], chosen: list[dict], stamp: str) -> list[dict]:
+    """13:00: 아침 이슈 순서를 지키고, 빠진 자리에 새 이슈(중요도 순)를 넣는다. 새 이슈에는 new_at 배지."""
+    keys = {item_key(t) for t in chosen}
+    old = {item_key(b) for b in before}
+    new = [{**t, "new_at": stamp} for t in chosen if item_key(t) not in old]
+    out = []
+    for b in before:
+        if item_key(b) in keys:
+            out.append(b)
+        elif new:
+            out.append(new.pop(0))
+    return (out + new)[:TOPICS_MAX]
+
+
+def refresh_cover(t: dict, ref: datetime, http=None) -> dict:
+    """AI 없이 기사 수·언론사 수·관련 기사·첫 보도만 다시 센다(NAVER). 이슈의 기존 기사를 RSS 기사처럼 넘긴다."""
+    ctx = [a for a in t.get("articles") or [] if a.get("pub") and a.get("url")]
+    if not ctx:
+        return t
+    ctx.sort(key=lambda a: not a.get("rep"))
+    tmp = cover({"name": t["name"], "query": t.get("query") or t["name"], "_context": ctx}, ref, http)
+    first = t.get("first")
+    if not first or tmp["first"]["pub"] < first["pub"]:
+        first = tmp["first"]
+    t.update(articles=tmp["articles"], coverage=tmp["coverage"], first=first,
+             ongoing=datetime.fromisoformat(first["pub"]) < ref - timedelta(hours=FRESH_HOURS))
+    return t
+
+
+def run_topics(basis: dict, http=None, merge: bool = False) -> dict:
+    """오늘의 이슈 TOPICS_MAX(5)개. 후보를 넉넉히(CANDIDATES_MAX) 만들고 AI 해석·검증해서, 검증된 국내 상장기업이 1곳 이상인
+    이슈만 중요도 순으로 고른다(검증된 상장사가 없거나 업종 참고만 있는 이슈는 빼고 excluded_issues에 이유).
+    5개가 안 되면 ① NAVER 종합지·방송사 기사 후보 ② 24~48시간 계속되는 이슈(최대 2) ③ 같은 날 섹터 이슈 중 검증된 것
+    ④ 직전 회차에서 검증된 이슈 순으로 채운다. 어느 단계에서도 검증 안 된 이슈로는 채우지 않는다.
+    merge(13:00 회차·관리자 '지금 이슈 다시 만들기'): 오늘 이미 보이는 이슈를 AI 다시 부르지 않고(기사 수·관련 기사·등락률만 갱신)
+    새 후보와 함께 순위를 매긴다. 새 후보는 지금 5위보다 크게 다뤄진 것만 해석·검증하고, 아침 순서를 지키며 빠진 자리만 바꾼다."""
+    prev = _read("lifemap", {})
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    ref = _ref_time(basis)
+    error, source, relax = "", "rss", []
+    _last_rejects.clear()
+    _last_dropped.clear()
+    _last_funnel.clear()
+    pool: list[dict] = []
+    before: list[dict] = []
+    reused = 0
+
+    if merge and prev.get("day") == today:
+        before = [t for t in prev.get("topics") or [] if not t.get("example")]
+        for t in before + list(prev.get("reserve") or []):
+            try:
+                refresh_cover(t, ref, http)
+                t["map"] = mark_reaction(t["map"], basis)
+            except Exception as e:
+                log.warning("lifemap refresh %s: %s", t.get("name"), type(e).__name__)
+            if showable(t):
+                pool.append(t)
+                reused += 1
+            else:
+                _rej("no_verified", t)
+
+    def cap() -> int:
+        return ONGOING_RELAXED if "ongoing48" in relax else ONGOING_MAX
+
+    def enough(n: int) -> bool:
+        return len(select(pool, n, cap())) >= n
+
+    def finish(cands: list[dict], gate: bool = False) -> None:
+        nonlocal error
+        for t in cands:
+            twin = next((k for k in pool if same_event(k, t)), None)
+            if twin is not None:  # 이미 있는 사건(아침 이슈 포함)이면 합친다(첫 보도는 더 이른 쪽)
+                merge_event(twin, t, ref)
+                _rej("same_event", t)
+                continue
+            top = select(pool, TOPICS_MAX, cap())
+            if gate and len(top) >= TOPICS_MAX and importance(t)[:2] <= importance(top[-1])[:2]:
+                _rej("below_kept", t)  # 지금 5위보다 작게 다뤄졌으면 AI를 부르지 않는다
+                continue
+            if not gate and enough(TOPICS_MAX + RESERVE_MAX):
+                _rej("rank", t)  # 이미 충분하다(후보는 크게 다뤄진 순서라 뒤는 순위 밖)
                 continue
             try:
                 done = _finish(t, basis, http=http)
             except Exception as e:
                 error = f"interpret:{type(e).__name__}"
+                _rej("error", t)
                 continue
-            if done and done.get("no_verified") and any(x.get("no_verified") for x in topics):
-                # 검증된 국내 상장기업(당사자·검증된 간접 영향)이 없는 이슈는 최대 1개
-                _last_rejects["no_verified"] = _last_rejects.get("no_verified", 0) + 1
-            elif done:
-                topics.append(done)
+            if not done:
+                _rej("no_company", t)
+            elif not showable(done):
+                _rej("no_verified", done)  # 검증된 국내 상장기업 없음(업종 참고만 있는 이슈 포함)
             else:
-                no_company += 1
+                pool.append(done)
 
+    picked: list[dict] = []
     try:
-        picked = rss_issues(basis, TOPICS_MAX + RESERVE_MAX, http)
+        picked = rss_issues(basis, CANDIDATES_MAX, http)
         if picked is None:  # RSS가 너무 적다(예전 기준일) → 예전 방식(NAVER 검색어)
             source = "naver"
-            picked = pick_issues(basis, collect_issue_news(basis, http), max_topics=TOPICS_MAX + RESERVE_MAX)
-        finish_all(dedupe_events(picked, ref))
-        if source == "rss" and len(topics) < TOPICS_MIN:
-            relax.append("naver_general")  # 완화 ①
-            finish_all(naver_general_issues(basis, topics + picked, TOPICS_MAX + RESERVE_MAX - len(topics), http))
-        if source == "rss" and len(topics) < TOPICS_MIN:
-            relax.append("ongoing48")  # 완화 ②
-            finish_all(ongoing_relaxed(ref, sum(1 for t in topics if t.get("ongoing"))))
-        if source == "rss" and len(topics) < TOPICS_MIN:
-            relax.append("short")  # 완화 ③: 억지로 채우지 않는다
+            picked = pick_issues(basis, collect_issue_news(basis, http), max_topics=CANDIDATES_MAX)
+        finish(dedupe_events(picked, ref), gate=bool(before))
+        for step in FILL_STEPS:
+            if enough(TOPICS_MAX):
+                break
+            relax.append(step)
+            if step == "naver_general" and source == "rss":
+                finish(naver_general_issues(basis, pool + picked, CANDIDATES_MAX, http))
+            elif step == "ongoing48":
+                finish(ongoing_relaxed(ref, 0))
+            elif step == "sector":
+                sec = _read("lifemap_sectors", {})
+                if sec.get("day") == today:
+                    for it in (sec.get("items") or {}).values():
+                        if showable(it) and not any(same_event(k, it) for k in pool):
+                            pool.append({**it, "from_sector": True, "_fill": 1})
+            elif step == "previous":
+                have = {item_key(k) for k in pool}
+                for it in (prev.get("topics") or []) + (prev.get("reserve") or []):
+                    if item_key(it) not in have and showable(it) and not any(same_event(k, it) for k in pool):
+                        pool.append({**{k: v for k, v in it.items() if k != "new_at"}, "carried": True, "_fill": 2})
+        if not enough(TOPICS_MAX):
+            relax.append("short")  # 검증 안 된 이슈로는 채우지 않는다
     except Exception as e:
         error = f"topics:{type(e).__name__}: {str(e)[:120]}"
         log.warning("lifemap topics failed: %s", error)
-    topics.sort(key=lambda t: bool(t.get("no_verified")))  # 검증된 국내 상장기업이 있는 이슈 먼저(안정 정렬)
-    names = {t["name"] for t in topics}
-    same_basis = (prev.get("basis") or {}).get("key") == basis["key"]
-    funnel = {**_last_funnel, "no_company": no_company, "made": len(topics)}
-    if not topics and same_basis and prev.get("topics"):
-        # 같은 기준에서 하나도 못 만들었으면 이미 보이는 이슈를 그대로 둔다(5개 → 3개로 줄지 않게)
-        _status(basis_key=basis["key"], ok=False, fresh=0, error=error, rejects=dict(_last_rejects),
-                excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], ts=time.time(), news_source=source,
-                rss=dict(_last_rss), relax=relax, funnel=funnel)
+
+    chosen = select(pool, TOPICS_MAX + RESERVE_MAX, cap())
+    for t in pool:
+        if t not in chosen and not t.get("_fill"):
+            _rej("rank", t)
+    topics = chosen[:TOPICS_MAX]
+    reserve = [t for t in chosen[TOPICS_MAX:] if not t.get("carried")]
+    stamp = basis.get("stamp") or ref.strftime("%H:%M")
+    if before:
+        topics = keep_order(before, topics, stamp)
+    else:
+        topics = [{k: v for k, v in t.items() if k != "new_at"} for t in topics]
+    topics = [{k: v for k, v in t.items() if k != "_fill"} for t in topics]
+    reserve = [{k: v for k, v in t.items() if k not in ("_fill", "new_at")} for t in reserve]
+    funnel = {**_last_funnel, "reused": reused, "pool": len(pool), "made": len(topics)}
+    status = dict(basis_key=basis["key"], slot=basis.get("slot"), error=error, rejects=dict(_last_rejects), relax=relax,
+                  excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], excluded_issues=_last_dropped[:40],
+                  ts=time.time(), news_source=source, rss=dict(_last_rss), funnel=funnel)
+    if not topics and prev.get("topics"):
+        # 하나도 못 만들었으면 이미 보이는 이슈를 그대로 둔다(화면이 비지 않게)
+        _status(ok=False, fresh=0, **status)
         return prev
-    fillers = (prev.get("topics") or []) if same_basis else []
-    if not topics:
-        fillers = fillers + [{**t, "example": True} for t in examples().get("topics") or []]
-    for t in fillers:
-        if len(topics) >= TOPICS_MIN:
-            break
-        if t["name"] in names or t.get("carried"):
-            continue
-        twin = next((k for k in topics if same_event(k, t)), None)
-        if twin is not None:  # 유지하던 이슈가 새 이슈와 같은 사건이면 하나로(첫 보도는 더 이른 쪽)
-            merge_event(twin, t, ref)
-            _last_rejects["same_event"] = _last_rejects.get("same_event", 0) + 1
-            continue
-        names.add(t["name"])
-        topics.append({**t, "carried": True})
-    topics, reserve = topics[:TOPICS_MAX], [t for t in topics[TOPICS_MAX:] if not t.get("carried")]
+    if not topics:  # 처음부터 아무것도 없을 때만 예시(다른 날 기준)
+        topics = [{**t, "example": True, "carried": True} for t in examples().get("topics") or []][:TOPICS_MAX]
     fresh = sum(1 for t in topics if not t.get("carried"))
-    data = {"day": datetime.now(KST).strftime("%Y-%m-%d"), "basis": basis_info(basis), "topics": topics, "reserve": reserve,
-            "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "news_source": source, "relax": relax,
-            "created_ts": time.time()}
+    data = {"day": today, "slot": basis.get("slot"), "slot_key": basis["key"], "basis": basis_info(basis), "topics": topics,
+            "reserve": reserve, "fresh": fresh, "topic_model": TOPIC_MODEL, "chain_model": CHAIN_MODEL, "news_source": source,
+            "relax": relax, "created_ts": time.time(), "articles_ts": time.time()}
     store.write("lifemap", data)
-    _status(basis_key=basis["key"], ok=fresh >= TOPICS_MIN, fresh=fresh, error=error, rejects=dict(_last_rejects),
-            excluded=len(_last_excluded), excluded_examples=_last_excluded[:10], ts=time.time(), news_source=source,
-            rss=dict(_last_rss), relax=relax, funnel=funnel)
+    _status(ok=len(topics) >= TOPICS_MAX, fresh=fresh, **status)
     return data
 
 
@@ -1505,65 +1627,147 @@ def run_sectors(basis: dict, http=None) -> int:
         if done:
             items[sector] = done
             made += 1
-    store.write("lifemap_sectors", {"basis": basis_info(basis), "items": items, "created_ts": time.time()})
+    store.write("lifemap_sectors", {"basis": basis_info(basis), "day": datetime.now(KST).strftime("%Y-%m-%d"), "items": items,
+                                    "created_ts": time.time()})
     return made
 
 
 _daily_lock = threading.Lock()
+# 하루 2회차(거래일만): 08:30(장 시작 전, 전날 장 마감 뒤~아침 뉴스로 새로 5개 + 섹터) · 13:00(아침 이슈 + 새 후보로 다시 순위).
+# 장 마감 뒤에는 새로 만들지 않고 회사·업종 등락률만 종가로 확정(수집기 rates_due). 주말·공휴일은 마지막 결과 유지.
+SLOTS = {"0830": (8, 30), "1300": (13, 0)}
+SLOT_LATE_MIN = 30         # 회차 시각보다 이만큼 늦게 돌면(재시작 등) 화면 기준 시각은 실제 시각
+MARKET_HOURS = ((9, 0), (15, 30))
+ARTICLES_REFRESH_SEC = 30 * 60  # 장중 관련 기사·기사 수 갱신 간격(AI 없음)
+REQUEST = "lifemap_request"     # 관리자 '지금 이슈 다시 만들기'(ailab이 쓰고 수집기가 읽는다)
 
 
-def topics_due(basis: dict | None) -> bool:
-    """새 기준(새 공공 기준일, 키움 장중·마감)이 생겼고 아직 토픽을 못 만들었으면 True. 같은 기준은 30분 간격 최대 3번."""
-    if not basis:
-        return False
+def prev_trading_day(ymd: str) -> str:
+    d = datetime.strptime(ymd, "%Y%m%d")
+    while True:
+        d -= timedelta(days=1)
+        if trading_day(d.strftime("%Y%m%d")):
+            return d.strftime("%Y%m%d")
+
+
+def _kiwoom_rates(kw: dict) -> dict:
+    rates = {s["code"]: s.get("rate") for lst in (kw.get("heatmap") or {}).values() for s in lst if s.get("code")}
+    for kind in ("up", "down", "value"):
+        rates.update({s["code"]: s.get("rate") for s in (kw.get("movers") or {}).get(kind) or [] if s.get("code")})
+    return rates
+
+
+def slot_basis(now: datetime, slot: str) -> dict | None:
+    """회차 기준: 뉴스 창은 전날(직전 거래일) 장 마감 15:20부터 지금까지, 등락률은 지금 볼 수 있는 가장 최근 값
+    (키움 장중 → 키움 전날 종가 → 공공데이터 최신 기준일). 시세가 없으면 None."""
+    base = topic_basis(now)
+    if not base:
+        return None
+    if base["source"] == "public":
+        kw, st = _read("market_kiwoom", {}), _read("kiwoom_status", {})
+        if st.get("price_source") == "kiwoom" and kw.get("session") == "closed" and (kw.get("as_of") or "") > base["as_of"]:
+            base = {**base, "source": "kiwoom", "as_of": kw["as_of"], "label": f"{_md(kw['as_of'])} 종가 기준",
+                    "rates": _kiwoom_rates(kw), "indices": index_rates(kw), "breadth": kw.get("breadth")}
+    ymd = now.strftime("%Y%m%d")
+    start = datetime.strptime(prev_trading_day(ymd), "%Y%m%d").replace(tzinfo=KST, hour=CLOSE_CUTOFF[0], minute=CLOSE_CUTOFF[1])
+    h, m = SLOTS.get(slot, (now.hour, now.minute))
+    late = (now.hour * 60 + now.minute) - (h * 60 + m) > SLOT_LATE_MIN
+    stamp = now.strftime("%H:%M") if slot not in SLOTS or late else f"{h:02d}:{m:02d}"
+    return {**base, "key": f"slot:{ymd}:{slot}", "slot": slot, "stamp": stamp, "rates_label": base["label"],
+            "label": f"{_md(ymd)} {stamp} 기준", "window": (start, now)}
+
+
+def slot_due(now: datetime) -> str | None:
+    """지금 돌릴 회차('0830'·'1300'). 거래일에 지난 회차 중 가장 최근 것을 아직 못 만들었으면. 실패는 30분 간격 최대 3번."""
+    ymd = now.strftime("%Y%m%d")
+    if not trading_day(ymd):
+        return None
+    passed = [s for s, hm in SLOTS.items() if (now.hour, now.minute) >= hm]
+    if not passed:
+        return None
+    key = f"slot:{ymd}:{passed[-1]}"
+    if _read("lifemap", {}).get("slot_key") == key:
+        return None
+    st = _read("lifemap_status", {})
+    if st.get("try_key") == key and (st.get("tries", 0) >= TOPIC_TRIES or time.time() - st.get("try_ts", 0) <= 1800):
+        return None
+    return passed[-1]
+
+
+def manual_due() -> float:
+    """관리자가 '지금 이슈 다시 만들기'를 눌렀고 아직 안 했으면 그 요청 시각, 아니면 0."""
+    ts = float((_read(REQUEST, {}) or {}).get("ts") or 0)
+    return ts if ts > float(_read("lifemap_status", {}).get("manual_ts") or 0) else 0.0
+
+
+def request_regenerate() -> dict:
+    """관리자: 수집기에 13:00 방식(보이는 이슈 + 새 후보로 다시 순위) 생성을 부탁한다. 수집기가 1분 안에 집어 간다."""
+    store.write(REQUEST, {"ts": time.time()})
+    return admin_curation()
+
+
+def articles_due(now: datetime) -> bool:
+    """장중(거래일 09:00~15:30) 30분마다 관련 기사·기사 수만 다시 센다(AI 없음)."""
     cur = _read("lifemap", {})
-    done = (cur.get("basis") or {}).get("key") == basis["key"]
-    if done and cur.get("fresh", 0) >= TOPICS_MIN:
-        return False
-    have = cur.get("basis") or {}
-    if have.get("source") == "kiwoom" and basis["source"] == "public" and (have.get("as_of") or "") >= basis["as_of"] \
-            and cur.get("fresh", 0) >= 1:
-        return False  # 기준은 뒤로 가지 않는다(키움 종가 기준 이슈를 더 오래된 공공 기준일로 바꾸지 않음)
-    s = _read("lifemap_status", {})
-    tries = s.get("tries", 0) if s.get("try_key") == basis["key"] else 0
-    if done and tries >= 1 and cur.get("fresh", 0) >= 1:
-        return False  # 이 기준으로 일부라도 만들었으면 다시 부르지 않는다(비용)
-    return tries < TOPIC_TRIES and time.time() - s.get("try_ts", 0) > 1800
+    return (trading_day(now.strftime("%Y%m%d")) and MARKET_HOURS[0] <= (now.hour, now.minute) <= MARKET_HOURS[1]
+            and cur.get("day") == now.strftime("%Y-%m-%d") and bool(cur.get("topics"))
+            and time.time() - float(cur.get("articles_ts") or 0) >= ARTICLES_REFRESH_SEC)
 
 
-def sectors_due(basis: dict | None) -> bool:
-    """섹터 이슈는 하루 한 번: 장 마감 뒤 기준(키움 종가·공공 기준일)이고 저장된 섹터가 그보다 이전 날일 때만.
-    키움 장중 기준으로는 만들지 않는다(장중 재생성은 오늘의 이슈만)."""
-    if not basis or basis["key"].endswith(":open"):
-        return False
-    have = (_read("lifemap_sectors", {}).get("basis") or {}).get("as_of") or ""
-    return have < basis["as_of"]
+def refresh_articles(now: datetime | None = None, http=None) -> int:
+    """보이는 이슈·다음 후보의 기사 수·관련 기사·첫 보도를 갱신한다(NAVER, AI 없음). 갱신한 이슈 수."""
+    now = now or datetime.now(KST)
+    cur = _read("lifemap", {})
+    done = 0
+    for t in (cur.get("topics") or []) + (cur.get("reserve") or []):
+        if t.get("example"):
+            continue
+        try:
+            refresh_cover(t, now, http)
+            done += 1
+        except Exception as e:
+            log.warning("lifemap articles %s: %s", t.get("name"), type(e).__name__)
+    cur["articles_ts"] = time.time()
+    store.write("lifemap", cur)
+    return done
 
 
 def maybe_run_daily(now: datetime | None = None) -> bool:
-    """수집기 루프에서 매번 부른다. 할 때가 됐으면 스레드 하나로 돌린다(키움 수집을 막지 않게)."""
+    """수집기 루프에서 매번 부른다. 회차(08:30·13:00) → 관리자 요청 → 장중 기사 갱신 순으로, 할 때가 된 것 하나를
+    스레드 하나로 돌린다(키움 수집을 막지 않게)."""
+    now = now or datetime.now(KST)
     if not ai.available() or not news.configured() or not budget.allowed():
         return False  # 비용 상한을 넘은 날은 저장된 이슈·섹터를 그대로 둔다
-    basis = topic_basis(now)
-    do_topics, do_sectors = topics_due(basis), sectors_due(basis)
-    if not (do_topics or do_sectors) or not _daily_lock.acquire(blocking=False):
+    slot = slot_due(now)
+    manual = 0.0 if slot else manual_due()
+    job = slot or ("manual" if manual else "articles" if articles_due(now) else None)
+    if not job or not _daily_lock.acquire(blocking=False):
         return False
-    if do_topics:
+    if slot:
         s = _read("lifemap_status", {})
-        _status(try_key=basis["key"], tries=(s.get("tries", 0) if s.get("try_key") == basis["key"] else 0) + 1, try_ts=time.time())
+        key = f"slot:{now.strftime('%Y%m%d')}:{slot}"
+        _status(try_key=key, tries=(s.get("tries", 0) if s.get("try_key") == key else 0) + 1, try_ts=time.time())
+    if manual:
+        _status(manual_ts=manual)
 
     def work():
         try:
-            if do_topics:
-                run_topics(basis)
-            if do_sectors:
-                run_sectors(basis)
+            if job == "articles":
+                refresh_articles(now)
+                return
+            basis = slot_basis(now, job)
+            if not basis:
+                return
+            today = now.strftime("%Y-%m-%d")
+            if job != "manual" and (job == "0830" or _read("lifemap_sectors", {}).get("day") != today):
+                run_sectors(basis)  # 섹터 이슈는 하루 한 번(08:30, 놓쳤으면 그날 첫 회차) — 13:00 채우기 ③에 쓴다
+            run_topics(basis, merge=job != "0830")
         except Exception as e:
-            log.warning("lifemap daily failed: %s", type(e).__name__)
+            log.warning("lifemap %s failed: %s", job, type(e).__name__)
         finally:
             _daily_lock.release()
 
-    threading.Thread(target=work, name="lifemap-daily", daemon=True).start()
+    threading.Thread(target=work, name=f"lifemap-{job}", daemon=True).start()
     return True
 
 
@@ -1902,7 +2106,7 @@ def candidates() -> list[dict]:
         out += [{**t, "_src": "topic"} for t in cur["topics"]]
         out += [{**t, "_src": "reserve"} for t in cur.get("reserve") or []]
         sec = _read("lifemap_sectors", {})
-        if (sec.get("basis") or {}).get("key") == (cur.get("basis") or {}).get("key"):
+        if (sec.get("basis") or {}).get("key") == (cur.get("basis") or {}).get("key") or (sec.get("day") and sec.get("day") == cur.get("day")):
             out += [{**t, "_src": "sector"} for t in (sec.get("items") or {}).values()]
     out += [{**t, "carried": True, "example": True, "_src": "example"} for t in examples().get("topics") or []]
     keys, names, uniq = set(), set(), []
@@ -1910,6 +2114,8 @@ def candidates() -> list[dict]:
         k = item_key(t)
         if t["_src"] != "example" and any(u["_src"] != "example" and same_event(u, t) for u in uniq):
             continue  # 다음 후보·섹터 이슈가 이미 있는 이슈와 같은 사건이면 두 번 보이지 않게
+        if t["_src"] != "example" and not showable(t):
+            continue  # 검증된 국내 상장기업이 없는 이슈는 숨긴 자리를 채우는 데에도 쓰지 않는다
         if t.get("map") and k not in keys and t.get("name") not in names and not index_news(t):
             keys.add(k)
             names.add(t.get("name"))
@@ -1962,7 +2168,15 @@ def admin_curation() -> dict:
     return {"day": _today(), "basis": _read("lifemap", {}).get("basis") or {}, "items": items,
             "hidden_other": [h for h in cfg["hidden"] if h["key"] not in keys_now],
             "words": cfg["words"], "fin_first": cfg["fin_first"], "order": cfg["order"]["keys"],
-            "min": TOPICS_MIN, "max": TOPICS_MAX}
+            "min": TOPICS_MIN, "max": TOPICS_MAX, "regen": regen_state()}
+
+
+def regen_state() -> dict:
+    """관리자 화면: 지금 이슈를 만든 회차·시각과 '지금 이슈 다시 만들기' 요청이 기다리는 중인지."""
+    cur, st = _read("lifemap", {}), _read("lifemap_status", {})
+    return {"pending": bool(manual_due()), "requested_ts": float((_read(REQUEST, {}) or {}).get("ts") or 0),
+            "slot": cur.get("slot"), "label": (cur.get("basis") or {}).get("label", ""), "created_ts": cur.get("created_ts"),
+            "relax": cur.get("relax") or [], "excluded": len(st.get("excluded_issues") or [])}
 
 
 def _save_curation(change) -> dict:
@@ -2195,8 +2409,9 @@ def request_word(word: str, session: str) -> dict:
 
 # ---------------------------------------------------------
 # 수동 실행
-#   python -m services.stockon.lifemap --daily      지금 기준으로 토픽 + 섹터 다시 만들기(수집기와 같은 일)
-#   python -m services.stockon.lifemap --topics     토픽만 다시
+#   python -m services.stockon.lifemap --daily      08:30 회차처럼 섹터 + 이슈 새로 만들기
+#   python -m services.stockon.lifemap --topics     08:30 방식으로 이슈만 새로 5개
+#   python -m services.stockon.lifemap --merge      13:00 방식(보이는 이슈 + 새 후보로 다시 순위, 관리자 버튼과 같음)
 #   python -m services.stockon.lifemap --sectors    섹터만 다시
 #   python -m services.stockon.lifemap --examples   저장소 예시 파일(data/stockon/lifemap_examples.json) 다시 만들기
 # ---------------------------------------------------------
@@ -2230,8 +2445,10 @@ if __name__ == "__main__":
         if not b:
             print("시세 스냅샷이 없어 만들 수 없어요.")
             sys.exit(1)
-        if "--daily" in sys.argv or "--topics" in sys.argv:
-            d = run_topics(b)
-            print(f"{b['label']} · 토픽: 새로 {d['fresh']}개 / {len(d['topics'])}개")
+        now = datetime.now(KST)
+        sb = slot_basis(now, "0830" if "--merge" not in sys.argv else "manual")
         if "--daily" in sys.argv or "--sectors" in sys.argv:
-            print(f"섹터: {run_sectors(b)}개")
+            print(f"섹터: {run_sectors(sb)}개")
+        if "--daily" in sys.argv or "--topics" in sys.argv or "--merge" in sys.argv:
+            d = run_topics(sb, merge="--merge" in sys.argv)
+            print(f"{sb['label']} · 이슈: 새로 {d['fresh']}개 / {len(d['topics'])}개 · 채우기 {d.get('relax')}")

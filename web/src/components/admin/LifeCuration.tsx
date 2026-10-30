@@ -62,8 +62,23 @@ export default function LifeCuration() {
     </li>
   );
 
+  const regen = data.regen;
+  const SLOT_NAME: Record<string, string> = { "0830": "08:30 회차", "1300": "13:00 회차", manual: "관리자 다시 만들기" };
   return (
     <div className="space-y-4">
+      {regen && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-xs">
+          <span className="text-muted">
+            지금 이슈: <b className="text-fg">{regen.label || "-"}</b>{regen.slot ? ` · ${SLOT_NAME[regen.slot] ?? regen.slot}` : ""}
+            {regen.relax.length > 0 && ` · 채우기 ${regen.relax.join("→")}`} · 제외 후보 {regen.excluded}개 · 하루 2번(08:30·13:00, 거래일)
+          </span>
+          <span className="flex items-center gap-2">
+            {regen.pending && <span className="font-bold text-amber-700 dark:text-amber-300">요청함 · 수집기가 1분 안에 시작(약 2~4분)</span>}
+            <button type="button" disabled={busy || regen.pending} onClick={() => send({ action: "regenerate" }, "다시 만들기를 요청했어요. 몇 분 뒤 새로고침해 보세요.")}
+              className="rounded-xl bg-accent px-3 py-2 font-extrabold text-white disabled:opacity-40">지금 이슈 다시 만들기</button>
+          </span>
+        </div>
+      )}
       <div>
         <h3 className="mb-1.5 text-sm font-extrabold">첫 화면에 보이는 이슈 ({order.length}개 · {data.day}) </h3>
         <p className="mb-2 text-xs text-muted">위에서부터 카드 순서예요. 순서는 오늘만 적용되고 날짜가 바뀌면 처음 순서로 돌아가요. 숨기면 다음 후보로 채워 {data.min}개 이상을 유지해요.</p>

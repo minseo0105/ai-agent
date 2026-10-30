@@ -121,7 +121,7 @@ def admin_refresh(req: Refresh):
 
 # 뉴스 속 숨은 종목 시연 안전장치: 이슈 숨기기·순서·제외 키워드·금융 사고 이슈 첫 카드 제외
 class LifeCuration(BaseModel):
-    action: Literal["hide", "show", "order", "words", "fin_first"]
+    action: Literal["hide", "show", "order", "words", "fin_first", "regenerate"]
     key: str = Field("", max_length=600)
     keys: list[str] = Field(default_factory=list, max_length=10)
     words: list[str] = Field(default_factory=list, max_length=50)
@@ -142,6 +142,8 @@ def admin_lifemap_set(req: LifeCuration):
             return lifemap.set_order(req.keys)
         if req.action == "words":
             return lifemap.set_words([w[:20] for w in req.words])
+        if req.action == "regenerate":  # 수집기에 13:00 방식 생성을 부탁(보이는 이슈 + 새 후보로 다시 순위)
+            return lifemap.request_regenerate()
         return lifemap.set_fin_first(req.on)
     except KeyError:
         raise HTTPException(404, "지금 후보에 없는 이슈예요. 새로고침해 주세요.")

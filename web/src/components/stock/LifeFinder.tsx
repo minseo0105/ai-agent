@@ -296,7 +296,7 @@ function VerifiedWhy({ c }: { c: LifeCompany }) {
           <span className="text-slate-100">연결 이유: {c.rel_kind || c.relation}{c.tier === "party" ? " · 뉴스 당사자" : " · 근거로 확인됨"}</span>
         </div>
         <p className="mt-1 font-bold text-white">{c.path || c.reason}</p>
-        {c.path && <p className="mt-0.5 text-[14px] text-slate-300">근거 자료로 설명된 영향 경로예요. 주가가 이 뉴스 때문에 움직인다는 뜻은 아니에요.</p>}
+        {c.path && <p className="mt-0.5 text-[14px] text-slate-300">근거 자료로 설명된 영향 경로예요.</p>}
       </div>
       {srcs.length > 0 && (
         <div>
@@ -468,9 +468,6 @@ function CompanyList({ item, open, hi, onToggle }: { item: LifeItem; open: strin
   const idx = Object.entries(item.map.indices ?? {}).map(([k, v]) => `${MARKET_NAME[k] ?? k} ${signed(v as number)}`).join(" · ");
   return (
     <div className="space-y-4">
-      {verified(item.map) && !sorted.length && (
-        <p className="rounded-2xl bg-white/[0.06] px-3.5 py-3 text-[15px] font-bold text-slate-100">검증된 국내 상장기업 없음 — 근거 자료로 이 뉴스와 이어진다고 확인된 상장사가 없어요.</p>
-      )}
       {groups.map((g) => {
         const list = sorted.filter((r) => g.test(r.c));
         if (!list.length) return null;
@@ -503,6 +500,7 @@ function IssueBadges({ item }: { item: LifeItem }) {
   const m = item.map, t = m.timing;
   const pill = "rounded-full px-2.5 py-0.5 text-[14px] font-extrabold ring-1";
   const badges: React.ReactNode[] = [];
+  if (item.new_at) badges.push(<span key="new" className={`${pill} bg-emerald-300/15 text-emerald-100 ring-emerald-200/40`}>새 이슈 {item.new_at}</span>);
   if (item.ongoing) badges.push(<span key="ongoing" className={`${pill} bg-sky-300/15 text-sky-100 ring-sky-200/40`}>계속되는 이슈</span>);
   if (!verified(m)) badges.push(<span key="unverified" className={`${pill} bg-white/10 text-slate-200 ring-white/25`} title="근거 자료와 대조하기 전 AI 해석이에요">검증 전</span>);
   else if (!m.verify?.listed) badges.push(<span key="none" className={`${pill} bg-white/10 text-slate-100 ring-white/30`}>검증된 국내 상장기업 없음</span>);
@@ -915,7 +913,7 @@ export default function LifeFinder() {
               {/* 회사 목록(예전 'AI 해석 vs 실제 등락' 표를 합침) */}
               {item.map.stages.length > 0 && !isPc && (
                 <section aria-label="연결된 회사" className="lg:hidden">
-                  <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/15 px-2.5 py-1 text-[14px] font-extrabold text-white">관련 종목 · 참고용</span>}>
+                  <SectionTitle issue={issue} >
                     연결된 회사
                   </SectionTitle>
                   <CompanyList item={item} open={open} hi={hiCodes} onToggle={(code) => setOpen((o) => (o === code ? null : code))} />
@@ -948,7 +946,7 @@ export default function LifeFinder() {
             <aside className="hidden lg:block" aria-label="연결된 회사">
               {item.map.stages.length > 0 && (
                 <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto rounded-3xl bg-white/[0.04] p-5 ring-1 ring-white/10">
-                  <SectionTitle issue={issue} badge={<span className="rounded-full bg-white/15 px-2.5 py-1 text-[14px] font-extrabold text-white">관련 종목 · 참고용</span>}>
+                  <SectionTitle issue={issue} >
                     연결된 회사
                   </SectionTitle>
                   {isPc && <CompanyList item={item} open={open} hi={hiCodes} onToggle={(code) => setOpen((o) => (o === code ? null : code))} />}

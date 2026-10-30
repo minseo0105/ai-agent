@@ -101,10 +101,12 @@ class FixtureCasesTest(VerifyBase):
         self.assertTrue(done["no_verified"])
         log = store.read("lifemap_verify_log")
         self.assertEqual(log[-1]["dropped"][0]["name"], "한진칼")  # 근거 부족은 로그에만
-        store.write("lifemap", {"basis": {"key": self.basis()["key"]}, "topics": [done]})
-        view = lifemap.overview()["topics"][0]["map"]
-        self.assertNotIn("dropped", view["verify"])  # 화면에는 내보내지 않는다
+        self.assertFalse(lifemap.showable(done))  # 검증된 국내 상장기업 없음 → 화면 이슈가 될 수 없다
+        view = lifemap.with_reaction(done)["map"]
+        self.assertNotIn("dropped", view["verify"])  # 화면 응답에는 근거 부족 목록을 내보내지 않는다
         self.assertEqual(view["verify"]["listed"], 0)
+        store.write("lifemap", {"day": "2026-10-30", "basis": {"key": self.basis()["key"]}, "topics": [done]})
+        self.assertNotIn(done["name"], [t["name"] for t in lifemap.overview()["topics"]])
 
 
 def _item(n, kind, title, text, press="연합뉴스", hours=2, **extra):
@@ -273,19 +275,25 @@ class RulesTest(VerifyBase):
 
 
 class SelectionTest(VerifyBase):
-    """4단계: 검증된 국내 상장기업이 있는 이슈 먼저, 없는 이슈는 최대 1개."""
+    """검증된 국내 상장기업(당사자·검증된 간접 영향)이 없는 이슈는 화면에 넣지 않는다(업종 참고만 있어도)."""
 
-    def test_no_verified_issues_capped_at_one_and_sorted_last(self):
-        def made(name, no_verified, url):
-            return {"name": name, "title": f"{name} 제목", "query": name, "no_verified": no_verified,
-                    "articles": [{"url": url, "title": f"{name} 기사", "rep": True}], "map": {"stages": []}}
-        picked = [made("공항 장애", True, "u1"), made("게임 논란", True, "u2"), made("배터리 리콜", False, "u3"), made("폭우 피해", False, "u4")]
+    def test_issues_without_verified_company_are_excluded(self):
+        def made(name, tiers, url):
+            comps = [{"code": f"00000{i}", "name": f"c{i}", "tier": tier, "grade": "단일 보도"} for i, tier in enumerate(tiers)]
+            return {"name": name, "title": f"{name} 제목", "query": name, "coverage": {"articles": 10, "presses": 5},
+                    "articles": [{"url": url, "title": f"{name} 기사", "rep": True}],
+                    "map": {"stages": [{"key": "p0", "label": "x", "companies": comps}] if comps else [],
+                            "verify": {"status": "ok", "listed": sum(t in ("party", "indirect") for t in tiers)}}}
+        picked = [made("공항 장애", [], "u1"), made("게임 논란", ["industry", "industry"], "u2"), made("배터리 리콜", ["indirect"], "u3"),
+                  made("폭우 피해", ["party", "industry"], "u4")]
         with mock.patch.object(lifemap, "rss_issues", return_value=picked), \
                 mock.patch.object(lifemap, "_finish", side_effect=lambda t, *a, **k: t), \
                 mock.patch.object(lifemap, "naver_general_issues", return_value=[]):
             data = lifemap.run_topics(self.basis())
-        self.assertEqual([t["name"] for t in data["topics"]], ["배터리 리콜", "폭우 피해", "공항 장애"])
-        self.assertEqual(store.read("lifemap_status")["rejects"]["no_verified"], 1)
+        self.assertEqual(sorted(t["name"] for t in data["topics"]), ["배터리 리콜", "폭우 피해"])
+        self.assertEqual(store.read("lifemap_status")["rejects"]["no_verified"], 2)
+        # 검증이 꺼졌거나 오류(검증 전)면 지금 방식대로 둔다 — 화면이 비지 않게
+        self.assertTrue(lifemap.showable({"map": {"stages": [{"companies": [{"code": "1"}]}], "verify": {"status": "unverified"}}}))
 
 
 if __name__ == "__main__":

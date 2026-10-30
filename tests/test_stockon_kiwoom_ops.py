@@ -177,13 +177,11 @@ class LifemapKiwoomBasisTest(TempStore):
                                       "heatmap": {}, "movers": {}})
         b = lifemap.topic_basis(now)
         self.assertEqual((b["key"], b["label"]), ("kiwoom:20261117:close", "11/17 종가 기준"))
-        store.write("lifemap", {"basis": lifemap.basis_info(b), "fresh": 5, "topics": []})
-        weekend = lifemap.topic_basis(datetime(2026, 11, 21, 11, 0, tzinfo=KST))  # 토요일 → 공공 기준(더 오래된 날)
-        self.assertEqual(weekend["source"], "public")
-        self.assertFalse(lifemap.topics_due(weekend))  # 종가 기준 이슈를 오래된 기준으로 바꾸지 않음
-        newer = {**weekend, "key": "public:20261118", "as_of": "20261118"}
-        store.write("lifemap_status", {})
-        self.assertTrue(lifemap.topics_due(newer))  # 더 새 기준이면 만든다
+        # 다음 날 08:30 회차: 장 전이라 키움 오늘 값이 없다 → 공공보다 새 키움 전날 종가로 기준 시점 등락률
+        morning = lifemap.slot_basis(datetime(2026, 11, 18, 8, 30, tzinfo=KST), "0830")
+        self.assertEqual((morning["source"], morning["as_of"], morning["rates_label"], morning["label"]),
+                         ("kiwoom", "20261117", "11/17 종가 기준", "11/18 08:30 기준"))
+        self.assertIsNone(lifemap.slot_due(datetime(2026, 11, 21, 11, 0, tzinfo=KST)))  # 토요일은 만들지 않음
 
     def test_company_and_index_rates_come_from_kiwoom_together_at_creation(self):
         """키움 기준이면 지도 회사 전부와 지수를 같은 때 다시 읽어 시장 대비를 같은 시각 값끼리 계산한다."""
