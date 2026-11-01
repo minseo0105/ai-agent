@@ -1141,7 +1141,7 @@ class ExamplesFileTest(unittest.TestCase):
                 self.assertLessEqual(len(st["companies"]), lifemap.PER_PATH)
                 for c in st["companies"]:
                     self.assertRegex(c["code"], r"^[0-9A-Z]{6}$")
-                    self.assertIn(c["direction"], ("pos", "neg"))
+                    self.assertIn(c["direction"], tuple(lifemap.DIRECTIONS.values()))  # pos·neg·unk(방향 불확실)
                     self.assertFalse(lifemap._unsafe(c["reason"]), c["reason"])
         sectors = [t["sector"] for t in data["topics"]]
         self.assertEqual(len(sectors), len(set(sectors)))
