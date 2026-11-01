@@ -1,6 +1,6 @@
 "use client";
 
-// 뉴스 속 숨은 종목의 관련 회사 지도. 방사형(2026-11-01 복귀): 가운데 = 뉴스(이슈) → 영향 경로 동그라미(번호) → 회사 동그라미.
+// 뉴스 속 숨은 종목의 관련 회사 지도. 방사형(2026-11-01 복귀): 가운데 = 뉴스(이슈) → 영향 경로 동그라미(경로 이름) → 회사 동그라미.
 //   경로는 360도에 고르게 펼치고(경로 수에 따라 각도 고정), 회사는 자기 경로 바깥쪽에 부채꼴로. 뉴스 당사자는 경로 없이 중심 가까이 바로 연결(두 겹 테두리).
 //   경로마다 색이 달라 경로 동그라미·연결선·회사 테두리에 같은 색. AI 해석 방향은 동그라미 오른쪽 위 배지 ＋(도움 가능)·－(부담 가능), 불확실은 배지 없음.
 //   회사명 아래에 시장 대비 등락 숫자(한국식: 올랐으면 빨강 ▲, 내렸으면 파랑 ▼, ±2%p 이내 회색). 크게 움직였으면(±3%p) 바깥 테두리 빛.
@@ -21,8 +21,7 @@ const R = 46;      // 회사 동그라미(두 줄 이름 4자 × 19.5)
 const R_REF = 22;  // 업종 참고(작은 회색)
 const REF_BELOW = 38; // 참고 동그라미 아래 이름·숫자 두 줄 자리
 const R_CENTER = 42;
-const R_PATH = 16;     // 경로 동그라미(번호)
-const RING_PATH = 90;  // 경로 동그라미 반지름 위치
+const PATH_FONT = 15;  // 경로 이름 글자(390px에서 약 13.3px)
 const RING_CO = 170;   // 회사 반지름 위치
 const RING_PARTY = 100; // 뉴스 당사자(경로 없이 중심 가까이)
 const W = 440, TOP = -220, H = 440; // viewBox: 정사각형, 중심 (0,0)
@@ -77,7 +76,22 @@ function curve(a: Pt, b: Pt, bend = 0.12): string {
 
 type Region = "party" | "co" | "ref";
 type Node = { c: LifeCompany; stage?: LifeStage; color: string; region: Region; r: number; pos: Pt };
-type PathNode = { stage: LifeStage; color: string; idx: number; ang: number; pos: Pt };
+type PathNode = { stage: LifeStage; color: string; idx: number; ang: number; pos: Pt; r: number; lines: string[] };
+
+/** 경로 이름 줄바꿈: 짧으면 한 줄, 아니면 두 줄(공백이 있고 균형이 맞으면 공백에서, 아니면 반으로). 말줄임 없이 그대로 보여준다. */
+function pathLines(label: string): string[] {
+  const t = label.trim();
+  if (t.length <= 3) return [t];
+  const sp = t.indexOf(" ", 1);
+  const half = Math.ceil(t.length / 2);
+  if (sp > 0 && sp <= half + 1 && t.length - sp - 1 <= half + 1) return [t.slice(0, sp), t.slice(sp + 1).trim()];
+  const h = Math.ceil(t.replace(/\s/g, "").length / 2);
+  const c = t.replace(/\s/g, "");
+  return [c.slice(0, h), c.slice(h)];
+}
+/** 글자가 들어가는 만큼 동그라미 반지름(넘치면 조금 키운다) */
+const pathRadius = (lines: string[]) =>
+  Math.max(26, Math.ceil(Math.hypot((Math.max(...lines.map((l) => l.length)) * PATH_FONT) / 2, (lines.length * (PATH_FONT + 2)) / 2)) + 3);
 
 const polar = (deg: number, r: number): Pt => ({ x: Math.cos((deg * Math.PI) / 180) * r, y: Math.sin((deg * Math.PI) / 180) * r });
 
@@ -88,7 +102,10 @@ function layout(stages: LifeStage[], refs: LifeCompany[]): { nodes: Node[]; path
   const n = active.length;
   const start = n % 2 === 0 && n > 0 ? -90 - 180 / n : -90; // 1·3곳은 위가 한 곳, 2·4곳은 대칭
   const angs = active.map((_, k) => start + (k * 360) / Math.max(n, 1));
-  const paths: PathNode[] = active.map(({ s, i }, k) => ({ stage: s, color: pathColor(i), idx: i, ang: angs[k], pos: polar(angs[k], RING_PATH) }));
+  const paths: PathNode[] = active.map(({ s, i }, k) => {
+    const lines = pathLines(s.label), r = pathRadius(lines);
+    return { stage: s, color: pathColor(i), idx: i, ang: angs[k], pos: polar(angs[k], R_CENTER + r + 10), r, lines };
+  });
   const hasParty = stages.some((s) => s.companies.some((c) => c.party));
   const nodes: (Node & { t: Pt })[] = [];
   const put = (c: LifeCompany, stage: LifeStage | undefined, color: string, region: Region, r: number, t: Pt) =>
@@ -115,7 +132,7 @@ function layout(stages: LifeStage[], refs: LifeCompany[]): { nodes: Node[]; path
       const d0 = Math.hypot(a.pos.x, a.pos.y) || 1, m0 = a.r + R_CENTER + 10; // 중심(고정)과 겹치지 않게
       if (d0 < m0) { a.pos.x = (a.pos.x * m0) / d0; a.pos.y = (a.pos.y * m0) / d0; }
       for (const p of paths) { // 경로 동그라미(고정)와 겹치지 않게
-        const dx = a.pos.x - p.pos.x, dy = a.pos.y - p.pos.y, d = Math.hypot(dx, dy) || 1, m = a.r + R_PATH + 8 + (a.region === "ref" ? 4 : 0);
+        const dx = a.pos.x - p.pos.x, dy = a.pos.y - p.pos.y, d = Math.hypot(dx, dy) || 1, m = a.r + p.r + 8 + (a.region === "ref" ? 4 : 0);
         if (d < m) { a.pos.x = p.pos.x + (dx * m) / d; a.pos.y = p.pos.y + (dy * m) / d; }
       }
       for (let j = i + 1; j < nodes.length; j++) {
@@ -137,7 +154,7 @@ function layout(stages: LifeStage[], refs: LifeCompany[]): { nodes: Node[]; path
         q.pos.y += (q.t.y - q.pos.y) * 0.06;
       }
       const below = q.region === "ref" ? REF_BELOW : 0; // 참고 이름·숫자가 동그라미 아래에 붙는다
-      const m = q.r + (q.region === "ref" ? 6 : 22); // 빛나는 테두리 몫
+      const m = q.r + (q.region === "ref" ? 6 : 12); // 빛나는 테두리 몫
       q.pos.x = Math.max(-W / 2 + m, Math.min(W / 2 - m, q.pos.x));
       q.pos.y = Math.max(TOP + m, Math.min(TOP + H - m - below - 3, q.pos.y));
     }
@@ -308,15 +325,17 @@ export default function MindMap({ map, refs = [], center, onPick, picked, basisY
               );
             })}
 
-            {/* 영향 경로 동그라미(번호): 누르면 그 경로만 강조 */}
+            {/* 영향 경로 동그라미(경로 이름): 누르면 그 경로만 강조 */}
             {paths.map((p, i) => (
-              <g key={`p-${p.stage.key}`} className="lm-node" role="button" tabIndex={0} aria-label={`영향 경로 ${p.idx + 1}, ${p.stage.label}`}
+              <g key={`p-${p.stage.key}`} className="lm-node" role="button" tabIndex={0} aria-label={`영향 경로 ${p.stage.label}`}
                 onClick={tap(() => toggleFocus(p.stage.key))} onKeyDown={press(() => toggleFocus(p.stage.key))}
                 style={{ cursor: "pointer", transform: `translate(${shown ? p.pos.x : 0}px, ${shown ? p.pos.y : 0}px) scale(${shown ? 1 : 0.2})`,
                   opacity: shown ? dimKey(p.stage.key) : 0, transitionDelay: shown ? `${100 + i * 80}ms` : "0ms" }}>
                 <title>{p.stage.label}</title>
-                <circle r={R_PATH} fill="#0b1a36" stroke={p.color} strokeWidth={focus === p.stage.key ? 4 : 2.8} />
-                <text textAnchor="middle" dy="0.36em" fontSize={17} fontWeight={900} fill={p.color}>{p.idx + 1}</text>
+                <circle r={p.r} fill="#0b1a36" stroke={p.color} strokeWidth={focus === p.stage.key ? 4 : 2.8} />
+                {p.lines.map((t, k) => (
+                  <text key={k} textAnchor="middle" y={(k - (p.lines.length - 1) / 2) * (PATH_FONT + 2)} dy="0.36em" fontSize={PATH_FONT} fontWeight={900} fill={p.color}>{t}</text>
+                ))}
               </g>
             ))}
 
@@ -399,12 +418,12 @@ export default function MindMap({ map, refs = [], center, onPick, picked, basisY
           <button key={s.key} type="button" aria-pressed={focus === s.key} onClick={() => toggleFocus(s.key)}
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[14px] font-extrabold ring-1 transition ${focus === s.key ? "bg-white/15 ring-white/60" : "bg-white/[0.05] ring-white/15"}`}
             style={{ color: pathColor(i) }}>
-            <span className="flex size-[18px] items-center justify-center rounded-full text-[12px] font-black text-[#0b1a36]" style={{ background: pathColor(i) }}>{i + 1}</span>{s.label}
+            <span className="h-[3px] w-4 rounded-full" style={{ background: pathColor(i) }} />{s.label}
           </button>
         ))}
       </div>
       <div className="mt-1.5 flex items-center justify-between gap-2 px-4 sm:px-0">
-        <p className="text-[14px] font-semibold text-slate-300">{focus ? "같은 경로를 다시 누르면 강조가 풀려요" : "경로 단추나 번호 동그라미를 누르면 그 경로만 강조해요"}</p>
+        <p className="text-[14px] font-semibold text-slate-300">{focus ? "같은 경로를 다시 누르면 강조가 풀려요" : "경로 단추나 경로 동그라미를 누르면 그 경로만 강조해요"}</p>
         <div className="flex shrink-0 gap-1.5">
           {[["+", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k * 1.4, v)), "확대"], ["−", () => setView((v) => zoomAt({ x: 0, y: 0 }, v.k / 1.4, v)), "축소"],
             ["⟲", () => setView({ k: 1, x: 0, y: 0 }), "원래 크기"]].map(([label, fn, name]) => (
