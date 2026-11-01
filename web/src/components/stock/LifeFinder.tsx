@@ -905,7 +905,7 @@ export default function LifeFinder() {
                 <Parties map={item.map} />
                 {shownMap?.stages.length ? (
                   <>
-                    <div className="-mx-4 sm:mx-0"><MindMap map={shownMap} refs={refsOnMap} center={item.name} picked={open ?? undefined} onPick={(c) => openCompany(c.code)} /></div>
+                    <div className="-mx-4 sm:mx-0"><MindMap map={shownMap} refs={refsOnMap} center={item.name} basisYmd={basisYmd} picked={open ?? undefined} onPick={(c) => openCompany(c.code)} /></div>
                     {refsOnMap.length > 0 && (
                       <p className="mt-2 text-[14px] leading-snug text-slate-300">
                         근거로 확인된 회사가 {RICH_MIN}곳보다 적어서, 같은 업종 회사를 점선 &lsquo;참고&rsquo;로 함께 보여드려요(연결이 확인된 회사는 아니에요).
