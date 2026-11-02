@@ -11,6 +11,8 @@ export default function Home() {
         <nav className="-ml-3 flex gap-2 sm:ml-0 text-sm font-semibold text-muted">
           <a href="#services" className="flex min-h-11 items-center rounded-full px-3 hover:bg-surface-muted hover:text-fg">서비스</a>
           <a href="#agent" className="flex min-h-11 items-center rounded-full px-3 hover:bg-surface-muted hover:text-fg">AI 에이전트</a>
+          {/* 강의 교안(web/public/lecture, 정적 HTML)은 서비스 카드가 아니라 글자 링크로만 둔다 */}
+          <a href="/lecture/" className="flex min-h-11 items-center rounded-full px-3 hover:bg-surface-muted hover:text-fg">강의</a>
         </nav>
       </header>
 

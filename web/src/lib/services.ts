@@ -8,8 +8,8 @@ export const MONEYON_URL = "/moneyon/";
 // HF 체험 Space(minseo2-moneyon-demo)는 예비로 남겨 둔다.
 export const ORACLE_ORIGIN = "https://wai-labs.com";
 
-export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search" | "Lecture";
-export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search", "Lecture"];
+export type ServiceCategory = "AI Agent" | "Prototype" | "API·Search";
+export const CATEGORIES: ServiceCategory[] = ["AI Agent", "Prototype", "API·Search"];
 
 export type Service = {
   id: string;
@@ -107,17 +107,6 @@ export const SERVICES: Service[] = [
     title: "AI 사주 · 대운 분석",
     desc: "사주팔자 · 오행 · 대운 흐름을 분석합니다.",
     href: "/saju",
-  },
-  {
-    id: "lecture",
-    category: "Lecture",
-    image: "/ailab/lecture.svg",
-    icon: "🎓",
-    title: "AI 코딩 강의 · 코드를 몰라도, 말로 만드는 서비스",
-    desc: "비개발자를 위한 Claude Code 3회 실습 교안. 설치부터 API 연결, 휴대폰 배포까지 프롬프트를 복사해 따라 합니다.",
-    tags: ["1회차 설치·화면", "2회차 DART·Claude API", "3회차 골프 코치·배포"],
-    // 정적 HTML(web/public/lecture)이라 Next 라우터가 아닌 일반 링크로 연다
-    href: "/lecture/",
   },
   {
     id: "car-selector",
