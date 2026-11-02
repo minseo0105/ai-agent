@@ -86,6 +86,13 @@ jobs:
             if curl -fsS --max-time 10 https://wai-labs.com/api/ready >/dev/null; then
               echo "wai-labs.com 정상 응답"
               curl -s -o /dev/null -w "/lecture/ → %{http_code}\n" https://wai-labs.com/lecture/
+              echo "== 메인 화면 응답 헤더 (cf-cache-status가 HIT이면 Cloudflare가 예전 화면을 저장 중)"
+              curl -sI --max-time 10 https://wai-labs.com/ | grep -i -E "^(server|cache-control|cf-cache-status|age|last-modified):" || true
+              if curl -s --max-time 10 "https://wai-labs.com/?deploycheck=$(date +%s)" | grep -q 'href="/lecture/"'; then
+                echo "메인 화면에 '강의' 링크 있음"
+              else
+                echo "::warning::메인 화면(서버 응답)에 '강의' 링크가 없습니다"
+              fi
               exit 0
             fi
             echo "아직 기동 중... ($i/24)"; sleep 10
