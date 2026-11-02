@@ -42,6 +42,7 @@ const TONES: Record<string, { card: string; accent: string }> = {
   saju: { card: "bg-[#fff7e6] border-[#f4e2b8]", accent: "text-[#8a5208]" },
   "car-selector": { card: "bg-[#eef2f8] border-[#d6dfec]", accent: "text-[#2f4a72]" },
   gif: { card: "bg-[#fdf1f9] border-[#f4d6ea]", accent: "text-[#9d1b75]" },
+  lecture: { card: "bg-[#eaf6f3] border-[#c9e8df]", accent: "text-[#1f6b52]" },
 };
 const DEFAULT_TONE = { card: "bg-surface border-border", accent: "text-woori" };
 

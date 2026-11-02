@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta property="og:site_name" content="WAI LABS">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>보고서 작성기 2회차 교안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: 2회차로 나뉜 실습 교안. 상단 고정 목차 + 회차 구분 띠 + 장마다 바닥띠(부서 표기) */
+:root{
+  --bg:#f3f6fa; --surface:#ffffff; --ink:#14213a; --muted:#56637a; --line:#d9e1eb;
+  --accent:#0062a8; --accent-soft:#e3eef8; --warn:#9a5a0c; --warn-soft:#fbf1e2;
+  --ok:#1d7349; --ok-soft:#e3f2ea; --s2:#6a3fa0; --s2-soft:#efe8f8; --s3:#1f6b52; --s3-soft:#e1f1ea;
+  --code-bg:#0f1b2d; --code-ink:#e2eaf6; --code-dim:#8fa3c0; --code-line:#22324b;
+  --band:#14213a; --band-ink:#dfe7f3;
+  --f-display:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1320; --surface:#131d2e; --ink:#e4ebf5; --muted:#9aa8bf; --line:#2a3851;
+  --accent:#62adea; --accent-soft:#16304b; --warn:#e7a557; --warn-soft:#33260f;
+  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a;
+  --code-bg:#080e19; --code-ink:#e2eaf6; --code-dim:#8295b3; --code-line:#1d2a40;
+  --band:#0a1019; --band-ink:#c9d5e6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1320; --surface:#131d2e; --ink:#e4ebf5; --muted:#9aa8bf; --line:#2a3851;
+  --accent:#62adea; --accent-soft:#16304b; --warn:#e7a557; --warn-soft:#33260f;
+  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a;
+  --code-bg:#080e19; --code-ink:#e2eaf6; --code-dim:#8295b3; --code-line:#1d2a40;
+  --band:#0a1019; --band-ink:#c9d5e6; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;word-break:keep-all;overflow-wrap:break-word}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:14px;padding-block:10px}
+.brand{font-weight:700;font-size:14px;white-space:nowrap}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.04em}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;align-items:center}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:none;font-family:var(--f-mono);font-size:12px;text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 9px;background:var(--surface)}
+.chips a.done{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+.chips .sep{flex:none;font-size:11px;font-weight:700;color:var(--muted);padding:0 2px 0 6px}
+.prog{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.cover{padding-block:52px 24px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--f-display);font-size:clamp(30px,6vw,44px);line-height:1.25;margin:10px 0 16px;text-wrap:balance;font-weight:700;letter-spacing:-.01em}
+.lead{font-size:18px;color:var(--muted);max-width:62ch;margin:0}
+
+.sessions{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:28px}
+.sess{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:6px;padding:18px 20px;min-width:0}
+.sess.two{border-top-color:var(--s2)}
+.sess .lbl{font-family:var(--f-mono);font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--accent)}
+.sess.two .lbl{color:var(--s2)}
+.sess h3{margin:4px 0 6px;font-size:19px}
+.sess p{margin:0 0 8px;color:var(--muted);font-size:14.5px}
+.sess ul{margin:0;padding-left:18px;font-size:14.5px}
+.sess .need{margin-top:10px;font-size:13.5px;color:var(--muted)}
+.sess .need b{color:var(--ink)}
+
+.divider{margin:44px 0 6px;padding:22px 24px;border-radius:6px;background:var(--accent);color:#fff;scroll-margin-top:72px}
+.divider.two{background:var(--s2)}
+.divider .k{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;font-weight:600;opacity:.85}
+.divider h2{margin:4px 0 2px;font-size:26px;line-height:1.3}
+.divider p{margin:0;opacity:.9;font-size:15px}
+:root[data-theme="dark"] .divider{color:#0b1220}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .divider{color:#0b1220}}
+
+.chapter{background:var(--surface);border:1px solid var(--line);border-radius:6px;margin-block:24px;overflow:hidden;scroll-margin-top:72px}
+.ch-head{padding:22px 24px 6px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.ch-no{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.06em}
+.s2c .ch-no{color:var(--s2)}
+.ch-time{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-left:auto}
+.ch-head h2{flex-basis:100%;margin:2px 0 0;font-size:25px;line-height:1.35;text-wrap:balance;font-weight:700}
+.ch-body{padding:6px 24px 26px}
+.ch-body > p{max-width:66ch}
+h3{font-size:18px;margin:28px 0 8px;font-weight:700}
+.goal{margin:6px 0 12px;color:var(--muted);font-size:15px}
+
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0}
+ol.steps > li{counter-increment:s;position:relative;padding:4px 0 10px 42px}
+ol.steps > li::before{content:counter(s);position:absolute;left:0;top:4px;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-weight:600;font-size:13px;display:grid;place-items:center;line-height:1}
+.s2c ol.steps > li::before{background:var(--s2-soft);color:var(--s2)}
+kbd,code.k{font-family:var(--f-mono);font-size:.88em;background:var(--accent-soft);color:var(--ink);padding:1px 6px;border-radius:4px;border:1px solid var(--line);white-space:nowrap}
+.ui{font-weight:600;color:var(--accent)}
+
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;margin:16px 0;font-size:15px;border-radius:0 4px 4px 0}
+.note.warn{border-color:var(--warn);background:var(--warn-soft)}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+.note b:first-child{display:block;margin-bottom:2px}
+
+.qa{border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin:14px 0}
+.qa .q{font-weight:700;margin:0 0 4px}
+.qa .q::before{content:"Q. ";color:var(--accent);font-family:var(--f-mono)}
+.qa p{margin:4px 0;font-size:15px}
+.qa .a-short{display:inline-block;font-weight:700;color:var(--ok);margin-right:6px}
+
+.block{margin:16px 0;border-radius:6px;overflow:hidden;background:var(--code-bg);color:var(--code-ink)}
+.block-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid var(--code-line);font-size:12px;flex-wrap:wrap}
+.tag{font-family:var(--f-mono);font-weight:600;letter-spacing:.06em;padding:2px 8px;border-radius:3px}
+.tag.p{background:#e8b04a;color:#2a1c02}
+.tag.t{background:#5fc795;color:#06210f}
+.tag.u{background:#8fb8ff;color:#08183a}
+.block-head .where{color:var(--code-dim)}
+.copy{margin-left:auto;font-family:var(--f-body);font-size:12px;font-weight:600;background:transparent;color:var(--code-ink);border:1px solid var(--code-line);border-radius:4px;padding:4px 12px;cursor:pointer}
+.copy:hover{border-color:var(--code-dim)}
+.copy.copied{color:#5fc795;border-color:#5fc795}
+.block pre{margin:0;padding:14px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:13.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.block.t pre{white-space:pre;word-break:normal}
+
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+td code{font-family:var(--f-mono);font-size:.9em}
+td.when{white-space:nowrap;font-family:var(--f-mono);font-size:12.5px}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.pill.two{background:var(--s2-soft);color:var(--s2)}
+.pill.no{background:var(--line);color:var(--muted)}
+
+/* diagrams */
+.fig{margin:18px 0;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.fig svg{display:block;min-width:660px;width:100%;height:auto}
+.fig figcaption{font-size:13px;color:var(--muted);padding:8px 14px 12px}
+.d-box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.d-acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.d-s2{fill:var(--s2-soft);stroke:var(--s2);stroke-width:1.5}
+.d-ok{fill:var(--ok-soft);stroke:var(--ok);stroke-width:1.5}
+.d-warn{fill:var(--warn-soft);stroke:var(--warn);stroke-width:1.5}
+.d-dash{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+.d-frame{fill:none;stroke:var(--muted);stroke-width:1.5}
+.d-line{stroke:var(--muted);stroke-width:1.6;fill:none}
+.d-arrowhead{fill:var(--muted)}
+.d-t{fill:var(--ink);font-family:var(--f-body);font-size:14px;font-weight:700}
+.d-s{fill:var(--muted);font-family:var(--f-body);font-size:12px}
+.d-l{fill:var(--accent);font-family:var(--f-body);font-size:12px;font-weight:600}
+.d-l2{fill:var(--s2);font-family:var(--f-body);font-size:12px;font-weight:600}
+
+.order{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:14px 0}
+.order li{flex:1 1 150px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--bg);font-size:14px;line-height:1.5;min-width:0}
+.order li b{display:block;font-size:15px}
+.order li small{color:var(--muted)}
+.order li .n{font-family:var(--f-mono);font-size:12px;color:var(--accent);font-weight:600}
+
+.check{display:flex;align-items:center;gap:10px;margin-top:22px;padding:12px 14px;border:1px dashed var(--line);border-radius:6px;cursor:pointer;font-weight:600;font-size:15px}
+.check input{width:20px;height:20px;accent-color:var(--ok)}
+.check.on{border-style:solid;border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+
+.ch-foot{background:var(--band);color:var(--band-ink);display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;padding:11px 24px;font-size:12.5px}
+.ch-foot b{font-weight:600;letter-spacing:.02em}
+.ch-foot span{font-family:var(--f-mono);opacity:.75;font-variant-numeric:tabular-nums}
+
+
+/* console screen mockups */
+.mockwrap{overflow-x:auto;margin:16px 0}
+.mock{min-width:520px;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden;font-size:13px;line-height:1.5}
+.mock-bar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--line)}
+.mock-bar .dots{display:flex;gap:5px}
+.mock-bar .dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.mock-bar .url{font-family:var(--f-mono);font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:2px 10px;flex:1;min-width:0}
+.mock-main{display:grid;grid-template-columns:150px 1fr;min-height:170px}
+.mock-side{border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:2px;color:var(--muted)}
+.mock-side > div{padding:4px 8px;border-radius:4px;position:relative}
+.mock-side .sec{font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:8px;color:var(--muted);font-weight:600}
+.mock-content{padding:14px 16px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;min-width:0}
+.mt{font-weight:700;font-size:15px;color:var(--ink)}
+.mrow-between{display:flex;justify-content:space-between;align-items:center;width:100%}
+.mempty{border:1px dashed var(--line);border-radius:6px;padding:10px 12px;color:var(--muted);width:100%}
+.mempty b{color:var(--ink)}
+.mbtn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--surface);border-radius:5px;padding:6px 14px;font-weight:600;position:relative}
+.mbtn.small{padding:3px 10px;font-size:12px}
+.mbtn.wide{justify-content:center;width:100%}
+.mock-modal{padding:16px 18px;display:flex;flex-direction:column;gap:10px;max-width:460px;margin:12px auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.mrow{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:5px;flex-wrap:wrap}
+.mrow .lab{width:120px;flex:none;color:var(--muted);font-size:12px}
+.mrow .field{flex:1;min-width:0;border:1px solid var(--line);border-radius:4px;padding:4px 8px;background:var(--bg);color:var(--ink)}
+.mrow .field.dim{color:var(--muted);border-style:dashed}
+.mrow .field.key{font-family:var(--f-mono)}
+.mrow.sum{border-top:1px solid var(--line);border-radius:0;padding-top:10px}
+.chipset{display:flex;gap:6px;flex:1;flex-wrap:wrap}
+.chipset span{border:1px solid var(--line);border-radius:4px;padding:2px 10px}
+.chipset span.on{border-color:var(--s2);color:var(--s2);font-weight:700;background:var(--s2-soft)}
+.hl{outline:2px solid var(--warn);outline-offset:2px;background:var(--warn-soft)}
+.mbtn.hl{background:var(--ink)}
+.mock-side .hl{color:var(--ink);font-weight:700}
+.num{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--warn);color:var(--surface);font-family:var(--f-mono);font-size:11px;font-weight:700;flex:none;line-height:1}
+
+.mock-nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--muted)}
+.mock-nav > span{padding:3px 6px;border-radius:4px;display:inline-flex;align-items:center;gap:6px}
+.mock-nav .logo{font-family:var(--f-mono);font-weight:700;color:var(--ink);letter-spacing:.04em}
+.mock-nav .hl{color:var(--ink);font-weight:700}
+.mock-nav .right{margin-left:auto}
+.mock-drop{margin:0 0 14px 200px;width:180px;border:1px solid var(--line);border-radius:6px;padding:6px;display:flex;flex-direction:column;gap:2px;background:var(--surface);color:var(--muted)}
+.mock-drop > div{padding:4px 8px;border-radius:4px;display:flex;align-items:center;justify-content:space-between}
+.mock-drop .hl{color:var(--ink);font-weight:700}
+.divider.three{background:var(--s3)}
+.s3c .ch-no{color:var(--s3)}
+.s3c ol.steps > li::before{background:var(--s3-soft);color:var(--s3)}
+.sess.three{border-top-color:var(--s3)}
+.sess.three .lbl{color:var(--s3)}
+.d-s3{fill:var(--s3-soft);stroke:var(--s3);stroke-width:1.5}
+.d-l3{fill:var(--s3);font-family:var(--f-body);font-size:12px;font-weight:600}
+.page-foot{text-align:center;color:var(--muted);font-size:13px;padding-block:28px 48px}
+ul.plain{padding-left:20px;margin:8px 0}
+ul.plain li{margin:4px 0}
+
+@media (max-width:560px){
+  .ch-head,.ch-body,.ch-foot{padding-left:16px;padding-right:16px}
+  .divider{padding:18px 16px}
+  .brand small{display:none}
+  ol.steps > li{padding-left:38px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<style>.back{flex:none;font-size:13px;font-weight:600;text-decoration:none;color:var(--accent);white-space:nowrap}@media (max-width:560px){.brand{display:none}}</style>
+<style>body{margin:0;font-size:16px}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="back" href="/lecture/">← 강의 목록</a><div class="brand">보고서 작성 에이전트 · 2회차<small>우리금융캐피탈 디지털전략부</small></div>
+    <nav class="chips" id="chips" aria-label="장 이동"></nav>
+    <div class="prog" id="prog">0/7</div>
+  </div>
+</header>
+<main class="wrap">
+<section class="cover">
+  <div class="eyebrow">비개발자 실습 교안 · 2회차</div>
+  <h1>DART와 Claude API를 연결해 보고서 작성 에이전트 완성하기</h1>
+  <p class="lead">1회차에 만든 화면은 그대로 두고, DART 인증키와 Claude API 키를 발급받아 실제 공시 데이터로 보고서를 쓰는 에이전트를 완성합니다.</p>
+
+  <div class="sessions"><div class="sess two">
+      <div class="lbl">2회차 · 약 2시간 30분</div>
+      <h3>API 발급받고 연결하기</h3>
+      <p>1회차 화면을 그대로 두고, 안에 실제 데이터와 AI를 넣습니다.</p>
+      <ul>
+        <li>개념 이해: API와 키란 무엇인가</li>
+        <li>DART 인증키, Claude API 키 발급</li>
+        <li>DART 공시·재무 데이터 연결</li>
+        <li>보고서 작성 에이전트 완성과 내려받기</li>
+      </ul>
+      <p class="need"><b>필요한 것</b> 1회차 폴더, 결제 카드(Claude API 크레딧)</p>
+    </div>
+      </div>
+
+  <h3>이 교안에서 쓰는 세 가지 블록</h3>
+  <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code 채팅창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>Claude Code에게 일을 시키는 문장입니다. 복사 버튼을 누르고 그대로 붙여넣으면 됩니다.</pre></div>
+  <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">VS Code 아래쪽 터미널에 입력</span><button class="copy" type="button">복사</button></div><pre>python --version</pre></div>
+  <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">브라우저 주소창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>https://code.visualstudio.com</pre></div>
+</section>
+<!-- ================= SESSION 2 ================= -->
+<div class="divider two" id="session2">
+  <div class="k">SESSION 2</div>
+  <h2>2회차 · API 발급받고 연결하기</h2>
+  <p>오늘의 결과물: 실제 DART 공시로 Claude가 보고서를 쓰고 워드로 내려받는 앱</p>
+</div>
+
+<!-- 2-1 -->
+<section class="chapter s2c" id="s2-1" data-ch="2-1">
+  <div class="ch-head"><span class="ch-no">2회차 · 01</span><span class="ch-time">20분</span><h2>API와 키는 무엇인가요</h2></div>
+  <div class="ch-body">
+    <p class="goal"><b>API</b>는 프로그램끼리 정해진 방식으로 주고받는 창구입니다. 은행 창구에 번호표와 신분증을 내고 서류를 받는 것처럼, 우리 앱이 <b>키</b>를 보여 주고 자료나 작업 결과를 받아 옵니다.</p>
+
+    <figure class="fig">
+      <svg viewBox="0 0 760 320" role="img" aria-label="2회차 구조: 브라우저 앱이 내 PC의 app.py와 agent.py를 실행하고, .env의 키로 DART 서버에서 공시 자료를, Claude API에서 보고서 작성 결과를 받아온다">
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-arrowhead"/></marker></defs>
+        <rect x="12" y="118" width="130" height="84" rx="8" class="d-ok"/>
+        <text x="77" y="152" text-anchor="middle" class="d-t">보고서 앱</text>
+        <text x="77" y="174" text-anchor="middle" class="d-s">브라우저 화면</text>
+        <line x1="142" y1="160" x2="174" y2="160" class="d-line" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+
+        <rect x="178" y="30" width="216" height="260" rx="10" class="d-frame"/>
+        <text x="194" y="54" class="d-t">내 PC</text>
+        <text x="244" y="54" class="d-s">report-agent 폴더</text>
+        <rect x="194" y="70" width="184" height="52" rx="8" class="d-box"/>
+        <text x="286" y="92" text-anchor="middle" class="d-t">app.py</text>
+        <text x="286" y="110" text-anchor="middle" class="d-s">화면 (1회차에 완성)</text>
+        <rect x="194" y="136" width="184" height="62" rx="8" class="d-s2"/>
+        <text x="286" y="162" text-anchor="middle" class="d-t">agent.py</text>
+        <text x="286" y="182" text-anchor="middle" class="d-s">계획 → 수집 → 작성 → 점검</text>
+        <rect x="194" y="212" width="184" height="62" rx="8" class="d-warn"/>
+        <text x="286" y="238" text-anchor="middle" class="d-t">.env 키 보관함</text>
+        <text x="286" y="258" text-anchor="middle" class="d-s">DART 키 · Claude 키</text>
+
+        <line x1="378" y1="150" x2="514" y2="88" class="d-line" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+        <text x="432" y="104" text-anchor="middle" class="d-l2">① 자료 요청</text>
+        <line x1="378" y1="184" x2="514" y2="236" class="d-line" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+        <text x="436" y="234" text-anchor="middle" class="d-l2">② 작성 요청</text>
+
+        <rect x="518" y="34" width="230" height="104" rx="8" class="d-box"/>
+        <text x="633" y="66" text-anchor="middle" class="d-t">DART 서버</text>
+        <text x="633" y="88" text-anchor="middle" class="d-s">금융감독원 전자공시</text>
+        <text x="633" y="110" text-anchor="middle" class="d-s">기업 개황 · 공시 목록 · 재무제표</text>
+        <rect x="518" y="182" width="230" height="104" rx="8" class="d-acc"/>
+        <text x="633" y="214" text-anchor="middle" class="d-t">Claude API</text>
+        <text x="633" y="236" text-anchor="middle" class="d-s">Anthropic 서버</text>
+        <text x="633" y="258" text-anchor="middle" class="d-s">자료를 읽고 보고서를 씀</text>
+      </svg>
+      <figcaption>2회차 구조. agent.py가 DART 키로 공시 자료를 받아 오고(①), 그 자료와 Claude 키로 Claude에게 보고서를 맡깁니다(②). 키는 .env에만 들어 있습니다.</figcaption>
+    </figure>
+
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>DART API</th><th>Claude API</th></tr></thead>
+      <tbody>
+        <tr><td><b>하는 일</b></td><td>공시·재무 자료를 줌</td><td>자료를 읽고 글을 씀</td></tr>
+        <tr><td><b>키 모양</b></td><td>영문·숫자 40자리</td><td><code>sk-ant-</code>로 시작</td></tr>
+        <tr><td><b>비용</b></td><td>무료 (하루 호출 한도 있음)</td><td>쓴 만큼 크레딧 차감</td></tr>
+        <tr><td><b>발급처</b></td><td>opendart.fss.or.kr</td><td>platform.claude.com</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="qa">
+      <p class="q">1회차에 쓴 Claude Code와 오늘 받는 Claude API는 뭐가 다른가요?</p>
+      <p>Claude Code는 <b>내가</b> 개발을 시키는 도구라 구독으로 로그인했습니다. 오늘 만드는 앱은 수업이 끝난 뒤에도 <b>앱이 혼자</b> Claude를 불러야 하므로, 앱 전용 출입증인 API 키가 필요합니다. 결제도 구독과 따로입니다.</p>
+    </div>
+    <h3>수업 시작 전에</h3>
+    <p>VS Code에서 <span class="ui">파일 → 폴더 열기</span>로 1회차의 <code class="k">report-agent</code> 폴더를 열고, Claude Code에 "앱 다시 실행해 줘"라고 해서 1회차 화면이 뜨는지 확인합니다.</p>
+    <label class="check"><input type="checkbox" id="done-2-1"> API와 키의 역할을 이해하고 1회차 앱을 다시 띄웠다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>2회차 01 / 07</span></footer>
+</section>
+
+<!-- 2-2 -->
+<section class="chapter s2c" id="s2-2" data-ch="2-2">
+  <div class="ch-head"><span class="ch-no">2회차 · 02</span><span class="ch-time">15분</span><h2>DART 인증키 발급받기 (신청 → 메일 인증 → 키 확인)</h2></div>
+  <div class="ch-body">
+    <p class="goal">DART 인증키는 무료이고 신청하면 바로 나옵니다. OpenDART는 <b>회원가입과 인증키 신청이 한 화면</b>이라, 가입 양식을 채우는 것이 곧 키 신청입니다.</p>
+    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>메뉴 이름과 입력 항목은 실제 사이트 기준으로 맞췄지만, 색과 배치는 실제와 조금 다를 수 있습니다. 번호(①②③)를 따라 누르면 됩니다.</div>
+
+    <h3>A. 인증키 신청 화면 열기</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">opendart.fss.or.kr</span></div>
+      <div class="mock-nav">
+        <span class="logo">OPEN DART</span>
+        <span>공시정보</span><span>개발가이드</span>
+        <span class="hl">인증키 신청/관리 <span class="num">1</span></span>
+        <span>고객지원</span>
+        <span class="right">로그인</span>
+      </div>
+      <div class="mock-drop">
+        <div class="hl">인증키 신청 <span class="num">2</span></div>
+        <div>오픈API 이용현황</div>
+        <div>인증키 관리</div>
+      </div>
+    </div></div>
+    <ol class="steps">
+      <li>OpenDART 사이트에 접속합니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">OpenDART</span><button class="copy" type="button">복사</button></div><pre>https://opendart.fss.or.kr</pre></div></li>
+      <li>상단 메뉴 <span class="ui">인증키 신청/관리</span> ①에 마우스를 올리고, 펼쳐지는 메뉴에서 <span class="ui">인증키 신청</span> ②을 누릅니다.</li>
+    </ol>
+
+    <h3>B. 신청 양식 채우기</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">인증키 신청</span></div>
+      <div class="mock-modal">
+        <div class="mt">인증키 신청</div>
+        <div class="mrow hl"><span class="lab">약관 동의</span><span class="field">☑ 이용약관 동의 · ☑ 개인정보 수집·이용 동의</span><span class="num">3</span></div>
+        <div class="mrow hl"><span class="lab">사용자 구분</span><span class="chipset"><span class="on">개인</span><span>기업</span></span><span class="num">4</span></div>
+        <div class="mrow hl"><span class="lab">이메일</span><span class="field">hong@woori.com</span><span class="num">5</span></div>
+        <div class="mrow hl"><span class="lab">비밀번호 / 확인</span><span class="field">•••••••• / ••••••••</span><span class="num">6</span></div>
+        <div class="mrow hl"><span class="lab">사용 용도</span><span class="field">사내 업무 보고서 자동화 교육 실습</span><span class="num">7</span></div>
+        <div class="mbtn hl wide">등록 <span class="num">8</span></div>
+      </div>
+    </div></div>
+    <ol class="steps" start="3" style="counter-reset:s 2">
+      <li><b>약관 동의 ③</b>: 이용약관과 개인정보 수집·이용에 모두 동의 체크합니다.</li>
+      <li><b>사용자 구분 ④</b>: <b>개인</b>을 고릅니다. 기업을 고르면 추가 서류 절차가 있어 실습에는 개인이 빠릅니다.</li>
+      <li><b>이메일 ⑤</b>: 지금 바로 메일함을 열 수 있는 주소를 씁니다. 이 이메일이 로그인 아이디가 됩니다.</li>
+      <li><b>비밀번호 ⑥</b>: 사이트가 요구하는 규칙(영문·숫자·특수문자 조합 등)에 맞춰 두 번 입력합니다.</li>
+      <li><b>사용 용도 ⑦</b>: 짧게 적으면 됩니다. 예: <code class="k">사내 업무 보고서 자동화 교육 실습</code></li>
+      <li><span class="ui">등록</span> ⑧을 누릅니다.</li>
+    </ol>
+
+    <h3>C. 메일 인증하기</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">메일함</span></div>
+      <div class="mock-modal">
+        <div class="mt">[OPENDART] 인증키 신청 이메일 인증</div>
+        <div class="mrow"><span class="field dim">아래 버튼을 눌러 이메일 인증을 완료해 주세요.</span></div>
+        <div class="mbtn hl wide">이메일 인증 <span class="num">9</span></div>
+      </div>
+    </div></div>
+    <ol class="steps" start="9" style="counter-reset:s 8">
+      <li>메일함에 온 OpenDART 메일을 열고 인증 버튼(또는 링크) ⑨를 누릅니다. 몇 분이 지나도 메일이 없으면 <b>스팸함</b>을 확인하세요. 회사 메일은 보안 필터 때문에 늦게 오기도 합니다.</li>
+    </ol>
+
+    <h3>D. 발급된 키 확인하고 복사하기</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">오픈API 이용현황</span></div>
+      <div class="mock-nav">
+        <span class="logo">OPEN DART</span>
+        <span>공시정보</span><span>개발가이드</span>
+        <span class="hl">인증키 신청/관리 → 오픈API 이용현황 <span class="num">10</span></span>
+        <span class="right">로그아웃</span>
+      </div>
+      <div class="mock-content">
+        <div class="mt">오픈API 이용현황</div>
+        <div class="mrow hl" style="width:100%"><span class="lab">API 인증키</span><span class="field key">a1b2c3d4••••••••••••••••••••••••••••••••</span><span class="num">11</span></div>
+        <div class="mrow" style="width:100%"><span class="lab">일일 이용 건수</span><span class="field">0 / 20,000</span></div>
+      </div>
+    </div></div>
+    <ol class="steps" start="10" style="counter-reset:s 9">
+      <li>사이트에 이메일과 비밀번호로 로그인한 뒤 <span class="ui">인증키 신청/관리 → 오픈API 이용현황</span> ⑩으로 갑니다.</li>
+      <li><b>API 인증키 ⑪</b>: 영문·숫자 <b>40자리</b>가 보입니다. 앞뒤 공백 없이 전체를 드래그해 복사하고 메모장에 붙여 둡니다. 다음 장에서 .env 파일에 넣습니다.</li>
+      <li>아래 주소의 <code class="k">내인증키</code>를 방금 복사한 키로 바꿔 브라우저에 붙여넣습니다. <code class="k">"status":"000"</code>과 삼성전자 정보가 나오면 키가 정상입니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">DART 키 동작 확인</span><button class="copy" type="button">복사</button></div><pre>https://opendart.fss.or.kr/api/company.json?crtfc_key=내인증키&amp;corp_code=00126380</pre></div></li>
+    </ol>
+
+    <h3>E. 막혔을 때</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>증상</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td>인증 메일이 오지 않음</td><td>스팸함 분류, 회사 메일 보안 필터</td><td>스팸함 확인, 개인 메일로 다시 신청</td></tr>
+        <tr><td>오픈API 이용현황에 키가 없음</td><td>메일 인증을 안 함</td><td>메일의 인증 버튼부터 누르기</td></tr>
+        <tr><td>확인 주소에서 <code>status 010</code></td><td>키 오타, 앞뒤 공백, 발급 직후 반영 전</td><td>키 다시 복사, 몇 분 뒤 재시도</td></tr>
+        <tr><td>확인 주소에서 <code>status 020</code></td><td>하루 호출 한도(약 2만 건) 초과</td><td>다음 날 재시도</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>DART 응답 코드 읽는 법</b><code class="k">000</code> 정상 · <code class="k">010</code> 등록되지 않은 키 · <code class="k">013</code> 조회된 데이터 없음 · <code class="k">020</code> 하루 요청 한도 초과</div>
+    <div class="note warn"><b>DART 키도 비밀번호처럼 다룹니다</b>무료라도 내 계정에 묶여 있고 호출 한도를 함께 씁니다. 채팅창이나 공유 문서에 붙이지 말고 .env에만 넣으세요.</div>
+    <label class="check"><input type="checkbox" id="done-2-2"> 40자리 키를 받고 확인 주소에서 status 000을 봤다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>2회차 02 / 07</span></footer>
+</section>
+
+<!-- 2-3 -->
+<section class="chapter s2c" id="s2-3" data-ch="2-3">
+  <div class="ch-head"><span class="ch-no">2회차 · 03</span><span class="ch-time">25분</span><h2>Claude API 키 발급받기 (가입 → 충전 → 키 만들기)</h2></div>
+  <div class="ch-body">
+    <p class="goal">2회차의 보고서 에이전트는 Claude API로 글을 씁니다. 키 발급은 <b>A 가입 → B 크레딧 충전 → C 키 만들기</b> 세 단계이고, 충전을 먼저 해야 키가 실제로 동작합니다.</p>
+    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>메뉴 위치와 버튼 이름은 공식 문서 기준으로 맞췄지만, 색과 배치는 실제 화면과 조금 다를 수 있습니다. 번호(①②③)를 따라 누르면 됩니다.</div>
+
+    <h3>A. 콘솔 가입하기 (5분)</h3>
+    <ol class="steps">
+      <li>브라우저에서 Claude 개발자 콘솔에 접속합니다. 예전 주소 console.anthropic.com으로 들어가도 같은 곳으로 연결됩니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">Claude 개발자 콘솔</span><button class="copy" type="button">복사</button></div><pre>https://platform.claude.com</pre></div></li>
+      <li>Google 계정으로 계속하거나, 이메일을 입력하고 메일로 온 로그인 링크를 누릅니다. <b>회사 메일</b>로 가입하면 나중에 비용 처리가 편합니다.</li>
+      <li>처음 들어가면 이름, 조직(회사) 이름 같은 기본 정보를 묻습니다. 사실대로 입력하고 넘어갑니다.</li>
+    </ol>
+    <div class="note warn"><b>claude.ai 구독과 다른 곳입니다</b>1회차에 Claude Code에 로그인한 claude.ai 구독 계정과 이 콘솔은 결제가 따로입니다. 같은 이메일로 가입해도 콘솔에서 크레딧을 따로 충전해야 합니다.</div>
+
+    <h3>B. 크레딧 충전하기 (10분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">platform.claude.com/settings/billing</span></div>
+      <div class="mock-main">
+        <div class="mock-side">
+          <div>Dashboard</div><div>Workbench</div><div>Usage</div>
+          <div class="sec">Settings</div>
+          <div>API keys</div>
+          <div class="hl">Billing <span class="num">1</span></div>
+          <div>Limits</div>
+        </div>
+        <div class="mock-content">
+          <div class="mt">Billing</div>
+          <div class="mempty">Credit balance <b>$0.00</b><br><small>Purchase credits to get started</small></div>
+          <div class="mbtn hl">Purchase credits <span class="num">2</span></div>
+        </div>
+      </div>
+    </div></div>
+    <ol class="steps">
+      <li>왼쪽 메뉴 <span class="ui">Settings → Billing</span> ①을 누릅니다. 바로 가려면 아래 주소를 씁니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">결제 페이지</span><button class="copy" type="button">복사</button></div><pre>https://platform.claude.com/settings/billing</pre></div></li>
+      <li><span class="ui">Purchase credits</span> ② 버튼을 누릅니다.</li>
+    </ol>
+
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Purchase credits</span></div>
+      <div class="mock-modal">
+        <div class="mt">Purchase credits</div>
+        <div class="mrow hl"><span class="lab">Amount</span><span class="chipset"><span class="on">$5</span><span>$20</span><span>$100</span><span>Other</span></span><span class="num">3</span></div>
+        <div class="mrow hl"><span class="lab">Billing address</span><span class="field">국가 · 주소 · 도시 · 주/도 · 우편번호</span><span class="num">4</span></div>
+        <div class="mrow hl"><span class="lab">Card information</span><span class="field">카드 번호 · 유효기간 · CVC</span><span class="num">5</span></div>
+        <div class="mrow"><span class="lab">Business tax ID</span><span class="field dim">(선택) 비워 두기</span></div>
+        <div class="mrow sum"><span class="lab">Credits / Tax / Total</span><span class="field">$5.00 + 부가세 = 합계</span></div>
+        <div class="mbtn hl wide">Purchase $5 of credits <span class="num">6</span></div>
+      </div>
+    </div></div>
+    <ol class="steps" start="3" style="counter-reset:s 2">
+      <li><b>금액 ③</b>: <code class="k">$5</code>를 고릅니다. 강의 실습과 연습에는 이 정도면 충분합니다.</li>
+      <li><b>청구지 주소 ④</b>: 국가 <code class="k">South Korea</code>를 고르고 영문 또는 한글로 주소를 넣습니다. <b>주/도(State) 칸을 비우면 구매 버튼이 눌리지 않으니</b> 예: <code class="k">Seoul</code>을 꼭 넣으세요.</li>
+      <li><b>카드 정보 ⑤</b>: 해외 결제가 되는 카드를 입력합니다. 사업자 세금 번호(Business tax ID)는 비워 둡니다.</li>
+      <li>아래 합계에 부가세가 더해진 금액이 보입니다. 확인 후 <span class="ui">Purchase $5 of credits</span> ⑥을 누릅니다.</li>
+      <li><span class="ui">You're all set!</span> 창이 뜨면 충전 완료입니다. Billing 화면의 잔액이 $5로 바뀌었는지 확인합니다.</li>
+    </ol>
+    <div class="note warn"><b>자동 충전(auto-reload)은 켜지 마세요</b>잔액이 떨어지면 자동으로 카드 결제가 되는 기능입니다. 실습 단계에서는 꺼 두어야 예상치 못한 결제가 없습니다. 3회차에 앱을 공개 배포하기 전에는 사용 한도(Limits)도 함께 확인합니다.</div>
+
+    <h3>C. API 키 만들기 (5분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">platform.claude.com/settings/keys</span></div>
+      <div class="mock-main">
+        <div class="mock-side">
+          <div>Dashboard</div><div>Workbench</div><div>Usage</div>
+          <div class="sec">Settings</div>
+          <div class="hl">API keys <span class="num">1</span></div>
+          <div>Billing</div><div>Limits</div>
+        </div>
+        <div class="mock-content">
+          <div class="mt mrow-between">API keys <span class="mbtn hl small">Create key <span class="num">2</span></span></div>
+          <div class="mempty"><small>아직 만든 키가 없습니다</small></div>
+        </div>
+      </div>
+    </div></div>
+    <ol class="steps">
+      <li>왼쪽 메뉴 <span class="ui">Settings → API keys</span> ①로 갑니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">API 키 페이지</span><button class="copy" type="button">복사</button></div><pre>https://platform.claude.com/settings/keys</pre></div></li>
+      <li>오른쪽 위 <span class="ui">Create key</span> ②를 누릅니다.</li>
+    </ol>
+
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Create API key</span></div>
+      <div class="mock-modal">
+        <div class="mt">Create API key</div>
+        <div class="mrow hl"><span class="lab">Name</span><span class="field">report-agent</span><span class="num">3</span></div>
+        <div class="mrow hl"><span class="lab">Expiration</span><span class="field">드롭다운에서 기간 선택</span><span class="num">4</span></div>
+        <div class="mrow"><span class="lab">Linked account</span><span class="field">나 (본인)</span></div>
+        <div class="mrow"><span class="lab">Workspace</span><span class="field">Default</span></div>
+        <div class="mbtn hl wide">Add <span class="num">5</span></div>
+      </div>
+    </div></div>
+    <ol class="steps" start="3" style="counter-reset:s 2">
+      <li><b>이름 ③</b>: <code class="k">report-agent</code>처럼 어디에 쓰는 키인지 알 수 있게 적습니다.</li>
+      <li><b>만료 기간 ④</b>: 3회차까지 쓸 것이므로 한두 달 이상으로 고릅니다. 기간이 지나면 키가 멈추고, 새로 만들면 됩니다.</li>
+      <li>연결 계정(Linked account)은 <b>본인</b>, 워크스페이스(Workspace)는 <b>Default</b> 그대로 둡니다. 화면에 이 칸이 없으면 신경 쓰지 않아도 됩니다.</li>
+      <li><span class="ui">Add</span> ⑤(화면에 따라 Create)를 누릅니다.</li>
+    </ol>
+
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Save your API key</span></div>
+      <div class="mock-modal">
+        <div class="mt">Save your API key</div>
+        <div class="mrow hl"><span class="field key">sk-ant-api03-••••••••••••••••••••</span><span class="mbtn small">Copy</span><span class="num">6</span></div>
+        <div class="mrow"><span class="field dim">이 창을 닫으면 키를 다시 볼 수 없습니다</span></div>
+        <div class="mbtn wide">Done</div>
+      </div>
+    </div></div>
+    <ol class="steps" start="7" style="counter-reset:s 6">
+      <li><b>가장 중요한 단계 ⑥</b>: <code class="k">sk-ant-</code>로 시작하는 키가 <b>이 창에서 단 한 번</b> 보입니다. <span class="ui">Copy</span>를 누르고 메모장에 붙여 둔 뒤 <span class="ui">Done</span>을 누릅니다.</li>
+      <li>복사하지 못하고 창을 닫았다면 같은 화면에서 키를 새로 하나 만들면 됩니다. 쓰지 않을 이전 키는 목록에서 삭제합니다.</li>
+    </ol>
+
+    <h3>D. 막혔을 때</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>증상</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td>Purchase 버튼이 회색이라 안 눌림</td><td>청구지 주소의 주/도(State) 칸이 비어 있음</td><td>주소 칸을 다시 펼쳐 주/도를 채움</td></tr>
+        <tr><td>카드 결제 거절</td><td>해외 결제 차단 카드</td><td>카드사 앱에서 해외 결제 허용, 또는 다른 카드</td></tr>
+        <tr><td>Create key 버튼이 회색</td><td>회사 조직 계정에서 키 생성 권한 없음</td><td>조직 관리자에게 권한 요청</td></tr>
+        <tr><td>앱에서 <code>credit balance is too low</code></td><td>B 단계 충전을 안 함</td><td>Billing에서 잔액 확인 후 충전</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note warn"><b>API 키는 비밀번호입니다</b>메신저, 메일, 공유 문서, Claude Code 채팅창에 붙여넣지 마세요. 다음 장에서 .env 파일에 직접 넣습니다. 노출되면 API keys 화면에서 즉시 삭제하고 새로 만듭니다.</div>
+    <div class="note"><b>얼마나 쓰였는지 보려면</b>왼쪽 메뉴 <span class="ui">Usage</span>에서 날짜별 사용량과 비용을 볼 수 있습니다. 실습이 끝나면 한 번 열어 보고, 보고서 한 건에 얼마가 드는지 감을 잡아 두세요.</div>
+    <label class="check"><input type="checkbox" id="done-2-3"> 크레딧을 충전하고 sk-ant- 로 시작하는 키를 받았다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>2회차 03 / 07</span></footer>
+</section>
+
+<!-- 2-4 -->
+<section class="chapter s2c" id="s2-4" data-ch="2-4">
+  <div class="ch-head"><span class="ch-no">2회차 · 04</span><span class="ch-time">15분</span><h2>키 보관함(.env) 만들기</h2></div>
+  <div class="ch-body">
+    <p class="goal">키를 코드 안에 직접 쓰지 않고, 앱만 읽는 <code class="k">.env</code> 파일에 따로 보관합니다.</p>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 키 보관함 준비</span><button class="copy" type="button">복사</button></div><pre>이제 이 앱에 API를 연결할 준비를 할게요. 1회차에 만든 화면 디자인은 그대로 유지해 주세요.
+
+1. requirements.txt 에 anthropic, requests, python-dotenv, python-docx 를 추가하고 가상환경에 설치해 주세요.
+2. .env 파일을 만들고 아래 두 줄만 넣어 주세요. 값은 비워 두세요. 제가 직접 채우겠습니다.
+   ANTHROPIC_API_KEY=
+   DART_API_KEY=
+3. .gitignore 를 만들어 .env 와 .venv 가 절대 공유되지 않게 해 주세요.
+4. 화면 사이드바(또는 아래쪽)에 "연결 상태"를 만들어 두 키가 채워져 있는지 ✅/❌ 로만 보여 주세요. 키 값 자체는 절대 화면에 나오면 안 됩니다.
+5. 제가 .env 에 값을 어떻게 넣으면 되는지 알려 주세요.</pre></div>
+    <p>왼쪽 파일 목록에서 <code class="k">.env</code>를 열고 <code class="k">=</code> 뒤에 키를 <b>직접</b> 붙여넣고 저장(<kbd>Ctrl</kbd>+<kbd>S</kbd>)합니다. 따옴표와 띄어쓰기는 넣지 않습니다. 저장 후 앱을 다시 켜서 연결 상태가 모두 ✅인지 봅니다.</p>
+    <div class="block t"><div class="block-head"><span class="tag t">.ENV</span><span class="where">작성 예시 (실제 값은 본인 것으로)</span></div><pre>ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxx
+DART_API_KEY=0123456789abcdef0123456789abcdef01234567</pre></div>
+    <div class="note ok"><b>메모장의 키는 이제 지우세요</b>키는 .env 한 곳에만 있으면 됩니다.</div>
+    <label class="check"><input type="checkbox" id="done-2-4"> 연결 상태 두 칸이 모두 ✅이다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>2회차 04 / 07</span></footer>
+</section>
+
+<!-- 2-5 -->
+<section class="chapter s2c" id="s2-5" data-ch="2-5">
+  <div class="ch-head"><span class="ch-no">2회차 · 05</span><span class="ch-time">25분</span><h2>DART 공시 데이터 연결하기</h2></div>
+  <div class="ch-body">
+    <p class="goal">샘플 데이터 자리에 실제 공시를 넣습니다. DART는 회사 이름이 아니라 8자리 고유번호로 조회하므로, 이름을 번호로 바꾸는 단계가 들어갑니다.</p>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · DART 연결</span><button class="copy" type="button">복사</button></div><pre>DART Open API를 연결해 주세요. 인증키는 .env 의 DART_API_KEY 를 씁니다. 화면 디자인은 그대로 유지해 주세요.
+
+1. dart_api.py 파일을 새로 만들고 아래 기능을 넣어 주세요.
+   - 회사 고유번호 목록: https://opendart.fss.or.kr/api/corpCode.xml 에서 압축 파일을 받아 풀고, 회사명 → 고유번호(corp_code) 표를 data 폴더에 저장해 두세요. 이미 받아 둔 파일이 있으면 다시 받지 마세요.
+   - find_company(회사명): 이름이 비슷한 회사 후보를 최대 10개 돌려줍니다. 상장사를 먼저 보여 주세요.
+   - get_company(corp_code): 기업 개황 (company.json)
+   - get_disclosures(corp_code): 최근 90일 공시 목록 (list.json) — 공시명, 접수일, 원문 링크
+   - get_financials(corp_code, 연도): 단일회사 주요계정 (fnlttSinglAcnt.json, 사업보고서) — 매출액, 영업이익, 당기순이익, 자산총계, 부채총계, 자본총계
+   - status 가 000 이 아니면 쉬운 한국어로 안내해 주세요. (010 미등록 키, 013 데이터 없음, 020 요청 한도 초과)
+   - 같은 조회를 반복하면 다시 부르지 않도록 결과를 잠시 저장(캐시)해 주세요.
+2. 화면에서 회사명을 입력하면 후보 목록이 나오고, 하나를 고르면 기업 개황 · 최근 공시 · 최근 2개년 재무 표(부채비율, 전년 대비 증감률 포함)를 미리 볼 수 있게 해 주세요. 금액은 억 원 단위로 보여 주세요.
+3. 끝나면 "현대캐피탈" 과 "삼성전자" 로 직접 테스트해 보고 결과를 요약해 알려 주세요.</pre></div>
+    <div class="note"><b>처음 한 번은 오래 걸립니다</b>회사 고유번호 목록을 처음 받을 때 수십 초가 걸릴 수 있습니다. 비상장사는 재무 데이터가 없을 수 있습니다.</div>
+    <label class="check"><input type="checkbox" id="done-2-5"> 회사를 골라 실제 재무 표를 확인했다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>2회차 05 / 07</span></footer>
+</section>
+
+<!-- 2-6 -->
+<section class="chapter s2c" id="s2-6" data-ch="2-6">
+  <div class="ch-head"><span class="ch-no">2회차 · 06</span><span class="ch-time">40분</span><h2>보고서 작성 에이전트 완성하기</h2></div>
+  <div class="ch-body">
+    <p class="goal">이제 Claude가 DART 도구를 직접 골라 쓰게 합니다. 사용자는 주제만 주고, 에이전트가 <b>계획 → 자료 수집 → 작성 → 자체 점검</b>을 거쳐 근거 달린 보고서를 냅니다.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>단계</th><th>에이전트가 하는 일</th><th>쓰는 것</th></tr></thead>
+      <tbody>
+        <tr><td>1 계획</td><td>주제를 읽고 어떤 회사의 어떤 자료가 필요한지 정한다</td><td>Claude API</td></tr>
+        <tr><td>2 수집</td><td>회사를 찾고 개황·공시·재무를 조회한다</td><td><code>dart_api.py</code></td></tr>
+        <tr><td>3 작성</td><td>정해진 양식으로 보고서를 쓰고 출처를 단다</td><td>Claude API</td></tr>
+        <tr><td>4 점검</td><td>숫자가 수집 자료와 맞는지 다시 확인하고 고친다</td><td>Claude API</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>6-1. 에이전트 엔진 만들기</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 에이전트 엔진</span><button class="copy" type="button">복사</button></div><pre>보고서 작성 에이전트를 만들어 주세요. Claude API 키는 .env 의 ANTHROPIC_API_KEY 를 쓰고 anthropic 파이썬 SDK를 사용합니다. 모델은 claude-sonnet-5-5 로 하되, 파일 맨 위 설정값 한 곳에서 바꿀 수 있게 해 주세요.
+
+agent.py 를 만들고 아래처럼 동작하게 해 주세요.
+1. Claude의 도구 사용(tool use) 기능으로 아래 도구를 Claude에게 알려 주세요. 실제 동작은 dart_api.py 의 함수를 그대로 씁니다.
+   - find_company, get_company, get_disclosures, get_financials
+2. Claude가 필요한 도구를 스스로 골라 호출하고, 결과를 보고 다시 판단하는 과정을 반복하게 해 주세요. 도구 호출은 최대 10번까지만 허용합니다.
+3. 수집이 끝나면 아래 양식의 마크다운 보고서를 쓰게 해 주세요.
+   # 제목
+   ## 1. 요약 (3줄 이내)
+   ## 2. 검토 배경
+   ## 3. 기업 개황
+   ## 4. 재무 분석 (2개년 비교 표, 증감률, 부채비율)
+   ## 5. 최근 공시 동향
+   ## 6. 리스크 요인 및 시사점
+   ## 7. 출처 (DART 공시 원문 링크)
+   보고서 유형(거래처 현황 보고 / 여신 심사 참고 메모 / 경쟁사 비교)에 따라 강조점을 바꾸고, 경쟁사 비교일 때는 두 회사를 나란히 비교해 주세요.
+4. 작성 뒤 Claude에게 한 번 더 "보고서의 숫자가 수집한 자료와 일치하는지 점검하고, 근거 없는 문장은 지우거나 '확인 필요'로 표시하라"고 시켜 최종본을 만들어 주세요.
+5. 시스템 프롬프트에 넣을 원칙: 수집 자료에 없는 수치는 지어내지 않는다 / 맨 아래에 "본 보고서는 공시 자료 기반 내부 검토용 초안임"을 적는다 / 금융회사 실무 보고서 문체(~함, ~임)로 쓴다.
+6. 계획, 도구 호출, 작성, 점검 단계를 화면에 실시간으로 보여 줄 수 있게 진행 상황을 하나씩 알려 주는 구조로 만들어 주세요.
+
+다 만들면 터미널에서 짧게 테스트해 보고 결과를 알려 주세요.</pre></div>
+
+    <h3>6-2. 화면에 연결하기</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 샘플을 실제로 교체</span><button class="copy" type="button">복사</button></div><pre>1회차에 만든 보고서 작성기 화면에서 샘플 데이터를 빼고 agent.py 를 연결해 주세요. 색상과 배치 등 디자인은 그대로 유지합니다.
+
+- "보고서 작성" 버튼을 누르면 agent.py 를 실행하고, 진행 단계를 실시간으로 보여 주세요. (예: 🧭 계획 세우는 중 → 🔎 회사 찾는 중: ○○캐피탈 → 📊 재무 조회 중 → ✍️ 작성 중 → ✅ 점검 완료)
+- "샘플 데이터입니다" 안내 상자는 지워 주세요.
+- 완성된 보고서 아래에 다운로드 버튼 두 개를 달아 주세요.
+  1) 마크다운(.md)
+  2) 워드(.docx) — 제목, 소제목, 표 서식이 살아 있게, 바닥글에 "우리금융캐피탈 디지털전략부"
+- 맨 아래에 "수집한 원자료 보기" 펼침 영역을 두어 실제로 가져온 DART 데이터를 확인할 수 있게 해 주세요.
+- 오류가 나면 쉬운 말로 원인과 해결 방법을 보여 주세요. 크레딧 부족, 잘못된 Claude 키, DART 오류 코드는 구분해서 안내해 주세요.
+
+다 되면 앱을 다시 실행해 주세요.</pre></div>
+
+    <h3>6-3. 시연용 주제로 돌려 보기</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">앱의 "검토 주제" 칸 · 거래처 현황 보고</span><button class="copy" type="button">복사</button></div><pre>최근 2개년 실적 추이와 부채비율 변화를 중심으로 회사의 재무 안정성을 검토하고, 최근 공시 중 거래 시 확인이 필요한 사항을 정리해 주세요.</pre></div>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">앱의 "검토 주제" 칸 · 경쟁사 비교</span><button class="copy" type="button">복사</button></div><pre>현대캐피탈과 KB캐피탈의 최근 2개년 매출, 영업이익, 부채비율을 비교하고, 각 사의 최근 공시에서 눈에 띄는 변화를 요약해 주세요.</pre></div>
+
+    <h3>6-4. 더 다듬고 싶을 때</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 개선 요청 예시</span><button class="copy" type="button">복사</button></div><pre>보고서 결과를 보니 아래가 아쉬워요. 고쳐 주세요.
+- (예) 재무 분석에 영업이익률을 추가해 주세요
+- (예) 요약을 표 형식으로 바꿔 주세요
+- (예) 워드 파일 첫 장에 표지(제목, 작성일, 부서명)를 넣어 주세요
+고친 뒤 같은 주제로 다시 테스트해 차이를 알려 주세요.</pre></div>
+    <div class="note warn"><b>보고서는 초안입니다</b>AI가 쓴 보고서는 반드시 DART 원문을 열어 숫자를 대조한 뒤 사용합니다. 고객 개인정보나 사내 대외비 자료는 입력하지 않습니다.</div>
+    <label class="check"><input type="checkbox" id="done-2-6"> 실제 공시로 보고서를 만들고 .docx 로 내려받았다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>2회차 06 / 07</span></footer>
+</section>
+
+<!-- 2-7 -->
+<section class="chapter s2c" id="s2-7" data-ch="2-7">
+  <div class="ch-head"><span class="ch-no">2회차 · 07</span><span class="ch-time">참고용</span><h2>오류 해결표와 보안 수칙</h2></div>
+  <div class="ch-body">
+    <h3>자주 만나는 오류</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>화면에 보이는 문구</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td><code>requires git-bash</code></td><td>Windows에 Git 미설치</td><td>1회차 02장 Git 설치 후 VS Code 재시작</td></tr>
+        <tr><td><code>'python'은(는) ... 인식되지 않습니다</code></td><td>Python 설치 시 PATH 미체크</td><td>Python 재설치, VS Code 재시작</td></tr>
+        <tr><td><code>No module named ...</code></td><td>가상환경이 꺼진 채 실행</td><td>Claude Code에 "가상환경 켜고 다시 실행해 줘"</td></tr>
+        <tr><td><code>authentication_error</code> / 401</td><td>Claude API 키 오타·삭제</td><td>새 키 발급 후 .env 수정</td></tr>
+        <tr><td><code>credit balance is too low</code></td><td>API 크레딧 소진</td><td>콘솔 Billing에서 충전</td></tr>
+        <tr><td>DART <code>status 010</code></td><td>DART 키 오타·미인증</td><td>메일 인증 여부, .env 값 확인</td></tr>
+        <tr><td>DART <code>status 013</code></td><td>해당 기간·회사 데이터 없음</td><td>연도 변경, 비상장 여부 확인</td></tr>
+        <tr><td>DART <code>status 020</code></td><td>하루 호출 한도 초과</td><td>다음 날 재시도</td></tr>
+        <tr><td>.env를 고쳤는데 반영 안 됨</td><td>앱이 예전 값으로 실행 중</td><td>터미널에서 Ctrl+C 후 다시 실행</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>오류를 Claude Code에 물어보는 법</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 오류 해결 요청</span><button class="copy" type="button">복사</button></div><pre>앱을 실행했더니 오류가 났어요. 원인을 쉬운 말로 설명하고 직접 고쳐 주세요. 제가 해야 할 일이 있으면 순서대로 알려 주세요.
+
+[제가 한 일]
+(예: 회사명에 ○○캐피탈을 넣고 보고서 작성 버튼을 눌렀어요)
+
+[터미널 또는 화면에 나온 오류 문구]
+(여기에 붙여넣기 — API 키처럼 보이는 값은 지우고 붙여넣기)</pre></div>
+
+    <h3>보안 수칙 다섯 가지</h3>
+    <ol class="steps">
+      <li>API 키는 <code class="k">.env</code>에만 둡니다. 노출되면 즉시 폐기하고 재발급합니다.</li>
+      <li>고객 개인정보, 신용정보, 사내 대외비는 입력하지 않습니다. 공개된 공시만 다룹니다.</li>
+      <li>Claude Code가 파일 삭제나 낯선 명령을 물어오면, 무엇을 하는지 묻고 이해한 뒤 허용합니다.</li>
+      <li>생성된 보고서는 DART 원문과 숫자를 대조한 뒤 사용합니다.</li>
+      <li>폴더를 동료에게 넘길 때는 <code class="k">.env</code>를 빼고 전달하고, 각자 자기 키를 넣게 합니다.</li>
+    </ol>
+
+    <h3>최종 폴더 구조</h3>
+    <div class="block t"><div class="block-head"><span class="tag t">FOLDER</span><span class="where">report-agent 완성본</span></div><pre>report-agent/
+├── .env                 # 내 키 2개 (공유 금지)
+├── .gitignore
+├── .streamlit/config.toml
+├── requirements.txt
+├── app.py               # 화면 (1회차에 꾸민 디자인)
+├── dart_api.py          # DART 개황·공시·재무
+├── agent.py             # 계획→수집→작성→점검 에이전트
+└── data/                # DART 회사 고유번호 목록</pre></div>
+    <label class="check"><input type="checkbox" id="done-2-7"> 오류 해결표와 보안 수칙을 확인했다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>2회차 07 / 07</span></footer>
+</section>
+
+
+</main>
+<p class="page-foot">우리금융캐피탈 디지털전략부 · 사내 교육용 자료</p>
+<script>
+(function(){
+  var KEY='ra-s2';
+  var state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){state={}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+  var chips=document.getElementById('chips');
+  var prog=document.getElementById('prog');
+  var chapters=[].slice.call(document.querySelectorAll('.chapter'));
+  var lastSess='';
+  chapters.forEach(function(sec){
+    var n=sec.getAttribute('data-ch');
+    var sess=n.split('-')[0];
+    if(sess!==lastSess){
+      var s=document.createElement('span');s.className='sep';s.textContent=sess+'회차';
+      chips.appendChild(s);lastSess=sess;
+    }
+    var a=document.createElement('a');
+    a.href='#'+sec.id; a.textContent='0'+n.split('-')[1]; a.id='chip-'+n;
+    a.title=sec.querySelector('h2').textContent;
+    chips.appendChild(a);
+  });
+  function render(){
+    var c=0;
+    chapters.forEach(function(sec){
+      var n=sec.getAttribute('data-ch');
+      var on=!!state[n]; if(on)c++;
+      var box=document.getElementById('done-'+n);
+      box.checked=on;
+      box.parentNode.classList.toggle('on',on);
+      document.getElementById('chip-'+n).classList.toggle('done',on);
+    });
+    prog.textContent=c+'/'+chapters.length;
+  }
+  chapters.forEach(function(sec){
+    var n=sec.getAttribute('data-ch');
+    document.getElementById('done-'+n).addEventListener('change',function(e){
+      state[n]=e.target.checked; save(); render();
+    });
+  });
+  render();
+
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pre=btn.closest('.block').querySelector('pre');
+      var text=pre.innerText;
+      function ok(){btn.textContent='복사됨';btn.classList.add('copied');setTimeout(function(){btn.textContent='복사';btn.classList.remove('copied')},1600)}
+      function fallback(){
+        var r=document.createRange();r.selectNodeContents(pre);
+        var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+        btn.textContent='선택됨 · Ctrl+C';
+        setTimeout(function(){btn.textContent='복사'},2200);
+      }
+      try{
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(ok,fallback);
+        }else{fallback()}
+      }catch(e){fallback()}
+    });
+  });
+})();
+</script>
+</body>
+</html>
