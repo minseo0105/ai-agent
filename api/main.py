@@ -240,5 +240,8 @@ if (WEB_DIST / "index.html").is_file():
         for c in candidates:
             c = c.resolve()
             if c.is_relative_to(WEB_DIST) and c.is_file():
-                return FileResponse(c)
-        return FileResponse(WEB_DIST / "404.html", status_code=404)
+                # 화면(HTML)은 배포 직후 바로 보이도록 브라우저가 매번 새 버전인지 확인하게 한다.
+                # (이미지·_next 파일은 그대로 캐시. 바뀌지 않았으면 304로 가볍게 끝난다)
+                headers = {"Cache-Control": "no-cache"} if c.suffix == ".html" else None
+                return FileResponse(c, headers=headers)
+        return FileResponse(WEB_DIST / "404.html", status_code=404, headers={"Cache-Control": "no-cache"})
