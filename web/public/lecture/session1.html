@@ -222,13 +222,23 @@ ul.plain li{margin:4px 0}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
-<style>.back{flex:none;font-size:13px;font-weight:600;text-decoration:none;color:var(--accent);white-space:nowrap}@media (max-width:560px){.brand{display:none}}</style>
+<style>.back{flex:none;font-size:13px;font-weight:600;text-decoration:none;color:var(--accent);white-space:nowrap}</style>
 <style>body{margin:0;font-size:16px}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+.dept-bar{background:var(--band);color:var(--band-ink);font-size:13px}
+.dept-bar .in{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.dept-bar b{font-weight:700;letter-spacing:.02em}
+@media (max-width:560px){.topbar .brand{display:none}}
+.dept-bar nav{display:flex;gap:6px}
+.dept-bar a{color:var(--band-ink);text-decoration:none;font-weight:600;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 12px;white-space:nowrap}
+.dept-bar a:hover,.dept-bar a:focus-visible{background:rgba(255,255,255,.12)}
+</style>
 </head>
 <body>
+<div class="dept-bar"><div class="in"><b>우리금융캐피탈 디지털전략부</b><nav aria-label="사이트 이동"><a href="/">← WAI LABS 메인</a><a href="/lecture/">강의 목록</a></nav></div></div>
 <header class="topbar">
   <div class="wrap">
-    <a class="back" href="/lecture/">← 강의 목록</a><div class="brand">보고서 작성 에이전트 · 1회차<small>우리금융캐피탈 디지털전략부</small></div>
+    <div class="brand">보고서 작성 에이전트 · 1회차<small>우리금융캐피탈 디지털전략부</small></div>
     <nav class="chips" id="chips" aria-label="장 이동"></nav>
     <div class="prog" id="prog">0/8</div>
   </div>
