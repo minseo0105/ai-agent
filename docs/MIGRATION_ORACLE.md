@@ -251,3 +251,12 @@ curl -s localhost/api/health            # Caddy 경유
 - 인증서: Let's Encrypt `wai-labs.com`·`www.wai-labs.com`, 재생성 5초 안에 발급(만료 2027-01-28, 자동 갱신).
 - 코드: `web/src/lib/services.ts` `MONEYON_URL`(같은 날 저녁 상대 경로 `/moneyon/`로 다시 변경 — 접속한 주소 안에서 이동, HF 예비 서버에서만 `ORACLE_ORIGIN` 붙임), `services/stockon/service.py` `ORACLE_URL`(HF 예비 서버의 'STOCK:ON 열기'), `apps/moneyon/web/src/app/layout.tsx` 공유 미리보기 기본 주소 + `og:url`, 점검 스크립트 기본 주소(`scripts/demo_load_test.py`, `scripts/demo_phone_check.cjs`), `tests/test_home_showcase_browser.cjs`.
 - 네이버 지도 콘솔 Web 서비스 URL에 `https://wai-labs.com` 추가는 사용자가 직접(기존 sslip.io는 남김). `www`는 apex로 리다이렉트되므로 등록하지 않아도 된다.
+
+### 6-12. 휴대폰 버튼 배포 (2026-11-03 추가)
+
+- `.github/workflows/deploy-oracle.yml`: GitHub Actions에서 **수동 실행만** 하는 오라클 반영 버튼. main push로는 돌지 않는다(HF 자동 배포 `deploy-space.yml`과 별개).
+- 실행: GitHub 앱 → `minseo0105/ai-agent` → Actions → **Deploy to Oracle (wai-labs.com)** → Run workflow → 대상(`ailab` 기본 / `moneyon` / `all`).
+- 서버에서 하는 일: `cd ~/ailab && git pull --ff-only` → 대상 서비스만 `docker compose build` + `up -d --no-deps`(ailab이면 `stockon-collector`도 재시작). caddy는 건드리지 않음. 끝나면 `https://wai-labs.com/api/ready`를 최대 4분 확인.
+- 처음 한 번 PC에서 할 일: 저장소 Settings → Secrets and variables → Actions에 `ORACLE_HOST`(140.245.88.198), `ORACLE_USER`(opc), `ORACLE_SSH_KEY`(`~/.ssh/ailab-a1.key` 내용 전체) 등록.
+- 오라클 보안 목록(Security List)에서 22번 포트를 내 PC IP로만 열어 두었다면 GitHub 서버가 접속하지 못한다. 그 경우 22번을 0.0.0.0/0으로 열거나(키 인증만 허용 상태 유지) 버튼 대신 PC에서 실행.
+- 서버에서 `git pull --ff-only`가 실패하면(서버에 직접 고친 파일이 있을 때) 중단된다. 서버에 접속해 `git status`로 확인 후 정리.

@@ -1,0 +1,98 @@
+name: Deploy to Oracle (wai-labs.com)
+
+# 휴대폰 GitHub 앱이나 웹에서 버튼으로 오라클 서버에 반영한다. 자동 실행은 하지 않는다(main push로는 안 돈다).
+#   GitHub 앱 → 저장소 → Actions → "Deploy to Oracle (wai-labs.com)" → Run workflow
+# 서버에서 하는 일은 docs/MIGRATION_ORACLE.md 운영 메모(서버 갱신)와 같다:
+#   cd ~/ailab && git pull && docker compose build <서비스> && docker compose up -d --no-deps <서비스>
+# 필요한 설정 (저장소 → Settings → Secrets and variables → Actions → Secrets)
+#   ORACLE_HOST     : 140.245.88.198
+#   ORACLE_USER     : opc
+#   ORACLE_SSH_KEY  : 서버 접속 개인키 파일 내용 전체(-----BEGIN ... 부터 END ...----- 까지)
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "반영할 대상"
+        type: choice
+        default: ailab
+        options:
+          - ailab        # AI LAB 화면·API (STOCK:ON 수집기도 같은 이미지라 함께 재시작)
+          - moneyon      # MONEY:ON 만
+          - all          # 둘 다
+
+concurrency:
+  group: deploy-oracle
+  cancel-in-progress: false   # 빌드 도중 끊기지 않게 앞 작업이 끝날 때까지 기다린다
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check settings
+        env:
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_USER: ${{ secrets.ORACLE_USER }}
+          ORACLE_SSH_KEY: ${{ secrets.ORACLE_SSH_KEY }}
+        run: |
+          missing=""
+          [ -z "$ORACLE_HOST" ] && missing="$missing ORACLE_HOST"
+          [ -z "$ORACLE_USER" ] && missing="$missing ORACLE_USER"
+          [ -z "$ORACLE_SSH_KEY" ] && missing="$missing ORACLE_SSH_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::GitHub Secrets가 비어 있습니다:$missing (Settings → Secrets and variables → Actions)"
+            exit 1
+          fi
+
+      - name: Prepare SSH
+        env:
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_SSH_KEY: ${{ secrets.ORACLE_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$ORACLE_SSH_KEY" | tr -d '\r' > ~/.ssh/oracle.key
+          chmod 600 ~/.ssh/oracle.key
+          ssh-keyscan -T 15 -H "$ORACLE_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Pull and rebuild on server
+        env:
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_USER: ${{ secrets.ORACLE_USER }}
+          TARGET: ${{ inputs.target }}
+        run: |
+          ssh -i ~/.ssh/oracle.key -o BatchMode=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 \
+            "$ORACLE_USER@$ORACLE_HOST" "TARGET='$TARGET' bash -s" <<'REMOTE'
+          set -euo pipefail
+          cd ~/ailab
+          echo "== 반영 전: $(git log -1 --format='%h %s')"
+          git pull --ff-only
+          echo "== 반영 후: $(git log -1 --format='%h %s')"
+          if [ "$TARGET" = "ailab" ] || [ "$TARGET" = "all" ]; then
+            docker compose build ailab
+            docker compose up -d --no-deps ailab
+            # STOCK:ON 수집기는 ailab 이미지를 같이 쓴다
+            docker compose up -d --no-deps stockon-collector
+          fi
+          if [ "$TARGET" = "moneyon" ] || [ "$TARGET" = "all" ]; then
+            docker compose build moneyon
+            docker compose up -d --no-deps moneyon
+          fi
+          docker compose ps
+          REMOTE
+
+      - name: Check site
+        run: |
+          for i in $(seq 1 24); do
+            if curl -fsS --max-time 10 https://wai-labs.com/api/ready >/dev/null; then
+              echo "wai-labs.com 정상 응답"
+              curl -s -o /dev/null -w "/lecture/ → %{http_code}\n" https://wai-labs.com/lecture/
+              exit 0
+            fi
+            echo "아직 기동 중... ($i/24)"; sleep 10
+          done
+          echo "::error::4분 안에 wai-labs.com/api/ready 응답이 없습니다. 서버에서 docker compose ps / logs ailab 확인"
+          exit 1
+
+      - name: Clean up key
+        if: always()
+        run: rm -f ~/.ssh/oracle.key
