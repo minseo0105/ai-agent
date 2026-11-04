@@ -250,7 +250,7 @@ ul.plain li{margin:4px 0}
   <p class="lead">스코어카드 사진을 AI가 읽고, 내가 확인하고, 코드가 계산하고, AI가 코칭하는 골프 코치를 만듭니다. 그리고 GitHub와 Streamlit Cloud로 인터넷에 올려 휴대폰과 동료에게 공유합니다.</p>
 
   <div class="sessions"><div class="sess three">
-      <div class="lbl">3회차 · 약 3시간</div>
+      <div class="lbl">3회차 · 약 3시간 30분</div>
       <h3>골프 코치 만들고 공유하기</h3>
       <p>스코어카드 사진을 분석하는 앱을 만들어 인터넷에 올리고 휴대폰으로 엽니다.</p>
       <ul>
@@ -539,130 +539,275 @@ ul.plain li{margin:4px 0}
 
 <!-- 3-6 -->
 <section class="chapter s3c" id="s3-6" data-ch="3-6">
-  <div class="ch-head"><span class="ch-no">3회차 · 06</span><span class="ch-time">10분</span><h2>배포 전 점검: 올릴 파일만 골라내기</h2></div>
+  <div class="ch-head"><span class="ch-no">3회차 · 06</span><span class="ch-time">15분</span><h2>배포 전 점검: 올릴 파일만 골라내기</h2></div>
   <div class="ch-body">
-    <p class="goal">GitHub 창고에는 <b>코드만</b> 올리고 키는 절대 올리지 않습니다. 실수를 막기 위해 Claude Code에게 올릴 파일만 따로 모아 달라고 합니다.</p>
-    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 배포 점검</span><button class="copy" type="button">복사</button></div><pre>이 앱을 GitHub 에 올리고 Streamlit Community Cloud 로 배포하려고 해요. 배포 전 점검을 해 주세요.
+    <p class="goal">GitHub 창고에는 <b>코드만</b> 올리고 키는 절대 올리지 않습니다. 실수를 막기 위해 Claude Code에게 올릴 파일만 바탕화면의 새 폴더에 따로 모아 달라고 합니다. 다음 장에서는 이 폴더 안의 파일만 끌어다 놓으면 됩니다.</p>
+
+    <h3>왜 이렇게 나눠서 올리나요</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>파일·폴더</th><th>GitHub에 올리나요?</th><th>이유</th></tr></thead>
+      <tbody>
+        <tr><td><code>app.py</code></td><td><span class="pill">올림</span></td><td>앱 본체입니다.</td></tr>
+        <tr><td><code>requirements.txt</code></td><td><span class="pill">올림</span></td><td>Streamlit Cloud가 이 목록을 보고 부품을 설치합니다. 없으면 배포가 실패합니다.</td></tr>
+        <tr><td><code>.env</code></td><td><span class="pill no">절대 안 올림</span></td><td>API 키가 들어 있습니다. 공개 창고에 올라가면 누구나 내 키를 씁니다.</td></tr>
+        <tr><td><code>.venv</code> 폴더</td><td><span class="pill no">안 올림</span></td><td>내 PC 전용 Python 환경입니다. 수천 개 파일이라 올라가지도 않습니다.</td></tr>
+        <tr><td>스코어카드 사진</td><td><span class="pill no">안 올림</span></td><td>개인 기록입니다. 앱에서 그때그때 올리면 됩니다.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Claude Code에 점검 맡기기</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 배포 점검</span><button class="copy" type="button">복사</button></div><pre>이 앱을 GitHub 웹사이트에 파일 끌어다 놓기로 올리고, Streamlit Community Cloud 로 배포하려고 해요. 배포 전 점검을 해 주세요.
 
 1. 코드 어디에도 API 키나 비밀번호가 직접 적혀 있지 않은지 확인해 주세요.
-2. requirements.txt 에 필요한 부품이 빠짐없이 있는지 확인해 주세요.
-3. 바탕화면에 upload_to_github 폴더를 새로 만들고, GitHub 에 올려야 할 파일만 복사해 주세요. .env, .venv, 캐시 파일, 개인 사진은 넣지 마세요.
-4. 그 폴더에 들어간 파일 목록과, 각 파일이 무슨 역할인지 한 줄씩 알려 주세요.
-5. Streamlit Cloud 의 Secrets 칸에 붙여넣을 내용의 "형식"을 알려 주세요. 실제 키 값은 쓰지 말고 자리만 표시해 주세요.</pre></div>
-    <p>보통 아래처럼 파일 두세 개만 남습니다. <code class="k">.env</code>가 보이면 절대 올리지 마세요.</p>
-    <div class="block t"><div class="block-head"><span class="tag t">FOLDER</span><span class="where">upload_to_github 예시</span></div><pre>upload_to_github/
+2. 키와 비밀번호를 get_secret() 으로 읽고, 배포 환경(st.secrets)과 내 PC(.env) 양쪽에서 동작하는지 확인해 주세요.
+3. requirements.txt 에 app.py 가 쓰는 부품이 빠짐없이 있는지 확인해 주세요. 버전 번호는 붙이지 않아도 됩니다.
+4. 앱이 다른 파일(예: 이미지, CSV, .streamlit 폴더)을 꼭 필요로 하는지 알려 주세요. 가능하면 app.py 와 requirements.txt 두 파일만으로 돌아가게 정리해 주세요.
+5. 바탕화면에 upload_to_github 폴더를 새로 만들고, GitHub 에 올려야 할 파일만 복사해 주세요. .env, .venv, __pycache__, 개인 사진은 넣지 마세요.
+6. 그 폴더의 파일 목록과 각 파일의 역할을 한 줄씩 알려 주세요.
+7. Streamlit Cloud 의 Secrets 칸에 붙여넣을 "형식"을 알려 주세요. 실제 키 값은 쓰지 말고 자리만 표시해 주세요.</pre></div>
+
+    <h3>결과 확인하기</h3>
+    <ol class="steps">
+      <li>바탕화면에 <code class="k">upload_to_github</code> 폴더가 생겼는지 봅니다.</li>
+      <li>폴더를 열어 파일이 아래처럼 <b>두 개(많아도 서너 개)</b>인지 확인합니다.
+        <div class="block t"><div class="block-head"><span class="tag t">FOLDER</span><span class="where">upload_to_github 예시</span></div><pre>upload_to_github/
 ├── app.py             # 골프 코치 화면과 분석
-└── requirements.txt   # 필요한 부품 목록</pre></div>
-    <div class="block t"><div class="block-head"><span class="tag t">SECRETS</span><span class="where">Streamlit Cloud에 넣을 형식 (값은 본인 것으로)</span></div><pre>ANTHROPIC_API_KEY = "sk-ant-api03-여기에_키"
+└── requirements.txt   # 필요한 부품 목록</pre></div></li>
+      <li><code class="k">.env</code>라는 파일이 보이면 <b>그 파일만 지웁니다</b>. Windows는 숨김 파일이 안 보일 수 있으니 탐색기 <span class="ui">보기 → 표시 → 숨긴 항목</span>을 켜고 한 번 더 확인합니다.</li>
+      <li><code class="k">requirements.txt</code>를 메모장으로 열어 <code class="k">streamlit</code>, <code class="k">anthropic</code>, <code class="k">pillow</code>, <code class="k">pillow-heif</code>, <code class="k">pandas</code>, <code class="k">python-dotenv</code>가 한 줄씩 있는지 봅니다.</li>
+    </ol>
+
+    <h3>Secrets에 넣을 내용 준비</h3>
+    <div class="block t"><div class="block-head"><span class="tag t">SECRETS</span><span class="where">메모장에 미리 적어 두기 (값은 본인 것으로)</span></div><pre>ANTHROPIC_API_KEY = "sk-ant-api03-여기에_키"
 APP_PASSWORD = "golf2026"</pre></div>
-    <div class="note warn"><b>배포용 API 키를 따로 만들기를 권합니다</b>2회차 03장처럼 콘솔에서 <code class="k">golf-coach-web</code>이라는 키를 하나 더 만들어 Secrets에 넣으세요. 나중에 링크가 너무 퍼졌을 때 이 키만 삭제하면 앱만 멈추고 내 PC 앱은 영향이 없습니다.</div>
-    <label class="check"><input type="checkbox" id="done-3-6"> upload_to_github 폴더에 .env 가 없는 것을 확인했다</label>
+    <ul class="plain">
+      <li>왼쪽 이름은 대문자·밑줄까지 그대로, 값은 반드시 <b>큰따옴표</b> 안에 넣습니다.</li>
+      <li>.env 와 달리 <code class="k">=</code> 앞뒤에 띄어쓰기가 있어도 됩니다(TOML 형식).</li>
+    </ul>
+    <div class="note warn"><b>배포용 API 키를 따로 만들기를 권합니다</b>2회차 03장 방법대로 콘솔에서 <code class="k">golf-coach-web</code>이라는 키를 하나 더 만들어 Secrets에 넣으세요. 링크가 너무 퍼졌을 때 이 키만 삭제하면 웹 앱만 멈추고, 내 PC 앱은 그대로 동작합니다.</div>
+    <label class="check"><input type="checkbox" id="done-3-6"> upload_to_github 폴더에 app.py·requirements.txt만 있고 .env 가 없다</label>
   </div>
   <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 06 / 09</span></footer>
 </section>
 
 <!-- 3-7 -->
 <section class="chapter s3c" id="s3-7" data-ch="3-7">
-  <div class="ch-head"><span class="ch-no">3회차 · 07</span><span class="ch-time">20분</span><h2>GitHub 가입하고 파일 올리기</h2></div>
+  <div class="ch-head"><span class="ch-no">3회차 · 07</span><span class="ch-time">30분</span><h2>GitHub 가입하고 파일 올리기</h2></div>
   <div class="ch-body">
-    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>버튼 이름은 실제 기준으로 맞췄지만, 색과 배치는 실제와 조금 다를 수 있습니다.</div>
-    <h3>A. 가입하기</h3>
+    <p class="goal">GitHub는 코드를 맡겨 두는 인터넷 창고입니다. 오늘은 명령어 없이 <b>웹사이트에서 파일을 끌어다 놓는 방식</b>만 씁니다. 파일 끌어다 놓기가 필요하므로 이 장은 <b>PC 브라우저</b>에서 진행하세요.</p>
+    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>버튼 이름은 실제 GitHub 기준으로 맞췄지만, 색과 배치는 실제와 조금 다를 수 있습니다. GitHub 화면은 영어로 나옵니다.</div>
+
+    <h3>A. 가입하기 (10분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/signup</span></div>
+      <div class="mock-modal">
+        <div class="mt">Sign up for GitHub</div>
+        <div class="mrow hl"><span class="lab">Email</span><span class="field">hong@woori.com</span><span class="num">1</span></div>
+        <div class="mrow hl"><span class="lab">Password</span><span class="field">••••••••••••••••</span><span class="num">2</span></div>
+        <div class="mrow hl"><span class="lab">Username</span><span class="field">hong-woori</span><span class="num">3</span></div>
+        <div class="mrow"><span class="lab">Your Country/Region</span><span class="field">South Korea</span></div>
+        <div class="mrow"><span class="lab">Email preferences</span><span class="field dim">☐ 체크 안 해도 됨</span></div>
+        <div class="mbtn hl wide">Continue <span class="num">4</span></div>
+      </div>
+    </div></div>
     <ol class="steps">
       <li>GitHub에 접속해 오른쪽 위 <span class="ui">Sign up</span>을 누릅니다.
-        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">GitHub</span><button class="copy" type="button">복사</button></div><pre>https://github.com</pre></div></li>
-      <li>이메일, 비밀번호, <b>사용자 이름(Username)</b>을 차례로 입력합니다. 사용자 이름은 영문·숫자로 정하며, 앱 주소와 창고 주소에 그대로 보이니 점잖게 짓습니다. 예: <code class="k">hong-woori</code></li>
-      <li>퍼즐(사람 확인)을 풀고, 메일로 온 숫자 코드를 입력합니다. 이후 나오는 설문은 건너뛰어도 되고, 요금제는 무료(Free)를 고릅니다.</li>
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">GitHub 가입</span><button class="copy" type="button">복사</button></div><pre>https://github.com/signup</pre></div></li>
+      <li><b>Email ①</b>: 지금 메일함을 열 수 있는 주소를 씁니다.</li>
+      <li><b>Password ②</b>: 15자 이상, 또는 8자 이상에 숫자와 소문자를 섞어야 합니다. 조건이 맞으면 칸 아래 글자가 초록색으로 바뀝니다.</li>
+      <li><b>Username ③</b>: 영문 소문자·숫자·하이픈(-)으로 정합니다. <b>창고 주소와 배포 화면에 그대로 보이므로</b> 점잖게 짓습니다. 예: <code class="k">hong-woori</code>. 이미 쓰는 이름이면 빨간 글씨가 나오니 숫자를 붙여 봅니다.</li>
+      <li><span class="ui">Continue</span> ④를 누르면 "사람인지 확인" 퍼즐이 나옵니다. 안내대로 풀어 줍니다.</li>
+      <li>메일로 온 <b>8자리 숫자(launch code)</b>를 화면 칸에 입력합니다. 메일이 안 오면 스팸함을 확인합니다.</li>
+      <li>가입이 끝나면 로그인 화면이 나옵니다. 방금 만든 이메일과 비밀번호로 로그인합니다.</li>
+      <li>"How many team members…", "What specific features…" 같은 설문이 나오면 아무거나 고르거나 <span class="ui">Skip personalization</span>을 누릅니다. 요금제를 물으면 <b>Free</b>(무료)를 고릅니다.</li>
     </ol>
+    <div class="note"><b>Git과 GitHub는 다릅니다</b>1회차에 설치한 Git은 내 PC의 프로그램이고, GitHub는 인터넷 창고 웹사이트입니다. 오늘은 웹사이트만 씁니다.</div>
 
-    <h3>B. 창고(저장소) 만들기</h3>
+    <h3>B. 창고(저장소) 만들기 (5분)</h3>
     <div class="mockwrap"><div class="mock">
       <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/new</span></div>
       <div class="mock-modal">
         <div class="mt">Create a new repository</div>
+        <div class="mrow"><span class="lab">Owner</span><span class="field">hong-woori</span></div>
         <div class="mrow hl"><span class="lab">Repository name</span><span class="field">golf-coach</span><span class="num">1</span></div>
         <div class="mrow"><span class="lab">Description</span><span class="field dim">(선택) 스코어카드 분석 골프 코치</span></div>
         <div class="mrow hl"><span class="lab">공개 범위</span><span class="chipset"><span class="on">Public</span><span>Private</span></span><span class="num">2</span></div>
-        <div class="mbtn hl wide">Create repository <span class="num">3</span></div>
+        <div class="mrow hl"><span class="lab">Add README</span><span class="field dim">Off 그대로</span><span class="num">3</span></div>
+        <div class="mbtn hl wide">Create repository <span class="num">4</span></div>
       </div>
     </div></div>
-    <ol class="steps" start="4" style="counter-reset:s 3">
-      <li>오른쪽 위 <span class="ui">+</span> → <span class="ui">New repository</span>를 누릅니다.</li>
-      <li><b>이름 ①</b>: <code class="k">golf-coach</code></li>
-      <li><b>공개 범위 ②</b>: <b>Public</b>을 고릅니다. 코드는 공개되지만 키는 코드에 없고, 앱은 비밀번호로 막혀 있으므로 안전합니다. 무료 배포도 가장 간단합니다.</li>
-      <li><span class="ui">Create repository</span> ③을 누릅니다.</li>
+    <ol class="steps" start="9" style="counter-reset:s 8">
+      <li>GitHub 오른쪽 위 <span class="ui">+</span> 버튼 → <span class="ui">New repository</span>를 누릅니다. 바로 가려면 아래 주소를 씁니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">새 창고 만들기</span><button class="copy" type="button">복사</button></div><pre>https://github.com/new</pre></div></li>
+      <li><b>Repository name ①</b>: <code class="k">golf-coach</code> (영문 소문자와 하이픈만)</li>
+      <li><b>공개 범위 ②</b>: <b>Public</b>을 고릅니다. 코드는 공개되지만 키는 코드에 없고(06장에서 확인), 앱은 비밀번호로 잠겨 있어 안전합니다. Private도 배포는 되지만 연결할 때 권한 확인 단계가 하나 더 늘어납니다.</li>
+      <li><b>README, .gitignore, license ③</b>: 모두 <b>추가하지 않고 그대로</b> 둡니다. 빈 창고여야 다음 단계의 파일 올리기 안내가 바로 보입니다.</li>
+      <li>맨 아래 초록색 <span class="ui">Create repository</span> ④를 누릅니다.</li>
     </ol>
 
-    <h3>C. 파일 끌어다 올리기</h3>
+    <h3>C. 파일 끌어다 올리기 (5분)</h3>
     <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/hong-woori/golf-coach/upload</span></div>
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/hong-woori/golf-coach</span></div>
       <div class="mock-content">
-        <div class="mt">golf-coach</div>
-        <div class="mempty hl" style="text-align:center;padding:26px 12px">여기로 파일을 끌어다 놓기<br><small>app.py · requirements.txt</small> <span class="num">4</span></div>
-        <div class="mrow" style="width:100%"><span class="lab">Commit changes</span><span class="field">첫 업로드</span></div>
+        <div class="mt">Quick setup — if you've done this kind of thing before</div>
+        <div class="mempty"><small>…or create a new repository on the command line (무시)</small></div>
+        <div class="mempty hl">Get started by creating a new file or <b>uploading an existing file</b> <span class="num">1</span></div>
+      </div>
+    </div></div>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/hong-woori/golf-coach/upload/main</span></div>
+      <div class="mock-content">
+        <div class="mt">golf-coach /</div>
+        <div class="mempty hl" style="text-align:center;padding:26px 12px">Drag files here to add them to your repository<br><small>or choose your files</small> <span class="num">2</span></div>
+        <div class="mrow" style="width:100%"><span class="lab">올라간 파일</span><span class="field">app.py · requirements.txt</span><span class="num">3</span></div>
+        <div class="mrow" style="width:100%"><span class="lab">Commit changes</span><span class="field">첫 업로드</span><span class="num">4</span></div>
+        <div class="mrow" style="width:100%"><span class="lab"></span><span class="field dim">◉ Commit directly to the main branch</span></div>
         <div class="mbtn hl">Commit changes <span class="num">5</span></div>
       </div>
     </div></div>
-    <ol class="steps" start="8" style="counter-reset:s 7">
-      <li>새 창고 화면에서 <span class="ui">uploading an existing file</span> 링크(또는 <span class="ui">Add file → Upload files</span>)를 누릅니다.</li>
-      <li>바탕화면 <code class="k">upload_to_github</code> 폴더 안의 파일들을 선택해 회색 상자 ④에 끌어다 놓습니다. 폴더째가 아니라 <b>안의 파일들</b>을 끌어다 놓으세요.</li>
-      <li>아래 <span class="ui">Commit changes</span> ⑤를 누릅니다. 창고 화면에 <code class="k">app.py</code>와 <code class="k">requirements.txt</code>가 보이면 완료입니다.</li>
+    <ol class="steps" start="14" style="counter-reset:s 13">
+      <li>창고를 만들면 영어 안내문(Quick setup)이 가득한 화면이 나옵니다. 명령어 부분은 모두 무시하고, 위쪽 문장 속 파란 글씨 <span class="ui">uploading an existing file</span> ①을 누릅니다.</li>
+      <li>바탕화면의 <code class="k">upload_to_github</code> 폴더를 열고, 안의 <b>파일들</b>을 마우스로 모두 선택(Ctrl+A)해 브라우저의 회색 상자 ②에 끌어다 놓습니다. <b>폴더째가 아니라 안의 파일들</b>을 놓아야 합니다. 끌어다 놓기가 어려우면 <span class="ui">choose your files</span>를 눌러 파일을 고릅니다.</li>
+      <li>상자 아래에 <code class="k">app.py</code>, <code class="k">requirements.txt</code>가 목록 ③으로 나타나는지 확인합니다. 업로드 막대가 끝날 때까지 기다립니다.</li>
+      <li><b>Commit changes 칸 ④</b>: 무엇을 올렸는지 메모입니다. <code class="k">첫 업로드</code>처럼 아무 말이나 적어도 됩니다. 아래 선택은 <span class="ui">Commit directly to the main branch</span> 그대로 둡니다.</li>
+      <li>초록색 <span class="ui">Commit changes</span> ⑤를 누릅니다.</li>
+      <li>창고 첫 화면에 <code class="k">app.py</code>와 <code class="k">requirements.txt</code>가 <b>맨 바깥에</b> 보이면 완료입니다. <code class="k">upload_to_github</code>라는 폴더가 보이고 그 안에 파일이 있다면 폴더째 올린 것이니, 아래 표의 방법으로 바로잡습니다.</li>
     </ol>
-    <div class="note ok"><b>앱을 고쳤을 때는?</b>Claude Code로 내 PC에서 고친 뒤, 06장의 점검 프롬프트로 upload_to_github 폴더를 다시 만들고, 같은 방법으로 파일을 다시 올리면 됩니다. 같은 이름 파일은 새 것으로 바뀌고, 배포된 앱도 몇 분 안에 자동으로 바뀝니다.</div>
-    <label class="check"><input type="checkbox" id="done-3-7"> GitHub 창고에 app.py 와 requirements.txt 가 보인다</label>
+
+    <h3>D. 앱을 고친 뒤 다시 올리기</h3>
+    <ol class="steps">
+      <li>내 PC에서 Claude Code로 앱을 고치고, 06장의 점검 프롬프트를 다시 붙여넣어 <code class="k">upload_to_github</code> 폴더를 새로 만듭니다.</li>
+      <li>GitHub 창고 화면 오른쪽 위 <span class="ui">Add file</span> → <span class="ui">Upload files</span>를 누릅니다.</li>
+      <li>같은 방법으로 파일을 끌어다 놓고 <span class="ui">Commit changes</span>를 누릅니다. 같은 이름 파일은 새 것으로 바뀝니다.</li>
+      <li>배포된 앱(08장)은 GitHub가 바뀐 것을 알아채고 <b>1~3분 안에 자동으로</b> 새 버전으로 바뀝니다.</li>
+    </ol>
+
+    <h3>E. 막혔을 때</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>증상</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td>launch code 메일이 안 옴</td><td>스팸함 분류, 회사 메일 보안 필터</td><td>스팸함 확인, 화면의 Resend code, 안 되면 개인 메일로 가입</td></tr>
+        <tr><td>창고 안에 폴더가 하나 더 생김</td><td>폴더째 끌어다 놓음</td><td>폴더를 눌러 안의 파일을 열고 ⋯ → Delete file로 지운 뒤, 파일만 다시 올리기. 또는 창고를 지우고(Settings 맨 아래 Delete) 새로 만들기</td></tr>
+        <tr><td><code>.env</code>를 실수로 올림</td><td>06장 점검 누락</td><td>그 파일을 Delete file로 지우고, <b>그 키는 콘솔에서 즉시 삭제 후 새로 발급</b>. 지워도 기록(커밋)에 남기 때문입니다.</td></tr>
+        <tr><td>uploading an existing file 링크가 안 보임</td><td>README를 추가해 창고를 만듦</td><td>창고 화면 <span class="ui">Add file → Upload files</span>로 올리면 됨</td></tr>
+        <tr><td>휴대폰에서 끌어다 놓기가 안 됨</td><td>휴대폰 브라우저 제약</td><td>PC 브라우저에서 진행</td></tr>
+      </tbody>
+    </table></div>
+    <label class="check"><input type="checkbox" id="done-3-7"> GitHub 창고 맨 바깥에 app.py 와 requirements.txt 가 보인다</label>
   </div>
   <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 07 / 09</span></footer>
 </section>
 
 <!-- 3-8 -->
 <section class="chapter s3c" id="s3-8" data-ch="3-8">
-  <div class="ch-head"><span class="ch-no">3회차 · 08</span><span class="ch-time">20분</span><h2>Streamlit Cloud로 배포하기</h2></div>
+  <div class="ch-head"><span class="ch-no">3회차 · 08</span><span class="ch-time">30분</span><h2>Streamlit Cloud로 웹에 배포하기</h2></div>
   <div class="ch-body">
-    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>항목 이름은 Streamlit 공식 문서 기준입니다.</div>
-    <h3>A. 로그인하기</h3>
+    <p class="goal">Streamlit Community Cloud는 GitHub 창고의 앱을 가져가 인터넷에서 24시간 돌려 주는 무료 서비스입니다. GitHub 계정으로 로그인하고, 창고를 고르고, 금고(Secrets)에 키를 넣고, Deploy를 누르면 <code class="k">○○.streamlit.app</code> 주소가 생깁니다.</p>
+    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>항목 이름은 Streamlit 공식 문서 기준입니다. 화면은 영어로 나옵니다.</div>
+
+    <h3>A. GitHub 계정으로 로그인하기 (5분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">share.streamlit.io</span></div>
+      <div class="mock-modal">
+        <div class="mt">Sign in to Streamlit Community Cloud</div>
+        <div class="mbtn hl wide">Continue with GitHub <span class="num">1</span></div>
+        <div class="mrow"><span class="field dim">Continue with Google · email (쓰지 않음)</span></div>
+      </div>
+    </div></div>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/login/oauth/authorize</span></div>
+      <div class="mock-modal">
+        <div class="mt">Authorize Streamlit</div>
+        <div class="mrow"><span class="field dim">Streamlit wants to access your hong-woori account</span></div>
+        <div class="mbtn hl wide">Authorize streamlit <span class="num">2</span></div>
+      </div>
+    </div></div>
     <ol class="steps">
       <li>Streamlit Community Cloud에 접속합니다.
         <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">Streamlit Community Cloud</span><button class="copy" type="button">복사</button></div><pre>https://share.streamlit.io</pre></div></li>
-      <li><span class="ui">Continue with GitHub</span>을 누르고, GitHub가 권한 허락을 물으면 <span class="ui">Authorize</span>를 누릅니다. 이름·이메일 같은 기본 정보를 물으면 입력합니다.</li>
+      <li><span class="ui">Continue with GitHub</span> ①을 누릅니다. <b>반드시 GitHub로</b> 로그인해야 창고를 바로 고를 수 있습니다.</li>
+      <li>GitHub 화면이 열리며 Streamlit에 권한을 줄지 묻습니다. <span class="ui">Authorize streamlit</span> ②를 누릅니다. 비밀번호를 다시 물으면 GitHub 비밀번호를 넣습니다.</li>
+      <li>처음이면 이름, 하는 일, 이용 목적 같은 계정 설정을 묻습니다. 사실대로 넣고 <span class="ui">Continue</span>를 누릅니다. 이용약관 동의 체크가 있으면 체크합니다.</li>
+      <li>"My apps" 같은 빈 작업 공간 화면이 나오면 로그인 완료입니다.</li>
     </ol>
 
-    <h3>B. 앱 만들기</h3>
+    <h3>B. 배포 정보 입력하기 (5분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">share.streamlit.io</span></div>
+      <div class="mock-content">
+        <div class="mt mrow-between">My apps <span class="mbtn hl small">Create app <span class="num">1</span></span></div>
+        <div class="mempty"><small>아직 배포한 앱이 없습니다</small></div>
+      </div>
+    </div></div>
     <div class="mockwrap"><div class="mock">
       <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">share.streamlit.io/deploy</span></div>
       <div class="mock-modal">
         <div class="mt">Deploy an app</div>
-        <div class="mrow hl"><span class="lab">Repository</span><span class="field">hong-woori/golf-coach</span><span class="num">1</span></div>
-        <div class="mrow hl"><span class="lab">Branch</span><span class="field">main</span><span class="num">2</span></div>
-        <div class="mrow hl"><span class="lab">Main file path</span><span class="field">app.py</span><span class="num">3</span></div>
-        <div class="mrow hl"><span class="lab">App URL</span><span class="field">hong-golf-coach .streamlit.app</span><span class="num">4</span></div>
-        <div class="mrow"><span class="lab"></span><span class="field dim">Advanced settings ▸</span><span class="num">5</span></div>
-        <div class="mbtn hl wide">Deploy <span class="num">7</span></div>
+        <div class="mrow hl"><span class="lab">Repository</span><span class="field">hong-woori/golf-coach</span><span class="num">2</span></div>
+        <div class="mrow hl"><span class="lab">Branch</span><span class="field">main</span><span class="num">3</span></div>
+        <div class="mrow hl"><span class="lab">Main file path</span><span class="field">app.py</span><span class="num">4</span></div>
+        <div class="mrow hl"><span class="lab">App URL (optional)</span><span class="field">hong-golf-coach .streamlit.app</span><span class="num">5</span></div>
+        <div class="mrow hl"><span class="lab"></span><span class="field dim">Advanced settings</span><span class="num">6</span></div>
+        <div class="mbtn wide">Deploy</div>
       </div>
     </div></div>
-    <ol class="steps" start="3" style="counter-reset:s 2">
-      <li>오른쪽 위 <span class="ui">Create app</span>을 누르고, 앱이 이미 있냐고 물으면 <span class="ui">Yup, I have an app</span>을 고릅니다.</li>
-      <li><b>Repository ①</b>: <code class="k">내사용자이름/golf-coach</code>를 고릅니다.</li>
-      <li><b>Branch ②</b>: <code class="k">main</code> 그대로 둡니다.</li>
-      <li><b>Main file path ③</b>: <code class="k">app.py</code></li>
-      <li><b>App URL ④</b>: 휴대폰에 칠 주소입니다. 짧고 기억하기 쉽게 정합니다. 예: <code class="k">hong-golf-coach</code> → <code class="k">hong-golf-coach.streamlit.app</code></li>
+    <ol class="steps" start="6" style="counter-reset:s 5">
+      <li>오른쪽 위 <span class="ui">Create app</span> ①을 누릅니다. 어떤 방식으로 만들지 물으면 <b>GitHub 창고에서 배포</b>(Deploy a public app from GitHub, 또는 "Yup, I have an app")를 고릅니다. 템플릿이나 Playground는 고르지 않습니다.</li>
+      <li><b>Repository ②</b>: 칸을 누르면 내 창고 목록이 나옵니다. <code class="k">내사용자이름/golf-coach</code>를 고릅니다. 목록에 없으면 직접 입력하거나, 07장 창고가 Public인지 확인합니다.</li>
+      <li><b>Branch ③</b>: <code class="k">main</code> 그대로 둡니다.</li>
+      <li><b>Main file path ④</b>: <code class="k">app.py</code>. 창고 맨 바깥에 있는 파일 이름과 정확히 같아야 합니다.</li>
+      <li><b>App URL ⑤</b>: 휴대폰에 칠 주소입니다. 영문 소문자·숫자·하이픈으로 짧게 정합니다. 예: <code class="k">hong-golf-coach</code> → <code class="k">hong-golf-coach.streamlit.app</code>. 이미 쓰는 주소면 빨간 글씨가 나오니 바꿉니다.</li>
     </ol>
 
-    <h3>C. 금고(Secrets)에 키 넣기</h3>
+    <h3>C. 금고(Secrets)에 키 넣고 배포하기 (5분 + 대기 3~5분)</h3>
     <div class="mockwrap"><div class="mock">
       <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Advanced settings</span></div>
       <div class="mock-modal">
         <div class="mt">Advanced settings</div>
-        <div class="mrow"><span class="lab">Python version</span><span class="field">3.12</span></div>
-        <div class="mrow hl"><span class="lab">Secrets</span><span class="field key">ANTHROPIC_API_KEY = "sk-ant-…"<br>APP_PASSWORD = "golf2026"</span><span class="num">6</span></div>
-        <div class="mbtn wide">Save</div>
+        <div class="mrow hl"><span class="lab">Python version</span><span class="field">3.12</span><span class="num">7</span></div>
+        <div class="mrow hl"><span class="lab">Secrets</span><span class="field key">ANTHROPIC_API_KEY = "sk-ant-…"<br>APP_PASSWORD = "golf2026"</span><span class="num">8</span></div>
+        <div class="mbtn hl wide">Save <span class="num">9</span></div>
       </div>
     </div></div>
-    <ol class="steps" start="8" style="counter-reset:s 7">
-      <li><span class="ui">Advanced settings</span> ⑤를 누릅니다. Python 버전은 기본값(3.12) 그대로 둡니다.</li>
-      <li><b>Secrets ⑥</b>: 06장의 형식대로 두 줄을 붙여넣습니다. 값은 반드시 큰따옴표 안에 넣습니다. <span class="ui">Save</span>를 누릅니다.</li>
-      <li><span class="ui">Deploy</span> ⑦을 누릅니다. 몇 분간 설치 화면이 지나가고 앱이 뜨면 배포 완료입니다.</li>
+    <ol class="steps" start="11" style="counter-reset:s 10">
+      <li>배포 화면 아래쪽 <span class="ui">Advanced settings</span> ⑥을 누릅니다.</li>
+      <li><b>Python version ⑦</b>: <code class="k">3.12</code>를 고릅니다. 내 PC와 같은 버전이면 문제가 가장 적습니다.</li>
+      <li><b>Secrets ⑧</b>: 06장에서 메모장에 적어 둔 두 줄을 그대로 붙여넣습니다. 따옴표가 빠지지 않았는지 한 번 더 봅니다.</li>
+      <li><span class="ui">Save</span> ⑨를 눌러 설정 창을 닫고, 초록색 <span class="ui">Deploy</span>를 누릅니다.</li>
+      <li>"Your app is in the oven" 화면과 함께 오른쪽 아래에 설치 기록(로그)이 흘러갑니다. 처음에는 부품 설치에 <b>3~5분</b> 걸립니다. 화면을 닫지 말고 기다립니다.</li>
+      <li>비밀번호 입력 화면이 뜨면 배포 성공입니다. 비밀번호를 넣고 스코어카드 사진으로 분석을 한 번 돌려 봅니다.</li>
     </ol>
-    <div class="note"><b>키나 비밀번호를 바꾸고 싶을 때</b>내 앱 목록에서 앱 옆 메뉴(⋮) → <span class="ui">Settings</span> → <span class="ui">Secrets</span>에서 언제든 고칠 수 있습니다.</div>
-    <label class="check"><input type="checkbox" id="done-3-8"> streamlit.app 주소로 앱이 열렸다</label>
+
+    <h3>D. 배포 후 관리하기</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>하고 싶은 일</th><th>위치</th></tr></thead>
+      <tbody>
+        <tr><td>설치 기록·오류 보기</td><td>내 앱 화면 오른쪽 아래 <span class="ui">Manage app</span> → 로그 창</td></tr>
+        <tr><td>키·비밀번호 바꾸기</td><td><code>share.streamlit.io</code> 내 앱 목록 → 앱 오른쪽 <span class="ui">⋮</span> → <span class="ui">Settings</span> → <span class="ui">Secrets</span> → 고친 뒤 Save (1분 안에 적용)</td></tr>
+        <tr><td>앱 다시 켜기</td><td>앱 목록 <span class="ui">⋮</span> → <span class="ui">Reboot app</span></td></tr>
+        <tr><td>앱 지우기</td><td>앱 목록 <span class="ui">⋮</span> → <span class="ui">Delete</span> (GitHub 창고는 그대로 남음)</td></tr>
+        <tr><td>코드 고치기</td><td>07장 D처럼 GitHub에 다시 올리면 1~3분 안에 자동 반영</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>E. 막혔을 때</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>화면에 보이는 문구</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td><code>ModuleNotFoundError: No module named ...</code></td><td>requirements.txt에 부품 누락</td><td>Claude Code에 오류 문구를 붙여넣고 requirements.txt를 고쳐 달라고 한 뒤 GitHub에 다시 올리기</td></tr>
+        <tr><td><code>KeyError</code> / <code>st.secrets has no key</code></td><td>Secrets 이름 오타 또는 미입력</td><td>Settings → Secrets에서 이름이 <code>ANTHROPIC_API_KEY</code>, <code>APP_PASSWORD</code>와 정확히 같은지 확인</td></tr>
+        <tr><td><code>authentication_error</code></td><td>키 값 오타, 따옴표 누락, 삭제된 키</td><td>콘솔에서 키 확인 후 Secrets 다시 붙여넣기</td></tr>
+        <tr><td><code>credit balance is too low</code></td><td>Claude API 크레딧 소진</td><td>콘솔 Billing에서 충전</td></tr>
+        <tr><td>Main file path 오류 / 파일을 못 찾음</td><td>창고 안에 폴더가 하나 더 있음</td><td>07장 E 표대로 파일을 맨 바깥으로</td></tr>
+        <tr><td>"This app has gone to sleep"</td><td>한동안 아무도 안 써서 쉬는 중 (정상)</td><td>깨우기 버튼(Yes, get this app back up!)을 누르고 1분 대기</td></tr>
+        <tr><td>로그가 오래 멈춘 듯 보임</td><td>첫 설치는 원래 오래 걸림</td><td>5분 넘게 그대로면 ⋮ → Reboot app</td></tr>
+      </tbody>
+    </table></div>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 배포 오류 해결</span><button class="copy" type="button">복사</button></div><pre>Streamlit Community Cloud 에 배포했더니 오류가 났어요. 원인을 쉬운 말로 설명하고 내 PC의 파일을 고쳐 주세요. 고친 뒤 upload_to_github 폴더도 새로 만들어 주시고, GitHub 에 무엇을 다시 올리면 되는지 알려 주세요.
+
+[Manage app 로그 창에 나온 오류 문구]
+(여기에 붙여넣기 — 키처럼 보이는 값은 지우고)</pre></div>
+    <label class="check"><input type="checkbox" id="done-3-8"> ○○.streamlit.app 주소에서 비밀번호를 넣고 분석이 됐다</label>
   </div>
   <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 08 / 09</span></footer>
 </section>
