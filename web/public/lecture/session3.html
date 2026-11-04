@@ -13,7 +13,7 @@
 :root{
   --bg:#f3f6fa; --surface:#ffffff; --ink:#14213a; --muted:#56637a; --line:#d9e1eb;
   --accent:#0062a8; --accent-soft:#e3eef8; --warn:#9a5a0c; --warn-soft:#fbf1e2;
-  --ok:#1d7349; --ok-soft:#e3f2ea; --s2:#6a3fa0; --s2-soft:#efe8f8; --s3:#1f6b52; --s3-soft:#e1f1ea;
+  --ok:#1d7349; --ok-soft:#e3f2ea; --s2:#6a3fa0; --s2-soft:#efe8f8; --s3:#1f6b52; --s3-soft:#e1f1ea; --s4:#4b5563; --s4-soft:#eceef2;
   --code-bg:#0f1b2d; --code-ink:#e2eaf6; --code-dim:#8fa3c0; --code-line:#22324b;
   --band:#14213a; --band-ink:#dfe7f3;
   --f-display:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
@@ -23,13 +23,13 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0c1320; --surface:#131d2e; --ink:#e4ebf5; --muted:#9aa8bf; --line:#2a3851;
   --accent:#62adea; --accent-soft:#16304b; --warn:#e7a557; --warn-soft:#33260f;
-  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a;
+  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a; --s4:#aab3c2; --s4-soft:#232c3b;
   --code-bg:#080e19; --code-ink:#e2eaf6; --code-dim:#8295b3; --code-line:#1d2a40;
   --band:#0a1019; --band-ink:#c9d5e6; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0c1320; --surface:#131d2e; --ink:#e4ebf5; --muted:#9aa8bf; --line:#2a3851;
   --accent:#62adea; --accent-soft:#16304b; --warn:#e7a557; --warn-soft:#33260f;
-  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a;
+  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a; --s4:#aab3c2; --s4-soft:#232c3b;
   --code-bg:#080e19; --code-ink:#e2eaf6; --code-dim:#8295b3; --code-line:#1d2a40;
   --band:#0a1019; --band-ink:#c9d5e6; color-scheme:dark}
 
@@ -210,6 +210,11 @@ td.when{white-space:nowrap;font-family:var(--f-mono);font-size:12.5px}
 .sess.three .lbl{color:var(--s3)}
 .d-s3{fill:var(--s3-soft);stroke:var(--s3);stroke-width:1.5}
 .d-l3{fill:var(--s3);font-family:var(--f-body);font-size:12px;font-weight:600}
+.divider.four{background:var(--s4)}
+.s4c .ch-no{color:var(--s4)}
+.s4c ol.steps > li::before{background:var(--s4-soft);color:var(--s4)}
+.sess.four{border-top-color:var(--s4)}
+.sess.four .lbl{color:var(--s4)}
 .page-foot{text-align:center;color:var(--muted);font-size:13px;padding-block:28px 48px}
 ul.plain{padding-left:20px;margin:8px 0}
 ul.plain li{margin:4px 0}
@@ -222,7 +227,6 @@ ul.plain li{margin:4px 0}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
-<style>.back{flex:none;font-size:13px;font-weight:600;text-decoration:none;color:var(--accent);white-space:nowrap}</style>
 <style>body{margin:0;font-size:16px}img{max-width:100%}[hidden]{display:none!important}</style>
 <style>
 .dept-bar{background:var(--band);color:var(--band-ink);font-size:13px}
@@ -240,137 +244,98 @@ ul.plain li{margin:4px 0}
   <div class="wrap">
     <div class="brand">보고서 작성 에이전트 · 3회차<small>우리금융캐피탈 디지털전략부</small></div>
     <nav class="chips" id="chips" aria-label="장 이동"></nav>
-    <div class="prog" id="prog">0/9</div>
+    <div class="prog" id="prog">0/8</div>
   </div>
 </header>
 <main class="wrap">
 <section class="cover">
   <div class="eyebrow">비개발자 실습 교안 · 3회차</div>
-  <h1>골프 스코어카드 코치 만들고 휴대폰으로 공유하기</h1>
-  <p class="lead">스코어카드 사진을 AI가 읽고, 내가 확인하고, 코드가 계산하고, AI가 코칭하는 골프 코치를 만듭니다. 그리고 GitHub와 Streamlit Cloud로 인터넷에 올려 휴대폰과 동료에게 공유합니다.</p>
+  <h1>골프 스코어카드 코치 만들고 휴대폰으로 쓰고 나누기</h1>
+  <p class="lead">스코어카드 사진을 AI가 읽고, 내가 확인하고, 코드가 계산하고, AI가 코칭하는 골프 코치를 만듭니다. 휴대폰 사진첩으로 분석하고, 휴대폰 Claude 앱으로 고쳐 반영하고, 동료와 안전하게 나눕니다.</p>
 
   <div class="sessions"><div class="sess three">
-      <div class="lbl">3회차 · 약 3시간 30분</div>
+      <div class="lbl">3회차 · 약 3시간</div>
       <h3>골프 코치 만들고 공유하기</h3>
-      <p>스코어카드 사진을 분석하는 앱을 만들어 인터넷에 올리고 휴대폰으로 엽니다.</p>
+      <p>스코어카드 사진을 분석하는 앱을 만들고, 휴대폰만으로 고치고 나눕니다.</p>
       <ul>
-        <li>휴대폰으로 내 앱 열어 보기</li>
         <li>사진 읽기 · 사람 확인 · 코드 계산 · AI 코칭</li>
-        <li>GitHub 가입과 업로드</li>
-        <li>Streamlit Cloud 배포, 비밀번호와 키 보호</li>
+        <li>배포하고 휴대폰 사진첩으로 분석</li>
+        <li>휴대폰 Claude 앱으로 고치고 반영</li>
+        <li>비밀번호와 키 보호, 동료와 공유</li>
       </ul>
-      <p class="need"><b>필요한 것</b> 스코어카드 사진 2~3장(사진첩), 휴대폰, GitHub 가입용 이메일</p>
+      <p class="need"><b>필요한 것</b> 스코어카드 사진 2~3장(사진첩), 휴대폰(Claude 앱)</p>
     </div>
-  </div>
+    </div>
 
-  <h3>이 교안에서 쓰는 세 가지 블록</h3>
-  <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code 채팅창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>Claude Code에게 일을 시키는 문장입니다. 복사 버튼을 누르고 그대로 붙여넣으면 됩니다.</pre></div>
-  <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">VS Code 아래쪽 터미널에 입력</span><button class="copy" type="button">복사</button></div><pre>python --version</pre></div>
-  <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">브라우저 주소창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>https://code.visualstudio.com</pre></div>
+  <h3>이 교안에서 쓰는 블록</h3>
+  <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code 입력창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>Claude Code에게 일을 시키는 문장입니다. 복사 버튼을 누르고 그대로 붙여넣으면 됩니다.</pre></div>
+  <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">브라우저 주소창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>https://claude.ai/code</pre></div>
+  <div class="block t"><div class="block-head"><span class="tag t">SECRETS</span><span class="where">Streamlit 금고에 넣는 형식 (2회차부터)</span></div><pre>이름 = "값"</pre></div>
 </section>
 <!-- ================= SESSION 3 ================= -->
 <div class="divider three" id="session3">
   <div class="k">SESSION 3</div>
-  <h2>3회차 · 골프 코치 만들고 휴대폰으로 공유하기</h2>
+  <h2>3회차 · 골프 코치 만들고 휴대폰으로 쓰고 나누기</h2>
   <p>오늘의 결과물: 링크만 있으면 누구나 휴대폰으로 여는, 스코어카드 사진을 분석해 주는 골프 코치 앱</p>
 </div>
 
 <!-- 3-1 -->
 <section class="chapter s3c" id="s3-1" data-ch="3-1">
-  <div class="ch-head"><span class="ch-no">3회차 · 01</span><span class="ch-time">15분</span><h2>배포란 무엇이고, 오늘 무엇을 준비하나요</h2></div>
+  <div class="ch-head"><span class="ch-no">3회차 · 01</span><span class="ch-time">15분</span><h2>오늘 할 일: 휴대폰으로 쓰고, 고치고, 나누는 앱</h2></div>
   <div class="ch-body">
-    <p class="goal">지금까지 만든 앱은 내 PC 안에서만 열립니다. <b>배포</b>는 앱을 인터넷에 올려서, 링크만 있으면 휴대폰이든 동료 PC든 어디서나 열리게 하는 일입니다.</p>
+    <p class="goal">1·2회차에서 "요청 → 결재(Merge) → 웹 화면" 흐름을 익혔습니다. 오늘은 같은 흐름으로 <b>사진을 읽는 골프 코치</b>를 만들고, <b>휴대폰만으로</b> 고치고 반영해 본 뒤, 동료와 안전하게 나누는 방법까지 다룹니다.</p>
 
     <figure class="fig">
-      <svg viewBox="0 0 760 280" role="img" aria-label="배포 구조: 내 PC에서 만든 코드를 GitHub 창고에 올리고, Streamlit Cloud가 가져가 실행하며, 휴대폰과 동료가 링크로 접속한다. 키와 비밀번호는 Streamlit Cloud의 Secrets에만 있다">
-        <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-arrowhead"/></marker></defs>
-        <rect x="12" y="60" width="150" height="110" rx="8" class="d-box"/>
-        <text x="87" y="94" text-anchor="middle" class="d-t">내 PC</text>
-        <text x="87" y="116" text-anchor="middle" class="d-s">Claude Code로</text>
-        <text x="87" y="134" text-anchor="middle" class="d-s">앱 코드 완성</text>
-        <text x="87" y="156" text-anchor="middle" class="d-s">(.env 키는 여기만)</text>
-        <line x1="162" y1="115" x2="202" y2="115" class="d-line" marker-end="url(#ah3)"/>
-        <text x="182" y="104" text-anchor="middle" class="d-l3">올리기</text>
-
-        <rect x="206" y="60" width="160" height="110" rx="8" class="d-warn"/>
-        <text x="286" y="94" text-anchor="middle" class="d-t">GitHub</text>
-        <text x="286" y="116" text-anchor="middle" class="d-s">인터넷 코드 창고</text>
-        <text x="286" y="134" text-anchor="middle" class="d-s">코드만 보관</text>
-        <text x="286" y="156" text-anchor="middle" class="d-s">키는 절대 안 올림</text>
-        <line x1="366" y1="115" x2="406" y2="115" class="d-line" marker-end="url(#ah3)"/>
-        <text x="386" y="104" text-anchor="middle" class="d-l3">가져감</text>
-
-        <rect x="410" y="40" width="170" height="150" rx="8" class="d-s3"/>
-        <text x="495" y="72" text-anchor="middle" class="d-t">Streamlit Cloud</text>
-        <text x="495" y="94" text-anchor="middle" class="d-s">무료 가게 자리</text>
-        <text x="495" y="112" text-anchor="middle" class="d-s">앱을 24시간 실행</text>
-        <rect x="428" y="126" width="134" height="48" rx="6" class="d-box"/>
-        <text x="495" y="146" text-anchor="middle" class="d-s">Secrets 금고</text>
-        <text x="495" y="164" text-anchor="middle" class="d-s">API 키 · 앱 비밀번호</text>
-
-        <line x1="580" y1="115" x2="620" y2="115" class="d-line" marker-start="url(#ah3)" marker-end="url(#ah3)"/>
-        <text x="600" y="104" text-anchor="middle" class="d-l3">링크</text>
-        <rect x="624" y="60" width="124" height="110" rx="8" class="d-ok"/>
-        <text x="686" y="94" text-anchor="middle" class="d-t">휴대폰 · 동료</text>
-        <text x="686" y="116" text-anchor="middle" class="d-s">링크 열고</text>
-        <text x="686" y="134" text-anchor="middle" class="d-s">비밀번호 입력</text>
-
-        <line x1="495" y1="190" x2="495" y2="222" class="d-line" marker-start="url(#ah3)" marker-end="url(#ah3)"/>
-        <rect x="410" y="226" width="170" height="44" rx="22" class="d-dash"/>
-        <text x="495" y="253" text-anchor="middle" class="d-s">Claude API · 사진 읽기와 코칭</text>
+      <svg viewBox="0 0 760 260" role="img" aria-label="3회차 구조: 휴대폰 Claude 앱이나 웹 Claude Code로 요청하면 GitHub 창고에 초안이 올라가고, Merge하면 Streamlit Cloud가 앱을 실행하며, 휴대폰과 동료가 링크와 비밀번호로 접속한다">
+        <defs><marker id="ahw4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-arrowhead"/></marker></defs>
+        <rect x="12" y="50" width="150" height="110" rx="8" class="d-acc"/>
+        <text x="87" y="84" text-anchor="middle" class="d-t">Claude Code</text>
+        <text x="87" y="106" text-anchor="middle" class="d-s">PC 브라우저 또는</text>
+        <text x="87" y="124" text-anchor="middle" class="d-s">휴대폰 Claude 앱</text>
+        <line x1="162" y1="105" x2="202" y2="105" class="d-line" marker-end="url(#ahw4)"/>
+        <text x="182" y="94" text-anchor="middle" class="d-l3">초안</text>
+        <rect x="206" y="50" width="160" height="110" rx="8" class="d-warn"/>
+        <text x="286" y="84" text-anchor="middle" class="d-t">GitHub</text>
+        <text x="286" y="106" text-anchor="middle" class="d-s">golf-coach 창고</text>
+        <text x="286" y="124" text-anchor="middle" class="d-s">PR → Merge</text>
+        <line x1="366" y1="105" x2="406" y2="105" class="d-line" marker-end="url(#ahw4)"/>
+        <text x="386" y="94" text-anchor="middle" class="d-l3">자동</text>
+        <rect x="410" y="30" width="170" height="150" rx="8" class="d-s3"/>
+        <text x="495" y="62" text-anchor="middle" class="d-t">Streamlit Cloud</text>
+        <text x="495" y="84" text-anchor="middle" class="d-s">앱을 24시간 실행</text>
+        <rect x="428" y="100" width="134" height="62" rx="6" class="d-box"/>
+        <text x="495" y="124" text-anchor="middle" class="d-s">Secrets 금고</text>
+        <text x="495" y="144" text-anchor="middle" class="d-s">API 키 · 비밀번호</text>
+        <line x1="580" y1="105" x2="620" y2="105" class="d-line" marker-start="url(#ahw4)" marker-end="url(#ahw4)"/>
+        <text x="600" y="94" text-anchor="middle" class="d-l3">링크</text>
+        <rect x="624" y="50" width="124" height="110" rx="8" class="d-ok"/>
+        <text x="686" y="84" text-anchor="middle" class="d-t">휴대폰 · 동료</text>
+        <text x="686" y="106" text-anchor="middle" class="d-s">사진첩에서</text>
+        <text x="686" y="124" text-anchor="middle" class="d-s">스코어카드 올림</text>
+        <line x1="495" y1="180" x2="495" y2="206" class="d-line" marker-start="url(#ahw4)" marker-end="url(#ahw4)"/>
+        <rect x="410" y="208" width="170" height="40" rx="20" class="d-dash"/>
+        <text x="495" y="233" text-anchor="middle" class="d-s">Claude API · 사진 읽기와 코칭</text>
       </svg>
-      <figcaption>배포 구조. GitHub는 코드를 맡겨 두는 창고, Streamlit Cloud는 그 코드를 가져가 앱을 돌려 주는 무료 가게 자리입니다. 키와 비밀번호는 창고가 아니라 가게의 금고(Secrets)에만 넣습니다.</figcaption>
+      <figcaption>오늘은 같은 흐름을 휴대폰에서도 돌립니다. 키와 비밀번호는 2회차처럼 Secrets 금고에만 넣습니다.</figcaption>
     </figure>
-
-    <div class="tbl"><table>
-      <thead><tr><th>도구</th><th>비유</th><th>오늘 하는 일</th></tr></thead>
-      <tbody>
-        <tr><td><b>GitHub</b></td><td>인터넷 코드 창고</td><td>가입하고, 앱 파일 몇 개를 끌어다 올립니다.</td></tr>
-        <tr><td><b>Streamlit Cloud</b></td><td>무료 가게 자리</td><td>GitHub 계정으로 로그인해 창고의 앱을 실행시키고 주소를 받습니다.</td></tr>
-        <tr><td><b>Secrets</b></td><td>가게 금고</td><td>Claude API 키와 앱 비밀번호를 넣어 둡니다.</td></tr>
-        <tr><td><b>Claude API</b></td><td>외주 작가 전화번호</td><td>2회차에 받은 키를 그대로 씁니다. 사진을 읽고 코칭 글을 씁니다.</td></tr>
-      </tbody>
-    </table></div>
 
     <h3>오늘의 준비물</h3>
     <ul class="plain">
       <li><b>스코어카드 사진 2~3장을 휴대폰 사진첩에</b> 넣어 오세요. 스마트스코어 공유 카드 캡처도 좋고 종이 스코어카드 사진도 좋습니다. 종이 카드는 PAR·거리·HDCP 줄이 보이게 찍으면 분석이 더 풍부해집니다.</li>
       <li>사진이 없는 분은 강사가 나눠 주는 <b>예시 스코어카드</b>를 씁니다.</li>
-      <li>내가 자주 가는 코스의 <b>홀별 PAR</b>(선택): 종이 카드나 골프장 홈페이지 코스 안내에서 미리 적어 오면 좋습니다.</li>
-      <li>GitHub 가입에 쓸 이메일 (회사 메일 또는 개인 메일)</li>
-      <li>2회차에 받은 <b>Claude API 키</b>와 콘솔 잔액 (잔액은 platform.claude.com의 Billing에서 확인)</li>
-      <li>노트북과 같은 와이파이에 연결된 휴대폰</li>
+      <li>내가 자주 가는 코스의 <b>홀별 PAR</b>(선택): 종이 카드나 골프장 홈페이지 코스 안내에서 적어 오면 좋습니다.</li>
+      <li>휴대폰에 <b>Claude 앱</b> 설치 및 로그인 (App Store·Play 스토어에서 "Claude"), 휴대폰 브라우저에서 GitHub 로그인</li>
+      <li>2회차에 받은 <b>Claude API 키</b>와 콘솔 잔액 (platform.claude.com 의 Billing에서 확인)</li>
     </ul>
-    <div class="note"><b>3회차는 새 폴더에서 시작합니다</b>보고서 앱(report-agent)은 그대로 두고, 골프 코치는 <code class="k">golf-coach</code>라는 새 폴더에서 만듭니다. 오늘 배운 배포 방법은 마지막에 보고서 앱에도 똑같이 쓸 수 있습니다.</div>
-    <label class="check"><input type="checkbox" id="done-3-1"> 배포 구조를 이해하고 준비물을 챙겼다</label>
+    <div class="note"><b>3회차는 새 창고에서 시작합니다</b>보고서 앱(report-agent)은 그대로 두고, 골프 코치는 <code class="k">golf-coach</code>라는 새 창고에서 만듭니다.</div>
+    <label class="check"><input type="checkbox" id="done-3-1"> 오늘의 흐름을 이해하고 준비물을 챙겼다</label>
   </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 01 / 09</span></footer>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 01 / 08</span></footer>
 </section>
 
 <!-- 3-2 -->
 <section class="chapter s3c" id="s3-2" data-ch="3-2">
-  <div class="ch-head"><span class="ch-no">3회차 · 02</span><span class="ch-time">15분</span><h2>휴대폰으로 내 앱 열어 보기</h2></div>
-  <div class="ch-body">
-    <p class="goal">배포를 하기 전에, 2회차에 만든 보고서 앱을 휴대폰으로 열어 봅니다. 같은 와이파이 안에서는 열리고, 밖에서는 안 열리는 것을 직접 확인하는 것이 목적입니다.</p>
-    <ol class="steps">
-      <li>VS Code에서 <code class="k">report-agent</code> 폴더를 열고 Claude Code에 "앱 실행해 줘"라고 합니다.</li>
-      <li>터미널에 주소가 두 줄 나옵니다. <code class="k">Local URL</code>은 이 PC 전용, <code class="k">Network URL</code>은 같은 와이파이의 다른 기기용입니다.
-        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">앱 실행 시 나오는 주소 예시</span></div><pre>  Local URL:   http://localhost:8501
-  Network URL: http://192.168.0.23:8501</pre></div></li>
-      <li>휴대폰을 노트북과 <b>같은 와이파이</b>에 연결하고, 휴대폰 브라우저 주소창에 <code class="k">Network URL</code>을 그대로 입력합니다.</li>
-      <li>Windows에서 "Windows 보안 경고: Python 액세스 허용" 창이 뜨면 <span class="ui">개인 네트워크</span>에 체크하고 <span class="ui">액세스 허용</span>을 누릅니다.</li>
-      <li>휴대폰에 보고서 앱이 뜨면 성공입니다. 이제 휴대폰의 와이파이를 끄고 LTE·5G로 다시 열어 보세요. 열리지 않습니다.</li>
-    </ol>
-    <div class="note warn"><b>회사 와이파이에서는 안 열릴 수 있습니다</b>회사망은 기기끼리 접속을 막아 두는 경우가 많습니다. 안 열리면 휴대폰 핫스팟에 노트북을 연결해 같은 방식으로 해 보세요.</div>
-    <div class="note ok"><b>그래서 배포가 필요합니다</b>노트북이 꺼져 있거나, 다른 곳에 있거나, 동료가 쓰려면 앱이 인터넷 어딘가에서 계속 돌아가고 있어야 합니다. 오늘 후반부에 그 작업을 합니다.</div>
-    <label class="check"><input type="checkbox" id="done-3-2"> 같은 와이파이에서 휴대폰으로 앱을 열어 봤다</label>
-  </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 02 / 09</span></footer>
-</section>
-
-<!-- 3-3 -->
-<section class="chapter s3c" id="s3-3" data-ch="3-3">
-  <div class="ch-head"><span class="ch-no">3회차 · 03</span><span class="ch-time">15분</span><h2>골프 코치는 어떻게 분석하나요</h2></div>
+  <div class="ch-head"><span class="ch-no">3회차 · 02</span><span class="ch-time">15분</span><h2>골프 코치는 어떻게 분석하나요</h2></div>
   <div class="ch-body">
     <p class="goal">AI에게 사진을 던지고 "분석해 줘"로 끝내면 숫자를 잘못 읽거나 계산이 틀려도 알 수 없습니다. 그래서 일을 네 단계로 나누고, 단계마다 가장 잘하는 쪽에 맡깁니다.</p>
     <figure class="fig">
@@ -426,29 +391,33 @@ ul.plain li{margin:4px 0}
         <tr><td>코칭</td><td>"트리플을 더블로 막는 것이 1순위. 위기 홀에서는 무리한 공략 대신 보기 목표로"</td><td>AI</td></tr>
       </tbody>
     </table></div>
-    <label class="check"><input type="checkbox" id="done-3-3"> 네 단계 역할 분리와 카드 읽는 법을 이해했다</label>
+    <label class="check"><input type="checkbox" id="done-3-2"> 네 단계 역할 분리와 카드 읽는 법을 이해했다</label>
   </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 03 / 09</span></footer>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 02 / 08</span></footer>
 </section>
 
-<!-- 3-4 -->
-<section class="chapter s3c" id="s3-4" data-ch="3-4">
-  <div class="ch-head"><span class="ch-no">3회차 · 04</span><span class="ch-time">40분</span><h2>골프 코치 앱 만들기</h2></div>
+<!-- 3-3 -->
+<section class="chapter s3c" id="s3-3" data-ch="3-3">
+  <div class="ch-head"><span class="ch-no">3회차 · 03</span><span class="ch-time">40분</span><h2>골프 코치 앱 만들기</h2></div>
   <div class="ch-body">
+    <h3>A. 새 창고 만들고 Claude에 연결하기 (5분)</h3>
     <ol class="steps">
-      <li>바탕화면에 <code class="k">golf-coach</code> 폴더를 만들고 VS Code에서 <span class="ui">파일 → 폴더 열기</span>로 엽니다.</li>
-      <li>아래 준비 프롬프트를 Claude Code에 붙여넣습니다.
-        <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 준비</span><button class="copy" type="button">복사</button></div><pre>지금 열린 폴더에서 "골프 스코어카드 코치" 웹 앱을 만들 거예요. 저는 비개발자라 단계마다 무엇을 했는지 한두 줄로 쉽게 알려 주세요. 나중에 인터넷에 배포할 앱이라 아래 규칙을 지켜 주세요.
+      <li>1회차 03장처럼 <code class="k">github.com/new</code>에서 새 창고를 만듭니다. 이름 <code class="k">golf-coach</code>, <b>Public</b>, <b>Add README 켜기</b>.</li>
+      <li>Claude GitHub App에 새 창고를 추가합니다. <code class="k">github.com/settings/installations</code> → Claude 옆 <span class="ui">Configure</span> → Repository access의 <span class="ui">Select repositories</span>에서 <code class="k">golf-coach</code> 추가 → <span class="ui">Save</span>. (Public 창고는 생략해도 되지만, 해 두면 목록에 바로 나옵니다.)</li>
+      <li>claude.ai/code → <span class="ui">+ 새 세션</span> → 저장소를 <code class="k">golf-coach</code>로 바꿉니다. 권한은 <b>Accept edits</b>.</li>
+    </ol>
 
-1. Python 가상환경(.venv)을 만들고, requirements.txt 에 streamlit, anthropic, python-dotenv, pillow, pillow-heif, pandas 를 적어 설치해 주세요.
-2. .env 파일을 만들고 ANTHROPIC_API_KEY= 와 APP_PASSWORD= 두 줄만 넣어 주세요. 값은 제가 직접 채웁니다.
-3. .gitignore 를 만들어 .env 와 .venv 가 절대 올라가지 않게 해 주세요.
-4. 키와 비밀번호는 get_secret(이름) 함수 하나로 읽게 해 주세요. 인터넷 배포 환경에서는 Streamlit의 st.secrets 에서, 내 PC에서는 .env 에서 읽고, st.secrets 가 없을 때 오류가 나지 않게 해 주세요.
-5. 화면 꾸미기는 .streamlit 폴더를 쓰지 말고 app.py 안의 CSS로만 해 주세요. 배포할 때 올릴 파일을 app.py, requirements.txt 처럼 폴더 없이 몇 개로 단순하게 유지하고 싶어요.
-6. 다 되면 제가 .env 에 무엇을 넣으면 되는지 알려 주세요.</pre></div></li>
-      <li><code class="k">.env</code>를 열어 2회차의 Claude API 키와, 앱 입장 비밀번호로 쓸 단어(예: <code class="k">golf2026</code>)를 직접 넣고 저장합니다.</li>
-      <li>아래 본 프롬프트를 붙여넣습니다. 길지만 그대로 복사하면 됩니다.
-        <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 골프 코치 본체</span><button class="copy" type="button">복사</button></div><pre>app.py 에 골프 스코어카드 코치를 만들어 주세요. Claude API(anthropic SDK)를 쓰고, 모델은 claude-sonnet-5-5 로 하되 파일 맨 위 설정값 한 곳에서 바꿀 수 있게 해 주세요. 휴대폰에서 주로 쓸 앱이라 화면을 세로 한 줄 배치로 만들어 주세요.
+    <h3>B. 골프 코치 만들기 (25분)</h3>
+    <p>아래 두 프롬프트를 <b>같은 세션에서 차례로</b> 보냅니다. 첫 번째가 끝난 뒤 두 번째를 보냅니다.</p>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">웹 Claude Code · 준비</span><button class="copy" type="button">복사</button></div><pre>이 저장소에 "골프 스코어카드 코치" 웹 앱을 만들 거예요. 저는 비개발자라 무엇을 했는지 한두 줄로 쉽게 알려 주세요.
+이 앱은 Streamlit Community Cloud 에 배포하고, 키와 비밀번호는 Streamlit Secrets 에 제가 직접 넣을 거예요.
+
+1. requirements.txt 를 만들고 streamlit, anthropic, pillow, pillow-heif, pandas 를 적어 주세요.
+2. 키와 비밀번호는 get_secret(이름) 함수 하나로 st.secrets 에서 읽게 해 주세요. 값이 없으면 앱이 멈추지 말고 "Secrets 에 ○○ 이(가) 없습니다" 라고 안내해 주세요.
+3. 쓰는 이름은 ANTHROPIC_API_KEY, APP_PASSWORD 두 개입니다. 코드 어디에도 실제 값을 적지 마세요.
+4. 화면 꾸미기는 app.py 안의 CSS로만 해 주세요.
+5. app.py 와 requirements.txt 는 저장소 맨 바깥에 두어 주세요. 아직 올리지(push) 말고 다음 요청을 기다려 주세요.</pre></div>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">웹 Claude Code · 골프 코치 본체</span><button class="copy" type="button">복사</button></div><pre>app.py 에 골프 스코어카드 코치를 만들어 주세요. Claude API(anthropic SDK)를 쓰고, 모델은 claude-sonnet-5-5 로 하되 파일 맨 위 설정값 한 곳에서 바꿀 수 있게 해 주세요. 휴대폰에서 주로 쓸 앱이라 화면을 세로 한 줄 배치로 만들어 주세요.
 
 [0. 입장]
 - 첫 화면에서 비밀번호를 묻고, get_secret("APP_PASSWORD") 와 같아야 다음 화면을 보여 주세요.
@@ -497,19 +466,57 @@ ul.plain li{margin:4px 0}
 - "이 라운드 기록 내려받기(CSV)" 버튼과, 예전 기록 CSV 를 올리면 같은 코스의 지난 라운드와 비교해 주는 기능
 - 맨 아래 바닥글: "우리금융캐피탈 디지털전략부"
 
-다 만들면 앱을 실행해 주세요.</pre></div></li>
-      <li>브라우저에서 비밀번호를 넣고, 노트북에 옮겨 둔 스코어카드 사진(또는 예시 카드)으로 끝까지 한 번 돌려 봅니다.</li>
+이 작업 환경에서는 Claude API 를 직접 부를 수 없으니 실제 호출은 하지 말고, 계산 함수는 예시 숫자로 시험해 본 뒤 Python 문법 오류가 없는지 확인해 올려(push) 주세요.</pre></div>
+    <ol class="steps">
+      <li>Claude가 다 하면 바뀐 파일을 확인하고 <span class="ui">Create PR</span> → GitHub에서 <span class="ui">Merge pull request</span> → <span class="ui">Confirm merge</span>.</li>
+      <li>창고 맨 바깥에 <code class="k">app.py</code>, <code class="k">requirements.txt</code>, <code class="k">README.md</code>가 보이면 다음 장으로 갑니다.</li>
     </ol>
-    <h3>확인해 보기</h3>
-    <ul class="plain">
-      <li>AI가 읽은 18홀 표가 사진과 같은가? 다르면 표에서 직접 고치고 다시 분석해 봅니다.</li>
-      <li>검산 경고가 뜨지 않는가?</li>
-      <li>코칭 글의 숫자가 위 계산 표의 숫자와 같은가?</li>
-    </ul>
-    <div class="note"><b>잘 안 읽힐 때</b>사진이 기울었거나 흐리면 잘못 읽습니다. 카드 부분만 잘라서 올리거나, Claude Code에 "사진 읽기가 자주 틀려요. 이 예시처럼 읽도록 지시문을 보강해 주세요"라고 요청하세요.</div>
-    <label class="check"><input type="checkbox" id="done-3-4"> 내 PC에서 스코어카드 분석이 끝까지 됐다</label>
+    <div class="note"><b>Claude가 사진 읽기를 시험하지 못하는 이유</b>Claude의 작업 환경은 외부 API 접속이 막혀 있어서, 실제 사진 분석은 배포한 뒤 내 앱에서 처음 확인합니다. 그래서 프롬프트에 "계산 함수는 예시 숫자로 시험"하도록 넣어 두었습니다.</div>
+    <label class="check"><input type="checkbox" id="done-3-3"> golf-coach 창고에 app.py 가 Merge 되었다</label>
   </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 04 / 09</span></footer>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 03 / 08</span></footer>
+</section>
+
+<!-- 3-4 -->
+<section class="chapter s3c" id="s3-4" data-ch="3-4">
+  <div class="ch-head"><span class="ch-no">3회차 · 04</span><span class="ch-time">25분</span><h2>배포하고 휴대폰으로 분석해 보기</h2></div>
+  <div class="ch-body">
+    <h3>A. Streamlit Cloud에 새 앱 만들기 (10분)</h3>
+    <ol class="steps">
+      <li><code class="k">share.streamlit.io</code> → <span class="ui">Create app</span> → GitHub 창고에서 배포.</li>
+      <li><b>Repository</b> <code class="k">내아이디/golf-coach</code> · <b>Branch</b> <code class="k">main</code> · <b>Main file path</b> <code class="k">app.py</code> · <b>App URL</b> 예: <code class="k">hong-golf</code></li>
+      <li><span class="ui">Advanced settings</span> → Python <code class="k">3.12</code> → <b>Secrets</b>에 두 줄을 넣고 Save.
+        <div class="block t"><div class="block-head"><span class="tag t">SECRETS</span><span class="where">형식 (값은 본인 것으로)</span><button class="copy" type="button">복사</button></div><pre>ANTHROPIC_API_KEY = "여기에_sk-ant_로_시작하는_키"
+APP_PASSWORD = "golf2026"</pre></div></li>
+      <li><span class="ui">Deploy</span> → 2~4분 기다리면 비밀번호 화면이 뜹니다.</li>
+    </ol>
+    <div class="note warn"><b>배포용 API 키를 따로 만들기를 권합니다</b>2회차 03장 방법대로 콘솔에서 <code class="k">golf-coach-web</code>이라는 키를 하나 더 만들어 넣으세요. 링크가 너무 퍼졌을 때 이 키만 삭제하면 골프 앱만 멈추고, 보고서 앱은 그대로 동작합니다.</div>
+
+    <h3>B. 휴대폰으로 열고 사진 올리기 (10분)</h3>
+    <ol class="steps">
+      <li>휴대폰 브라우저에 <code class="k">내앱이름.streamlit.app</code>을 입력하고 비밀번호를 넣습니다.</li>
+      <li>사진 올리기 칸을 누르면 <b>사진 보관함(사진첩)</b>을 고를 수 있습니다. 준비해 온 스코어카드를 고릅니다.</li>
+      <li>AI가 읽은 18홀 표가 사진과 같은지 확인하고, 틀린 칸은 손가락으로 고칩니다.</li>
+      <li>분석 결과(큰 숫자 카드, 막대그래프, 코칭 글)를 확인합니다. 코칭 글의 숫자가 위 계산 표와 같은지 봅니다.</li>
+    </ol>
+
+    <h3>C. 홈 화면에 앱처럼 두기 (2분)</h3>
+    <ul class="plain">
+      <li><b>아이폰(Safari)</b>: 아래 공유 버튼 → <span class="ui">홈 화면에 추가</span></li>
+      <li><b>안드로이드(Chrome·삼성 인터넷)</b>: 오른쪽 위(또는 아래) ⋮ / ≡ → <span class="ui">홈 화면에 추가</span></li>
+    </ul>
+    <div class="tbl"><table>
+      <thead><tr><th>증상</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td>사진을 골랐는데 오류</td><td>아이폰 HEIC 사진 처리 누락, 너무 큰 사진</td><td>오류 문구를 Claude에 붙여넣고 "HEIC와 큰 사진도 되게 해 주세요"</td></tr>
+        <tr><td>18홀 표가 많이 틀림</td><td>사진이 기울거나 흐림</td><td>카드 부분만 잘라서 다시 올리기, 또는 Claude에 "사진 읽기가 자주 틀려요, 지시문을 보강해 주세요"</td></tr>
+        <tr><td>검산 경고(노란 상자)</td><td>AI가 숫자를 잘못 읽음</td><td>표에서 직접 고친 뒤 다시 분석</td></tr>
+        <tr><td>"Secrets 에 ○○ 이(가) 없습니다"</td><td>Secrets 미입력, 이름 오타</td><td>⋮ → Settings → Secrets 확인</td></tr>
+      </tbody>
+    </table></div>
+    <label class="check"><input type="checkbox" id="done-3-4"> 휴대폰 사진첩의 스코어카드로 분석 결과를 봤다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 04 / 08</span></footer>
 </section>
 
 <!-- 3-5 -->
@@ -517,7 +524,7 @@ ul.plain li{margin:4px 0}
   <div class="ch-head"><span class="ch-no">3회차 · 05</span><span class="ch-time">20분</span><h2>휴대폰 화면에 맞게 꾸미기</h2></div>
   <div class="ch-body">
     <p class="goal">이 앱은 라운딩 직후 클럽하우스나 차 안에서 휴대폰으로 열게 됩니다. 1회차의 주문서를 휴대폰용으로 바꿔 씁니다.</p>
-    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 휴대폰 화면 주문서</span><button class="copy" type="button">복사</button></div><pre>골프 코치 화면을 휴대폰에서 쓰기 좋게 꾸며 주세요. 기능은 그대로 두고, 꾸미기는 app.py 안의 CSS로만 해 주세요.
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">웹 Claude Code · 휴대폰 화면 주문서</span><button class="copy" type="button">복사</button></div><pre>골프 코치 화면을 휴대폰에서 쓰기 좋게 꾸며 주세요. 기능은 그대로 두고, 꾸미기는 app.py 안의 CSS로만 해 주세요.
 
 [분위기] (예: 잔디 위 클럽하우스처럼 차분하고 고급스럽게)
 [색상]
@@ -530,339 +537,89 @@ ul.plain li{margin:4px 0}
 [결과] 큰 숫자 카드 3개를 맨 위에, 코칭 글은 카드 상자 안에
 [기타] 바닥글 "우리금융캐피탈 디지털전략부"
 
-다 고치면 앱을 다시 실행하고, 휴대폰으로 볼 때 확인할 점을 알려 주세요.</pre></div>
-    <p>꾸민 뒤 02장처럼 <code class="k">Network URL</code>로 휴대폰에서 열어 보고, 사진첩에서 스코어카드를 골라 올려 봅니다. 글씨 크기나 버튼이 불편하면 "휴대폰에서 버튼이 너무 작아요"처럼 한 가지씩 요청합니다.</p>
+다 고치면 Python 문법 오류가 없는지 확인해 올려(push) 주시고, 휴대폰으로 볼 때 확인할 점을 알려 주세요.</pre></div>
+    <p>PR → Merge 후 1~3분 뒤 휴대폰에서 내 앱을 새로고침하고, 사진첩에서 스코어카드를 골라 올려 봅니다. 글씨 크기나 버튼이 불편하면 "휴대폰에서 버튼이 너무 작아요"처럼 한 가지씩 요청합니다.</p>
     <label class="check"><input type="checkbox" id="done-3-5"> 휴대폰에서 사진첩의 스코어카드를 올려 분석했다</label>
   </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 05 / 09</span></footer>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 05 / 08</span></footer>
 </section>
 
 <!-- 3-6 -->
 <section class="chapter s3c" id="s3-6" data-ch="3-6">
-  <div class="ch-head"><span class="ch-no">3회차 · 06</span><span class="ch-time">15분</span><h2>배포 전 점검: 올릴 파일만 골라내기</h2></div>
+  <div class="ch-head"><span class="ch-no">3회차 · 06</span><span class="ch-time">20분</span><h2>휴대폰만으로 고치고 반영하기</h2></div>
   <div class="ch-body">
-    <p class="goal">GitHub 창고에는 <b>코드만</b> 올리고 키는 절대 올리지 않습니다. 실수를 막기 위해 Claude Code에게 올릴 파일만 바탕화면의 새 폴더에 따로 모아 달라고 합니다. 다음 장에서는 이 폴더 안의 파일만 끌어다 놓으면 됩니다.</p>
-
-    <h3>왜 이렇게 나눠서 올리나요</h3>
-    <div class="tbl"><table>
-      <thead><tr><th>파일·폴더</th><th>GitHub에 올리나요?</th><th>이유</th></tr></thead>
-      <tbody>
-        <tr><td><code>app.py</code></td><td><span class="pill">올림</span></td><td>앱 본체입니다.</td></tr>
-        <tr><td><code>requirements.txt</code></td><td><span class="pill">올림</span></td><td>Streamlit Cloud가 이 목록을 보고 부품을 설치합니다. 없으면 배포가 실패합니다.</td></tr>
-        <tr><td><code>.env</code></td><td><span class="pill no">절대 안 올림</span></td><td>API 키가 들어 있습니다. 공개 창고에 올라가면 누구나 내 키를 씁니다.</td></tr>
-        <tr><td><code>.venv</code> 폴더</td><td><span class="pill no">안 올림</span></td><td>내 PC 전용 Python 환경입니다. 수천 개 파일이라 올라가지도 않습니다.</td></tr>
-        <tr><td>스코어카드 사진</td><td><span class="pill no">안 올림</span></td><td>개인 기록입니다. 앱에서 그때그때 올리면 됩니다.</td></tr>
-      </tbody>
-    </table></div>
-
-    <h3>Claude Code에 점검 맡기기</h3>
-    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 배포 점검</span><button class="copy" type="button">복사</button></div><pre>이 앱을 GitHub 웹사이트에 파일 끌어다 놓기로 올리고, Streamlit Community Cloud 로 배포하려고 해요. 배포 전 점검을 해 주세요.
-
-1. 코드 어디에도 API 키나 비밀번호가 직접 적혀 있지 않은지 확인해 주세요.
-2. 키와 비밀번호를 get_secret() 으로 읽고, 배포 환경(st.secrets)과 내 PC(.env) 양쪽에서 동작하는지 확인해 주세요.
-3. requirements.txt 에 app.py 가 쓰는 부품이 빠짐없이 있는지 확인해 주세요. 버전 번호는 붙이지 않아도 됩니다.
-4. 앱이 다른 파일(예: 이미지, CSV, .streamlit 폴더)을 꼭 필요로 하는지 알려 주세요. 가능하면 app.py 와 requirements.txt 두 파일만으로 돌아가게 정리해 주세요.
-5. 바탕화면에 upload_to_github 폴더를 새로 만들고, GitHub 에 올려야 할 파일만 복사해 주세요. .env, .venv, __pycache__, 개인 사진은 넣지 마세요.
-6. 그 폴더의 파일 목록과 각 파일의 역할을 한 줄씩 알려 주세요.
-7. Streamlit Cloud 의 Secrets 칸에 붙여넣을 "형식"을 알려 주세요. 실제 키 값은 쓰지 말고 자리만 표시해 주세요.</pre></div>
-
-    <h3>결과 확인하기</h3>
+    <p class="goal">라운딩 뒤 앱을 쓰다가 "이 부분 바꾸고 싶다"는 생각이 들면 그 자리에서 고칠 수 있습니다. 휴대폰 Claude 앱에서 요청하고, 휴대폰 브라우저로 결재(Merge)합니다. PC가 없어도 됩니다.</p>
     <ol class="steps">
-      <li>바탕화면에 <code class="k">upload_to_github</code> 폴더가 생겼는지 봅니다.</li>
-      <li>폴더를 열어 파일이 아래처럼 <b>두 개(많아도 서너 개)</b>인지 확인합니다.
-        <div class="block t"><div class="block-head"><span class="tag t">FOLDER</span><span class="where">upload_to_github 예시</span></div><pre>upload_to_github/
-├── app.py             # 골프 코치 화면과 분석
-└── requirements.txt   # 필요한 부품 목록</pre></div></li>
-      <li><code class="k">.env</code>라는 파일이 보이면 <b>그 파일만 지웁니다</b>. Windows는 숨김 파일이 안 보일 수 있으니 탐색기 <span class="ui">보기 → 표시 → 숨긴 항목</span>을 켜고 한 번 더 확인합니다.</li>
-      <li><code class="k">requirements.txt</code>를 메모장으로 열어 <code class="k">streamlit</code>, <code class="k">anthropic</code>, <code class="k">pillow</code>, <code class="k">pillow-heif</code>, <code class="k">pandas</code>, <code class="k">python-dotenv</code>가 한 줄씩 있는지 봅니다.</li>
+      <li>휴대폰 <b>Claude 앱</b>을 열고 아래쪽(또는 메뉴)의 <span class="ui">Code</span> 탭으로 갑니다. claude.ai/code 에서 만든 세션 목록이 그대로 보입니다.</li>
+      <li>새 세션을 시작하고 저장소를 <code class="k">golf-coach</code>로 고릅니다.</li>
+      <li>짧은 요청을 보냅니다. 예시:
+        <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">휴대폰 Claude 앱 · 한 줄 요청 예시</span><button class="copy" type="button">복사</button></div><pre>코칭 글 맨 위에 오늘 라운드를 한 문장으로 요약한 굵은 제목을 넣어 주세요. 다 되면 올려(push) 주세요.</pre></div></li>
+      <li>Claude가 끝나면 <span class="ui">Create PR</span>을 누르고, 나오는 PR 링크를 눌러 휴대폰 브라우저에서 GitHub를 엽니다.</li>
+      <li>PR 화면을 아래로 내려 <span class="ui">Merge pull request</span> → <span class="ui">Confirm merge</span>.</li>
+      <li>1~3분 뒤 홈 화면의 골프 코치 아이콘을 열고 새로고침하면 바뀐 화면이 나옵니다.</li>
     </ol>
-
-    <h3>Secrets에 넣을 내용 준비</h3>
-    <div class="block t"><div class="block-head"><span class="tag t">SECRETS</span><span class="where">메모장에 미리 적어 두기 (값은 본인 것으로)</span></div><pre>ANTHROPIC_API_KEY = "sk-ant-api03-여기에_키"
-APP_PASSWORD = "golf2026"</pre></div>
-    <ul class="plain">
-      <li>왼쪽 이름은 대문자·밑줄까지 그대로, 값은 반드시 <b>큰따옴표</b> 안에 넣습니다.</li>
-      <li>.env 와 달리 <code class="k">=</code> 앞뒤에 띄어쓰기가 있어도 됩니다(TOML 형식).</li>
-    </ul>
-    <div class="note warn"><b>배포용 API 키를 따로 만들기를 권합니다</b>2회차 03장 방법대로 콘솔에서 <code class="k">golf-coach-web</code>이라는 키를 하나 더 만들어 Secrets에 넣으세요. 링크가 너무 퍼졌을 때 이 키만 삭제하면 웹 앱만 멈추고, 내 PC 앱은 그대로 동작합니다.</div>
-    <label class="check"><input type="checkbox" id="done-3-6"> upload_to_github 폴더에 app.py·requirements.txt만 있고 .env 가 없다</label>
+    <div class="note"><b>휴대폰에서 요청을 잘 쓰는 법</b>한 번에 한 가지만 요청합니다. "버튼을 크게", "그래프 색을 바꿔"처럼 짧고 구체적으로 쓰면 결과가 빨리 나옵니다. 화면을 캡처해 함께 보내면 "여기"가 어디인지 Claude가 정확히 압니다.</div>
+    <div class="note warn"><b>Merge 전에 한 번 더 확인</b>휴대폰 화면은 작아서 바뀐 파일을 놓치기 쉽습니다. PR 화면의 <span class="ui">Files changed</span>에 <code class="k">app.py</code>(또는 requirements.txt) 외에 낯선 파일이 있으면 Merge하지 말고 Claude에게 "이 파일은 왜 바뀌었나요?"라고 먼저 묻습니다.</div>
+    <label class="check"><input type="checkbox" id="done-3-6"> 휴대폰만으로 요청 → Merge → 화면 변경까지 해 봤다</label>
   </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 06 / 09</span></footer>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 06 / 08</span></footer>
 </section>
 
 <!-- 3-7 -->
 <section class="chapter s3c" id="s3-7" data-ch="3-7">
-  <div class="ch-head"><span class="ch-no">3회차 · 07</span><span class="ch-time">30분</span><h2>GitHub 가입하고 파일 올리기</h2></div>
+  <div class="ch-head"><span class="ch-no">3회차 · 07</span><span class="ch-time">15분</span><h2>동료와 공유하기</h2></div>
   <div class="ch-body">
-    <p class="goal">GitHub는 코드를 맡겨 두는 인터넷 창고입니다. 오늘은 명령어 없이 <b>웹사이트에서 파일을 끌어다 놓는 방식</b>만 씁니다. 파일 끌어다 놓기가 필요하므로 이 장은 <b>PC 브라우저</b>에서 진행하세요.</p>
-    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>버튼 이름은 실제 GitHub 기준으로 맞췄지만, 색과 배치는 실제와 조금 다를 수 있습니다. GitHub 화면은 영어로 나옵니다.</div>
-
-    <h3>A. 가입하기 (10분)</h3>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/signup</span></div>
-      <div class="mock-modal">
-        <div class="mt">Sign up for GitHub</div>
-        <div class="mrow hl"><span class="lab">Email</span><span class="field">hong@woori.com</span><span class="num">1</span></div>
-        <div class="mrow hl"><span class="lab">Password</span><span class="field">••••••••••••••••</span><span class="num">2</span></div>
-        <div class="mrow hl"><span class="lab">Username</span><span class="field">hong-woori</span><span class="num">3</span></div>
-        <div class="mrow"><span class="lab">Your Country/Region</span><span class="field">South Korea</span></div>
-        <div class="mrow"><span class="lab">Email preferences</span><span class="field dim">☐ 체크 안 해도 됨</span></div>
-        <div class="mbtn hl wide">Continue <span class="num">4</span></div>
-      </div>
-    </div></div>
-    <ol class="steps">
-      <li>GitHub에 접속해 오른쪽 위 <span class="ui">Sign up</span>을 누릅니다.
-        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">GitHub 가입</span><button class="copy" type="button">복사</button></div><pre>https://github.com/signup</pre></div></li>
-      <li><b>Email ①</b>: 지금 메일함을 열 수 있는 주소를 씁니다.</li>
-      <li><b>Password ②</b>: 15자 이상, 또는 8자 이상에 숫자와 소문자를 섞어야 합니다. 조건이 맞으면 칸 아래 글자가 초록색으로 바뀝니다.</li>
-      <li><b>Username ③</b>: 영문 소문자·숫자·하이픈(-)으로 정합니다. <b>창고 주소와 배포 화면에 그대로 보이므로</b> 점잖게 짓습니다. 예: <code class="k">hong-woori</code>. 이미 쓰는 이름이면 빨간 글씨가 나오니 숫자를 붙여 봅니다.</li>
-      <li><span class="ui">Continue</span> ④를 누르면 "사람인지 확인" 퍼즐이 나옵니다. 안내대로 풀어 줍니다.</li>
-      <li>메일로 온 <b>8자리 숫자(launch code)</b>를 화면 칸에 입력합니다. 메일이 안 오면 스팸함을 확인합니다.</li>
-      <li>가입이 끝나면 로그인 화면이 나옵니다. 방금 만든 이메일과 비밀번호로 로그인합니다.</li>
-      <li>"How many team members…", "What specific features…" 같은 설문이 나오면 아무거나 고르거나 <span class="ui">Skip personalization</span>을 누릅니다. 요금제를 물으면 <b>Free</b>(무료)를 고릅니다.</li>
-    </ol>
-    <div class="note"><b>Git과 GitHub는 다릅니다</b>1회차에 설치한 Git은 내 PC의 프로그램이고, GitHub는 인터넷 창고 웹사이트입니다. 오늘은 웹사이트만 씁니다.</div>
-
-    <h3>B. 창고(저장소) 만들기 (5분)</h3>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/new</span></div>
-      <div class="mock-modal">
-        <div class="mt">Create a new repository</div>
-        <div class="mrow"><span class="lab">Owner</span><span class="field">hong-woori</span></div>
-        <div class="mrow hl"><span class="lab">Repository name</span><span class="field">golf-coach</span><span class="num">1</span></div>
-        <div class="mrow"><span class="lab">Description</span><span class="field dim">(선택) 스코어카드 분석 골프 코치</span></div>
-        <div class="mrow hl"><span class="lab">공개 범위</span><span class="chipset"><span class="on">Public</span><span>Private</span></span><span class="num">2</span></div>
-        <div class="mrow hl"><span class="lab">Add README</span><span class="field dim">Off 그대로</span><span class="num">3</span></div>
-        <div class="mbtn hl wide">Create repository <span class="num">4</span></div>
-      </div>
-    </div></div>
-    <ol class="steps" start="9" style="counter-reset:s 8">
-      <li>GitHub 오른쪽 위 <span class="ui">+</span> 버튼 → <span class="ui">New repository</span>를 누릅니다. 바로 가려면 아래 주소를 씁니다.
-        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">새 창고 만들기</span><button class="copy" type="button">복사</button></div><pre>https://github.com/new</pre></div></li>
-      <li><b>Repository name ①</b>: <code class="k">golf-coach</code> (영문 소문자와 하이픈만)</li>
-      <li><b>공개 범위 ②</b>: <b>Public</b>을 고릅니다. 코드는 공개되지만 키는 코드에 없고(06장에서 확인), 앱은 비밀번호로 잠겨 있어 안전합니다. Private도 배포는 되지만 연결할 때 권한 확인 단계가 하나 더 늘어납니다.</li>
-      <li><b>README, .gitignore, license ③</b>: 모두 <b>추가하지 않고 그대로</b> 둡니다. 빈 창고여야 다음 단계의 파일 올리기 안내가 바로 보입니다.</li>
-      <li>맨 아래 초록색 <span class="ui">Create repository</span> ④를 누릅니다.</li>
-    </ol>
-
-    <h3>C. 파일 끌어다 올리기 (5분)</h3>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/hong-woori/golf-coach</span></div>
-      <div class="mock-content">
-        <div class="mt">Quick setup — if you've done this kind of thing before</div>
-        <div class="mempty"><small>…or create a new repository on the command line (무시)</small></div>
-        <div class="mempty hl">Get started by creating a new file or <b>uploading an existing file</b> <span class="num">1</span></div>
-      </div>
-    </div></div>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/hong-woori/golf-coach/upload/main</span></div>
-      <div class="mock-content">
-        <div class="mt">golf-coach /</div>
-        <div class="mempty hl" style="text-align:center;padding:26px 12px">Drag files here to add them to your repository<br><small>or choose your files</small> <span class="num">2</span></div>
-        <div class="mrow" style="width:100%"><span class="lab">올라간 파일</span><span class="field">app.py · requirements.txt</span><span class="num">3</span></div>
-        <div class="mrow" style="width:100%"><span class="lab">Commit changes</span><span class="field">첫 업로드</span><span class="num">4</span></div>
-        <div class="mrow" style="width:100%"><span class="lab"></span><span class="field dim">◉ Commit directly to the main branch</span></div>
-        <div class="mbtn hl">Commit changes <span class="num">5</span></div>
-      </div>
-    </div></div>
-    <ol class="steps" start="14" style="counter-reset:s 13">
-      <li>창고를 만들면 영어 안내문(Quick setup)이 가득한 화면이 나옵니다. 명령어 부분은 모두 무시하고, 위쪽 문장 속 파란 글씨 <span class="ui">uploading an existing file</span> ①을 누릅니다.</li>
-      <li>바탕화면의 <code class="k">upload_to_github</code> 폴더를 열고, 안의 <b>파일들</b>을 마우스로 모두 선택(Ctrl+A)해 브라우저의 회색 상자 ②에 끌어다 놓습니다. <b>폴더째가 아니라 안의 파일들</b>을 놓아야 합니다. 끌어다 놓기가 어려우면 <span class="ui">choose your files</span>를 눌러 파일을 고릅니다.</li>
-      <li>상자 아래에 <code class="k">app.py</code>, <code class="k">requirements.txt</code>가 목록 ③으로 나타나는지 확인합니다. 업로드 막대가 끝날 때까지 기다립니다.</li>
-      <li><b>Commit changes 칸 ④</b>: 무엇을 올렸는지 메모입니다. <code class="k">첫 업로드</code>처럼 아무 말이나 적어도 됩니다. 아래 선택은 <span class="ui">Commit directly to the main branch</span> 그대로 둡니다.</li>
-      <li>초록색 <span class="ui">Commit changes</span> ⑤를 누릅니다.</li>
-      <li>창고 첫 화면에 <code class="k">app.py</code>와 <code class="k">requirements.txt</code>가 <b>맨 바깥에</b> 보이면 완료입니다. <code class="k">upload_to_github</code>라는 폴더가 보이고 그 안에 파일이 있다면 폴더째 올린 것이니, 아래 표의 방법으로 바로잡습니다.</li>
-    </ol>
-
-    <h3>D. 앱을 고친 뒤 다시 올리기</h3>
-    <ol class="steps">
-      <li>내 PC에서 Claude Code로 앱을 고치고, 06장의 점검 프롬프트를 다시 붙여넣어 <code class="k">upload_to_github</code> 폴더를 새로 만듭니다.</li>
-      <li>GitHub 창고 화면 오른쪽 위 <span class="ui">Add file</span> → <span class="ui">Upload files</span>를 누릅니다.</li>
-      <li>같은 방법으로 파일을 끌어다 놓고 <span class="ui">Commit changes</span>를 누릅니다. 같은 이름 파일은 새 것으로 바뀝니다.</li>
-      <li>배포된 앱(08장)은 GitHub가 바뀐 것을 알아채고 <b>1~3분 안에 자동으로</b> 새 버전으로 바뀝니다.</li>
-    </ol>
-
-    <h3>E. 막혔을 때</h3>
-    <div class="tbl"><table>
-      <thead><tr><th>증상</th><th>원인</th><th>해결</th></tr></thead>
-      <tbody>
-        <tr><td>launch code 메일이 안 옴</td><td>스팸함 분류, 회사 메일 보안 필터</td><td>스팸함 확인, 화면의 Resend code, 안 되면 개인 메일로 가입</td></tr>
-        <tr><td>창고 안에 폴더가 하나 더 생김</td><td>폴더째 끌어다 놓음</td><td>폴더를 눌러 안의 파일을 열고 ⋯ → Delete file로 지운 뒤, 파일만 다시 올리기. 또는 창고를 지우고(Settings 맨 아래 Delete) 새로 만들기</td></tr>
-        <tr><td><code>.env</code>를 실수로 올림</td><td>06장 점검 누락</td><td>그 파일을 Delete file로 지우고, <b>그 키는 콘솔에서 즉시 삭제 후 새로 발급</b>. 지워도 기록(커밋)에 남기 때문입니다.</td></tr>
-        <tr><td>uploading an existing file 링크가 안 보임</td><td>README를 추가해 창고를 만듦</td><td>창고 화면 <span class="ui">Add file → Upload files</span>로 올리면 됨</td></tr>
-        <tr><td>휴대폰에서 끌어다 놓기가 안 됨</td><td>휴대폰 브라우저 제약</td><td>PC 브라우저에서 진행</td></tr>
-      </tbody>
-    </table></div>
-    <label class="check"><input type="checkbox" id="done-3-7"> GitHub 창고 맨 바깥에 app.py 와 requirements.txt 가 보인다</label>
-  </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 07 / 09</span></footer>
-</section>
-
-<!-- 3-8 -->
-<section class="chapter s3c" id="s3-8" data-ch="3-8">
-  <div class="ch-head"><span class="ch-no">3회차 · 08</span><span class="ch-time">30분</span><h2>Streamlit Cloud로 웹에 배포하기</h2></div>
-  <div class="ch-body">
-    <p class="goal">Streamlit Community Cloud는 GitHub 창고의 앱을 가져가 인터넷에서 24시간 돌려 주는 무료 서비스입니다. GitHub 계정으로 로그인하고, 창고를 고르고, 금고(Secrets)에 키를 넣고, Deploy를 누르면 <code class="k">○○.streamlit.app</code> 주소가 생깁니다.</p>
-    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>항목 이름은 Streamlit 공식 문서 기준입니다. 화면은 영어로 나옵니다.</div>
-
-    <h3>A. GitHub 계정으로 로그인하기 (5분)</h3>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">share.streamlit.io</span></div>
-      <div class="mock-modal">
-        <div class="mt">Sign in to Streamlit Community Cloud</div>
-        <div class="mbtn hl wide">Continue with GitHub <span class="num">1</span></div>
-        <div class="mrow"><span class="field dim">Continue with Google · email (쓰지 않음)</span></div>
-      </div>
-    </div></div>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/login/oauth/authorize</span></div>
-      <div class="mock-modal">
-        <div class="mt">Authorize Streamlit</div>
-        <div class="mrow"><span class="field dim">Streamlit wants to access your hong-woori account</span></div>
-        <div class="mbtn hl wide">Authorize streamlit <span class="num">2</span></div>
-      </div>
-    </div></div>
-    <ol class="steps">
-      <li>Streamlit Community Cloud에 접속합니다.
-        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">Streamlit Community Cloud</span><button class="copy" type="button">복사</button></div><pre>https://share.streamlit.io</pre></div></li>
-      <li><span class="ui">Continue with GitHub</span> ①을 누릅니다. <b>반드시 GitHub로</b> 로그인해야 창고를 바로 고를 수 있습니다.</li>
-      <li>GitHub 화면이 열리며 Streamlit에 권한을 줄지 묻습니다. <span class="ui">Authorize streamlit</span> ②를 누릅니다. 비밀번호를 다시 물으면 GitHub 비밀번호를 넣습니다.</li>
-      <li>처음이면 이름, 하는 일, 이용 목적 같은 계정 설정을 묻습니다. 사실대로 넣고 <span class="ui">Continue</span>를 누릅니다. 이용약관 동의 체크가 있으면 체크합니다.</li>
-      <li>"My apps" 같은 빈 작업 공간 화면이 나오면 로그인 완료입니다.</li>
-    </ol>
-
-    <h3>B. 배포 정보 입력하기 (5분)</h3>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">share.streamlit.io</span></div>
-      <div class="mock-content">
-        <div class="mt mrow-between">My apps <span class="mbtn hl small">Create app <span class="num">1</span></span></div>
-        <div class="mempty"><small>아직 배포한 앱이 없습니다</small></div>
-      </div>
-    </div></div>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">share.streamlit.io/deploy</span></div>
-      <div class="mock-modal">
-        <div class="mt">Deploy an app</div>
-        <div class="mrow hl"><span class="lab">Repository</span><span class="field">hong-woori/golf-coach</span><span class="num">2</span></div>
-        <div class="mrow hl"><span class="lab">Branch</span><span class="field">main</span><span class="num">3</span></div>
-        <div class="mrow hl"><span class="lab">Main file path</span><span class="field">app.py</span><span class="num">4</span></div>
-        <div class="mrow hl"><span class="lab">App URL (optional)</span><span class="field">hong-golf-coach .streamlit.app</span><span class="num">5</span></div>
-        <div class="mrow hl"><span class="lab"></span><span class="field dim">Advanced settings</span><span class="num">6</span></div>
-        <div class="mbtn wide">Deploy</div>
-      </div>
-    </div></div>
-    <ol class="steps" start="6" style="counter-reset:s 5">
-      <li>오른쪽 위 <span class="ui">Create app</span> ①을 누릅니다. 어떤 방식으로 만들지 물으면 <b>GitHub 창고에서 배포</b>(Deploy a public app from GitHub, 또는 "Yup, I have an app")를 고릅니다. 템플릿이나 Playground는 고르지 않습니다.</li>
-      <li><b>Repository ②</b>: 칸을 누르면 내 창고 목록이 나옵니다. <code class="k">내사용자이름/golf-coach</code>를 고릅니다. 목록에 없으면 직접 입력하거나, 07장 창고가 Public인지 확인합니다.</li>
-      <li><b>Branch ③</b>: <code class="k">main</code> 그대로 둡니다.</li>
-      <li><b>Main file path ④</b>: <code class="k">app.py</code>. 창고 맨 바깥에 있는 파일 이름과 정확히 같아야 합니다.</li>
-      <li><b>App URL ⑤</b>: 휴대폰에 칠 주소입니다. 영문 소문자·숫자·하이픈으로 짧게 정합니다. 예: <code class="k">hong-golf-coach</code> → <code class="k">hong-golf-coach.streamlit.app</code>. 이미 쓰는 주소면 빨간 글씨가 나오니 바꿉니다.</li>
-    </ol>
-
-    <h3>C. 금고(Secrets)에 키 넣고 배포하기 (5분 + 대기 3~5분)</h3>
-    <div class="mockwrap"><div class="mock">
-      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Advanced settings</span></div>
-      <div class="mock-modal">
-        <div class="mt">Advanced settings</div>
-        <div class="mrow hl"><span class="lab">Python version</span><span class="field">3.12</span><span class="num">7</span></div>
-        <div class="mrow hl"><span class="lab">Secrets</span><span class="field key">ANTHROPIC_API_KEY = "sk-ant-…"<br>APP_PASSWORD = "golf2026"</span><span class="num">8</span></div>
-        <div class="mbtn hl wide">Save <span class="num">9</span></div>
-      </div>
-    </div></div>
-    <ol class="steps" start="11" style="counter-reset:s 10">
-      <li>배포 화면 아래쪽 <span class="ui">Advanced settings</span> ⑥을 누릅니다.</li>
-      <li><b>Python version ⑦</b>: <code class="k">3.12</code>를 고릅니다. 내 PC와 같은 버전이면 문제가 가장 적습니다.</li>
-      <li><b>Secrets ⑧</b>: 06장에서 메모장에 적어 둔 두 줄을 그대로 붙여넣습니다. 따옴표가 빠지지 않았는지 한 번 더 봅니다.</li>
-      <li><span class="ui">Save</span> ⑨를 눌러 설정 창을 닫고, 초록색 <span class="ui">Deploy</span>를 누릅니다.</li>
-      <li>"Your app is in the oven" 화면과 함께 오른쪽 아래에 설치 기록(로그)이 흘러갑니다. 처음에는 부품 설치에 <b>3~5분</b> 걸립니다. 화면을 닫지 말고 기다립니다.</li>
-      <li>비밀번호 입력 화면이 뜨면 배포 성공입니다. 비밀번호를 넣고 스코어카드 사진으로 분석을 한 번 돌려 봅니다.</li>
-    </ol>
-
-    <h3>D. 배포 후 관리하기</h3>
-    <div class="tbl"><table>
-      <thead><tr><th>하고 싶은 일</th><th>위치</th></tr></thead>
-      <tbody>
-        <tr><td>설치 기록·오류 보기</td><td>내 앱 화면 오른쪽 아래 <span class="ui">Manage app</span> → 로그 창</td></tr>
-        <tr><td>키·비밀번호 바꾸기</td><td><code>share.streamlit.io</code> 내 앱 목록 → 앱 오른쪽 <span class="ui">⋮</span> → <span class="ui">Settings</span> → <span class="ui">Secrets</span> → 고친 뒤 Save (1분 안에 적용)</td></tr>
-        <tr><td>앱 다시 켜기</td><td>앱 목록 <span class="ui">⋮</span> → <span class="ui">Reboot app</span></td></tr>
-        <tr><td>앱 지우기</td><td>앱 목록 <span class="ui">⋮</span> → <span class="ui">Delete</span> (GitHub 창고는 그대로 남음)</td></tr>
-        <tr><td>코드 고치기</td><td>07장 D처럼 GitHub에 다시 올리면 1~3분 안에 자동 반영</td></tr>
-      </tbody>
-    </table></div>
-
-    <h3>E. 막혔을 때</h3>
-    <div class="tbl"><table>
-      <thead><tr><th>화면에 보이는 문구</th><th>원인</th><th>해결</th></tr></thead>
-      <tbody>
-        <tr><td><code>ModuleNotFoundError: No module named ...</code></td><td>requirements.txt에 부품 누락</td><td>Claude Code에 오류 문구를 붙여넣고 requirements.txt를 고쳐 달라고 한 뒤 GitHub에 다시 올리기</td></tr>
-        <tr><td><code>KeyError</code> / <code>st.secrets has no key</code></td><td>Secrets 이름 오타 또는 미입력</td><td>Settings → Secrets에서 이름이 <code>ANTHROPIC_API_KEY</code>, <code>APP_PASSWORD</code>와 정확히 같은지 확인</td></tr>
-        <tr><td><code>authentication_error</code></td><td>키 값 오타, 따옴표 누락, 삭제된 키</td><td>콘솔에서 키 확인 후 Secrets 다시 붙여넣기</td></tr>
-        <tr><td><code>credit balance is too low</code></td><td>Claude API 크레딧 소진</td><td>콘솔 Billing에서 충전</td></tr>
-        <tr><td>Main file path 오류 / 파일을 못 찾음</td><td>창고 안에 폴더가 하나 더 있음</td><td>07장 E 표대로 파일을 맨 바깥으로</td></tr>
-        <tr><td>"This app has gone to sleep"</td><td>한동안 아무도 안 써서 쉬는 중 (정상)</td><td>깨우기 버튼(Yes, get this app back up!)을 누르고 1분 대기</td></tr>
-        <tr><td>로그가 오래 멈춘 듯 보임</td><td>첫 설치는 원래 오래 걸림</td><td>5분 넘게 그대로면 ⋮ → Reboot app</td></tr>
-      </tbody>
-    </table></div>
-    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 배포 오류 해결</span><button class="copy" type="button">복사</button></div><pre>Streamlit Community Cloud 에 배포했더니 오류가 났어요. 원인을 쉬운 말로 설명하고 내 PC의 파일을 고쳐 주세요. 고친 뒤 upload_to_github 폴더도 새로 만들어 주시고, GitHub 에 무엇을 다시 올리면 되는지 알려 주세요.
-
-[Manage app 로그 창에 나온 오류 문구]
-(여기에 붙여넣기 — 키처럼 보이는 값은 지우고)</pre></div>
-    <label class="check"><input type="checkbox" id="done-3-8"> ○○.streamlit.app 주소에서 비밀번호를 넣고 분석이 됐다</label>
-  </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 08 / 09</span></footer>
-</section>
-
-<!-- 3-9 -->
-<section class="chapter s3c" id="s3-9" data-ch="3-9">
-  <div class="ch-head"><span class="ch-no">3회차 · 09</span><span class="ch-time">20분</span><h2>휴대폰으로 열고 동료와 공유하기</h2></div>
-  <div class="ch-body">
-    <h3>A. 휴대폰에서 열고 홈 화면에 두기</h3>
-    <ol class="steps">
-      <li>이번에는 와이파이를 끄고 LTE·5G 상태에서 휴대폰 브라우저에 <code class="k">내앱이름.streamlit.app</code>을 입력합니다. 02장과 달리 어디서나 열립니다.</li>
-      <li>비밀번호를 넣고, 사진첩의 스코어카드를 올려 분석해 봅니다.</li>
-      <li>앱처럼 쓰려면 홈 화면에 아이콘을 만듭니다.<br><b>아이폰(Safari)</b>: 아래 공유 버튼 → <span class="ui">홈 화면에 추가</span><br><b>안드로이드(Chrome)</b>: 오른쪽 위 ⋮ → <span class="ui">홈 화면에 추가</span></li>
-    </ol>
-
-    <h3>B. 동료에게 보내기</h3>
+    <h3>A. 동료에게 보내기</h3>
     <div class="block"><div class="block-head"><span class="tag p">MESSAGE</span><span class="where">동료에게 보낼 안내 문구 예시</span><button class="copy" type="button">복사</button></div><pre>제가 AI로 만든 골프 스코어카드 코치입니다 ⛳
 스마트스코어 카드나 종이 스코어카드 사진을 올리면 약점과 연습 방법을 알려 줍니다.
 
-주소: https://hong-golf-coach.streamlit.app
+주소: https://hong-golf.streamlit.app
 비밀번호: (따로 알려 드릴게요)
 
 ※ AI 분석이라 숫자는 표에서 한 번 확인해 주세요.</pre></div>
     <div class="note warn"><b>비밀번호는 링크와 따로 보내세요</b>링크와 비밀번호가 함께 퍼지면 누구나 쓰게 되고, 그만큼 내 Claude API 크레딧이 나갑니다.</div>
 
-    <h3>C. 알아 두면 좋은 점</h3>
+    <h3>B. 알아 두면 좋은 점</h3>
     <div class="tbl"><table>
       <thead><tr><th>상황</th><th>이유</th><th>해결</th></tr></thead>
       <tbody>
         <tr><td>"앱이 잠들어 있다"는 화면</td><td>한동안 아무도 안 쓰면 무료 앱은 쉬는 상태가 됨</td><td>깨우기 버튼을 누르고 1~2분 기다림</td></tr>
         <tr><td>저장한 기록이 사라짐</td><td>무료 배포 환경은 앱을 다시 켜면 파일이 초기화됨</td><td>라운드마다 CSV를 내려받아 두고 다음에 올리기</td></tr>
-        <tr><td>배포 중 오류 화면</td><td>requirements.txt 부품 누락이 가장 흔함</td><td>오류 글을 복사해 Claude Code에 "배포 오류예요"와 함께 붙여넣기</td></tr>
-        <tr><td><code>credit balance is too low</code></td><td>Claude API 크레딧 소진</td><td>콘솔 Billing에서 충전, Usage로 사용량 확인</td></tr>
-        <tr><td>비밀번호가 퍼진 것 같음</td><td></td><td>Streamlit Secrets에서 APP_PASSWORD 변경, 필요하면 배포용 키 삭제</td></tr>
+        <tr><td>사용량이 예상보다 많음</td><td>비밀번호가 퍼졌을 수 있음</td><td>Secrets에서 APP_PASSWORD 변경, 필요하면 배포용 키 삭제 후 새로 발급</td></tr>
+        <tr><td>동료가 자기 버전을 갖고 싶어 함</td><td>앱은 내 창고·내 키로 돌아감</td><td>동료가 1회차 02~06장대로 자기 계정을 만들고, 이 교안의 프롬프트로 직접 만들게 안내</td></tr>
       </tbody>
     </table></div>
 
-    <h3>D. 보고서 앱도 배포해 보기 (과제)</h3>
-    <p>오늘 한 06~08장을 2회차 <code class="k">report-agent</code>에 똑같이 적용하면 보고서 앱도 휴대폰으로 열립니다. Secrets에는 <code class="k">ANTHROPIC_API_KEY</code>, <code class="k">DART_API_KEY</code>, <code class="k">APP_PASSWORD</code> 세 줄을 넣고, Claude Code에 06장 프롬프트를 쓰기 전에 "이 앱도 get_secret 방식과 비밀번호 입장을 넣어 주세요"라고 먼저 요청하세요.</p>
+    <h3>C. 보고서 앱도 함께 공유하기</h3>
+    <p>2회차의 보고서 앱도 이미 <code class="k">○○.streamlit.app</code> 주소와 입장 비밀번호가 있습니다. 같은 방식으로 안내 문구를 만들어 팀에 공유해 보세요. 공개 공시만 다루는 앱이라는 점과 "AI 초안이니 원문 대조 필수"를 함께 적어 두는 것이 좋습니다.</p>
+    <label class="check"><input type="checkbox" id="done-3-7"> 안내 문구를 만들고 비밀번호를 따로 전했다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 07 / 08</span></footer>
+</section>
 
-    <h3>E. 다음 단계: 웹에서 바로 고치기</h3>
-    <p>GitHub에 창고가 생겼으니, 이제 claude.ai의 <b>웹 Claude Code</b>도 쓸 수 있습니다. PC에 VS Code가 없어도 브라우저에서 창고를 연결해 "버튼 색 바꿔 줘"라고 하면 고친 코드가 창고에 반영되고, 배포된 앱도 자동으로 바뀝니다. 출장지나 휴대폰에서 앱을 고치고 싶을 때 써 보세요.</p>
-
-    <h3>3회 과정을 마치며</h3>
+<!-- 3-8 -->
+<section class="chapter s3c" id="s3-8" data-ch="3-8">
+  <div class="ch-head"><span class="ch-no">3회차 · 08</span><span class="ch-time">10분</span><h2>3회 과정을 마치며</h2></div>
+  <div class="ch-body">
     <div class="tbl"><table>
       <thead><tr><th>회차</th><th>배운 것</th><th>만든 것</th></tr></thead>
       <tbody>
-        <tr><td>1회차</td><td>설치, 말로 화면 만들기, 꾸미기</td><td>보고서 작성기 화면</td></tr>
-        <tr><td>2회차</td><td>API와 키, 데이터 연결, 에이전트</td><td>DART 보고서 에이전트</td></tr>
-        <tr><td>3회차</td><td>사진 읽기, 역할 분리, 배포와 공유</td><td>휴대폰 골프 코치</td></tr>
+        <tr><td>1회차</td><td>웹 Claude Code, GitHub 결재(Merge), Streamlit 배포, 꾸미기</td><td>보고서 작성기 화면</td></tr>
+        <tr><td>2회차</td><td>API와 키, Secrets 금고, 데이터 연결, 에이전트</td><td>DART 보고서 에이전트</td></tr>
+        <tr><td>3회차</td><td>사진 읽기, 역할 분리, 휴대폰 개발, 공유</td><td>휴대폰 골프 코치</td></tr>
       </tbody>
     </table></div>
-    <label class="check"><input type="checkbox" id="done-3-9"> LTE로 휴대폰에서 앱을 열고 홈 화면에 추가했다</label>
+    <h3>계속 써 나갈 때 기억할 것</h3>
+    <ol class="steps">
+      <li><b>요청은 작게, 결재는 자주</b>: 한 세션에 한 가지 목적. 끝나면 PR → Merge.</li>
+      <li><b>숫자는 코드가, 글은 AI가</b>: 계산을 AI에게 맡기지 않고, AI가 쓴 숫자는 원자료와 대조합니다.</li>
+      <li><b>키는 금고에만</b>: 채팅·코드·GitHub에 키를 적지 않습니다.</li>
+      <li><b>비용 확인</b>: Claude 콘솔의 Usage를 한 달에 한 번 열어 봅니다.</li>
+    </ol>
+    <div class="note"><b>더 해 보고 싶다면</b>맨 뒤 <b>부록</b>에서 VS Code로 내 PC에서 직접 만들고 바로 확인하는 방법, 터미널과 PowerShell 읽는 법을 다룹니다. 화면을 수정 즉시 확인하고 싶거나 회사 안에서만 돌려야 하는 앱을 만들 때 유용합니다.</div>
+    <label class="check"><input type="checkbox" id="done-3-8"> 3회 과정을 마쳤다</label>
   </div>
-  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 09 / 09</span></footer>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>3회차 08 / 08</span></footer>
 </section>
 
 
@@ -870,7 +627,7 @@ APP_PASSWORD = "golf2026"</pre></div>
 <p class="page-foot">우리금융캐피탈 디지털전략부 · 사내 교육용 자료</p>
 <script>
 (function(){
-  var KEY='ra-s3';
+  var KEY='ra-v3-3';
   var state={};
   try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){state={}}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
@@ -883,7 +640,7 @@ APP_PASSWORD = "golf2026"</pre></div>
     var n=sec.getAttribute('data-ch');
     var sess=n.split('-')[0];
     if(sess!==lastSess){
-      var s=document.createElement('span');s.className='sep';s.textContent=sess+'회차';
+      var s=document.createElement('span');s.className='sep';s.textContent=(sess==='A'?'부록':sess+'회차');
       chips.appendChild(s);lastSess=sess;
     }
     var a=document.createElement('a');

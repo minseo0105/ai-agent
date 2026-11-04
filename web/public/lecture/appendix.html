@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta property="og:site_name" content="WAI LABS">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VS Code 부록 교안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: 2회차로 나뉜 실습 교안. 상단 고정 목차 + 회차 구분 띠 + 장마다 바닥띠(부서 표기) */
+:root{
+  --bg:#f3f6fa; --surface:#ffffff; --ink:#14213a; --muted:#56637a; --line:#d9e1eb;
+  --accent:#0062a8; --accent-soft:#e3eef8; --warn:#9a5a0c; --warn-soft:#fbf1e2;
+  --ok:#1d7349; --ok-soft:#e3f2ea; --s2:#6a3fa0; --s2-soft:#efe8f8; --s3:#1f6b52; --s3-soft:#e1f1ea; --s4:#4b5563; --s4-soft:#eceef2;
+  --code-bg:#0f1b2d; --code-ink:#e2eaf6; --code-dim:#8fa3c0; --code-line:#22324b;
+  --band:#14213a; --band-ink:#dfe7f3;
+  --f-display:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1320; --surface:#131d2e; --ink:#e4ebf5; --muted:#9aa8bf; --line:#2a3851;
+  --accent:#62adea; --accent-soft:#16304b; --warn:#e7a557; --warn-soft:#33260f;
+  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a; --s4:#aab3c2; --s4-soft:#232c3b;
+  --code-bg:#080e19; --code-ink:#e2eaf6; --code-dim:#8295b3; --code-line:#1d2a40;
+  --band:#0a1019; --band-ink:#c9d5e6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1320; --surface:#131d2e; --ink:#e4ebf5; --muted:#9aa8bf; --line:#2a3851;
+  --accent:#62adea; --accent-soft:#16304b; --warn:#e7a557; --warn-soft:#33260f;
+  --ok:#5fc795; --ok-soft:#11301f; --s2:#b896e6; --s2-soft:#2a1f3d; --s3:#6fd1a8; --s3-soft:#12312a; --s4:#aab3c2; --s4-soft:#232c3b;
+  --code-bg:#080e19; --code-ink:#e2eaf6; --code-dim:#8295b3; --code-line:#1d2a40;
+  --band:#0a1019; --band-ink:#c9d5e6; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;word-break:keep-all;overflow-wrap:break-word}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:14px;padding-block:10px}
+.brand{font-weight:700;font-size:14px;white-space:nowrap}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.04em}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;align-items:center}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:none;font-family:var(--f-mono);font-size:12px;text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 9px;background:var(--surface)}
+.chips a.done{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+.chips .sep{flex:none;font-size:11px;font-weight:700;color:var(--muted);padding:0 2px 0 6px}
+.prog{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.cover{padding-block:52px 24px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--f-display);font-size:clamp(30px,6vw,44px);line-height:1.25;margin:10px 0 16px;text-wrap:balance;font-weight:700;letter-spacing:-.01em}
+.lead{font-size:18px;color:var(--muted);max-width:62ch;margin:0}
+
+.sessions{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:28px}
+.sess{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:6px;padding:18px 20px;min-width:0}
+.sess.two{border-top-color:var(--s2)}
+.sess .lbl{font-family:var(--f-mono);font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--accent)}
+.sess.two .lbl{color:var(--s2)}
+.sess h3{margin:4px 0 6px;font-size:19px}
+.sess p{margin:0 0 8px;color:var(--muted);font-size:14.5px}
+.sess ul{margin:0;padding-left:18px;font-size:14.5px}
+.sess .need{margin-top:10px;font-size:13.5px;color:var(--muted)}
+.sess .need b{color:var(--ink)}
+
+.divider{margin:44px 0 6px;padding:22px 24px;border-radius:6px;background:var(--accent);color:#fff;scroll-margin-top:72px}
+.divider.two{background:var(--s2)}
+.divider .k{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;font-weight:600;opacity:.85}
+.divider h2{margin:4px 0 2px;font-size:26px;line-height:1.3}
+.divider p{margin:0;opacity:.9;font-size:15px}
+:root[data-theme="dark"] .divider{color:#0b1220}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .divider{color:#0b1220}}
+
+.chapter{background:var(--surface);border:1px solid var(--line);border-radius:6px;margin-block:24px;overflow:hidden;scroll-margin-top:72px}
+.ch-head{padding:22px 24px 6px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.ch-no{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.06em}
+.s2c .ch-no{color:var(--s2)}
+.ch-time{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-left:auto}
+.ch-head h2{flex-basis:100%;margin:2px 0 0;font-size:25px;line-height:1.35;text-wrap:balance;font-weight:700}
+.ch-body{padding:6px 24px 26px}
+.ch-body > p{max-width:66ch}
+h3{font-size:18px;margin:28px 0 8px;font-weight:700}
+.goal{margin:6px 0 12px;color:var(--muted);font-size:15px}
+
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:12px 0}
+ol.steps > li{counter-increment:s;position:relative;padding:4px 0 10px 42px}
+ol.steps > li::before{content:counter(s);position:absolute;left:0;top:4px;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-weight:600;font-size:13px;display:grid;place-items:center;line-height:1}
+.s2c ol.steps > li::before{background:var(--s2-soft);color:var(--s2)}
+kbd,code.k{font-family:var(--f-mono);font-size:.88em;background:var(--accent-soft);color:var(--ink);padding:1px 6px;border-radius:4px;border:1px solid var(--line);white-space:nowrap}
+.ui{font-weight:600;color:var(--accent)}
+
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;margin:16px 0;font-size:15px;border-radius:0 4px 4px 0}
+.note.warn{border-color:var(--warn);background:var(--warn-soft)}
+.note.ok{border-color:var(--ok);background:var(--ok-soft)}
+.note b:first-child{display:block;margin-bottom:2px}
+
+.qa{border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin:14px 0}
+.qa .q{font-weight:700;margin:0 0 4px}
+.qa .q::before{content:"Q. ";color:var(--accent);font-family:var(--f-mono)}
+.qa p{margin:4px 0;font-size:15px}
+.qa .a-short{display:inline-block;font-weight:700;color:var(--ok);margin-right:6px}
+
+.block{margin:16px 0;border-radius:6px;overflow:hidden;background:var(--code-bg);color:var(--code-ink)}
+.block-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid var(--code-line);font-size:12px;flex-wrap:wrap}
+.tag{font-family:var(--f-mono);font-weight:600;letter-spacing:.06em;padding:2px 8px;border-radius:3px}
+.tag.p{background:#e8b04a;color:#2a1c02}
+.tag.t{background:#5fc795;color:#06210f}
+.tag.u{background:#8fb8ff;color:#08183a}
+.block-head .where{color:var(--code-dim)}
+.copy{margin-left:auto;font-family:var(--f-body);font-size:12px;font-weight:600;background:transparent;color:var(--code-ink);border:1px solid var(--code-line);border-radius:4px;padding:4px 12px;cursor:pointer}
+.copy:hover{border-color:var(--code-dim)}
+.copy.copied{color:#5fc795;border-color:#5fc795}
+.block pre{margin:0;padding:14px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:13.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.block.t pre{white-space:pre;word-break:normal}
+
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+td code{font-family:var(--f-mono);font-size:.9em}
+td.when{white-space:nowrap;font-family:var(--f-mono);font-size:12.5px}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.pill.two{background:var(--s2-soft);color:var(--s2)}
+.pill.no{background:var(--line);color:var(--muted)}
+
+/* diagrams */
+.fig{margin:18px 0;overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.fig svg{display:block;min-width:660px;width:100%;height:auto}
+.fig figcaption{font-size:13px;color:var(--muted);padding:8px 14px 12px}
+.d-box{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.d-acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.d-s2{fill:var(--s2-soft);stroke:var(--s2);stroke-width:1.5}
+.d-ok{fill:var(--ok-soft);stroke:var(--ok);stroke-width:1.5}
+.d-warn{fill:var(--warn-soft);stroke:var(--warn);stroke-width:1.5}
+.d-dash{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+.d-frame{fill:none;stroke:var(--muted);stroke-width:1.5}
+.d-line{stroke:var(--muted);stroke-width:1.6;fill:none}
+.d-arrowhead{fill:var(--muted)}
+.d-t{fill:var(--ink);font-family:var(--f-body);font-size:14px;font-weight:700}
+.d-s{fill:var(--muted);font-family:var(--f-body);font-size:12px}
+.d-l{fill:var(--accent);font-family:var(--f-body);font-size:12px;font-weight:600}
+.d-l2{fill:var(--s2);font-family:var(--f-body);font-size:12px;font-weight:600}
+
+.order{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:14px 0}
+.order li{flex:1 1 150px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--bg);font-size:14px;line-height:1.5;min-width:0}
+.order li b{display:block;font-size:15px}
+.order li small{color:var(--muted)}
+.order li .n{font-family:var(--f-mono);font-size:12px;color:var(--accent);font-weight:600}
+
+.check{display:flex;align-items:center;gap:10px;margin-top:22px;padding:12px 14px;border:1px dashed var(--line);border-radius:6px;cursor:pointer;font-weight:600;font-size:15px}
+.check input{width:20px;height:20px;accent-color:var(--ok)}
+.check.on{border-style:solid;border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+
+.ch-foot{background:var(--band);color:var(--band-ink);display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;padding:11px 24px;font-size:12.5px}
+.ch-foot b{font-weight:600;letter-spacing:.02em}
+.ch-foot span{font-family:var(--f-mono);opacity:.75;font-variant-numeric:tabular-nums}
+
+
+/* console screen mockups */
+.mockwrap{overflow-x:auto;margin:16px 0}
+.mock{min-width:520px;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden;font-size:13px;line-height:1.5}
+.mock-bar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--line)}
+.mock-bar .dots{display:flex;gap:5px}
+.mock-bar .dots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+.mock-bar .url{font-family:var(--f-mono);font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:2px 10px;flex:1;min-width:0}
+.mock-main{display:grid;grid-template-columns:150px 1fr;min-height:170px}
+.mock-side{border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:2px;color:var(--muted)}
+.mock-side > div{padding:4px 8px;border-radius:4px;position:relative}
+.mock-side .sec{font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:8px;color:var(--muted);font-weight:600}
+.mock-content{padding:14px 16px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;min-width:0}
+.mt{font-weight:700;font-size:15px;color:var(--ink)}
+.mrow-between{display:flex;justify-content:space-between;align-items:center;width:100%}
+.mempty{border:1px dashed var(--line);border-radius:6px;padding:10px 12px;color:var(--muted);width:100%}
+.mempty b{color:var(--ink)}
+.mbtn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--surface);border-radius:5px;padding:6px 14px;font-weight:600;position:relative}
+.mbtn.small{padding:3px 10px;font-size:12px}
+.mbtn.wide{justify-content:center;width:100%}
+.mock-modal{padding:16px 18px;display:flex;flex-direction:column;gap:10px;max-width:460px;margin:12px auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.mrow{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:5px;flex-wrap:wrap}
+.mrow .lab{width:120px;flex:none;color:var(--muted);font-size:12px}
+.mrow .field{flex:1;min-width:0;border:1px solid var(--line);border-radius:4px;padding:4px 8px;background:var(--bg);color:var(--ink)}
+.mrow .field.dim{color:var(--muted);border-style:dashed}
+.mrow .field.key{font-family:var(--f-mono)}
+.mrow.sum{border-top:1px solid var(--line);border-radius:0;padding-top:10px}
+.chipset{display:flex;gap:6px;flex:1;flex-wrap:wrap}
+.chipset span{border:1px solid var(--line);border-radius:4px;padding:2px 10px}
+.chipset span.on{border-color:var(--s2);color:var(--s2);font-weight:700;background:var(--s2-soft)}
+.hl{outline:2px solid var(--warn);outline-offset:2px;background:var(--warn-soft)}
+.mbtn.hl{background:var(--ink)}
+.mock-side .hl{color:var(--ink);font-weight:700}
+.num{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--warn);color:var(--surface);font-family:var(--f-mono);font-size:11px;font-weight:700;flex:none;line-height:1}
+
+.mock-nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--muted)}
+.mock-nav > span{padding:3px 6px;border-radius:4px;display:inline-flex;align-items:center;gap:6px}
+.mock-nav .logo{font-family:var(--f-mono);font-weight:700;color:var(--ink);letter-spacing:.04em}
+.mock-nav .hl{color:var(--ink);font-weight:700}
+.mock-nav .right{margin-left:auto}
+.mock-drop{margin:0 0 14px 200px;width:180px;border:1px solid var(--line);border-radius:6px;padding:6px;display:flex;flex-direction:column;gap:2px;background:var(--surface);color:var(--muted)}
+.mock-drop > div{padding:4px 8px;border-radius:4px;display:flex;align-items:center;justify-content:space-between}
+.mock-drop .hl{color:var(--ink);font-weight:700}
+.divider.three{background:var(--s3)}
+.s3c .ch-no{color:var(--s3)}
+.s3c ol.steps > li::before{background:var(--s3-soft);color:var(--s3)}
+.sess.three{border-top-color:var(--s3)}
+.sess.three .lbl{color:var(--s3)}
+.d-s3{fill:var(--s3-soft);stroke:var(--s3);stroke-width:1.5}
+.d-l3{fill:var(--s3);font-family:var(--f-body);font-size:12px;font-weight:600}
+.divider.four{background:var(--s4)}
+.s4c .ch-no{color:var(--s4)}
+.s4c ol.steps > li::before{background:var(--s4-soft);color:var(--s4)}
+.sess.four{border-top-color:var(--s4)}
+.sess.four .lbl{color:var(--s4)}
+.page-foot{text-align:center;color:var(--muted);font-size:13px;padding-block:28px 48px}
+ul.plain{padding-left:20px;margin:8px 0}
+ul.plain li{margin:4px 0}
+
+@media (max-width:560px){
+  .ch-head,.ch-body,.ch-foot{padding-left:16px;padding-right:16px}
+  .divider{padding:18px 16px}
+  .brand small{display:none}
+  ol.steps > li{padding-left:38px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<style>body{margin:0;font-size:16px}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+.dept-bar{background:var(--band);color:var(--band-ink);font-size:13px}
+.dept-bar .in{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.dept-bar b{font-weight:700;letter-spacing:.02em}
+@media (max-width:560px){.topbar .brand{display:none}}
+.dept-bar nav{display:flex;gap:6px}
+.dept-bar a{color:var(--band-ink);text-decoration:none;font-weight:600;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 12px;white-space:nowrap}
+.dept-bar a:hover,.dept-bar a:focus-visible{background:rgba(255,255,255,.12)}
+</style>
+</head>
+<body>
+<div class="dept-bar"><div class="in"><b>우리금융캐피탈 디지털전략부</b><nav aria-label="사이트 이동"><a href="/">← WAI LABS 메인</a><a href="/lecture/">강의 목록</a></nav></div></div>
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">보고서 작성 에이전트 · 부록<small>우리금융캐피탈 디지털전략부</small></div>
+    <nav class="chips" id="chips" aria-label="장 이동"></nav>
+    <div class="prog" id="prog">0/8</div>
+  </div>
+</header>
+<main class="wrap">
+<section class="cover">
+  <div class="eyebrow">비개발자 실습 교안 · 부록</div>
+  <h1>VS Code로 내 PC에서 만들고 바로 보기</h1>
+  <p class="lead">설치가 가능하고 고친 화면을 바로 확인하고 싶은 분을 위한 선택 과정입니다. Git·VS Code·Python 설치, 한국어 설정, VS Code 화면과 터미널·PowerShell 읽는 법, 내 PC에서 실행하고 GitHub에 올리는 방법을 다룹니다.</p>
+
+  <div class="sessions"><div class="sess four">
+      <div class="lbl">부록 · 선택</div>
+      <h3>VS Code로 내 PC에서 하기</h3>
+      <p>설치가 가능하고, 고친 화면을 바로 확인하고 싶은 분을 위한 내용입니다.</p>
+      <ul>
+        <li>Git · VS Code · 한국어 · Python 설치</li>
+        <li>VS Code 화면, 터미널, PowerShell 읽는 법</li>
+        <li>내 PC에서 실행(.env, localhost)</li>
+        <li>내 PC 작업을 GitHub에 올리기</li>
+      </ul>
+      <p class="need"><b>필요한 것</b> 프로그램 설치가 가능한 PC</p>
+    </div>
+  </div>
+
+  <h3>이 교안에서 쓰는 블록</h3>
+  <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code 입력창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>Claude Code에게 일을 시키는 문장입니다. 복사 버튼을 누르고 그대로 붙여넣으면 됩니다.</pre></div>
+  <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">브라우저 주소창에 붙여넣기</span><button class="copy" type="button">복사</button></div><pre>https://claude.ai/code</pre></div>
+  <div class="block t"><div class="block-head"><span class="tag t">SECRETS</span><span class="where">Streamlit 금고에 넣는 형식 (2회차부터)</span></div><pre>이름 = "값"</pre></div>
+</section>
+<!-- ================= APPENDIX ================= -->
+<div class="divider four" id="appendix">
+  <div class="k">APPENDIX</div>
+  <h2>부록 · VS Code로 내 PC에서 하기</h2>
+  <p>선택 과정: 설치가 가능하고, 고친 화면을 결재 없이 바로 확인하고 싶을 때</p>
+</div>
+
+<!-- A-1 -->
+<section class="chapter s4c" id="sA-1" data-ch="A-1">
+  <div class="ch-head"><span class="ch-no">부록 · 01</span><span class="ch-time">10분</span><h2>VS Code 방식은 언제 쓰나요</h2></div>
+  <div class="ch-body">
+    <p class="goal">본 과정은 설치 없는 웹 Claude Code로 진행했습니다. 같은 일을 <b>내 PC 안에서</b> 할 수도 있습니다. VS Code에 Claude Code를 설치하면, 고친 화면을 결재 없이 <b>바로</b> 내 PC에서 확인할 수 있습니다.</p>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>웹 Claude Code (본 과정)</th><th>VS Code 안 Claude Code (부록)</th></tr></thead>
+      <tbody>
+        <tr><td><b>설치</b></td><td>없음, 브라우저만</td><td>Git · VS Code · Python (사내 PC는 막힐 수 있음)</td></tr>
+        <tr><td><b>코드가 있는 곳</b></td><td>GitHub 창고</td><td>내 PC 폴더</td></tr>
+        <tr><td><b>화면 확인</b></td><td>PR → Merge 후 1~3분</td><td>수정 즉시 <code>localhost:8501</code></td></tr>
+        <tr><td><b>키 보관</b></td><td>Streamlit Secrets</td><td>내 PC의 <code>.env</code> 파일</td></tr>
+        <tr><td><b>휴대폰</b></td><td>링크로 어디서나</td><td>같은 와이파이에서만, PC가 켜져 있어야</td></tr>
+        <tr><td><b>이어서 하기</b></td><td>아무 PC, 휴대폰 Claude 앱</td><td>그 PC에서만</td></tr>
+        <tr><td><b>터미널</b></td><td>볼 일 없음</td><td>결과와 오류를 터미널에서 읽음</td></tr>
+        <tr><td><b>잘 맞는 경우</b></td><td>설치가 어렵거나 휴대폰·여러 PC에서 작업</td><td>자주 고치며 바로 확인, 외부에 올리면 안 되는 사내용 앱</td></tr>
+      </tbody>
+    </table></div>
+    <h3>부록 순서</h3>
+    <ol class="order">
+      <li><span class="n">02</span><b>Git</b><small>Windows만</small></li>
+      <li><span class="n">03</span><b>VS Code · 한국어 · Python</b><small>설치</small></li>
+      <li><span class="n">04</span><b>Claude Code 확장</b><small>로그인</small></li>
+      <li><span class="n">05</span><b>화면 · 터미널 · PowerShell</b><small>둘러보기</small></li>
+      <li><span class="n">06</span><b>내 PC에서 실행</b><small>.env · localhost</small></li>
+      <li><span class="n">07~08</span><b>GitHub에 올리기</b><small>배포용</small></li>
+    </ol>
+    <div class="note"><b>본 과정 프롬프트를 그대로 써도 됩니다</b>VS Code에서는 "올려(push) 주세요" 대신 "앱을 실행해 주세요"라고 하면 Claude Code가 내 PC에서 바로 띄워 줍니다. 키는 Secrets 대신 <code class="k">.env</code>에서 읽게 하면 됩니다(06장).</div>
+    <label class="check"><input type="checkbox" id="done-A-1"> 두 방식의 차이를 이해했다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 01 / 08</span></footer>
+</section>
+
+<!-- A-2 -->
+<section class="chapter s4c" id="sA-2" data-ch="A-2">
+  <div class="ch-head"><span class="ch-no">부록 · 02</span><span class="ch-time">15분</span><h2>설치 전 준비와 Git 설치</h2></div>
+  <div class="ch-body">
+    <p class="goal">설치에는 순서가 있습니다. 뒤 단계가 앞 단계를 필요로 하기 때문입니다. 순서를 지키면 오류가 크게 줄어듭니다.</p>
+    <ol class="order">
+      <li><span class="n">STEP 1</span><b>Git</b><small>Windows만. Claude Code가 켜질 때 찾음</small></li>
+      <li><span class="n">STEP 2</span><b>VS Code</b><small>Claude Code가 들어갈 자리</small></li>
+      <li><span class="n">STEP 3</span><b>Python</b><small>Streamlit이 올라갈 엔진</small></li>
+      <li><span class="n">STEP 4</span><b>Claude Code</b><small>VS Code 확장으로 설치</small></li>
+      <li><span class="n">STEP 5</span><b>Streamlit</b><small>Claude Code가 대신 설치</small></li>
+    </ol>
+
+    <h3>설치 전 체크리스트</h3>
+    <ul class="plain">
+      <li>설치 권한: 사내 PC는 프로그램 설치가 막혀 있을 수 있습니다. 미리 IT 담당 부서에 Git, VS Code, Python 설치를 요청해 두세요.</li>
+      <li>Claude 유료 구독(Pro, Max 또는 회사 Team 플랜) 계정의 이메일과 비밀번호</li>
+      <li>노트북 충전기, 안정적인 인터넷</li>
+    </ul>
+
+    <h3>Git 설치 (Windows 사용자만)</h3>
+    <ol class="steps">
+      <li>아래 주소에서 <span class="ui">Click here to download</span>(64-bit Git for Windows Setup)을 내려받습니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">Git for Windows 다운로드</span><button class="copy" type="button">복사</button></div><pre>https://git-scm.com/downloads/win</pre></div></li>
+      <li>설치 파일을 실행하고 모든 화면에서 기본값 그대로 <span class="ui">Next</span>를 누릅니다. 설정을 바꿀 필요가 없습니다.</li>
+      <li>설치가 끝나면 시작 메뉴에 <b>Git Bash</b>가 생깁니다. 열어 볼 필요는 없습니다. Claude Code가 알아서 씁니다.</li>
+    </ol>
+    <div class="note"><b>Mac 사용자는 건너뛰세요</b>Mac에는 필요한 도구가 이미 들어 있습니다. 나중에 "개발자 도구를 설치하시겠습니까?" 창이 뜨면 <span class="ui">설치</span>를 누르면 됩니다.</div>
+    <label class="check"><input type="checkbox" id="done-A-2"> Git 설치를 마쳤다 (Mac은 건너뜀)</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 02 / 08</span></footer>
+</section>
+
+<!-- A-3 -->
+<section class="chapter s4c" id="sA-3" data-ch="A-3">
+  <div class="ch-head"><span class="ch-no">부록 · 03</span><span class="ch-time">30분</span><h2>VS Code 설치·한국어 설정과 Python 설치</h2></div>
+  <div class="ch-body">
+    <h3>VS Code</h3>
+    <ol class="steps">
+      <li>아래 주소에서 <span class="ui">Download</span> 버튼을 누릅니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">VS Code 다운로드</span><button class="copy" type="button">복사</button></div><pre>https://code.visualstudio.com</pre></div></li>
+      <li><b>Windows</b>: 설치 중 <span class="ui">PATH에 추가</span>와 <span class="ui">"Code(으)로 열기" 메뉴 추가</span>를 체크합니다.<br><b>Mac</b>: 압축을 풀고 앱을 <span class="ui">응용 프로그램</span> 폴더로 옮깁니다.</li>
+      <li>VS Code를 처음 켜면 메뉴가 영어로 나옵니다. 바로 아래 <b>"VS Code를 한국어로 바꾸기"</b>를 따라 한국어로 바꿉니다.</li>
+    </ol>
+
+    <h3>VS Code를 한국어로 바꾸기 (5분)</h3>
+    <p>이 교안은 한국어 메뉴 기준으로 설명합니다. 예를 들어 "파일 → 폴더 열기"가 영어 화면에서는 <code class="k">File → Open Folder</code>입니다. 수업 중 헷갈리지 않도록 지금 바꿔 둡니다.</p>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">Visual Studio Code</span></div>
+      <div class="mock-main">
+        <div class="mock-side">
+          <div>Explorer</div><div>Search</div>
+          <div class="hl">Extensions <span class="num">1</span></div>
+        </div>
+        <div class="mock-content">
+          <div class="mrow hl" style="width:100%"><span class="lab">검색창</span><span class="field">Korean</span><span class="num">2</span></div>
+          <div class="mrow hl" style="width:100%"><span class="field"><b>Korean Language Pack for Visual Studio Code</b><br><small>Microsoft ✓</small></span><span class="mbtn small">Install</span><span class="num">3</span></div>
+          <div class="mrow" style="width:100%"><span class="field dim">Change Language and Restart</span><span class="mbtn hl small">Restart <span class="num">4</span></span></div>
+        </div>
+      </div>
+    </div></div>
+    <ol class="steps">
+      <li>VS Code 왼쪽 세로 막대에서 <b>네모 4개 모양 아이콘(Extensions)</b> ①을 누릅니다. 단축키는 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> (Mac은 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>)입니다.</li>
+      <li>위쪽 검색창 ②에 <code class="k">Korean</code>을 입력합니다.</li>
+      <li>목록에서 <b>Korean Language Pack for Visual Studio Code</b>를 찾습니다. 게시자가 <b>Microsoft</b>이고 파란 체크 표시가 있는 항목입니다. 파란 <span class="ui">Install</span> ③을 누릅니다.</li>
+      <li>설치가 끝나면 오른쪽 아래에 "Change Language and Restart" 알림이 뜹니다. <span class="ui">Restart</span> ④를 누르면 VS Code가 껐다 켜지며 한국어로 바뀝니다.</li>
+      <li>상단 메뉴가 <b>파일 · 편집 · 선택 영역 · 보기 · 이동 · 실행 · 터미널 · 도움말</b>로 보이면 성공입니다.</li>
+    </ol>
+
+    <h4 style="margin:18px 0 6px;font-size:16px">알림이 안 뜨거나 놓쳤을 때</h4>
+    <ol class="steps">
+      <li><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> (Mac은 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>)를 누르면 화면 위쪽에 명령 입력창이 열립니다.</li>
+      <li><code class="k">display language</code>를 입력하고, 나오는 <span class="ui">Configure Display Language</span>를 누릅니다.</li>
+      <li>목록에서 <span class="ui">한국어 (ko)</span>를 고르고, 다시 시작할지 물으면 <span class="ui">Restart</span>를 누릅니다.</li>
+    </ol>
+    <div class="note"><b>영어로 되돌리고 싶을 때</b>같은 방법으로 <span class="ui">Configure Display Language</span>를 열고 <span class="ui">English (en)</span>를 고르면 됩니다. Claude Code 패널은 언어 설정과 상관없이 한국어로 말을 걸면 한국어로 답합니다.</div>
+
+    <h3>Python</h3>
+    <ol class="steps">
+      <li>Python 3.12 이상을 내려받습니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">Python 다운로드</span><button class="copy" type="button">복사</button></div><pre>https://www.python.org/downloads/</pre></div></li>
+      <li><b>Windows</b>: 첫 화면 맨 아래 <span class="ui">Add python.exe to PATH</span>를 <b>반드시 체크</b>하고 <span class="ui">Install Now</span>를 누릅니다.<br><b>Mac</b>: .pkg 파일을 열어 안내대로 설치합니다.</li>
+      <li>VS Code를 완전히 껐다 켜고, 메뉴 <span class="ui">터미널 → 새 터미널</span>을 연 뒤 아래를 입력합니다. 버전 번호가 나오면 성공입니다.
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">Windows</span><button class="copy" type="button">복사</button></div><pre>python --version</pre></div>
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">Mac</span><button class="copy" type="button">복사</button></div><pre>python3 --version</pre></div></li>
+    </ol>
+    <div class="note warn"><b>"python은 인식되지 않습니다"가 나오면</b>PATH 체크를 빠뜨린 경우입니다. Python 설치 파일을 다시 실행해 <span class="ui">Modify</span>로 들어가거나, 제거 후 체크하고 재설치하세요.</div>
+    <label class="check"><input type="checkbox" id="done-A-3"> VS Code 터미널에 Python 버전이 표시된다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 03 / 08</span></footer>
+</section>
+
+<!-- A-4 -->
+<section class="chapter s4c" id="sA-4" data-ch="A-4">
+  <div class="ch-head"><span class="ch-no">부록 · 04</span><span class="ch-time">15분</span><h2>Claude Code 설치하고 로그인하기</h2></div>
+  <div class="ch-body">
+    <ol class="steps">
+      <li>VS Code에서 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> (Mac은 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>)로 확장 화면을 엽니다.</li>
+      <li><code class="k">Claude Code</code>를 검색하고, 게시자가 <b>Anthropic</b>인 항목을 <span class="ui">Install</span>합니다. 신뢰 확인 창에서 <span class="ui">Trust Publisher &amp; Install</span>을 누릅니다.</li>
+      <li>아무 파일이나 하나 연 상태에서 편집기 오른쪽 위 <b>불꽃(Spark) 아이콘</b>을 누르면 Claude Code 패널이 열립니다. 안 보이면 VS Code를 재시작합니다.</li>
+      <li>로그인 화면에서 <span class="ui">Claude.ai Subscription</span>을 고르고 브라우저에서 구독 계정으로 로그인합니다.</li>
+      <li>패널에 아래 문장을 붙여넣어 대답이 오는지 확인합니다.
+        <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 연결 확인</span><button class="copy" type="button">복사</button></div><pre>안녕하세요. 저는 코딩을 전혀 모르는 비개발자입니다. 앞으로 설명은 쉬운 말로 짧게 해 주시고, 제가 직접 해야 하는 일이 있으면 단계별로 알려 주세요. 지금 이 PC에 Python과 Git이 설치되어 있는지 확인해 주세요.</pre></div></li>
+    </ol>
+    <div class="note warn"><b>"Claude Code on Windows requires git-bash" 오류가 뜨면</b>Git 설치를 빠뜨렸거나, Git 설치 전에 VS Code를 켜 둔 경우입니다. 02장의 Git을 설치한 뒤 VS Code를 완전히 껐다가 다시 켜세요.</div>
+    <div class="note"><b>Claude Code가 무언가 하겠다고 물어보면</b>파일 만들기, 프로그램 설치, 앱 실행 같은 요청이 옵니다. 무엇을 하는지 한 줄 설명을 읽고 허용하세요. 이해가 안 되면 "이게 무슨 뜻이에요?"라고 되물어도 됩니다.</div>
+    <label class="check"><input type="checkbox" id="done-A-4"> Claude Code 패널에서 대답을 받았다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 04 / 08</span></footer>
+</section>
+
+<!-- A-5 -->
+<section class="chapter s4c" id="sA-5" data-ch="A-5">
+  <div class="ch-head"><span class="ch-no">부록 · 05</span><span class="ch-time">20분</span><h2>VS Code 화면 둘러보기: 창 구성, 터미널, PowerShell</h2></div>
+  <div class="ch-body">
+    <p class="goal">앞으로 "탐색기에서 파일을 열고", "터미널을 보세요" 같은 말이 계속 나옵니다. 처음에 VS Code 화면이 어떤 칸으로 나뉘어 있고, 각 칸이 무슨 일을 하는지 한 번 잡고 가면 수업이 훨씬 편해집니다.</p>
+
+    <h3>VS Code 화면은 여섯 칸입니다</h3>
+    <figure class="fig">
+      <svg viewBox="0 0 760 430" role="img" aria-label="VS Code 화면 구성: 왼쪽 아이콘 줄, 탐색기, 가운데 편집기, 오른쪽 Claude Code 패널, 아래 터미널, 맨 아래 상태 표시줄">
+        <rect x="10" y="10" width="740" height="410" rx="8" fill="#1f1f1f" stroke="#3c3c3c"/>
+        <rect x="10" y="10" width="740" height="30" rx="8" fill="#181818"/>
+        <circle cx="30" cy="25" r="5" fill="#ff5f57"/><circle cx="46" cy="25" r="5" fill="#febc2e"/><circle cx="62" cy="25" r="5" fill="#28c840"/>
+        <text x="90" y="30" fill="#cccccc" font-family="sans-serif" font-size="12">파일  편집  선택 영역  보기  이동  실행  터미널  도움말</text>
+        <text x="600" y="30" fill="#8b8b8b" font-family="sans-serif" font-size="12">report-agent</text>
+        <!-- activity bar -->
+        <rect x="10" y="40" width="44" height="356" fill="#181818"/>
+        <g fill="#858585"><rect x="22" y="56" width="20" height="16" rx="2"/><circle cx="32" cy="100" r="8"/><rect x="24" y="130" width="16" height="16" rx="2"/><rect x="22" y="172" width="9" height="9"/><rect x="33" y="172" width="9" height="9"/><rect x="22" y="183" width="9" height="9"/><rect x="33" y="183" width="9" height="9" fill="#cccccc"/></g>
+        <!-- explorer -->
+        <rect x="54" y="40" width="170" height="356" fill="#181818" stroke="#2b2b2b"/>
+        <text x="66" y="60" fill="#bbbbbb" font-family="sans-serif" font-size="11" font-weight="700">탐색기</text>
+        <text x="66" y="84" fill="#cccccc" font-family="sans-serif" font-size="12">▾ REPORT-AGENT</text>
+        <text x="80" y="106" fill="#cccccc" font-family="sans-serif" font-size="12">▸ .venv</text>
+        <text x="80" y="128" fill="#e8b04a" font-family="monospace" font-size="12">app.py</text>
+        <text x="80" y="150" fill="#cccccc" font-family="monospace" font-size="12">requirements.txt</text>
+        <text x="80" y="172" fill="#cccccc" font-family="monospace" font-size="12">.env</text>
+        <!-- editor -->
+        <rect x="224" y="40" width="320" height="226" fill="#1f1f1f"/>
+        <rect x="224" y="40" width="96" height="26" fill="#1f1f1f" stroke="#2b2b2b"/>
+        <text x="236" y="58" fill="#ffffff" font-family="monospace" font-size="12">app.py ×</text>
+        <g font-family="monospace" font-size="12"><text x="236" y="92" fill="#6a9955"># 보고서 작성기</text><text x="236" y="114" fill="#c586c0">import <tspan fill="#9cdcfe">streamlit</tspan> as st</text><text x="236" y="136" fill="#dcdcaa">st.title<tspan fill="#ce9178">("보고서 작성기")</tspan></text><text x="236" y="158" fill="#dcdcaa">st.caption<tspan fill="#ce9178">("디지털전략부")</tspan></text></g>
+        <!-- claude panel -->
+        <rect x="544" y="40" width="206" height="226" fill="#181818" stroke="#2b2b2b"/>
+        <text x="556" y="60" fill="#d97757" font-family="sans-serif" font-size="12" font-weight="700">✻ Claude Code</text>
+        <rect x="556" y="72" width="182" height="44" rx="6" fill="#2b2b2b"/><text x="566" y="92" fill="#cccccc" font-family="sans-serif" font-size="11">첫 화면을 띄워 주세요</text>
+        <text x="556" y="138" fill="#bbbbbb" font-family="sans-serif" font-size="11">app.py 를 만들었어요.</text>
+        <text x="556" y="156" fill="#bbbbbb" font-family="sans-serif" font-size="11">앱을 실행할게요.</text>
+        <rect x="556" y="226" width="182" height="28" rx="6" fill="#2b2b2b" stroke="#3c3c3c"/><text x="566" y="244" fill="#8b8b8b" font-family="sans-serif" font-size="11">여기에 프롬프트 입력…</text>
+        <!-- terminal panel -->
+        <rect x="224" y="266" width="526" height="130" fill="#181818" stroke="#2b2b2b"/>
+        <text x="236" y="286" fill="#8b8b8b" font-family="sans-serif" font-size="11">문제   출력   디버그 콘솔   <tspan fill="#ffffff" text-decoration="underline">터미널</tspan>   포트</text>
+        <text x="640" y="286" fill="#8b8b8b" font-family="sans-serif" font-size="11">powershell ＋ ∨ 🗑 ^ ×</text>
+        <g font-family="monospace" font-size="12"><text x="236" y="312" fill="#cccccc">(.venv) PS C:\Users\user\Desktop\report-agent&gt; python --version</text><text x="236" y="332" fill="#cccccc">Python 3.12.7</text><text x="236" y="352" fill="#cccccc">(.venv) PS C:\Users\user\Desktop\report-agent&gt; <tspan fill="#ffffff">▌</tspan></text></g>
+        <!-- status bar -->
+        <rect x="10" y="396" width="740" height="24" fill="#007acc"/>
+        <text x="22" y="412" fill="#ffffff" font-family="sans-serif" font-size="11">⎇ main   ⊗ 0  ⚠ 0</text>
+        <text x="560" y="412" fill="#ffffff" font-family="sans-serif" font-size="11">Python 3.12.7 ('.venv')   UTF-8</text>
+        <!-- badges -->
+        <g font-family="sans-serif" font-size="13" font-weight="700" fill="#2a1c02">
+          <circle cx="32" cy="230" r="13" fill="#e8b04a"/><text x="32" y="235" text-anchor="middle">1</text>
+          <circle cx="200" cy="72" r="13" fill="#e8b04a"/><text x="200" y="77" text-anchor="middle">2</text>
+          <circle cx="520" cy="210" r="13" fill="#e8b04a"/><text x="520" y="215" text-anchor="middle">3</text>
+          <circle cx="726" cy="190" r="13" fill="#e8b04a"/><text x="726" y="195" text-anchor="middle">4</text>
+          <circle cx="726" cy="350" r="13" fill="#e8b04a"/><text x="726" y="355" text-anchor="middle">5</text>
+          <circle cx="470" cy="408" r="11" fill="#e8b04a"/><text x="470" y="413" text-anchor="middle" font-size="12">6</text>
+        </g>
+      </svg>
+      <figcaption>VS Code 화면 구성(설명용 그림). 한국어로 바꾼 상태 기준입니다. 실제 화면은 테마나 창 크기에 따라 칸의 넓이가 다를 수 있습니다.</figcaption>
+    </figure>
+
+    <div class="tbl"><table>
+      <thead><tr><th>칸</th><th>이름</th><th>비유</th><th>이 수업에서 하는 일</th></tr></thead>
+      <tbody>
+        <tr><td>①</td><td><b>액티비티 바</b><br><small>왼쪽 세로 아이콘 줄</small></td><td>서랍 손잡이</td><td>위에서부터 탐색기(종이 2장), 검색(돋보기), 소스 제어, 확장(네모 4개). 누르면 ② 자리 내용이 바뀝니다. 우리는 <b>탐색기</b>와 <b>확장</b>만 씁니다.</td></tr>
+        <tr><td>②</td><td><b>탐색기</b><br><small>파일 목록</small></td><td>서류함</td><td>지금 연 폴더(report-agent)의 파일이 보입니다. 파일을 한 번 누르면 ③에 열립니다. <code>.env</code>에 키를 넣을 때 여기서 엽니다.</td></tr>
+        <tr><td>③</td><td><b>편집기</b><br><small>가운데 큰 칸</small></td><td>책상 위 서류</td><td>파일 내용을 보고 고치는 곳입니다. 우리는 주로 <b>읽기만</b> 하고, 고치는 일은 Claude Code가 합니다. 위쪽 탭으로 여러 파일을 오갑니다. 탭에 ● 표시가 있으면 저장 전이니 <kbd>Ctrl</kbd>+<kbd>S</kbd>.</td></tr>
+        <tr><td>④</td><td><b>Claude Code 패널</b><br><small>오른쪽(또는 왼쪽)</small></td><td>옆자리 개발자</td><td>프롬프트를 붙여넣는 곳입니다. 편집기 오른쪽 위 ✻(불꽃) 아이콘으로 엽니다. 허락을 물으면 여기서 답합니다.</td></tr>
+        <tr><td>⑤</td><td><b>패널 · 터미널</b><br><small>아래 칸</small></td><td>기계실 창구</td><td>컴퓨터에 글자로 명령하고 결과를 보는 곳입니다. 앱 실행 주소와 오류 메시지가 여기에 나옵니다. 아래에서 자세히 설명합니다.</td></tr>
+        <tr><td>⑥</td><td><b>상태 표시줄</b><br><small>맨 아래 파란 줄</small></td><td>계기판</td><td>오른쪽에 <code>Python 3.12 ('.venv')</code>처럼 보이면 이 폴더 전용 Python이 선택된 것입니다. 오류·경고 개수도 보입니다.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>칸이 사라졌을 때</b>탐색기가 안 보이면 ①의 종이 아이콘을 누르거나 <kbd>Ctrl</kbd>+<kbd>B</kbd>. 터미널이 안 보이면 <kbd>Ctrl</kbd>+<kbd>`</kbd>(숫자 1 왼쪽 키). 화면이 엉망이 되면 메뉴 <span class="ui">보기 → 모양 → 레이아웃 다시 설정</span>(영어: View → Appearance → Reset Layout)을 누르면 처음 모양으로 돌아옵니다.</div>
+
+    <h3>터미널이란</h3>
+    <p>평소에는 마우스로 아이콘을 눌러 컴퓨터에 일을 시킵니다. <b>터미널은 같은 일을 글자로 시키는 창</b>입니다. "이 폴더 파일 목록 보여 줘"를 클릭 대신 <code class="k">dir</code>이라고 쳐서 시키는 식입니다. 우리 수업에서는 Claude Code가 대부분의 명령을 대신 입력하므로, 우리는 <b>결과를 읽는 일</b>이 많습니다.</p>
+
+    <h3>PowerShell, 명령 프롬프트, Git Bash는 무엇인가요</h3>
+    <p>터미널은 "창"이고, 그 안에서 명령을 알아듣는 "통역사"가 따로 있습니다. 통역사마다 사투리가 조금 다릅니다.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>통역사</th><th>어디서</th><th>특징</th><th>이 수업에서</th></tr></thead>
+      <tbody>
+        <tr><td><b>PowerShell</b></td><td>Windows 기본</td><td>줄 앞에 <code>PS</code>가 붙습니다. VS Code 터미널을 열면 보통 이것이 나옵니다.</td><td><span class="pill">주로 사용</span></td></tr>
+        <tr><td><b>명령 프롬프트(cmd)</b></td><td>Windows 옛 방식</td><td>검은 창, 줄 앞에 <code>C:\&gt;</code>만 보입니다. 일부 명령이 PowerShell과 다릅니다.</td><td><span class="pill no">쓰지 않음</span></td></tr>
+        <tr><td><b>Git Bash</b></td><td>Git 설치 시 함께 생김</td><td>Mac·리눅스와 같은 말투. Claude Code가 내부에서 씁니다.</td><td><span class="pill no">직접 쓰지 않음</span></td></tr>
+        <tr><td><b>zsh(터미널)</b></td><td>Mac 기본</td><td>줄 끝에 <code>%</code>가 붙습니다.</td><td><span class="pill">Mac 사용자</span></td></tr>
+      </tbody>
+    </table></div>
+    <p>터미널 오른쪽 위의 <span class="ui">∨</span>를 누르면 통역사를 골라 새 터미널을 열 수 있습니다. 헷갈리면 <b>PowerShell</b>을 고르세요.</p>
+
+    <h3>터미널 한 줄 읽는 법</h3>
+    <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">VS Code 터미널 예시 (Windows)</span></div><pre>(.venv) PS C:\Users\user\Desktop\report-agent&gt; _</pre></div>
+    <div class="tbl"><table>
+      <thead><tr><th>부분</th><th>뜻</th></tr></thead>
+      <tbody>
+        <tr><td><code>(.venv)</code></td><td>이 폴더 전용 Python 환경이 <b>켜져 있음</b>. 없으면 "No module named streamlit" 같은 오류가 날 수 있습니다.</td></tr>
+        <tr><td><code>PS</code></td><td>지금 통역사가 PowerShell이라는 표시</td></tr>
+        <tr><td><code>C:\Users\user\Desktop\report-agent</code></td><td>지금 서 있는 폴더 위치. 명령은 이 폴더를 기준으로 실행됩니다.</td></tr>
+        <tr><td><code>&gt;</code> 와 깜빡이는 커서</td><td>"명령을 기다리는 중". 여기서 입력하고 <kbd>Enter</kbd>.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>터미널 위쪽 버튼</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>버튼</th><th>하는 일</th></tr></thead>
+      <tbody>
+        <tr><td><b>문제 · 출력 · 디버그 콘솔 · 터미널 · 포트</b> 탭</td><td>우리는 <b>터미널</b> 탭만 씁니다. 다른 탭으로 넘어가 있으면 터미널을 눌러 돌아옵니다.</td></tr>
+        <tr><td><b>＋</b></td><td>터미널을 하나 더 엽니다. 앱이 실행 중이라 입력이 안 될 때 씁니다.</td></tr>
+        <tr><td><b>∨</b></td><td>PowerShell / Git Bash / 명령 프롬프트 중 골라서 새로 엽니다.</td></tr>
+        <tr><td><b>휴지통</b></td><td>그 터미널을 <b>끕니다</b>. 실행 중이던 앱도 함께 꺼집니다.</td></tr>
+        <tr><td><b>^ / ×</b></td><td>칸을 크게 하거나 <b>숨깁니다</b>. ×로 숨겨도 앱은 계속 실행됩니다.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>직접 해 보기 (5분)</h3>
+    <ol class="steps">
+      <li>메뉴 <span class="ui">터미널 → 새 터미널</span>을 누르거나 <kbd>Ctrl</kbd>+<kbd>`</kbd>를 눌러 터미널을 엽니다.</li>
+      <li>아래 명령을 하나씩 붙여넣고 <kbd>Enter</kbd>를 눌러 봅니다. 모두 보기만 하는 명령이라 아무것도 망가지지 않습니다.
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">지금 위치 보기</span><button class="copy" type="button">복사</button></div><pre>pwd</pre></div>
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">이 폴더의 파일 목록 보기</span><button class="copy" type="button">복사</button></div><pre>dir</pre></div>
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">Python 버전 보기</span><button class="copy" type="button">복사</button></div><pre>python --version</pre></div>
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">화면 깨끗이 지우기</span><button class="copy" type="button">복사</button></div><pre>cls</pre></div></li>
+      <li>Mac은 <code class="k">dir</code> 대신 <code class="k">ls</code>, <code class="k">cls</code> 대신 <code class="k">clear</code>, <code class="k">python</code> 대신 <code class="k">python3</code>를 씁니다.</li>
+    </ol>
+
+    <h3>꼭 알아 둘 단축키</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>하고 싶은 일</th><th>터미널에서</th></tr></thead>
+      <tbody>
+        <tr><td>붙여넣기</td><td><kbd>Ctrl</kbd>+<kbd>V</kbd> 또는 마우스 오른쪽 클릭</td></tr>
+        <tr><td>복사</td><td>글자를 드래그해 선택한 뒤 <kbd>Ctrl</kbd>+<kbd>C</kbd></td></tr>
+        <tr><td><b>실행 중인 앱 멈추기</b></td><td>아무것도 선택하지 않은 상태에서 <kbd>Ctrl</kbd>+<kbd>C</kbd>. 그래서 복사할 때는 꼭 글자를 먼저 선택하세요.</td></tr>
+        <tr><td>방금 친 명령 다시 부르기</td><td>키보드 <kbd>↑</kbd></td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>놀라지 않아도 되는 장면</h3>
+    <ul class="plain">
+      <li><b>글자가 엄청 빠르게 흘러감</b>: 설치 중이라는 뜻입니다. 끝나고 <code class="k">&gt;</code>가 다시 나올 때까지 기다리면 됩니다.</li>
+      <li><b>빨간 글씨</b>: 모두 오류는 아닙니다. 경고(WARNING)일 때도 많습니다. 확실하지 않으면 그 부분을 복사해 Claude Code에 "이거 문제인가요?"라고 물으면 됩니다.</li>
+      <li><b>입력해도 반응이 없음</b>: 앱이 실행 중이면 그 터미널은 앱이 차지하고 있습니다. <b>＋</b>로 새 터미널을 열어 입력하세요.</li>
+      <li><b>"이 시스템에서 스크립트를 실행할 수 없으므로…"</b>: PowerShell의 보안 설정 때문에 가상환경(.venv)이 켜지지 않는 경우입니다. Claude Code에 이 문구를 붙여넣고 "해결해 주세요"라고 하면 됩니다. 직접 하려면 아래 명령을 한 번 실행합니다. 사내 PC에서 막혀 있으면 IT 담당 부서에 문의하세요.
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">PowerShell 스크립트 실행 허용 (내 계정에만)</span><button class="copy" type="button">복사</button></div><pre>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</pre></div></li>
+    </ul>
+    <label class="check"><input type="checkbox" id="done-A-5"> 여섯 칸의 이름을 알고, 터미널에서 pwd와 dir를 실행해 봤다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 05 / 08</span></footer>
+</section>
+
+<!-- A-6 -->
+<section class="chapter s4c" id="sA-6" data-ch="A-6">
+  <div class="ch-head"><span class="ch-no">부록 · 06</span><span class="ch-time">25분</span><h2>내 PC에서 만들고 바로 보기</h2></div>
+  <div class="ch-body">
+    <h3>A. 프로젝트 폴더와 첫 화면</h3>
+    <ol class="steps">
+      <li>바탕화면에 <code class="k">report-agent</code> 폴더를 만들고, VS Code 메뉴 <span class="ui">파일 → 폴더 열기</span>로 엽니다. 신뢰 여부를 물으면 <span class="ui">예, 작성자를 신뢰합니다</span>.</li>
+      <li>Claude Code 패널에 아래를 붙여넣습니다.
+        <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">VS Code Claude Code · 준비와 첫 화면</span><button class="copy" type="button">복사</button></div><pre>지금 열린 폴더에서 "보고서 작성기" 웹 앱을 만들 거예요. 저는 비개발자라 단계마다 무엇을 했는지 한두 줄로 쉽게 알려 주세요.
+
+1. 이 폴더 안에 Python 가상환경(.venv)을 만들어 주세요.
+2. requirements.txt 를 만들고 streamlit 을 적은 뒤 가상환경에 설치해 주세요.
+3. app.py 를 만들어 아주 간단한 첫 화면을 띄워 주세요.
+   - 제목: "보고서 작성기"
+   - 부제: "우리금융캐피탈 디지털전략부"
+   - "안녕하세요! 화면이 잘 나왔습니다." 라는 문장 하나
+4. 가상환경에서 앱을 실행하는 명령을 터미널에서 직접 실행해 주고, 브라우저 어느 주소로 들어가면 되는지 알려 주세요.</pre></div></li>
+      <li>브라우저에 <code class="k">http://localhost:8501</code> 화면이 뜨면 성공입니다. 코드를 고치면 브라우저 오른쪽 위 <span class="ui">Rerun</span>을 눌러 바로 확인합니다.</li>
+      <li>앱을 끄려면 터미널을 클릭하고 <kbd>Ctrl</kbd>+<kbd>C</kbd>. 다시 켤 때는 Claude Code에 "앱 다시 실행해 줘" 또는 아래 명령.
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">앱 다시 실행</span><button class="copy" type="button">복사</button></div><pre>python -m streamlit run app.py</pre></div></li>
+    </ol>
+    <p>이후 본 과정 1회차 07~08장의 프롬프트를 그대로 붙여넣되, 끝의 "올려(push) 주세요"를 "앱을 다시 실행해 주세요"로 바꿔 쓰면 됩니다.</p>
+
+    <h3>B. 키는 .env 파일에</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">VS Code Claude Code · 키 보관함</span><button class="copy" type="button">복사</button></div><pre>requirements.txt 에 python-dotenv 를 추가해 설치해 주세요.
+.env 파일을 만들고 ANTHROPIC_API_KEY=, DART_API_KEY=, APP_PASSWORD= 세 줄만 넣어 주세요. 값은 제가 직접 채웁니다.
+.gitignore 를 만들어 .env 와 .venv 가 절대 공유되지 않게 해 주세요.
+키는 get_secret(이름) 함수 하나로 읽되, 배포 환경에서는 st.secrets, 내 PC에서는 .env 에서 읽게 해 주세요.</pre></div>
+    <p>왼쪽 탐색기에서 <code class="k">.env</code>를 열어 <code class="k">=</code> 뒤에 키를 따옴표 없이 직접 붙여넣고 <kbd>Ctrl</kbd>+<kbd>S</kbd>. 고친 뒤에는 앱을 껐다 켜야 새 값이 적용됩니다.</p>
+    <div class="block t"><div class="block-head"><span class="tag t">.ENV</span><span class="where">작성 예시 (실제 값은 본인 것으로)</span></div><pre>ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxx
+DART_API_KEY=0123456789abcdef0123456789abcdef01234567
+APP_PASSWORD=report2026</pre></div>
+
+    <h3>C. 휴대폰으로 열어 보기 (같은 와이파이)</h3>
+    <ol class="steps">
+      <li>앱을 실행하면 터미널에 주소가 두 줄 나옵니다. <code class="k">Local URL</code>은 이 PC 전용, <code class="k">Network URL</code>은 같은 와이파이의 다른 기기용입니다.
+        <div class="block t"><div class="block-head"><span class="tag t">TERMINAL</span><span class="where">앱 실행 시 나오는 주소 예시</span></div><pre>  Local URL:   http://localhost:8501
+  Network URL: http://192.168.0.23:8501</pre></div></li>
+      <li>휴대폰을 같은 와이파이에 연결하고 휴대폰 브라우저에 <code class="k">Network URL</code>을 입력합니다.</li>
+      <li>Windows 보안 경고(Python 액세스 허용)가 뜨면 <span class="ui">개인 네트워크</span>에 체크하고 <span class="ui">액세스 허용</span>.</li>
+    </ol>
+    <div class="note warn"><b>회사 와이파이에서는 안 열릴 수 있습니다</b>회사망은 기기끼리 접속을 막아 두는 경우가 많습니다. 휴대폰 핫스팟에 노트북을 연결해 보세요. 밖에서도, PC가 꺼져도 열리게 하려면 07~08장으로 GitHub에 올려 Streamlit Cloud에 배포합니다.</div>
+
+    <h3>D. 자주 만나는 오류 (내 PC)</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>화면에 보이는 문구</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td><code>requires git-bash</code></td><td>Windows에 Git 미설치</td><td>02장 Git 설치 후 VS Code 재시작</td></tr>
+        <tr><td><code>'python'은(는) ... 인식되지 않습니다</code></td><td>Python 설치 시 PATH 미체크</td><td>03장대로 재설치, VS Code 재시작</td></tr>
+        <tr><td><code>No module named ...</code></td><td>가상환경이 꺼진 채 실행</td><td>Claude Code에 "가상환경 켜고 다시 실행해 줘"</td></tr>
+        <tr><td>"이 시스템에서 스크립트를 실행할 수 없으므로…"</td><td>PowerShell 실행 정책</td><td>05장의 <code>Set-ExecutionPolicy</code> 참고</td></tr>
+        <tr><td>.env를 고쳤는데 반영 안 됨</td><td>앱이 예전 값으로 실행 중</td><td>터미널에서 Ctrl+C 후 다시 실행</td></tr>
+      </tbody>
+    </table></div>
+    <label class="check"><input type="checkbox" id="done-A-6"> localhost:8501 에서 내 PC의 앱을 열었다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 06 / 08</span></footer>
+</section>
+
+<!-- A-7 -->
+<section class="chapter s4c" id="sA-7" data-ch="A-7">
+  <div class="ch-head"><span class="ch-no">부록 · 07</span><span class="ch-time">15분</span><h2>배포 전 점검: 올릴 파일만 골라내기</h2></div>
+  <div class="ch-body">
+    <p class="goal">GitHub 창고에는 <b>코드만</b> 올리고 키는 절대 올리지 않습니다. 실수를 막기 위해 Claude Code에게 올릴 파일만 바탕화면의 새 폴더에 따로 모아 달라고 합니다. 다음 장에서는 이 폴더 안의 파일만 끌어다 놓으면 됩니다.</p>
+
+    <h3>왜 이렇게 나눠서 올리나요</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>파일·폴더</th><th>GitHub에 올리나요?</th><th>이유</th></tr></thead>
+      <tbody>
+        <tr><td><code>app.py</code></td><td><span class="pill">올림</span></td><td>앱 본체입니다.</td></tr>
+        <tr><td><code>requirements.txt</code></td><td><span class="pill">올림</span></td><td>Streamlit Cloud가 이 목록을 보고 부품을 설치합니다. 없으면 배포가 실패합니다.</td></tr>
+        <tr><td><code>.env</code></td><td><span class="pill no">절대 안 올림</span></td><td>API 키가 들어 있습니다. 공개 창고에 올라가면 누구나 내 키를 씁니다.</td></tr>
+        <tr><td><code>.venv</code> 폴더</td><td><span class="pill no">안 올림</span></td><td>내 PC 전용 Python 환경입니다. 수천 개 파일이라 올라가지도 않습니다.</td></tr>
+        <tr><td>스코어카드 사진</td><td><span class="pill no">안 올림</span></td><td>개인 기록입니다. 앱에서 그때그때 올리면 됩니다.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Claude Code에 점검 맡기기</h3>
+    <div class="block"><div class="block-head"><span class="tag p">PROMPT</span><span class="where">Claude Code · 배포 점검</span><button class="copy" type="button">복사</button></div><pre>이 앱을 GitHub 웹사이트에 파일 끌어다 놓기로 올리고, Streamlit Community Cloud 로 배포하려고 해요. 배포 전 점검을 해 주세요.
+
+1. 코드 어디에도 API 키나 비밀번호가 직접 적혀 있지 않은지 확인해 주세요.
+2. 키와 비밀번호를 get_secret() 으로 읽고, 배포 환경(st.secrets)과 내 PC(.env) 양쪽에서 동작하는지 확인해 주세요.
+3. requirements.txt 에 app.py 가 쓰는 부품이 빠짐없이 있는지 확인해 주세요. 버전 번호는 붙이지 않아도 됩니다.
+4. 앱이 다른 파일(예: 이미지, CSV, .streamlit 폴더)을 꼭 필요로 하는지 알려 주세요. 가능하면 app.py 와 requirements.txt 두 파일만으로 돌아가게 정리해 주세요.
+5. 바탕화면에 upload_to_github 폴더를 새로 만들고, GitHub 에 올려야 할 파일만 복사해 주세요. .env, .venv, __pycache__, 개인 사진은 넣지 마세요.
+6. 그 폴더의 파일 목록과 각 파일의 역할을 한 줄씩 알려 주세요.
+7. Streamlit Cloud 의 Secrets 칸에 붙여넣을 "형식"을 알려 주세요. 실제 키 값은 쓰지 말고 자리만 표시해 주세요.</pre></div>
+
+    <h3>결과 확인하기</h3>
+    <ol class="steps">
+      <li>바탕화면에 <code class="k">upload_to_github</code> 폴더가 생겼는지 봅니다.</li>
+      <li>폴더를 열어 파일이 아래처럼 <b>두 개(많아도 서너 개)</b>인지 확인합니다.
+        <div class="block t"><div class="block-head"><span class="tag t">FOLDER</span><span class="where">upload_to_github 예시</span></div><pre>upload_to_github/
+├── app.py             # 앱 화면
+└── requirements.txt   # 필요한 부품 목록</pre></div></li>
+      <li><code class="k">.env</code>라는 파일이 보이면 <b>그 파일만 지웁니다</b>. Windows는 숨김 파일이 안 보일 수 있으니 탐색기 <span class="ui">보기 → 표시 → 숨긴 항목</span>을 켜고 한 번 더 확인합니다.</li>
+      <li><code class="k">requirements.txt</code>를 메모장으로 열어 <code class="k">streamlit</code>, <code class="k">anthropic</code>, <code class="k">pillow</code>, <code class="k">pillow-heif</code>, <code class="k">pandas</code>, <code class="k">python-dotenv</code>가 한 줄씩 있는지 봅니다.</li>
+    </ol>
+
+    <h3>Secrets에 넣을 내용 준비</h3>
+    <div class="block t"><div class="block-head"><span class="tag t">SECRETS</span><span class="where">메모장에 미리 적어 두기 (값은 본인 것으로)</span></div><pre>ANTHROPIC_API_KEY = "sk-ant-api03-여기에_키"
+APP_PASSWORD = "golf2026"</pre></div>
+    <ul class="plain">
+      <li>왼쪽 이름은 대문자·밑줄까지 그대로, 값은 반드시 <b>큰따옴표</b> 안에 넣습니다.</li>
+      <li>.env 와 달리 <code class="k">=</code> 앞뒤에 띄어쓰기가 있어도 됩니다(TOML 형식).</li>
+    </ul>
+    <div class="note warn"><b>배포용 API 키를 따로 만들기를 권합니다</b>본 과정 2회차 03장 방법대로 콘솔에서 <code class="k">report-web</code>처럼 배포용 키를 하나 더 만들어 Secrets에 넣으세요. 링크가 너무 퍼졌을 때 이 키만 삭제하면 웹 앱만 멈추고, 내 PC 앱은 그대로 동작합니다.</div>
+    <label class="check"><input type="checkbox" id="done-A-7"> upload_to_github 폴더에 app.py·requirements.txt만 있고 .env 가 없다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 07 / 08</span></footer>
+</section>
+
+<!-- A-8 -->
+<section class="chapter s4c" id="sA-8" data-ch="A-8">
+  <div class="ch-head"><span class="ch-no">부록 · 08</span><span class="ch-time">30분</span><h2>GitHub 가입하고 파일 올리기</h2></div>
+  <div class="ch-body">
+    <p class="goal">GitHub는 코드를 맡겨 두는 인터넷 창고입니다. 오늘은 명령어 없이 <b>웹사이트에서 파일을 끌어다 놓는 방식</b>만 씁니다. 파일 끌어다 놓기가 필요하므로 이 장은 <b>PC 브라우저</b>에서 진행하세요.</p>
+    <div class="note"><b>아래 그림은 설명용으로 다시 그린 화면입니다</b>버튼 이름은 실제 GitHub 기준으로 맞췄지만, 색과 배치는 실제와 조금 다를 수 있습니다. GitHub 화면은 영어로 나옵니다.</div>
+
+    <h3>A. 가입하기 (10분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/signup</span></div>
+      <div class="mock-modal">
+        <div class="mt">Sign up for GitHub</div>
+        <div class="mrow hl"><span class="lab">Email</span><span class="field">hong@woori.com</span><span class="num">1</span></div>
+        <div class="mrow hl"><span class="lab">Password</span><span class="field">••••••••••••••••</span><span class="num">2</span></div>
+        <div class="mrow hl"><span class="lab">Username</span><span class="field">hong-woori</span><span class="num">3</span></div>
+        <div class="mrow"><span class="lab">Your Country/Region</span><span class="field">South Korea</span></div>
+        <div class="mrow"><span class="lab">Email preferences</span><span class="field dim">☐ 체크 안 해도 됨</span></div>
+        <div class="mbtn hl wide">Continue <span class="num">4</span></div>
+      </div>
+    </div></div>
+    <ol class="steps">
+      <li>GitHub에 접속해 오른쪽 위 <span class="ui">Sign up</span>을 누릅니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">GitHub 가입</span><button class="copy" type="button">복사</button></div><pre>https://github.com/signup</pre></div></li>
+      <li><b>Email ①</b>: 지금 메일함을 열 수 있는 주소를 씁니다.</li>
+      <li><b>Password ②</b>: 15자 이상, 또는 8자 이상에 숫자와 소문자를 섞어야 합니다. 조건이 맞으면 칸 아래 글자가 초록색으로 바뀝니다.</li>
+      <li><b>Username ③</b>: 영문 소문자·숫자·하이픈(-)으로 정합니다. <b>창고 주소와 배포 화면에 그대로 보이므로</b> 점잖게 짓습니다. 예: <code class="k">hong-woori</code>. 이미 쓰는 이름이면 빨간 글씨가 나오니 숫자를 붙여 봅니다.</li>
+      <li><span class="ui">Continue</span> ④를 누르면 "사람인지 확인" 퍼즐이 나옵니다. 안내대로 풀어 줍니다.</li>
+      <li>메일로 온 <b>8자리 숫자(launch code)</b>를 화면 칸에 입력합니다. 메일이 안 오면 스팸함을 확인합니다.</li>
+      <li>가입이 끝나면 로그인 화면이 나옵니다. 방금 만든 이메일과 비밀번호로 로그인합니다.</li>
+      <li>"How many team members…", "What specific features…" 같은 설문이 나오면 아무거나 고르거나 <span class="ui">Skip personalization</span>을 누릅니다. 요금제를 물으면 <b>Free</b>(무료)를 고릅니다.</li>
+    </ol>
+    <div class="note"><b>Git과 GitHub는 다릅니다</b>1회차에 설치한 Git은 내 PC의 프로그램이고, GitHub는 인터넷 창고 웹사이트입니다. 오늘은 웹사이트만 씁니다.</div>
+
+    <h3>B. 창고(저장소) 만들기 (5분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/new</span></div>
+      <div class="mock-modal">
+        <div class="mt">Create a new repository</div>
+        <div class="mrow"><span class="lab">Owner</span><span class="field">hong-woori</span></div>
+        <div class="mrow hl"><span class="lab">Repository name</span><span class="field">report-agent</span><span class="num">1</span></div>
+        <div class="mrow"><span class="lab">Description</span><span class="field dim">(선택) DART 공시 보고서 작성기</span></div>
+        <div class="mrow hl"><span class="lab">공개 범위</span><span class="chipset"><span class="on">Public</span><span>Private</span></span><span class="num">2</span></div>
+        <div class="mrow hl"><span class="lab">Add README</span><span class="field dim">Off 그대로</span><span class="num">3</span></div>
+        <div class="mbtn hl wide">Create repository <span class="num">4</span></div>
+      </div>
+    </div></div>
+    <ol class="steps" start="9" style="counter-reset:s 8">
+      <li>GitHub 오른쪽 위 <span class="ui">+</span> 버튼 → <span class="ui">New repository</span>를 누릅니다. 바로 가려면 아래 주소를 씁니다.
+        <div class="block"><div class="block-head"><span class="tag u">BROWSER</span><span class="where">새 창고 만들기</span><button class="copy" type="button">복사</button></div><pre>https://github.com/new</pre></div></li>
+      <li><b>Repository name ①</b>: <code class="k">report-agent</code> (영문 소문자와 하이픈만)</li>
+      <li><b>공개 범위 ②</b>: <b>Public</b>을 고릅니다. 코드는 공개되지만 키는 코드에 없고(07장에서 확인), 앱은 비밀번호로 잠겨 있어 안전합니다. Private도 배포는 되지만 연결할 때 권한 확인 단계가 하나 더 늘어납니다.</li>
+      <li><b>README, .gitignore, license ③</b>: 모두 <b>추가하지 않고 그대로</b> 둡니다. 빈 창고여야 다음 단계의 파일 올리기 안내가 바로 보입니다.</li>
+      <li>맨 아래 초록색 <span class="ui">Create repository</span> ④를 누릅니다.</li>
+    </ol>
+
+    <h3>C. 파일 끌어다 올리기 (5분)</h3>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/hong-woori/report-agent</span></div>
+      <div class="mock-content">
+        <div class="mt">Quick setup — if you've done this kind of thing before</div>
+        <div class="mempty"><small>…or create a new repository on the command line (무시)</small></div>
+        <div class="mempty hl">Get started by creating a new file or <b>uploading an existing file</b> <span class="num">1</span></div>
+      </div>
+    </div></div>
+    <div class="mockwrap"><div class="mock">
+      <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">github.com/hong-woori/report-agent/upload/main</span></div>
+      <div class="mock-content">
+        <div class="mt">report-agent /</div>
+        <div class="mempty hl" style="text-align:center;padding:26px 12px">Drag files here to add them to your repository<br><small>or choose your files</small> <span class="num">2</span></div>
+        <div class="mrow" style="width:100%"><span class="lab">올라간 파일</span><span class="field">app.py · requirements.txt</span><span class="num">3</span></div>
+        <div class="mrow" style="width:100%"><span class="lab">Commit changes</span><span class="field">첫 업로드</span><span class="num">4</span></div>
+        <div class="mrow" style="width:100%"><span class="lab"></span><span class="field dim">◉ Commit directly to the main branch</span></div>
+        <div class="mbtn hl">Commit changes <span class="num">5</span></div>
+      </div>
+    </div></div>
+    <ol class="steps" start="14" style="counter-reset:s 13">
+      <li>창고를 만들면 영어 안내문(Quick setup)이 가득한 화면이 나옵니다. 명령어 부분은 모두 무시하고, 위쪽 문장 속 파란 글씨 <span class="ui">uploading an existing file</span> ①을 누릅니다.</li>
+      <li>바탕화면의 <code class="k">upload_to_github</code> 폴더를 열고, 안의 <b>파일들</b>을 마우스로 모두 선택(Ctrl+A)해 브라우저의 회색 상자 ②에 끌어다 놓습니다. <b>폴더째가 아니라 안의 파일들</b>을 놓아야 합니다. 끌어다 놓기가 어려우면 <span class="ui">choose your files</span>를 눌러 파일을 고릅니다.</li>
+      <li>상자 아래에 <code class="k">app.py</code>, <code class="k">requirements.txt</code>가 목록 ③으로 나타나는지 확인합니다. 업로드 막대가 끝날 때까지 기다립니다.</li>
+      <li><b>Commit changes 칸 ④</b>: 무엇을 올렸는지 메모입니다. <code class="k">첫 업로드</code>처럼 아무 말이나 적어도 됩니다. 아래 선택은 <span class="ui">Commit directly to the main branch</span> 그대로 둡니다.</li>
+      <li>초록색 <span class="ui">Commit changes</span> ⑤를 누릅니다.</li>
+      <li>창고 첫 화면에 <code class="k">app.py</code>와 <code class="k">requirements.txt</code>가 <b>맨 바깥에</b> 보이면 완료입니다. <code class="k">upload_to_github</code>라는 폴더가 보이고 그 안에 파일이 있다면 폴더째 올린 것이니, 아래 표의 방법으로 바로잡습니다.</li>
+    </ol>
+
+    <h3>D. 앱을 고친 뒤 다시 올리기</h3>
+    <ol class="steps">
+      <li>내 PC에서 Claude Code로 앱을 고치고, 07장의 점검 프롬프트를 다시 붙여넣어 <code class="k">upload_to_github</code> 폴더를 새로 만듭니다.</li>
+      <li>GitHub 창고 화면 오른쪽 위 <span class="ui">Add file</span> → <span class="ui">Upload files</span>를 누릅니다.</li>
+      <li>같은 방법으로 파일을 끌어다 놓고 <span class="ui">Commit changes</span>를 누릅니다. 같은 이름 파일은 새 것으로 바뀝니다.</li>
+      <li>배포된 앱(본 과정 1회차 06장)은 GitHub가 바뀐 것을 알아채고 <b>1~3분 안에 자동으로</b> 새 버전으로 바뀝니다.</li>
+    </ol>
+
+    <h3>E. 막혔을 때</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>증상</th><th>원인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td>launch code 메일이 안 옴</td><td>스팸함 분류, 회사 메일 보안 필터</td><td>스팸함 확인, 화면의 Resend code, 안 되면 개인 메일로 가입</td></tr>
+        <tr><td>창고 안에 폴더가 하나 더 생김</td><td>폴더째 끌어다 놓음</td><td>폴더를 눌러 안의 파일을 열고 ⋯ → Delete file로 지운 뒤, 파일만 다시 올리기. 또는 창고를 지우고(Settings 맨 아래 Delete) 새로 만들기</td></tr>
+        <tr><td><code>.env</code>를 실수로 올림</td><td>07장 점검 누락</td><td>그 파일을 Delete file로 지우고, <b>그 키는 콘솔에서 즉시 삭제 후 새로 발급</b>. 지워도 기록(커밋)에 남기 때문입니다.</td></tr>
+        <tr><td>uploading an existing file 링크가 안 보임</td><td>README를 추가해 창고를 만듦</td><td>창고 화면 <span class="ui">Add file → Upload files</span>로 올리면 됨</td></tr>
+        <tr><td>휴대폰에서 끌어다 놓기가 안 됨</td><td>휴대폰 브라우저 제약</td><td>PC 브라우저에서 진행</td></tr>
+      </tbody>
+    </table></div>
+    <label class="check"><input type="checkbox" id="done-A-8"> GitHub 창고 맨 바깥에 app.py 와 requirements.txt 가 보인다</label>
+  </div>
+  <footer class="ch-foot"><b>우리금융캐피탈 디지털전략부</b><span>부록 08 / 08</span></footer>
+</section>
+
+
+</main>
+<p class="page-foot">우리금융캐피탈 디지털전략부 · 사내 교육용 자료</p>
+<script>
+(function(){
+  var KEY='ra-v3-A';
+  var state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){state={}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+  var chips=document.getElementById('chips');
+  var prog=document.getElementById('prog');
+  var chapters=[].slice.call(document.querySelectorAll('.chapter'));
+  var lastSess='';
+  chapters.forEach(function(sec){
+    var n=sec.getAttribute('data-ch');
+    var sess=n.split('-')[0];
+    if(sess!==lastSess){
+      var s=document.createElement('span');s.className='sep';s.textContent=(sess==='A'?'부록':sess+'회차');
+      chips.appendChild(s);lastSess=sess;
+    }
+    var a=document.createElement('a');
+    a.href='#'+sec.id; a.textContent='0'+n.split('-')[1]; a.id='chip-'+n;
+    a.title=sec.querySelector('h2').textContent;
+    chips.appendChild(a);
+  });
+  function render(){
+    var c=0;
+    chapters.forEach(function(sec){
+      var n=sec.getAttribute('data-ch');
+      var on=!!state[n]; if(on)c++;
+      var box=document.getElementById('done-'+n);
+      box.checked=on;
+      box.parentNode.classList.toggle('on',on);
+      document.getElementById('chip-'+n).classList.toggle('done',on);
+    });
+    prog.textContent=c+'/'+chapters.length;
+  }
+  chapters.forEach(function(sec){
+    var n=sec.getAttribute('data-ch');
+    document.getElementById('done-'+n).addEventListener('change',function(e){
+      state[n]=e.target.checked; save(); render();
+    });
+  });
+  render();
+
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pre=btn.closest('.block').querySelector('pre');
+      var text=pre.innerText;
+      function ok(){btn.textContent='복사됨';btn.classList.add('copied');setTimeout(function(){btn.textContent='복사';btn.classList.remove('copied')},1600)}
+      function fallback(){
+        var r=document.createRange();r.selectNodeContents(pre);
+        var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+        btn.textContent='선택됨 · Ctrl+C';
+        setTimeout(function(){btn.textContent='복사'},2200);
+      }
+      try{
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(ok,fallback);
+        }else{fallback()}
+      }catch(e){fallback()}
+    });
+  });
+})();
+</script>
+</body>
+</html>
