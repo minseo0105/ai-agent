@@ -16,6 +16,10 @@
   --golf-soft: #f0fdf4;
   --estate: #a91f2d;
   --estate-soft: #fbeaec;
+  /* ZIP 개발지도 대시보드 전용 브랜드 포인트(퍼플). 다른 서비스 색은 건드리지 않는다. */
+  --zip: #6d3fc8;
+  --zip-strong: #5b2fb0;
+  --zip-soft: #f2edfb;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,6 +38,9 @@
     --golf-soft: #052e16;
     --estate: #f87171;
     --estate-soft: #3b0d12;
+    --zip: #a78bfa;
+    --zip-strong: #c4b5fd;
+    --zip-soft: #261c44;
   }
 }
 
@@ -76,6 +83,9 @@
   --color-golf-soft: var(--golf-soft);
   --color-estate: var(--estate);
   --color-estate-soft: var(--estate-soft);
+  --color-zip: var(--zip);
+  --color-zip-strong: var(--zip-strong);
+  --color-zip-soft: var(--zip-soft);
   /* 홈 프리미엄 포털용 색. 기존 토큰은 건드리지 않는다. */
   --color-navy: #102a43;
   --color-woori: #0067c8;

@@ -313,6 +313,16 @@ def read(path):
     return (WEB / path).read_text(encoding='utf-8')
 
 
+def dev_tab_bundle():
+    """개발지도 탭을 구성하는 파일 묶음. DevelopmentTab은 대시보드 셸로 얇아졌고, 데이터 로딩·필터·알림·목록·툴바
+    로직은 components/realestate/zip/ 아래로 동작 변경 없이 옮겼다. 그 로직을 지키는 테스트가 같은 보증을 이 묶음에서 확인한다."""
+    base = WEB / 'components/realestate'
+    parts = [base / 'DevelopmentTab.tsx']
+    parts += sorted(p for p in (base / 'zip').iterdir() if p.is_file() and p.suffix in ('.ts', '.tsx'))
+    return '\n'.join(p.read_text(encoding='utf-8') for p in parts)
+
+
+
 class DevelopmentSummaryTests(unittest.TestCase):
     rows = [{'sigungu': '강동구', 'project_type': 'RECONSTRUCTION', 'validation_status': 'NEEDS_REVIEW'},
             {'sigungu': '강동구', 'project_type': 'REDEVELOPMENT', 'validation_status': 'NEEDS_REVIEW'},
@@ -357,7 +367,7 @@ class ScreenCompactnessTests(unittest.TestCase):
     """Static checks for the review findings: tall hero, duplicate nav, open region list."""
 
     def test_the_hero_is_compact_and_has_no_long_paragraph(self):
-        hero = read('app/realestate/page.tsx')
+        hero = read('components/realestate/EstateHero.tsx')  # 소개 배너는 EstateHero로 옮겼다
         self.assertIn('내 집과 관심지역의 부동산 변화를 한눈에', hero)
         self.assertIn('실거래 · 청약 · 개발사업 · 관심지역 모니터링', hero)
         self.assertNotIn('py-8', hero)
@@ -419,7 +429,7 @@ class ScreenCompactnessTests(unittest.TestCase):
         self.assertIn('if (!value) return null;', read('components/realestate/CollapsibleDetails.tsx'))
 
     def test_the_development_tab_loads_without_a_search_button(self):
-        tab = read('components/realestate/DevelopmentTab.tsx')
+        tab = dev_tab_bundle()
         self.assertIn('useEffect', tab)
         # 목록과 marker를 한 응답에서 받는다. 자치구별 조회를 합치지 않는다.
         self.assertIn('estateApi.developmentMap(', tab)
@@ -428,7 +438,7 @@ class ScreenCompactnessTests(unittest.TestCase):
         self.assertNotIn('estateApi.development(', tab)
 
     def test_the_development_tab_shows_counts_and_filters_from_the_data(self):
-        tab = read('components/realestate/DevelopmentTab.tsx')
+        tab = dev_tab_bundle() + read('lib/developmentFilter.ts')  # 필터 이름·단계 목록 계산은 순수 함수로 분리했다
         for piece in ('전체', '재건축', '재개발', '신속통합기획', '모아타운'):
             self.assertIn(piece, tab)
         self.assertIn('[...new Set(projects.map((p) => p.stage.label))]', tab)
@@ -447,9 +457,14 @@ class ScreenCompactnessTests(unittest.TestCase):
             self.assertNotIn(token, card)
 
     def test_touch_targets_and_wrapping_are_mobile_safe(self):
-        for name in ('RegionPicker.tsx', 'TradeFilters.tsx', 'DevelopmentTab.tsx',
-                     'DevelopmentCard.tsx', 'CollapsibleDetails.tsx'):
+        for name in ('RegionPicker.tsx', 'TradeFilters.tsx', 'DevelopmentCard.tsx', 'CollapsibleDetails.tsx'):
             source = read('components/realestate/' + name)
+            self.assertIn('min-h-', source, name)
+            self.assertNotIn('w-[', source, name)
+            self.assertNotIn('overflow-x-scroll', source, name)
+        # DevelopmentTab의 화면은 대시보드 파일로 옮겼다. 같은 규칙을 그 파일들에 적용한다.
+        for name in ('ZipDashboard.tsx', 'DashboardToolbar.tsx', 'ZoneList.tsx', 'ZoneDetailPanel.tsx'):
+            source = read('components/realestate/zip/' + name)
             self.assertIn('min-h-', source, name)
             self.assertNotIn('w-[', source, name)
             self.assertNotIn('overflow-x-scroll', source, name)
@@ -457,11 +472,10 @@ class ScreenCompactnessTests(unittest.TestCase):
         self.assertIn('min-w-0', read('components/realestate/TransactionCard.tsx'))
 
     def test_only_selected_and_primary_elements_are_burgundy(self):
-        tab = read('components/realestate/DevelopmentTab.tsx')
-        # 선택되지 않은 필터는 중립색을 쓴다.
-        self.assertIn('border border-border text-muted hover:text-fg', tab)
-        self.assertIn('bg-estate text-white', tab)
-
+        tool = read('components/realestate/zip/DashboardToolbar.tsx')
+        # 선택되지 않은 필터는 중립색, 선택된 필터만 브랜드 포인트 색을 쓴다(대시보드의 포인트 색은 퍼플로 승인됨).
+        self.assertIn('border border-border text-muted hover:text-fg', tool)
+        self.assertIn('bg-zip text-white', tool)
 
 class ZiponSupabaseSeparationTests(unittest.TestCase):
     """ZIP:ON uses its own project in production without touching AI LAB's."""
@@ -844,11 +858,11 @@ class MapScreenTests(unittest.TestCase):
         self.assertIn('{url && (', source)
 
     def test_the_development_tab_puts_the_map_above_the_list(self):
-        source = read('components/realestate/DevelopmentTab.tsx')
-        self.assertIn('<ZiponMap', source)
-        self.assertLess(source.index('<ZiponMap'), source.index('<DevelopmentCard'))
-        self.assertIn('모아타운', source)
-        self.assertIn('developmentMap(', source)
+        dash = read('components/realestate/zip/ZipDashboard.tsx')
+        self.assertIn('<ZiponMap', dash)
+        self.assertLess(dash.index('<ZiponMap'), dash.index('{panel}'))
+        self.assertIn('모아타운', read('lib/developmentFilter.ts'))
+        self.assertIn('developmentMap(', read('components/realestate/zip/useZiponDevelopment.ts'))
 
     def test_no_raw_enum_or_secret_in_the_new_screens(self):
         for name in ('ZiponMap.tsx', 'StageTimeline.tsx', 'DevelopmentImpact.tsx',
@@ -860,8 +874,8 @@ class MapScreenTests(unittest.TestCase):
 
     def test_the_map_height_is_mobile_sized(self):
         self.assertIn('height = 340', read('components/realestate/ZiponMap.tsx'))
-        self.assertIn('height={340}', read('components/realestate/DevelopmentTab.tsx'))
-
+        # 대시보드의 모바일 지도 높이(뷰포트 기준). 고정 340px 대신 화면에 맞춘다.
+        self.assertIn('h-[calc(100svh-19rem)] min-h-[420px]', read('components/realestate/zip/ZipDashboard.tsx'))
 
 class BaseMapTests(unittest.TestCase):
     def test_open_street_map_is_the_working_default(self):
@@ -1136,29 +1150,29 @@ class MapFirstScreenTests(unittest.TestCase):
         self.assertLess(monitor.index('label: "개발지도"'), monitor.index('label: "실거래"'))
 
     def test_the_explorer_puts_search_and_map_above_the_list(self):
-        tab = read('components/realestate/DevelopmentTab.tsx')
-        self.assertIn('부동산 개발정보 지도', tab)
-        # 순서는 컴포넌트 본문 기준으로 본다. 파일 앞쪽의 보조 컴포넌트 정의는 렌더 순서가 아니다.
-        body = tab.split('export default function DevelopmentTab', 1)[1]
-        self.assertLess(body.index('aria-label="사업명 · 동 · 유형 검색"'), body.index('<ZiponMap'))
-        self.assertLess(body.index('<ZiponMap'), body.index('이 위치의 개발정보'))
-        self.assertLess(body.index('이 위치의 개발정보'), body.index('<DevelopmentCard'))
+        dash = read('components/realestate/zip/ZipDashboard.tsx')
+        tool = read('components/realestate/zip/DashboardToolbar.tsx')
+        self.assertIn('aria-label="사업명 · 동 · 유형 검색"', tool)
+        body = dash.split('return (\n    <div data-zip-dashboard', 1)[1]
+        # 검색·필터 툴바 → 지도 → 목록·상세 패널 순서. 지도가 주인공이고 목록은 지도를 설명하는 보조 역할이다.
+        self.assertLess(body.index('<DashboardToolbar'), body.index('<ZiponMap'))
+        self.assertLess(body.index('<ZiponMap'), body.index('{panel}'))
 
     def test_the_filters_cover_every_layer(self):
-        tab = read('components/realestate/DevelopmentTab.tsx')
+        tab = read('lib/developmentFilter.ts')
         for label in ('재개발', '재건축', '신속통합기획', '모아타운', '기타 정비사업'):
             self.assertIn(f'"{label}"', tab)
 
     def test_map_and_list_are_synchronised(self):
-        tab = read('components/realestate/DevelopmentTab.tsx')
-        self.assertIn('onSelect={selectFromMap}', tab)
-        self.assertIn('scrollIntoView', tab)
-        self.assertIn('setSelectedId(p.project_id)', tab)
-        self.assertIn('selectedId={selectedId}', tab)
-        # 선택 강조는 카드가 직접 한다. 바깥 ring과 겹치지 않는다.
-        self.assertIn('aria-current={selectedId === p.project_id ? "true" : undefined}', tab)
-        self.assertIn('border-estate bg-estate-soft/40',
-                      read('components/realestate/DevelopmentCard.tsx'))
+        dash = read('components/realestate/zip/ZipDashboard.tsx')
+        lst = read('components/realestate/zip/ZoneList.tsx')
+        self.assertIn('onSelect={(id) => select(id, "map")}', dash)
+        self.assertIn('selectedId={selectedId}', dash)
+        self.assertIn('scrollIntoView', lst)
+        self.assertIn('onClick={() => onSelect(p.project_id)}', lst)
+        # 선택 강조는 목록 줄이 직접 한다. 같은 selectedId만 본다.
+        self.assertIn('aria-current={active ? "true" : undefined}', lst)
+        self.assertIn('border-zip bg-zip-soft/60', lst)
 
     def test_the_map_separates_property_type_programme_and_boundary(self):
         map_source = read('components/realestate/ZiponMap.tsx')
@@ -1180,7 +1194,7 @@ class MapFirstScreenTests(unittest.TestCase):
         self.assertIn('loadNaverMaps(sdk)', map_source)
         # 키가 없으면 빈 지도를 남기지 않고 못 불러왔다고 말한다.
         self.assertIn('지도를 불러오지 못했어요', map_source)
-        self.assertIn('mapConfig()', read('components/realestate/DevelopmentTab.tsx'))
+        self.assertIn('mapConfig()', read('components/realestate/zip/useZiponDevelopment.ts'))
 
     def test_the_map_reports_its_viewport_for_a_future_bbox_query(self):
         map_source = read('components/realestate/ZiponMap.tsx')
@@ -1199,8 +1213,8 @@ class MapFirstScreenTests(unittest.TestCase):
 
     def test_the_map_height_stays_mobile_sized(self):
         self.assertIn('height = 340', read('components/realestate/ZiponMap.tsx'))
-        self.assertIn('height={340}', read('components/realestate/DevelopmentTab.tsx'))
-
+        # 대시보드의 모바일 지도 높이(뷰포트 기준). 고정 340px 대신 화면에 맞춘다.
+        self.assertIn('h-[calc(100svh-19rem)] min-h-[420px]', read('components/realestate/zip/ZipDashboard.tsx'))
 
 NAVER_ITEM = {
     'roadAddress': '서울특별시 강동구 천호대로 1000',
@@ -2549,7 +2563,7 @@ class MapScreenConsistencyTests(unittest.TestCase):
     """화면이 숫자를 만들어내는 방식이 다시 자치구별 합산으로 돌아가지 않도록 고정한다."""
 
     def setUp(self):
-        self.tab = read('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
 
     def test_the_tab_reads_one_endpoint_for_the_list_and_the_map(self):
         # 서울 전체가 1,000건대가 되었으므로 선택한 자치구만 조회한다. 그래도 목록과
@@ -2580,24 +2594,28 @@ class MapScreenConsistencyTests(unittest.TestCase):
         self.assertNotIn('setDistricts(r.districts', self.tab)
         self.assertIn('selectedDistricts.size === 0', self.tab)
         # 잘린 응답을 '전체 N건'이라고 말하지 않는다.
-        self.assertIn('서울시 전체 ${projects.length}건을 보여드리고 있어요', self.tab)
-        self.assertIn('truncated ? "서울시 전체 미리보기예요"', self.tab)
+        self.assertIn('서울시 전체 ${projects.length.toLocaleString("ko-KR")}건${truncated ? " 미리보기" : ""}입니다', self.tab)
 
     def test_the_markers_follow_the_visible_list(self):
-        self.assertIn('points.filter((point) => visibleIds.has(point.project_id))', self.tab)
+        self.assertIn('pickVisiblePoints(points, visible)', self.tab)
+        self.assertIn('points.filter((point) => ids.has(point.project_id))', read('lib/developmentFilter.ts'))
         self.assertIn('const coordinateless = visible.length - mappable', self.tab)
-        self.assertIn('좌표가 없는 ${coordinateless}건은 목록에만 남습니다', self.tab)
+        self.assertIn('좌표 없는 ${coordinateless.toLocaleString("ko-KR")}건은 목록에만', self.tab)
 
     def test_the_card_list_is_not_silently_truncated(self):
-        self.assertIn('const MAX_CARDS = 200', self.tab)
-        self.assertIn('visible.slice(0, MAX_CARDS)', self.tab)
-        self.assertIn('visible.length > MAX_CARDS', self.tab)
+        lst = read('components/realestate/zip/ZoneList.tsx')
+        self.assertIn('export const MAX_LIST_ITEMS = 200', lst)
+        self.assertIn('visible.slice(0, MAX_LIST_ITEMS)', lst)
+        self.assertIn('visible.length > MAX_LIST_ITEMS', lst)
         self.assertNotIn('visible.slice(0, 60)', self.tab)
 
     def test_the_card_uses_its_own_address_and_accuracy(self):
-        self.assertIn('{selected.address ?? "대표주소 확인 중"} · {selected.location_accuracy.label}',
-                      self.tab)
-
+        info = read('components/realestate/zip/tabs/ProjectInfoTab.tsx')
+        panel = read('components/realestate/zip/ZoneDetailPanel.tsx')
+        # 상세 패널은 선택한 사업 자신의 주소·위치 정확도를 쓴다(다른 곳의 값을 빌려 쓰지 않는다).
+        self.assertIn('project.location_accuracy.label', panel)
+        self.assertIn('[place, project.address].filter(Boolean).join(" · ")', info)
+        self.assertIn('project.location_accuracy.label', info)
 
 class StageBatchTests(unittest.TestCase):
     """서울시 전체를 한 번에 물을 때 단계 상세가 통째로 비지 않도록."""
@@ -2647,7 +2665,7 @@ class NaverDynamicMapTests(unittest.TestCase):
     def setUp(self):
         self.map_source = read('components/realestate/ZiponMap.tsx')
         self.loader = read('lib/naverMaps.ts')
-        self.tab = read('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
 
     def test_the_sdk_is_loaded_once_with_the_server_supplied_key(self):
         self.assertIn('let pending: Promise<NaverMaps> | null = null', self.loader)
@@ -2700,9 +2718,14 @@ class NaverDynamicMapTests(unittest.TestCase):
         self.assertNotIn('allows_inside', self.map_source)
 
     def test_the_map_is_responsive_and_mobile_sized(self):
+        # 고정 높이 기본값은 유지한다(카드 안 지도·단독 사용). 대시보드는 컨테이너 높이를 채우는 fill 모드를 쓴다.
         self.assertIn('height = 340', self.map_source)
-        self.assertIn('className="w-full overflow-hidden rounded-2xl', self.map_source)
-        self.assertIn('height={340}', self.tab)
+        self.assertIn('fill = false', self.map_source)
+        self.assertIn('className={`w-full overflow-hidden rounded-2xl', self.map_source)
+        dashboard = read('components/realestate/zip/ZipDashboard.tsx')
+        self.assertRegex(dashboard, r'<ZiponMap[\s\S]*?\bfill\b[\s\S]*?/>')
+        self.assertIn('h-[calc(100svh-19rem)] min-h-[420px]', dashboard)  # 모바일 지도 높이
+        self.assertIn('lg:grid-cols-[65fr_35fr]', dashboard)  # 데스크톱 65% / 35%
         # 카드 안 지도는 더 작게. 카드가 지도에 먹히지 않게 한다.
         self.assertIn('height={190}', read('components/realestate/DevelopmentCard.tsx'))
 
@@ -2710,38 +2733,41 @@ class NaverDynamicMapTests(unittest.TestCase):
         # 좌표 해석은 공통 helper 하나로만 한다.
         self.assertIn('getProjectCoordinate(point)', self.map_source)
         self.assertIn('entry.coordinate !== null', self.map_source)
-        self.assertIn('for (const { point, coordinate } of located)', self.map_source)
+        # 마커 계획에는 좌표를 해석한 located만 넘긴다. 계획 쪽에서도 유효한 좌표만 센다.
+        self.assertIn('located.map(({ point, coordinate }) => ({', self.map_source)
+        self.assertIn('hasValidCoordinate(p)', read('lib/markerPlan.ts'))
         self.assertNotIn('p.latitude != null && p.longitude != null', self.map_source)
-
 
 class MapCardLinkTests(unittest.TestCase):
     """카드 ↔ 지도 양방향 연결. selectedProject 하나가 기준이다."""
 
     def setUp(self):
-        self.tab = read('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
         self.map_source = read('components/realestate/ZiponMap.tsx')
 
     def test_selection_has_a_single_source_of_truth(self):
+        hook = read('components/realestate/zip/useZiponDevelopment.ts')
+        dash = read('components/realestate/zip/ZipDashboard.tsx')
         self.assertEqual(self.tab.count('useState<string | null>(null)'), 1)
-        self.assertIn('const [selectedId, setSelectedId] = useState<string | null>(null)', self.tab)
-        # 카드 클릭과 marker 클릭이 같은 상태를 바꾼다.
-        self.assertIn('onClick={() => setSelectedId(p.project_id)}', self.tab)
-        self.assertIn('onSelect={selectFromMap}', self.tab)
-        selecting = self.tab[self.tab.index('const selectFromMap = useCallback('):]
-        selecting = selecting[:selecting.index('const scrollToCard')]
-        self.assertIn('setSelectedId(projectId)', selecting)
-        # 선택 상태를 따로 복제하지 않는다. 지도와 카드가 같은 하나를 본다.
-        self.assertNotIn('useState', selecting)
+        self.assertIn('const [selectedId, setSelectedId] = useState<string | null>(null)', hook)
+        # 목록 클릭·마커 클릭·주소 해시가 모두 같은 상태를 바꾼다.
+        self.assertIn('onSelect={(id) => select(id, "map")}', dash)
+        self.assertIn('onSelect={(id) => select(id, "list")}', dash)
+        selecting = dash[dash.index('const select = useCallback('):]
+        selecting = selecting[:selecting.index('// 데스크톱에서는 Esc')]
+        self.assertIn('setSelectedId(id)', selecting)
+        self.assertIn('setSelectedId(match ? match[1].toLowerCase() : null)', dash)
 
     def test_a_marker_click_moves_to_that_project_card(self):
-        # 지도에서 고른 것이 어느 사업인지 바로 보이도록 그 카드로 이동한다.
-        self.assertIn('requestAnimationFrame(() => scrollToProject(projectId))', self.tab)
-        self.assertIn("node.scrollIntoView({ block: \"center\", behavior: \"smooth\" })", self.tab)
+        # 지도에서 고른 것이 어느 사업인지 바로 보이도록 목록의 그 줄과 상세 패널이 따라온다.
+        dash = read('components/realestate/zip/ZipDashboard.tsx')
+        lst = read('components/realestate/zip/ZoneList.tsx')
+        self.assertIn('onSelect={(id) => select(id, "map")}', dash)
+        self.assertIn('itemRefs.current[selectedId]?.scrollIntoView({ block: "nearest" })', lst)
         # 이동은 canonical id로만. 이름이 닮은 다른 사업으로 가지 않는다.
-        self.assertIn('cardRefs.current[projectId]', self.tab)
-        # 버튼으로도 여전히 이동할 수 있다.
-        self.assertIn('사업정보 보기', self.tab)
-        self.assertIn('onClick={scrollToCard}', self.tab)
+        self.assertIn('itemRefs.current[p.project_id] = node', lst)
+        # 목록에서 고르면 같은 선택 함수를 쓴다(지도 ↔ 목록 양방향).
+        self.assertIn('onSelect={(id) => select(id, "list")}', dash)
 
     def test_selecting_a_project_pans_the_map_and_opens_an_info_window(self):
         # 상세(compact) 지도는 즉시 중심을 잡고, 메인 지도는 부드럽게 이동한다.
@@ -2768,7 +2794,11 @@ class MapCardLinkTests(unittest.TestCase):
         self.assertIn('points={[point]}', card)
         self.assertNotIn('latitude:', card)
         self.assertNotIn('longitude:', card)
-        self.assertIn('pointById.get(p.project_id) ?? null', self.tab)
+        # 대시보드 파일도 좌표를 새로 만들지 않는다. 좌표는 같은 응답의 point에서만 온다.
+        for name in ('ZipDashboard.tsx', 'ZoneList.tsx', 'ZoneDetailPanel.tsx', 'useZiponDevelopment.ts'):
+            source = read('components/realestate/zip/' + name)
+            self.assertNotIn('latitude:', source, name)
+            self.assertNotIn('longitude:', source, name)
         self.assertIn('new Map(points.map((point) => [point.project_id, point]))', self.tab)
 
     def test_a_project_without_a_coordinate_says_so_instead_of_a_blank_map(self):
@@ -3106,9 +3136,11 @@ class MiniMapLifecycleTests(unittest.TestCase):
         self.assertNotIn('const map = useRef<NaverMapInstance | null>(null)', self.map_source)
 
     def test_both_effects_wait_for_the_instance(self):
-        self.assertIn('}, [api, instance, located, property, selectedId]);', self.map_source)
-        self.assertIn('}, [api, instance, selectedEntry, located, compact, property]);',
-                      self.map_source)
+        # 마커 효과는 markerSync로 위임하면서 deps에 zoom·clustering이 늘었고, 폴리곤·핀·크기 감시는 별도 효과로 나뉘었다.
+        # 어느 효과든 지도 인스턴스가 생기기 전에는 아무것도 하지 않고, 인스턴스가 생기면 다시 돈다(deps에 api·instance).
+        self.assertIn('}, [api, instance, located, selectedId, zoom, clustering, pointById, expandCluster]);', self.map_source)
+        self.assertIn('}, [api, instance, selectedEntry, located, compact, property, bottomInset]);', self.map_source)
+        self.assertGreaterEqual(self.map_source.count('if (!api || !instance) return;'), 4)
 
     def test_a_collapsed_container_is_resized_after_the_centre_is_set(self):
         self.assertIn('api.Event.trigger(instance, "resize")', self.map_source)
@@ -3129,8 +3161,9 @@ class MiniMapLifecycleTests(unittest.TestCase):
         self.assertIn('zoom: centre ? 17 :', self.map_source)
 
     def test_switching_projects_moves_the_existing_marker(self):
-        self.assertIn('existing.setPosition(position)', self.map_source)
-        self.assertIn('markers.current.get(point.project_id)', self.map_source)
+        # 기존 마커를 지우고 다시 만들지 않고 옮기는 코드는 markerSync로 옮겼다(가짜 naver.maps 테스트로도 검증).
+        self.assertIn('existing.setPosition(position)', read('lib/markerSync.ts'))
+        self.assertIn('sync.current.singles.get(point.project_id)', self.map_source)
         # 선택이 바뀌면 이전 원은 지우고 새로 그린다. 쌓이지 않는다.
         self.assertIn('circle.current?.setMap(null)', self.map_source)
 
@@ -3140,12 +3173,11 @@ class MiniMapLifecycleTests(unittest.TestCase):
 
     def test_the_card_and_the_main_map_share_one_coordinate_source(self):
         card = read('components/realestate/DevelopmentCard.tsx')
-        tab = read('components/realestate/DevelopmentTab.tsx')
+        hook = read('components/realestate/zip/useZiponDevelopment.ts')
         self.assertIn('getProjectCoordinate', self.map_source)
         # 카드는 좌표를 직접 만들지 않고 같은 point를 넘긴다.
         self.assertIn('points={[point]}', card)
-        self.assertIn('pointById.get(p.project_id) ?? null', tab)
-
+        self.assertIn('new Map(points.map((point) => [point.project_id, point]))', hook)
 
 # 실제 원본은 EPSG:5174(Korea 1985 / Modified Central Belt)로 확인됐다. .prj에서 읽는다.
 POLYGON_PRJ = ('PROJCS["Korea 1985 / Modified Central Belt",GEOGCS["Korea 1985",'

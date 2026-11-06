@@ -17,6 +17,7 @@ import {
 import { useAccess } from "@/components/access/AccessProvider";
 import RegionPicker from "./RegionPicker";
 import DevelopmentTab from "./DevelopmentTab";
+import EstateHero from "./EstateHero";
 import TradeFilters, { FilterChips, type TradeFilterValue } from "./TradeFilters";
 import TransactionCard from "./TransactionCard";
 
@@ -530,14 +531,24 @@ export default function EstateMonitor() {
   if (error) return <ErrorBox message={error} />;
   if (!options) return <Spinner label="불러오는 중…" />;
 
+  // 개발지도는 지도 중심 대시보드라 넓은 폭을 쓰고, 나머지 탭은 기존 폭(max-w-4xl)을 유지한다.
+  const dashboard = tab === "개발지도";
+  const narrow = "mx-auto w-full max-w-4xl";
+
   return (
     <div className="space-y-4">
+      {!dashboard && (
+        <div className={narrow}>
+          <EstateHero />
+        </div>
+      )}
+      {dashboard && <h1 className="sr-only">ZIP:ON 개발지도</h1>}
       {!options.api_key && (
-        <p className="rounded-xl bg-red-500/10 px-3 py-2.5 text-sm text-red-600 dark:text-red-400">
+        <p className={`${narrow} rounded-xl bg-red-500/10 px-3 py-2.5 text-sm text-red-600 dark:text-red-400`}>
           PUBLIC_DATA_API_KEY가 없어요. .streamlit/secrets.toml의 [realestate] 설정을 확인해 주세요.
         </p>
       )}
-      <div className="-mx-1 overflow-x-auto px-1 pb-0.5">
+      <div className={`${narrow} -mx-1 overflow-x-auto px-1 pb-0.5`}>
         <Segmented
           value={tab}
           onChange={setTab}
@@ -553,7 +564,7 @@ export default function EstateMonitor() {
           ]}
         />
       </div>
-      <div className="rounded-2xl border border-border bg-surface p-3 shadow-sm sm:p-5">
+      <div className={dashboard ? "" : `${narrow} rounded-2xl border border-border bg-surface p-3 shadow-sm sm:p-5`}>
         {/* 탭을 숨겨도 입력값·결과가 유지되도록 언마운트하지 않는다 */}
         <div hidden={tab !== "청약 조회"}>
           <SubscriptionTab options={options} />
@@ -561,14 +572,16 @@ export default function EstateMonitor() {
         <div hidden={tab !== "실거래 조회"}>
           <TradeTab options={options} />
         </div>
-        <div hidden={tab !== "개발지도"}>{tab === "개발지도" && <DevelopmentTab options={options} />}</div>
+        <div hidden={tab !== "개발지도"}>
+          {tab === "개발지도" && <DevelopmentTab options={options} onOpenTradeSearch={() => setTab("실거래 조회")} />}
+        </div>
         {/* 관리자가 아니면 영역도 만들지 않는다. CSS로 가리는 것이 아니라 렌더링하지 않는다. */}
         {admin && (
           <div hidden={tab !== "모니터링 조건"}>{tab === "모니터링 조건" && <MonitorTab options={options} />}</div>
         )}
         <div hidden={tab !== "알림함"}>{tab === "알림함" && <AlertTab onUnread={setUnread} />}</div>
       </div>
-      <p className="text-[11px] text-subtle">
+      <p className={`${narrow} text-[11px] text-subtle`}>
         저장소: {options.storage === "supabase" ? "Supabase (클라우드 · GitHub Actions 예약 모니터와 공유)" : "이 PC의 로컬 DB (realestate_monitor.db)"}
       </p>
     </div>

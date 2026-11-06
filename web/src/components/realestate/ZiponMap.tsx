@@ -4,11 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DevelopmentMapPoint, MapConfig } from "@/lib/realestate";
 import { getProjectCoordinate, type ProjectCoordinate } from "@/lib/projectCoordinate";
 import { boundaryPoints, verifiedBoundaryPolygons } from "@/lib/projectBoundary";
+import { DEFAULT_MAX_ZOOM } from "@/lib/clusterPoints";
+import { buildMarkerPlan } from "@/lib/markerPlan";
+import { clearMarkers, createSyncState, syncMarkers, type ClusterItem, type SyncState } from "@/lib/markerSync";
 import {
   loadNaverMaps,
   type NaverInfoWindow,
   type NaverMapInstance,
-  type NaverMarker,
   type NaverMaps,
   type NaverOverlay,
 } from "@/lib/naverMaps";
@@ -53,6 +55,20 @@ function markerIcon(maps: NaverMaps, point: DevelopmentMapPoint, selected: boole
   };
 }
 
+/** 가까운 사업을 묶은 마커. 개수가 클수록 조금 크게, 지도를 가릴 만큼은 키우지 않는다. */
+const ZIP_PURPLE = "#6D3FC8";
+function clusterIcon(maps: NaverMaps, count: number) {
+  const size = count >= 100 ? 54 : count >= 30 ? 46 : count >= 10 ? 40 : 34;
+  return {
+    content:
+      `<div style="width:${size}px;height:${size}px;border-radius:9999px;background:${ZIP_PURPLE};color:#fff;` +
+      `display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${size >= 46 ? 15 : 13}px;` +
+      `border:3px solid rgba(255,255,255,.92);box-shadow:0 2px 6px rgba(0,0,0,.35);box-sizing:border-box">${count}</div>`,
+    size: new maps.Size(size, size),
+    anchor: new maps.Point(size / 2, size / 2),
+  };
+}
+
 function infoHtml(point: DevelopmentMapPoint) {
   const tags = [point.type_label, point.program_label].filter(Boolean).join(" · ");
   const rows = [
@@ -80,6 +96,9 @@ export default function ZiponMap({
   config = null,
   selectedId = null,
   height = 340,
+  fill = false,
+  bottomInset = 0,
+  cluster = true,
   compact = false,
   onSelect,
   onBoundsChange,
@@ -89,14 +108,19 @@ export default function ZiponMap({
   config?: MapConfig | null;
   selectedId?: string | null;
   height?: number;
+  /** 부모의 높이를 채운다(대시보드). height는 무시한다. */
+  fill?: boolean;
+  /** 지도 아래를 덮는 패널(모바일 시트)의 높이(px). 선택한 사업이 가려지지 않게 중심을 옮긴다. */
+  bottomInset?: number;
+  /** 가까운 사업을 묶어 보여준다. compact(mini-map)에서는 쓰지 않는다. */
+  cluster?: boolean;
   /** mini-map 모드: 범례와 범위 통지 없이 선택 사업만 보여준다. */
   compact?: boolean;
   onSelect?: (projectId: string | null) => void;
   onBoundsChange?: (bounds: MapBounds) => void;
 }) {
   const container = useRef<HTMLDivElement>(null);
-  const markers = useRef<Map<string, NaverMarker>>(new Map());
-  const overlays = useRef<NaverOverlay[]>([]);
+  const sync = useRef<SyncState>(createSyncState());
   const circle = useRef<NaverOverlay | null>(null);
   const info = useRef<NaverInfoWindow | null>(null);
   const listeners = useRef<unknown[]>([]);
@@ -108,6 +132,7 @@ export default function ZiponMap({
   const [api, setApi] = useState<NaverMaps | null>(null);
   const [instance, setInstance] = useState<NaverMapInstance | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(12);
   const sdk = config?.sdk ?? null;
 
   select.current = onSelect;
@@ -176,6 +201,11 @@ export default function ZiponMap({
             }),
           );
         }
+        // 줌이 바뀌면 클러스터를 다시 계산한다.
+        listeners.current.push(
+          loaded.Event.addListener(created, "zoom_changed", () => setZoom(created?.getZoom() ?? 12)),
+        );
+        setZoom(created.getZoom());
         setApi(loaded);
         setInstance(created);
         setFailed(null);
@@ -189,10 +219,7 @@ export default function ZiponMap({
       listeners.current = [];
       info.current?.close();
       info.current = null;
-      for (const marker of markers.current.values()) marker.setMap(null);
-      markers.current.clear();
-      for (const overlay of overlays.current) overlay.setMap(null);
-      overlays.current = [];
+      if (window.naver?.maps) clearMarkers(sync.current, window.naver.maps);
       circle.current?.setMap(null);
       circle.current = null;
       created?.destroy();
@@ -203,26 +230,62 @@ export default function ZiponMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sdk, compact]);
 
+  const pointById = useMemo(
+    () => new Map(located.map((entry) => [entry.point.project_id, entry.point])),
+    [located],
+  );
+  const clustering = cluster && !compact;
+
+  /** 클러스터를 누르면 구성원이 모두 보이는 범위로 확대한다. 같은 좌표뿐이면 최대 확대로 간다. */
+  const expandCluster = useCallback(
+    (item: ClusterItem) => {
+      if (!api || !instance) return;
+      const { north, south, east, west } = item.bounds;
+      if (north === south && east === west) {
+        instance.setCenter(new api.LatLng(north, east));
+        instance.setZoom(DEFAULT_MAX_ZOOM, true);
+        return;
+      }
+      instance.fitBounds(new api.LatLngBounds(new api.LatLng(south, west), new api.LatLng(north, east)), {
+        top: 60, right: 60, bottom: 60, left: 60,
+      });
+    },
+    [api, instance],
+  );
+
   // marker 갱신. 좌표가 없는 사업은 marker를 만들지 않는다(가짜 좌표 금지).
-  // 이미 있는 marker는 지우고 다시 만들지 않고 위치와 아이콘만 바꾼다.
+  // 개별 marker·클러스터 계산은 markerPlan이, 지도 반영은 markerSync가 맡는다.
   useEffect(() => {
     if (!api || !instance) return;
-    const wanted = new Set(located.map((entry) => entry.point.project_id));
-    for (const [projectId, marker] of markers.current) {
-      if (!wanted.has(projectId)) {
-        marker.setMap(null);
-        markers.current.delete(projectId);
-      }
-    }
-    for (const overlay of overlays.current) overlay.setMap(null);
-    overlays.current = [];
+    const plan = buildMarkerPlan(
+      located.map(({ point, coordinate }) => ({
+        project_id: point.project_id, latitude: coordinate.lat, longitude: coordinate.lng,
+      })),
+      { zoom, selectedId, enabled: clustering },
+    );
+    syncMarkers(
+      plan,
+      {
+        api,
+        map: instance,
+        selectedId,
+        singleIcon: (id, selected) => markerIcon(api, pointById.get(id) as DevelopmentMapPoint, selected),
+        singleTitle: (id) => pointById.get(id)?.name ?? undefined,
+        clusterIcon: (count) => clusterIcon(api, count),
+        onSelect: (id) => select.current?.(id),
+        onClusterClick: expandCluster,
+      },
+      sync.current,
+    );
+  }, [api, instance, located, selectedId, zoom, clustering, pointById, expandCluster]);
 
-    for (const { point, coordinate } of located) {
-      // NAVER SDK는 (위도, 경도) 순서다. API는 longitude/latitude로 준다.
-      const position = new api.LatLng(coordinate.lat, coordinate.lng);
-      // 공식 경계가 확인된 사업만 면으로. 오늘은 해당 사업이 없어 아무 면도 그리지 않는다.
-      // MultiPolygon이면 구역마다 하나씩 그린다. 첫 구역만 그리거나 떨어진 두 구역을
-      // 한 구역으로 합치지 않는다.
+  // 공식 경계가 확인된 사업만 면으로. 줌이 바뀌어도 다시 그리지 않고, 다시 그릴 때는 리스너를 함께 정리한다.
+  // MultiPolygon이면 구역마다 하나씩 그린다. 첫 구역만 그리거나 떨어진 두 구역을 한 구역으로 합치지 않는다.
+  useEffect(() => {
+    if (!api || !instance) return;
+    const drawn: NaverOverlay[] = [];
+    const tokens: unknown[] = [];
+    for (const { point } of located) {
       for (const part of verifiedBoundaryPolygons(point)) {
         const selectedArea = selectedId === point.project_id;
         const area = new api.Polygon({
@@ -238,60 +301,54 @@ export default function ZiponMap({
           clickable: true,
         });
         // 구역(면)을 눌러도 marker와 똑같이 그 사업이 선택된다. canonical project_id로만 잇는다.
-        if (select.current) {
-          listeners.current.push(
-            api.Event.addListener(area, "click", () => select.current?.(point.project_id)),
-          );
-        }
-        overlays.current.push(area);
+        tokens.push(api.Event.addListener(area, "click", () => select.current?.(point.project_id)));
+        drawn.push(area);
       }
-      const selected = selectedId === point.project_id;
-      const existing = markers.current.get(point.project_id);
-      if (existing) {
-        existing.setPosition(position);
-        existing.setIcon(markerIcon(api, point, selected));
-        existing.setZIndex(selected ? 1000 : 1);
-        existing.setMap(instance);
-        continue;
-      }
-      const marker = new api.Marker({
-        map: instance,
-        position,
-        title: point.name ?? undefined,
-        icon: markerIcon(api, point, selected),
-        zIndex: selected ? 1000 : 1,
-      });
-      if (select.current) {
-        listeners.current.push(
-          api.Event.addListener(marker, "click", () => select.current?.(point.project_id)),
-        );
-      }
-      markers.current.set(point.project_id, marker);
     }
+    return () => {
+      for (const token of tokens) api.Event.removeListener(token);
+      for (const overlay of drawn) overlay.setMap(null);
+    };
+  }, [api, instance, located, selectedId]);
 
-    if (property) {
-      overlays.current.push(
-        new api.Marker({
-          map: instance,
-          position: new api.LatLng(property.latitude, property.longitude),
-          icon: {
-            content:
-              '<div style="width:18px;height:18px;border-radius:9999px;background:#FFFFFF;' +
-              'border:3px solid #111827;box-sizing:border-box"></div>',
-            size: new api.Size(18, 18),
-            anchor: new api.Point(9, 9),
-          },
-          zIndex: 1200,
-        }) as unknown as NaverOverlay,
-      );
-    }
-  }, [api, instance, located, property, selectedId]);
+  // 선택한 부동산(실거래 등에서 넘어온 위치) 표시.
+  useEffect(() => {
+    if (!api || !instance || !property) return;
+    const pin = new api.Marker({
+      map: instance,
+      position: new api.LatLng(property.latitude, property.longitude),
+      icon: {
+        content:
+          '<div style="width:18px;height:18px;border-radius:9999px;background:#FFFFFF;' +
+          'border:3px solid #111827;box-sizing:border-box"></div>',
+        size: new api.Size(18, 18),
+        anchor: new api.Point(9, 9),
+      },
+      zIndex: 1200,
+    });
+    return () => pin.setMap(null);
+  }, [api, instance, property]);
+
+  // 지도 영역의 크기가 바뀌면(패널·시트가 열리고 닫힘) SDK에 알려 타일과 중심을 다시 맞춘다.
+  useEffect(() => {
+    if (!api || !instance || !container.current || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      try {
+        api.Event.trigger(instance, "resize");
+      } catch {
+        // SDK 버전에 따라 trigger가 없을 수 있다. 지도는 계속 동작한다.
+      }
+    });
+    observer.observe(container.current);
+    return () => observer.disconnect();
+  }, [api, instance]);
 
   // 선택 사업으로 지도를 옮기고 InfoWindow를 띄운다. 화면을 강제로 스크롤하지 않는다.
   useEffect(() => {
     if (!api || !instance) return;
     circle.current?.setMap(null);
     circle.current = null;
+    let insetTimer: number | undefined;
     if (!selectedEntry) {
       info.current?.close();
       if (!compact && !property && located.length > 0) {
@@ -314,6 +371,16 @@ export default function ZiponMap({
       } else {
         instance.panTo(position, { duration: 320 });
         if (instance.getZoom() < 15) instance.setZoom(15, true);
+        // 모바일 시트가 지도 아래를 덮으면 사업이 시트 뒤에 가려진다. 이동이 끝난 뒤 가려지는 높이의 절반만큼 올린다.
+        if (bottomInset > 0) {
+          insetTimer = window.setTimeout(() => {
+            try {
+              instance.panBy?.(0, bottomInset / 2);
+            } catch {
+              // SDK 버전에 따라 panBy가 없을 수 있다. 사업 선택과 이동은 영향받지 않는다.
+            }
+          }, 380);
+        }
       }
       // 접혀 있던 영역에서 만들어진 지도에 크기 변경을 알린다. 이 호출이 실패하더라도
       // 중심은 위에서 이미 맞췄으므로 지도가 서울 한복판에 남지 않는다.
@@ -348,13 +415,16 @@ export default function ZiponMap({
         fillOpacity: 0.08,
       });
     }
-    const marker = markers.current.get(point.project_id);
+    const marker = sync.current.singles.get(point.project_id);
     if (info.current && marker) {
       info.current.setContent(infoHtml(point));
       info.current.open(instance, marker);
     }
-    return () => window.cancelAnimationFrame(frame);
-  }, [api, instance, selectedEntry, located, compact, property]);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      if (insetTimer !== undefined) window.clearTimeout(insetTimer);
+    };
+  }, [api, instance, selectedEntry, located, compact, property, bottomInset]);
 
   const mappable = located.length;
   // 확인된 공식 경계를 가진 사업 수. 범례와 안내문은 이 값이 있을 때만 구역을 말한다.
@@ -363,8 +433,8 @@ export default function ZiponMap({
   if (!sdk?.configured || failed) {
     return (
       <div
-        style={{ height }}
-        className="flex w-full items-center justify-center rounded-2xl border border-border bg-surface-muted px-4 text-center text-xs text-muted"
+        style={fill ? undefined : { height }}
+        className={`flex w-full items-center justify-center rounded-2xl border border-border bg-surface-muted px-4 text-center text-xs text-muted ${fill ? "h-full min-h-48" : ""}`}
       >
         지도를 불러오지 못했어요. 네이버 지도 설정을 확인해 주세요.
       </div>
@@ -372,13 +442,13 @@ export default function ZiponMap({
   }
 
   return (
-    <div className="space-y-1.5">
+    <div className={fill ? "flex h-full min-h-0 flex-col gap-1.5" : "space-y-1.5"}>
       <div
         ref={container}
         role="application"
         aria-label={compact ? "선택 사업 위치 지도" : "부동산 개발정보 지도"}
-        style={{ height }}
-        className="w-full overflow-hidden rounded-2xl border border-border bg-surface-muted"
+        style={fill ? undefined : { height }}
+        className={`w-full overflow-hidden rounded-2xl border border-border bg-surface-muted ${fill ? "min-h-0 flex-1" : ""}`}
       />
       {!compact && (
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-subtle">
@@ -403,6 +473,18 @@ export default function ZiponMap({
             />
             선택 부동산
           </span>
+          {clustering && zoom < DEFAULT_MAX_ZOOM && mappable > 1 && (
+            <span className="inline-flex items-center gap-1">
+              <span
+                aria-hidden
+                className="inline-flex size-3.5 items-center justify-center rounded-full text-[8px] font-extrabold text-white"
+                style={{ background: ZIP_PURPLE }}
+              >
+                N
+              </span>
+              가까운 사업 묶음 (확대하면 펼쳐져요)
+            </span>
+          )}
           {/* 공식 경계가 실제로 그려질 때만 범례에 넣는다. 없는 것을 있다고 적지 않는다. */}
           {withBoundary > 0 && (
             <span className="inline-flex items-center gap-1">

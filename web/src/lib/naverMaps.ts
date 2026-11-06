@@ -18,6 +18,8 @@ export type NaverMapInstance = {
   setZoom: (zoom: number, useEffect?: boolean) => void;
   getZoom: () => number;
   panTo: (latlng: NaverLatLng, options?: { duration?: number }) => void;
+  /** SDK 버전에 따라 없을 수 있다. */
+  panBy?: (x: number, y: number) => void;
   fitBounds: (bounds: NaverLatLngBounds, options?: unknown) => void;
   getBounds: () => { getMax: () => NaverLatLng; getMin: () => NaverLatLng };
   destroy: () => void;
