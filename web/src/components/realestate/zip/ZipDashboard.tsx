@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { trackUsage } from "@/lib/analytics";
 import type { EstateOptions } from "@/lib/realestate";
 import ZiponMap, { type MapFocus } from "../ZiponMap";
@@ -60,6 +60,8 @@ export default function ZipDashboard({
   const [snap, setSnap] = useState<SheetSnap>("peek");
   const [listOpen, setListOpen] = useState(false);
   const [hashLoaded, setHashLoaded] = useState(false);
+  const [bottomInset, setBottomInset] = useState(0);
+  const mapBox = useRef<HTMLDivElement>(null);
   const { state: detailState, retry } = useZoneDetail(selectedId);
 
   // 주소 해시 → 선택. 첫 렌더에서 해시를 지우지 않도록, 읽은 뒤에만 쓰기 시작한다.
@@ -126,7 +128,17 @@ export default function ZipDashboard({
     <ZoneList data={data} onSelect={(id) => select(id, "list")} />
   );
   const sheetOpen = !desktop && (selectedId !== null || listOpen);
-  const bottomInset = !desktop && selectedId && snap === "peek" ? Math.round(viewport * PEEK_RATIO) : 0;
+
+  // 시트(peek)가 지도 아래를 덮는 높이. 시트 높이가 아니라 지도 영역과 겹치는 만큼만 보정한다.
+  // (지도 영역은 뷰포트보다 작아서 시트의 일부만 지도와 겹친다.)
+  useEffect(() => {
+    if (desktop || !selectedId || snap !== "peek" || !mapBox.current) {
+      setBottomInset(0);
+      return;
+    }
+    const rect = mapBox.current.getBoundingClientRect();
+    setBottomInset(Math.max(0, Math.round(rect.bottom - viewport * (1 - PEEK_RATIO))));
+  }, [desktop, selectedId, snap, viewport]);
 
   return (
     <div data-zip-dashboard className="space-y-3">
@@ -134,7 +146,7 @@ export default function ZipDashboard({
       <DashboardNotices data={data} />
 
       <div className="grid gap-3 lg:grid-cols-[65fr_35fr]">
-        <div className="relative h-[calc(100svh-19rem)] min-h-[420px] lg:h-[calc(100svh-15rem)] lg:min-h-[560px]">
+        <div ref={mapBox} className="relative h-[calc(100svh-19rem)] min-h-[420px] lg:h-[calc(100svh-21rem)] lg:min-h-[520px]">
           {/* 조회 상태와 무관하게 지도는 한 번 만들고 유지한다. 지역을 바꾸거나 조회가 실패할 때마다
               인스턴스가 파괴되고 SDK 초기화가 다시 도는 것을 막는다. */}
           {data.config ? (
@@ -162,7 +174,7 @@ export default function ZipDashboard({
         </div>
 
         {desktop && (
-          <aside aria-label="개발구역 상세" className="h-[calc(100svh-15rem)] min-h-[560px] overflow-hidden rounded-2xl border border-border bg-surface">
+          <aside aria-label="개발구역 상세" className="h-[calc(100svh-21rem)] min-h-[520px] overflow-hidden rounded-2xl border border-border bg-surface">
             {panel}
           </aside>
         )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type PointerEvent, type ReactNode } from "react";
+import { sheetGesture } from "@/lib/sheetGesture";
 
 export type SheetSnap = "peek" | "full";
 
@@ -32,12 +33,16 @@ export default function MobileSheet({
     start.current = event.clientY;
     event.currentTarget.setPointerCapture?.(event.pointerId);
   };
+  const toggle = () => onSnap(snap === "full" ? "peek" : "full");
   const up = (event: PointerEvent<HTMLDivElement>) => {
     if (start.current === null) return;
     const delta = event.clientY - start.current;
     start.current = null;
-    if (delta < -40) onSnap("full");
-    else if (delta > 40) (snap === "full" ? onSnap("peek") : onClose());
+    // 탭도 여기서 처리한다. 포인터 캡처 때문에 손잡이 안 버튼의 click은 버튼으로 오지 않는다.
+    const action = sheetGesture(delta, snap);
+    if (action === "toggle") toggle();
+    else if (action === "close") onClose();
+    else if (action) onSnap(action);
   };
 
   return (
@@ -58,7 +63,10 @@ export default function MobileSheet({
       >
         <button
           type="button"
-          onClick={() => onSnap(snap === "full" ? "peek" : "full")}
+          // 키보드로 누른 경우(detail === 0)만 여기서 처리한다. 포인터 탭은 위 up()이 처리해 두 번 전환되지 않는다.
+          onClick={(event) => {
+            if (event.detail === 0) toggle();
+          }}
           aria-label={snap === "full" ? "시트 줄이기" : "시트 펼치기"}
           className="h-1.5 w-12 rounded-full bg-border"
         />
