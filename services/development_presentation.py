@@ -10,6 +10,7 @@ import re
 
 from services.development_official import STATUS_FROM_STAGE, STATUS_HYPOTHESIS, normalize_stage
 from services.development_stage import observation, stage_view, DESCRIPTIONS
+from services.development_investor import investor_guide, freshness
 
 
 STAGE_LABELS = {
@@ -237,6 +238,14 @@ def relation(spatial_relation, *, boundary_verified=False):
 
 def present_project(row):
     """One development project, shaped for the screen. Input is a DB/RPC row."""
+    project = _present_project(row)
+    # 표현 전용 블록. 확인된 사실과 섞지 않고, DB 값이나 단계 판정은 바꾸지 않는다.
+    project['investor_guide'] = investor_guide(project['stage_guide']['stage'])
+    project['freshness'] = freshness([project.get('last_checked')])
+    return project
+
+
+def _present_project(row):
     # zipon_development_search는 project_stage / official_source / source_url / verified_at을
     # 돌려주고, REST 직접 조회는 stage_raw / source_name을 돌려준다. 둘 다 받는다.
     detail, listed = observation(row)

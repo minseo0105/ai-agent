@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import sys
+import traceback
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,6 +27,34 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class RefreshError(Exception):
     pass
+
+
+def spatial_writes_enabled():
+    """Official boundary writes need their own explicit opt-in, separate from the write gate.
+
+    A verified boundary enables the INSIDE verdict, and the staging check of the PostGIS
+    predicates is a documented prerequisite. The value must be exactly 'true'.
+    """
+    return os.environ.get('ZIPON_REFRESH_SPATIAL_ENABLED') == 'true'
+
+
+def _object_missing(response):
+    """True only when Storage says the OBJECT does not exist.
+
+    Supabase Storage answers a read of a missing object with HTTP 400 and a body of
+    statusCode 404, not with a real 404. A missing bucket gives the same status code but a
+    different message; that is a configuration error and must stay one.
+    """
+    if response.status_code == 404:
+        return True
+    if response.status_code != 400:
+        return False
+    try:
+        info = response.json()
+    except ValueError:
+        return False
+    return (isinstance(info, dict) and str(info.get('statusCode')) == '404'
+            and 'object not found' in str(info.get('message', '')).lower())
 
 
 class Database:
@@ -75,7 +104,7 @@ class Database:
             r = self.session.request('GET' if body is None else 'POST',
                 self.url + '/storage/v1/object/zipon-official-raw/' + path,
                 headers=headers, data=body, timeout=60, allow_redirects=False)
-            if body is None and r.status_code == 404:
+            if body is None and _object_missing(r):
                 return None
             if not r.ok:
                 raise RefreshError('RAW_STORAGE_HTTP_' + str(r.status_code))
@@ -242,7 +271,9 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
             saved = db.storage('state.json')
             state = json.loads(saved) if saved else {}
         collection = collector.collect(fetch=http.get,districts=districts or collector.SEOUL_DISTRICTS)
-        report['sources'] = collection['runs']
+        # 복사본이어야 한다. 같은 목록이면 아래에서 보고서에만 붙이는 항목(모아 취소, 공지)이
+        # 수집기의 runs에도 섞여 source_url이 없는 항목이 완료 소스 집합에 들어간다.
+        report['sources'] = list(collection['runs'])
         if any(r['source']=='seoul_moa' and r['status']!='SUCCEEDED' for r in collection['runs']):
             try:
                 cancellations=collect_moa_cancellations(http)
@@ -488,6 +519,9 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
                             continue
                         if not apply:
                             report['spatial'].append({'project_id':pid,'kind':'BOUNDARY','dry_run':True})
+                        elif not spatial_writes_enabled():
+                            # 검증된 경계는 구역 안(INSIDE) 판정을 켠다. 명시적으로 허용하기 전에는 쓰지 않는다.
+                            report['spatial'].append({'project_id':pid,'kind':'BOUNDARY','result':'SPATIAL_WRITES_DISABLED'})
                         elif written < limit:
                             try:
                                 result=db.request('POST','rpc/zipon_refresh_spatial',{'p_project_id':pid,'p_kind':'BOUNDARY',
@@ -515,7 +549,7 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
         report['status']='PARTIAL' if failed else 'SUCCEEDED'
     except Exception as exc:
         report['status']='FAILED'
-        report['errors'].append({'code':str(exc) if isinstance(exc,(RefreshError,SourceError)) else type(exc).__name__})
+        report['errors'].append(_error_entry(exc))
     finally:
         report['finished_at']=now()
         report['counts']['review_required'] += len(report['reviews'])
@@ -539,6 +573,24 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
                 report['errors'].append({'code':'LEASE_RELEASE_FAILED'})
         (directory/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     return report
+
+
+def _error_entry(exc):
+    """Known errors keep their plain code. An unexpected one also records where it happened.
+
+    A bare 'KeyError' cannot be diagnosed from a CI report. File:line and the missing key's
+    name are code locations and field names, never credentials or raw responses.
+    """
+    if isinstance(exc, (RefreshError, SourceError)):
+        return {'code': str(exc)}
+    entry = {'code': type(exc).__name__}
+    frames = traceback.extract_tb(exc.__traceback__)
+    if frames:
+        last = frames[-1]
+        entry['where'] = f'{Path(last.filename).name}:{last.lineno} in {last.name}'
+    if isinstance(exc, KeyError) and exc.args:
+        entry['key'] = repr(exc.args[0])[:80]
+    return entry
 
 
 def coverage(rows):

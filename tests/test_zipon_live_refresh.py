@@ -2,6 +2,7 @@
 import copy
 import io
 import json
+import os
 import tempfile
 import unittest
 import zipfile
@@ -10,7 +11,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from services.development_refresh import identity, decision, refresh, Database, RefreshError, validate_survey
+from services.development_refresh import identity, decision, refresh, Database, RefreshError, validate_survey, PROJECT_URL
 from services.development_sources import discover_archive, validate_zip, labeled_dates, SourceError, OfficialHTTP, collect_notices
 from services.development_stage import observation
 from services.development_collector import fetch_source_pages, build_sources
@@ -149,12 +150,161 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(result['status'],'FAILED')
             self.assertTrue(Path(folder,'report.json').is_file())
 
+    def test_successful_notice_collection_does_not_pollute_the_collectors_run_list(self):
+        # 보고서 전용 항목(공지·모아 취소)에는 source_url이 없다. 이것이 수집기의
+        # runs 목록에 섞이면 완료된 소스 URL 집합을 만들다가 KeyError가 난다.
+        db=Mock()
+        db.rows.side_effect=lambda table,*a,**k: []
+        runs=[{'source':'seoul_moa','source_url':'https://cleanup.seoul.go.kr/moa','status':'FAILED',
+               'source_complete':False,'errors':['SOURCE_ACCESS_DENIED']},
+              {'source':'cleanup_11740','source_url':'https://cleanup.seoul.go.kr/list','status':'SUCCEEDED',
+               'source_complete':True,'errors':[]}]
+        collection={'records':[],'districts':['강동구'],'runs':runs}
+        notices={'source':'official_notices','status':'SUCCEEDED','source_complete':True,
+                 'scope':'NEW_IDS_OR_LAST_30_DAYS','errors':[],'items':[],'seen':['1'],'target_aliases':[]}
+        with tempfile.TemporaryDirectory() as folder,\
+             patch('services.development_refresh.collector.collect',return_value=collection),\
+             patch('services.development_refresh.collect_moa_cancellations',return_value=[]),\
+             patch('services.development_refresh.collect_notices',return_value=notices):
+            report=refresh(db=db,http=Mock(objects=[]),directory=folder,shp=False)
+            # 기록되는 오류는 소스 자체의 접근 거부 하나뿐이다(코드 오류 KeyError가 아니다).
+            self.assertEqual(report['errors'],[{'source':'seoul_moa','code':'SOURCE_ACCESS_DENIED'}])
+            self.assertEqual(report['status'],'PARTIAL')  # 접근 거부는 실패가 아니라 부분 성공
+            self.assertEqual([r['source'] for r in runs],['seoul_moa','cleanup_11740'])
+            self.assertIn('official_notices',[s['source'] for s in report['sources']])
+            self.assertIn('moa_official_cancellations',[s['source'] for s in report['sources']])
+
+    def test_unexpected_error_report_names_the_failing_line_and_missing_key(self):
+        # 예상하지 못한 오류가 'KeyError' 한 단어로만 남으면 원인을 찾을 수 없다.
+        db=Mock();db.rows.return_value=[]
+        def broken(*args,**kwargs):
+            return {'source':{}}['content_hash']
+        with tempfile.TemporaryDirectory() as folder,patch('services.development_refresh.collector.collect',side_effect=broken):
+            result=refresh(db=db,http=Mock(objects=[]),directory=folder,shp=False)
+            self.assertEqual(result['status'],'FAILED')
+            error=result['errors'][0]
+            self.assertEqual(error['code'],'KeyError')
+            self.assertEqual(error['key'],"'content_hash'")
+            self.assertRegex(error['where'],r'^test_zipon_live_refresh\.py:\d+ in broken$')
+            saved=json.loads(Path(folder,'report.json').read_text(encoding='utf-8'))
+            self.assertEqual(saved['errors'][0]['where'],error['where'])
+
+    def test_expected_errors_keep_their_plain_code_without_location(self):
+        db=Mock();db.rows.side_effect=RefreshError('DATABASE_REQUEST_FAILED')
+        with tempfile.TemporaryDirectory() as folder:
+            result=refresh(db=db,directory=folder,shp=False)
+            self.assertEqual(result['errors'],[{'code':'DATABASE_REQUEST_FAILED'}])
+
     def test_concurrent_apply_refused_before_collection_or_project_write(self):
         db=Mock();db.request.return_value=False
         with tempfile.TemporaryDirectory() as folder,patch('services.development_refresh.collector.collect') as collect:
             result=refresh(db=db,directory=folder,apply=True,shp=False)
             self.assertEqual(result['status'],'FAILED');collect.assert_not_called()
             self.assertEqual(db.request.call_count,1)
+
+
+class StorageTests(unittest.TestCase):
+    """Supabase Storage는 없는 객체를 404가 아니라 HTTP 400(본문 statusCode 404)으로 답한다."""
+    def database(self, apply=False):
+        env={'ZIPON_IMPORT_SUPABASE_URL':PROJECT_URL,'ZIPON_IMPORT_SUPABASE_KEY':'sb_secret_test',
+             'ZIPON_REFRESH_WRITE_ENABLED':'true' if apply else ''}
+        with patch.dict(os.environ,env):
+            db=Database(apply)
+        db.session=Mock()
+        return db
+
+    def reply(self,db,status,body=None,content=b''):
+        response=Mock(status_code=status,ok=200<=status<300,content=content)
+        if body is None:
+            response.json.side_effect=ValueError('no json')
+        else:
+            response.json.return_value=body
+        db.session.request.return_value=response
+
+    def test_plain_404_means_the_object_is_missing(self):
+        db=self.database();self.reply(db,404)
+        self.assertIsNone(db.storage('state.json'))
+
+    def test_400_with_object_not_found_body_means_the_object_is_missing(self):
+        db=self.database()
+        self.reply(db,400,{'statusCode':'404','error':'not_found','message':'Object not found'})
+        self.assertIsNone(db.storage('state.json'))
+
+    def test_missing_bucket_is_a_configuration_error_not_an_empty_state(self):
+        db=self.database()
+        self.reply(db,400,{'statusCode':'404','error':'Bucket not found','message':'Bucket not found'})
+        with self.assertRaises(RefreshError) as caught:db.storage('state.json')
+        self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_400')
+
+    def test_other_400_and_unreadable_bodies_still_fail(self):
+        for body in ({'statusCode':'400','error':'Invalid','message':'Invalid key'},['x'],None):
+            db=self.database();self.reply(db,400,body)
+            with self.assertRaises(RefreshError) as caught:db.storage('state.json')
+            self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_400')
+
+    def test_authorization_failures_are_never_treated_as_missing(self):
+        for status in (401,403,500):
+            db=self.database();self.reply(db,status,{'statusCode':'404','message':'Object not found'})
+            with self.assertRaises(RefreshError) as caught:db.storage('state.json')
+            self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_'+str(status))
+
+    def test_a_failed_upload_is_not_treated_as_missing(self):
+        db=self.database(apply=True)
+        self.reply(db,400,{'statusCode':'404','error':'not_found','message':'Object not found'})
+        with self.assertRaises(RefreshError) as caught:db.storage('state.json',b'{}')
+        self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_400')
+
+    def test_successful_read_returns_the_content(self):
+        db=self.database();self.reply(db,200,content=b'{"a":1}')
+        self.assertEqual(db.storage('state.json'),b'{"a":1}')
+
+
+class SpatialGateTests(unittest.TestCase):
+    """공식 경계 쓰기는 별도 변수로 명시적으로 허용하기 전에는 하지 않는다."""
+    PID='22222222-2222-5222-8222-222222222222'
+
+    def test_gate_is_closed_unless_the_variable_is_exactly_true(self):
+        from services.development_refresh import spatial_writes_enabled
+        for value in (None,'','false','TRUE','1','yes',' true'):
+            env={} if value is None else {'ZIPON_REFRESH_SPATIAL_ENABLED':value}
+            with patch.dict(os.environ,env,clear=False):
+                if value is None: os.environ.pop('ZIPON_REFRESH_SPATIAL_ENABLED',None)
+                self.assertFalse(spatial_writes_enabled(),repr(value))
+        with patch.dict(os.environ,{'ZIPON_REFRESH_SPATIAL_ENABLED':'true'}):
+            self.assertTrue(spatial_writes_enabled())
+
+    def test_apply_with_the_gate_closed_never_calls_the_boundary_rpc(self):
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+        import analyze_seoul_polygon_source as polygons
+        import apply_zipon_polygons
+        row=dict(project(project_id=self.PID),location=None,geometry=None,revision=1,dong=None,address=None)
+        db=Mock();db.storage.return_value=None
+        db.request.return_value=True
+        db.rows.side_effect=lambda table,*a,**k:[row] if table=='development_projects' else []
+        manifest={'path':'x.zip','sha256':'a'*64,'version':'202609','unchanged':False,'downloaded':False}
+        survey={'source_crs_label':'EPSG:5174','schema':{},'schema_fingerprint':'f'*64}
+        rows=[{'zipon_project_id':self.PID,'auto_apply_candidate':True}]
+        features=[{'properties':{'zipon_project_id':self.PID},
+                   'geometry':{'type':'Polygon','coordinates':[[[127,37],[127.1,37],[127.1,37.1],[127,37]]]}}]
+        collection={'records':[],'districts':[],'runs':[]}
+        notices={'source':'official_notices','status':'SUCCEEDED','source_complete':True,
+                 'errors':[],'items':[],'seen':[],'target_aliases':[]}
+        env=dict(os.environ);env.pop('ZIPON_REFRESH_SPATIAL_ENABLED',None)
+        with tempfile.TemporaryDirectory() as folder,patch.dict(os.environ,env,clear=True),\
+             patch('services.development_refresh.collector.collect',return_value=collection),\
+             patch('services.development_refresh.collect_notices',return_value=notices),\
+             patch('services.development_refresh.acquire_archive',return_value=manifest),\
+             patch('services.development_refresh.validate_survey'),\
+             patch.object(polygons,'build',return_value=(survey,rows,features)),\
+             patch.object(polygons,'conflicted_ids',return_value=set()),\
+             patch.object(apply_zipon_polygons,'evidence_for',return_value={}):
+            report=refresh(job='weekly',apply=True,limit=5,db=db,http=Mock(objects=[]),directory=folder)
+        calls=[c for c in db.request.call_args_list if c.args[:2]==('POST','rpc/zipon_refresh_spatial')]
+        self.assertEqual(calls,[])
+        self.assertEqual(report['errors'],[])
+        self.assertEqual(report['shp']['candidates'],1)
+        self.assertEqual(report['spatial'],[{'project_id':self.PID,'kind':'BOUNDARY','result':'SPATIAL_WRITES_DISABLED'}])
 
 
 if __name__=='__main__':unittest.main()
