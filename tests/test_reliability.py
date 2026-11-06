@@ -222,13 +222,31 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(entry['code'], 'CONSTRUCTION')
         self.assertTrue(entry['in_default_map'])
 
-    def test_an_ambiguous_stage_stays_unknown_and_visible(self):
+    def test_dissolution_and_liquidation_are_a_normal_close(self):
+        # 2026-11-07 사용자 결정: 조합해산·조합청산은 정상 종료로 보고 기본 지도에서 숨긴다(데이터는 유지).
         for stage in ('조합해산', '조합청산'):
             entry = self.life(stage_raw=stage)
-            self.assertEqual(entry['code'], 'UNKNOWN', stage)
-            # 끝났을 수도 있다는 가설은 적되, 그것으로 지도에서 지우지 않는다.
+            self.assertEqual(entry['code'], 'CLOSED', stage)
+            self.assertEqual(entry['basis'], 'OFFICIAL_TERMINAL_STAGE')
             self.assertTrue(entry['hypothesis'], stage)
-            self.assertTrue(entry['in_default_map'], stage)
+            self.assertFalse(entry['in_default_map'], stage)
+
+    def test_an_official_cancelled_status_wins_over_any_stage(self):
+        for stage in ('조합해산', '조합설립인가', None):
+            entry = self.life(stage_raw=stage, status='CANCELLED')
+            self.assertEqual(entry['code'], 'CANCELLED', stage)
+            self.assertFalse(entry['in_default_map'])
+
+    def test_other_official_stages_are_active(self):
+        for stage in ('조합설립인가', '사업시행인가', '관리처분인가', '정비계획고시', '부분준공인가'):
+            entry = self.life(stage_raw=stage)
+            self.assertEqual((entry['code'], entry['basis']), ('ACTIVE', 'OFFICIAL_STAGE'), stage)
+            self.assertTrue(entry['in_default_map'])
+
+    def test_an_unmapped_stage_text_is_unknown_not_guessed(self):
+        entry = self.life(stage_raw='해제 검토 중')
+        self.assertEqual(entry['code'], 'UNKNOWN')
+        self.assertTrue(entry['in_default_map'])
 
     def test_a_project_without_stage_evidence_is_never_hidden(self):
         entry = self.life()
@@ -238,7 +256,7 @@ class LifecycleTests(unittest.TestCase):
 
     def test_a_name_that_sounds_finished_does_not_decide_anything(self):
         entry = self.life(project_name='둔촌주공 준공 완료된 아파트', stage_raw='조합설립인가')
-        self.assertEqual(entry['code'], 'UNKNOWN')
+        self.assertEqual(entry['code'], 'ACTIVE')
         self.assertTrue(entry['in_default_map'])
 
     def test_the_map_point_carries_the_lifecycle(self):
@@ -246,7 +264,7 @@ class LifecycleTests(unittest.TestCase):
                               'sigungu': '강동구', 'stage_raw': '이전고시',
                               'validation_status': 'VERIFIED'})
         self.assertEqual(point['lifecycle'], 'COMPLETED')
-        self.assertEqual(point['lifecycle_label'], '사업 완료')
+        self.assertEqual(point['lifecycle_label'], '완료 절차(준공인가·이전고시)')
         self.assertFalse(point['in_default_map'])
 
 

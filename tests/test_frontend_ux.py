@@ -21,6 +21,16 @@ def web(path):
     return (ROOT / 'web/src' / path).read_text(encoding='utf-8')
 
 
+def dev_tab_bundle():
+    """개발지도 탭을 구성하는 파일 묶음. DevelopmentTab은 대시보드 셸로 얇아졌고, 데이터 로딩·필터·알림·목록·툴바
+    로직은 components/realestate/zip/ 아래로 동작 변경 없이 옮겼다. 그 로직을 지키는 테스트가 같은 보증을 이 묶음에서 확인한다."""
+    base = (ROOT / 'web/src') / 'components/realestate'
+    parts = [base / 'DevelopmentTab.tsx']
+    parts += sorted(p for p in (base / 'zip').iterdir() if p.is_file() and p.suffix in ('.ts', '.tsx'))
+    return '\n'.join(p.read_text(encoding='utf-8') for p in parts)
+
+
+
 class GolfSortVisibilityTests(unittest.TestCase):
     """출발지를 넣었는데 '가까운순' 버튼이 사라지지 않는지."""
 
@@ -90,7 +100,7 @@ class RegionEmptyStateTests(unittest.TestCase):
     """개발정보가 없는 자치구를 골랐을 때, 고장이 아니라 준비 중으로 읽히는지."""
 
     def setUp(self):
-        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
         self.picker = web('components/realestate/RegionPicker.tsx')
 
     def test_every_seoul_district_is_selectable(self):
@@ -128,19 +138,19 @@ class RegionEmptyStateTests(unittest.TestCase):
         self.assertIn('의 개발정보를 보실 수 있어요', self.tab)
 
     def test_zero_of_zero_is_not_printed_as_a_map_summary(self):
-        self.assertIn('표시할 사업이 없어요.', self.tab)
+        self.assertIn('표시할 사업이 없어요', self.tab)
 
 
 class SeoulOnlyDevelopmentMapTests(unittest.TestCase):
     """개발지도에는 서울 25개 자치구만 올린다."""
 
     def setUp(self):
-        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
         self.picker = web('components/realestate/RegionPicker.tsx')
 
     def test_the_picker_is_given_seoul_only(self):
         self.assertIn('경기: [] as string[]', self.tab)
-        self.assertIn('regions={seoulOnly}', self.tab)
+        self.assertIn('regions={data.seoulOnly}', self.tab)
         self.assertNotIn('<RegionPicker regions={options.regions}', self.tab)
 
     def test_an_empty_scope_is_not_offered_or_searched(self):
@@ -173,14 +183,15 @@ class MapInstanceReuseTests(unittest.TestCase):
     """지도 인스턴스를 반복해서 만들지 않는지."""
 
     def setUp(self):
-        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
         self.map = web('components/realestate/ZiponMap.tsx')
         self.loader = web('lib/naverMaps.ts')
 
     def test_the_map_is_not_unmounted_while_loading(self):
         # ready로 감싸면 지역을 바꾸거나 조회가 실패할 때마다 인스턴스가 파괴된다.
-        self.assertIn('{config && (\n        <ZiponMap', self.tab)
-        self.assertNotIn('{ready && (\n        <ZiponMap', self.tab)
+        dash = web('components/realestate/zip/ZipDashboard.tsx')
+        self.assertRegex(dash, r'\{data\.config \? \(\s*<ZiponMap')
+        self.assertNotRegex(dash, r'\{data\.ready \? \(\s*<ZiponMap')
 
     def test_one_container_is_never_built_twice(self):
         self.assertIn('const built = useRef<HTMLDivElement | null>(null);', self.map)
@@ -268,7 +279,7 @@ class RegionScopedMapFetchTests(unittest.TestCase):
     """서울 전체를 한 번에 받지 않고, 선택한 자치구만 조회하는지."""
 
     def setUp(self):
-        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
 
     def test_the_request_carries_the_selected_district(self):
         self.assertIn('estateApi.developmentMap(sigungu, 500, undefined', self.tab)
@@ -293,11 +304,11 @@ class RegionScopedMapFetchTests(unittest.TestCase):
     def test_a_capped_response_is_not_called_the_total(self):
         self.assertIn('setTruncated', self.tab)
         self.assertIn('표시 한도에 닿아 일부만 받았어요', self.tab)
-        self.assertIn('서울시 전체 미리보기예요', self.tab)
+        self.assertIn('truncated ? " 미리보기" : ""', self.tab)
 
     def test_the_district_ceiling_is_unchanged(self):
         self.assertIn('const MAX_DISTRICTS = 5;', self.tab)
-        self.assertIn('const MAX_CARDS = 200;', self.tab)
+        self.assertIn('export const MAX_LIST_ITEMS = 200;', self.tab)
         self.assertIn('.slice(0, MAX_DISTRICTS)', self.tab)
 
 
@@ -305,32 +316,36 @@ class MapCardLinkingTests(unittest.TestCase):
     """지도에서 고른 사업과 카드가 canonical id로 이어지는지."""
 
     def setUp(self):
-        self.tab = web('components/realestate/DevelopmentTab.tsx')
+        self.tab = dev_tab_bundle()
         self.map = web('components/realestate/ZiponMap.tsx')
 
     def test_selection_travels_by_project_id_not_by_name(self):
-        self.assertIn('const scrollToProject = useCallback((projectId: string)', self.tab)
-        self.assertIn('cardRefs.current[projectId]', self.tab)
-        self.assertIn('data-project-id={p.project_id}', self.tab)
-        # 이름으로 카드를 찾지 않는다. 닮은 이름이 서로 다른 사업이다.
+        lst = web('components/realestate/zip/ZoneList.tsx')
+        self.assertIn('itemRefs.current[p.project_id] = node', lst)
+        self.assertIn('data-project-id={p.project_id}', lst)
+        # 이름으로 사업을 찾지 않는다. 닮은 이름이 서로 다른 사업이다.
         self.assertNotIn('find((p) => p.name ===', self.tab)
         self.assertNotIn('project_name ===', self.tab)
 
     def test_choosing_on_the_map_moves_to_that_card(self):
-        select = self.tab[self.tab.index('const selectFromMap = useCallback('):]
-        select = select[:select.index('const scrollToCard')]
-        self.assertIn('setSelectedId(projectId)', select)
-        self.assertIn('scrollToProject(projectId)', select)
-        # 카드가 다시 그려진 뒤에 옮긴다.
-        self.assertIn('requestAnimationFrame', select)
+        dash = web('components/realestate/zip/ZipDashboard.tsx')
+        select = dash[dash.index('const select = useCallback('):]
+        select = select[:select.index('// 데스크톱에서는 Esc')]
+        self.assertIn('setSelectedId(id)', select)
+        self.assertIn('trackUsage(source === "map" ? "map_click" : "project_click")', select)
+        # 목록의 그 줄은 같은 선택을 보고 보이는 위치로 스스로 온다.
+        lst = web('components/realestate/zip/ZoneList.tsx')
+        self.assertIn('itemRefs.current[selectedId]?.scrollIntoView({ block: "nearest" })', lst)
 
     def test_a_card_is_not_hidden_under_the_sticky_area(self):
-        self.assertIn('block: "center"', self.tab)
-        self.assertIn('scroll-mt-24', self.tab)
+        lst = web('components/realestate/zip/ZoneList.tsx')
+        # 목록은 자기 스크롤 영역 안에서만 움직인다. 페이지를 스크롤하지 않으므로 고정 영역 밑에 가려지지 않는다.
+        self.assertIn('block: "nearest"', lst)
+        self.assertIn('overflow-y-auto', lst)
 
     def test_a_verified_boundary_is_clickable_and_selects_the_same_project(self):
         area = self.map[self.map.index('for (const part of verifiedBoundaryPolygons(point))'):]
-        area = area[:area.index('const selected = selectedId')]
+        area = area[:area.index('return () => {')]  # 폴리곤 효과의 정리 함수 앞까지
         self.assertIn('clickable: true', area)
         self.assertIn('select.current?.(point.project_id)', area)
 
@@ -340,19 +355,21 @@ class MapCardLinkingTests(unittest.TestCase):
         self.assertIn('fillOpacity: selectedArea ? 0.3 : 0.18', self.map)
 
     def test_a_project_without_a_boundary_is_highlighted_by_its_marker(self):
-        self.assertIn('existing.setIcon(markerIcon(api, point, selected))', self.map)
-        self.assertIn('const selected = selectedId === point.project_id', self.map)
-        self.assertIn('zIndex: selected ? 1000 : 1', self.map)
+        # 마커 갱신은 markerSync로 옮겼다. 지도는 아이콘 팩토리만 넘기고 강조(아이콘·zIndex)는 동기화 쪽이 한다.
+        sync = web('lib/markerSync.ts')
+        self.assertIn('existing.setIcon(ctx.singleIcon(item.id, selected))', sync)
+        self.assertIn('const selected = ctx.selectedId === item.id', sync)
+        self.assertIn('zIndex: selected ? 1000 : 1', sync)
+        self.assertIn('markerIcon(api, pointById.get(id) as DevelopmentMapPoint, selected)', self.map)
 
     def test_only_one_project_is_highlighted_at_a_time(self):
-        # 카드도 지도도 같은 하나의 selectedId만 본다.
-        self.assertIn('selected={selectedId === p.project_id}', self.tab)
-        self.assertIn('selectedId={selectedId}', self.tab)
+        # 목록도 지도도 같은 하나의 selectedId만 본다.
+        self.assertIn('const active = selectedId === p.project_id', web('components/realestate/zip/ZoneList.tsx'))
+        self.assertIn('selectedId={selectedId}', web('components/realestate/zip/ZipDashboard.tsx'))
 
     def test_a_filtered_out_project_has_no_card_to_jump_to(self):
-        # 목록에 없는 사업은 ref가 없으므로 이동하지 않고 조용히 지나간다.
-        self.assertIn('if (!node) return false;', self.tab)
-
+        # 목록에 없는 사업은 ref가 없으므로 이동하지 않고 조용히 지나간다(옵셔널 체이닝).
+        self.assertIn('itemRefs.current[selectedId]?.scrollIntoView', web('components/realestate/zip/ZoneList.tsx'))
 
 class StageGuideTests(unittest.TestCase):
     """단계 설명: 공식 값은 그대로, 해석은 따로, 투자 판단은 없음."""
@@ -610,7 +627,8 @@ class SpatialSafetyUnchangedTests(unittest.TestCase):
     def test_the_lifecycle_rule_is_unchanged(self):
         self.assertEqual(pr.lifecycle({'stage_raw': '준공인가'})['code'], 'COMPLETED')
         self.assertEqual(pr.lifecycle({'stage_raw': '착공'})['code'], 'CONSTRUCTION')
-        self.assertTrue(pr.lifecycle({'stage_raw': '조합해산'})['in_default_map'])
+        self.assertFalse(pr.lifecycle({'stage_raw': '조합해산'})['in_default_map'])
+        self.assertTrue(pr.lifecycle({'stage_raw': ''})['in_default_map'])
 
 
 class MapCardApiBehaviourTests(unittest.TestCase):

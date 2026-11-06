@@ -148,8 +148,8 @@ def dataset_profile(stem, archive_name=None):
     return None
 
 
-def normalize_name(value):
-    """사업명 정규화. (정규화된 이름, 적용한 규칙) 을 돌려준다.
+def normalize_name_v1(value):
+    """[v1, 비교용으로 보존] 사업명 정규화. (정규화된 이름, 적용한 규칙) 을 돌려준다.
 
     공백과 괄호는 없애지만 괄호 안 내용은 남긴다('(1구역)'을 지우면 서로 다른 구역이
     같은 이름이 된다). 사업 방식·조합 표기 같은 꼬리만 떼고 고유명칭과 숫자는 건드리지
@@ -173,6 +173,72 @@ def normalize_name(value):
     while changed:
         changed = False
         for label, suffixes in NAME_RULES:
+            for suffix in sorted(suffixes, key=len, reverse=True):
+                if text.endswith(suffix) and len(text) - len(suffix) >= NAME_MIN_LENGTH:
+                    text = text[:-len(suffix)]
+                    if label not in rules:
+                        rules.append(label)
+                    changed = True
+                    break
+            if changed:
+                break
+    return (text or None), rules
+
+
+NAME_NORMALIZER_VERSION = 'v2'
+# v2에서 추가한 표기 정리. 어느 것도 숫자·고유명칭을 지우지 않고, 지운 뒤 너무 짧아지면 되돌린다.
+#  LEADING_SERIAL      '69. 양평제12구역' 앞의 목록 일련번호
+#  PROVISIONAL_PREFIX  '(가칭)', '(임시)' 접두 — 공식 레이어에는 붙지 않는다
+#  ORDINAL_JE          '미아제3구역' → '미아3구역' (숫자 앞 '제'만. 숫자는 그대로)
+#  그리고 사업 방식 표기(공공/민간재개발, 주택정비형, LH)를 SCHEME_SUFFIX에 추가
+V2_SCHEME_SUFFIXES = ('공공재개발사업', '민간재개발사업', '공공재개발', '민간재개발',
+                      '주택정비형', '도시정비형', 'LH')
+
+
+def normalize_name(value):
+    """사업명 정규화 v2. v1에 표기 정리 3가지와 사업 방식 꼬리를 더했다. (이름, 적용한 규칙)을 돌려준다.
+
+    EXACT 판정 기준(match)은 바뀌지 않는다. 이름이 더 잘 같아질 뿐이며, 같은 이름의 사업이
+    둘 이상이면 match()가 그대로 AMBIGUOUS로 내린다.
+    """
+    if not value:
+        return None, []
+    rules = []
+    text = compact(value)
+    serial = re.sub(r'^\d{1,3}[.)]', '', text)
+    if serial != text and len(serial) >= NAME_MIN_LENGTH:
+        rules.append('LEADING_SERIAL')
+        value = serial
+    return _normalize_core(value, rules)
+
+
+def _normalize_core(value, rules):
+    text = compact(value)
+    if text != value and 'COMPACT_WHITESPACE' not in rules:
+        rules.append('COMPACT_WHITESPACE')
+    unwrapped = re.sub(r'[()\[\]{}〈〉<>「」『』]', '', text)
+    if unwrapped != text:
+        rules.append('UNWRAP_BRACKETS')
+        text = unwrapped
+    stripped = text.replace('·', '').replace('.', '').replace(',', '')
+    if stripped != text:
+        rules.append('DROP_PUNCTUATION')
+        text = stripped
+    provisional = re.sub(r'^(가칭|임시)', '', text)
+    if provisional != text and len(provisional) >= NAME_MIN_LENGTH:
+        rules.append('PROVISIONAL_PREFIX')
+        text = provisional
+    ordinal = re.sub(r'(?<=[가-힣A-Za-z])제(?=\d)', '', text)
+    if ordinal != text and len(ordinal) >= NAME_MIN_LENGTH:
+        rules.append('ORDINAL_JE')
+        text = ordinal
+    schemes = NAME_SCHEME_SUFFIXES + V2_SCHEME_SUFFIXES
+    rule_set = (('ORG_SUFFIX', NAME_ORG_SUFFIXES), ('SCHEME_SUFFIX', schemes),
+                ('AREA_SUFFIX', NAME_AREA_SUFFIXES), ('BUILDING_SUFFIX', NAME_BUILDING_SUFFIXES))
+    changed = True
+    while changed:
+        changed = False
+        for label, suffixes in rule_set:
             for suffix in sorted(suffixes, key=len, reverse=True):
                 if text.endswith(suffix) and len(text) - len(suffix) >= NAME_MIN_LENGTH:
                     text = text[:-len(suffix)]
@@ -669,14 +735,8 @@ def conflicted_ids():
     return ids
 
 
-def match(project, records, protected, collisions=None, identity_comparable_id=False):
-    """정규화 사업명 + 자치구로 후보를 만들고, 모순이 없을 때만 EXACT로 본다.
-
-    geometry는 후보를 만든 뒤의 보조 검증이다. 여기서는 쓰지 않는다.
-    PRESENT_SN 같은 원천 record 식별자는 ZIP:ON id와 같은 namespace라고 확인되지 않으면
-    동일성 신호가 되지 않는다(identity_comparable_id=False).
-    """
-    collisions = collisions or {}
+def name_candidates(project, records, identity_comparable_id=False):
+    """정규화 사업명(또는 공식 ID)으로 이어지는 공식 record 후보. geometry는 보지 않는다."""
     candidates = []
     key = project['normalized_name']
     raw = compact(project['project_name'])
@@ -705,6 +765,19 @@ def match(project, records, protected, collisions=None, identity_comparable_id=F
         # 자치구가 서로 다르면 이름이 같아도 같은 사업으로 보지 않는다.
         if named and 'DISTRICT_MISMATCH' not in hit:
             candidates.append({'record': record, 'signals': hit})
+    return candidates
+
+
+def match(project, records, protected, collisions=None, identity_comparable_id=False):
+    """정규화 사업명 + 자치구로 후보를 만들고, 모순이 없을 때만 EXACT로 본다.
+
+    geometry는 후보를 만든 뒤의 보조 검증이다. 여기서는 쓰지 않는다.
+    PRESENT_SN 같은 원천 record 식별자는 ZIP:ON id와 같은 namespace라고 확인되지 않으면
+    동일성 신호가 되지 않는다(identity_comparable_id=False).
+    """
+    collisions = collisions or {}
+    key = project['normalized_name']
+    candidates = name_candidates(project, records, identity_comparable_id)
     if not candidates:
         return 'NO_MATCH', None, [], '정규화 사업명으로 이어지는 공식 record가 없습니다.'
     if project['project_id'] in protected:
@@ -731,6 +804,88 @@ def match(project, records, protected, collisions=None, identity_comparable_id=F
                 '정규화 사업명은 일치하지만 공식 record에 자치구가 없어 확인이 더 필요합니다.')
     return ('PROBABLE', single, signals,
             '이름이 부분적으로만 일치해 표기 차이인지 다른 사업인지 확인이 더 필요합니다.')
+
+
+# 사업 분류(SCLAS_CL) → 계열. 코드정의표(서울플랜+ 코드정의표, 202609판)로 확인한 값만 둔다.
+LAYER_FAMILY = {'BZ101': 'SHINTONG', 'BZ102': 'REDEVELOPMENT', 'BZ103': 'REDEVELOPMENT',
+                'BZ104': 'RECONSTRUCTION', 'BZ105': 'RECONSTRUCTION',
+                'BZ107': 'HOUSING_ENVIRONMENT', 'BZ108': 'HOUSING_ENVIRONMENT',
+                'BZ201': 'MOA_TOWN', 'BZ202': 'STREET_HOUSING', 'BZ203': 'SELF_HOUSING',
+                'BZ204': 'SMALL_RECONSTRUCTION', 'BZ205': 'SMALL_REDEVELOPMENT',
+                'BZ401': 'REVITALIZATION_DISTRICT', 'BZ402': 'REVITALIZATION_ZONE'}
+# ZIP:ON 유형과 공식 계열이 서로 어긋나지 않는지. SHINTONG은 프로그램 이름이라 재개발·재건축 계열도 허용한다.
+TYPE_COMPATIBLE = {'REDEVELOPMENT': {'REDEVELOPMENT', 'REVITALIZATION_ZONE', 'REVITALIZATION_DISTRICT', 'SMALL_REDEVELOPMENT', 'SHINTONG'},
+                   'RECONSTRUCTION': {'RECONSTRUCTION', 'SMALL_RECONSTRUCTION', 'SHINTONG'},
+                   'SHINTONG': {'SHINTONG', 'REDEVELOPMENT', 'RECONSTRUCTION', 'REVITALIZATION_ZONE'}}
+DUPLICATE_IOU = 0.9
+
+
+def record_family(record):
+    code = ((record or {}).get('attributes') or {}).get('SCLAS_CL')
+    return LAYER_FAMILY.get(code, 'OTHER:%s' % code if code else None)
+
+
+def type_consistency(project_type, record):
+    """ZIP:ON 사업 유형과 공식 레이어 분류가 맞는지. 불일치는 보고만 하며 등급을 바꾸지 않는다."""
+    family = record_family(record)
+    if family is None or project_type not in TYPE_COMPATIBLE:
+        return 'UNKNOWN'
+    return 'CONSISTENT' if family in TYPE_COMPATIBLE[project_type] else 'MISMATCH'
+
+
+def layer_duplicate_evidence(candidates):
+    """같은 이름의 후보 레코드들이 같은 도형을 겹쳐 쌓은 행인지에 대한 **근거**. 병합하지 않는다.
+
+    도형 유사도(IoU)만으로 같은 사업이라고 단정하지 않는다. 결과는 사람 검토용 표시일 뿐이며
+    등급(AMBIGUOUS)은 그대로다. shapely가 없으면 None.
+    """
+    try:
+        from shapely.geometry import Polygon
+        from shapely.ops import unary_union
+    except ImportError:
+        return None
+    shapes = []
+    for item in candidates:
+        record = item['record']
+        try:
+            shapes.append((record, unary_union([Polygon(ring).buffer(0) for ring in record['outer_rings']])))
+        except Exception:
+            return None
+    if len(shapes) < 2:
+        return None
+    lowest = 1.0
+    for i in range(len(shapes)):
+        for j in range(i + 1, len(shapes)):
+            union = shapes[i][1].union(shapes[j][1]).area
+            lowest = min(lowest, shapes[i][1].intersection(shapes[j][1]).area / union if union else 0.0)
+    names = {r['normalized_name'] for r, _ in shapes}
+    return {'candidate_record_ids': [r['source_record_id'] for r, _ in shapes],
+            'candidate_names': [r['name'] for r, _ in shapes],
+            'candidate_families': [record_family(r) for r, _ in shapes],
+            'same_normalized_name': len(names) == 1,
+            'min_pairwise_iou': round(lowest, 3),
+            'looks_like_stacked_rows': len(names) == 1 and lowest >= DUPLICATE_IOU,
+            'auto_merge': False,
+            'note': '도형이 거의 같아도 자동으로 하나로 보지 않는다. 사람이 같은 사업인지 확인한다.'}
+
+
+def exact_exclusion(status, record, inside, project_type):
+    """EXACT인데 자동 반영 후보에서 빼는 이유. 기준을 더하기만 하고 줄이지 않는다.
+
+    v2에서 OFFICIAL_TYPE_MISMATCH를 추가했다: 이름이 같아도 공식 분류가 ZIP:ON 유형과 어긋나면
+    (예: 신속통합으로 알려진 사업이 공식 레이어에는 가로주택정비) 다른 사업일 수 있어 사람이 본다.
+    """
+    if status != 'EXACT':
+        return None
+    if not record['geometry_valid']:
+        return 'GEOMETRY_NOT_VALID'
+    if inside is False:
+        return 'REPRESENTATIVE_POINT_OUTSIDE_POLYGON'
+    if inside is None:
+        return 'NO_REPRESENTATIVE_POINT'
+    if type_consistency(project_type, record) == 'MISMATCH':
+        return 'OFFICIAL_TYPE_MISMATCH'
+    return None
 
 
 # --------------------------------------------------------------------------- 분석
@@ -832,20 +987,16 @@ def build(archive, projects=None, protected=None):
     for project in projects:
         status, chosen, signals, reason = match(project, survey['records'], protected,
                                                collisions, identity_id)
+        evidence = None
+        if status == 'AMBIGUOUS' and '후보가' in reason:
+            evidence = layer_duplicate_evidence(name_candidates(project, survey['records'], identity_id))
         record = (chosen or {}).get('record') if chosen else None
         inside, distance, basis = None, None, None
         if record and record['outer_rings'] and project['longitude'] is not None:
             point = (project['longitude'], project['latitude'])
             inside = contains(point, record['outer_rings'], record['hole_rings'])
             distance, basis = point_distance(project, record, survey)
-        excluded = None
-        if status == 'EXACT':
-            if not record['geometry_valid']:
-                excluded = 'GEOMETRY_NOT_VALID'
-            elif inside is False:
-                excluded = 'REPRESENTATIVE_POINT_OUTSIDE_POLYGON'
-            elif inside is None:
-                excluded = 'NO_REPRESENTATIVE_POINT'
+        excluded = exact_exclusion(status, record, inside, project['project_type'])
         rows.append({
             'zipon_project_id': project['project_id'],
             'zipon_project_name': project['project_name'],
@@ -860,6 +1011,12 @@ def build(archive, projects=None, protected=None):
             'official_normalization_rules': (record or {}).get('normalization_rules'),
             'official_type': (record or {}).get('type'),
             'match_status': status, 'match_signals': signals, 'confidence_reason': reason,
+            'duplicate_layer_evidence': evidence,
+            'review_reason_code': ('DUPLICATE_LAYER_ROWS_FOR_REVIEW'
+                                   if evidence and evidence['looks_like_stacked_rows'] else None),
+            'official_family': record_family(record) if record else None,
+            'type_consistency': type_consistency(project['project_type'], record) if record else None,
+            'normalizer_version': NAME_NORMALIZER_VERSION,
             'geometry_type': ((record or {}).get('geometry') or {}).get('type'),
             'geometry_valid': (record or {}).get('geometry_valid'),
             'geometry_validity': (record or {}).get('validity'),

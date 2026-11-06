@@ -242,7 +242,46 @@ def present_project(row):
     # 표현 전용 블록. 확인된 사실과 섞지 않고, DB 값이나 단계 판정은 바꾸지 않는다.
     project['investor_guide'] = investor_guide(project['stage_guide']['stage'])
     project['freshness'] = freshness([project.get('last_checked')])
+    project['stage_display'] = stage_display(row.get('stage_raw') or row.get('project_stage') or row.get('stage'))
+    # 날짜를 섞지 않는다. 단계 정보 수집일(카탈로그·공식 상세 수집)과 DB 반영일(갱신 작업이 DB에 쓴 시각)은 다르다.
+    # 둘 다 '공식 확인일'이 아니며, 값이 없으면 None(화면은 '미기록')으로 둔다.
+    project['data_dates'] = {'stage_collected': _day(project.get('last_checked')),
+                             'db_reflected': _day(row.get('last_verified_at'))}
     return project
+
+
+
+def _day(value):
+    text = str(value or '')[:10]
+    return text if re.fullmatch(r'\d{4}-\d{2}-\d{2}', text) else None
+
+
+# 공식 단계표(normalize_stage)에 없는 원문 단계명의 표시 계층. 법적 단계·사업 상태(lifecycle)는 바꾸지 않는다.
+# legal_stage_confirmed는 항상 False — 화면 표시용 묶음일 뿐 공식 법적 단계로 확정하지 않는다.
+STAGE_DISPLAY = {
+    '신통착수': ('SHINTONG_EARLY', '신속통합기획 초기·준비'),
+    '신통통보': ('SHINTONG_EARLY', '신속통합기획 초기·준비'),
+    '용역착수': ('SHINTONG_EARLY', '신속통합기획 초기·준비'),
+    '추진위구성': ('COMMITTEE_FORMING', '추진위원회 구성 중(승인 전)'),
+    '신통자문': ('ADVISORY', '자문 단계(심의 완료 아님)'),
+    '자문': ('ADVISORY', '자문 단계(심의 완료 아님)'),
+}
+# 뜻이 모호하거나 기존 공식 코드와 일치를 확인하지 못한 원문은 그대로 보이고 공식 확인 대상으로 남긴다.
+STAGE_NEEDS_OFFICIAL_CHECK = ('준공', '재촉', '사업인가', '인가완료', '시행자지정(신탁)', '신탁시행자지정(신탁)')
+
+
+def stage_display(raw):
+    """원문 단계명을 보존하고 표시용 이름만 정한다. 공식 단계표에 있으면 손대지 않는다."""
+    text = re.sub(r'\s+', '', raw or '')
+    base = {'raw': raw or None, 'legal_stage_confirmed': False, 'needs_official_check': False}
+    if not text:
+        return dict(base, family=None, label=None)
+    if normalize_stage(raw)['normalized_stage'] != 'UNKNOWN':
+        return dict(base, family='OFFICIAL_STAGE', label=raw, legal_stage_confirmed=True)
+    if text in STAGE_DISPLAY:
+        family, label = STAGE_DISPLAY[text]
+        return dict(base, family=family, label=label)
+    return dict(base, family='UNMAPPED', label=raw, needs_official_check=True)
 
 
 def _present_project(row):
@@ -472,34 +511,49 @@ def map_layer_of(row):
 
 # 사업의 생애주기. 단계(stage)와 별개다. 공식 종결 단계만 COMPLETED로 본다.
 # 착공/공사중은 완료가 아니다. 애매하면 UNKNOWN으로 남기고 지도에서 숨기지 않는다.
-LIFECYCLE_LABELS = {'ACTIVE': '진행 중', 'CONSTRUCTION': '공사 중', 'COMPLETED': '사업 완료',
-                    'CANCELLED': '취소·해제', 'UNKNOWN': '진행 상태 확인 중'}
-# 기본 지도에 그리는 생애주기. 앞으로 변화가 남은 사업에 집중한다.
+LIFECYCLE_LABELS = {'ACTIVE': '진행 중', 'CONSTRUCTION': '진행 중(공사)',
+                    'COMPLETED': '완료 절차(준공인가·이전고시)',
+                    'CLOSED': '정상 종료(조합 해산·청산)',
+                    'CANCELLED': '중도 종료(구역 해제·사업 취소)',
+                    'UNKNOWN': '상태 미확인'}
+# 기본 지도에 그리는 생애주기. 앞으로 변화가 남은 사업과, 상태를 확인하지 못한 사업.
 DEFAULT_LIFECYCLES = ('ACTIVE', 'CONSTRUCTION', 'UNKNOWN')
+# 공식 단계 코드(normalize_stage 결과)로만 정한다. 사업명 키워드로 정하지 않는다.
+CLOSED_STAGES = ('ASSOCIATION_DISSOLVED', 'ASSOCIATION_LIQUIDATION')
 
 
 def lifecycle(row):
-    """공식 단계에서만 생애주기를 정한다. 사업명이나 오래됐다는 이유로 완료라고 하지 않는다.
+    """공식 사업 상태와 공식 단계 코드로 생애주기를 정한다.
 
-    근거가 없으면 UNKNOWN이다. UNKNOWN은 기본 지도에서 숨기지 않는다. 확인하지 못한 것을
-    끝난 것으로 다루면, 아직 진행 중인 사업이 지도에서 조용히 사라진다.
+    우선순위: ① DB의 공식 상태가 CANCELLED(구역 해제·사업 취소) → 중도 종료
+              ② 준공인가·이전고시 → 완료 절차, 조합해산·조합청산 → 정상 종료, 착공 → 공사
+              ③ 그 밖에 공식 단계로 확인된 사업 → 진행 중
+              ④ 단계를 확인하지 못하면 DB 공식 상태, 그것도 없으면 상태 미확인(UNKNOWN, 기본 지도에 남김)
+    완료·종료 사업은 기본 지도에서 숨기기만 하고 데이터는 지우지 않는다([완료사업 보기]로 조회).
+    조합해산은 구역 해제 뒤에도 일어날 수 있어, 공식 상태가 CANCELLED면 중도 종료가 우선한다.
     """
     stored = str(row.get('lifecycle') or row.get('status') or '').strip().upper()
     stage = row.get('normalized_stage') or normalize_stage(
         row.get('stage_raw') or row.get('project_stage') or row.get('stage'))['normalized_stage']
-    from_stage = STATUS_FROM_STAGE.get(stage)
-    if from_stage:
-        code, basis = from_stage, 'OFFICIAL_TERMINAL_STAGE'
+    if stored == 'CANCELLED':
+        code, basis = 'CANCELLED', 'STORED_STATUS'
+    elif STATUS_FROM_STAGE.get(stage):
+        code, basis = STATUS_FROM_STAGE[stage], 'OFFICIAL_TERMINAL_STAGE'
+    elif stage in CLOSED_STAGES:
+        code, basis = 'CLOSED', 'OFFICIAL_TERMINAL_STAGE'
+    elif stage == 'CANCELLED':
+        code, basis = 'CANCELLED', 'OFFICIAL_STAGE'
     elif stage == 'CONSTRUCTION':
         code, basis = 'CONSTRUCTION', 'OFFICIAL_STAGE'
-    elif stored in ('COMPLETED', 'CANCELLED', 'ACTIVE', 'SUSPENDED') and stored != 'UNKNOWN':
-        # 데이터베이스가 공식 근거로 이미 정해 둔 값. 단계와 충돌하지 않을 때만 쓴다.
+    elif stage and stage != 'UNKNOWN':
+        code, basis = 'ACTIVE', 'OFFICIAL_STAGE'
+    elif stored in ('COMPLETED', 'ACTIVE', 'SUSPENDED'):
         code, basis = ('ACTIVE' if stored == 'SUSPENDED' else stored), 'STORED_STATUS'
     else:
         code, basis = 'UNKNOWN', 'UNRESOLVED'
     return {'code': code, 'label': LIFECYCLE_LABELS[code], 'basis': basis,
             'stage': stage, 'in_default_map': code in DEFAULT_LIFECYCLES,
-            'hypothesis': STATUS_HYPOTHESIS.get(stage) if code == 'UNKNOWN' else None}
+            'hypothesis': STATUS_HYPOTHESIS.get(stage) if code in ('UNKNOWN', 'CLOSED') else None}
 
 
 def boundary_layer(row):
