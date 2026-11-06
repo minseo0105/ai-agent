@@ -29,6 +29,25 @@ class RefreshError(Exception):
     pass
 
 
+def _object_missing(response):
+    """True only when Storage says the OBJECT does not exist.
+
+    Supabase Storage answers a read of a missing object with HTTP 400 and a body of
+    statusCode 404, not with a real 404. A missing bucket gives the same status code but a
+    different message; that is a configuration error and must stay one.
+    """
+    if response.status_code == 404:
+        return True
+    if response.status_code != 400:
+        return False
+    try:
+        info = response.json()
+    except ValueError:
+        return False
+    return (isinstance(info, dict) and str(info.get('statusCode')) == '404'
+            and 'object not found' in str(info.get('message', '')).lower())
+
+
 class Database:
     """ZIP credentials only. Never fall back to the Golf/shared database."""
     def __init__(self, apply=False):
@@ -76,7 +95,7 @@ class Database:
             r = self.session.request('GET' if body is None else 'POST',
                 self.url + '/storage/v1/object/zipon-official-raw/' + path,
                 headers=headers, data=body, timeout=60, allow_redirects=False)
-            if body is None and r.status_code == 404:
+            if body is None and _object_missing(r):
                 return None
             if not r.ok:
                 raise RefreshError('RAW_STORAGE_HTTP_' + str(r.status_code))

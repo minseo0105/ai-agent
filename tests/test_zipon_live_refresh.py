@@ -2,6 +2,7 @@
 import copy
 import io
 import json
+import os
 import tempfile
 import unittest
 import zipfile
@@ -10,7 +11,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from services.development_refresh import identity, decision, refresh, Database, RefreshError, validate_survey
+from services.development_refresh import identity, decision, refresh, Database, RefreshError, validate_survey, PROJECT_URL
 from services.development_sources import discover_archive, validate_zip, labeled_dates, SourceError, OfficialHTTP, collect_notices
 from services.development_stage import observation
 from services.development_collector import fetch_source_pages, build_sources
@@ -200,6 +201,62 @@ class RunnerTests(unittest.TestCase):
             result=refresh(db=db,directory=folder,apply=True,shp=False)
             self.assertEqual(result['status'],'FAILED');collect.assert_not_called()
             self.assertEqual(db.request.call_count,1)
+
+
+class StorageTests(unittest.TestCase):
+    """Supabase Storage는 없는 객체를 404가 아니라 HTTP 400(본문 statusCode 404)으로 답한다."""
+    def database(self, apply=False):
+        env={'ZIPON_IMPORT_SUPABASE_URL':PROJECT_URL,'ZIPON_IMPORT_SUPABASE_KEY':'sb_secret_test',
+             'ZIPON_REFRESH_WRITE_ENABLED':'true' if apply else ''}
+        with patch.dict(os.environ,env):
+            db=Database(apply)
+        db.session=Mock()
+        return db
+
+    def reply(self,db,status,body=None,content=b''):
+        response=Mock(status_code=status,ok=200<=status<300,content=content)
+        if body is None:
+            response.json.side_effect=ValueError('no json')
+        else:
+            response.json.return_value=body
+        db.session.request.return_value=response
+
+    def test_plain_404_means_the_object_is_missing(self):
+        db=self.database();self.reply(db,404)
+        self.assertIsNone(db.storage('state.json'))
+
+    def test_400_with_object_not_found_body_means_the_object_is_missing(self):
+        db=self.database()
+        self.reply(db,400,{'statusCode':'404','error':'not_found','message':'Object not found'})
+        self.assertIsNone(db.storage('state.json'))
+
+    def test_missing_bucket_is_a_configuration_error_not_an_empty_state(self):
+        db=self.database()
+        self.reply(db,400,{'statusCode':'404','error':'Bucket not found','message':'Bucket not found'})
+        with self.assertRaises(RefreshError) as caught:db.storage('state.json')
+        self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_400')
+
+    def test_other_400_and_unreadable_bodies_still_fail(self):
+        for body in ({'statusCode':'400','error':'Invalid','message':'Invalid key'},['x'],None):
+            db=self.database();self.reply(db,400,body)
+            with self.assertRaises(RefreshError) as caught:db.storage('state.json')
+            self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_400')
+
+    def test_authorization_failures_are_never_treated_as_missing(self):
+        for status in (401,403,500):
+            db=self.database();self.reply(db,status,{'statusCode':'404','message':'Object not found'})
+            with self.assertRaises(RefreshError) as caught:db.storage('state.json')
+            self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_'+str(status))
+
+    def test_a_failed_upload_is_not_treated_as_missing(self):
+        db=self.database(apply=True)
+        self.reply(db,400,{'statusCode':'404','error':'not_found','message':'Object not found'})
+        with self.assertRaises(RefreshError) as caught:db.storage('state.json',b'{}')
+        self.assertEqual(str(caught.exception),'RAW_STORAGE_HTTP_400')
+
+    def test_successful_read_returns_the_content(self):
+        db=self.database();self.reply(db,200,content=b'{"a":1}')
+        self.assertEqual(db.storage('state.json'),b'{"a":1}')
 
 
 if __name__=='__main__':unittest.main()
