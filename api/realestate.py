@@ -12,6 +12,7 @@ from api.access import require_admin
 from services import realestate_monitor as rm
 from services import development
 from services import development_presentation as presentation
+from services import development_detail as detail
 from services import map_providers
 from services import development_geocode as geocode
 from services import trade_geocode
@@ -339,6 +340,18 @@ async def development_map(sigungu: str | None = None, limit: int = 500,
             'location_notice': presentation.NO_LOCATION_NOTICE,
             # 검증된 경계가 없으므로 대표 좌표로 구역 내부를 판정하지 않는다.
             'inside_enabled': False}
+
+
+@router.get('/development/projects/{project_id}')
+async def development_project_detail(project_id: str):
+    """개발사업 1건의 상세(읽기 전용). 면적·세대수·고시일·출처·이력·타임라인·연결 상태.
+
+    DB·RPC를 바꾸지 않는다. 접근 범위는 /api/realestate 서비스 규칙(AccessMiddleware)을 그대로 따른다.
+    """
+    try:
+        return await run_in_threadpool(detail.project_detail, project_id)
+    except detail.DetailError as exc:
+        raise HTTPException(exc.status, exc.message)
 
 
 @router.post('/development/nearby')
