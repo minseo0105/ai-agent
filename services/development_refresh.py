@@ -350,7 +350,8 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
                     if detail_reason:
                         review_obs = obs
                         if detail_reason not in ('AMBIGUOUS_DATE','CONFLICTING_STAGE_DATES','CONFLICTING_OFFICIAL_DATES','IDENTITY_OR_FRAME_UNRESOLVED'):
-                            report['errors'].append({'source':'official_detail','code':detail_reason})
+                            report['errors'].append({'source':'official_detail','code':detail_reason,
+                                                     'project_id':record.get('project_id')})
                         # Safe candidate registration remains possible with listing evidence.
                     if detail_reason:
                         obs = {}
@@ -360,7 +361,8 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
                         obs['listing_content_hash'] = record['source']['content_hash']
                     reason = reason or decision(previous,record,obs)
                 except SourceError as exc:
-                    report['errors'].append({'source':'official_detail','code':str(exc)})
+                    report['errors'].append({'source':'official_detail','code':str(exc),
+                                             'project_id':record.get('project_id')})
             source = source_for(record,review_obs or obs)
             if reason:
                 review(db,record,source,reason,report,apply,observation=review_obs or obs)

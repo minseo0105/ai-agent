@@ -242,7 +242,36 @@ def present_project(row):
     # 표현 전용 블록. 확인된 사실과 섞지 않고, DB 값이나 단계 판정은 바꾸지 않는다.
     project['investor_guide'] = investor_guide(project['stage_guide']['stage'])
     project['freshness'] = freshness([project.get('last_checked')])
+    project['stage_display'] = stage_display(row.get('stage_raw') or row.get('project_stage') or row.get('stage'))
     return project
+
+
+# 공식 단계표(normalize_stage)에 없는 원문 단계명의 표시 계층. 법적 단계·사업 상태(lifecycle)는 바꾸지 않는다.
+# legal_stage_confirmed는 항상 False — 화면 표시용 묶음일 뿐 공식 법적 단계로 확정하지 않는다.
+STAGE_DISPLAY = {
+    '신통착수': ('SHINTONG_EARLY', '신속통합기획 초기·준비'),
+    '신통통보': ('SHINTONG_EARLY', '신속통합기획 초기·준비'),
+    '용역착수': ('SHINTONG_EARLY', '신속통합기획 초기·준비'),
+    '추진위구성': ('COMMITTEE_FORMING', '추진위원회 구성 중(승인 전)'),
+    '신통자문': ('ADVISORY', '자문 단계(심의 완료 아님)'),
+    '자문': ('ADVISORY', '자문 단계(심의 완료 아님)'),
+}
+# 뜻이 모호하거나 기존 공식 코드와 일치를 확인하지 못한 원문은 그대로 보이고 공식 확인 대상으로 남긴다.
+STAGE_NEEDS_OFFICIAL_CHECK = ('준공', '재촉', '사업인가', '인가완료', '시행자지정(신탁)', '신탁시행자지정(신탁)')
+
+
+def stage_display(raw):
+    """원문 단계명을 보존하고 표시용 이름만 정한다. 공식 단계표에 있으면 손대지 않는다."""
+    text = re.sub(r'\s+', '', raw or '')
+    base = {'raw': raw or None, 'legal_stage_confirmed': False, 'needs_official_check': False}
+    if not text:
+        return dict(base, family=None, label=None)
+    if normalize_stage(raw)['normalized_stage'] != 'UNKNOWN':
+        return dict(base, family='OFFICIAL_STAGE', label=raw, legal_stage_confirmed=True)
+    if text in STAGE_DISPLAY:
+        family, label = STAGE_DISPLAY[text]
+        return dict(base, family=family, label=label)
+    return dict(base, family='UNMAPPED', label=raw, needs_official_check=True)
 
 
 def _present_project(row):
