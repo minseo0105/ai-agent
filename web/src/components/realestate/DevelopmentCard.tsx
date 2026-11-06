@@ -2,6 +2,7 @@
 import { trackUsage } from "@/lib/analytics";
 
 import CollapsibleDetails, { DetailRow } from "./CollapsibleDetails";
+import InvestorGuide from "./InvestorGuide";
 import StageTimeline from "./StageTimeline";
 import ZiponMap, { type MapFocus } from "./ZiponMap";
 import type { DevelopmentMapPoint, DevelopmentProject, MapConfig } from "@/lib/realestate";
@@ -136,9 +137,15 @@ export default function DevelopmentCard({
           </div>
         </>
       )}
+      {!compact && <InvestorGuide guide={project.investor_guide} />}
 
       <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-subtle">
         <span>{project.stage_basis}</span>
+        {project.freshness?.stale && (
+          <span className="rounded-full bg-amber-500/15 px-2 py-0.5 font-bold text-amber-800 dark:text-amber-300">
+            {project.freshness.age_days}일 전 확인
+          </span>
+        )}
         {project.last_checked && <span>최근 확인 {project.last_checked.slice(0, 10).replace(/-/g, ".")}</span>}
         {project.distance_label && <span className="font-bold text-muted">{project.distance_label}</span>}
       </div>

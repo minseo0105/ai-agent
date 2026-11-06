@@ -121,6 +121,32 @@ export type DevelopmentMap = {
   lifecycle_counts: Record<string, number>;
   lifecycle_labels: Record<string, string>;
   default_lifecycles: string[];
+  /** 구버전 서버에는 없다. */
+  freshness?: FreshnessBlock;
+};
+
+/** 마지막 공식 확인일 기준 신선도. 날짜가 없으면 unknown이며 최신으로 보지 않는다. */
+export type FreshnessBlock = {
+  state: "fresh" | "stale" | "unknown";
+  stale: boolean | null;
+  latest: string | null;
+  age_days: number | null;
+  threshold_days: number;
+  label: string;
+};
+
+/** 단계별 일반 안내. 이 사업에서 확인된 사실이 아니며 투자 권유가 아니다. */
+export type InvestorGuideBlock = {
+  stage: string;
+  interpreted: boolean;
+  phase: string;
+  phase_label: string;
+  risk_level: "HIGH" | "MEDIUM" | "LOW" | "UNKNOWN";
+  risk_label: string;
+  risk_note: string;
+  watch_next: string[];
+  pitfalls: string[];
+  disclaimer: string;
 };
 
 export type DevelopmentImpactBlock = {
@@ -167,6 +193,9 @@ export type DevelopmentProject = {
   trust: { code: string; label: string; tone: string; note: string };
   official_source: { name: string | null; url: string | null };
   last_checked: string | null;
+  /** 구버전 서버에는 없다. */
+  investor_guide?: InvestorGuideBlock;
+  freshness?: FreshnessBlock;
   /** 매수자 관점의 단계 해석. 확인된 사실이 아니라 일반 안내다. */
   stage_guide: {
     stage: string;

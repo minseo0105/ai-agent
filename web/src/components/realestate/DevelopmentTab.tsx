@@ -10,6 +10,7 @@ import { isTransient, withColdStartRetry } from "@/lib/coldStart";
 import {
   estateApi,
   type DevelopmentMap,
+  type FreshnessBlock,
   type DevelopmentMapPoint,
   type DevelopmentProject,
   type EstateOptions,
@@ -64,6 +65,8 @@ export default function DevelopmentTab({
   const [failedDistricts, setFailedDistricts] = useState<string[]>([]);
   /** limit에 닿아 더 있을 수 있는 응답인지 */
   const [truncated, setTruncated] = useState(false);
+  /** 가장 최근 공식 확인 기준. 오래됐으면 지도 위에 알린다. */
+  const [freshness, setFreshness] = useState<FreshnessBlock | null>(null);
   const [dataRevision, setDataRevision] = useState(0);
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const lastSearch = useRef("");
@@ -109,6 +112,7 @@ export default function DevelopmentTab({
     setPoints([]);
     setFailedDistricts([]);
     setTruncated(false);
+    setFreshness(null);
     // 서버가 깨어나는 중일 수 있다. 읽기 요청이므로 잠깐 기다렸다가 다시 시도한다.
     const load = (sigungu: string | undefined) =>
       withColdStartRetry(
@@ -152,6 +156,11 @@ export default function DevelopmentTab({
         setHiddenCompleted(hidden);
         setFailedDistricts(failed.filter((d): d is string => d !== null));
         setTruncated(ok.some(([, r]) => r.truncated));
+        // 자치구별 응답 중 가장 최근 확인일을 쓴다. 수집은 25개 자치구를 함께 돌기 때문이다.
+        const known = ok.map(([, r]) => r.freshness).filter((f): f is FreshnessBlock => !!f);
+        setFreshness(known.length
+          ? known.reduce((a, b) => ((b.latest ?? "") > (a.latest ?? "") ? b : a))
+          : null);
       })
       .catch((e) => {
         if (controller.signal.aborted) return;
@@ -369,6 +378,11 @@ export default function DevelopmentTab({
       {!loading && failedDistricts.length > 0 && (
         <p className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-sm text-amber-800 dark:text-amber-300">
           {failedDistricts.join("·")}의 개발정보를 받지 못했어요. 아래 합계에는 빠져 있습니다.
+        </p>
+      )}
+      {!loading && ready && freshness && freshness.state !== "fresh" && (
+        <p role="status" className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-xs text-amber-800 dark:text-amber-300">
+          {freshness.label} 지도의 단계와 일정은 현재와 다를 수 있으니 공식 사업정보를 함께 확인해 주세요.
         </p>
       )}
       {!loading && ready && truncated && (

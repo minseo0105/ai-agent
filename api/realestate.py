@@ -310,6 +310,7 @@ async def development_map(sigungu: str | None = None, limit: int = 500,
     rows = result.get('projects') or []
     points = [presentation.map_point(row) for row in rows]
     projects = [presentation.present_project(row) for row in rows]
+    all_projects = projects
     # 기본 지도는 앞으로 변화가 남은 사업만 그린다. 완료·취소는 [완료사업 보기]에서만.
     # 판정 근거가 없는 UNKNOWN은 숨기지 않는다. 확인 못 한 것을 끝난 것으로 다루지 않는다.
     by_id = {point['project_id']: point for point in points}
@@ -323,6 +324,8 @@ async def development_map(sigungu: str | None = None, limit: int = 500,
         lifecycles[point['lifecycle']] = lifecycles.get(point['lifecycle'], 0) + 1
     return {'status': result['status'], 'reason': result['reason'], 'points': points,
             'projects': projects, 'total': len(points), 'mappable': mappable,
+            # 완료·취소로 가려진 사업까지 포함해 가장 최근 공식 확인일을 본다.
+            'freshness': presentation.freshness([p.get('last_checked') for p in all_projects]),
             'coordinateless': len(points) - mappable,
             'include_completed': include_completed,
             'lifecycle_counts': lifecycles,
