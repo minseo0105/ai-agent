@@ -663,6 +663,11 @@ class MapIntelligenceTests(unittest.TestCase):
 
 
 class MapEndpointTests(unittest.TestCase):
+    def setUp(self):
+        # 서울 전체 지도 원자료는 5분 캐시된다(2026-11-07). 테스트마다 다른 가짜 응답을 쓰므로 비운다.
+        import api.realestate as realestate_api
+        realestate_api._cache.clear()
+
     def rows(self, with_point=True):
         import binascii
         import struct
@@ -2442,6 +2447,11 @@ def whole_city_rows():
 
 class MapListConsistencyTests(unittest.TestCase):
     """목록 합계와 지도 마커 수가 API 응답과 어긋나지 않는지."""
+
+    def setUp(self):
+        # 서울 전체 지도 원자료는 5분 캐시된다(2026-11-07). 테스트마다 다른 가짜 응답을 쓰므로 비운다.
+        import api.realestate as realestate_api
+        realestate_api._cache.clear()
 
     @staticmethod
     def routed(rows, detail=()):

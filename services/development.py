@@ -2,6 +2,7 @@
 import binascii
 import math
 import struct
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from uuid import UUID
 
@@ -19,7 +20,7 @@ SEOUL_MAP_DISTRICTS = tuple(label.split(' > ', 1)[1] for label in rm.REGION_LAWD
 MAP_WORKERS = 6
 
 
-def stage_metadata(rows):
+def stage_metadata(rows, meter=None):
     """One read-only batch fills columns omitted by the spatial RPC. No SQL change."""
     ids = []
     for row in rows or []:
@@ -33,6 +34,7 @@ def stage_metadata(rows):
     metadata = {}
     for start in range(0, len(unique), STAGE_BATCH):
         chunk = unique[start:start + STAGE_BATCH]
+        _tick(meter)
         try:
             found = rm._remote_request('GET', 'development_projects', params={
                 'select':'project_id,stage,stage_raw,stage_mapping_version,source_date,notice_date,last_verified_at,field_evidence,external_id,official_authority',
@@ -82,16 +84,17 @@ def map_projects(sigungu=None, limit=500, bbox=None):
             raise ValueError('Invalid bbox')
     if not rm._using_remote_db():
         return {'status': 'unavailable', 'projects': [], 'reason': 'NOT_CONFIGURED'}
+    meter = _Meter()
     if sigungu is None:
-        rows, boundary_source, truncated = _map_rows_citywide(limit)
+        rows, boundary_source, truncated = _map_rows_citywide(limit, meter)
     else:
-        rows, boundary_source = _map_rows(sigungu, limit)
+        rows, boundary_source = _map_rows(sigungu, limit, meter)
         truncated = len(rows or []) >= limit
     if rows is None:
         return {'status': 'unavailable', 'projects': [], 'reason': 'DEVELOPMENT_UNAVAILABLE'}
     # 목록과 지도가 같은 응답을 쓰므로 단계 상세도 여기서 함께 채운다. 단계 판정 로직은
     # 건드리지 않고, 탐색 경로가 이미 쓰는 읽기 전용 배치를 그대로 재사용한다.
-    rows = stage_metadata(rows)
+    rows = stage_metadata(rows, meter)
     result = []
     for row in rows or []:
         longitude, latitude = _coordinates(row)
@@ -108,11 +111,12 @@ def map_projects(sigungu=None, limit=500, bbox=None):
     # 사실만 알린다. 서울 전체 조회가 1,000건대가 되면 이 신호가 필요하다.
     return {'status': 'ok', 'projects': result, 'reason': None,
             'bbox_filtered': bbox is not None, 'boundary_source': boundary_source,
-            'truncated': truncated}
+            'truncated': truncated, 'db_calls': meter.count}
 
 
-def _map_rows(sigungu, limit):
+def _map_rows(sigungu, limit, meter=None):
     """(행, 경계를 어디서 얻었는지). 경계 RPC가 없는 서버에서도 지도는 계속 나온다."""
+    _tick(meter)
     try:
         rows = rm._remote_request('POST', 'rpc/zipon_development_map', payload={
             'p_sigungu': sigungu, 'p_limit': limit})
@@ -121,6 +125,7 @@ def _map_rows(sigungu, limit):
         # 경계 RPC가 아직 설치되지 않은 서버. 좌표만으로 이전과 같이 그린다.
         pass
     params = {'select': MAP_COLUMNS, 'limit': limit}
+    _tick(meter)
     if sigungu:
         params['sigungu'] = 'eq.' + sigungu
     try:
@@ -130,20 +135,36 @@ def _map_rows(sigungu, limit):
     return [dict(row, boundary=None) for row in rows or []], 'NONE'
 
 
-def _map_rows_citywide(limit):
+class _Meter:
+    """한 번의 지도 조회에서 일어난 DB 요청 수(스레드 안전). 성능 로그용이며 응답에는 넣지 않는다."""
+    def __init__(self):
+        self.count = 0
+        self._lock = threading.Lock()
+
+    def tick(self):
+        with self._lock:
+            self.count += 1
+
+
+def _tick(meter):
+    if meter is not None:
+        meter.tick()
+
+
+def _map_rows_citywide(limit, meter=None):
     """서울 전체 = 자치구별 페이지의 합. (행, 경계 출처, 잘림 여부).
 
     한 구라도 실패하면 전체를 실패로 돌린다. 일부가 빠진 목록을 '서울 전체'라고 내보내지 않는다.
     25개 구에 속하지 않는 행(자치구가 비었거나 표기가 다른 행)은 REST 한 번으로 따로 받는다.
     """
     with ThreadPoolExecutor(max_workers=MAP_WORKERS) as pool:
-        pages = list(pool.map(lambda d: _map_rows(d, limit), SEOUL_MAP_DISTRICTS))
+        pages = list(pool.map(lambda d: _map_rows(d, limit, meter), SEOUL_MAP_DISTRICTS))
     if any(rows is None for rows, _ in pages):
         return None, None, False
     truncated = any(len(rows) >= limit for rows, _ in pages)
     sources = {source for _, source in pages}
     rows = [row for page, _ in pages for row in page]
-    others = _rows_outside_districts(limit)
+    others = _rows_outside_districts(limit, meter)
     if others is None:
         truncated = True  # 확인하지 못한 나머지가 있을 수 있다
     else:
@@ -160,7 +181,8 @@ def _map_rows_citywide(limit):
     return merged, ('RPC' if sources == {'RPC'} else 'NONE' if sources == {'NONE'} else 'MIXED'), truncated
 
 
-def _rows_outside_districts(limit):
+def _rows_outside_districts(limit, meter=None):
+    _tick(meter)
     quoted = ','.join('"%s"' % d for d in SEOUL_MAP_DISTRICTS)
     try:
         rows = rm._remote_request('GET', 'development_projects', params={

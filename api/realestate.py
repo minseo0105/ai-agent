@@ -1,5 +1,9 @@
 """부동산 모니터 API (services/realestate_monitor.py 래핑)."""
 
+import copy
+import json
+import logging
+import threading
 import time
 from pathlib import Path
 from typing import Literal
@@ -30,16 +34,60 @@ EVENT_TYPES = ["신규청약", "무순위청약", "신규실거래"]
 MAX_TRADE_COMBOS = 40  # 지역 × 주택유형 조합 상한 (공공데이터 호출량 보호)
 
 _cache = {}
+_key_locks = {}
+_key_locks_guard = threading.Lock()
+logger = logging.getLogger('ailab.realestate')
 
 
-def _cached(key, loader, ttl=600):
-    """청약 목록은 자주 바뀌지 않아 10분간 재사용한다."""
-    hit = _cache.get(key)
-    if hit and time.monotonic() - hit[0] < ttl:
-        return hit[1]
-    value = loader()
-    _cache[key] = (time.monotonic(), value)
-    return value
+def _key_lock(key):
+    with _key_locks_guard:
+        lock = _key_locks.get(key)
+        if lock is None:
+            lock = _key_locks[key] = threading.Lock()
+        return lock
+
+
+def _cached(key, loader, ttl=600, store_if=None, copy_value=False, on_result=None):
+    """청약 목록은 자주 바뀌지 않아 10분간 재사용한다. 지도 원자료도 같은 구조를 쓴다.
+
+    같은 키의 MISS가 동시에 오면 키별 잠금으로 한 요청만 loader를 부르고, 나머지는 잠금이 풀린 뒤
+    캐시를 다시 확인한다. 다른 키는 서로 기다리지 않는다. store_if가 False를 돌려주는 값(실패·잘림)은
+    저장하지 않는다. copy_value=True면 깊은 복사본을 돌려줘 요청이 캐시 원본을 바꾸지 못하게 한다.
+    on_result('HIT'|'MISS')로 측정 콜백을 받을 수 있다.
+    """
+    def fresh():
+        hit = _cache.get(key)
+        return hit if hit and time.monotonic() - hit[0] < ttl else None
+
+    def out(value, outcome):
+        if on_result:
+            on_result(outcome)
+        return copy.deepcopy(value) if copy_value else value
+
+    hit = fresh()
+    if hit:
+        return out(hit[1], 'HIT')
+    with _key_lock(key):   # 예외가 나도 with가 잠금을 푼다
+        hit = fresh()
+        if hit:
+            return out(hit[1], 'HIT')
+        value = loader()
+        if store_if is None or store_if(value):
+            _cache[key] = (time.monotonic(), value)
+        return out(value, 'MISS')
+
+
+MAP_CACHE_TTL = 300
+
+
+def _map_cache_key(sigungu, limit, bbox):
+    box = None if bbox is None else tuple(bbox[k] for k in ('north', 'south', 'east', 'west'))
+    # include_completed는 키에 넣지 않는다. 같은 원자료에서 필터만 다르게 건다.
+    return ('devmap', sigungu or 'ALL', limit, box)
+
+
+def _map_rows_cacheable(result):
+    return result.get('status') == 'ok' and not result.get('truncated')
 
 
 def _clean(item):
@@ -304,10 +352,26 @@ async def development_map(sigungu: str | None = None, limit: int = 500,
     if any(v is not None for v in corners) and not all(v is not None for v in corners):
         raise HTTPException(422, '지도 범위는 north·south·east·west를 함께 보내주세요.')
     bbox = None if north is None else {'north': north, 'south': south, 'east': east, 'west': west}
+    started = time.monotonic()
+    outcome = {'cache': 'BYPASS'}
     try:
-        result = await run_in_threadpool(development.map_projects, sigungu, limit, bbox)
+        if sigungu is None:
+            # 서울 전체(약 50회 DB 조회)만 원자료를 5분 캐시한다. 자치구 조회는 기존대로.
+            result = await run_in_threadpool(
+                _cached, _map_cache_key(sigungu, limit, bbox),
+                lambda: development.map_projects(sigungu, limit, bbox), MAP_CACHE_TTL,
+                _map_rows_cacheable, True, lambda o: outcome.update(cache=o))
+        else:
+            result = await run_in_threadpool(development.map_projects, sigungu, limit, bbox)
     except ValueError:
         raise HTTPException(422, '지도 범위 값이 올바르지 않습니다.')
+    # 구조화된 성능 로그. 개인정보·키·접속정보는 넣지 않는다.
+    logger.info(json.dumps({'event': 'zipon_map', 'scope': 'ALL' if sigungu is None else 'DISTRICT',
+                            'cache': outcome['cache'],
+                            'db_calls': 0 if outcome['cache'] == 'HIT' else result.get('db_calls'),
+                            'ms': round((time.monotonic() - started) * 1000, 1),
+                            'status': result.get('status'), 'truncated': bool(result.get('truncated')),
+                            'include_completed': include_completed}))
     rows = result.get('projects') or []
     points = [presentation.map_point(row) for row in rows]
     projects = [presentation.present_project(row) for row in rows]
