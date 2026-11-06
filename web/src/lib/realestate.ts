@@ -123,9 +123,11 @@ export type DevelopmentMap = {
   default_lifecycles: string[];
   /** 구버전 서버에는 없다. */
   freshness?: FreshnessBlock;
+  /** 지도 전체에서 가장 최근 DB 반영일. 없으면 null(화면은 '미기록'). 공식 확인일이 아니다. */
+  db_reflected_latest?: string | null;
 };
 
-/** 마지막 공식 확인일 기준 신선도. 날짜가 없으면 unknown이며 최신으로 보지 않는다. */
+/** 단계 정보 수집일 기준 신선도(공식 확인일 아님). 날짜가 없으면 unknown이며 최신으로 보지 않는다. */
 export type FreshnessBlock = {
   state: "fresh" | "stale" | "unknown";
   stale: boolean | null;
@@ -309,6 +311,8 @@ export type DevelopmentProject = {
   /** 구버전 서버에는 없다. */
   investor_guide?: InvestorGuideBlock;
   freshness?: FreshnessBlock;
+  /** 단계 정보 수집일과 DB 반영일. 둘 다 공식 확인일이 아니다. 없으면 null. */
+  data_dates?: { stage_collected: string | null; db_reflected: string | null };
   /** 매수자 관점의 단계 해석. 확인된 사실이 아니라 일반 안내다. */
   stage_guide: {
     stage: string;

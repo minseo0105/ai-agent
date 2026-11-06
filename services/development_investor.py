@@ -162,18 +162,18 @@ def _parse(value):
 
 
 def freshness(checked_values, *, now=None, stale_after_days=STALE_AFTER_DAYS):
-    """가장 최근 공식 확인일 기준 신선도. 읽을 수 있는 날짜가 없으면 unknown."""
+    """가장 최근 단계 정보 수집일 기준 신선도(공식 확인일이 아니다). 읽을 수 있는 날짜가 없으면 unknown."""
     now = now or datetime.now(timezone.utc)
     dates = [d for d in (_parse(v) for v in checked_values or []) if d]
     if not dates:
         return {'state': 'unknown', 'stale': None, 'latest': None, 'age_days': None,
                 'threshold_days': stale_after_days,
-                'label': '공식 확인일 정보가 없어 최신 여부를 알 수 없어요.'}
+                'label': '단계 정보 수집일이 없어 최신 여부를 알 수 없어요.'}
     latest = max(dates)
     age = max((now.date() - latest.astimezone(timezone.utc).date()).days, 0)
     stale = age > stale_after_days
     day = latest.astimezone(timezone.utc).date().isoformat()
-    label = (f'마지막 공식 확인이 {age}일 전({day})이라 최신이 아닐 수 있어요.' if stale
-             else f'마지막 공식 확인 {day} ({age}일 전)')
+    label = (f'단계 정보 수집일이 {age}일 전({day})이라 최신이 아닐 수 있어요.' if stale
+             else f'단계 정보 수집일 {day} ({age}일 전)')
     return {'state': 'stale' if stale else 'fresh', 'stale': stale, 'latest': day,
             'age_days': age, 'threshold_days': stale_after_days, 'label': label}

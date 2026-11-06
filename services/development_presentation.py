@@ -243,7 +243,17 @@ def present_project(row):
     project['investor_guide'] = investor_guide(project['stage_guide']['stage'])
     project['freshness'] = freshness([project.get('last_checked')])
     project['stage_display'] = stage_display(row.get('stage_raw') or row.get('project_stage') or row.get('stage'))
+    # 날짜를 섞지 않는다. 단계 정보 수집일(카탈로그·공식 상세 수집)과 DB 반영일(갱신 작업이 DB에 쓴 시각)은 다르다.
+    # 둘 다 '공식 확인일'이 아니며, 값이 없으면 None(화면은 '미기록')으로 둔다.
+    project['data_dates'] = {'stage_collected': _day(project.get('last_checked')),
+                             'db_reflected': _day(row.get('last_verified_at'))}
     return project
+
+
+
+def _day(value):
+    text = str(value or '')[:10]
+    return text if re.fullmatch(r'\d{4}-\d{2}-\d{2}', text) else None
 
 
 # 공식 단계표(normalize_stage)에 없는 원문 단계명의 표시 계층. 법적 단계·사업 상태(lifecycle)는 바꾸지 않는다.

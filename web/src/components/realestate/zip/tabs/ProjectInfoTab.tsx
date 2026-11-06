@@ -29,7 +29,8 @@ function ProvenanceStrip({ project, detail, loading }: { project: DevelopmentPro
     <section aria-label="데이터 출처와 기준일" className="rounded-xl border border-border bg-surface-muted/60 px-3 py-2">
       <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-[11px]">
         <div><dt className="text-subtle">출처</dt><dd className="font-semibold">{sourceName}</dd></div>
-        <div><dt className="text-subtle">최종 수집일</dt><dd className="font-semibold">{formatDate(collected)}</dd></div>
+        <div><dt className="text-subtle">단계 정보 수집일</dt><dd className="font-semibold">{formatDate(collected)}</dd></div>
+        <div><dt className="text-subtle">DB 반영일</dt><dd className="font-semibold">{project.data_dates?.db_reflected ?? "미기록"}</dd></div>
         <div><dt className="text-subtle">공식 기준일</dt><dd className="font-semibold">{loading ? "불러오는 중…" : formatDate(detail?.provenance.source_date ?? project.source_date)}</dd></div>
         <div><dt className="text-subtle">최근 고시일</dt><dd className="font-semibold">{loading ? "불러오는 중…" : formatDate(detail?.provenance.notice_date ?? project.notice_date)}</dd></div>
       </dl>

@@ -44,6 +44,8 @@ export function useZiponDevelopment(options: EstateOptions) {
   const [truncated, setTruncated] = useState(false);
   /** 가장 최근 공식 확인 기준. 오래됐으면 지도 위에 알린다. */
   const [freshness, setFreshness] = useState<FreshnessBlock | null>(null);
+  // DB 반영일(갱신 작업이 실제로 쓴 날). 공식 확인일이 아니다. 없으면 null → 화면은 '미기록'.
+  const [dbReflected, setDbReflected] = useState(null as string | null);
   const [dataRevision, setDataRevision] = useState(0);
 
   useEffect(() => {
@@ -86,6 +88,7 @@ export function useZiponDevelopment(options: EstateOptions) {
     setFailedDistricts([]);
     setTruncated(false);
     setFreshness(null);
+    setDbReflected(null);
     // 서버가 깨어나는 중일 수 있다. 읽기 요청이므로 잠깐 기다렸다가 다시 시도한다.
     const load = (sigungu: string | undefined) =>
       withColdStartRetry(
@@ -132,6 +135,7 @@ export function useZiponDevelopment(options: EstateOptions) {
         // 자치구별 응답 중 가장 최근 확인일을 쓴다. 수집은 25개 자치구를 함께 돌기 때문이다.
         const known = ok.map(([, r]) => r.freshness).filter((f): f is FreshnessBlock => !!f);
         setFreshness(known.length ? known.reduce((a, b) => ((b.latest ?? "") > (a.latest ?? "") ? b : a)) : null);
+        setDbReflected(ok.map(([, r]) => r.db_reflected_latest ?? null).filter((d): d is string => !!d).sort().pop() ?? null);
       })
       .catch((e) => {
         if (controller.signal.aborted) return;
@@ -196,7 +200,7 @@ export function useZiponDevelopment(options: EstateOptions) {
     filter, setFilter, keyword, setKeyword, stageFilter, setStageFilter, lastSearch,
     includeCompleted, setIncludeCompleted, hiddenCompleted,
     selectedId, setSelectedId, selectedRow,
-    loading, waking, error, ready, unavailable, failedDistricts, truncated, freshness,
+    loading, waking, error, ready, unavailable, failedDistricts, truncated, freshness, dbReflected,
     mappable, coordinateless, coveredDistricts, emptyDistricts, noDataForRegion,
   };
 }
