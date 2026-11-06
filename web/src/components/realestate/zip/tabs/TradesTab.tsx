@@ -31,8 +31,8 @@ export default function TradesTab({
   }
   const trades = state.data.connections.trades;
   const badge: Record<Connections["trades"]["state"], { label: string; tone: StatusTone }> = {
-    NOT_CONNECTED: { label: "연결되지 않음", tone: "off" },
-    REGIONAL_ONLY: { label: "구역 연동 전 · 지역 조회만 가능", tone: "partial" },
+    NOT_CONNECTED: { label: "미연동 · 연결되지 않음", tone: "off" },
+    REGIONAL_ONLY: { label: "이 구역 실거래 미연동 · 자치구 조회만 가능", tone: "partial" },
     CONNECTED: { label: "연결됨", tone: "ok" },
   };
   const rows: StatusRow[] = [

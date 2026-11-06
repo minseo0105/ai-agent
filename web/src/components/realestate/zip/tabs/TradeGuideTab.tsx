@@ -60,7 +60,7 @@ export default function TradeGuideTab({
 
       <FeatureStatusCard
         title="거래·권리 사전진단"
-        badge={engine === "CONNECTED" ? "연결됨" : "연결되지 않음"}
+        badge={engine === "CONNECTED" ? "연결됨" : "미연동 · 연결되지 않음"}
         badgeTone={engine === "CONNECTED" ? "ok" : "off"}
         notice="지금은 거래 가능 여부나 조합원 지위 취득 가능 여부를 판정하지 않아요. 정보가 부족한 경우에도 '거래 가능'이나 '안전한 매물'이라고 표시하지 않습니다."
         rows={[
