@@ -29,6 +29,15 @@ class RefreshError(Exception):
     pass
 
 
+def spatial_writes_enabled():
+    """Official boundary writes need their own explicit opt-in, separate from the write gate.
+
+    A verified boundary enables the INSIDE verdict, and the staging check of the PostGIS
+    predicates is a documented prerequisite. The value must be exactly 'true'.
+    """
+    return os.environ.get('ZIPON_REFRESH_SPATIAL_ENABLED') == 'true'
+
+
 def _object_missing(response):
     """True only when Storage says the OBJECT does not exist.
 
@@ -510,6 +519,9 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
                             continue
                         if not apply:
                             report['spatial'].append({'project_id':pid,'kind':'BOUNDARY','dry_run':True})
+                        elif not spatial_writes_enabled():
+                            # 검증된 경계는 구역 안(INSIDE) 판정을 켠다. 명시적으로 허용하기 전에는 쓰지 않는다.
+                            report['spatial'].append({'project_id':pid,'kind':'BOUNDARY','result':'SPATIAL_WRITES_DISABLED'})
                         elif written < limit:
                             try:
                                 result=db.request('POST','rpc/zipon_refresh_spatial',{'p_project_id':pid,'p_kind':'BOUNDARY',

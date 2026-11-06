@@ -259,4 +259,52 @@ class StorageTests(unittest.TestCase):
         self.assertEqual(db.storage('state.json'),b'{"a":1}')
 
 
+class SpatialGateTests(unittest.TestCase):
+    """공식 경계 쓰기는 별도 변수로 명시적으로 허용하기 전에는 하지 않는다."""
+    PID='22222222-2222-5222-8222-222222222222'
+
+    def test_gate_is_closed_unless_the_variable_is_exactly_true(self):
+        from services.development_refresh import spatial_writes_enabled
+        for value in (None,'','false','TRUE','1','yes',' true'):
+            env={} if value is None else {'ZIPON_REFRESH_SPATIAL_ENABLED':value}
+            with patch.dict(os.environ,env,clear=False):
+                if value is None: os.environ.pop('ZIPON_REFRESH_SPATIAL_ENABLED',None)
+                self.assertFalse(spatial_writes_enabled(),repr(value))
+        with patch.dict(os.environ,{'ZIPON_REFRESH_SPATIAL_ENABLED':'true'}):
+            self.assertTrue(spatial_writes_enabled())
+
+    def test_apply_with_the_gate_closed_never_calls_the_boundary_rpc(self):
+        import sys
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+        import analyze_seoul_polygon_source as polygons
+        import apply_zipon_polygons
+        row=dict(project(project_id=self.PID),location=None,geometry=None,revision=1,dong=None,address=None)
+        db=Mock();db.storage.return_value=None
+        db.request.return_value=True
+        db.rows.side_effect=lambda table,*a,**k:[row] if table=='development_projects' else []
+        manifest={'path':'x.zip','sha256':'a'*64,'version':'202609','unchanged':False,'downloaded':False}
+        survey={'source_crs_label':'EPSG:5174','schema':{},'schema_fingerprint':'f'*64}
+        rows=[{'zipon_project_id':self.PID,'auto_apply_candidate':True}]
+        features=[{'properties':{'zipon_project_id':self.PID},
+                   'geometry':{'type':'Polygon','coordinates':[[[127,37],[127.1,37],[127.1,37.1],[127,37]]]}}]
+        collection={'records':[],'districts':[],'runs':[]}
+        notices={'source':'official_notices','status':'SUCCEEDED','source_complete':True,
+                 'errors':[],'items':[],'seen':[],'target_aliases':[]}
+        env=dict(os.environ);env.pop('ZIPON_REFRESH_SPATIAL_ENABLED',None)
+        with tempfile.TemporaryDirectory() as folder,patch.dict(os.environ,env,clear=True),\
+             patch('services.development_refresh.collector.collect',return_value=collection),\
+             patch('services.development_refresh.collect_notices',return_value=notices),\
+             patch('services.development_refresh.acquire_archive',return_value=manifest),\
+             patch('services.development_refresh.validate_survey'),\
+             patch.object(polygons,'build',return_value=(survey,rows,features)),\
+             patch.object(polygons,'conflicted_ids',return_value=set()),\
+             patch.object(apply_zipon_polygons,'evidence_for',return_value={}):
+            report=refresh(job='weekly',apply=True,limit=5,db=db,http=Mock(objects=[]),directory=folder)
+        calls=[c for c in db.request.call_args_list if c.args[:2]==('POST','rpc/zipon_refresh_spatial')]
+        self.assertEqual(calls,[])
+        self.assertEqual(report['errors'],[])
+        self.assertEqual(report['shp']['candidates'],1)
+        self.assertEqual(report['spatial'],[{'project_id':self.PID,'kind':'BOUNDARY','result':'SPATIAL_WRITES_DISABLED'}])
+
+
 if __name__=='__main__':unittest.main()
