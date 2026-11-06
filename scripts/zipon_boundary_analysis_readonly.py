@@ -118,12 +118,109 @@ def layer_profile(archive):
             'code_table_rows': [[str(c)[:40] for c in row][:6] for row in bundle['code_table_rows'][:60]]}
 
 
+def run_match(archive, projects, normalizer):
+    """지정한 정규화 함수로 레코드와 사업 이름을 모두 정규화해 매칭한다(전역 교체 후 복구)."""
+    original = src.normalize_name
+    src.normalize_name = normalizer
+    try:
+        built = to_projects_with(projects, normalizer)
+        survey, rows, _ = src.build(archive, projects=built, protected=set())
+    finally:
+        src.normalize_name = original
+    for r in rows:
+        r['group'] = group(r['match_status'])
+    return survey, rows
+
+
+def to_projects_with(raw_rows, normalizer):
+    out = []
+    for r in raw_rows:
+        n, rules = normalizer(r['project_name'])
+        out.append({'project_id': r['project_id'], 'project_name': r['project_name'], 'normalized_name': n,
+                    'normalization_rules': rules, 'official_external_id': r.get('external_id'),
+                    'project_type': r.get('project_type'), 'program': None, 'district': r.get('sigungu'),
+                    'dong': r.get('dong'), 'address': r.get('address'), 'lot_number': None,
+                    'latitude': r.get('lat'), 'longitude': r.get('lon')})
+    return out
+
+
+def pct(n, total):
+    return round(100 * n / total, 1) if total else 0.0
+
+
+def compare(archive, raw_rows, stage_rows=None):
+    _, before = run_match(archive, raw_rows, src.normalize_name_v1)
+    _, after = run_match(archive, raw_rows, src.normalize_name)
+    total = len(after)
+
+    def counts(rows):
+        c = collections.Counter(r['group'] for r in rows)
+        review = collections.Counter(r['match_status'] for r in rows if r['group'] == 'REVIEW')
+        return {'total': len(rows), 'EXACT': c['EXACT'], 'auto_apply': sum(1 for r in rows if r['auto_apply_candidate']),
+                'REVIEW': c['REVIEW'], 'REVIEW_AMBIGUOUS': review['AMBIGUOUS'], 'REVIEW_PROBABLE': review['PROBABLE'],
+                'NO_MATCH': c['NO_MATCH'],
+                'EXACT_excluded': dict(collections.Counter(r['excluded_reason'] for r in rows if r['match_status'] == 'EXACT' and r['excluded_reason'])),
+                'review_dup_layer_rows': sum(1 for r in rows if r.get('review_reason_code'))}
+    result = {'before_v1': counts(before), 'after_v2': counts(after)}
+    for key in ('before_v1', 'after_v2'):
+        d = result[key]
+        d['pct'] = {k: pct(d[k], d['total']) for k in ('EXACT', 'auto_apply', 'REVIEW', 'NO_MATCH')}
+    by_id = {r['zipon_project_id']: r for r in before}
+    moves = collections.Counter(); samples = collections.defaultdict(list); new_exact_check = collections.Counter()
+    for r in after:
+        b = by_id[r['zipon_project_id']]
+        if b['match_status'] != r['match_status'] or b['official_source_record_id'] != r['official_source_record_id']:
+            key = '%s -> %s' % (b['match_status'], r['match_status'])
+            moves[key] += 1
+            if len(samples[key]) < 6:
+                samples[key].append({'project': r['zipon_project_name'], 'district': r['district'], 'type': r['project_type'],
+                                     'official_name': r['official_name'], 'inside': r['representative_point_inside_polygon']})
+        if r['match_status'] == 'EXACT' and b['match_status'] != 'EXACT':
+            new_exact_check['inside' if r['representative_point_inside_polygon'] else 'outside' if r['representative_point_inside_polygon'] is False else 'no_coord'] += 1
+        if b['match_status'] == 'EXACT' and r['match_status'] != 'EXACT':
+            new_exact_check['REGRESSION_exact_lost'] += 1
+    result['transitions'] = dict(moves); result['transition_samples'] = dict(samples)
+    result['newly_exact_position_check'] = dict(new_exact_check)
+    result['by_type_after'] = tabulate(after, 'project_type')
+    result['by_type_before'] = tabulate(before, 'project_type')
+    result['by_district_after'] = tabulate(after, 'district')
+    # 유형 불일치: ZIP:ON 유형 × 공식 계열(선택된 레코드가 있는 건)
+    cross = collections.Counter((r['project_type'], r['official_family']) for r in after if r['official_family'])
+    result['type_x_official_family'] = {'%s | %s' % k: v for k, v in sorted(cross.items(), key=lambda kv: -kv[1])}
+    mism = [r for r in after if r['type_consistency'] == 'MISMATCH']
+    result['type_mismatch_count'] = {'matched_with_record': sum(1 for r in after if r['official_family']), 'MISMATCH': len(mism),
+                                     'by_status': dict(collections.Counter(r['match_status'] for r in mism))}
+    result['type_mismatch_samples'] = [{'project': r['zipon_project_name'], 'district': r['district'], 'zipon_type': r['project_type'],
+                                        'official_name': r['official_name'], 'official_family': r['official_family'], 'status': r['match_status']} for r in mism[:25]]
+    # 중복 레이어(사람 검토 대상) 요약
+    dups = [r for r in after if r.get('duplicate_layer_evidence')]
+    result['duplicate_layer'] = {'ambiguous_with_evidence': len(dups),
+                                 'looks_like_stacked_rows': sum(1 for r in dups if r['duplicate_layer_evidence']['looks_like_stacked_rows']),
+                                 'same_name_but_iou_below_0.9': sum(1 for r in dups if r['duplicate_layer_evidence']['same_normalized_name'] and not r['duplicate_layer_evidence']['looks_like_stacked_rows']),
+                                 'different_names': sum(1 for r in dups if not r['duplicate_layer_evidence']['same_normalized_name']),
+                                 'auto_merged': 0}
+    if stage_rows:
+        st = {r['project_id']: r for r in stage_rows}
+        table = collections.defaultdict(collections.Counter)
+        for r in after:
+            s_ = st.get(r['zipon_project_id'], {})
+            table[s_.get('status') or '(없음)'][r['group']] += 1
+        result['status_x_match_group'] = {k: dict(v) for k, v in table.items()}
+        stage_tab = collections.defaultdict(collections.Counter)
+        for r in after:
+            stage_tab[(st.get(r['zipon_project_id'], {}).get('stage_raw') or '(없음)')][r['group']] += 1
+        result['stage_x_match_group'] = {k: dict(v) for k, v in sorted(stage_tab.items(), key=lambda kv: -sum(kv[1].values()))[:25]}
+    return result, after
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--archive', required=True)
     ap.add_argument('--projects', help='운영 SELECT 결과(JSON 또는 MCP 결과 원문)')
     ap.add_argument('--out-dir', required=True, help='저장소 밖 경로')
     ap.add_argument('--layer-only', action='store_true')
+    ap.add_argument('--compare', action='store_true', help='정규화 v1(개선 전) ↔ v2(개선 후) 비교')
+    ap.add_argument('--stage-file', help='SELECT project_id,status,stage,stage_raw 결과')
     args = ap.parse_args(argv)
     out = Path(args.out_dir).resolve()
     if ROOT in out.parents or out == ROOT:
@@ -133,6 +230,14 @@ def main(argv=None):
     (out / 'layer_profile.json').write_text(json.dumps(layer, ensure_ascii=False, indent=2), encoding='utf-8')
     if args.layer_only or not args.projects:
         print(json.dumps({k: layer[k] for k in ('records', 'fields')}, ensure_ascii=False)); return 0
+    if args.compare:
+        raw = load_export(args.projects)
+        stage = load_export(args.stage_file) if args.stage_file else None
+        result, after = compare(args.archive, raw, stage)
+        (out / 'compare_summary.json').write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+        (out / 'match_rows_v2.json').write_text(json.dumps(after, ensure_ascii=False), encoding='utf-8')
+        print(json.dumps({k: result[k] for k in ('before_v1', 'after_v2', 'transitions', 'newly_exact_position_check', 'duplicate_layer', 'type_mismatch_count')}, ensure_ascii=False, indent=1))
+        return 0
     projects = to_projects(load_export(args.projects))
     survey, rows, _features = src.build(args.archive, projects=projects, protected=set())
     summary = summarize(rows)
