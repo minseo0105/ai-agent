@@ -149,6 +149,119 @@ export type InvestorGuideBlock = {
   disclaimer: string;
 };
 
+/** 8단계 타임라인(서버 services/development_timeline.py). 공식 정보가 항상 우선한다. */
+export type TimelineStatus =
+  | "CURRENT" | "REACHED_DATED" | "REACHED_UNDATED" | "UPCOMING" | "NOT_RECORDED" | "USUALLY_SKIPPED";
+export type TimelineDate = { date: string | null; date_display: string | null; date_precision: string | null };
+export type TimelineSubItem = TimelineDate & { official_name: string; status: TimelineStatus };
+export type TimelineStep = TimelineDate & {
+  order: number;
+  key: string;
+  label: string;
+  official_names: string[];
+  status: TimelineStatus;
+  has_date: boolean;
+  applicability: "STANDARD" | "UNDEFINED";
+  meaning: string;
+  next_label: string | null;
+  questions: string[];
+  doc: { state: "PROJECT_LEVEL_ONLY"; url: string | null; note: string };
+  sub_items?: TimelineSubItem[];
+};
+export type TimelineAuxRow = TimelineDate & {
+  official_name: string;
+  label: string;
+  order_index: number;
+  is_current: boolean;
+  has_date: boolean;
+  status: TimelineStatus;
+  applicability?: "STANDARD" | "USUALLY_SKIPPED" | "UNDEFINED";
+};
+export type ProcessTimeline = {
+  verified: boolean;
+  flow: { code: "REDEVELOPMENT" | "RECONSTRUCTION" | "GENERIC"; label: string; note: string; basis: "GUIDE_RULE" };
+  guide_note: string;
+  source: { name: string | null; url: string | null; fetched_at: string | null } | null;
+  program_label: string | null;
+  current_official: { name: string | null; official_name: string | null; index: number | null; recognised: boolean; in_standard_steps: boolean };
+  steps: TimelineStep[];
+  pre_steps: TimelineAuxRow[];
+  extra_steps: TimelineAuxRow[];
+  closing_steps: TimelineAuxRow[];
+  progress: { reached: number; dated: number; total: number; phrase: string } | null;
+  closing_note: string | null;
+  unverified_note: string | null;
+};
+
+/** 서버가 요청 시점의 실제 설정·구현 여부로 계산한다. 구현되지 않은 기능은 사용 가능으로 오지 않는다. */
+export type Connections = {
+  trades: {
+    state: "NOT_CONNECTED" | "REGIONAL_ONLY" | "CONNECTED";
+    api_key_configured: boolean;
+    linked_types: string[];
+    unlinked_types: string[];
+    zone_panel: "NOT_IMPLEMENTED" | "IMPLEMENTED";
+    zone_matching: "BLOCKED_NO_VERIFIED_BOUNDARY" | "NOT_IMPLEMENTED" | "AVAILABLE";
+    coordinate_provider_configured: boolean;
+  };
+  rights_engine: { state: "NOT_CONNECTED" | "CONNECTED" };
+  listings: { state: "NOT_CONNECTED" | "CONNECTED" };
+};
+
+export type ZoneSource = {
+  name: string | null;
+  url: string | null;
+  official: boolean;
+  flagged_official: boolean;
+  collected_at: string | null;
+  verified_at: string | null;
+  validation_status: string | null;
+  document_title: string | null;
+  published_at: string | null;
+  effective_at: string | null;
+};
+export type ZoneUpdate = {
+  update_kind: string | null;
+  kind_label: string;
+  previous_stage: string | null;
+  new_stage: string | null;
+  previous_status: string | null;
+  new_status: string | null;
+  changed_fields: string[];
+  recorded_at: string | null;
+  published_at: string | null;
+  effective_at: string | null;
+};
+export type ZoneFacts = {
+  area_m2: number | null;
+  planned_units: number | null;
+  planned_floor: number | null;
+  planned_far: number | null;
+  selected_date: string | null;
+  notice_date: string | null;
+  source_date: string | null;
+  official_authority: string | null;
+  external_id: string | null;
+};
+/** 지도 목록 응답에는 없고 상세 조회에서만 오는 값. NULL은 NULL로 온다. */
+export type ZoneDetail = {
+  project: DevelopmentProject & {
+    facts: ZoneFacts;
+    boundary: { verified: boolean; source: string | null; verified_at: string | null };
+  };
+  process_timeline: ProcessTimeline;
+  sources: { state: "ok" | "unavailable"; items: ZoneSource[] };
+  recent_updates: { state: "ok" | "unavailable"; items: ZoneUpdate[] };
+  provenance: {
+    last_verified_at: string | null;
+    last_collected_at: string | null;
+    source_date: string | null;
+    notice_date: string | null;
+    generated_at: string;
+  };
+  connections: Connections;
+};
+
 export type DevelopmentImpactBlock = {
   inside: { code: string; label: string; project: string | null; notice: string | null };
   nearest: {
@@ -338,6 +451,8 @@ export const estateApi = {
         (options?.includeCompleted ? "&include_completed=true" : ""),
       options?.init,
     ),
+  developmentDetail: (projectId: string, init?: ApiInit) =>
+    request<ZoneDetail>(`/development/projects/${encodeURIComponent(projectId)}`, init),
   developmentNearby: (q: { longitude: number; latitude: number; radius_m?: number; limit?: number }) =>
     post<DevelopmentSearch & { impact: DevelopmentImpactBlock }>("/development/nearby", q),
   development: (q: { sigungu?: string; longitude?: number; latitude?: number; radius_m?: number; limit?: number }) =>
