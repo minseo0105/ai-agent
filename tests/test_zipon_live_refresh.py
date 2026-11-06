@@ -149,6 +149,27 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(result['status'],'FAILED')
             self.assertTrue(Path(folder,'report.json').is_file())
 
+    def test_unexpected_error_report_names_the_failing_line_and_missing_key(self):
+        # 예상하지 못한 오류가 'KeyError' 한 단어로만 남으면 원인을 찾을 수 없다.
+        db=Mock();db.rows.return_value=[]
+        def broken(*args,**kwargs):
+            return {'source':{}}['content_hash']
+        with tempfile.TemporaryDirectory() as folder,patch('services.development_refresh.collector.collect',side_effect=broken):
+            result=refresh(db=db,http=Mock(objects=[]),directory=folder,shp=False)
+            self.assertEqual(result['status'],'FAILED')
+            error=result['errors'][0]
+            self.assertEqual(error['code'],'KeyError')
+            self.assertEqual(error['key'],"'content_hash'")
+            self.assertRegex(error['where'],r'^test_zipon_live_refresh\.py:\d+ in broken$')
+            saved=json.loads(Path(folder,'report.json').read_text(encoding='utf-8'))
+            self.assertEqual(saved['errors'][0]['where'],error['where'])
+
+    def test_expected_errors_keep_their_plain_code_without_location(self):
+        db=Mock();db.rows.side_effect=RefreshError('DATABASE_REQUEST_FAILED')
+        with tempfile.TemporaryDirectory() as folder:
+            result=refresh(db=db,directory=folder,shp=False)
+            self.assertEqual(result['errors'],[{'code':'DATABASE_REQUEST_FAILED'}])
+
     def test_concurrent_apply_refused_before_collection_or_project_write(self):
         db=Mock();db.request.return_value=False
         with tempfile.TemporaryDirectory() as folder,patch('services.development_refresh.collector.collect') as collect:

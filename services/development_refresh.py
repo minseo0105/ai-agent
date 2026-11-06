@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import sys
+import traceback
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -515,7 +516,7 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
         report['status']='PARTIAL' if failed else 'SUCCEEDED'
     except Exception as exc:
         report['status']='FAILED'
-        report['errors'].append({'code':str(exc) if isinstance(exc,(RefreshError,SourceError)) else type(exc).__name__})
+        report['errors'].append(_error_entry(exc))
     finally:
         report['finished_at']=now()
         report['counts']['review_required'] += len(report['reviews'])
@@ -539,6 +540,24 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
                 report['errors'].append({'code':'LEASE_RELEASE_FAILED'})
         (directory/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     return report
+
+
+def _error_entry(exc):
+    """Known errors keep their plain code. An unexpected one also records where it happened.
+
+    A bare 'KeyError' cannot be diagnosed from a CI report. File:line and the missing key's
+    name are code locations and field names, never credentials or raw responses.
+    """
+    if isinstance(exc, (RefreshError, SourceError)):
+        return {'code': str(exc)}
+    entry = {'code': type(exc).__name__}
+    frames = traceback.extract_tb(exc.__traceback__)
+    if frames:
+        last = frames[-1]
+        entry['where'] = f'{Path(last.filename).name}:{last.lineno} in {last.name}'
+    if isinstance(exc, KeyError) and exc.args:
+        entry['key'] = repr(exc.args[0])[:80]
+    return entry
 
 
 def coverage(rows):
