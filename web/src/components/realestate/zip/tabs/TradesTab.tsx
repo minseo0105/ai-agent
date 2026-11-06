@@ -16,22 +16,33 @@ const MATCHING_TEXT: Record<Connections["trades"]["zone_matching"], string> = {
 const TYPES = ["아파트", "연립·다세대", "단독·다가구", "오피스텔"];
 const SHOW_LIMIT = 30;
 
-/** 네이버부동산 연결(기존 링크 그대로). 호가·시세는 사용자가 직접 확인한다. 집은 매물정보를 수집·표시하지 않는다. */
-function NaverFallback({ project, primary }: { project?: DevelopmentProject; primary: boolean }) {
+/**
+ * 네이버부동산 연결 버튼. 실거래 조회 결과와 무관하게 실거래 탭 상단에 한 번만 고정 표시한다.
+ * URL은 서버의 기존 naver_real_estate(사업 대표좌표 기반)를 그대로 쓴다. 좌표가 없으면 비활성.
+ * 네이버 매물 호가·시세는 국토부 실거래가와 다르며, 집은 네이버 매물정보를 수집·표시하지 않는다.
+ */
+export function NaverListingButton({ project }: { project?: DevelopmentProject }) {
   const naver = project?.naver_real_estate;
+  const cls = "inline-flex min-h-10 items-center rounded-xl px-3 text-xs font-bold";
   return (
-    <section aria-label="네이버부동산에서 직접 확인" className={`rounded-xl border px-3 py-2.5 ${primary ? "border-zip/40 bg-zip-soft/40" : "border-border"}`}>
-      <p className="text-xs leading-relaxed text-muted">
-        매물 호가와 시세는 네이버부동산에서 직접 확인해 주세요. 집은 네이버부동산 매물정보를 수집하지 않으며 실거래가로 표시하지 않습니다.
-      </p>
+    <section aria-label="네이버부동산 매물·시세 확인" className="sticky top-0 z-10 rounded-xl border border-border bg-surface px-3 py-2.5">
       {naver ? (
-        <a href={naver.url} target="_blank" rel="noopener noreferrer" title={naver.note}
-          className="mt-2 inline-flex min-h-10 items-center rounded-xl border border-border bg-surface px-3 text-xs font-bold text-zip hover:border-zip">
-          {naver.label} ↗
+        <a href={naver.url} target="_blank" rel="noopener noreferrer" title={naver.note} data-naver-link
+          className={`${cls} bg-zip text-white transition hover:bg-zip-strong`}>
+          네이버부동산에서 매물·시세 확인 ↗
         </a>
       ) : (
-        <p className="mt-1 text-[11px] text-subtle">이 사업은 대표 좌표가 없어 네이버부동산 위치 연결을 제공하지 않아요.</p>
+        <>
+          <button type="button" disabled aria-disabled="true" data-naver-link
+            className={`${cls} cursor-not-allowed border border-border bg-surface-muted text-subtle`}>
+            네이버부동산에서 매물·시세 확인
+          </button>
+          <p className="mt-1 text-[11px] text-subtle">위치정보가 없어 연결할 수 없습니다.</p>
+        </>
       )}
+      <p className="mt-1.5 text-[11px] leading-relaxed text-subtle">
+        네이버부동산의 매물 호가·시세는 외부 사이트 정보이며, 아래 국토교통부 실거래가(신고된 계약 금액)와 다릅니다.
+      </p>
     </section>
   );
 }
@@ -75,12 +86,9 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
   }
   if (result.status !== "OK") {
     return (
-      <>
-        <p role="status" className="rounded-xl border border-border px-3 py-2.5 text-xs font-semibold text-muted">
-          {region ? STATUS_TEXT[result.status] : "자치구 정보가 없어 실거래를 조회하지 않았어요."}
-        </p>
-        <NaverFallback project={project} primary />
-      </>
+      <p role="status" className="rounded-xl border border-border px-3 py-2.5 text-xs font-semibold text-muted">
+        {region ? STATUS_TEXT[result.status] : "자치구 정보가 없어 실거래를 조회하지 않았어요."}
+      </p>
     );
   }
   return (
@@ -107,12 +115,11 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
         </table>
       </div>
       {result.rows.length > SHOW_LIMIT && <p className="mt-1 text-[11px] text-subtle">최근 {SHOW_LIMIT}건만 표시했어요(전체 {result.rows.length}건).</p>}
-      <div className="mt-2"><NaverFallback project={project} primary={false} /></div>
     </section>
   );
 }
 
-export default function TradesTab({
+function TradesBody({
   state,
   project,
   onOpenTradeSearch,
@@ -130,7 +137,6 @@ export default function TradesTab({
         <p role="alert" className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-3 text-xs font-semibold text-amber-800 dark:text-amber-300">
           실거래 연결 상태를 확인하지 못했어요. {state.message}
         </p>
-        <NaverFallback project={project} primary />
       </div>
     );
   }
@@ -165,7 +171,7 @@ export default function TradesTab({
   }
   return (
     <div className="space-y-3">
-    {project ? <RecentTrades project={project} apiKeyConfigured={trades.api_key_configured} /> : <NaverFallback project={project} primary />}
+    {project && <RecentTrades project={project} apiKeyConfigured={trades.api_key_configured} />}
     <FeatureStatusCard
       title="실거래"
       badge={badge[trades.state].label}
@@ -179,6 +185,15 @@ export default function TradesTab({
       ]}
       action={action}
     />
+    </div>
+  );
+}
+
+export default function TradesTab(props: { state: DetailState; project?: DevelopmentProject; onOpenTradeSearch?: () => void }) {
+  return (
+    <div className="space-y-3">
+      <NaverListingButton project={props.project} />
+      <TradesBody {...props} />
     </div>
   );
 }
