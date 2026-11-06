@@ -144,7 +144,7 @@ export default function TradesTab({
     { label: "국토교통부 실거래 API 키", value: trades.api_key_configured ? "서버에 설정됨" : "설정되지 않음", tone: trades.api_key_configured ? "ok" : "off" },
     { label: "연동된 거래 유형", value: trades.linked_types.join(", ") || "없음", tone: trades.linked_types.length ? "ok" : "off" },
     { label: "연동되지 않은 유형", value: trades.unlinked_types.join(", ") || "없음", tone: trades.unlinked_types.length ? "off" : "ok" },
-    { label: "이 구역의 거래 목록", value: trades.zone_panel === "IMPLEMENTED" ? "제공" : "아직 제공하지 않음", tone: trades.zone_panel === "IMPLEMENTED" ? "ok" : "off" },
+    { label: "사업구역 단위 거래 목록", value: trades.zone_panel === "IMPLEMENTED" ? "제공" : "아직 제공하지 않음", tone: trades.zone_panel === "IMPLEMENTED" ? "ok" : "off" },
     { label: "구역 안·밖 거래 분류", value: MATCHING_TEXT[trades.zone_matching], tone: trades.zone_matching === "AVAILABLE" ? "ok" : "off" },
     { label: "거래 주소 좌표 변환", value: trades.coordinate_provider_configured ? "서버에 설정됨" : "설정되지 않음", tone: trades.coordinate_provider_configured ? "ok" : "off" },
   ];
@@ -173,7 +173,7 @@ export default function TradesTab({
       notice={notice}
       rows={rows}
       planned={[
-        "이 구역 안·인근의 실거래 목록 (구역 내부 확인 / 구역 인근 추정 / 위치 확인 불가로 구분)",
+        "사업 대표 위치 기준 반경 내 참고 거래(인근 추정 / 위치 확인 불가로 구분, 구역 내부 판정 아님)",
         "계약일·거래금액·면적·층·건축연도와 위치 정확도 표시",
         "최근 거래 추이와 지도 위 실거래 가격 마커",
       ]}

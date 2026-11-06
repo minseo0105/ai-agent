@@ -90,7 +90,7 @@ export type DevelopmentMapPoint = {
   confidence: string;
   mappable: boolean;
   /** 사업 생애주기. 단계와 별개이며 공식 종결 단계만 COMPLETED다. */
-  lifecycle: "ACTIVE" | "CONSTRUCTION" | "COMPLETED" | "CANCELLED" | "UNKNOWN";
+  lifecycle: "ACTIVE" | "CONSTRUCTION" | "COMPLETED" | "CLOSED" | "CANCELLED" | "UNKNOWN";
   lifecycle_label: string;
   lifecycle_basis: string;
   /** 기본 지도에 그리는 사업인지. 완료·취소만 false다. */

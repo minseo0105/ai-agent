@@ -627,7 +627,8 @@ class SpatialSafetyUnchangedTests(unittest.TestCase):
     def test_the_lifecycle_rule_is_unchanged(self):
         self.assertEqual(pr.lifecycle({'stage_raw': '준공인가'})['code'], 'COMPLETED')
         self.assertEqual(pr.lifecycle({'stage_raw': '착공'})['code'], 'CONSTRUCTION')
-        self.assertTrue(pr.lifecycle({'stage_raw': '조합해산'})['in_default_map'])
+        self.assertFalse(pr.lifecycle({'stage_raw': '조합해산'})['in_default_map'])
+        self.assertTrue(pr.lifecycle({'stage_raw': ''})['in_default_map'])
 
 
 class MapCardApiBehaviourTests(unittest.TestCase):
