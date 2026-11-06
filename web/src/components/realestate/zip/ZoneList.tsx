@@ -17,7 +17,7 @@ export default function ZoneList({ data, onSelect }: { data: ZiponDevelopment; o
   }, [selectedId]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-1 flex-col">
       <div className="border-b border-border px-3 py-2.5">
         <h2 className="text-sm font-extrabold">개발구역 {ready ? `${visible.length.toLocaleString("ko-KR")}건` : ""}</h2>
         <p className="mt-0.5 text-[11px] text-subtle">지도에서 구역을 누르거나 아래에서 골라 보세요.</p>

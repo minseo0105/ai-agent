@@ -10,7 +10,7 @@ import re
 
 from services.development_official import STATUS_FROM_STAGE, STATUS_HYPOTHESIS, normalize_stage
 from services.development_stage import observation, stage_view, DESCRIPTIONS
-from services.development_investor import investor_guide, freshness
+from services.development_investor import investor_guide, freshness, map_freshness
 
 
 STAGE_LABELS = {

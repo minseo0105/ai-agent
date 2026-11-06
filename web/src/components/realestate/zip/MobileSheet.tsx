@@ -31,7 +31,11 @@ export default function MobileSheet({
 
   const down = (event: PointerEvent<HTMLDivElement>) => {
     start.current = event.clientY;
-    event.currentTarget.setPointerCapture?.(event.pointerId);
+    try {
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    } catch {
+      // 일부 Android 브라우저는 포인터가 이미 끝났으면 예외를 던진다. 캡처 없이도 끌기 판정은 동작한다.
+    }
   };
   const toggle = () => onSnap(snap === "full" ? "peek" : "full");
   const up = (event: PointerEvent<HTMLDivElement>) => {
@@ -51,15 +55,18 @@ export default function MobileSheet({
       aria-modal="false"
       aria-label={label}
       data-snap={snap}
-      className={`fixed inset-x-0 bottom-0 z-40 flex flex-col rounded-t-2xl border border-b-0 border-border bg-surface shadow-[0_-8px_30px_-12px_rgba(15,23,42,.35)] transition-[height] duration-200 motion-reduce:transition-none ${
-        snap === "full" ? "h-[92svh]" : "h-[42svh]"
+      // 확장 88%(85~90% 기준), 기본 42%. svh를 모르는 브라우저(구형 Samsung Internet 등)는 vh로 떨어진다.
+      className={`fixed inset-x-0 bottom-0 z-40 flex flex-col overflow-hidden rounded-t-2xl border border-b-0 border-border bg-surface shadow-[0_-8px_30px_-12px_rgba(15,23,42,.35)] transition-[height] duration-200 motion-reduce:transition-none ${
+        snap === "full" ? "h-[88vh] supports-[height:100svh]:h-[88svh]" : "h-[42vh] supports-[height:100svh]:h-[42svh]"
       }`}
     >
+      {/* 끌기 영역: 손가락으로 잡기 쉽게 44px 이상. 위로 끌면 확장, 아래로 끌면 기본·닫기. */}
       <div
+        data-sheet-handle
         onPointerDown={down}
         onPointerUp={up}
         onPointerCancel={() => { start.current = null; }}
-        className="flex shrink-0 cursor-grab touch-none items-center justify-center py-2"
+        className="relative flex min-h-11 shrink-0 cursor-grab touch-none items-center justify-center"
       >
         <button
           type="button"
@@ -68,10 +75,17 @@ export default function MobileSheet({
             if (event.detail === 0) toggle();
           }}
           aria-label={snap === "full" ? "시트 줄이기" : "시트 펼치기"}
-          className="h-1.5 w-12 rounded-full bg-border"
-        />
+          aria-expanded={snap === "full"}
+          className="flex h-11 w-24 items-center justify-center"
+        >
+          <span aria-hidden className="h-1.5 w-12 rounded-full bg-border" />
+        </button>
+        <span aria-hidden className="pointer-events-none absolute right-3 text-[11px] font-bold text-subtle">
+          {snap === "full" ? "접기 ▾" : "펼치기 ▴"}
+        </span>
       </div>
-      <div className="min-h-0 flex-1">{children}</div>
+      {/* 내부 스크롤: 높이가 정해진 flex 열이어야 안쪽 overflow-y-auto가 동작한다. */}
+      <div data-sheet-body className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
     </div>
   );
 }
