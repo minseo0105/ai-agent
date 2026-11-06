@@ -177,3 +177,44 @@ def freshness(checked_values, *, now=None, stale_after_days=STALE_AFTER_DAYS):
              else f'단계 정보 수집일 {day} ({age}일 전)')
     return {'state': 'stale' if stale else 'fresh', 'stale': stale, 'latest': day,
             'age_days': age, 'threshold_days': stale_after_days, 'label': label}
+
+
+def map_freshness(projects, *, now=None, stale_after_days=STALE_AFTER_DAYS):
+    """지도 전체 신선도. 가장 최근 한 건이 전체를 대표하지 않게 사업별 날짜의 '중앙값'으로 판정한다.
+
+    단계 정보 수집일(카탈로그·공식 상세 수집)과 DB 반영일(갱신 작업이 실제로 쓴 날)을 따로 센다.
+    DB 반영이 일부 사업에만 있으면 '전체 N건 중 k건'으로 적고 전체 확인일처럼 쓰지 않는다.
+    """
+    now = now or datetime.now(timezone.utc)
+    projects = list(projects or [])
+    total = len(projects)
+    stage = sorted(d for d in (_parse((p.get('data_dates') or {}).get('stage_collected') or '') for p in projects) if d)
+    db = sorted(d for d in (_parse((p.get('data_dates') or {}).get('db_reflected') or '') for p in projects) if d)
+    db_part = (f' DB 반영은 전체 {total:,}건 중 {len(db):,}건(최근 {db[-1].date().isoformat()})뿐이에요.'
+               if db else f' DB 반영 기록은 아직 없어요(전체 {total:,}건).')
+    undated = total - len(stage)
+    undated_part = f' 단계 정보 수집일 기록이 없는 사업이 {undated:,}건이에요.' if undated else ''
+    if not stage:
+        return {'state': 'unknown', 'stale': None, 'latest': None, 'age_days': None, 'median': None,
+                'oldest': None, 'stage_dated': 0, 'undated': undated, 'db_reflected': len(db), 'total': total,
+                'threshold_days': stale_after_days,
+                'label': '사업별 단계 정보 수집일이 없어 최신 여부를 알 수 없어요.' + db_part}
+    # 날짜 없는 사업은 '가장 오래됨'으로 함께 센다. 날짜 있는 일부만으로 중앙값을 내면 신선도를 과대평가한다.
+    median_index = total // 2
+    if median_index < undated:
+        return {'state': 'stale', 'stale': True, 'latest': stage[-1].date().isoformat(), 'age_days': None,
+                'median': None, 'oldest': stage[0].date().isoformat(), 'stage_dated': len(stage),
+                'undated': undated, 'db_reflected': len(db), 'total': total, 'threshold_days': stale_after_days,
+                'label': (f'전체 {total:,}건 중 {undated:,}건은 단계 정보 수집일 기록이 없어 최신 여부를 확인할 수 없어요'
+                          f'(기록 있는 {len(stage):,}건의 범위 {stage[0].date().isoformat()}~{stage[-1].date().isoformat()}).')
+                         + db_part}
+    median = stage[median_index - undated]
+    age = max((now.date() - median.date()).days, 0)
+    stale = age > stale_after_days
+    day = median.date().isoformat()
+    head = (f'사업 절반 이상의 단계 정보 수집일이 {day} 이전({age}일 이상 전)이라 최신이 아닐 수 있어요.' if stale
+            else f'사업별 단계 정보 수집일 중앙값 {day} ({age}일 전).')
+    return {'state': 'stale' if stale else 'fresh', 'stale': stale, 'latest': stage[-1].date().isoformat(),
+            'age_days': age, 'median': day, 'oldest': stage[0].date().isoformat(),
+            'stage_dated': len(stage), 'undated': undated, 'db_reflected': len(db), 'total': total,
+            'threshold_days': stale_after_days, 'label': head + undated_part + db_part}

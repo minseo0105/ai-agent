@@ -186,7 +186,9 @@ export default function ZiponMap({
           scaleControl: false,
           logoControl: true,
           mapDataControl: false,
-          zoomControl: !compact,
+          // 좁은 화면(모바일·태블릿)에서는 큰 세로 줌 바가 목록·시트·버튼을 가린다. 핀치 줌이 되므로
+          // 작은 컨트롤을 오른쪽 위에 두고, SDK가 작은 스타일을 모르면 숨긴다. PC(1024px 이상)는 그대로.
+          ...zoomControlOptions(loaded, compact),
           scrollWheel: !compact,
         });
         info.current = new loaded.InfoWindow({ content: "", borderWidth: 0, disableAnchor: true });
@@ -508,4 +510,20 @@ export default function ZiponMap({
       )}
     </div>
   );
+}
+
+
+/** 줌 컨트롤 설정. 좁은 화면은 작은 스타일·오른쪽 위, 지원하지 않으면 숨긴다. */
+export function zoomControlOptions(
+  maps: { ZoomControlStyle?: Record<string, unknown>; Position: Record<string, unknown> },
+  compact: boolean,
+  narrow: boolean = typeof window !== "undefined" && !window.matchMedia("(min-width: 1024px)").matches,
+): Record<string, unknown> {
+  if (compact) return { zoomControl: false };
+  if (!narrow) return { zoomControl: true };
+  const small = maps.ZoomControlStyle?.SMALL;
+  const topRight = maps.Position?.TOP_RIGHT;
+  return small !== undefined && topRight !== undefined
+    ? { zoomControl: true, zoomControlOptions: { style: small, position: topRight } }
+    : { zoomControl: false };
 }

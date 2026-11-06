@@ -53,6 +53,8 @@ export type NaverMaps = {
   Size: new (width: number, height: number) => unknown;
   MapTypeId: { NORMAL: string; TERRAIN: string; SATELLITE: string; HYBRID: string };
   Position: Record<string, unknown>;
+  /** SDK 버전에 따라 없을 수 있다. */
+  ZoomControlStyle?: Record<string, unknown>;
   Event: {
     addListener: (target: unknown, event: string, handler: (...args: unknown[]) => void) => unknown;
     removeListener: (listener: unknown) => void;

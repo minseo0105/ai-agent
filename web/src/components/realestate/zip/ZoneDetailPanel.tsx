@@ -49,7 +49,7 @@ export default function ZoneDetailPanel({
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-1 flex-col">
       <div className="sticky top-0 z-10 border-b border-border bg-surface px-3 pb-0 pt-2.5">
         <div className="flex items-start gap-2">
           <button type="button" onClick={onBack} aria-label="목록으로 돌아가기"

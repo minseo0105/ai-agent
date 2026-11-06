@@ -2834,7 +2834,9 @@ class MapCardLinkTests(unittest.TestCase):
     def test_the_compact_map_drops_the_legend_and_bounds_reporting(self):
         self.assertIn('{!compact && (', self.map_source)
         self.assertIn('if (!compact && bounds.current)', self.map_source)
-        self.assertIn('zoomControl: !compact', self.map_source)
+        # 2026-11-07: 줌 설정은 zoomControlOptions로 옮겼다. compact는 여전히 줌 컨트롤이 없다.
+        self.assertIn('...zoomControlOptions(loaded, compact)', self.map_source)
+        self.assertIn('if (compact) return { zoomControl: false };', self.map_source)
 
 
 class CoordinateGapReviewTests(unittest.TestCase):

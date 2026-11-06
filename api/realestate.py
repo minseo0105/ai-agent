@@ -390,7 +390,8 @@ async def development_map(sigungu: str | None = None, limit: int = 500,
     return {'status': result['status'], 'reason': result['reason'], 'points': points,
             'projects': projects, 'total': len(points), 'mappable': mappable,
             # 완료·취소로 가려진 사업까지 포함해 가장 최근 공식 확인일을 본다.
-            'freshness': presentation.freshness([p.get('last_checked') for p in all_projects]),
+            # 가장 최근 한 건이 전체를 대표하지 않게 중앙값으로 판정하고, DB 반영은 건수로 적는다.
+            'freshness': presentation.map_freshness(all_projects),
             # DB 반영일(갱신 작업이 실제로 쓴 날). 없으면 None — 화면은 '미기록'.
             'db_reflected_latest': max((p['data_dates']['db_reflected'] for p in all_projects
                                         if p['data_dates']['db_reflected']), default=None),

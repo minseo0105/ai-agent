@@ -5,7 +5,7 @@ import type { ZiponDevelopment } from "./useZiponDevelopment";
 
 /** 로딩·오류·오래된 데이터·일부 실패를 서로 다른 문구로 구분해 알린다. 빈 화면과 실패를 같은 문장으로 보이지 않게 한다. */
 export default function DashboardNotices({ data }: { data: ZiponDevelopment }) {
-  const { loading, waking, error, ready, unavailable, failedDistricts, freshness, dbReflected, truncated, includeCompleted, hiddenCompleted, selectedDistricts, projects } = data;
+  const { loading, waking, error, ready, unavailable, failedDistricts, freshness, truncated, includeCompleted, hiddenCompleted, selectedDistricts, projects } = data;
   return (
     <div className="space-y-2 empty:hidden">
       {loading && <Spinner label={waking ? "서버를 깨우는 중이에요…" : "개발정보를 불러오고 있어요…"} />}
@@ -22,7 +22,7 @@ export default function DashboardNotices({ data }: { data: ZiponDevelopment }) {
       )}
       {!loading && ready && freshness && freshness.state !== "fresh" && (
         <p role="status" className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-xs text-amber-800 dark:text-amber-300">
-          {freshness.label} DB 반영일: {dbReflected ?? "미기록"}. 지도의 단계와 일정은 현재와 다를 수 있으니 공식 사업정보를 함께 확인해 주세요.
+          {freshness.label} 지도의 단계와 일정은 현재와 다를 수 있으니 공식 사업정보를 함께 확인해 주세요.
         </p>
       )}
       {!loading && ready && truncated && (

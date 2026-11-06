@@ -31,7 +31,7 @@ class DataDatesTests(unittest.TestCase):
         self.assertIn('단계 정보 수집일', info)
         self.assertIn('DB 반영일', info)
         self.assertIn('"미기록"', info)
-        self.assertIn('DB 반영일: {dbReflected ?? "미기록"}', notice)
+        self.assertNotIn('dbReflected', notice)  # 전체 DB 반영일 단일 값은 쓰지 않는다(건수로 표시)
         for src in (info, notice):
             self.assertNotIn('공식 확인일', src)
 
