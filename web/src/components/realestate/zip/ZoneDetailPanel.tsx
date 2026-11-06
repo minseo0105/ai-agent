@@ -120,7 +120,7 @@ export default function ZoneDetailPanel({
         ) : tab === "info" ? (
           <ProjectInfoTab project={project} detail={detail} detailState={detailState} retry={retry} />
         ) : tab === "trades" ? (
-          <TradesTab state={detailState} onOpenTradeSearch={onOpenTradeSearch} />
+          <TradesTab state={detailState} project={project} onOpenTradeSearch={onOpenTradeSearch} />
         ) : tab === "invest" ? (
           <InvestmentTab projectId={projectId} />
         ) : (
