@@ -777,6 +777,14 @@ def fetch_trade(
             f"{property_type} API 응답을 XML로 해석하지 못했습니다."
         ) from e
 
+    # 공공데이터포털 게이트웨이는 키·권한 오류도 HTTP 200 + <cmmMsgHeader>로 돌려준다.
+    # 이걸 놓치면 오류가 '거래 없음'으로 보인다.
+    gateway = root.find(".//cmmMsgHeader")
+    if gateway is not None:
+        err = _xml_text(gateway, "errMsg") or "UNKNOWN_ERROR"
+        reason = _xml_text(gateway, "returnReasonCode")
+        raise RuntimeError(f"{property_type} 공공데이터포털 인증 오류 {reason}: {err}")
+
     header = root.find(".//header")
     if header is not None:
         result_code = _xml_text(header, "resultCode")

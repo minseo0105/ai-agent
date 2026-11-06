@@ -26,3 +26,18 @@ test("같은 법정동만 남기고, 동을 모르면 그대로 둔다", () => {
   assert.equal(sameDong(rows, "천호동").length, 2);
   assert.equal(sameDong(rows, null).length, 3);
 });
+
+import { withoutCancelled, periodText } from "../../web/src/lib/zoneTrades.ts";
+
+test("계약 해제 건은 빼고, 해제 표시가 없으면 남긴다", () => {
+  const rows = [{ detail: { 계약해제: "O" } }, { detail: { 계약해제: " " } }, { detail: {} }, {}];
+  assert.equal(withoutCancelled(rows).length, 3);
+});
+
+test("HTTP 200 인증 오류는 거래 없음이 아니라 거부로 분류", () => {
+  assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: ["아파트 공공데이터포털 인증 오류 30: SERVICE_KEY_IS_NOT_REGISTERED_ERROR"] }), "FORBIDDEN");
+});
+
+test("조회 기준 문구는 계약년월 범위", () => {
+  assert.equal(periodText(["202611", "202610", "202609"]), "2026.09~2026.11 계약분");
+});

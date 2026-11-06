@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { estateApi, type Connections, type DevelopmentProject } from "@/lib/realestate";
-import { STATUS_TEXT, classify, recentMonths, regionLabel, sameDong, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
+import { STATUS_TEXT, classify, periodText, recentMonths, regionLabel, sameDong, withoutCancelled, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
 import FeatureStatusCard, { type StatusRow, type StatusTone } from "../FeatureStatusCard";
 import type { DetailState } from "../useZoneDetail";
 
@@ -39,6 +39,7 @@ function NaverFallback({ project, primary }: { project?: DevelopmentProject; pri
 /** 국토부 실거래 중 이 사업과 같은 법정동의 최근 거래. 구역 안 여부는 판단하지 않는다. */
 function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProject; apiKeyConfigured: boolean }) {
   const region = regionLabel(project.district);
+  const [months] = useState(() => recentMonths(new Date()));
   const [result, setResult] = useState<{ status: ZoneTradeStatus | "LOADING"; rows: ZoneTradeRow[] }>({ status: "LOADING", rows: [] });
   useEffect(() => {
     let alive = true;
@@ -50,7 +51,7 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
     (async () => {
       const rows: ZoneTradeRow[] = [];
       const errors: string[] = [];
-      for (const month of recentMonths(new Date())) {
+      for (const month of months) {
         try {
           const res = await estateApi.trades({ regions: [region], property_types: TYPES, month });
           rows.push(...res.items);
@@ -60,17 +61,17 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
         }
       }
       if (!alive) return;
-      const local = sameDong(rows, project.dong).sort((a, b) => b.date.localeCompare(a.date));
+      const local = withoutCancelled(sameDong(rows, project.dong)).sort((a, b) => b.date.localeCompare(a.date));
       setResult({ status: classify({ apiKeyConfigured, rows: local, errors }), rows: local });
     })();
     return () => {
       alive = false;
     };
-  }, [apiKeyConfigured, region, project.dong]);
+  }, [apiKeyConfigured, region, project.dong, months]);
 
   const scope = [project.district, project.dong].filter(Boolean).join(" ");
   if (result.status === "LOADING") {
-    return <p aria-busy="true" className="rounded-xl bg-surface-muted px-3 py-3 text-xs text-muted">{scope} 최근 실거래를 불러오고 있어요…</p>;
+    return <p aria-busy="true" className="rounded-xl bg-surface-muted px-3 py-3 text-xs text-muted">{scope} 동일 법정동 참고 실거래를 불러오고 있어요…</p>;
   }
   if (result.status !== "OK") {
     return (
@@ -83,10 +84,10 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
     );
   }
   return (
-    <section aria-label="같은 법정동 최근 실거래">
-      <h3 className="text-sm font-extrabold">{scope} 최근 실거래</h3>
+    <section aria-label="동일 법정동 참고 실거래">
+      <h3 className="text-sm font-extrabold">동일 법정동 참고 실거래 · {scope}</h3>
       <p className="mt-0.5 text-[11px] text-subtle">
-        국토교통부 실거래가(최근 3개월, 같은 법정동). 정비구역 안 거래인지는 판단하지 않습니다.
+        국토교통부 실거래가, {periodText(months)}, 계약 해제 건 제외. 이 사업구역 안의 거래가 아니라 같은 법정동 전체의 참고 거래입니다.
       </p>
       <div className="mt-2 max-h-80 overflow-auto rounded-xl border border-border">
         <table className="w-full text-left text-xs">

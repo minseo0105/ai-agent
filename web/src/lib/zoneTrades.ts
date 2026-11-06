@@ -6,7 +6,18 @@
  *       / EMPTY(조회는 됐지만 거래 없음) / OK(거래 있음)
  */
 export type ZoneTradeRow = { date: string; price_text: string; price_100m: number; area: number; area_basis?: string;
-  property_type: string; name: string; region: string };
+  property_type: string; name: string; region: string; detail?: Record<string, string> };
+
+/** 계약 해제(취소) 신고된 거래는 시세 참고에서 뺀다. 국토부 cdealType 값이 있으면 해제 건이다. */
+export function withoutCancelled<T extends { detail?: Record<string, string> }>(rows: T[]): T[] {
+  return rows.filter((r) => !(r.detail?.["계약해제"] ?? "").trim());
+}
+
+/** 화면에 적는 조회 기준: 계약년월(국토부 DEAL_YMD) 범위. */
+export function periodText(months: string[]): string {
+  const f = (m: string) => `${m.slice(0, 4)}.${m.slice(4)}`;
+  return months.length ? `${f(months[months.length - 1])}~${f(months[0])} 계약분` : "";
+}
 export type ZoneTradeStatus = "NOT_CONNECTED" | "FORBIDDEN" | "FAILED" | "EMPTY" | "OK";
 
 /** 최근 n개월(이번 달 포함) YYYYMM, 최신순. 국토부 신고는 늦게 올라오므로 이번 달은 비어 있을 수 있다. */
@@ -35,7 +46,7 @@ export function sameDong<T extends { region: string }>(rows: T[], dong: string |
 export function classify(input: { apiKeyConfigured: boolean; rows: unknown[]; errors: string[] }): ZoneTradeStatus {
   if (!input.apiKeyConfigured) return "NOT_CONNECTED";
   if (input.rows.length > 0) return "OK";
-  if (input.errors.some((e) => /\(403\)|403|활용신청/.test(e))) return "FORBIDDEN";
+  if (input.errors.some((e) => /\(403\)|403|활용신청|인증 오류|SERVICE_KEY/.test(e))) return "FORBIDDEN";
   if (input.errors.some((e) => /PUBLIC_DATA_API_KEY/.test(e))) return "NOT_CONNECTED";
   if (input.errors.length > 0) return "FAILED";
   return "EMPTY";
@@ -43,7 +54,7 @@ export function classify(input: { apiKeyConfigured: boolean; rows: unknown[]; er
 
 export const STATUS_TEXT: Record<ZoneTradeStatus, string> = {
   NOT_CONNECTED: "실거래 API가 연결되지 않았어요(서버에 국토교통부 실거래 API 키가 설정되지 않음).",
-  FORBIDDEN: "국토교통부 실거래 API가 거부했어요(403). 공공데이터포털에서 해당 API 활용신청이 필요해요.",
+  FORBIDDEN: "국토교통부 실거래 API가 요청을 거부했어요(403 또는 인증 오류). 공공데이터포털 활용신청·서비스키 상태 확인이 필요해요.",
   FAILED: "실거래를 지금 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",
   EMPTY: "조회 기간에 이 동의 신고된 실거래가 없어요.",
   OK: "",
