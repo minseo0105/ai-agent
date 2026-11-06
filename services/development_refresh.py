@@ -243,7 +243,9 @@ def refresh(*, job='weekly', apply=False, directory='reports/zipon-refresh', lim
             saved = db.storage('state.json')
             state = json.loads(saved) if saved else {}
         collection = collector.collect(fetch=http.get,districts=districts or collector.SEOUL_DISTRICTS)
-        report['sources'] = collection['runs']
+        # 복사본이어야 한다. 같은 목록이면 아래에서 보고서에만 붙이는 항목(모아 취소, 공지)이
+        # 수집기의 runs에도 섞여 source_url이 없는 항목이 완료 소스 집합에 들어간다.
+        report['sources'] = list(collection['runs'])
         if any(r['source']=='seoul_moa' and r['status']!='SUCCEEDED' for r in collection['runs']):
             try:
                 cancellations=collect_moa_cancellations(http)

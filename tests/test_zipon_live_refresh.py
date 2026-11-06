@@ -149,6 +149,30 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(result['status'],'FAILED')
             self.assertTrue(Path(folder,'report.json').is_file())
 
+    def test_successful_notice_collection_does_not_pollute_the_collectors_run_list(self):
+        # 보고서 전용 항목(공지·모아 취소)에는 source_url이 없다. 이것이 수집기의
+        # runs 목록에 섞이면 완료된 소스 URL 집합을 만들다가 KeyError가 난다.
+        db=Mock()
+        db.rows.side_effect=lambda table,*a,**k: []
+        runs=[{'source':'seoul_moa','source_url':'https://cleanup.seoul.go.kr/moa','status':'FAILED',
+               'source_complete':False,'errors':['SOURCE_ACCESS_DENIED']},
+              {'source':'cleanup_11740','source_url':'https://cleanup.seoul.go.kr/list','status':'SUCCEEDED',
+               'source_complete':True,'errors':[]}]
+        collection={'records':[],'districts':['강동구'],'runs':runs}
+        notices={'source':'official_notices','status':'SUCCEEDED','source_complete':True,
+                 'scope':'NEW_IDS_OR_LAST_30_DAYS','errors':[],'items':[],'seen':['1'],'target_aliases':[]}
+        with tempfile.TemporaryDirectory() as folder,\
+             patch('services.development_refresh.collector.collect',return_value=collection),\
+             patch('services.development_refresh.collect_moa_cancellations',return_value=[]),\
+             patch('services.development_refresh.collect_notices',return_value=notices):
+            report=refresh(db=db,http=Mock(objects=[]),directory=folder,shp=False)
+            # 기록되는 오류는 소스 자체의 접근 거부 하나뿐이다(코드 오류 KeyError가 아니다).
+            self.assertEqual(report['errors'],[{'source':'seoul_moa','code':'SOURCE_ACCESS_DENIED'}])
+            self.assertEqual(report['status'],'PARTIAL')  # 접근 거부는 실패가 아니라 부분 성공
+            self.assertEqual([r['source'] for r in runs],['seoul_moa','cleanup_11740'])
+            self.assertIn('official_notices',[s['source'] for s in report['sources']])
+            self.assertIn('moa_official_cancellations',[s['source'] for s in report['sources']])
+
     def test_unexpected_error_report_names_the_failing_line_and_missing_key(self):
         # 예상하지 못한 오류가 'KeyError' 한 단어로만 남으면 원인을 찾을 수 없다.
         db=Mock();db.rows.return_value=[]
