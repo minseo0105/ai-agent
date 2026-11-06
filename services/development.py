@@ -2,6 +2,7 @@
 import binascii
 import math
 import struct
+from concurrent.futures import ThreadPoolExecutor
 from uuid import UUID
 
 from services import realestate_monitor as rm
@@ -12,6 +13,10 @@ MAP_COLUMNS = ('project_id,project_name,project_type,sigungu,dong,address,stage_
 # in.() 필터는 id마다 37자를 쓴다. 서울시 전체를 한 번에 물으면 질의문자열이 5KB에
 # 가까워지고, 중간 프록시가 자르면 카드의 단계 상세가 통째로 비어버린다. 그래서 나눠 묻는다.
 STAGE_BATCH = 50
+# 서울 전체 지도는 RPC의 p_limit(최대 500) 한 번으로는 잘린다. 기존 자치구 필터를 페이지처럼 써서
+# 25개 구를 나눠 받고 합친다. DB 함수·스키마는 바꾸지 않는다.
+SEOUL_MAP_DISTRICTS = tuple(label.split(' > ', 1)[1] for label in rm.REGION_LAWD if label.startswith('서울 > '))
+MAP_WORKERS = 6
 
 
 def stage_metadata(rows):
@@ -77,7 +82,11 @@ def map_projects(sigungu=None, limit=500, bbox=None):
             raise ValueError('Invalid bbox')
     if not rm._using_remote_db():
         return {'status': 'unavailable', 'projects': [], 'reason': 'NOT_CONFIGURED'}
-    rows, boundary_source = _map_rows(sigungu, limit)
+    if sigungu is None:
+        rows, boundary_source, truncated = _map_rows_citywide(limit)
+    else:
+        rows, boundary_source = _map_rows(sigungu, limit)
+        truncated = len(rows or []) >= limit
     if rows is None:
         return {'status': 'unavailable', 'projects': [], 'reason': 'DEVELOPMENT_UNAVAILABLE'}
     # 목록과 지도가 같은 응답을 쓰므로 단계 상세도 여기서 함께 채운다. 단계 판정 로직은
@@ -99,7 +108,7 @@ def map_projects(sigungu=None, limit=500, bbox=None):
     # 사실만 알린다. 서울 전체 조회가 1,000건대가 되면 이 신호가 필요하다.
     return {'status': 'ok', 'projects': result, 'reason': None,
             'bbox_filtered': bbox is not None, 'boundary_source': boundary_source,
-            'truncated': len(rows or []) >= limit}
+            'truncated': truncated}
 
 
 def _map_rows(sigungu, limit):
@@ -119,6 +128,48 @@ def _map_rows(sigungu, limit):
     except Exception:
         return None, None
     return [dict(row, boundary=None) for row in rows or []], 'NONE'
+
+
+def _map_rows_citywide(limit):
+    """서울 전체 = 자치구별 페이지의 합. (행, 경계 출처, 잘림 여부).
+
+    한 구라도 실패하면 전체를 실패로 돌린다. 일부가 빠진 목록을 '서울 전체'라고 내보내지 않는다.
+    25개 구에 속하지 않는 행(자치구가 비었거나 표기가 다른 행)은 REST 한 번으로 따로 받는다.
+    """
+    with ThreadPoolExecutor(max_workers=MAP_WORKERS) as pool:
+        pages = list(pool.map(lambda d: _map_rows(d, limit), SEOUL_MAP_DISTRICTS))
+    if any(rows is None for rows, _ in pages):
+        return None, None, False
+    truncated = any(len(rows) >= limit for rows, _ in pages)
+    sources = {source for _, source in pages}
+    rows = [row for page, _ in pages for row in page]
+    others = _rows_outside_districts(limit)
+    if others is None:
+        truncated = True  # 확인하지 못한 나머지가 있을 수 있다
+    else:
+        rows += others
+        truncated = truncated or len(others) >= limit
+    seen, merged = set(), []
+    for row in rows:
+        key = row.get('project_id')
+        if key in seen:
+            continue
+        seen.add(key)
+        merged.append(row)
+    merged.sort(key=lambda r: (r.get('sigungu') or '', r.get('project_name') or '', str(r.get('project_id'))))
+    return merged, ('RPC' if sources == {'RPC'} else 'NONE' if sources == {'NONE'} else 'MIXED'), truncated
+
+
+def _rows_outside_districts(limit):
+    quoted = ','.join('"%s"' % d for d in SEOUL_MAP_DISTRICTS)
+    try:
+        rows = rm._remote_request('GET', 'development_projects', params={
+            'select': MAP_COLUMNS, 'limit': limit,
+            'or': '(sigungu.is.null,sigungu.not.in.(%s))' % quoted,
+            'validation_status': 'neq.REJECTED'})
+    except Exception:
+        return None
+    return [dict(row, boundary=None) for row in rows or []]
 
 
 def _coordinates(row):

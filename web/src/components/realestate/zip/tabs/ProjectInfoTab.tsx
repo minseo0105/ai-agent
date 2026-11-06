@@ -71,6 +71,15 @@ export default function ProjectInfoTab({
           <DevelopmentBadge label={project.trust.label} tone={project.trust.tone} title={project.trust.note} />
         </div>
         <p className="mt-0.5 text-[11px] text-subtle">{project.stage_basis}</p>
+        {project.stage_display && project.stage_display.label && !project.stage_display.legal_stage_confirmed && (
+          <p data-stage-display className="mt-1 rounded-lg bg-surface-muted px-2 py-1.5 text-[11px] leading-relaxed text-muted">
+            <span className="font-bold text-fg">표시 단계: {project.stage_display.label}</span>
+            {" · "}공식 원문 “{project.stage_display.raw}”
+            {project.stage_display.needs_official_check
+              ? " · 공식 단계표에 없는 표기라 확인이 필요합니다."
+              : " · 이해를 돕는 표시용 분류이며 공식 법적 단계가 아닙니다."}
+          </p>
+        )}
         {project.stage_description && <p className="mt-1 text-xs leading-relaxed text-muted">{project.stage_description}</p>}
       </section>
 

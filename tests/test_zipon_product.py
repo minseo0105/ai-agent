@@ -2443,10 +2443,22 @@ def whole_city_rows():
 class MapListConsistencyTests(unittest.TestCase):
     """목록 합계와 지도 마커 수가 API 응답과 어긋나지 않는지."""
 
+    @staticmethod
+    def routed(rows, detail=()):
+        # 서울 전체는 자치구별 RPC 페이지의 합이다(2026-11-07, 500건 한도 해소). 구별로 나눠 돌려준다.
+        def answer(method, path, **request):
+            if path == 'rpc/zipon_development_map':
+                district = request['payload']['p_sigungu']
+                return [r for r in rows if r.get('sigungu') == district]
+            if 'or' in request.get('params', {}):
+                return []
+            return list(detail)
+        return answer
+
     def call(self, rows, **kwargs):
         from api.realestate import development_map
         with patch.object(rm, '_using_remote_db', return_value=True), \
-             patch.object(rm, '_remote_request', side_effect=[rows, []]):
+             patch.object(rm, '_remote_request', side_effect=self.routed(rows)):
             return asyncio.run(development_map(**kwargs))
 
     def test_one_response_carries_both_the_list_and_the_markers(self):
@@ -2532,9 +2544,11 @@ class MapListConsistencyTests(unittest.TestCase):
                    'official_authority': 'cleanup.seoul.go.kr', 'field_evidence': {}}]
         from api.realestate import development_map
         with patch.object(rm, '_using_remote_db', return_value=True), \
-             patch.object(rm, '_remote_request', side_effect=[rows, detail]) as request:
+             patch.object(rm, '_remote_request', side_effect=self.routed(rows, detail)) as request:
             result = asyncio.run(development_map())
-        self.assertEqual(request.call_count, 2)
+        stage_batches = [c for c in request.call_args_list
+                         if c.args[1] == 'development_projects' and 'or' not in c.kwargs.get('params', {})]
+        self.assertEqual(len(stage_batches), 1)
         card = next(p for p in result['projects'] if p['project_id'] == GANGDONG_LOCATED)
         self.assertEqual(card['official_id'], 'gangdong0')
         self.assertEqual(card['official_authority'], 'cleanup.seoul.go.kr')

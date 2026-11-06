@@ -325,6 +325,14 @@ export type DevelopmentProject = {
    * 것보다 연결하지 않는 쪽이 낫기 때문이다. 형식이 확인되면 서버만 바뀌고 이 모양은
    * 그대로 쓰인다.
    */
+  /** 공식 단계표에 없는 원문 단계명의 표시용 이름. 사업 상태(lifecycle)·법적 단계를 바꾸지 않는다. */
+  stage_display?: {
+    raw: string | null;
+    label: string | null;
+    family: string | null;
+    legal_stage_confirmed: boolean;
+    needs_official_check: boolean;
+  };
   naver_real_estate: {
     url: string;
     label: string;
