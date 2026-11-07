@@ -317,6 +317,21 @@ def normalize(dataset, fetched, now=None):
 STAGE_STEPS = [label for code, label in STD_STAGES if code not in ("TRANSFER_NOTICE", "CLOSED", "PLAN_DELIBERATION")]
 
 
+def naver_link(r):
+    """검증된 주소 좌표가 있을 때만 서울과 같은 함수로 네이버부동산 지도 링크를 만든다.
+
+    특정 단지·매물이 아니라 그 좌표를 중심으로 지도를 연다. 좌표가 없거나 검증되지 않았으면 None.
+    URL·필드 모양은 서울 사업(development_presentation.naver_real_estate_link)과 같고, 안내 문구만 경기 좌표 근거로 바꾼다.
+    """
+    if not (r.get("coordinate_verified") and r.get("mappable")):
+        return None
+    from services.development_presentation import naver_real_estate_link
+    link = naver_real_estate_link({"latitude": r.get("latitude"), "longitude": r.get("longitude")})
+    if link is None:
+        return None
+    return dict(link, note="검증된 주소 좌표 위치의 Npay 부동산 지도를 새 탭에서 엽니다(특정 단지·매물이 아니에요).")
+
+
 def to_project(r):
     """경기 레코드 → 서울 사업 화면(DevelopmentProject)과 같은 모양. 모르는 값은 null·'확인 필요'로 둔다."""
     std_label = r["stage_std_label"]
@@ -343,7 +358,7 @@ def to_project(r):
         "stage_guide": None,
         "stage_display": {"raw": r["stage_raw"], "label": std_label, "family": "GYEONGGI_LIST",
                           "legal_stage_confirmed": False, "needs_official_check": True},
-        "naver_real_estate": None,
+        "naver_real_estate": naver_link(r),
         "spatial": {"code": "UNKNOWN", "label": "구역 경계 없음", "confirmed_boundary": False},
         "distance_m": None, "latitude": r["latitude"], "longitude": r["longitude"], "mappable": r["mappable"],
         "has_location": r["has_location"], "location_notice": r["location_notice"],
