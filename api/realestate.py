@@ -532,26 +532,54 @@ def _gg_collect():
     return records, meta
 
 
+GG_TYPES = {'재개발': lambda p: p['type_label'] == '재개발', '재건축': lambda p: p['type_label'] == '재건축',
+            '주거환경개선': lambda p: p['type_label'] == '주거환경개선',
+            '소규모정비': lambda p: p.get('program_label') == '소규모주택정비'}
+
+
 @router.get('/gyeonggi/projects')
 async def gyeonggi_projects(sigun: str | None = None, dataset: str | None = None, q: str | None = None,
-                            mappable_only: bool = False, limit: int = 500, offset: int = 0):
-    """경기도 정비사업 목록(공통 필드 + 출처·수집일·기준일 + 결측·중복 표시). 원본 행은 /gyeonggi/quality에서 확인."""
+                            type: str | None = None, include_completed: bool = True,
+                            mappable_only: bool = False, limit: int = 1000, offset: int = 0):
+    """경기도 정비사업 목록. 서울 사업 화면과 같은 모양(DevelopmentProject)에 경기 원본 정보(gyeonggi)를 붙인다."""
     if sigun and sigun not in gg.GYEONGGI_SIGUN:
         raise HTTPException(400, '경기도 31개 시·군 이름으로 조회해 주세요.')
     if dataset and dataset not in gg.DATASETS:
         raise HTTPException(400, f'dataset은 {", ".join(gg.DATASETS)} 중 하나예요.')
-    limit, offset = max(1, min(limit, 1000)), max(0, offset)
+    if type and type not in GG_TYPES:
+        raise HTTPException(400, f'type은 {", ".join(GG_TYPES)} 중 하나예요.')
+    limit, offset = max(1, min(limit, 2000)), max(0, offset)
     records, meta = await run_in_threadpool(_gg_collect)
-    rows = [r for r in records
-            if (not sigun or r['sigun'] == sigun) and (not dataset or r['source_dataset'] == dataset)
-            and (not mappable_only or r['mappable'])
-            and (not q or q.strip() in ' '.join(filter(None, [r['name'], r['address'], r['district'], r['dong']])))]
+    projects = [gg.to_project(r) for r in records
+                if (not sigun or r['sigun'] == sigun) and (not dataset or r['source_dataset'] == dataset)
+                and (include_completed or not r['completed']) and (not mappable_only or r['mappable'])]
+    if type:
+        projects = [p for p in projects if GG_TYPES[type](p)]
+    if q and q.strip():
+        needle = q.strip()
+        projects = [p for p in projects if needle in ' '.join(filter(None, [p['name'], p['address'], p['district'], p['dong']]))]
     return {'status': 'OK' if all(m.get('status') == 'OK' for m in meta.values()) else 'PARTIAL',
-            'total': len(rows), 'items': [gg.public_record(r) for r in rows[offset:offset + limit]],
+            'total': len(projects), 'items': projects[offset:offset + limit],
+            'completed': sum(1 for p in projects if p['completed']),
             'datasets': {k: {kk: vv for kk, vv in v.items() if kk != 'mapping'} for k, v in meta.items()},
-            'mapping_status': 'UNVERIFIED' if any((v.get('mapping') or {}).get('status') != 'VERIFIED' for v in meta.values() if v.get('mapping')) else 'VERIFIED',
-            'notes': ['과거·현재 공공데이터 기준 사업 목록이며 판매 중인 매물이 아니에요.',
+            'notes': ['경기데이터드림 목록 자료예요. 판매 중인 매물이 아니에요.',
+                      '면적·세대수·날짜는 원본 값 그대로이며 단위·형식은 확인되지 않았어요.',
                       '좌표는 검증된 주소만 표시하고, 정비구역 경계는 아직 연결하지 않았어요.']}
+
+
+@router.get('/gyeonggi/projects/{project_id}')
+async def gyeonggi_project_detail(project_id: str):
+    """경기 사업 상세(서울 상세와 같은 모양). 실거래 연결 상태는 서울과 같은 규칙(connections_for)으로 계산한다."""
+    if not project_id.startswith('gg-'):
+        raise HTTPException(422, '경기 사업 번호 형식이 올바르지 않아요.')
+    records, _ = await run_in_threadpool(_gg_collect)
+    record = next((r for r in records if r['project_id'] == project_id), None)
+    if record is None:
+        raise HTTPException(404, '해당 경기 정비사업을 찾을 수 없어요.')
+    connections = await run_in_threadpool(lambda: detail.connections_for(
+        {'geometry_verified': False}, api_status=rm.get_api_status(),
+        coordinate_provider=detail._coordinate_provider_configured()))
+    return gg.detail_for(gg.to_project(record), connections)
 
 
 @router.get('/gyeonggi/regions')

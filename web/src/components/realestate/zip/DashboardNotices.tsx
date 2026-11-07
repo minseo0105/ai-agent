@@ -21,6 +21,22 @@ export default function DashboardNotices({ data }: { data: ZiponDevelopment }) {
         </p>
       )}
       {/* 최신성 경고는 지도 하단 상태 표시줄(MapStatusBar)로 옮겼다. */}
+      {data.sido !== "서울" && data.ggStatus.state === "error" && (
+        <p role="alert" data-gg-notice="error" className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-xs font-semibold text-amber-800 dark:text-amber-300">
+          경기도 정비사업을 불러오지 못했어요({data.ggStatus.message}). 경기 사업이 없는 것이 아니라 조회에 실패한 거예요. 잠시 후 다시 시도해 주세요.
+        </p>
+      )}
+      {data.sido !== "서울" && data.ggStatus.state === "partial" && (
+        <p role="status" data-gg-notice="partial" className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-xs text-amber-800 dark:text-amber-300">
+          경기도 자료 일부를 받지 못했어요:{" "}
+          {Object.entries(data.ggStatus.datasets).filter(([, d]) => d.status !== "OK").map(([k, d]) => `${k === "general" ? "일반 정비사업" : "소규모주택정비"}(${d.code ?? d.status})`).join(", ")}. 받은 자료만 보여 줘요.
+        </p>
+      )}
+      {data.sido !== "서울" && (data.ggStatus.state === "ok" || data.ggStatus.state === "partial") && (
+        <p data-gg-notice="basis" className="rounded-xl bg-surface-muted px-3 py-2.5 text-[11px] leading-relaxed text-muted">
+          경기 사업은 경기데이터드림 목록 자료예요(판매 중 매물 아님). 원본에 기준일이 없어 수집일만 확인됐고, 검증된 좌표가 없는 사업은 지도에 표시하지 않고 목록에만 보여 줘요.
+        </p>
+      )}
       {!loading && ready && truncated && (
         <p className="rounded-xl bg-surface-muted px-3 py-2.5 text-xs text-muted">
           표시 한도에 닿아 일부만 받았어요. 지역을 선택하면 그 자치구의 사업을 모두 볼 수 있습니다.

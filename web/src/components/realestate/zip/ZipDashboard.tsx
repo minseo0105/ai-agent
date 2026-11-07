@@ -13,7 +13,8 @@ import ZoneList from "./ZoneList";
 import { useZiponDevelopment } from "./useZiponDevelopment";
 import { useZoneDetail } from "./useZoneDetail";
 
-const HASH = /^#zone=([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/;
+// 서울 사업은 UUID, 경기 사업은 gg-<데이터셋>-<16자리>(서버 services/gyeonggi_projects.py가 만든다).
+const HASH = /^#zone=([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|gg-(?:general|small)-[0-9a-f]{16})$/;
 // 데스크톱 기준. 이보다 좁으면 패널이 지도 위로 열리는 바텀시트가 된다.
 const DESKTOP = "(min-width: 1024px)";
 const PEEK_RATIO = 0.42; // MobileSheet의 peek 높이(42svh)와 같은 값

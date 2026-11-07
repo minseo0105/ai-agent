@@ -145,82 +145,99 @@ def fetch_dataset(dataset, http_get, get_secret, *, page_size=PAGE_SIZE, retries
             "fetched_at": _now().isoformat()}
 
 
-# ---------- 공통 필드 매핑(응답에서 탐지, 미검증) ----------
+# ---------- 필드 매핑(실제 응답으로 필드명 확인됨, 값 형식은 미검증) ----------
 
 def _norm(text):
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", str(text or ""))).strip()
 
 
-# (공통 필드, 정확 일치 후보, 정규식 후보). 값이 있는 첫 필드를 쓴다. 근거는 mapping에 남긴다.
-FIELD_RULES = [
-    ("sigun", ["SIGUN_NM", "시군명"], []),
-    ("sigun_code", ["SIGUN_CD"], []),
-    ("name", ["정비구역명", "사업장명", "구역명"], [r"(ZONE|DSTRCT|BIZPLC|BIZ|PRJCT|BSNS)_?NM$"]),
-    ("business_type", ["정비유형", "사업유형", "사업구분"], [r"(IMPRV|BIZ|BSNS|PRJCT)_?(TYPE|DIV|KIND|SE)(_NM)?$"]),
-    ("stage", ["현추진상황", "추진단계", "진행단계", "사업단계"], [r"(PROGRS|PRGS|STEP|STAGE|STTUS)(_NM|_DIV|_SE)?$"]),
-    ("address", ["위치", "소재지", "주소"], [r"^REFINE_LOTNO_ADDR$", r"(LOTNO|LOCPLC|LC|LOC)_?ADDR$", r"ADDR$"]),
-    ("road_address", [], [r"^REFINE_ROADNM_ADDR$", r"ROADNM_?ADDR$"]),
-    ("area_m2", ["구역면적", "면적"], [r"(ZONE|DSTRCT|BIZ)?_?AR(EA)?$"]),
-    ("base_date", ["기준일자", "데이터기준일자"], [r"(DATA_)?(STD|CRTR|BASE)_?(DE|DT|YMD)$"]),
+# 운영 서버에서 실제 응답으로 확인한 필드명(2026-11 검증). 값의 단위·날짜 형식·최신성은 검증되지 않았다.
+FIELDS = {
+    "general": {
+        "sigun": "SIGUN_NM", "name": "IMPRV_ZONE_NM", "address": "LOCPLC_ADDR", "business_type": "BIZ_TYPE_NM",
+        "stage": "BIZ_STEP_NM", "area": "ZONE_AR", "existing_households": "EXISTNG_HOUSNG_HSHLD_CNT",
+        "planned_households": "BIZ_IMPLMTN_HSHLD_CNT_TOTSUM", "implementer": "BIZ_IMPLMNTR_NM",
+    },
+    "small": {
+        "sigun": "SIGNGU_NM", "name": "BIZ_NM", "address": "DETAIL_ADDR", "stage": "PROPLSN_STEP",
+        "area": "BIZ_IMPLMTN_AR", "biz_div": "BIZ_DIV",
+    },
+}
+# 단계별 인가·고시일(원본 필드명 → 표시 이름). 값은 원문 그대로 보여 준다.
+DATE_FIELDS = {
+    "general": [("ASSOCTN_FOUND_CONFMTN_DE", "조합설립인가일"), ("BIZ_IMPLMTN_CONFMTN_DE", "사업시행인가일"),
+                ("MANAGE_DISPOSIT_CONFMTN_DE", "관리처분인가일")],
+    "small": [("ASSOCTN_FOUND_CONFMTN_LPERD", "조합설립인가"), ("BIZ_IMPLMTN_PLAN_CONFMTN_LPERD", "사업시행계획인가"),
+              ("STRCONTR_LPERD", "착공"), ("COMPLTN_LPERD", "준공")],
+}
+LABELS = {"area": "사업(구역) 면적", "existing_households": "기존 세대수", "planned_households": "계획 세대수",
+          "implementer": "사업 시행자", "biz_div": "사업구분 코드(BIZ_DIV)"}
+
+# 표준 단계(서울 stage_guide 코드와 같은 이름을 쓰되, 원본 단계명은 별도로 보관한다).
+STD_STAGES = [
+    ("CANDIDATE", "정비예정구역"), ("DESIGNATED", "정비구역 지정"), ("COMMITTEE", "추진위원회·주민합의체"),
+    ("ASSOCIATION_APPROVED", "조합설립인가"), ("PLAN_DELIBERATION", "건축심의"), ("IMPLEMENTATION_APPROVED", "사업시행(계획)인가"),
+    ("MANAGEMENT_DISPOSITION", "관리처분인가"), ("CONSTRUCTION", "착공"), ("COMPLETED", "준공"),
+    ("TRANSFER_NOTICE", "이전고시"), ("CLOSED", "청산"),
 ]
-EXCLUDE_FOR = {"name": {"SIGUN_NM"}}
-DATE_VALUE = re.compile(r"^(19|20)\d{2}[-./]?\d{2}([-./]?\d{2})?$")
-VERIFIED_MAPPING: dict = {}  # 실제 응답을 사람이 확인한 뒤 {데이터셋: {공통필드: 원본필드}}로 채운다.
+STD_LABEL = dict(STD_STAGES)
+STAGE_MAP = {
+    "general": {"예정구역": "CANDIDATE", "정비구역": "DESIGNATED", "추진위원회": "COMMITTEE", "조합설립": "ASSOCIATION_APPROVED",
+                "사업시행": "IMPLEMENTATION_APPROVED", "관리처분": "MANAGEMENT_DISPOSITION", "착공": "CONSTRUCTION",
+                "준공": "COMPLETED", "청산": "CLOSED"},
+    "small": {"주민합의체 구성": "COMMITTEE", "조합설립인가": "ASSOCIATION_APPROVED", "건축심의": "PLAN_DELIBERATION",
+              "사업시행계획인가": "IMPLEMENTATION_APPROVED", "사업시행인가": "IMPLEMENTATION_APPROVED", "착공": "CONSTRUCTION",
+              "준공": "COMPLETED", "이전고시": "TRANSFER_NOTICE"},
+}
+FINISHED = {"COMPLETED", "TRANSFER_NOTICE", "CLOSED"}
+
+
+def standard_stage(dataset, raw):
+    """원본 단계명 → 표준 단계 코드. 표에 없는 값·빈 값은 UNKNOWN(추정하지 않음)."""
+    key = re.sub(r"\s+", " ", _norm(raw))
+    code = STAGE_MAP[dataset].get(key) or STAGE_MAP[dataset].get(key.replace(" ", ""))
+    return code or "UNKNOWN"
 
 
 def detect_mapping(rows, dataset=None):
+    """확인된 필드명이 실제 응답에 있는지 본다. 없는 필드는 missing_fields로 보고하고 다른 필드로 대신하지 않는다."""
     fields = []
     for row in rows:
         for k in row:
             if k not in fields:
                 fields.append(k)
-    verified = VERIFIED_MAPPING.get(dataset or "", {})
-    mapping, basis = {}, {}
-    for common, exact, patterns in FIELD_RULES:
-        if common in verified and verified[common] in fields:
-            mapping[common], basis[common] = verified[common], "VERIFIED"
-            continue
-        found = next((f for f in exact if f in fields), None)
-        if not found:
-            for pattern in patterns:
-                found = next((f for f in fields if re.search(pattern, f, re.I)
-                              and f not in EXCLUDE_FOR.get(common, set())
-                              and f not in mapping.values()), None)
-                if found:
-                    break
-        if found:
-            mapping[common], basis[common] = found, "DETECTED"
-    # 날짜처럼 보이는 값이 들어 있는 원본 필드(인가일 등). 해석하지 않고 원본 필드명 그대로 보여 준다.
-    date_fields = [f for f in fields if f not in mapping.values()
-                   and any(DATE_VALUE.match(_norm(r.get(f))) for r in rows if r.get(f))]
-    status = "VERIFIED" if basis and all(v == "VERIFIED" for v in basis.values()) else "UNVERIFIED"
-    return {"fields": fields, "mapping": mapping, "basis": basis, "date_fields": date_fields,
-            "unmapped": [f for f in fields if f not in mapping.values() and f not in date_fields],
-            "status": status}
+    spec = FIELDS.get(dataset or "", {})
+    dates = [f for f, _ in DATE_FIELDS.get(dataset or "", [])]
+    mapping = {k: v for k, v in spec.items() if v in fields}
+    expected = list(spec.values()) + dates
+    missing = [f for f in expected if f not in fields]
+    return {"fields": fields, "mapping": mapping, "basis": {k: "VERIFIED_NAME" for k in mapping},
+            "date_fields": [f for f in dates if f in fields], "missing_fields": missing,
+            "unmapped": [f for f in fields if f not in expected],
+            "status": "VERIFIED_NAMES" if not missing else "FIELDS_MISSING"}
 
 
-def _sigungu(address, sigun):
-    """주소에서 '수원시 팔달구'처럼 시·구를, 그리고 읍·면·동·리·가를 뽑는다. 못 찾으면 None."""
-    text = _norm(address)
-    tokens = text.replace("경기도", " ").split()
-    gu = next((t for t in tokens if re.fullmatch(r"[가-힣]+구", t)), None)
-    dong = next((t for t in tokens if re.fullmatch(r"[가-힣0-9]+(동|읍|면|리|가)", t)
-                 and t != sigun and not t.endswith("시")), None)
-    return (f"{sigun} {gu}" if sigun and gu else sigun), dong
+def split_region(value, address=None):
+    """'수원시 장안구'·'광명시' 같은 시군구 값(없으면 주소) → (시군, 시군구). 31개 시군으로 확인되지 않으면 시군 None."""
+    texts = [_norm(value), _norm(address).replace("경기도", "").strip() if address else ""]
+    sigun = next((s for t in texts for s in GYEONGGI_SIGUN if t == s or t.startswith(s + " ") or t.startswith(s)), None)
+    if not sigun:
+        return None, None
+    gu = None
+    for t in texts:
+        if t.startswith(sigun):
+            m = re.match(r"\s*([가-힣]+구)(?:\s|$)", t[len(sigun):])
+            if m:
+                gu = m.group(1)
+                break
+    return sigun, f"{sigun} {gu}" if gu else sigun
 
 
-def _to_float(value):
-    try:
-        return float(str(value).replace(",", "").strip())
-    except (TypeError, ValueError):
-        return None
-
-
-def _name_key(text):
-    text = _norm(text)
-    text = re.sub(r"\(.*?\)", "", text)
-    text = re.sub(r"(주택|재개발|재건축|정비|사업|구역|지구|일대|조합|가로|소규모|아파트|\s)", "", text)
-    return text
+def _dong(address):
+    for t in _norm(address).split():
+        if re.fullmatch(r"[가-힣0-9]+(동|읍|면|리|가)", t) and not t.endswith("시"):
+            return t
+    return None
 
 
 def _parse_date(value):
@@ -230,54 +247,141 @@ def _parse_date(value):
     return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3) or 1), tzinfo=timezone.utc)
 
 
+def _name_key(text):
+    text = _norm(text)
+    text = re.sub(r"\(.*?\)", "", text)
+    text = re.sub(r"(주택|재개발|재건축|정비|사업|구역|지구|일대|조합|가로|소규모|아파트|\s)", "", text)
+    return text
+
+
 def normalize(dataset, fetched, now=None):
-    """원본 행 → 서울 사업과 같은 이름의 공통 필드 + 원본 보존 + 결측·중복 표시."""
+    """원본 행 → 공통 필드 + 원본 보존. 원본에 없는 값은 만들지 않고, 값 형식이 미검증인 항목은 원문 문자열로 둔다."""
     spec, rows = DATASETS[dataset], fetched["rows"]
     detected = detect_mapping(rows, dataset)
-    m = detected["mapping"]
-    now = now or _now()
+    f = FIELDS[dataset]
     out = []
     for row in rows:
-        get = lambda k: _norm(row.get(m[k])) if k in m and row.get(m[k]) not in (None, "") else None
-        sigun = get("sigun")
-        address = get("address") or get("road_address")
-        sigungu, dong = _sigungu(address, sigun) if address else (sigun, None)
-        base = get("base_date")
-        base_dt = _parse_date(base) if base else None
-        identity = "|".join([dataset, sigun or "", get("name") or "", address or ""])
+        def get(key):
+            name = f.get(key)
+            value = row.get(name) if name else None
+            return _norm(value) if value not in (None, "") and _norm(value) else None
+        address = get("address")
+        sigun, district = split_region(get("sigun"), address)
+        stage_raw = get("stage")
+        std = standard_stage(dataset, stage_raw)
+        identity = "|".join([dataset, get("sigun") or "", get("name") or "", address or ""])
+        values = [{"key": k, "label": LABELS[k], "value": get(k), "source_field": f[k]}
+                  for k in ("area", "existing_households", "planned_households", "implementer", "biz_div") if k in f]
+        dates = [{"label": label, "value": _norm(row.get(field)) or None, "source_field": field}
+                 for field, label in DATE_FIELDS[dataset]]
         record = {
-            "project_id": "gg:" + dataset + ":" + hashlib.sha1(identity.encode()).hexdigest()[:16],
+            "project_id": "gg-" + dataset + "-" + hashlib.sha1(identity.encode()).hexdigest()[:16],
             "name": get("name"),
-            "type_label": get("business_type"),  # 원본 표기 그대로(재개발·재건축·가로주택정비 등)
-            "program_label": spec["default_program"],  # 정책·계획 유형. 일반 정비사업은 원본에 없으면 비운다.
+            # 일반 정비사업은 원본 BIZ_TYPE_NM(재건축·재개발·주거환경개선)을 그대로 쓴다.
+            # 소규모는 BIZ_DIV 코드의 공식 의미가 확인되지 않아 세부 유형으로 바꾸지 않는다.
+            "type_label": get("business_type") if dataset == "general" else "소규모주택정비",
+            "program_label": spec["default_program"],
+            "biz_div": get("biz_div") if dataset == "small" else None,
             "sido": "경기도",
-            "district": sigungu,
             "sigun": sigun,
-            "dong": dong,
+            "sigungu_raw": get("sigun"),
+            "district": district,
+            "dong": _dong(address) if address else None,
             "address": address,
-            "stage": {"label": get("stage"), "official_text": get("stage")},
-            "stage_dates": {f: _norm(row.get(f)) for f in detected["date_fields"] if row.get(f)},
-            "area_m2": _to_float(get("area_m2")),
-            "latitude": None, "longitude": None, "mappable": False, "has_location": False,
+            "stage_raw": stage_raw,
+            "stage_std": std,
+            "stage_std_label": STD_LABEL.get(std),
+            "completed": std in FINISHED,
+            "values": values,
+            "stage_dates": dates,
+            "latitude": None, "longitude": None, "mappable": False, "has_location": False, "coordinate_verified": False,
             "location_notice": "검증된 주소 좌표가 아직 없어 지도에 표시하지 않아요." if address else "주소가 없어 지도에 표시할 수 없어요.",
-            "coordinate_verified": False,
             "official_source": {"name": spec["title"], "provider": spec["provider"], "url": spec["url"],
                                 "data_go_kr": spec["data_go_kr"], "service": spec["service"]},
             "collected_at": fetched["fetched_at"],
-            "source_base_date": base,
-            "needs_refresh": (base_dt is None) or (now - base_dt > timedelta(days=STALE_DAYS)),
-            "freshness_note": ("원본 기준일 필드를 확인하지 못했어요(수집일만 확인됨)." if base is None
-                               else ("원본 기준일이 1년 넘게 지나 최신 정보 확인이 필요해요." if base_dt and now - base_dt > timedelta(days=STALE_DAYS) else None)),
-            "boundary": None,  # 공식 정비구역 경계 미연결
+            "source_base_date": None,
+            "needs_refresh": True,
+            "freshness_note": "원본에 데이터 기준일 필드가 없어 수집일만 확인됐어요. 최신 단계는 시군 공고로 확인해 주세요.",
+            "boundary": None,
             "mapping_status": detected["status"],
             "source_dataset": dataset,
             "raw": dict(row),
         }
-        record["missing"] = [k for k in ("name", "sigun", "type_label", "address") if not record[k]] + \
-            ([] if record["stage"]["label"] else ["stage"])
+        record["missing"] = [k for k in ("name", "sigun", "address") if not record[k]] + \
+            ([] if record["type_label"] else ["type_label"]) + ([] if stage_raw else ["stage"])
         record["sigun_valid"] = sigun in GYEONGGI_SIGUN
         out.append(record)
     return out, detected
+
+
+STAGE_STEPS = [label for code, label in STD_STAGES if code not in ("TRANSFER_NOTICE", "CLOSED", "PLAN_DELIBERATION")]
+
+
+def to_project(r):
+    """경기 레코드 → 서울 사업 화면(DevelopmentProject)과 같은 모양. 모르는 값은 null·'확인 필요'로 둔다."""
+    std_label = r["stage_std_label"]
+    index = STAGE_STEPS.index(std_label) if std_label in STAGE_STEPS else None
+    stage_label = r["stage_raw"] or "단계 미입력"
+    return {
+        "project_id": r["project_id"], "name": r["name"] or "(사업명 없음)", "official_id": None,
+        "official_authority": r["sigun"], "type_label": r["type_label"] or "유형 미입력",
+        "program": {"code": "SMALL_SCALE", "label": r["program_label"]} if r["program_label"] else None,
+        "program_label": r["program_label"], "stage_verified_level": "OFFICIAL_LIST_MAPPED",
+        "stage_timeline": {"steps": STAGE_STEPS, "current_index": index, "current_label": std_label, "total": len(STAGE_STEPS),
+                           "note": None if index is not None else f"원본 단계 '{stage_label}'를 표준 단계에 대응하지 않았어요."},
+        "stage_description": None,
+        "location_accuracy": {"code": "NO_VERIFIED_COORDINATE", "label": "위치 확인 필요",
+                              "note": "경기도 원본에는 검증된 좌표가 없어 주소 기준으로만 표시해요."},
+        "distance_label": None, "district": r["district"], "dong": r["dong"], "address": r["address"],
+        "stage": {"label": stage_label, "official_text": r["stage_raw"]},
+        "stage_basis": f"경기데이터드림 원본 단계: {stage_label}" + (f" → 표준 단계: {std_label}" if std_label else " (표준 단계 미대응)"),
+        "status_label": "완료·청산" if r["completed"] else "추진 중",
+        "trust": {"code": "GYEONGGI_OPEN_DATA", "label": "경기도 공공데이터", "tone": "info",
+                  "note": "경기데이터드림 목록 자료예요. 사업별 공식 고시로 확인된 단계가 아니에요."},
+        "official_source": {"name": r["official_source"]["name"], "url": r["official_source"]["url"]},
+        "last_checked": r["collected_at"], "data_dates": {"stage_collected": (r["collected_at"] or "")[:10] or None, "db_reflected": None},
+        "stage_guide": None,
+        "stage_display": {"raw": r["stage_raw"], "label": std_label, "family": "GYEONGGI_LIST",
+                          "legal_stage_confirmed": False, "needs_official_check": True},
+        "naver_real_estate": None,
+        "spatial": {"code": "UNKNOWN", "label": "구역 경계 없음", "confirmed_boundary": False},
+        "distance_m": None, "latitude": r["latitude"], "longitude": r["longitude"], "mappable": r["mappable"],
+        "has_location": r["has_location"], "location_notice": r["location_notice"],
+        "sido": "경기도", "completed": r["completed"],
+        "gyeonggi": {"dataset": r["source_dataset"], "dataset_title": r["official_source"]["name"], "service": r["official_source"]["service"],
+                     "stage_raw": r["stage_raw"], "stage_std": r["stage_std"], "stage_std_label": std_label,
+                     "sigungu_raw": r["sigungu_raw"], "values": r["values"], "stage_dates": r["stage_dates"],
+                     "biz_div": r["biz_div"], "missing": r["missing"], "duplicate_of": r.get("duplicate_of", []),
+                     "duplicate_basis": r.get("duplicate_basis", []), "collected_at": r["collected_at"],
+                     "freshness_note": r["freshness_note"], "format_note": "면적·세대수·날짜는 원본 값을 그대로 보여 줘요(단위·형식 미검증)."},
+    }
+
+
+def detail_for(project, connections):
+    """상세 패널(ZoneDetail) 모양. 경기 원본에 없는 사업정보·이력·경계는 비워 두고 '확인 필요'로 남긴다."""
+    g = project["gyeonggi"]
+    return {
+        "project": dict(project, facts={"area_m2": None, "planned_units": None, "planned_floor": None, "planned_far": None,
+                                        "selected_date": None, "notice_date": None, "source_date": None,
+                                        "official_authority": project["official_authority"], "external_id": None},
+                        boundary={"verified": False, "source": None, "verified_at": None}),
+        "process_timeline": {
+            "verified": False,
+            "flow": {"code": "RECONSTRUCTION" if project["type_label"] == "재건축" else "REDEVELOPMENT" if project["type_label"] == "재개발" else "GENERIC",
+                     "label": project["type_label"], "note": "일반적인 절차 안내이며 이 사업의 공식 일정이 아니에요.", "basis": "GUIDE_RULE"},
+            "guide_note": "경기도 목록 자료의 단계만 확인됐어요.", "source": None, "program_label": project["program_label"],
+            "current_official": {"name": g["stage_raw"], "official_name": g["stage_raw"], "index": None, "recognised": g["stage_std"] != "UNKNOWN",
+                                 "in_standard_steps": False},
+            "steps": [], "pre_steps": [], "extra_steps": [], "closing_steps": [], "progress": None,
+            "closing_note": "준공·청산 등 완료 단계 사업이에요." if project["completed"] else None,
+            "unverified_note": "경기데이터드림 목록의 단계명이에요. 사업별 고시로 확인된 일정은 아니에요.",
+        },
+        "sources": {"state": "ok", "items": []},
+        "recent_updates": {"state": "unavailable", "items": []},
+        "provenance": {"last_verified_at": None, "last_collected_at": g["collected_at"], "source_date": None,
+                       "notice_date": None, "generated_at": _now().isoformat()},
+        "connections": connections,
+    }
 
 
 def mark_duplicates(records):
@@ -306,6 +410,10 @@ def mark_duplicates(records):
 
 def quality_report(records, meta):
     fields = ("name", "sigun", "type_label", "address", "stage")
+    stage_counts = {}
+    for r in records:
+        key = (r["source_dataset"], r["stage_raw"] or "(미입력)", r["stage_std"])
+        stage_counts[" / ".join(key)] = stage_counts.get(" / ".join(key), 0) + 1
     missing = {f: sum(1 for r in records if f in r["missing"]) for f in fields}
     by_sigun = {s: 0 for s in GYEONGGI_SIGUN}
     unknown = {}
@@ -323,6 +431,9 @@ def quality_report(records, meta):
         "sigun_without_projects": [s for s, n in by_sigun.items() if n == 0],
         "unknown_sigun": unknown,
         "needs_refresh": sum(1 for r in records if r["needs_refresh"]),
+        "completed": sum(1 for r in records if r["completed"]),
+        "stage_mapping": stage_counts,
+        "unknown_stage": sum(1 for r in records if r["stage_std"] == "UNKNOWN"),
         "coordinate_verified": sum(1 for r in records if r["coordinate_verified"]),
     }
 
@@ -368,7 +479,7 @@ def collect(http_get, get_secret, datasets=None, **kw):
                       "total": fetched["total"], "received": fetched["received"], "pages": fetched["pages"],
                       "result_code": fetched["result_code"], "fetched_at": fetched["fetched_at"],
                       "cache": fetched.get("cache"), "error": fetched.get("error"),
-                      "mapping": {k: detected[k] for k in ("mapping", "basis", "status", "date_fields", "unmapped", "fields")}}
+                      "mapping": {k: detected[k] for k in ("mapping", "status", "date_fields", "missing_fields", "unmapped", "fields")}}
     mark_duplicates(records)
     return records, meta
 

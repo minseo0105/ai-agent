@@ -4,6 +4,9 @@
  */
 export const FILTER_OPTIONS = ["전체", "재개발", "재건축", "신속통합기획", "모아타운", "기타 정비사업"] as const;
 
+/** 경기 범위에서만 보이는 유형 칩. 서울 필터 목록(FILTER_OPTIONS)과 그 동작은 바꾸지 않는다. */
+export const GYEONGGI_FILTER_OPTIONS = ["소규모정비", "주거환경개선"] as const;
+
 export type FilterableProject = {
   project_id: string;
   name: string;
@@ -19,6 +22,8 @@ export type FilterQuery = { districts: Set<string>; filter: string; stageFilter:
 export function matchesFilter(item: { type_label: string; program_label: string | null }, filter: string): boolean {
   if (filter === "전체") return true;
   if (filter === "기타 정비사업") return !["재개발", "재건축", "모아타운"].includes(item.type_label);
+  // 경기 소규모주택정비는 BIZ_DIV 세부 유형을 확인하지 못해 한 묶음으로만 거른다.
+  if (filter === "소규모정비") return item.program_label === "소규모주택정비";
   return item.type_label === filter || item.program_label === filter;
 }
 

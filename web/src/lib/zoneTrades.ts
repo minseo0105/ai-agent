@@ -31,9 +31,21 @@ export function recentMonths(now: Date, n = 3): string[] {
 }
 
 /** 서울 자치구 이름 → 실거래 조회 지역 라벨. 자치구를 모르면 조회하지 않는다. */
+// 서버 실거래 지역코드에서 구 단위로만 조회되는 경기 시(시 전체 코드가 없다).
+const GYEONGGI_GU_CITIES = new Set(["수원시", "성남시", "안양시", "부천시", "안산시", "고양시", "용인시"]);
+// 경기도 31개 시·군(인천 등 다른 시·도 이름이 경기로 잘못 붙지 않게 이 목록으로만 판단한다).
+const GYEONGGI_SIGUN = new Set(["수원시", "성남시", "의정부시", "안양시", "부천시", "광명시", "평택시", "동두천시", "안산시", "고양시",
+  "과천시", "구리시", "남양주시", "오산시", "시흥시", "군포시", "의왕시", "하남시", "용인시", "파주시", "이천시", "안성시", "김포시",
+  "화성시", "광주시", "양주시", "포천시", "여주시", "연천군", "가평군", "양평군"]);
+
 export function regionLabel(district: string | null | undefined): string | null {
   const name = (district ?? "").trim();
-  return /^[가-힣]{1,4}구$/.test(name) ? `서울 > ${name}` : null;
+  if (/^[가-힣]{1,4}구$/.test(name)) return `서울 > ${name}`;
+  // 경기: '광명시' 같은 시·군, 또는 '수원시 팔달구'처럼 구가 있는 시. 구를 모르는 구 단위 시는 조회하지 않는다.
+  const m = name.match(/^([가-힣]+(?:시|군))(?: ([가-힣]+구))?$/);
+  if (!m || !GYEONGGI_SIGUN.has(m[1])) return null;
+  if (GYEONGGI_GU_CITIES.has(m[1]) && !m[2]) return null;
+  return `경기 > ${name}`;
 }
 
 /** 같은 법정동 거래만 남긴다(구역 안 여부가 아니라 같은 동). 동을 모르면 자치구 전체를 그대로 둔다. */

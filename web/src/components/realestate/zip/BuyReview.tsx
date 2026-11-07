@@ -130,7 +130,8 @@ export function ListingCompare({ project, trades, money }: { project: Developmen
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF((v) => ({ ...v, [k]: e.target.value }));
   const sameDong = !!f.dong && f.dong === project.dong;
   const kind = sameDong ? projectKind(project) : { business: null, plan: null };
-  const stage = sameDong ? project.stage_guide?.stage : null;
+  // 경기 사업은 stage_guide가 없어 경기 목록의 표준 단계를 쓴다(목록 표기 기준, 공식 고시 확인 아님).
+  const stage = sameDong ? project.stage_guide?.stage ?? project.gyeonggi?.stage_std ?? null : null;
   const m = money;
   const funds = m ? fundsFor(m, askForFunds) : null;
   const fundsBad = !!m && (m.invalid.length > 0 || !!askParsed.error);

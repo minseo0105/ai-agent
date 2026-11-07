@@ -24,6 +24,9 @@ export function describeDetailError(error: unknown): { code: number | null; mess
  * 선택한 사업의 상세(읽기 전용). 구역을 고를 때만 1건 조회한다. 같은 사업은 60초간 다시 부르지 않는다.
  * 사업을 바꾸면 이전 요청은 취소한다(늦게 온 이전 응답이 새 선택을 덮어쓰지 않게).
  */
+/** 경기데이터드림 사업 번호(서버가 gg-로 시작하게 만든다). */
+export const isGyeonggiId = (id: string | null | undefined) => !!id && id.startsWith("gg-");
+
 export function useZoneDetail(projectId: string | null) {
   const [state, setState] = useState<DetailState>({ status: "idle" });
   const [attempt, setAttempt] = useState(0);
@@ -42,8 +45,9 @@ export function useZoneDetail(projectId: string | null) {
     }
     const controller = new AbortController();
     setState({ status: "loading" });
-    estateApi
-      .developmentDetail(projectId, { signal: controller.signal })
+    // 경기 사업(gg-…)은 경기 전용 상세를, 서울 사업은 기존 상세를 읽는다.
+    const load = isGyeonggiId(projectId) ? estateApi.gyeonggiDetail : estateApi.developmentDetail;
+    load(projectId, { signal: controller.signal })
       .then((data) => {
         if (controller.signal.aborted || requested.current !== projectId) return;
         cache.set(projectId, { at: Date.now(), data });
