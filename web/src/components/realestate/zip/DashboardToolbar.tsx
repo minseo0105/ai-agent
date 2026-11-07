@@ -10,7 +10,7 @@ const CHIP = "min-h-9 shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transi
 
 /** 상단 영역: 로고, 통합 검색, 지역, 유형·단계 필터. 기존 개발지도의 검색·필터를 그대로 쓴다. */
 export default function DashboardToolbar({ data }: { data: ZiponDevelopment }) {
-  const { counts, stages, projects, ready, visible, mappable, coordinateless } = data;
+  const { counts, stages, projects, ready } = data;
   return (
     <header className="space-y-2">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -84,13 +84,6 @@ export default function DashboardToolbar({ data }: { data: ZiponDevelopment }) {
           >
             완료사업 보기
           </button>
-        )}
-        {ready && (
-          <p className="ml-auto text-[11px] text-subtle" aria-live="polite">
-            {visible.length === 0
-              ? "표시할 사업이 없어요"
-              : `${visible.length.toLocaleString("ko-KR")}건 중 ${mappable.toLocaleString("ko-KR")}건 지도 표시${coordinateless > 0 ? ` · 좌표 없는 ${coordinateless.toLocaleString("ko-KR")}건은 목록에만` : ""}`}
-          </p>
         )}
       </div>
     </header>

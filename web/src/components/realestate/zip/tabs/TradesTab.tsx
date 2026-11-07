@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { estateApi, type Connections, type DevelopmentProject } from "@/lib/realestate";
-import { STATUS_TEXT, classify, partialFailureText, periodText, recentMonths, regionLabel, sameDong, withoutCancelled, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
+import { PER_PYEONG_LABEL, STATUS_TEXT, aptAnalysis, classify, fmtMonth, partialFailureText, periodText, recentMonths, regionLabel, sameDong, withoutCancelled, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
 import FeatureStatusCard, { type StatusRow, type StatusTone } from "../FeatureStatusCard";
 import type { DetailState } from "../useZoneDetail";
 
@@ -43,6 +43,42 @@ export function NaverListingButton({ project }: { project?: DevelopmentProject }
       <p className="mt-1.5 text-[11px] leading-relaxed text-subtle">
         네이버부동산의 매물 호가·시세는 외부 사이트 정보이며, 아래 국토교통부 실거래가(신고된 계약 금액)와 다릅니다.
       </p>
+    </section>
+  );
+}
+
+/** 아파트 매매 월별 요약. 받은 3개월 거래만 쓰고 차트는 가벼운 막대로 그린다. */
+function AptSummary({ rows, months }: { rows: ZoneTradeRow[]; months: string[] }) {
+  const a = aptAnalysis(rows, months);
+  const maxPrice = Math.max(...a.months.map((m) => m.median ?? 0), 0);
+  const maxCount = Math.max(...a.months.map((m) => m.count), 0);
+  const bar = (v: number, max: number) => `${max > 0 ? Math.max(4, Math.round((v / max) * 100)) : 0}%`;
+  return (
+    <section data-apt-analysis aria-label="아파트 매매 요약" className="mt-2 rounded-xl border border-border px-3 py-2.5">
+      <div className="flex items-baseline justify-between gap-2">
+        <h4 className="text-xs font-extrabold">아파트 매매 요약 · 동일 법정동 참고</h4>
+        <span className="text-[11px] text-subtle">{a.total}건</span>
+      </div>
+      {a.total > 0 && (
+        <table className="mt-1.5 w-full text-[11px]">
+          <thead className="text-subtle"><tr><th className="text-left font-normal">월</th><th className="text-left font-normal">중위가격</th><th className="text-left font-normal">거래량</th><th className="text-right font-normal">{PER_PYEONG_LABEL}</th></tr></thead>
+          <tbody>
+            {a.months.map((m) => (
+              <tr key={m.month}>
+                <td className="py-0.5 pr-1">{fmtMonth(m.month)}</td>
+                <td className="w-[38%] py-0.5 pr-2">
+                  <div className="flex items-center gap-1"><span className="h-2 rounded bg-zip/70" style={{ width: bar(m.median ?? 0, maxPrice) }} /><span className="whitespace-nowrap">{m.median ? `${m.median.toFixed(2)}억` : "—"}</span></div>
+                </td>
+                <td className="w-[28%] py-0.5 pr-2">
+                  <div className="flex items-center gap-1"><span className="h-2 rounded bg-slate-400/70" style={{ width: bar(m.count, maxCount) }} /><span>{m.count}</span></div>
+                </td>
+                <td className="whitespace-nowrap py-0.5 text-right">{m.perPyeong ? `${(m.perPyeong * 10000).toLocaleString("ko-KR", { maximumFractionDigits: 0 })}만원` : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <p className="mt-1.5 text-[11px] leading-relaxed text-muted">{a.summary}</p>
     </section>
   );
 }
@@ -105,6 +141,7 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
           {partialFailureText(result.errors ?? [])}
         </p>
       )}
+      {!(result.errors ?? []).some((e) => /· 아파트:/.test(e)) && <AptSummary rows={result.rows} months={months} />}
       <div className="mt-2 max-h-80 overflow-auto rounded-xl border border-border">
         <table className="w-full text-left text-xs">
           <thead className="sticky top-0 bg-surface-muted text-[11px] text-subtle">
