@@ -5,6 +5,7 @@ import copy
 import json
 import math
 import os
+import re
 import sqlite3
 import threading
 import time
@@ -714,6 +715,8 @@ def _trade_item_to_common(item, property_type: str, lawd_cd: str, deal_ymd: str)
         "date": deal_date,
         "floor": floor,
         "build_year": build_year,
+        # 국토부 아파트 단지 일련번호(aptSeq). 단지 단위 매칭에 쓴다. 다른 유형·형식이 아니면 None.
+        "apt_seq": sequence if re.fullmatch(r"\d{5}-\d+", sequence or "") else None,
         "detail": detail,
         "raw_detail": raw_detail,
         "address_road": address_road or None,
