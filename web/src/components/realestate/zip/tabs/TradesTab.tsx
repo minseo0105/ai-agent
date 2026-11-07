@@ -6,6 +6,7 @@ import { PER_PYEONG_LABEL, STATUS_TEXT, aptAnalysis, classify, fmtMonth, partial
 import FeatureStatusCard, { type StatusRow, type StatusTone } from "../FeatureStatusCard";
 import type { DetailState } from "../useZoneDetail";
 import { useDistrictTrades } from "../useDistrictTrades";
+import ComplexTrades from "../ComplexTrades";
 
 const MATCHING_TEXT: Record<Connections["trades"]["zone_matching"], string> = {
   BLOCKED_NO_VERIFIED_BOUNDARY: "공식 경계가 확인되지 않아 구역 안·밖 거래를 분류할 수 없음",
@@ -95,7 +96,23 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
 
   const scope = [project.district, project.dong].filter(Boolean).join(" ");
   if (result.status === "LOADING") {
-    return <p aria-busy="true" className="rounded-xl bg-surface-muted px-3 py-3 text-xs text-muted">{scope} 동일 법정동 참고 실거래를 불러오고 있어요…</p>;
+    return <p aria-busy="true" className="rounded-xl bg-surface-muted px-3 py-3 text-xs text-muted">{scope} 실거래를 불러오고 있어요…</p>;
+  }
+  const errs = result.errors ?? [];
+  // 재건축: 단지명·지번이 함께 일치하는 단지 거래만 이 사업의 실거래로 보여 주고, 같은 동 다른 거래는 '주변 비교 시세'로 분리한다.
+  if (project.type_label === "재건축" && region && apiKeyConfigured) {
+    return (
+      <section aria-label="재건축 단지 실거래">
+        <p className="mb-1.5 text-[11px] text-subtle">
+          국토교통부 실거래가, {periodText(months)}, 계약 해제 건 제외. 단지명과 지번이 함께 일치하는 단지의 거래만 이 사업의 실거래로 보여 줘요.
+        </p>
+        {partialFailureText(errs) && (
+          <p role="status" data-partial-failure className="mb-1.5 rounded-lg bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-800 dark:text-amber-300">{partialFailureText(errs)}</p>
+        )}
+        <ComplexTrades project={project} status={result.status} errors={errs} rows={result.rows}
+          renderNearby={(rows) => <DongTrades rows={rows} months={months} errors={errs} scope={scope} nearby />} />
+      </section>
+    );
   }
   if (result.status !== "OK") {
     return (
@@ -104,25 +121,39 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
       </p>
     );
   }
+  const kindNote = project.type_label === "재개발"
+    ? "공식 사업구역 경계가 검증되지 않아 재개발 구역 내부 거래로 표시하지 않아요."
+    : project.type_label !== "재건축" ? "사업 유형(재개발·재건축)이 확인되지 않아 단지별 매칭을 하지 않았어요." : null;
   return (
     <section aria-label="동일 법정동 참고 실거래">
       <h3 className="text-sm font-extrabold">동일 법정동 참고 실거래 · {scope}</h3>
-      <p className="mt-0.5 text-[11px] text-subtle">
-        국토교통부 실거래가, {periodText(months)}, 계약 해제 건 제외. 이 사업구역 안의 거래가 아니라 같은 법정동 전체의 참고 거래입니다.
-      </p>
-      {partialFailureText(result.errors ?? []) && (
+      {kindNote && <p data-kind-note className="mt-0.5 text-[11px] font-semibold text-amber-800 dark:text-amber-300">{kindNote}</p>}
+      {partialFailureText(errs) && (
         <p role="status" data-partial-failure className="mt-1.5 rounded-lg bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-800 dark:text-amber-300">
-          {partialFailureText(result.errors ?? [])}
+          {partialFailureText(errs)}
         </p>
       )}
-      {!(result.errors ?? []).some((e) => /· 아파트:/.test(e)) && <AptSummary rows={result.rows} months={months} />}
+      <DongTrades rows={result.rows} months={months} errors={errs} scope={scope} />
+    </section>
+  );
+}
+
+/** 같은 법정동 거래 목록과 아파트 요약. 재건축 화면에서는 '주변 비교 시세'로 쓴다. */
+function DongTrades({ rows, months, errors, scope, nearby = false }: { rows: ZoneTradeRow[]; months: string[]; errors: string[]; scope: string; nearby?: boolean }) {
+  if (!rows.length) return <p className="text-xs text-muted">같은 법정동의 다른 거래가 없어요.</p>;
+  return (
+    <div>
+      <p className="mt-0.5 text-[11px] text-subtle">
+        국토교통부 실거래가, {periodText(months)}, 계약 해제 건 제외. {nearby ? `${scope}의 다른 단지·유형 거래로, 이 사업의 시세가 아니에요.` : "이 사업구역 안의 거래가 아니라 같은 법정동 전체의 참고 거래입니다."}
+      </p>
+      {!errors.some((e) => /· 아파트:/.test(e)) && <AptSummary rows={rows} months={months} />}
       <div className="mt-2 max-h-80 overflow-auto rounded-xl border border-border">
         <table className="w-full text-left text-xs">
           <thead className="sticky top-0 bg-surface-muted text-[11px] text-subtle">
             <tr><th className="px-2 py-1.5">계약일</th><th className="px-2 py-1.5">거래금액</th><th className="px-2 py-1.5">면적</th><th className="px-2 py-1.5">유형·이름</th></tr>
           </thead>
           <tbody>
-            {result.rows.slice(0, SHOW_LIMIT).map((r, i) => (
+            {rows.slice(0, SHOW_LIMIT).map((r, i) => (
               <tr key={`${r.date}-${r.name}-${i}`} className="border-t border-border/60">
                 <td className="whitespace-nowrap px-2 py-1.5">{r.date}</td>
                 <td className="whitespace-nowrap px-2 py-1.5 font-bold">{r.price_text}</td>
@@ -133,8 +164,8 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
           </tbody>
         </table>
       </div>
-      {result.rows.length > SHOW_LIMIT && <p className="mt-1 text-[11px] text-subtle">최근 {SHOW_LIMIT}건만 표시했어요(전체 {result.rows.length}건).</p>}
-    </section>
+      {rows.length > SHOW_LIMIT && <p className="mt-1 text-[11px] text-subtle">최근 {SHOW_LIMIT}건만 표시했어요(전체 {rows.length}건).</p>}
+    </div>
   );
 }
 
