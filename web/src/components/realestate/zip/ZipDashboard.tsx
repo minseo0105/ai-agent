@@ -166,9 +166,12 @@ export default function ZipDashboard({
             <button
               type="button"
               onClick={() => { setSnap("peek"); setListOpen(true); }}
-              className="absolute bottom-3 left-1/2 z-10 min-h-11 -translate-x-1/2 rounded-full bg-zip px-5 text-sm font-bold text-white shadow-lg"
+              aria-label={`개발구역 목록 보기 (${data.visible.length.toLocaleString("ko-KR")}건)`}
+              // 지도 가운데를 덮지 않게 화면 왼쪽 아래에 고정한 작은 버튼(지도가 화면보다 길어도 바로 보이게). 오른쪽 아래 NAVER 표시·오른쪽 위 줌과 겹치지 않고,
+              // Android 제스처 바·브라우저 하단 메뉴를 피하도록 safe-area만큼 띄운다.
+              className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 z-30 min-h-10 rounded-full bg-zip px-3.5 text-xs font-bold text-white shadow-lg"
             >
-              개발구역 목록 보기 ({data.visible.length.toLocaleString("ko-KR")}건)
+              ☰ 목록 {data.visible.length.toLocaleString("ko-KR")}건
             </button>
           )}
         </div>

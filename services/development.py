@@ -32,17 +32,22 @@ def stage_metadata(rows, meter=None):
     if not unique:
         return rows
     metadata = {}
-    for start in range(0, len(unique), STAGE_BATCH):
-        chunk = unique[start:start + STAGE_BATCH]
+
+    def batch(chunk):
         _tick(meter)
         try:
-            found = rm._remote_request('GET', 'development_projects', params={
+            return rm._remote_request('GET', 'development_projects', params={
                 'select':'project_id,stage,stage_raw,stage_mapping_version,source_date,notice_date,last_verified_at,field_evidence,external_id,official_authority',
                 'project_id':'in.(' + ','.join(chunk) + ')', 'limit':len(chunk)})
         except Exception:
             # 한 묶음이 실패해도 나머지 단계 상세는 살린다. 단계를 추정하지는 않는다.
-            continue
-        metadata.update({p['project_id']:p for p in found})
+            return []
+
+    chunks = [unique[start:start + STAGE_BATCH] for start in range(0, len(unique), STAGE_BATCH)]
+    # 서울 전체(약 24묶음)를 순차로 물으면 첫 조회가 길어진다. 지도 RPC와 같은 수로 제한해 병렬로 묻는다.
+    with ThreadPoolExecutor(max_workers=min(MAP_WORKERS, len(chunks))) as pool:
+        for found in pool.map(batch, chunks):
+            metadata.update({p['project_id']:p for p in found})
     return [dict(row, **{k:v for k,v in metadata.get(row.get('project_id'), {}).items() if k != 'project_id'}) for row in rows]
 
 

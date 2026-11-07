@@ -1,14 +1,18 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import math
 import os
 import sqlite3
+import threading
+import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from datetime import datetime, date
 from typing import Optional
+from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote
 
 import requests
@@ -810,6 +814,56 @@ def fetch_trade(
     return result
 
 
+# 국토부 실거래 조회 캐시. (시군구코드, 유형, 계약월)이 응답을 정한다. 성공한 조회만 저장하고,
+# 실패·시간 초과는 저장하지 않는다. 신고가 매일 늘어나므로 30분만 재사용한다.
+TRADE_CACHE_TTL = 1800
+TRADE_WORKERS = 4          # 한 요청 안에서 유형·지역 조합을 동시에 부르는 수(호출 제한 고려)
+_trade_cache = {}
+_trade_locks = {}
+_trade_guard = threading.Lock()
+_trade_slots = threading.BoundedSemaphore(6)   # 프로세스 전체 동시 외부 호출 상한
+
+
+def _trade_lock(key):
+    with _trade_guard:
+        return _trade_locks.setdefault(key, threading.Lock())
+
+
+FORBIDDEN_BACKOFF = 600   # 활용신청이 없는 API(403)는 권한은 유형 단위라 10분간 다시 부르지 않는다
+_forbidden_until = {}
+
+
+class TradeForbidden(RuntimeError):
+    """403 권한 없음. 거래 없음이 아니다."""
+    status_code = 403
+
+
+def fetch_trade_cached(property_type, lawd_cd, deal_ymd):
+    """같은 조건의 동시 요청은 한 번만 외부 API를 부른다(single-flight). 반환은 복사본."""
+    key = (lawd_cd, property_type, deal_ymd)
+    if _forbidden_until.get(property_type, 0) > time.monotonic():
+        raise TradeForbidden("공공데이터포털 활용신청이 필요한 API입니다 (403)")
+
+    def fresh():
+        hit = _trade_cache.get(key)
+        return hit[1] if hit and time.monotonic() - hit[0] < TRADE_CACHE_TTL else None
+
+    rows = fresh()
+    if rows is None:
+        with _trade_lock(key):
+            rows = fresh()
+            if rows is None:
+                with _trade_slots:
+                    try:
+                        rows = fetch_trade(property_type, lawd_cd, deal_ymd)
+                    except requests.HTTPError as exc:
+                        if getattr(exc.response, 'status_code', None) == 403:
+                            _forbidden_until[property_type] = time.monotonic() + FORBIDDEN_BACKOFF
+                        raise
+                _trade_cache[key] = (time.monotonic(), rows)
+    return copy.deepcopy(rows)
+
+
 def fetch_trades_multi(
     region_labels: list[str],
     property_types: list[str],
@@ -817,31 +871,32 @@ def fetch_trades_multi(
 ):
     all_rows = []
     errors = []
-
+    jobs = []
     for region_label in region_labels:
         lawd_cd = REGION_LAWD.get(region_label)
-
         if not lawd_cd:
             errors.append(f"{region_label}: 지역코드를 찾을 수 없습니다.")
             continue
-
         for property_type in property_types:
-            try:
-                rows = fetch_trade(
-                    property_type,
-                    lawd_cd,
-                    deal_ymd,
-                )
+            jobs.append((region_label, lawd_cd, property_type))
 
-                for row in rows:
-                    row["region_label"] = region_label
+    def run(job):
+        region_label, lawd_cd, property_type = job
+        try:
+            rows = fetch_trade_cached(property_type, lawd_cd, deal_ymd)
+            for row in rows:
+                row["region_label"] = region_label
+            return rows, None
+        except Exception as e:
+            # 일부 유형이 실패해도 정상 조회된 유형의 결과는 유지한다.
+            return [], f"{region_label} · {property_type}: {safe_error(e)}"
 
+    if jobs:
+        with ThreadPoolExecutor(max_workers=min(TRADE_WORKERS, len(jobs))) as pool:
+            for rows, error in pool.map(run, jobs):   # 입력 순서를 유지한다
                 all_rows.extend(rows)
-
-            except Exception as e:
-                errors.append(
-                    f"{region_label} · {property_type}: {safe_error(e)}"
-                )
+                if error:
+                    errors.append(error)
 
     all_rows.sort(
         key=lambda x: (

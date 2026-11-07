@@ -18,7 +18,7 @@ export function periodText(months: string[]): string {
   const f = (m: string) => `${m.slice(0, 4)}.${m.slice(4)}`;
   return months.length ? `${f(months[months.length - 1])}~${f(months[0])} 계약분` : "";
 }
-export type ZoneTradeStatus = "NOT_CONNECTED" | "FORBIDDEN" | "FAILED" | "EMPTY" | "OK";
+export type ZoneTradeStatus = "NOT_CONNECTED" | "FORBIDDEN" | "TIMEOUT" | "PARSE_ERROR" | "FAILED" | "EMPTY" | "OK";
 
 /** 최근 n개월(이번 달 포함) YYYYMM, 최신순. 국토부 신고는 늦게 올라오므로 이번 달은 비어 있을 수 있다. */
 export function recentMonths(now: Date, n = 3): string[] {
@@ -48,6 +48,8 @@ export function classify(input: { apiKeyConfigured: boolean; rows: unknown[]; er
   if (input.rows.length > 0) return "OK";
   if (input.errors.some((e) => /\(403\)|403|활용신청|인증 오류|SERVICE_KEY/.test(e))) return "FORBIDDEN";
   if (input.errors.some((e) => /PUBLIC_DATA_API_KEY/.test(e))) return "NOT_CONNECTED";
+  if (input.errors.some((e) => /timed? ?out|Timeout|시간 초과|ReadTimeout/i.test(e))) return "TIMEOUT";
+  if (input.errors.some((e) => /XML로 해석하지 못했습니다|ParseError/.test(e))) return "PARSE_ERROR";
   if (input.errors.length > 0) return "FAILED";
   return "EMPTY";
 }
@@ -55,7 +57,25 @@ export function classify(input: { apiKeyConfigured: boolean; rows: unknown[]; er
 export const STATUS_TEXT: Record<ZoneTradeStatus, string> = {
   NOT_CONNECTED: "실거래 API가 연결되지 않았어요(서버에 국토교통부 실거래 API 키가 설정되지 않음).",
   FORBIDDEN: "국토교통부 실거래 API가 요청을 거부했어요(403 또는 인증 오류). 공공데이터포털 활용신청·서비스키 상태 확인이 필요해요.",
+  TIMEOUT: "국토교통부 실거래 API 응답이 늦어 시간이 초과됐어요. 잠시 후 다시 시도해 주세요.",
+  PARSE_ERROR: "국토교통부 실거래 응답 형식을 읽지 못했어요. 잠시 후 다시 시도해 주세요.",
   FAILED: "실거래를 지금 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",
   EMPTY: "조회 기간에 이 동의 신고된 실거래가 없어요.",
   OK: "",
 };
+
+/** 일부 유형만 실패한 경우 안내 문구(정상 유형 결과는 그대로 보여 준다). 실패가 없으면 null. */
+export function partialFailureText(errors: string[]): string | null {
+  const types = new Set<string>();
+  let forbidden = false;
+  for (const e of errors) {
+    const m = /·\s*([^:]+):/.exec(e);
+    if (m) types.add(m[1].trim());
+    if (/\(403\)|활용신청|인증 오류|SERVICE_KEY/.test(e)) forbidden = true;
+  }
+  if (!types.size) return null;
+  const list = [...types].join("·");
+  return forbidden
+    ? `${list} 유형은 국토교통부 API 권한(활용신청)이 없어 조회하지 못했어요(403). 아래는 조회된 유형만의 거래입니다.`
+    : `${list} 유형은 조회하지 못했어요. 아래는 조회된 유형만의 거래입니다.`;
+}

@@ -1,5 +1,6 @@
 """부동산 모니터 API (services/realestate_monitor.py 래핑)."""
 
+import asyncio
 import copy
 import json
 import logging
@@ -8,7 +9,8 @@ import time
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.encoders import jsonable_encoder
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, Field
 
@@ -335,7 +337,59 @@ def geocode_bulk(offset: int = 0, size: int = bulk_geocode.DEFAULT_SLICE,
                                             offset=offset, size=size), ttl=3600)
 
 
+_response_locks = {}
+
+
+def _response_lock(key):
+    lock = _response_locks.get(key)
+    if lock is None:
+        lock = _response_locks[key] = asyncio.Lock()
+    return lock
+
+
+def _fresh(key, ttl):
+    hit = _cache.get(key)
+    return hit[1] if hit and time.monotonic() - hit[0] < ttl else None
+
+
 @router.get('/development/map')
+async def development_map_route(sigungu: str | None = None, limit: int = 500,
+                                north: float | None = None, south: float | None = None,
+                                east: float | None = None, west: float | None = None,
+                                include_completed: bool = False):
+    """지도 API. 서울 전체 응답은 직렬화된 본문까지 5분 캐시한다(가공·인코딩 반복 제거).
+
+    캐시 키: 서울 전체 · limit · bbox · 완료사업 포함 여부. 실패·잘림 응답은 저장하지 않는다.
+    원자료는 development_map 안에서 같은 TTL·키별 잠금으로 따로 캐시되므로, MISS여도 DB 재조회는 한 번뿐이다.
+    """
+    if sigungu is not None:
+        return await development_map(sigungu, limit, north, south, east, west, include_completed)
+    started = time.monotonic()
+    box = None if north is None else (north, south, east, west)
+    key = ('devmap-resp', limit, box, include_completed)
+    body = _fresh(key, MAP_CACHE_TTL)
+    outcome = 'HIT'
+    if body is None:
+        # 같은 키의 첫 요청이 동시에 몰려도 가공·직렬화는 한 번만 한다(나머지는 기다렸다가 캐시를 읽는다).
+        async with _response_lock(key):
+            body = _fresh(key, MAP_CACHE_TTL)
+            if body is None:
+                payload = await development_map(sigungu, limit, north, south, east, west, include_completed)
+                body = await run_in_threadpool(lambda: json.dumps(
+                    jsonable_encoder(payload), ensure_ascii=False, allow_nan=False,
+                    separators=(',', ':')).encode('utf-8'))
+                if payload.get('status') == 'ok' and not payload.get('truncated'):
+                    # 응답 본문은 원자료보다 오래 살지 않는다. 원자료를 캐시한 시각으로 저장해 만료를 맞춘다.
+                    raw = _cache.get(_map_cache_key(sigungu, limit, None if box is None else
+                                                    dict(zip(('north', 'south', 'east', 'west'), box))))
+                    _cache[key] = (raw[0] if raw else time.monotonic(), body)
+                outcome = 'MISS'
+    logger.info(json.dumps({'event': 'zipon_map_response', 'scope': 'ALL', 'cache': outcome,
+                            'ms': round((time.monotonic() - started) * 1000, 1), 'bytes': len(body),
+                            'include_completed': include_completed}))
+    return Response(content=body, media_type='application/json')
+
+
 async def development_map(sigungu: str | None = None, limit: int = 500,
                           north: float | None = None, south: float | None = None,
                           east: float | None = None, west: float | None = None,

@@ -2658,7 +2658,8 @@ class StageBatchTests(unittest.TestCase):
             return [{'project_id': i, 'external_id': 'x'} for i in ids]
         with patch.object(rm, '_remote_request', side_effect=request):
             enriched = dev.stage_metadata(self.rows())
-        self.assertEqual(sizes, [50, 50, 30])
+        # 2026-11-07: 묶음을 병렬로 물으므로 순서는 정해져 있지 않다. 50건 단위로 나뉘는지만 본다.
+        self.assertEqual(sorted(sizes), [30, 50, 50])
         self.assertEqual(sum(1 for r in enriched if r.get('external_id')), 130)
 
     def test_one_failed_batch_does_not_erase_the_others(self):
