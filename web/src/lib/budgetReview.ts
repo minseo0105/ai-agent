@@ -54,10 +54,10 @@ const quantile = (xs: number[], q: number): number => {
   return s[lo] + (s[Math.ceil(pos)] - s[lo]) * (pos - lo);
 };
 
-export type ProjectLite = { name: string; dong: string | null; stage: { label: string }; investor_guide?: { risk_label: string; risk_level: string } };
+export type ProjectLite = { name: string; dong: string | null; stage: { label: string }; investor_guide?: { risk_label: string; risk_level: string }; type_label?: string | null; program_label?: string | null };
 export type DongRow = {
   dong: string;
-  projects: { name: string; stage: string; risk: string | null }[];
+  projects: { name: string; stage: string; risk: string | null; business: string | null; plan: string | null }[];
   trades: number;
   median: number | null; // 억원
   withinBudget: number | null; // 예산 이하 거래 수(예산 미입력이면 null)
@@ -73,7 +73,7 @@ export function dongReview(rows: ZoneTradeRow[], projects: ProjectLite[], ceilin
       const local = sameDong(rows, dong).filter((r) => r.price_100m > 0);
       return {
         dong,
-        projects: projects.filter((p) => p.dong === dong).map((p) => ({ name: p.name, stage: p.stage.label, risk: p.investor_guide?.risk_label ?? null })),
+        projects: projects.filter((p) => p.dong === dong).map((p) => ({ name: p.name, stage: p.stage.label, risk: p.investor_guide?.risk_label ?? null, business: p.type_label === "재개발" || p.type_label === "재건축" ? p.type_label : null, plan: p.program_label ?? null })),
         trades: local.length,
         median: median(local.map((r) => r.price_100m)),
         withinBudget: limit === null ? null : local.filter((r) => r.price_100m <= limit).length,

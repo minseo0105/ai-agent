@@ -8,6 +8,8 @@ import {
 } from "@/lib/investmentCalc";
 import { parseNumberInput } from "@/lib/zipFormat";
 import BudgetPanel from "./BudgetPanel";
+import { StorageControls, useMoney } from "./MoneyForm";
+import { readFin, writeFin } from "@/lib/finStorage";
 
 const FIELDS: { key: SimKey; label: string; unit: string; hint?: string }[] = [
   { key: "purchasePrice", label: "매입가격", unit: "만원", hint: "매도인에게 지급하는 금액. 취득 관련 비용은 따로 입력해요." },
@@ -69,37 +71,42 @@ export default function InvestmentSimulator({ projectId, onCeiling }: { projectI
   const [values, setValues] = useState<Record<SimKey, string>>(EMPTY);
   const [deltas, setDeltas] = useState<Deltas>(cloneDeltas);
   const loaded = useRef<string | null>(null);
+  const prevKey = useRef<string | null>(null);
+  const prevCleared = useRef<number | null>(null);
+  const current = useRef(values);
+  current.current = values;
+  const moneyState = useMoney();
+  const { consent, consentAt, clearedAt } = moneyState;
 
-  // 사업별 입력을 브라우저에 저장한다(보는 사람 개인의 편의). 접근이 막혀도 화면은 정상 동작한다.
+  // 사업별 입력은 '금융 입력값 저장'에 동의했을 때만 이 브라우저에 저장·복원한다(lib/finStorage).
+  // 지우기를 누르면 화면 값도 비운다. 동의를 켤 때 화면에 입력값이 있으면 화면 값이 우선한다.
   useEffect(() => {
     loaded.current = null;
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      if (raw) {
-        const saved = JSON.parse(raw);
-        setValues({ ...EMPTY, ...(saved?.values ?? {}) });
-        setDeltas({
-          conservative: { ...DEFAULT_DELTAS.conservative, ...(saved?.deltas?.conservative ?? {}) },
-          optimistic: { ...DEFAULT_DELTAS.optimistic, ...(saved?.deltas?.optimistic ?? {}) },
-        });
-      } else {
-        setValues(EMPTY);
-        setDeltas(cloneDeltas());
-      }
-    } catch {
+    const switched = prevKey.current !== storageKey;
+    const cleared = prevCleared.current !== null && clearedAt !== prevCleared.current;
+    prevKey.current = storageKey;
+    prevCleared.current = clearedAt;
+    const saved = readFin<{ values?: Partial<Record<SimKey, string>>; deltas?: Partial<Deltas> }>(storageKey);
+    const typed = INPUT_KEYS.some((k) => current.current[k].trim() !== "");
+    if (cleared) {
+      setValues(EMPTY);
+      setDeltas(cloneDeltas());
+    } else if (saved && (switched || !typed)) {
+      setValues({ ...EMPTY, ...(saved.values ?? {}) });
+      setDeltas({
+        conservative: { ...DEFAULT_DELTAS.conservative, ...(saved.deltas?.conservative ?? {}) },
+        optimistic: { ...DEFAULT_DELTAS.optimistic, ...(saved.deltas?.optimistic ?? {}) },
+      });
+    } else if (switched) {
       setValues(EMPTY);
       setDeltas(cloneDeltas());
     }
     loaded.current = storageKey;
-  }, [storageKey]);
+  }, [storageKey, consentAt, clearedAt]);
   useEffect(() => {
     if (loaded.current !== storageKey) return;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify({ values, deltas }));
-    } catch {
-      // 저장하지 못해도 계산에는 영향이 없다.
-    }
-  }, [values, deltas, storageKey]);
+    writeFin(storageKey, { values, deltas }); // 동의가 없으면 저장하지 않는다.
+  }, [values, deltas, storageKey, consent]);
 
   const inputs = useMemo(
     () => Object.fromEntries(INPUT_KEYS.map((k) => [k, parseNumberInput(values[k])])) as SimInputs,
@@ -115,6 +122,7 @@ export default function InvestmentSimulator({ projectId, onCeiling }: { projectI
         입력한 값은 <b className="text-fg">사용자가 정한 가정</b>이며 공식 사업 자료가 아닙니다. 결과는 확정 수익이 아니라
         가정 기반 추정치예요. 비례율·분양가는 사업 진행에 따라 달라질 수 있어요.
       </p>
+      <StorageControls state={moneyState} />
 
       <section aria-label="입력값" className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {FIELDS.map((field) => {
