@@ -4,12 +4,12 @@ import { useMemo, useState } from "react";
 import { inputClass } from "@/components/golf/ui";
 import { compareListing, dongReview, failedTypes, type ProjectLite } from "@/lib/budgetReview";
 import { formatManwon } from "@/lib/investmentCalc";
-import { dealCondition, fundsCondition, fundsFor, projectKind, rightsCondition, type Money } from "@/lib/investDecision";
+import { RULES, dealCondition, fundsCondition, fundsFor, parseField, projectKind, rightsCondition, type Money } from "@/lib/investDecision";
 import type { DevelopmentProject } from "@/lib/realestate";
 import { STATUS_TEXT, classify, partialFailureText, periodText } from "@/lib/zoneTrades";
 import { parseNumberInput } from "@/lib/zipFormat";
 import DecisionBoard from "./DecisionBoard";
-import { AmountInput, Term } from "./MoneyForm";
+import { AmountInput, CostScope, Term } from "./MoneyForm";
 import { TRADE_TYPES, type DistrictTrades } from "./useDistrictTrades";
 
 const SCOPE_NOTE = "모두 같은 법정동의 참고 거래예요. 정비구역 경계 자료가 없어 구역 안 거래인지는 구분하지 않았어요.";
@@ -57,7 +57,8 @@ export function RegionReview({ project, projects, trades, apiKeyConfigured, ceil
         ))}
       </div>
       <p className="text-[11px] text-subtle">재개발·재건축은 실제 사업 유형, 신속통합기획은 정책·계획 유형이에요(신속통합기획 중 실제 유형이 확인되지 않은 곳은 &apos;유형 확인 필요&apos;). 모아타운·소규모정비사업 자료는 아직 연결되지 않았어요.</p>
-      <p className="text-[11px] text-subtle">{periodText(trades.months)} · {SCOPE_NOTE} {ceiling === null ? "예산(보유 현금)을 입력하면 예산 이하 거래 수를 보여 줘요." : `입력한 가정 기준 한도 ${formatManwon(ceiling)} 이하 거래 사례를 셉니다.`}</p>
+      <p className="text-[11px] text-subtle">{periodText(trades.months)} · {SCOPE_NOTE} {ceiling === null ? "내 자금(가용현금)을 입력하면 예산 이하 거래 수를 보여 줘요(입력 오류가 있으면 세지 않아요)." : `입력 조건상 추정 상한 ${formatManwon(ceiling)} 이하 거래 사례를 셉니다.`}</p>
+      {ceiling !== null && <CostScope />}
       <TradeStatus t={trades} apiKeyConfigured={apiKeyConfigured} />
       {!trades.loading && trades.rows.length > 0 && rows.length === 0 && <p className="text-xs text-muted">이 조건에 맞는 정비사업이 있는 동이 없어요.</p>}
       {noDong.length > 0 && (
@@ -118,7 +119,10 @@ export function ListingCompare({ project, trades, money }: { project: Developmen
   const dongs = useMemo(() => [...new Set([project.dong, ...trades.rows.map((r) => r.region)].filter((d): d is string => !!d))].sort(), [project.dong, trades.rows]);
   const [f, setF] = useState({ dong: project.dong ?? "", type: "아파트", area: "", ask: "", complex: "", address: "", year: "", url: "" });
   const area = parseNumberInput(f.area);
-  const ask = parseNumberInput(f.ask);
+  // 매도 희망가격은 형식·범위를 검증한다. 잘못된 값은 NaN으로 넘겨 자금 조건이 '입력 오류'가 되게 한다.
+  const askParsed = parseField(f.ask, RULES.price);
+  const ask = askParsed.value;
+  const askForFunds = askParsed.error ? Number.NaN : ask;
   const buildYear = parseNumberInput(f.year);
   const r = useMemo(() => compareListing(trades.rows, { dong: f.dong, type: f.type, area, ask, complex: f.complex, buildYear }), [trades.rows, f.dong, f.type, area, ask, f.complex, buildYear]);
   // 403·조회 실패 유형은 '거래 0건'이 아니라 '데이터 없음'이다.
@@ -128,8 +132,9 @@ export function ListingCompare({ project, trades, money }: { project: Developmen
   const kind = sameDong ? projectKind(project) : { business: null, plan: null };
   const stage = sameDong ? project.stage_guide?.stage : null;
   const m = money;
-  const funds = m ? fundsFor(m, ask) : null;
-  const conditions = m ? [fundsCondition(m, ask), dealCondition(m), rightsCondition(kind, stage, false)] : [];
+  const funds = m ? fundsFor(m, askForFunds) : null;
+  const fundsBad = !!m && (m.invalid.length > 0 || !!askParsed.error);
+  const conditions = m ? [fundsCondition(m, askForFunds), dealCondition(m), rightsCondition(kind, stage, false)] : [];
   const url = safeUrl(f.url);
   return (
     <section data-listing-compare aria-label="관심 매물 분석" className="space-y-2 rounded-xl border border-border px-3 py-2.5">
@@ -143,15 +148,21 @@ export function ListingCompare({ project, trades, money }: { project: Developmen
         <label className="block"><span className="mb-0.5 block font-bold">유형</span>
           <select value={f.type} onChange={set("type")} className={`${inputClass} w-full`}>{TRADE_TYPES.map((t) => <option key={t}>{t}</option>)}</select></label>
         <label className="block"><span className="mb-0.5 block font-bold">{f.type === "단독·다가구" ? "연면적" : "전용면적"} (㎡)</span><input inputMode="decimal" value={f.area} onChange={set("area")} placeholder={f.type === "단독·다가구" ? "연면적" : "전용면적"} className={`${inputClass} w-full`} /></label>
-        <AmountInput label="매도 희망가격" value={f.ask} onChange={(v) => setF((o) => ({ ...o, ask: v }))} />
+        <AmountInput label="매도 희망가격" value={f.ask} onChange={(v) => setF((o) => ({ ...o, ask: v }))} rule={RULES.price} />
         <label className="block"><span className="mb-0.5 block font-bold">단지·건물명 (선택)</span><input value={f.complex} onChange={set("complex")} placeholder="같은 단지 우선" className={`${inputClass} w-full`} /></label>
         <label className="block"><span className="mb-0.5 block font-bold">건축연도 (선택)</span><input inputMode="numeric" value={f.year} onChange={set("year")} placeholder="±5년 우선" className={`${inputClass} w-full`} /></label>
       </div>
-      {funds && (
+      {funds && fundsBad && (
+        <p role="status" data-listing-funds className="rounded-lg bg-red-500/10 px-2.5 py-2 text-xs font-bold text-red-700 dark:text-red-300">
+          입력 오류·추가 확인 필요: {[...(m?.invalid ?? []), ...(askParsed.error ? ["매도 희망가격"] : [])].join(", ")} 값을 확인해 주세요. 계산 결과를 표시하지 않아요.
+        </p>
+      )}
+      {funds && !fundsBad && (
         <dl data-listing-funds className="grid grid-cols-2 gap-x-3 gap-y-1 rounded-lg bg-surface-muted px-2.5 py-2 text-xs">
           <dt className="text-muted">필요자금 (매입가 + 부대비용)</dt><dd className="text-right font-bold">{funds.need === null ? "매도 희망가격 필요" : formatManwon(funds.need)}{funds.need !== null && funds.cost === null && <span className="block text-[11px] font-normal text-subtle">부대비용 미입력(0%로 계산)</span>}</dd>
           <dt className="text-muted">가용현금 − 예비비 + 대출 가정</dt><dd className="text-right">{funds.available === null ? "가용현금 필요" : formatManwon(funds.available + (m?.loan ?? 0))}</dd>
           <dt className="text-muted">부족 / 여유</dt><dd className={`text-right font-extrabold ${funds.shortfall !== null && funds.shortfall > 0 ? "text-red-600 dark:text-red-400" : ""}`}>{funds.shortfall === null ? "—" : funds.shortfall > 0 ? `부족 ${formatManwon(funds.shortfall)}` : `여유 ${formatManwon(-funds.shortfall)}`}</dd>
+          <dd className="col-span-2"><CostScope costMissing={funds.need !== null && funds.cost === null} /></dd>
         </dl>
       )}
       {trades.loading ? (

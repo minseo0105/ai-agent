@@ -19,10 +19,50 @@ export type Money = {
   loan: number | null; // 사용자가 확인한 대출 가능금액(가정)
   loanConfirmed: boolean; // 금융기관 상담으로 확인한 금액인지(사용자 표시)
   costRate: number | null; // 취득세·중개보수 등 부대비용 가정(매입가격 대비 %)
+  invalid: string[]; // 형식·범위가 잘못된 입력 항목 이름. 하나라도 있으면 계산 결과를 내지 않는다.
 };
 export const EMPTY_MONEY: Money = {
   cash: null, income: null, debt: null, homes: "", purpose: "", reserve: null,
-  debtAnnual: null, rate: null, years: null, loan: null, loanConfirmed: false, costRate: null,
+  debtAnnual: null, rate: null, years: null, loan: null, loanConfirmed: false, costRate: null, invalid: [],
+};
+
+/** 입력 규칙. 빈칸은 미입력(null), 0은 값, 형식·범위 오류는 error. */
+export type FieldRule = { min: number; max: number; minExclusive?: boolean; integer?: boolean };
+export const RULES = {
+  amount: { min: 0, max: 10_000_000 }, // 만원(최대 1,000억)
+  price: { min: 0, max: 10_000_000, minExclusive: true },
+  percent: { min: 0, max: 30 },
+  years: { min: 1, max: 50, integer: true },
+} satisfies Record<string, FieldRule>;
+
+export function parseField(text: string, rule: FieldRule): { value: number | null; error: string | null } {
+  const t = text.replace(/[,\s]/g, "");
+  if (t === "") return { value: null, error: null };
+  if (!/^\d+(\.\d+)?$/.test(t)) return { value: null, error: "숫자 형식이 올바르지 않아요" };
+  const v = Number(t);
+  if (!Number.isFinite(v)) return { value: null, error: "숫자 형식이 올바르지 않아요" };
+  if (rule.integer && !Number.isInteger(v)) return { value: null, error: "정수로 입력해 주세요" };
+  if (v < rule.min || (rule.minExclusive && v === rule.min)) return { value: null, error: rule.minExclusive ? `${rule.min}보다 커야 해요` : `${rule.min} 이상이어야 해요` };
+  if (v > rule.max) return { value: null, error: `${rule.max.toLocaleString("ko-KR")} 이하로 입력해 주세요` };
+  return { value: v, error: null };
+}
+
+/** 계산 직전 방어: 숫자 필드가 유한한 0 이상 값인지(입력 검증을 거치지 않은 값도 막는다). */
+export function moneyInvalid(m: Money): string[] {
+  const bad = [...m.invalid];
+  const fields: [keyof Money, string][] = [["cash", "가용현금"], ["income", "연소득"], ["debt", "기존 대출 잔액"], ["reserve", "예비비"], ["debtAnnual", "기존 대출 연 원리금"], ["rate", "예상 대출금리"], ["years", "대출기간"], ["loan", "확인한 대출 가능금액"], ["costRate", "부대비용 가정"]];
+  for (const [k, label] of fields) {
+    const v = m[k] as number | null;
+    if (v !== null && (!Number.isFinite(v) || v < 0) && !bad.includes(label)) bad.push(label);
+  }
+  return bad;
+}
+const priceBad = (price: number | null) => price !== null && (!Number.isFinite(price) || price <= 0);
+
+/** 필요자금·추정 상한에 포함·미포함되는 비용(항상 결과 옆에 표시). */
+export const COST_SCOPE = {
+  included: "매입가격 + 부대비용(취득세·중개보수·법무비 등, 입력한 %)",
+  excluded: "대출 이자, 추가분담금, 이주비, 보유세(재산세·종부세), 양도세",
 };
 
 const n0 = (v: number | null | undefined) => v ?? 0;
@@ -33,7 +73,8 @@ export function formatAmountInput(text: string): string {
   if (!cleaned) return "";
   const [int, ...rest] = cleaned.split(".");
   const grouped = (int.replace(/^0+(?=\d)/, "") || (rest.length ? "0" : "")).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return rest.length ? `${grouped}.${rest.join("")}` : grouped;
+  // 소수점이 여러 개면 합치지 않고 그대로 둬서 검증에서 오류로 잡히게 한다.
+  return rest.length ? `${grouped}.${rest.join(".")}` : grouped;
 }
 
 /** 원리금균등상환 가정의 월 상환액(만원). 금리·기간이 없으면 null. */
@@ -46,17 +87,18 @@ export function monthlyPayment(loan: number, ratePct: number | null, years: numb
 }
 
 /** 같은 가정에서 감당 가능한 매입가격 상한: (가용현금 − 예비비 + 대출) ÷ (1 + 부대비용률). */
-export function priceCeiling(m: Money, loan: number): { value: number | null; costMissing: boolean } {
-  if (m.cash === null) return { value: null, costMissing: m.costRate === null };
+export function priceCeiling(m: Money, loan: number): { value: number | null; costMissing: boolean; invalid: boolean } {
+  if (moneyInvalid(m).length || !Number.isFinite(loan) || loan < 0) return { value: null, costMissing: m.costRate === null, invalid: true };
+  if (m.cash === null) return { value: null, costMissing: m.costRate === null, invalid: false };
   const funds = m.cash - n0(m.reserve) + loan;
-  return { value: Math.max(0, funds / (1 + n0(m.costRate) / 100)), costMissing: m.costRate === null };
+  return { value: Math.max(0, funds / (1 + n0(m.costRate) / 100)), costMissing: m.costRate === null, invalid: false };
 }
 
 export type Scenario = { loan: number; ceiling: number | null; monthly: number | null; burden: number | null };
 
 /** 대출금액별 비교(0 · 절반 · 입력액). 부담률 = (기존 연 상환액 + 신규 연 상환액) ÷ 연소득. 규제 DSR 아님. */
 export function loanScenarios(m: Money): Scenario[] {
-  if (!m.loan || m.loan <= 0) return [];
+  if (!m.loan || m.loan <= 0 || moneyInvalid(m).length) return [];
   const amounts = [...new Set([0, Math.round(m.loan / 2), m.loan])];
   return amounts.map((loan) => {
     const monthly = monthlyPayment(loan, m.rate, m.years);
@@ -74,6 +116,7 @@ export type FundsResult = { need: number | null; available: number | null; short
 
 /** 관심 매물 필요자금: 매입가격 + 부대비용(가정). 추가분담금·이주비·보유비용은 포함하지 않는다. */
 export function fundsFor(m: Money, price: number | null): FundsResult {
+  if (moneyInvalid(m).length || priceBad(price)) return { need: null, available: null, shortfall: null, cost: null };
   const cost = price === null || m.costRate === null ? null : (price * m.costRate) / 100;
   const need = price === null ? null : price + n0(cost);
   const available = m.cash === null ? null : m.cash - n0(m.reserve);
@@ -83,8 +126,13 @@ export function fundsFor(m: Money, price: number | null): FundsResult {
 
 export function fundsCondition(m: Money, price: number | null): Condition {
   const f = fundsFor(m, price);
-  const items = ["추가분담금·이주비·보유기간 이자·세금은 포함하지 않았어요(상세 분석에서 가정 입력)."];
+  const items = [`포함: ${COST_SCOPE.included}. 미포함: ${COST_SCOPE.excluded}(추가분담금·이자는 상세 분석에서 가정 입력).`];
   const base = { key: "funds" as const, title: "자금 조건" };
+  const bad = moneyInvalid(m);
+  if (bad.length || priceBad(price)) {
+    const names = [...bad, ...(priceBad(price) ? ["매도 희망가격"] : [])];
+    return { ...base, status: "CHECK", summary: `입력 오류·추가 확인 필요: ${names.join(", ")} 값을 확인해 주세요.`, items };
+  }
   if (price === null || f.available === null) {
     return { ...base, status: "CHECK", summary: price === null ? "매도 희망가격을 입력해 주세요." : "가용현금을 입력해 주세요.", items };
   }
@@ -98,7 +146,7 @@ export function fundsCondition(m: Money, price: number | null): Condition {
   if (n0(m.loan) > 0 && !m.loanConfirmed) {
     return { ...base, status: "CHECK", summary: "입력한 대출금액이 금융기관에서 확인한 금액인지 표시되지 않았어요.", items: ["대출 가능금액은 금융기관 심사로 정해져요. 상담 후 '확인한 금액' 표시를 해 주세요.", ...items] };
   }
-  return { ...base, status: "MET", summary: "입력한 현금·대출·부대비용 기준으로 매입가격을 감당할 수 있어요(대출 승인 아님).", items };
+  return { ...base, status: "MET", summary: "입력 조건상 필요자금이 현금·대출 가정 안에 있어요(대출 승인·매수 가능 확정 아님).", items };
 }
 
 /** 거래·허가 조건: 토지거래허가·규제지역 자료가 없어 항상 추가 확인 필요. 목적·보유 주택 수에 맞춘 확인 항목만 안내한다. */

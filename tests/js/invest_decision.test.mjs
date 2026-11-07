@@ -20,8 +20,8 @@ test("원리금균등 월 상환액과 0%·미입력 처리", () => {
 });
 
 test("가격 상한: 부대비용 빈칸은 미입력 표시, 0%는 입력으로 처리", () => {
-  assert.deepEqual(priceCeiling(M({ cash: 50000, reserve: 5000 }), 40000), { value: 85000, costMissing: true });
-  assert.deepEqual(priceCeiling(M({ cash: 50000, reserve: 5000, costRate: 0 }), 40000), { value: 85000, costMissing: false });
+  assert.deepEqual(priceCeiling(M({ cash: 50000, reserve: 5000 }), 40000), { value: 85000, costMissing: true, invalid: false });
+  assert.deepEqual(priceCeiling(M({ cash: 50000, reserve: 5000, costRate: 0 }), 40000), { value: 85000, costMissing: false, invalid: false });
   assert.equal(Math.round(priceCeiling(M({ cash: 52000, costRate: 4 }), 0).value), 50000);
   assert.equal(priceCeiling(M({}), 0).value, null);
 });
@@ -42,7 +42,7 @@ test("자금 조건: 부족이면 미충족, 비용 미입력·대출 미확인�
   assert.equal(fundsCondition(M({ cash: 30000, loan: 30000, costRate: 4 }), 50000).status, "CHECK"); // 대출 미확인
   const ok = fundsCondition(M({ cash: 30000, loan: 30000, costRate: 4, loanConfirmed: true }), 50000);
   assert.equal(ok.status, "MET");
-  assert.match(ok.summary, /대출 승인 아님/);
+  assert.match(ok.summary, /대출 승인·매수 가능 확정 아님/);
   const f = fundsFor(M({ cash: 30000, reserve: 2000, loan: 20000, costRate: 4 }), 50000);
   assert.deepEqual([f.need, f.available, f.shortfall], [52000, 28000, 4000]);
 });
