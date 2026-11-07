@@ -6,6 +6,7 @@ import json
 import logging
 import threading
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
@@ -602,32 +603,68 @@ async def gyeonggi_quality(include_raw: bool = False, limit: int = 20):
 
 
 @router.post('/gyeonggi/geocode', dependencies=[Depends(require_admin)])
-async def gyeonggi_geocode(limit: int = 50):
-    """관리자용: 주소를 지오코딩해 경기 검증 규칙을 통과한 좌표만 캐시에 남긴다(자동 실행 없음)."""
+async def gyeonggi_geocode(limit: int = 10, retry_failed: bool = False, dry_run: bool = False):
+    """관리자용: 경기 주소를 지오코딩해 검증 규칙을 통과한 좌표만 지도에 쓴다(자동 실행 없음).
+
+    - 원본 주소는 바꾸지 않고, 정리한 질의 주소(gg.geocode_target)로 provider를 부른다.
+    - 성공 캐시는 그대로 쓰고, 실패 캐시는 주소 규칙 버전이 바뀌었거나 retry_failed=true일 때만 다시 시도한다.
+    - dry_run=true는 provider를 부르지 않고 질의 주소·파싱 실패 사유·시도 예정 건수만 돌려준다.
+    """
     def run():
         records, _ = gg.collect(_gg_http_get, rm._secret)
+        addresses = list(dict.fromkeys(r['address'] for r in records if r['address']))
+        lookup = _gg_coordinate_lookup()
+        cap = max(1, min(limit, 500))
+        todo = [a for a in addresses if gg.needs_geocode(lookup(a), retry_failed)]
+        # 실제 실행과 dry run은 같은 계획(gg.plan_geocode)을 따른다. 그래서 dry run의 예상 호출 수가 실제와 같다.
+        plan = gg.plan_geocode(todo, cap)
+        counts = {k: sum(1 for _, action, _ in plan if action == k) for k in ('CALL', 'SKIP_UNPARSEABLE', 'DEFER')}
+        if dry_run:
+            reasons = {}
+            for _, action, target in plan:
+                if action != 'DEFER':
+                    key = target['reason'] or 'QUERY_READY'
+                    reasons[key] = reasons.get(key, 0) + 1
+            return {'status': 'DRY_RUN', 'parser_version': gg.PARSER_VERSION, 'limit': cap,
+                    'addresses': len(addresses), 'pending': len(todo),
+                    # 이번 실행에서 provider를 부를 횟수(망 오류 재시도 없음, 최대 limit)
+                    'expected_api_calls': counts['CALL'],
+                    # provider를 부르지 않고 '질의 불가' 사유만 기록할 주소(호출 수에 포함되지 않음)
+                    'unparseable_recorded': counts['SKIP_UNPARSEABLE'],
+                    # limit에 닿아 이번 실행에서 처리하지 않을 주소(다음 실행 대상)
+                    'deferred': counts['DEFER'],
+                    'parse_results': reasons,
+                    'samples': [{'address': a, 'action': action, 'query': t['query'], 'reason': t['reason']}
+                                for a, action, t in plan if action != 'DEFER'][:20]}
         selected = geocode.select_provider(rm._secret, geocode.requests_get)
         provider = selected['provider']
         if provider is None:
             return {'status': 'NO_PROVIDER', 'blocker': selected['blocker']}
         GG_GEOCODE_CACHE.mkdir(parents=True, exist_ok=True)
-        lookup = _gg_coordinate_lookup()
-        done, verified, failed = 0, 0, 0
-        for address in dict.fromkeys(r['address'] for r in records if r['address']):
-            if done >= max(1, min(limit, 500)):
+        done, verified, failed, parse_failed, reasons = 0, 0, 0, 0, {}
+        for address, action, target in plan:
+            if action == 'DEFER':
                 break
-            if lookup(address) is not None:
-                continue
-            done += 1
-            try:
-                result = gg.verify_coordinate(address, provider(geocode.normalize_address(address)))
-            except Exception as exc:  # 망 오류는 캐시에 남기지 않고 다음 실행에서 다시 시도
-                failed += 1
-                logger.warning('gyeonggi geocode failed: %s', type(exc).__name__)
-                continue
-            verified += bool(result.get('coordinate_verified'))
+            if action == 'SKIP_UNPARSEABLE':
+                # 질의를 만들 수 없는 주소는 provider를 부르지 않고 사유만 남긴다.
+                result = gg.verify_coordinate(address, None)
+                parse_failed += 1
+            else:
+                done += 1
+                try:
+                    result = gg.verify_coordinate(address, provider(target['query']))
+                except Exception as exc:  # 망 오류는 캐시에 남기지 않고 다음 실행에서 다시 시도
+                    failed += 1
+                    logger.warning('gyeonggi geocode failed: %s', type(exc).__name__)
+                    continue
+                verified += bool(result.get('coordinate_verified'))
+            key = result.get('reason') or 'VERIFIED'
+            reasons[key] = reasons.get(key, 0) + 1
+            entry = dict(result, address=address, status='VERIFIED' if result.get('coordinate_verified') else 'FAILED',
+                         checked_at=datetime.now(timezone.utc).isoformat())
             (GG_GEOCODE_CACHE / (geocode.cache_key(address) + '.json')).write_text(
-                json.dumps(dict(result, address=address), ensure_ascii=False), encoding='utf-8')
-        return {'status': 'OK', 'provider': selected['name'], 'attempted': done,
-                'verified': verified, 'network_failures': failed}
+                json.dumps(entry, ensure_ascii=False), encoding='utf-8')
+        return {'status': 'OK', 'provider': selected['name'], 'parser_version': gg.PARSER_VERSION, 'limit': cap,
+                'api_calls': done, 'attempted': done, 'verified': verified, 'network_failures': failed,
+                'unparseable_recorded': parse_failed, 'deferred': counts['DEFER'], 'reasons': reasons}
     return await run_in_threadpool(run)
