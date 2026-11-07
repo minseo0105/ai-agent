@@ -6,7 +6,7 @@ test("403, 미연동, 거래 없음, 실패를 서로 구분한다", () => {
   assert.equal(classify({ apiKeyConfigured: false, rows: [], errors: [] }), "NOT_CONNECTED");
   assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: ["서울 > 강동구 · 아파트: 공공데이터포털 활용신청이 필요한 API입니다 (403)"] }), "FORBIDDEN");
   assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: ["x: PUBLIC_DATA_API_KEY가 없습니다."] }), "NOT_CONNECTED");
-  assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: ["x: timeout"] }), "FAILED");
+  assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: ["x: connection reset"] }), "FAILED");
   assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: [] }), "EMPTY");
   assert.equal(classify({ apiKeyConfigured: true, rows: [{}], errors: ["일부 유형 403"] }), "OK");
 });
@@ -40,4 +40,16 @@ test("HTTP 200 인증 오류는 거래 없음이 아니라 거부로 분류", ()
 
 test("조회 기준 문구는 계약년월 범위", () => {
   assert.equal(periodText(["202611", "202610", "202609"]), "2026.09~2026.11 계약분");
+});
+
+test("시간 초과·파싱 오류를 따로 구분", () => {
+  assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: ["서울 > 송파구 · 아파트: HTTPSConnectionPool Read timed out."] }), "TIMEOUT");
+  assert.equal(classify({ apiKeyConfigured: true, rows: [], errors: ["아파트 API 응답을 XML로 해석하지 못했습니다."] }), "PARSE_ERROR");
+});
+
+import { partialFailureText } from "../../web/src/lib/zoneTrades.ts";
+test("일부 유형 403은 따로 안내, 실패 없으면 null", () => {
+  const t = partialFailureText(["서울 > 송파구 · 연립·다세대: 공공데이터포털 활용신청이 필요한 API입니다 (403)", "서울 > 송파구 · 오피스텔: 공공데이터포털 활용신청이 필요한 API입니다 (403)"]);
+  assert.match(t, /연립·다세대·오피스텔 유형은 국토교통부 API 권한/);
+  assert.equal(partialFailureText([]), null);
 });

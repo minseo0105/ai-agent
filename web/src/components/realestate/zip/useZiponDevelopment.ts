@@ -193,9 +193,14 @@ export function useZiponDevelopment(options: EstateOptions) {
   // ready가 true일 때만 쓴다. 응답을 받지 못한 상태를 '0건'이라고 말하지 않는다.
   const noDataForRegion = ready && selectedDistricts.size > 0 && inRegion.length === 0;
   const lastSearch = useRef("");
+  // 지역을 바꾸면 이전 지역에서 쓰던 검색어가 새 지역 결과를 부당하게 줄이지 않도록 지운다.
+  const changeDistricts = (next: string[]) => {
+    setDistricts(next);
+    setKeyword("");
+  };
 
   return {
-    config, seoulOnly, districts, setDistricts, selectedDistricts,
+    config, seoulOnly, districts, setDistricts: changeDistricts, selectedDistricts,
     projects, points, visible, visiblePoints, pointById, inRegion, stages, counts,
     filter, setFilter, keyword, setKeyword, stageFilter, setStageFilter, lastSearch,
     includeCompleted, setIncludeCompleted, hiddenCompleted,

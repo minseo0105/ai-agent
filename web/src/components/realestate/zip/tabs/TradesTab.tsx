@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { estateApi, type Connections, type DevelopmentProject } from "@/lib/realestate";
-import { STATUS_TEXT, classify, periodText, recentMonths, regionLabel, sameDong, withoutCancelled, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
+import { STATUS_TEXT, classify, partialFailureText, periodText, recentMonths, regionLabel, sameDong, withoutCancelled, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
 import FeatureStatusCard, { type StatusRow, type StatusTone } from "../FeatureStatusCard";
 import type { DetailState } from "../useZoneDetail";
 
@@ -51,7 +51,7 @@ export function NaverListingButton({ project }: { project?: DevelopmentProject }
 function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProject; apiKeyConfigured: boolean }) {
   const region = regionLabel(project.district);
   const [months] = useState(() => recentMonths(new Date()));
-  const [result, setResult] = useState<{ status: ZoneTradeStatus | "LOADING"; rows: ZoneTradeRow[] }>({ status: "LOADING", rows: [] });
+  const [result, setResult] = useState<{ status: ZoneTradeStatus | "LOADING"; rows: ZoneTradeRow[]; errors?: string[] }>({ status: "LOADING", rows: [] });
   useEffect(() => {
     let alive = true;
     if (!apiKeyConfigured || !region) {
@@ -62,18 +62,21 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
     (async () => {
       const rows: ZoneTradeRow[] = [];
       const errors: string[] = [];
-      for (const month of months) {
-        try {
-          const res = await estateApi.trades({ regions: [region], property_types: TYPES, month });
-          rows.push(...res.items);
-          errors.push(...res.errors);
-        } catch (e) {
-          errors.push((e as Error).message);
+      // 3개월을 동시에 요청한다(서버가 유형별 호출을 제한적으로 병렬 처리하고 결과를 30분 캐시한다).
+      const settled = await Promise.allSettled(
+        months.map((month) => estateApi.trades({ regions: [region], property_types: TYPES, month })),
+      );
+      for (const r of settled) {
+        if (r.status === "fulfilled") {
+          rows.push(...r.value.items);
+          errors.push(...r.value.errors);
+        } else {
+          errors.push((r.reason as Error)?.message ?? String(r.reason));
         }
       }
       if (!alive) return;
       const local = withoutCancelled(sameDong(rows, project.dong)).sort((a, b) => b.date.localeCompare(a.date));
-      setResult({ status: classify({ apiKeyConfigured, rows: local, errors }), rows: local });
+      setResult({ status: classify({ apiKeyConfigured, rows: local, errors }), rows: local, errors });
     })();
     return () => {
       alive = false;
@@ -97,6 +100,11 @@ function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProje
       <p className="mt-0.5 text-[11px] text-subtle">
         국토교통부 실거래가, {periodText(months)}, 계약 해제 건 제외. 이 사업구역 안의 거래가 아니라 같은 법정동 전체의 참고 거래입니다.
       </p>
+      {partialFailureText(result.errors ?? []) && (
+        <p role="status" data-partial-failure className="mt-1.5 rounded-lg bg-amber-500/10 px-2 py-1.5 text-[11px] text-amber-800 dark:text-amber-300">
+          {partialFailureText(result.errors ?? [])}
+        </p>
+      )}
       <div className="mt-2 max-h-80 overflow-auto rounded-xl border border-border">
         <table className="w-full text-left text-xs">
           <thead className="sticky top-0 bg-surface-muted text-[11px] text-subtle">

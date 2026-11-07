@@ -38,6 +38,19 @@ export default function DashboardToolbar({ data }: { data: ZiponDevelopment }) {
         </div>
       </div>
 
+      {data.keyword.trim() && (
+        // 지역과 검색어가 함께 걸려 있으면 결과가 둘 다로 줄어든다. 무엇이 걸려 있는지 보여 주고 바로 지울 수 있게 한다.
+        <p data-active-conditions className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted">
+          <span>
+            적용 중: {data.selectedDistricts.size ? [...data.selectedDistricts].join("·") : "서울 전체"} · 검색어 “{data.keyword.trim()}” →{" "}
+            {data.visible.length.toLocaleString("ko-KR")}건
+          </span>
+          <button type="button" onClick={() => data.setKeyword("")} className="rounded-full border border-border px-2 py-0.5 font-bold text-zip">
+            검색어 지우기
+          </button>
+        </p>
+      )}
+
       <div className="flex flex-wrap items-center gap-2">
         <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5">
           {FILTER_OPTIONS.filter((f) => f === "전체" || f === "기타 정비사업" || counts[f as "재개발"] > 0).map((f) => (

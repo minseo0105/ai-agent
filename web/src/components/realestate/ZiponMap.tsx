@@ -5,6 +5,7 @@ import type { DevelopmentMapPoint, MapConfig } from "@/lib/realestate";
 import { getProjectCoordinate, type ProjectCoordinate } from "@/lib/projectCoordinate";
 import { boundaryPoints, verifiedBoundaryPolygons } from "@/lib/projectBoundary";
 import { DEFAULT_MAX_ZOOM } from "@/lib/clusterPoints";
+import { SINGLE_RESULT_ZOOM, fitTarget } from "@/lib/mapFit";
 import { buildMarkerPlan } from "@/lib/markerPlan";
 import { clearMarkers, createSyncState, syncMarkers, type ClusterItem, type SyncState } from "@/lib/markerSync";
 import {
@@ -16,6 +17,7 @@ import {
 } from "@/lib/naverMaps";
 
 const SEOUL = { lat: 37.5512, lng: 127.1265 };
+
 /** 사업유형별 marker 색. 정책 프로그램은 테두리로 구분해 유형과 섞지 않는다. */
 const TYPE_COLOR: Record<string, string> = {
   REDEVELOPMENT: "#B42332",
@@ -122,6 +124,8 @@ export default function ZiponMap({
   const container = useRef<HTMLDivElement>(null);
   const sync = useRef<SyncState>(createSyncState());
   const circle = useRef<NaverOverlay | null>(null);
+  /** 마지막으로 화면을 맞춘 결과 집합. 같은 결과에는 다시 맞추지 않는다. */
+  const fitted = useRef<string | null>(null);
   const info = useRef<NaverInfoWindow | null>(null);
   const listeners = useRef<unknown[]>([]);
   const select = useRef(onSelect);
@@ -353,10 +357,20 @@ export default function ZiponMap({
     let insetTimer: number | undefined;
     if (!selectedEntry) {
       info.current?.close();
-      if (!compact && !property && located.length > 0) {
-        const box = new api.LatLngBounds();
-        for (const entry of located) box.extend(new api.LatLng(entry.coordinate.lat, entry.coordinate.lng));
-        instance.fitBounds(box, { top: 24, right: 24, bottom: 24, left: 24 });
+      // 결과 집합이 바뀌었을 때만 화면을 맞춘다. 같은 결과에서 선택만 풀거나 사용자가 지도를 직접 옮긴 뒤에는
+      // 다시 움직이지 않는다. 결과 0건이면 마커만 지우고 위치는 그대로 둔다(이전 결과를 현재처럼 보이지 않게).
+      const target = fitTarget(located.map((entry) => entry.coordinate));
+      if (!compact && !property && target && fitted.current !== signature) {
+        fitted.current = signature;
+        if (target.kind === "single") {
+          // 1건: 점 하나에 fitBounds를 걸면 SDK 최대 확대까지 들어간다. 사업을 고를 때와 같은 확대 수준을 쓴다.
+          instance.setCenter(new api.LatLng(target.lat, target.lng));
+          instance.setZoom(SINGLE_RESULT_ZOOM, false);
+        } else {
+          const box = new api.LatLngBounds();
+          for (const entry of located) box.extend(new api.LatLng(entry.coordinate.lat, entry.coordinate.lng));
+          instance.fitBounds(box, { top: 24, right: 24, bottom: 24, left: 24 });
+        }
       }
       return;
     }
@@ -372,7 +386,7 @@ export default function ZiponMap({
         instance.setZoom(17, false);
       } else {
         instance.panTo(position, { duration: 320 });
-        if (instance.getZoom() < 15) instance.setZoom(15, true);
+        if (instance.getZoom() < SINGLE_RESULT_ZOOM) instance.setZoom(SINGLE_RESULT_ZOOM, true);
         // 모바일 시트가 지도 아래를 덮으면 사업이 시트 뒤에 가려진다. 이동이 끝난 뒤 가려지는 높이의 절반만큼 올린다.
         if (bottomInset > 0) {
           insetTimer = window.setTimeout(() => {
@@ -426,6 +440,7 @@ export default function ZiponMap({
       window.cancelAnimationFrame(frame);
       if (insetTimer !== undefined) window.clearTimeout(insetTimer);
     };
+  // signature는 located와 함께 바뀌므로 의존성에 따로 넣지 않는다.
   }, [api, instance, selectedEntry, located, compact, property, bottomInset]);
 
   const mappable = located.length;
