@@ -490,49 +490,132 @@ GYEONGGI_BOUNDS = {"longitude": (126.25, 127.90), "latitude": (36.85, 38.35)}
 ACCEPTED_ACCURACY = ("PARCEL", "BUILDING", "ROAD_ADDRESS")
 
 
+PARSER_VERSION = 2  # 지오코딩 질의 주소 규칙 버전. 실패 캐시는 버전이 다르면 다시 시도한다.
+
+
+def geocode_target(address):
+    """원본 주소(바꾸지 않음) → 지오코딩용 질의 주소와 검증용 구성요소.
+
+    '번지'·'일원'·'일대'·'번지일원'·'외 N필지'와 괄호 속 부가 설명을 떼고, 시군·구·읍면동·리·지번을 뽑는다.
+    시군·읍면동·지번 중 하나라도 없거나 지번이 여러 개면 질의를 만들지 않는다(추측해서 보완하지 않음).
+    """
+    text = unicodedata.normalize("NFKC", str(address or ""))
+    text = re.sub(r"\([^)]*\)", " ", text)          # 괄호 속 부가 설명
+    text = re.sub(r"\(.*$", " ", text)              # 닫히지 않은 괄호 뒤
+    text = re.sub(r"외\s*\d+\s*(?:개\s*)?필지", " ", text)
+    text = re.sub(r"번지|일원|일대", " ", text)
+    text = re.sub(r"\s*-\s*", "-", text)
+    text = re.sub(r"(?<=\d),\s*", " , ", text)      # 지번 나열(178-57, 178-58)을 따로 센다
+    tokens = [t for t in text.split() if t not in ("경기도", "경기")]
+    out = {"query": None, "si": None, "gu": None, "dong": None, "ri": None, "lot": None, "mountain": False, "reason": None}
+    si_i = next((i for i, t in enumerate(tokens) if t in GYEONGGI_SIGUN), None)
+    if si_i is None:
+        return dict(out, reason="NO_SIGUN")
+    out["si"] = tokens[si_i]
+    rest = tokens[si_i + 1:]
+    if rest and re.fullmatch(r"[가-힣]+구", rest[0]):
+        out["gu"], rest = rest[0], rest[1:]
+    dong_i = next((i for i, t in enumerate(rest) if re.fullmatch(r"[가-힣0-9]+(동|읍|면|가)", t)), None)
+    if dong_i is None:
+        return dict(out, reason="NO_DONG")
+    out["dong"] = rest[dong_i]
+    rest = rest[dong_i + 1:]
+    if rest and re.fullmatch(r"[가-힣0-9]+리", rest[0]):
+        out["ri"], rest = rest[0], rest[1:]
+    lots, mountain, i = [], False, 0
+    while i < len(rest):
+        t = rest[i]
+        if t == "산" and i + 1 < len(rest) and re.fullmatch(r"\d+(-\d+)?", rest[i + 1]):
+            lots.append(rest[i + 1]); mountain = True; i += 2; continue
+        m = re.fullmatch(r"(산)?(\d+(?:-\d+)?)", t)
+        if m:
+            lots.append(m.group(2)); mountain = mountain or bool(m.group(1))
+        i += 1
+    if not lots:
+        return dict(out, reason="NO_LOT")
+    if len(set(lots)) > 1:
+        return dict(out, reason="MULTIPLE_LOTS")
+    lot = lots[0]
+    out.update(lot=lot, mountain=mountain)
+    out["query"] = " ".join(x for x in ["경기도", out["si"], out["gu"], out["dong"], out["ri"], ("산 " if mountain else "") + lot] if x)
+    return out
+
+
 def wanted(address):
-    text = _norm(address)
-    tokens = text.split()
-    si = next((t for t in tokens if re.fullmatch(r"[가-힣]+(시|군)", t)), None)
-    gu = next((t for t in tokens if re.fullmatch(r"[가-힣]+구", t)), None)
-    dong = next((t for t in tokens if re.fullmatch(r"[가-힣0-9]+(동|읍|면|리|가)", t)), None)
-    lot = re.search(r"(?:^|\s)(산?\d+(?:-\d+)?)(?:번지)?(?:\s*(?:일대|외\s*\d+\s*필지))?\s*$", text)
-    return {"si": si, "gu": gu, "dong": dong, "lot": lot.group(1) if lot else None}
+    """이전 이름 호환: 검증용 구성요소."""
+    t = geocode_target(address)
+    return {"si": t["si"], "gu": t["gu"], "dong": t["dong"], "lot": t["lot"]}
+
+
+def _lot_core(value):
+    return re.sub(r"\s|산", "", str(value or ""))
 
 
 def verify_coordinate(address, response):
-    """provider 응답에서 '경기도·시군(구)·동·지번이 모두 일치하는 후보가 정확히 하나'일 때만 좌표를 채택한다."""
-    parts = wanted(address)
-    if not parts["si"] or not parts["lot"]:
-        return {"coordinate_verified": False, "reason": "ADDRESS_HAS_NO_LOT_OR_SIGUN"}
+    """provider 응답에서 '경기도·시군(구)·읍면동(리)·지번이 모두 일치하는 후보가 정확히 하나'일 때만 좌표를 채택한다.
+
+    실패하면 후보별로 어떤 조건이 틀렸는지(diagnostics)를 남긴다. 주소·좌표 외 민감정보는 담지 않는다.
+    """
+    target = geocode_target(address)
+    base = {"coordinate_verified": False, "parser_version": PARSER_VERSION, "query": target["query"],
+            "parsed": {k: target[k] for k in ("si", "gu", "dong", "ri", "lot", "mountain")}}
+    if target["reason"]:
+        return dict(base, reason="ADDRESS_HAS_NO_LOT_OR_SIGUN", parse_reason=target["reason"])
     if not response or response.get("result_status") != "MATCHED":
-        return {"coordinate_verified": False, "reason": "NO_MATCH"}
-    passing = []
-    for c in response.get("candidates") or []:
+        return dict(base, reason="NO_MATCH", provider_status=(response or {}).get("result_status"))
+    passing, diagnostics = [], []
+    for c in (response.get("candidates") or [])[:10]:
         lon, lat = c.get("longitude"), c.get("latitude")
         el = c.get("address_elements") or {}
         if el:
-            sigungu = el.get("SIGUGUN", "")
-            ok_region = el.get("SIDO", "") == "경기도" and sigungu.split()[0:1] == [parts["si"]] and \
-                (not parts["gu"] or parts["gu"] in sigungu.split())
-            ok_dong = not parts["dong"] or el.get("DONGMYUN", "") == parts["dong"] or el.get("RI", "") == parts["dong"]
-            ok_lot = el.get("LAND_NUMBER", "") == parts["lot"]
+            sigungu = (el.get("SIGUGUN") or "").split()
+            jibun = _norm(c.get("jibun_address") or c.get("matched_address"))
+            checks = {
+                "sido": el.get("SIDO", "") == "경기도",
+                "sigun": sigungu[:1] == [target["si"]],
+                "gu": not target["gu"] or target["gu"] in sigungu[1:],
+                "dong": el.get("DONGMYUN", "") == target["dong"],
+                "ri": not target["ri"] or el.get("RI", "") == target["ri"],
+                "lot": _lot_core(el.get("LAND_NUMBER")) == target["lot"],
+                "mountain": target["mountain"] == bool(re.search(r"(^|\s)산\s?\d", jibun) or "산" in str(el.get("LAND_NUMBER") or "")),
+            }
         else:
             text = _norm(c.get("matched_address"))
-            ok_region = "경기" in text and parts["si"] in text.split() and (not parts["gu"] or parts["gu"] in text.split())
-            ok_dong = not parts["dong"] or parts["dong"] in text.split()
-            ok_lot = text.endswith(parts["lot"]) or f" {parts['lot']} " in f" {text} "
-        ok_bounds = isinstance(lon, (int, float)) and isinstance(lat, (int, float)) and \
+            words = text.split()
+            checks = {
+                "sido": words[:1] in (["경기도"], ["경기"]),
+                "sigun": target["si"] in words,
+                "gu": not target["gu"] or target["gu"] in words,
+                "dong": target["dong"] in words,
+                "ri": not target["ri"] or target["ri"] in words,
+                "lot": bool(words) and _lot_core(words[-1]) == target["lot"],
+                "mountain": target["mountain"] == ("산" in words or bool(words and words[-1].startswith("산"))),
+            }
+        checks["accuracy"] = c.get("accuracy") in ACCEPTED_ACCURACY
+        checks["bounds"] = isinstance(lon, (int, float)) and isinstance(lat, (int, float)) and \
             GYEONGGI_BOUNDS["longitude"][0] <= lon <= GYEONGGI_BOUNDS["longitude"][1] and \
             GYEONGGI_BOUNDS["latitude"][0] <= lat <= GYEONGGI_BOUNDS["latitude"][1]
-        if c.get("accuracy") in ACCEPTED_ACCURACY and ok_region and ok_dong and ok_lot and ok_bounds:
+        failed = sorted(k for k, ok in checks.items() if not ok)
+        diagnostics.append({"matched_address": c.get("matched_address"), "accuracy": c.get("accuracy"), "failed_checks": failed})
+        if not failed:
             passing.append(c)
     if len(passing) != 1:
-        return {"coordinate_verified": False, "reason": "NO_CANDIDATE_PASSED" if not passing else "MULTIPLE_CANDIDATES"}
+        return dict(base, reason="NO_CANDIDATE_PASSED" if not passing else "MULTIPLE_CANDIDATES",
+                    candidate_count=len(response.get("candidates") or []), diagnostics=diagnostics,
+                    failed_checks=sorted({f for d in diagnostics for f in d["failed_checks"]}))
     c = passing[0]
-    return {"coordinate_verified": True, "latitude": c["latitude"], "longitude": c["longitude"],
-            "geocode_source": response.get("provider"), "matched_address": c.get("matched_address"),
-            "reason": None}
+    return dict(base, coordinate_verified=True, latitude=c["latitude"], longitude=c["longitude"],
+                geocode_source=response.get("provider"), matched_address=c.get("matched_address"), reason=None,
+                candidate_count=len(response.get("candidates") or []))
+
+
+def needs_geocode(entry, retry_failed=False):
+    """캐시 항목을 다시 지오코딩할지. 성공은 유지, 실패는 규칙 버전이 바뀌었거나 명시적으로 요청했을 때만 다시 한다."""
+    if not entry:
+        return True
+    if entry.get("coordinate_verified"):
+        return False
+    return retry_failed or entry.get("parser_version") != PARSER_VERSION
 
 
 def attach_coordinates(records, lookup):

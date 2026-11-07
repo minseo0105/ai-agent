@@ -6,6 +6,7 @@ import json
 import logging
 import threading
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
@@ -602,32 +603,60 @@ async def gyeonggi_quality(include_raw: bool = False, limit: int = 20):
 
 
 @router.post('/gyeonggi/geocode', dependencies=[Depends(require_admin)])
-async def gyeonggi_geocode(limit: int = 50):
-    """관리자용: 주소를 지오코딩해 경기 검증 규칙을 통과한 좌표만 캐시에 남긴다(자동 실행 없음)."""
+async def gyeonggi_geocode(limit: int = 10, retry_failed: bool = False, dry_run: bool = False):
+    """관리자용: 경기 주소를 지오코딩해 검증 규칙을 통과한 좌표만 지도에 쓴다(자동 실행 없음).
+
+    - 원본 주소는 바꾸지 않고, 정리한 질의 주소(gg.geocode_target)로 provider를 부른다.
+    - 성공 캐시는 그대로 쓰고, 실패 캐시는 주소 규칙 버전이 바뀌었거나 retry_failed=true일 때만 다시 시도한다.
+    - dry_run=true는 provider를 부르지 않고 질의 주소·파싱 실패 사유·시도 예정 건수만 돌려준다.
+    """
     def run():
         records, _ = gg.collect(_gg_http_get, rm._secret)
+        addresses = list(dict.fromkeys(r['address'] for r in records if r['address']))
+        lookup = _gg_coordinate_lookup()
+        cap = max(1, min(limit, 500))
+        todo = [a for a in addresses if gg.needs_geocode(lookup(a), retry_failed)]
+        if dry_run:
+            reasons, samples = {}, []
+            for address in todo:
+                target = gg.geocode_target(address)
+                key = target['reason'] or 'QUERY_READY'
+                reasons[key] = reasons.get(key, 0) + 1
+                if len(samples) < 20:
+                    samples.append({'address': address, 'query': target['query'], 'reason': target['reason']})
+            return {'status': 'DRY_RUN', 'parser_version': gg.PARSER_VERSION, 'addresses': len(addresses),
+                    'pending': len(todo), 'would_attempt': min(cap, sum(1 for a in todo if not gg.geocode_target(a)['reason'])),
+                    'parse_results': reasons, 'samples': samples}
         selected = geocode.select_provider(rm._secret, geocode.requests_get)
         provider = selected['provider']
         if provider is None:
             return {'status': 'NO_PROVIDER', 'blocker': selected['blocker']}
         GG_GEOCODE_CACHE.mkdir(parents=True, exist_ok=True)
-        lookup = _gg_coordinate_lookup()
-        done, verified, failed = 0, 0, 0
-        for address in dict.fromkeys(r['address'] for r in records if r['address']):
-            if done >= max(1, min(limit, 500)):
+        done, verified, failed, parse_failed, reasons = 0, 0, 0, 0, {}
+        for address in todo:
+            if done >= cap:
                 break
-            if lookup(address) is not None:
-                continue
-            done += 1
-            try:
-                result = gg.verify_coordinate(address, provider(geocode.normalize_address(address)))
-            except Exception as exc:  # 망 오류는 캐시에 남기지 않고 다음 실행에서 다시 시도
-                failed += 1
-                logger.warning('gyeonggi geocode failed: %s', type(exc).__name__)
-                continue
-            verified += bool(result.get('coordinate_verified'))
+            target = gg.geocode_target(address)
+            if target['reason']:
+                # 질의를 만들 수 없는 주소는 provider를 부르지 않고 사유만 남긴다.
+                result = gg.verify_coordinate(address, None)
+                parse_failed += 1
+            else:
+                done += 1
+                try:
+                    result = gg.verify_coordinate(address, provider(target['query']))
+                except Exception as exc:  # 망 오류는 캐시에 남기지 않고 다음 실행에서 다시 시도
+                    failed += 1
+                    logger.warning('gyeonggi geocode failed: %s', type(exc).__name__)
+                    continue
+                verified += bool(result.get('coordinate_verified'))
+            key = result.get('reason') or 'VERIFIED'
+            reasons[key] = reasons.get(key, 0) + 1
+            entry = dict(result, address=address, status='VERIFIED' if result.get('coordinate_verified') else 'FAILED',
+                         checked_at=datetime.now(timezone.utc).isoformat())
             (GG_GEOCODE_CACHE / (geocode.cache_key(address) + '.json')).write_text(
-                json.dumps(dict(result, address=address), ensure_ascii=False), encoding='utf-8')
-        return {'status': 'OK', 'provider': selected['name'], 'attempted': done,
-                'verified': verified, 'network_failures': failed}
+                json.dumps(entry, ensure_ascii=False), encoding='utf-8')
+        return {'status': 'OK', 'provider': selected['name'], 'parser_version': gg.PARSER_VERSION, 'attempted': done,
+                'verified': verified, 'network_failures': failed, 'unparseable': parse_failed, 'reasons': reasons,
+                'pending_after': max(0, len(todo) - done - parse_failed - failed)}
     return await run_in_threadpool(run)
