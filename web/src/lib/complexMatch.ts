@@ -62,7 +62,7 @@ export function nameMatches(projectName: string, complexName: string): boolean {
 /** 사업 주소 끝의 지번(본번·부번). '산' 지번이나 지번이 없으면 null/mountain. */
 export function parseLot(address: string | null | undefined) {
   const m = (address ?? "").normalize("NFKC").trim()
-    .match(/(?:^|\s)(산\s*)?(\d+)(?:-(\d+))?(?:\s*번지)?(?:\s*(?:일대|외\s*\d+\s*(?:개\s*)?필지))?\s*$/);
+    .match(/(?:^|\s)(산\s*)?(\d+)(?:-(\d+))?(?:\s*번지)?(?:\s*(?:일대|일원|외\s*\d+\s*(?:개\s*)?필지))?\s*$/);
   return m ? { main: String(Number(m[2])), sub: m[3] ? String(Number(m[3])) : null, mountain: !!m[1] } : null;
 }
 

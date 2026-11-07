@@ -497,3 +497,137 @@ async def development_search(q: DevelopmentQuery):
     return dict(result, projects=projects, total=len(projects),
                 located=sum(1 for p in projects if p['has_location']),
                 location_notice=presentation.NO_LOCATION_NOTICE)
+
+
+# ---------- 경기도 정비사업(경기데이터드림, 읽기 전용) ----------
+# 서울 사업 경로·캐시와 분리한다. 키는 서버 환경변수 GYEONGGI_API_KEY로만 읽고 응답·오류에 담지 않는다.
+from services import gyeonggi_projects as gg  # noqa: E402
+
+GG_GEOCODE_CACHE = BASE_DIR / 'data/development/cache/geocode-gyeonggi'
+
+
+def _gg_http_get(url, params=None, timeout=None):
+    import requests
+    return requests.get(url, params=params, timeout=timeout)
+
+
+def _gg_coordinate_lookup():
+    """관리자가 미리 검증해 둔 좌표만 읽는다(이 경로는 외부 지오코더를 부르지 않는다)."""
+    def lookup(address):
+        path = GG_GEOCODE_CACHE / (geocode.cache_key(address) + '.json')
+        if not path.exists():
+            return None
+        try:
+            return json.loads(path.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return None
+    return lookup
+
+
+def _gg_collect():
+    records, meta = gg.collect(_gg_http_get, rm._secret)
+    gg.attach_coordinates(records, _gg_coordinate_lookup())
+    if not records and meta and all(m.get('code') == 'NOT_CONFIGURED' for m in meta.values()):
+        raise HTTPException(503, '경기데이터드림 인증키가 서버에 설정되지 않았어요.')
+    return records, meta
+
+
+GG_TYPES = {'재개발': lambda p: p['type_label'] == '재개발', '재건축': lambda p: p['type_label'] == '재건축',
+            '주거환경개선': lambda p: p['type_label'] == '주거환경개선',
+            '소규모정비': lambda p: p.get('program_label') == '소규모주택정비'}
+
+
+@router.get('/gyeonggi/projects')
+async def gyeonggi_projects(sigun: str | None = None, dataset: str | None = None, q: str | None = None,
+                            type: str | None = None, include_completed: bool = True,
+                            mappable_only: bool = False, limit: int = 1000, offset: int = 0):
+    """경기도 정비사업 목록. 서울 사업 화면과 같은 모양(DevelopmentProject)에 경기 원본 정보(gyeonggi)를 붙인다."""
+    if sigun and sigun not in gg.GYEONGGI_SIGUN:
+        raise HTTPException(400, '경기도 31개 시·군 이름으로 조회해 주세요.')
+    if dataset and dataset not in gg.DATASETS:
+        raise HTTPException(400, f'dataset은 {", ".join(gg.DATASETS)} 중 하나예요.')
+    if type and type not in GG_TYPES:
+        raise HTTPException(400, f'type은 {", ".join(GG_TYPES)} 중 하나예요.')
+    limit, offset = max(1, min(limit, 2000)), max(0, offset)
+    records, meta = await run_in_threadpool(_gg_collect)
+    projects = [gg.to_project(r) for r in records
+                if (not sigun or r['sigun'] == sigun) and (not dataset or r['source_dataset'] == dataset)
+                and (include_completed or not r['completed']) and (not mappable_only or r['mappable'])]
+    if type:
+        projects = [p for p in projects if GG_TYPES[type](p)]
+    if q and q.strip():
+        needle = q.strip()
+        projects = [p for p in projects if needle in ' '.join(filter(None, [p['name'], p['address'], p['district'], p['dong']]))]
+    return {'status': 'OK' if all(m.get('status') == 'OK' for m in meta.values()) else 'PARTIAL',
+            'total': len(projects), 'items': projects[offset:offset + limit],
+            'completed': sum(1 for p in projects if p['completed']),
+            'datasets': {k: {kk: vv for kk, vv in v.items() if kk != 'mapping'} for k, v in meta.items()},
+            'notes': ['경기데이터드림 목록 자료예요. 판매 중인 매물이 아니에요.',
+                      '면적·세대수·날짜는 원본 값 그대로이며 단위·형식은 확인되지 않았어요.',
+                      '좌표는 검증된 주소만 표시하고, 정비구역 경계는 아직 연결하지 않았어요.']}
+
+
+@router.get('/gyeonggi/projects/{project_id}')
+async def gyeonggi_project_detail(project_id: str):
+    """경기 사업 상세(서울 상세와 같은 모양). 실거래 연결 상태는 서울과 같은 규칙(connections_for)으로 계산한다."""
+    if not project_id.startswith('gg-'):
+        raise HTTPException(422, '경기 사업 번호 형식이 올바르지 않아요.')
+    records, _ = await run_in_threadpool(_gg_collect)
+    record = next((r for r in records if r['project_id'] == project_id), None)
+    if record is None:
+        raise HTTPException(404, '해당 경기 정비사업을 찾을 수 없어요.')
+    connections = await run_in_threadpool(lambda: detail.connections_for(
+        {'geometry_verified': False}, api_status=rm.get_api_status(),
+        coordinate_provider=detail._coordinate_provider_configured()))
+    return gg.detail_for(gg.to_project(record), connections)
+
+
+@router.get('/gyeonggi/regions')
+async def gyeonggi_regions():
+    """경기도 31개 시·군별 사업 수·지도 표시 가능 수·검증 좌표 범위."""
+    records, meta = await run_in_threadpool(_gg_collect)
+    return {'regions': gg.region_summary(records), 'excluded': ['인천광역시'],
+            'datasets': {k: {kk: vv for kk, vv in v.items() if kk != 'mapping'} for k, v in meta.items()}}
+
+
+@router.get('/gyeonggi/quality', dependencies=[Depends(require_admin)])
+async def gyeonggi_quality(include_raw: bool = False, limit: int = 20):
+    """관리자용: 응답 필드·매핑 근거·결측·중복·시군 분포. 키 값은 포함하지 않는다."""
+    records, meta = await run_in_threadpool(_gg_collect)
+    report = gg.quality_report(records, meta)
+    if include_raw:
+        report['samples'] = [gg.public_record(r, include_raw=True) for r in records[:max(1, min(limit, 100))]]
+        report['duplicate_samples'] = [gg.public_record(r, include_raw=True) for r in records if r['duplicate_of']][:max(1, min(limit, 100))]
+    return report
+
+
+@router.post('/gyeonggi/geocode', dependencies=[Depends(require_admin)])
+async def gyeonggi_geocode(limit: int = 50):
+    """관리자용: 주소를 지오코딩해 경기 검증 규칙을 통과한 좌표만 캐시에 남긴다(자동 실행 없음)."""
+    def run():
+        records, _ = gg.collect(_gg_http_get, rm._secret)
+        selected = geocode.select_provider(rm._secret, geocode.requests_get)
+        provider = selected['provider']
+        if provider is None:
+            return {'status': 'NO_PROVIDER', 'blocker': selected['blocker']}
+        GG_GEOCODE_CACHE.mkdir(parents=True, exist_ok=True)
+        lookup = _gg_coordinate_lookup()
+        done, verified, failed = 0, 0, 0
+        for address in dict.fromkeys(r['address'] for r in records if r['address']):
+            if done >= max(1, min(limit, 500)):
+                break
+            if lookup(address) is not None:
+                continue
+            done += 1
+            try:
+                result = gg.verify_coordinate(address, provider(geocode.normalize_address(address)))
+            except Exception as exc:  # 망 오류는 캐시에 남기지 않고 다음 실행에서 다시 시도
+                failed += 1
+                logger.warning('gyeonggi geocode failed: %s', type(exc).__name__)
+                continue
+            verified += bool(result.get('coordinate_verified'))
+            (GG_GEOCODE_CACHE / (geocode.cache_key(address) + '.json')).write_text(
+                json.dumps(dict(result, address=address), ensure_ascii=False), encoding='utf-8')
+        return {'status': 'OK', 'provider': selected['name'], 'attempted': done,
+                'verified': verified, 'network_failures': failed}
+    return await run_in_threadpool(run)

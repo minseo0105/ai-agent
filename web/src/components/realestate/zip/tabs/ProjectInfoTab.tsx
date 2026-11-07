@@ -6,6 +6,7 @@ import StageTimeline from "../../StageTimeline";
 import type { DevelopmentProject, ZoneDetail } from "@/lib/realestate";
 import { NONE, formatArea, formatCount, formatDate } from "@/lib/zipFormat";
 import CheckpointCard from "../CheckpointCard";
+import GyeonggiInfoCard from "../GyeonggiInfoCard";
 import ProcessTimeline from "../ProcessTimeline";
 import type { DetailState } from "../useZoneDetail";
 
@@ -64,6 +65,7 @@ export default function ProjectInfoTab({
   return (
     <div className="space-y-3">
       <ProvenanceStrip project={project} detail={detail} loading={loading} />
+      {project.gyeonggi && <GyeonggiInfoCard info={project.gyeonggi} />}
 
       <section aria-label="현재 사업 단계">
         <div className="flex flex-wrap items-center gap-1.5">

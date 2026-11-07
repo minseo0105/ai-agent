@@ -283,7 +283,40 @@ export type DevelopmentImpactBlock = {
   available: boolean;
 };
 
+/** 경기데이터드림 원본 정보. 필드명은 실제 응답으로 확인됐고, 값의 단위·날짜 형식·최신성은 미검증이다. */
+export type GyeonggiInfo = {
+  dataset: "general" | "small";
+  dataset_title: string;
+  service: string;
+  stage_raw: string | null;
+  stage_std: string;
+  stage_std_label: string | null;
+  sigungu_raw: string | null;
+  values: { key: string; label: string; value: string | null; source_field: string }[];
+  stage_dates: { label: string; value: string | null; source_field: string }[];
+  biz_div: string | null;
+  missing: string[];
+  duplicate_of: string[];
+  duplicate_basis: string[];
+  collected_at: string;
+  freshness_note: string;
+  format_note: string;
+};
+
+export type GyeonggiList = {
+  status: "OK" | "PARTIAL";
+  total: number;
+  items: DevelopmentProject[];
+  completed: number;
+  datasets: Record<string, { status: string; total?: number | null; received?: number; code?: string; message?: string; fetched_at?: string; cache?: string }>;
+  notes: string[];
+};
+
 export type DevelopmentProject = {
+  /** 경기 사업에만 있다(서울 사업은 없음). */
+  sido?: string;
+  completed?: boolean;
+  gyeonggi?: GyeonggiInfo;
   source_date?: string | null;
   notice_date?: string | null;
   project_id: string;
@@ -465,6 +498,10 @@ export const estateApi = {
     ),
   developmentDetail: (projectId: string, init?: ApiInit) =>
     request<ZoneDetail>(`/development/projects/${encodeURIComponent(projectId)}`, init),
+  /** 경기도 정비사업 전체(일반 + 소규모). 서버가 6시간 캐시하고, 실패하면 이전 값을 돌려준다. */
+  gyeonggiProjects: (init?: ApiInit) => request<GyeonggiList>("/gyeonggi/projects?limit=2000", init),
+  gyeonggiDetail: (projectId: string, init?: ApiInit) =>
+    request<ZoneDetail>(`/gyeonggi/projects/${encodeURIComponent(projectId)}`, init),
   developmentNearby: (q: { longitude: number; latitude: number; radius_m?: number; limit?: number }) =>
     post<DevelopmentSearch & { impact: DevelopmentImpactBlock }>("/development/nearby", q),
   development: (q: { sigungu?: string; longitude?: number; latitude?: number; radius_m?: number; limit?: number }) =>
