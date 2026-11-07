@@ -7,6 +7,7 @@ import ZiponMap, { type MapFocus } from "../ZiponMap";
 import DashboardNotices from "./DashboardNotices";
 import DashboardToolbar from "./DashboardToolbar";
 import MobileSheet, { type SheetSnap } from "./MobileSheet";
+import MapStatusBar from "./MapStatusBar";
 import ZoneDetailPanel, { type ZoneTab } from "./ZoneDetailPanel";
 import ZoneList from "./ZoneList";
 import { useZiponDevelopment } from "./useZiponDevelopment";
@@ -162,6 +163,7 @@ export default function ZipDashboard({
           ) : (
             <div className="flex h-full items-center justify-center rounded-2xl border border-border bg-surface-muted text-xs text-muted">지도를 준비하고 있어요…</div>
           )}
+          {data.ready && <MapStatusBar data={data} />}
           {!desktop && !sheetOpen && data.ready && (
             <button
               type="button"

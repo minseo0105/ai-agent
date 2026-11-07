@@ -53,3 +53,19 @@ test("일부 유형 403은 따로 안내, 실패 없으면 null", () => {
   assert.match(t, /연립·다세대·오피스텔 유형은 국토교통부 API 권한/);
   assert.equal(partialFailureText([]), null);
 });
+
+import { aptAnalysis } from "../../web/src/lib/zoneTrades.ts";
+const tr = (date, price, area = 84, type = "아파트") => ({ date, price_100m: price, area, area_basis: "전용면적", property_type: type, price_text: "", name: "", region: "" });
+test("아파트 월별 중위가격·거래량·3.3㎡당, 다른 유형 제외", () => {
+  const rows = [tr("2026-09-02", 9), tr("2026-09-10", 11), tr("2026-09-20", 10), tr("2026-10-01", 12), tr("2026-10-05", 12), tr("2026-10-07", 13), tr("2026-11-01", 14), tr("2026-10-01", 3, 50, "오피스텔")];
+  const a = aptAnalysis(rows, ["202611", "202610", "202609"]);
+  assert.deepEqual(a.months.map((m) => [m.month, m.count, m.median]), [["202609", 3, 10], ["202610", 3, 12], ["202611", 1, 14]]);
+  assert.equal(a.total, 7);
+  assert.ok(Math.abs(a.months[0].perPyeong - (10 / 84) * 3.3058) < 1e-9);
+  assert.match(a.summary, /10월 기준 중위가격이 9월 대비 \+20\.0%/);
+  assert.match(a.summary, /가격 예측이 아닙니다/);
+});
+test("거래 부족·없음은 해석하지 않는다", () => {
+  assert.match(aptAnalysis([tr("2026-10-01", 9)], ["202610"]).summary, /1건뿐/);
+  assert.match(aptAnalysis([], ["202610"]).summary, /거래가 없어요/);
+});

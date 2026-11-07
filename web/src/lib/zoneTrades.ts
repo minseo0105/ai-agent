@@ -79,3 +79,51 @@ export function partialFailureText(errors: string[]): string | null {
     ? `${list} 유형은 국토교통부 API 권한(활용신청)이 없어 조회하지 못했어요(403). 아래는 조회된 유형만의 거래입니다.`
     : `${list} 유형은 조회하지 못했어요. 아래는 조회된 유형만의 거래입니다.`;
 }
+
+/** 아파트 매매 월별 요약(이미 받은 3개월 거래만 사용, 추가 호출 없음). 가격 단위는 억원. */
+export type AptMonth = { month: string; count: number; median: number | null; perPyeong: number | null };
+export type AptAnalysis = { months: AptMonth[]; total: number; summary: string };
+
+const median = (xs: number[]): number | null => {
+  if (!xs.length) return null;
+  const s = [...xs].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+};
+const PYEONG = 3.3058;
+
+export function aptAnalysis(rows: ZoneTradeRow[], months: string[]): AptAnalysis {
+  const apt = rows.filter((r) => r.property_type === "아파트" && r.price_100m > 0);
+  const ordered = [...months].sort(); // 오래된 달부터
+  const list: AptMonth[] = ordered.map((ym) => {
+    const inMonth = apt.filter((r) => r.date.replace(/-/g, "").slice(0, 6) === ym);
+    const unit = inMonth.filter((r) => r.area > 0 && (r.area_basis ?? "전용면적") === "전용면적").map((r) => (r.price_100m / r.area) * PYEONG);
+    return { month: ym, count: inMonth.length, median: median(inMonth.map((r) => r.price_100m)), perPyeong: median(unit) };
+  });
+  const total = list.reduce((n, m) => n + m.count, 0);
+  return { months: list, total, summary: interpret(list, total) };
+}
+
+function interpret(list: AptMonth[], total: number): string {
+  if (total === 0) return "조회 기간에 이 동의 아파트 매매 거래가 없어요.";
+  if (total < 5) return `아파트 거래가 ${total}건뿐이라 가격 흐름을 해석하기 어려워요(개별 거래 참고).`;
+  // 가장 최근 달은 신고 기한(계약 후 30일)이 지나지 않아 건수가 적게 잡힐 수 있다. 앞의 두 달을 비교한다.
+  const [a, b] = list.length >= 3 ? [list[0], list[1]] : [list[0], list[list.length - 1]];
+  const parts: string[] = [];
+  if (a.median && b.median && a.count >= 3 && b.count >= 3) {
+    const pct = ((b.median - a.median) / a.median) * 100;
+    parts.push(Math.abs(pct) < 3 ? "중위가격은 큰 변화가 없어요" : `중위가격이 ${fmtMonth(a.month)} 대비 ${pct > 0 ? "+" : ""}${pct.toFixed(1)}%예요`);
+  } else {
+    parts.push("월별 거래가 적어 중위가격 비교는 참고만 해 주세요");
+  }
+  if (a.count && b.count) {
+    const v = ((b.count - a.count) / a.count) * 100;
+    parts.push(Math.abs(v) < 20 ? "거래량은 비슷해요" : `거래량은 ${v > 0 ? "늘었어요" : "줄었어요"}(${a.count}→${b.count}건)`);
+  }
+  return `${fmtMonth(b.month)} 기준 ${parts.join(", ")}. 최근 달은 신고가 덜 들어왔을 수 있어요. 단순 통계이며 가격 예측이 아닙니다.`;
+}
+
+export const fmtMonth = (ym: string) => `${Number(ym.slice(4))}월`;
+
+/** 전용면적 3.3㎡(1평)당 표기. 화면 문구는 여기서만 가져다 쓴다. */
+export const PER_PYEONG_LABEL = "3.3㎡당";
