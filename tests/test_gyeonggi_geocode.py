@@ -100,6 +100,19 @@ class VerifyTests(unittest.TestCase):
         r = gg.verify_coordinate("경기도 고양시 덕양구 토당동 251-12번지 일원", resp(cand("토당동", "251-12"), cand("토당동", "251-12", lon=126.86)))
         self.assertEqual((r["coordinate_verified"], r["reason"]), (False, "MULTIPLE_CANDIDATES"))
 
+    def test_every_candidate_is_checked_not_only_the_first_ten(self):
+        a = "경기도 고양시 덕양구 토당동 251-12번지 일원"
+        noise = [cand("토당동", f"251-{n}") for n in range(20, 30)]  # 10건, 모두 지번 불일치
+        # 1번째와 12번째가 모두 정확히 맞으면 하나로 확정하지 않는다.
+        r = gg.verify_coordinate(a, resp(cand("토당동", "251-12"), *noise, cand("토당동", "251-12", lon=126.86)))
+        self.assertEqual((r["coordinate_verified"], r["reason"], r["candidate_count"], r["passing_count"]), (False, "MULTIPLE_CANDIDATES", 12, 2))
+        self.assertEqual(len(r["diagnostics"]), gg.MAX_DIAGNOSTICS)
+        self.assertTrue(r["diagnostics_truncated"])
+        # 유일한 일치 후보가 12번째에 있어도 찾는다.
+        only_last = gg.verify_coordinate(a, resp(*noise, cand("토당동", "251-1"), cand("토당동", "251-12")))
+        self.assertTrue(only_last["coordinate_verified"])
+        self.assertEqual(only_last["candidate_count"], 12)
+
     def test_mountain_lot_must_match_mountain(self):
         a = "경기도 양평군 양평읍 양근리 산 12-3번지 일원"
         plain = cand("양평읍", "12-3", sigungu="양평군", ri="양근리", lon=127.5, lat=37.49, jibun="경기도 양평군 양평읍 양근리 12-3")
@@ -167,6 +180,7 @@ class RouteTests(unittest.TestCase):
         self.assertEqual(out["status"], "DRY_RUN")
         self.assertEqual(out["pending"], 3)  # 예전 실패 1 + 처음 1 + 지번 없음 1
         self.assertEqual(out["parse_results"], {"QUERY_READY": 2, "NO_LOT": 1})
+        self.assertEqual((out["expected_api_calls"], out["unparseable_recorded"], out["deferred"]), (2, 1, 0))
 
     def test_old_failures_are_retried_with_clean_queries_and_successes_kept(self):
         with tempfile.TemporaryDirectory() as d:
@@ -174,7 +188,7 @@ class RouteTests(unittest.TestCase):
             self.seed(cache)
             out, calls = self.run_route(cache, limit=10)
             self.assertEqual(calls, ["경기도 고양시 덕양구 행신동 222", "경기도 고양시 덕양구 고양동 22-2"])
-            self.assertEqual((out["attempted"], out["verified"], out["unparseable"]), (2, 2, 1))
+            self.assertEqual((out["api_calls"], out["verified"], out["unparseable_recorded"]), (2, 2, 1))
             import services.development_geocode as geo
             saved = json.loads((cache / (geo.cache_key(self.ADDRS[1]) + ".json")).read_text(encoding="utf-8"))
             self.assertEqual((saved["status"], saved["parser_version"], saved["address"]), ("VERIFIED", gg.PARSER_VERSION, self.ADDRS[1]))
@@ -185,11 +199,32 @@ class RouteTests(unittest.TestCase):
             forced, calls3 = self.run_route(cache, limit=10, retry_failed=True)
             self.assertEqual(calls3, ["경기도 고양시 덕양구 토당동 251-12"])
 
+    def test_plan_order_matches_limit(self):
+        ok = lambda n: f"경기도 고양시 덕양구 관산동 {n}번지 일원"
+        bad = lambda n: f"경기도 고양시 덕양구 관산{n}동 일원"
+        plan = gg.plan_geocode([ok(1), bad(1), ok(2), bad(2), ok(3)], 2)
+        self.assertEqual([action for _, action, _ in plan], ["CALL", "SKIP_UNPARSEABLE", "CALL", "DEFER", "DEFER"])
+
+    def test_dry_run_counts_match_the_real_run(self):
+        order = [self.ADDRS[4], self.ADDRS[1], self.ADDRS[3]]  # 지번 없음, 예전 실패, 처음
+        for limit in (1, 2, 10):
+            with tempfile.TemporaryDirectory() as d:
+                cache = Path(d) / "c"
+                with mock.patch.object(self, "ADDRS", order):
+                    dry, calls = self.run_route(cache, limit=limit, dry_run=True)
+                    self.assertEqual(calls, [])
+                    real, calls = self.run_route(cache, limit=limit)
+                self.assertEqual(dry["expected_api_calls"], len(calls), limit)
+                self.assertEqual(dry["expected_api_calls"], real["api_calls"], limit)
+                self.assertEqual(dry["unparseable_recorded"], real["unparseable_recorded"], limit)
+                self.assertEqual(dry["deferred"], real["deferred"], limit)
+                self.assertEqual(dry["expected_api_calls"] + dry["unparseable_recorded"] + dry["deferred"], dry["pending"])
+
     def test_limit_caps_provider_calls(self):
         with tempfile.TemporaryDirectory() as d:
             out, calls = self.run_route(Path(d) / "c", limit=1)
         self.assertEqual(len(calls), 1)
-        self.assertEqual(out["attempted"], 1)
+        self.assertEqual(out["api_calls"], 1)
 
 
 if __name__ == "__main__":

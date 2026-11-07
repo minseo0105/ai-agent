@@ -491,6 +491,7 @@ ACCEPTED_ACCURACY = ("PARCEL", "BUILDING", "ROAD_ADDRESS")
 
 
 PARSER_VERSION = 2  # 지오코딩 질의 주소 규칙 버전. 실패 캐시는 버전이 다르면 다시 시도한다.
+MAX_DIAGNOSTICS = 10  # 캐시에 남기는 후보별 진단 수(검증은 모든 후보에 한다)
 
 
 def geocode_target(address):
@@ -563,8 +564,11 @@ def verify_coordinate(address, response):
         return dict(base, reason="ADDRESS_HAS_NO_LOT_OR_SIGUN", parse_reason=target["reason"])
     if not response or response.get("result_status") != "MATCHED":
         return dict(base, reason="NO_MATCH", provider_status=(response or {}).get("result_status"))
+    # 모든 후보를 검증한다(앞쪽 일부만 보면 뒤에 숨은 두 번째 일치 후보를 놓쳐 잘못 확정할 수 있다).
+    # 저장하는 진단만 앞 MAX_DIAGNOSTICS건으로 줄인다.
+    candidates = response.get("candidates") or []
     passing, diagnostics = [], []
-    for c in (response.get("candidates") or [])[:10]:
+    for c in candidates:
         lon, lat = c.get("longitude"), c.get("latitude")
         el = c.get("address_elements") or {}
         if el:
@@ -596,17 +600,38 @@ def verify_coordinate(address, response):
             GYEONGGI_BOUNDS["longitude"][0] <= lon <= GYEONGGI_BOUNDS["longitude"][1] and \
             GYEONGGI_BOUNDS["latitude"][0] <= lat <= GYEONGGI_BOUNDS["latitude"][1]
         failed = sorted(k for k, ok in checks.items() if not ok)
-        diagnostics.append({"matched_address": c.get("matched_address"), "accuracy": c.get("accuracy"), "failed_checks": failed})
+        if len(diagnostics) < MAX_DIAGNOSTICS:
+            diagnostics.append({"matched_address": c.get("matched_address"), "accuracy": c.get("accuracy"), "failed_checks": failed})
         if not failed:
             passing.append(c)
     if len(passing) != 1:
         return dict(base, reason="NO_CANDIDATE_PASSED" if not passing else "MULTIPLE_CANDIDATES",
-                    candidate_count=len(response.get("candidates") or []), diagnostics=diagnostics,
+                    candidate_count=len(candidates), passing_count=len(passing), diagnostics=diagnostics,
+                    diagnostics_truncated=len(candidates) > MAX_DIAGNOSTICS,
                     failed_checks=sorted({f for d in diagnostics for f in d["failed_checks"]}))
     c = passing[0]
     return dict(base, coordinate_verified=True, latitude=c["latitude"], longitude=c["longitude"],
                 geocode_source=response.get("provider"), matched_address=c.get("matched_address"), reason=None,
-                candidate_count=len(response.get("candidates") or []))
+                candidate_count=len(candidates))
+
+
+def plan_geocode(addresses, cap):
+    """실제 실행과 dry run이 같은 순서·같은 규칙을 쓰도록 주소별 처리를 정한다.
+
+    CALL: provider를 부른다(최대 cap건). SKIP_UNPARSEABLE: 질의를 만들 수 없어 부르지 않고 사유만 기록한다.
+    DEFER: 이번 실행에서 처리하지 않는다(cap에 닿은 뒤의 주소, 파싱 실패 주소 포함).
+    """
+    plan, calls = [], 0
+    for address in addresses:
+        target = geocode_target(address)
+        if calls >= cap:
+            plan.append((address, "DEFER", target))
+        elif target["reason"]:
+            plan.append((address, "SKIP_UNPARSEABLE", target))
+        else:
+            plan.append((address, "CALL", target))
+            calls += 1
+    return plan
 
 
 def needs_geocode(entry, retry_failed=False):
