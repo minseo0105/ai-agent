@@ -14,6 +14,7 @@ export type BudgetResult = {
   gap: number | null; // available − need (음수면 부족)
   ceiling: number | null; // 같은 가정에서 감당 가능한 최대 매입가격(만원)
   contributionIncluded: boolean;
+  missingCosts: string[]; // 비어 있어 0원으로 계산된 비용(직접 0을 입력한 경우는 포함하지 않음)
   debtMultiple: number | null; // (기존 부채 + 입력 대출) ÷ 연소득, 규제 지표 아님
   notes: string[];
 };
@@ -28,6 +29,8 @@ export function budgetCheck(b: Budget, sim: SimInputs, r: SimResult): BudgetResu
   const need = sim.purchasePrice === null ? null : sim.purchasePrice + extra - n0(sim.loanAmount);
   const ceiling = available === null ? null : Math.max(0, available + n0(sim.loanAmount) - extra);
   const debtMultiple = b.income && b.income > 0 ? (n0(b.debt) + n0(sim.loanAmount)) / b.income : null;
+  // 빈칸(null)과 직접 입력한 0을 구분한다. 빈칸만 "미입력"이다.
+  const missingCosts = [sim.acquisitionCost === null && "취득 관련 비용", !contributionIncluded && "추가분담금"].filter((x): x is string => !!x);
   const notes = [
     "대출금액은 입력한 가정값이에요. LTV·DSR 등 규제 한도는 계산하지 않았으니 금융기관에서 확인하세요.",
     "부채 ÷ 연소득은 부채 잔액 기준 단순 배수로, 연간 원리금 상환액 기준인 DSR이 아니에요.",
@@ -35,7 +38,7 @@ export function budgetCheck(b: Budget, sim: SimInputs, r: SimResult): BudgetResu
   if (!contributionIncluded) notes.push("추가분담금이 빠져 있어요. 감정평가액·비례율·조합원 분양가를 넣으면 반영돼요.");
   if (b.homes === "1" || b.homes === "2+") notes.push("주택을 보유하면 취득세율과 대출 가능 여부가 달라질 수 있어요. 취득 관련 비용과 대출금액을 최신 규정으로 확인해 입력하세요.");
   if (sim.acquisitionCost === null) notes.push("취득 관련 비용(취득세·중개보수·법무비)이 비어 있어 최대 매입가격이 실제보다 크게 나올 수 있어요.");
-  return { available, need, gap: available !== null && need !== null ? available - need : null, ceiling, contributionIncluded, debtMultiple, notes };
+  return { available, need, gap: available !== null && need !== null ? available - need : null, ceiling, contributionIncluded, missingCosts, debtMultiple, notes };
 }
 
 const median = (xs: number[]): number | null => {

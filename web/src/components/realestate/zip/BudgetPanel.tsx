@@ -70,7 +70,12 @@ export default function BudgetPanel({ sim, result, onCeiling }: { sim: SimInputs
         <dt className="text-muted">매수 시 필요한 자기자금</dt><dd className="text-right font-bold">{r.need === null ? "매입가격 입력 필요" : formatManwon(r.need)}</dd>
         <dt className="text-muted">여유 / 부족</dt>
         <dd className={`text-right font-extrabold ${r.gap !== null && r.gap < 0 ? "text-red-600 dark:text-red-400" : ""}`}>{r.gap === null ? "—" : r.gap < 0 ? `부족 ${formatManwon(-r.gap)}` : `여유 ${formatManwon(r.gap)}`}</dd>
-        <dt className="text-muted">같은 가정의 최대 매입가격</dt><dd className="text-right font-bold">{r.ceiling === null ? "—" : formatManwon(r.ceiling)}</dd>
+        <dt className="text-muted">{r.missingCosts.length ? "입력된 비용 기준 가정 한도" : "같은 가정의 최대 매입가격"}</dt><dd className="text-right font-bold">{r.ceiling === null ? "—" : formatManwon(r.ceiling)}</dd>
+        {r.ceiling !== null && r.missingCosts.length > 0 && (
+          <dd data-missing-costs className="col-span-2 text-[11px] font-semibold text-amber-800 dark:text-amber-300">
+            미입력: {r.missingCosts.join("·")}(0원으로 계산). 실제 매수 가능 한도가 아니며, 비용을 넣으면 낮아질 수 있어요.
+          </dd>
+        )}
         <dt className="text-muted">(기존 부채 + 입력 대출) ÷ 연소득 · DSR 아님</dt><dd className="text-right">{r.debtMultiple === null ? "—" : `${r.debtMultiple.toFixed(1)}배`}</dd>
       </dl>
       <ul className="list-disc space-y-0.5 pl-4 text-[11px] leading-relaxed text-muted">

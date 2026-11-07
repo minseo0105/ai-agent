@@ -32,13 +32,13 @@ export function RegionReview({ project, projects, trades, apiKeyConfigured, ceil
   return (
     <section data-region-review aria-label="지역별 매수 검토" className="space-y-2 rounded-xl border border-border px-3 py-2.5">
       <h3 className="text-xs font-extrabold">지역별 매수 검토 · {project.district} <span className="font-semibold text-subtle">동일 법정동 참고 실거래</span></h3>
-      <p className="text-[11px] text-subtle">{periodText(trades.months)} · {SCOPE_NOTE} {ceiling === null ? "예산(보유 현금)을 입력하면 예산 이하 거래 수를 보여 줘요." : `예산 기준 최대 매입가격 ${formatManwon(ceiling)} 이하 거래를 셉니다.`}</p>
+      <p className="text-[11px] text-subtle">{periodText(trades.months)} · {SCOPE_NOTE} {ceiling === null ? "예산(보유 현금)을 입력하면 예산 이하 거래 수를 보여 줘요." : `입력한 가정 기준 한도 ${formatManwon(ceiling)} 이하 거래 사례를 셉니다.`}</p>
       <TradeStatus t={trades} apiKeyConfigured={apiKeyConfigured} />
       {!trades.loading && trades.rows.length > 0 && rows.length > 0 && (
         <div className="max-h-72 overflow-auto rounded-lg border border-border">
           <table className="w-full text-left text-[11px]">
             <thead className="sticky top-0 bg-surface-muted text-subtle">
-              <tr><th className="px-2 py-1">법정동</th><th className="px-2 py-1">정비사업 (단계 · 위험)</th><th className="px-2 py-1 text-right">거래</th><th className="px-2 py-1 text-right">중위가</th><th className="px-2 py-1 text-right">예산 이하</th></tr>
+              <tr><th className="px-2 py-1">법정동</th><th className="px-2 py-1">정비사업 (단계 · 위험)</th><th className="px-2 py-1 text-right">거래</th><th className="px-2 py-1 text-right">중위가</th><th className="px-2 py-1 text-right">예산 이하{failed.length > 0 && "*"}</th></tr>
             </thead>
             <tbody>
               {rows.map((d) => (
@@ -50,11 +50,16 @@ export function RegionReview({ project, projects, trades, apiKeyConfigured, ceil
                   </td>
                   <td className="px-2 py-1 text-right">{d.trades === 0 ? (failed.length ? "0 (조회된 유형 기준)" : "0") : d.trades}{d.types.length > 0 && <div className="text-subtle">{d.types.join("·")}</div>}</td>
                   <td className="whitespace-nowrap px-2 py-1 text-right">{eok(d.median)}</td>
-                  <td className="px-2 py-1 text-right font-bold">{d.withinBudget === null ? "—" : d.withinBudget}</td>
+                  <td className="px-2 py-1 text-right font-bold">{d.withinBudget === null ? "—" : d.withinBudget === 0 && failed.length ? "0 (조회된 유형 기준)" : d.withinBudget}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          {failed.length > 0 && (
+            <p data-scope-note className="border-t border-border px-2 py-1.5 text-[11px] text-amber-800 dark:text-amber-300">
+              * 거래·예산 이하 건수는 조회에 성공한 유형만 센 거래 사례 수예요. {failed.join("·")} 유형은 조회하지 못해(403·실패) 빠져 있으며, 거래가 0건이라는 뜻이 아니에요.
+            </p>
+          )}
         </div>
       )}
       {guide && (

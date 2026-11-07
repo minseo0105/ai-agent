@@ -22,6 +22,15 @@ test("예산: 필요 자기자금·여유/부족·최대 매입가격, 대출은
   assert.ok(r.notes.some((n) => /주택을 보유하면/.test(n)));
 });
 
+test("예산: 빈칸 비용은 미입력으로, 직접 입력한 0원은 입력으로 구분", () => {
+  const blank = sim({ purchasePrice: 100000, loanAmount: 50000 });
+  assert.deepEqual(budgetCheck({ cash: 60000, reserve: 0, income: null, debt: null, homes: "" }, blank, calculate(blank)).missingCosts, ["취득 관련 비용", "추가분담금"]);
+  const zero = sim({ purchasePrice: 100000, loanAmount: 50000, acquisitionCost: 0, appraisedValue: 80000, proportionalRate: 100, memberSalePrice: 80000 });
+  const r = budgetCheck({ cash: 60000, reserve: 0, income: null, debt: null, homes: "" }, zero, calculate(zero));
+  assert.deepEqual(r.missingCosts, []);
+  assert.equal(r.ceiling, 110000); // 계산식은 그대로
+});
+
 test("예산: 추가분담금이 있으면 필요 자기자금에 포함, 현금 미입력이면 최대가 없음", () => {
   const s = sim({ purchasePrice: 80000, appraisedValue: 50000, proportionalRate: 100, memberSalePrice: 70000 });
   const r = budgetCheck({ cash: null, reserve: null, income: null, debt: null, homes: "" }, s, calculate(s));
