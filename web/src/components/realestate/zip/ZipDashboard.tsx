@@ -124,6 +124,7 @@ export default function ZipDashboard({
       }}
       onClose={desktop ? undefined : () => setSelectedId(null)}
       onOpenTradeSearch={onOpenTradeSearch}
+      allProjects={data.projects}
     />
   ) : (
     <ZoneList data={data} onSelect={(id) => select(id, "list")} />

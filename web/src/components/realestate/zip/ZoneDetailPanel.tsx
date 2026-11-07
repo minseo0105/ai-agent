@@ -22,7 +22,7 @@ export type ZoneTab = (typeof ZONE_TABS)[number]["id"];
  * 같은 화면에 채운다. 목록에 없는 사업(필터·완료사업 숨김)은 상세 응답만으로 그린다.
  */
 export default function ZoneDetailPanel({
-  projectId, row, detailState, retry, tab, onTab, onBack, onClose, onOpenTradeSearch,
+  projectId, row, detailState, retry, tab, onTab, onBack, onClose, onOpenTradeSearch, allProjects,
 }: {
   projectId: string;
   row: DevelopmentProject | null;
@@ -33,6 +33,7 @@ export default function ZoneDetailPanel({
   onBack: () => void;
   onClose?: () => void;
   onOpenTradeSearch?: () => void;
+  allProjects?: DevelopmentProject[];
 }) {
   const detail: ZoneDetail | null = detailState.status === "ready" ? detailState.data : null;
   const project = detail?.project ?? row;
@@ -122,7 +123,7 @@ export default function ZoneDetailPanel({
         ) : tab === "trades" ? (
           <TradesTab state={detailState} project={project} onOpenTradeSearch={onOpenTradeSearch} />
         ) : tab === "invest" ? (
-          <InvestmentTab projectId={projectId} />
+          <InvestmentTab projectId={projectId} project={project} state={detailState} allProjects={allProjects} />
         ) : (
           <TradeGuideTab project={project} timeline={detail?.process_timeline ?? null} state={detailState} />
         )}
