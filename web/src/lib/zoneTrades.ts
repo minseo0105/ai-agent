@@ -6,7 +6,7 @@
  *       / EMPTY(조회는 됐지만 거래 없음) / OK(거래 있음)
  */
 export type ZoneTradeRow = { date: string; price_text: string; price_100m: number; area: number; area_basis?: string;
-  property_type: string; name: string; region: string; detail?: Record<string, string> };
+  property_type: string; name: string; region: string; detail?: Record<string, string>; floor?: string; build_year?: string };
 
 /** 계약 해제(취소) 신고된 거래는 시세 참고에서 뺀다. 국토부 cdealType 값이 있으면 해제 건이다. */
 export function withoutCancelled<T extends { detail?: Record<string, string> }>(rows: T[]): T[] {

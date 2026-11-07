@@ -7,6 +7,7 @@ import {
   type SimDeltas, type SimInputs, type SimKey, type SimResult,
 } from "@/lib/investmentCalc";
 import { parseNumberInput } from "@/lib/zipFormat";
+import BudgetPanel from "./BudgetPanel";
 
 const FIELDS: { key: SimKey; label: string; unit: string; hint?: string }[] = [
   { key: "purchasePrice", label: "매입가격", unit: "만원", hint: "매도인에게 지급하는 금액. 취득 관련 비용은 따로 입력해요." },
@@ -63,7 +64,7 @@ const ROWS: { label: string; note?: string; get: (r: SimResult) => string; stron
  * 투자금·추가분담금 시뮬레이터. 입력값은 모두 사용자가 정한 가정이며 공식 사업 자료가 아니다.
  * 계산은 lib/investmentCalc(단위 테스트로 관계식·중복 계산 방지 검증)가 하고, 이 화면은 입력과 표시만 한다.
  */
-export default function InvestmentSimulator({ projectId }: { projectId: string }) {
+export default function InvestmentSimulator({ projectId, onCeiling }: { projectId: string; onCeiling?: (manwon: number | null) => void }) {
   const storageKey = `zip:sim:v1:${projectId}`;
   const [values, setValues] = useState<Record<SimKey, string>>(EMPTY);
   const [deltas, setDeltas] = useState<Deltas>(cloneDeltas);
@@ -152,6 +153,8 @@ export default function InvestmentSimulator({ projectId }: { projectId: string }
           입력 지우기
         </button>
       </div>
+
+      <BudgetPanel sim={inputs} result={base} onCeiling={onCeiling} />
 
       <section aria-label="계산 결과">
         <h3 className="text-[11px] font-extrabold tracking-wide text-muted">시나리오 비교 (같은 계산식)</h3>

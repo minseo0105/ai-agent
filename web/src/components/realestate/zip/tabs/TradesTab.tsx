@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
-import { estateApi, type Connections, type DevelopmentProject } from "@/lib/realestate";
-import { PER_PYEONG_LABEL, STATUS_TEXT, aptAnalysis, classify, fmtMonth, partialFailureText, periodText, recentMonths, regionLabel, sameDong, withoutCancelled, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
+import { type ReactNode } from "react";
+import type { Connections, DevelopmentProject } from "@/lib/realestate";
+import { PER_PYEONG_LABEL, STATUS_TEXT, aptAnalysis, classify, fmtMonth, partialFailureText, periodText, sameDong, type ZoneTradeRow, type ZoneTradeStatus } from "@/lib/zoneTrades";
 import FeatureStatusCard, { type StatusRow, type StatusTone } from "../FeatureStatusCard";
 import type { DetailState } from "../useZoneDetail";
+import { useDistrictTrades } from "../useDistrictTrades";
 
 const MATCHING_TEXT: Record<Connections["trades"]["zone_matching"], string> = {
   BLOCKED_NO_VERIFIED_BOUNDARY: "공식 경계가 확인되지 않아 구역 안·밖 거래를 분류할 수 없음",
@@ -13,7 +14,6 @@ const MATCHING_TEXT: Record<Connections["trades"]["zone_matching"], string> = {
 };
 
 /** 실거래 탭. 연결 상태는 서버가 알려준 값(connections.trades)만 근거로 표시한다. */
-const TYPES = ["아파트", "연립·다세대", "단독·다가구", "오피스텔"];
 const SHOW_LIMIT = 30;
 
 /**
@@ -85,39 +85,13 @@ function AptSummary({ rows, months }: { rows: ZoneTradeRow[]; months: string[] }
 
 /** 국토부 실거래 중 이 사업과 같은 법정동의 최근 거래. 구역 안 여부는 판단하지 않는다. */
 function RecentTrades({ project, apiKeyConfigured }: { project: DevelopmentProject; apiKeyConfigured: boolean }) {
-  const region = regionLabel(project.district);
-  const [months] = useState(() => recentMonths(new Date()));
-  const [result, setResult] = useState<{ status: ZoneTradeStatus | "LOADING"; rows: ZoneTradeRow[]; errors?: string[] }>({ status: "LOADING", rows: [] });
-  useEffect(() => {
-    let alive = true;
-    if (!apiKeyConfigured || !region) {
-      setResult({ status: apiKeyConfigured ? "FAILED" : "NOT_CONNECTED", rows: [] });
-      return;
-    }
-    setResult({ status: "LOADING", rows: [] });
-    (async () => {
-      const rows: ZoneTradeRow[] = [];
-      const errors: string[] = [];
-      // 3개월을 동시에 요청한다(서버가 유형별 호출을 제한적으로 병렬 처리하고 결과를 30분 캐시한다).
-      const settled = await Promise.allSettled(
-        months.map((month) => estateApi.trades({ regions: [region], property_types: TYPES, month })),
-      );
-      for (const r of settled) {
-        if (r.status === "fulfilled") {
-          rows.push(...r.value.items);
-          errors.push(...r.value.errors);
-        } else {
-          errors.push((r.reason as Error)?.message ?? String(r.reason));
-        }
-      }
-      if (!alive) return;
-      const local = withoutCancelled(sameDong(rows, project.dong)).sort((a, b) => b.date.localeCompare(a.date));
-      setResult({ status: classify({ apiKeyConfigured, rows: local, errors }), rows: local, errors });
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [apiKeyConfigured, region, project.dong, months]);
+  const { loading, region, rows: districtRows, errors, months } = useDistrictTrades(project.district, apiKeyConfigured);
+  const local = sameDong(districtRows, project.dong);
+  const result: { status: ZoneTradeStatus | "LOADING"; rows: ZoneTradeRow[]; errors?: string[] } = loading
+    ? { status: "LOADING", rows: [] }
+    : !apiKeyConfigured || !region
+      ? { status: apiKeyConfigured ? "FAILED" : "NOT_CONNECTED", rows: [] }
+      : { status: classify({ apiKeyConfigured, rows: local, errors }), rows: local, errors };
 
   const scope = [project.district, project.dong].filter(Boolean).join(" ");
   if (result.status === "LOADING") {
